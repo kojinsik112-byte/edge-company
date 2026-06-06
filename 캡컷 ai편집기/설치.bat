@@ -33,14 +33,24 @@ echo 가상환경(.venv)을 만듭니다...
 call .venv\Scripts\activate.bat
 
 echo.
-echo 필요한 프로그램을 설치합니다. (처음엔 몇 분 걸릴 수 있어요)
+echo [1/2] 필수 구성요소를 설치합니다. (무음컷/숏츠/브랜딩 + ffmpeg)
 python -m pip install --upgrade pip
-pip install -r requirements.txt
+pip install pyyaml imageio-ffmpeg
 if errorlevel 1 (
   echo.
-  echo [오류] 설치 중 문제가 발생했습니다. 인터넷 연결을 확인하고 다시 시도하세요.
+  echo [오류] 필수 구성요소 설치에 실패했습니다. 인터넷 연결을 확인하고 다시 시도하세요.
   pause
   exit /b 1
+)
+
+echo.
+echo [2/2] 자막(AI 음성인식) 구성요소를 설치합니다.
+pip install faster-whisper
+if errorlevel 1 (
+  echo.
+  echo [참고] 자막 기능 설치에 실패했습니다. ^(파이썬 최신 버전 호환 문제일 수 있어요^)
+  echo        걱정 마세요 — 무음컷 / 숏츠 / 인트로·아웃트로·BGM 은 정상 동작합니다.
+  echo        자막까지 쓰고 싶으면 알려주세요. 해결 방법을 안내해 드립니다.
 )
 
 echo.
