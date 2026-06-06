@@ -1,0 +1,9 @@
+# Windows 배치 파일은 항상 CRLF 줄바꿈 유지 (cmd 호환)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 그 외 텍스트는 LF
+*.py text eol=lf
+*.md text eol=lf
+*.yaml text eol=lf
+*.txt text eol=lf
