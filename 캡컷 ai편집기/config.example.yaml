@@ -7,10 +7,10 @@ silence:
 
 subtitle:
   enabled: true
-  model: small         # tiny / base / small / medium / large-v3
+  model: base          # tiny / base / small / medium / large-v3 (클수록 정확하지만 느림)
   language: ko
   burn_in: true        # 영상에 자막 굽기
-  font: NanumGothic
+  font: Malgun Gothic  # 한국어 Windows 기본 한글 폰트
   font_size: 22
 
 shorts:
@@ -30,5 +30,5 @@ output:
   width: 1920
   height: 1080
   fps: 30
-  crf: 20              # 화질(낮을수록 고화질)
-  preset: medium
+  crf: 22              # 화질(낮을수록 고화질)
+  preset: veryfast     # 인코딩 속도(veryfast=빠름, medium/slow=고화질·느림)

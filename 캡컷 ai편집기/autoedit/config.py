@@ -31,10 +31,10 @@ class SubtitleConfig:
     """자동 자막(번인) 설정."""
 
     enabled: bool = True
-    model: str = "small"         # whisper 모델 크기 (tiny/base/small/medium/large-v3)
+    model: str = "base"          # whisper 모델 크기 (tiny/base/small/medium/large-v3). base=빠름·괜찮은 정확도
     language: Optional[str] = "ko"
     burn_in: bool = True         # True면 영상에 자막을 구워 넣는다
-    font: str = "NanumGothic"
+    font: str = "Malgun Gothic"  # 한국어 Windows 기본 한글 폰트 (맑은 고딕)
     font_size: int = 22
     primary_color: str = "&H00FFFFFF"   # ASS 색상 (흰색)
     outline_color: str = "&H00000000"   # 검정 외곽선
@@ -77,8 +77,8 @@ class OutputConfig:
     height: int = 1080
     fps: int = 30
     video_codec: str = "libx264"
-    crf: int = 20                # 화질 (낮을수록 고화질, 18~23 권장)
-    preset: str = "medium"
+    crf: int = 22                # 화질 (낮을수록 고화질, 18~23 권장)
+    preset: str = "veryfast"     # 인코딩 속도 (veryfast=빠름. 더 고화질 원하면 medium/slow)
     audio_bitrate: str = "192k"
 
 
