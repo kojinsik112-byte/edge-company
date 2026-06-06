@@ -1,0 +1,31 @@
+# 파이썬
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# autoedit 출력/임시
+output/
+autoedit_*/
+*.srt
+
+# 브랜딩 자원(용량 큰 미디어는 커밋하지 않음)
+assets/*.mp4
+assets/*.mov
+assets/*.mp3
+assets/*.wav
+!assets/.gitkeep
+
+# 영상 원본/결과
+*.mp4
+*.mov
+*.mkv
+*.avi
+!tests/**/*.mp4
+
+# OS
+.DS_Store

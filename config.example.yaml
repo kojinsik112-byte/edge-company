@@ -1,0 +1,34 @@
+# autoedit 설정 파일 — 필요한 값만 바꿔 쓰면 됩니다.
+silence:
+  enabled: true
+  noise_db: -30.0      # 이보다 조용하면 무음으로 간주
+  min_silence: 0.6     # 잘라낼 무음 최소 길이(초)
+  keep_pad: 0.15       # 말 앞뒤로 남길 여유(초)
+
+subtitle:
+  enabled: true
+  model: small         # tiny / base / small / medium / large-v3
+  language: ko
+  burn_in: true        # 영상에 자막 굽기
+  font: NanumGothic
+  font_size: 22
+
+shorts:
+  enabled: true
+  count: 3             # 만들 숏츠 개수
+  min_duration: 20
+  max_duration: 58
+
+branding:
+  enabled: true
+  intro: intro.mp4     # assets/ 폴더 기준 상대경로 (없으면 자동 건너뜀)
+  outro: outro.mp4
+  bgm: bgm.mp3
+  bgm_volume: 0.12
+
+output:
+  width: 1920
+  height: 1080
+  fps: 30
+  crf: 20              # 화질(낮을수록 고화질)
+  preset: medium
