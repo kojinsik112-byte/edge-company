@@ -1,6 +1,7 @@
-# Windows 배치 파일은 항상 CRLF 줄바꿈 유지 (cmd 호환)
-*.bat text eol=crlf
-*.cmd text eol=crlf
+# Windows 배치 파일은 cp949(한국어) 인코딩 + CRLF 바이트를 그대로 보존해야 하므로
+# binary 로 표시해 git의 인코딩/줄바꿈 자동 변환을 막는다.
+*.bat binary
+*.cmd binary
 
 # 그 외 텍스트는 LF
 *.py text eol=lf

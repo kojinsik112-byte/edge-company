@@ -1,43 +1,42 @@
 @echo off
-REM ASCII-only content to avoid Korean codepage parsing issues on Windows.
+chcp 949 >/dev/null
 cd /d "%~dp0"
 
 if "%~1"=="" (
   echo ============================================
-  echo    CapCut AI Editor
+  echo    캡컷 AI 편집기
+  echo.
+  echo   사용법: 촬영한 영상 파일을 마우스로 집어서
+  echo           이 파일 위로 끌어다 놓으세요.
   echo ============================================
-  echo.
-  echo  How to use: drag your recorded video file
-  echo  and drop it onto THIS batch file.
-  echo.
   pause
   exit /b 0
 )
 
 if not exist ".venv\Scripts\activate.bat" (
-  echo [ERROR] Please run the SETUP batch file first.
+  echo [오류] 먼저 "설치.bat" 을 한 번 실행해 주세요.
   pause
   exit /b 1
 )
 
 call .venv\Scripts\activate.bat
-echo Editing: %~1
-echo ^(This can take a while depending on video length. Do not close this window.^)
+echo 편집 시작: %~1
+echo 영상 길이에 따라 시간이 걸립니다. 창을 닫지 마세요.
 echo.
 python -m autoedit.cli edit "%~1" -o output -v
 if errorlevel 1 (
   echo.
-  echo [ERROR] Editing failed. Please check the messages above.
+  echo [오류] 편집 중 문제가 발생했습니다. 위 메시지를 확인하세요.
   pause
   exit /b 1
 )
 
 echo.
 echo ============================================
-echo    DONE!  Results are in the "output" folder:
-echo      - Final video : output\(name)_edited.mp4
-echo      - Subtitles   : output\(name).srt
-echo      - Shorts      : output\shorts\
+echo    완료! 결과는 output 폴더에 있습니다.
+echo      - 완성 영상은 output 폴더 안의 _edited.mp4
+echo      - 자막은 .srt 파일
+echo      - 숏츠는 output\shorts\ 폴더
 echo ============================================
 explorer "%~dp0output"
 pause
