@@ -32,7 +32,7 @@ call .venv\Scripts\activate.bat
 echo.
 echo [1/2] 핵심 구성요소 설치 중 ... 무음컷 / 숏츠 / 브랜딩 + ffmpeg
 python -m pip install --upgrade pip
-pip install pyyaml imageio-ffmpeg
+pip install pyyaml imageio-ffmpeg anthropic
 if errorlevel 1 (
   echo.
   echo [오류] 핵심 구성요소 설치 실패. 인터넷 연결을 확인하고 다시 시도하세요.

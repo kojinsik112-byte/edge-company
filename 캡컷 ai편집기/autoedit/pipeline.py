@@ -77,13 +77,17 @@ def _remove_fillers(
 
 
 def _speech_only_cut(
-    video: Path, captions: List[Caption], work_dir: Path, config: Config
+    video: Path,
+    captions: List[Caption],
+    work_dir: Path,
+    config: Config,
+    extra_drop: Optional[set] = None,
 ) -> tuple[Path, List[Caption]]:
     """말하는 단어만 남기는 과감한 컷.
 
     제거 대상: ① 말 안 하는 구간(준비·응시·무음) ② 단어 사이의 뜸들임/멈춤
-    ③ 추임새("어/아/음") ④ 같은 말 반복(재촬영 NG). 단어별 타임스탬프가 있으면
-    단어 단위로 잘라 문장 내부의 침묵까지 제거한다.
+    ③ 추임새("어/아/음") ④ 같은 말 반복(재촬영 NG) ⑤ AI가 판단한 비문·잡담·의미중복.
+    단어별 타임스탬프가 있으면 단어 단위로 잘라 문장 내부의 침묵까지 제거한다.
     """
     from .fillers import _shift, is_filler
     from .redundancy import find_duplicate_indices
@@ -92,6 +96,8 @@ def _speech_only_cut(
     sil = config.silence
 
     dup = find_duplicate_indices(captions)
+    if extra_drop:
+        dup = dup | set(extra_drop)
     kept = [
         c
         for i, c in enumerate(captions)
@@ -255,10 +261,21 @@ def process(
                 logger.warning("음성 분석 건너뜀: %s", exc)
 
         if captions and config.silence.enabled and config.silence.speech_only:
-            # 말하는 구간만 남기고 무음·준비·응시·추임새·반복 전부 컷
-            logger.info("[2/5] 과감한 컷 (무음/준비/응시/추임새/반복 제거)")
+            # AI 스마트 편집: 자막 '내용'을 이해해 비문·잡담·의미중복까지 컷 대상 선정
+            smart_drop: set = set()
+            if config.smart_edit.enabled:
+                from .smart_edit import SmartEditUnavailable, analyze
+
+                try:
+                    smart_drop = analyze(captions, config.smart_edit)
+                    result.steps.append("AI 스마트편집")
+                except SmartEditUnavailable as exc:
+                    logger.info("AI 스마트 편집 건너뜀(휴리스틱 사용): %s", exc)
+
+            # 말하는 구간만 남기고 무음·준비·응시·추임새·반복·잡담 전부 컷
+            logger.info("[2/5] 과감한 컷 (무음/준비/응시/추임새/반복/잡담 제거)")
             current, captions = _speech_only_cut(
-                current, captions, work_dir, config
+                current, captions, work_dir, config, extra_drop=smart_drop
             )
             result.steps.append("과감한 컷")
         elif config.silence.enabled:

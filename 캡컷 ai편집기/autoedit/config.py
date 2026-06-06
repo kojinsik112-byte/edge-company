@@ -125,6 +125,15 @@ class MetadataConfig:
 
 
 @dataclass
+class SmartEditConfig:
+    """AI 스마트 편집 설정 (자막 내용을 이해해 반복·비문·잡담 컷)."""
+
+    enabled: bool = True         # API 키가 있으면 사용, 없으면 자동으로 휴리스틱 폴백
+    model: str = "claude-opus-4-8"
+    api_key: Optional[str] = None  # 비워두면 ANTHROPIC_API_KEY 또는 api_key.txt 사용
+
+
+@dataclass
 class Config:
     silence: SilenceConfig = field(default_factory=SilenceConfig)
     audio: AudioConfig = field(default_factory=AudioConfig)
@@ -133,6 +142,7 @@ class Config:
     branding: BrandingConfig = field(default_factory=BrandingConfig)
     thumbnail: ThumbnailConfig = field(default_factory=ThumbnailConfig)
     metadata: MetadataConfig = field(default_factory=MetadataConfig)
+    smart_edit: SmartEditConfig = field(default_factory=SmartEditConfig)
     output: OutputConfig = field(default_factory=OutputConfig)
 
     @classmethod
@@ -154,6 +164,7 @@ class Config:
             ("branding", BrandingConfig),
             ("thumbnail", ThumbnailConfig),
             ("metadata", MetadataConfig),
+            ("smart_edit", SmartEditConfig),
             ("output", OutputConfig),
         ):
             if section in data and isinstance(data[section], dict):

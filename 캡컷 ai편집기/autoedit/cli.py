@@ -63,6 +63,11 @@ thumbnail:
 metadata:
   enabled: true        # 제목/설명/해시태그/챕터 자동 생성
 
+smart_edit:
+  enabled: true        # AI가 자막 내용을 이해해 반복·비문·잡담까지 컷 (API 키 있을 때)
+  model: claude-opus-4-8
+  api_key:             # 비워두면 api_key.txt 또는 ANTHROPIC_API_KEY 사용
+
 branding:
   enabled: true
   intro: intro.mp4     # assets/ 폴더 기준 상대경로 (없으면 자동 건너뜀)
