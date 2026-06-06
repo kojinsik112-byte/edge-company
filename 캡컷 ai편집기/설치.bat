@@ -1,5 +1,5 @@
 @echo off
-chcp 949 >/dev/null
+chcp 949 >nul
 cd /d "%~dp0"
 echo ============================================
 echo    캡컷 AI 편집기 - 설치
@@ -8,9 +8,9 @@ echo.
 
 REM 파이썬 찾기: py 런처 우선, 그다음 python (Microsoft Store 가짜 별칭 제외)
 set "PY="
-py -3 --version >/dev/null 2>/dev/null && set "PY=py -3"
-if not defined PY ( py --version >/dev/null 2>/dev/null && set "PY=py" )
-if not defined PY ( python --version >/dev/null 2>/dev/null && set "PY=python" )
+py -3 --version >nul 2>nul && set "PY=py -3"
+if not defined PY ( py --version >nul 2>nul && set "PY=py" )
+if not defined PY ( python --version >nul 2>nul && set "PY=python" )
 
 if not defined PY (
   echo [오류] 파이썬을 찾을 수 없습니다.

@@ -1,5 +1,5 @@
 @echo off
-chcp 949 >/dev/null
+chcp 949 >nul
 cd /d "%~dp0"
 
 if "%~1"=="" (
