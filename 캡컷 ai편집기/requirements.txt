@@ -1,5 +1,6 @@
 # autoedit 실행에 필요한 파이썬 패키지
-# (영상 처리는 시스템에 설치된 ffmpeg 를 사용합니다 — README 참고)
+# (imageio-ffmpeg 가 ffmpeg 바이너리를 자동 동봉하므로 별도 설치 없이도 동작합니다)
 
 faster-whisper>=1.0.0   # 자동 자막(음성 인식)
 pyyaml>=6.0             # 설정 파일(YAML)
+imageio-ffmpeg>=0.4.9   # ffmpeg 자동 동봉 (시스템에 ffmpeg 없을 때 자동 사용)

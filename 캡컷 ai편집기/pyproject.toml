@@ -12,6 +12,7 @@ license = { text = "MIT" }
 dependencies = [
     "faster-whisper>=1.0.0",
     "pyyaml>=6.0",
+    "imageio-ffmpeg>=0.4.9",
 ]
 
 [project.optional-dependencies]

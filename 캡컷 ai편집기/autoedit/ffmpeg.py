@@ -7,9 +7,11 @@ ffprobe가 없는 환경(정적 ffmpeg 단독 설치 등)을 대비해 길이 �
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import List, Optional
 
@@ -24,15 +26,52 @@ def _which(name: str) -> Optional[str]:
     return shutil.which(name)
 
 
+def _try_bundled_ffmpeg() -> bool:
+    """시스템 ffmpeg가 없을 때 imageio-ffmpeg에 동봉된 바이너리를 PATH에 끼워 넣는다.
+
+    imageio-ffmpeg는 OS에 맞는 ffmpeg 정적 바이너리를 자동으로 내려받아 제공한다.
+    바이너리 이름이 `ffmpeg`가 아니므로(예: ffmpeg-win64-...exe) 'ffmpeg'(.exe)라는
+    이름으로 캐시 폴더에 복사한 뒤 그 폴더를 PATH 맨 앞에 추가한다.
+    이렇게 하면 사용자가 ffmpeg를 따로 설치하지 않아도 동작한다.
+    """
+    try:
+        import imageio_ffmpeg  # type: ignore
+
+        src = imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:  # noqa: BLE001
+        return False
+    if not src or not os.path.exists(src):
+        return False
+
+    cache = Path(tempfile.gettempdir()) / "autoedit_bin"
+    cache.mkdir(exist_ok=True)
+    dst = cache / ("ffmpeg.exe" if os.name == "nt" else "ffmpeg")
+    try:
+        if not dst.exists():
+            shutil.copy2(src, dst)
+            if os.name != "nt":
+                os.chmod(dst, 0o755)
+    except Exception:  # noqa: BLE001
+        # 복사가 안 되면 원본 폴더라도 PATH에 추가 시도
+        cache = Path(src).parent
+    os.environ["PATH"] = str(cache) + os.pathsep + os.environ.get("PATH", "")
+    return _which("ffmpeg") is not None
+
+
 def ensure_ffmpeg() -> None:
-    """ffmpeg 실행 파일이 PATH에 있는지 확인하고, 없으면 안내와 함께 예외를 던진다."""
-    if _which("ffmpeg") is None:
-        raise FFmpegError(
-            "ffmpeg 를 찾을 수 없습니다. 먼저 설치하세요.\n"
-            "  macOS:  brew install ffmpeg\n"
-            "  Ubuntu: sudo apt install ffmpeg\n"
-            "  Windows: https://www.gyan.dev/ffmpeg/builds/ 에서 받아 PATH 등록"
-        )
+    """ffmpeg 실행 파일을 확보한다. 시스템 → 동봉(imageio-ffmpeg) 순으로 찾는다."""
+    if _which("ffmpeg") is not None:
+        return
+    if _try_bundled_ffmpeg():
+        logger.info("동봉된 ffmpeg(imageio-ffmpeg)를 사용합니다.")
+        return
+    raise FFmpegError(
+        "ffmpeg 를 찾을 수 없습니다. 아래 중 하나로 해결하세요.\n"
+        "  · 가장 쉬움:  pip install imageio-ffmpeg   (ffmpeg 자동 동봉)\n"
+        "  · macOS:      brew install ffmpeg\n"
+        "  · Ubuntu:     sudo apt install ffmpeg\n"
+        "  · Windows:    https://www.gyan.dev/ffmpeg/builds/ 에서 받아 PATH 등록"
+    )
 
 
 def run(args: List[str], *, quiet: bool = True) -> subprocess.CompletedProcess:

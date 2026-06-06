@@ -16,28 +16,43 @@
 
 각 단계는 켜고 끌 수 있고, 필요한 자원(인트로 등)이 없으면 자동으로 건너뜁니다.
 
-## 설치
+---
 
-### 1) ffmpeg (필수)
+## 🪟 Windows 사용자 — 가장 쉬운 방법 (명령어 몰라도 OK)
 
-영상 처리는 시스템 `ffmpeg` 를 사용합니다.
+영상은 **본인 컴퓨터에서** 편집합니다. 어디 올릴 필요 없고, 용량 제한도 없습니다.
+
+1. **파이썬 설치** (한 번만)
+   - https://www.python.org/downloads/ 에서 다운로드 → 설치
+   - ⚠️ 설치 첫 화면에서 **"Add Python to PATH"** 체크 필수!
+2. 이 폴더(`캡컷 ai편집기`)를 컴퓨터에 내려받습니다.
+   ([GitHub에서 **Code → Download ZIP**] 으로 받아 압축 풀기)
+3. **`설치.bat`** 더블클릭 → 자동으로 모든 게 설치됩니다 (ffmpeg 포함, 몇 분 소요)
+4. 편집할 영상을 **`편집하기.bat`** 위로 **마우스로 끌어다 놓기(드래그&드롭)**
+5. 끝! 잠시 기다리면 `output` 폴더에 **완성 영상 + 자막 + 숏츠**가 생깁니다.
+
+> ffmpeg는 `설치.bat`이 자동으로 챙기므로 따로 설치할 필요가 없습니다.
+
+---
+
+## 설치 (명령줄 / 개발자용)
+
+### 1) 파이썬 패키지
+
+```bash
+pip install -r requirements.txt
+# 또는 패키지로 설치 (autoedit 명령 등록)
+pip install -e .
+```
+
+`imageio-ffmpeg` 가 함께 설치되어 **ffmpeg 가 자동 동봉**됩니다 — 시스템에 ffmpeg가 없어도 동작합니다.
+직접 설치하고 싶다면(더 빠름):
 
 ```bash
 # macOS
 brew install ffmpeg
 # Ubuntu / Debian
 sudo apt install ffmpeg
-# Windows: https://www.gyan.dev/ffmpeg/builds/ 에서 받아 PATH 에 등록
-```
-
-설치 확인: `ffmpeg -version`
-
-### 2) 파이썬 패키지
-
-```bash
-pip install -r requirements.txt
-# 또는 패키지로 설치 (autoedit 명령 등록)
-pip install -e .
 ```
 
 > 자막 생성에 쓰는 `faster-whisper` 는 첫 실행 시 모델을 자동으로 내려받습니다.
