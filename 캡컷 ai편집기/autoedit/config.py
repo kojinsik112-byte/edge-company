@@ -36,11 +36,12 @@ class SubtitleConfig:
     language: Optional[str] = "ko"
     burn_in: bool = True         # True면 영상에 자막을 구워 넣는다
     font: str = "Malgun Gothic"  # 한국어 Windows 기본 한글 폰트 (맑은 고딕)
-    font_size: int = 22
+    # 아래 크기 값들은 모두 "실제 픽셀" 단위다(가로 1920×세로 1080 본편 기준).
+    font_size: int = 48          # 본편 자막 글자 크기(px)
     primary_color: str = "&H00FFFFFF"   # ASS 색상 (흰색)
     outline_color: str = "&H00000000"   # 검정 외곽선
-    outline: int = 2
-    margin_v: int = 40           # 화면 하단 여백 (px)
+    outline: int = 3             # 외곽선 두께(px) — 배경 위에서도 잘 보이게
+    margin_v: int = 60           # 화면 하단 여백 (px)
     max_line_chars: int = 28     # 한 줄 최대 글자수 (넘으면 줄바꿈)
 
 
@@ -55,8 +56,10 @@ class ShortsConfig:
     width: int = 1080
     height: int = 1920
     burn_subtitles: bool = True
-    font_size: int = 14          # 세로 영상은 자막을 더 크게
-    margin_v: int = 320          # 세로 영상 자막 하단 여백
+    # 세로 숏츠(1080×1920) 기준 "실제 픽셀" 단위.
+    font_size: int = 56          # 숏츠 자막 글자 크기(px) — 너무 키우면 양옆이 짤린다
+    margin_v: int = 220          # 자막 하단 여백(px) — 하단 UI/진행바 위로 띄움
+    max_line_chars: int = 16     # 한 줄 최대 글자수 — 좁은 세로 화면에 맞춰 짧게
 
 
 @dataclass

@@ -6,6 +6,7 @@ faster-whisper 미설치 시 명확한 안내와 함께 자막 단계만 건너�
 
 from __future__ import annotations
 
+import re
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
@@ -99,6 +100,45 @@ def write_srt(captions: List[Caption], out_path: Path, max_chars: int = 0) -> Pa
         lines.append("")
     out_path.write_text("\n".join(lines), encoding="utf-8")
     return out_path
+
+
+_TS = re.compile(r"(\d+):(\d{2}):(\d{2})[,\.](\d{1,3})")
+
+
+def _parse_timestamp(text: str) -> Optional[float]:
+    """SRT 타임스탬프(HH:MM:SS,mmm)를 초로 변환한다. 형식이 아니면 None."""
+    m = _TS.search(text)
+    if not m:
+        return None
+    h, mm, ss, ms = m.groups()
+    return int(h) * 3600 + int(mm) * 60 + int(ss) + int(ms.ljust(3, "0")) / 1000.0
+
+
+def parse_srt(path: Path) -> List[Caption]:
+    """SRT 파일을 읽어 자막 구간 목록으로 되돌린다.
+
+    사용자가 메모장 등으로 오타를 직접 고친 SRT 를 다시 불러올 때 쓴다.
+    빈 줄로 구분된 블록 단위로 파싱하며, 번호 줄과 타임코드 줄을 제외한
+    나머지를 한 줄(공백으로 연결)로 합친다. 시간/형식이 어긋난 블록은 건너뛴다.
+    """
+    raw = Path(path).read_text(encoding="utf-8-sig")
+    captions: List[Caption] = []
+    for block in re.split(r"\r?\n\s*\r?\n", raw.strip()):
+        lines = [ln.strip() for ln in block.splitlines() if ln.strip()]
+        if not lines:
+            continue
+        # 타임코드 줄 찾기 ("--> " 포함). 보통 첫째(번호) 다음 줄.
+        ts_idx = next((i for i, ln in enumerate(lines) if "-->" in ln), None)
+        if ts_idx is None:
+            continue
+        left, _, right = lines[ts_idx].partition("-->")
+        start, end = _parse_timestamp(left), _parse_timestamp(right)
+        if start is None or end is None or end <= start:
+            continue
+        text = " ".join(lines[ts_idx + 1:]).strip()
+        if text:
+            captions.append(Caption(start=start, end=end, text=text))
+    return captions
 
 
 def slice_captions(

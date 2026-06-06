@@ -33,13 +33,20 @@ subtitle:
   language: ko
   burn_in: true        # 영상에 자막 굽기
   font: NanumGothic
-  font_size: 22
+  # 크기 값은 "실제 픽셀" 단위(본편 1920x1080 기준)
+  font_size: 48        # 본편 자막 글자 크기(px)
+  margin_v: 60         # 화면 하단 여백(px)
+  max_line_chars: 28   # 한 줄 최대 글자수
 
 shorts:
   enabled: true
   count: 3             # 만들 숏츠 개수
   min_duration: 20
   max_duration: 58
+  # 세로 숏츠용 자막(픽셀 단위). 키우면 양옆이 짤리니 주의.
+  font_size: 56        # 숏츠 자막 글자 크기(px)
+  margin_v: 220        # 자막 하단 여백(px)
+  max_line_chars: 16   # 좁은 세로 화면에 맞춰 짧게
 
 branding:
   enabled: true
@@ -75,6 +82,12 @@ def _build_parser() -> argparse.ArgumentParser:
     p_edit.add_argument("--no-subtitles", action="store_true", help="자막 비활성화")
     p_edit.add_argument("--no-shorts", action="store_true", help="숏츠 비활성화")
     p_edit.add_argument("--no-branding", action="store_true", help="인트로/아웃트로/BGM 비활성화")
+    p_edit.add_argument(
+        "--srt",
+        type=Path,
+        default=None,
+        help="오타를 직접 고친 자막(.srt)을 사용 (음성 인식 건너뜀)",
+    )
     p_edit.add_argument("--shorts-count", type=int, default=None, help="숏츠 개수")
     p_edit.add_argument("--whisper-model", type=str, default=None, help="Whisper 모델 크기")
     p_edit.add_argument("--keep-temp", action="store_true", help="임시 작업 파일 보존")
@@ -116,6 +129,7 @@ def cmd_edit(args: argparse.Namespace) -> int:
             cfg,
             assets_dir=args.assets,
             keep_temp=args.keep_temp,
+            srt_override=args.srt,
         )
     except (FFmpegError, FileNotFoundError) as exc:
         logger.error("%s", exc)

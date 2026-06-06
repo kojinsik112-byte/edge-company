@@ -11,13 +11,21 @@ subtitle:
   language: ko
   burn_in: true        # 영상에 자막 굽기
   font: Malgun Gothic  # 한국어 Windows 기본 한글 폰트
-  font_size: 22
+  # 아래 크기 값은 모두 "실제 픽셀" 단위(본편 1920x1080 기준)
+  font_size: 48        # 본편 자막 글자 크기(px)
+  outline: 3           # 외곽선 두께(px)
+  margin_v: 60         # 화면 하단 여백(px)
+  max_line_chars: 28   # 한 줄 최대 글자수(넘으면 줄바꿈)
 
 shorts:
   enabled: true
   count: 3             # 만들 숏츠 개수
   min_duration: 20
   max_duration: 58
+  # 세로 숏츠(1080x1920)용 자막 — 키우면 양옆이 짤리니 주의(픽셀 단위)
+  font_size: 56        # 숏츠 자막 글자 크기(px)
+  margin_v: 220        # 자막 하단 여백(px)
+  max_line_chars: 16   # 좁은 세로 화면에 맞춰 한 줄을 짧게
 
 branding:
   enabled: true

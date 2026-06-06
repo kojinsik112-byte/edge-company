@@ -6,7 +6,14 @@ from autoedit.utils import (
     merge_intervals,
     invert_intervals,
 )
-from autoedit.transcribe import Caption, slice_captions, _wrap
+from autoedit.transcribe import (
+    Caption,
+    slice_captions,
+    write_srt,
+    parse_srt,
+    _parse_timestamp,
+    _wrap,
+)
 from autoedit.shorts import _score_windows, _select_non_overlapping
 from autoedit.config import ShortsConfig, Config
 
@@ -74,3 +81,35 @@ def test_config_defaults():
     assert cfg.silence.enabled is True
     assert cfg.shorts.width == 1080 and cfg.shorts.height == 1920
     assert cfg.output.width == 1920 and cfg.output.height == 1080
+    # 숏츠 자막은 좁은 세로 화면에 맞게 본편보다 한 줄을 짧게 끊는다.
+    assert cfg.shorts.max_line_chars < cfg.subtitle.max_line_chars
+
+
+def test_parse_timestamp():
+    assert _parse_timestamp("00:00:00,000") == 0.0
+    assert _parse_timestamp("01:01:01,500") == 3661.5
+    # 점(.) 구분자도 허용
+    assert _parse_timestamp("00:00:02.250") == 2.25
+    assert _parse_timestamp("타임코드 아님") is None
+
+
+def test_parse_srt_roundtrip(tmp_path):
+    caps = [Caption(0.0, 2.0, "안녕하세요"), Caption(3.5, 5.0, "반갑습니다")]
+    srt = write_srt(caps, tmp_path / "x.srt")
+    out = parse_srt(srt)
+    assert [c.text for c in out] == ["안녕하세요", "반갑습니다"]
+    assert out[0].start == 0.0 and out[0].end == 2.0
+    assert out[1].start == 3.5 and out[1].end == 5.0
+
+
+def test_parse_srt_skips_bad_blocks(tmp_path):
+    # BOM, 여러 줄 자막, 형식이 깨진 블록이 섞여 있어도 견고하게 파싱한다.
+    text = (
+        "﻿1\n00:00:00,000 --> 00:00:02,000\n첫 줄\n둘째 줄\n\n"
+        "2\n잘못된 타임코드\n버릴 블록\n\n"
+        "3\n00:00:03,000 --> 00:00:04,000\n끝\n"
+    )
+    p = tmp_path / "messy.srt"
+    p.write_text(text, encoding="utf-8")
+    out = parse_srt(p)
+    assert [c.text for c in out] == ["첫 줄 둘째 줄", "끝"]

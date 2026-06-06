@@ -139,7 +139,7 @@ def render_short(
         clip_caps = slice_captions(captions, highlight.start, highlight.end)
         if clip_caps:
             srt = write_srt(
-                clip_caps, work_dir / f"short_{index}.srt", sub_cfg.max_line_chars
+                clip_caps, work_dir / f"short_{index}.srt", cfg.max_line_chars
             )
             burn_subtitles(
                 raw,
@@ -149,6 +149,7 @@ def render_short(
                 out_cfg,
                 font_size=cfg.font_size,
                 margin_v=cfg.margin_v,
+                video_size=(cfg.width, cfg.height),
             )
             raw.unlink(missing_ok=True)
             return out_path

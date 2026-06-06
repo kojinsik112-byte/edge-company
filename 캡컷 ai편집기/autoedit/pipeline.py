@@ -21,7 +21,7 @@ from .config import Config
 from .ffmpeg import ensure_ffmpeg, probe_duration
 from .silence import cut_silence
 from .subtitles import burn_subtitles
-from .transcribe import Caption, WhisperUnavailable, transcribe, write_srt
+from .transcribe import Caption, WhisperUnavailable, parse_srt, transcribe, write_srt
 from .shorts import make_shorts
 from .utils import fmt_duration, logger
 
@@ -41,8 +41,13 @@ def process(
     *,
     assets_dir: Optional[Path] = None,
     keep_temp: bool = False,
+    srt_override: Optional[Path] = None,
 ) -> PipelineResult:
-    """원본 영상 한 개를 받아 완성 영상과 숏츠를 만든다."""
+    """원본 영상 한 개를 받아 완성 영상과 숏츠를 만든다.
+
+    srt_override 가 주어지면 음성 인식을 건너뛰고 그 SRT(사용자가 오타를 직접
+    고친 자막)를 본편/숏츠에 그대로 사용한다.
+    """
     ensure_ffmpeg()
     input_video = input_video.resolve()
     if not input_video.exists():
@@ -74,17 +79,31 @@ def process(
         # ── 2) 자막 생성 ─────────────────────────────────────────────
         captions: Optional[List[Caption]] = None
         if config.subtitle.enabled:
-            logger.info("[2/4] 자동 자막 생성")
+            srt_out = output_dir / f"{stem}.srt"
             try:
-                captions = transcribe(current, work_dir, config.subtitle)
-                srt_out = output_dir / f"{stem}.srt"
-                write_srt(captions, srt_out, config.subtitle.max_line_chars)
+                if srt_override is not None:
+                    if not srt_override.exists():
+                        raise FileNotFoundError(
+                            f"지정한 자막 파일을 찾을 수 없습니다: {srt_override}"
+                        )
+                    logger.info("[2/4] 수정된 자막 사용: %s", srt_override)
+                    captions = parse_srt(srt_override)
+                    logger.info("자막 구간 %d개 불러옴", len(captions))
+                    # 본편 출력 폴더에도 동일 자막을 남겨 추적 가능하게 한다.
+                    write_srt(captions, srt_out, config.subtitle.max_line_chars)
+                    result.steps.append("수정 자막 적용")
+                else:
+                    logger.info("[2/4] 자동 자막 생성")
+                    captions = transcribe(current, work_dir, config.subtitle)
+                    write_srt(captions, srt_out, config.subtitle.max_line_chars)
+                    result.steps.append("자막 생성")
                 result.srt = srt_out
-                result.steps.append("자막 생성")
 
                 if config.subtitle.burn_in and captions:
                     logger.info("자막 번인(굽기)")
                     burned = work_dir / "subbed.mp4"
+                    # video_size 미지정 → 실제 영상 해상도를 자동 측정해 픽셀 기준을 맞춘다.
+                    # (무음 컷은 원본 해상도를 유지하므로 출력 설정값으로 단정하지 않는다.)
                     burn_subtitles(
                         current, srt_out, burned, config.subtitle, config.output
                     )
