@@ -15,7 +15,7 @@ from autoedit.transcribe import (
     _wrap,
 )
 from autoedit.shorts import _score_windows, _select_non_overlapping, _resolve_sfx
-from autoedit.subtitles import build_force_style
+from autoedit.subtitles import build_ass, _ass_timestamp, _ass_text
 from autoedit.config import ShortsConfig, SubtitleConfig, Config
 
 
@@ -89,20 +89,45 @@ def test_config_defaults():
     assert cfg.shorts.background_box is True
 
 
-def test_force_style_background_box():
-    # 박스 모드면 BorderStyle=3 + 박스색을 OutlineColour 로 사용한다.
-    boxed = build_force_style(
-        "맑은고딕", 56, "&H00FFFFFF", "&H00000000", 3, 220,
+def test_ass_timestamp():
+    assert _ass_timestamp(0) == "0:00:00.00"
+    assert _ass_timestamp(3661.5) == "1:01:01.50"
+    assert _ass_timestamp(-1) == "0:00:00.00"
+
+
+def test_ass_text_escapes_and_wraps():
+    # 줄바꿈은 \\N 으로, 태그 문자({})는 제거된다.
+    out = _ass_text("가나다라마바사아자차", 4)
+    assert "\\N" in out and "\n" not in out
+    assert _ass_text("a{b}c", 0) == "a(b)c"
+
+
+def test_build_ass_pixel_accurate(tmp_path):
+    caps = [Caption(0.0, 2.0, "픽셀 크기 테스트")]
+    # PlayRes 를 영상 크기에 고정 → Fontsize 가 픽셀 단위가 된다.
+    p = build_ass(
+        caps, tmp_path / "x.ass", dims=(1080, 1920), font="Malgun Gothic",
+        font_size=58, primary_color="&H00FFFFFF", outline_color="&H00000000",
+        outline=3, margin_v=220, max_line_chars=16,
+    )
+    text = p.read_text(encoding="utf-8")
+    assert "PlayResX: 1080" in text and "PlayResY: 1920" in text
+    assert "Fontsize" in text and ",58," in text
+    assert "BorderStyle" in text and "Dialogue: 0,0:00:00.00,0:00:02.00" in text
+
+    # 배경 박스 모드: BorderStyle=3, 박스색을 OutlineColour 로 사용.
+    pb = build_ass(
+        caps, tmp_path / "b.ass", dims=(1080, 1920), font="Malgun Gothic",
+        font_size=58, primary_color="&H00FFFFFF", outline_color="&H00000000",
+        outline=3, margin_v=220, max_line_chars=16,
         background_box=True, box_color="&H80000000", box_pad=14,
     )
-    assert "BorderStyle=3" in boxed
-    assert "OutlineColour=&H80000000" in boxed
-    assert "Outline=14" in boxed
-    # 일반 모드면 BorderStyle=1 + 외곽선.
-    plain = build_force_style(
-        "맑은고딕", 48, "&H00FFFFFF", "&H00000000", 3, 60,
-    )
-    assert "BorderStyle=1" in plain and "Outline=3" in plain
+    style = [ln for ln in pb.read_text(encoding="utf-8").splitlines()
+             if ln.startswith("Style:")][0]
+    parts = style.split(",")
+    assert parts[5] == "3"            # BorderStyle
+    assert parts[4] == "&H80000000"   # OutlineColour = 박스색
+    assert parts[6] == "14"           # Outline = 박스 여백
 
 
 def test_resolve_sfx(tmp_path):

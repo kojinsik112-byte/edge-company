@@ -115,10 +115,11 @@ def process(
                 if config.subtitle.burn_in and captions:
                     logger.info("자막 번인(굽기)")
                     burned = work_dir / "subbed.mp4"
-                    # video_size 미지정 → 실제 영상 해상도를 자동 측정해 픽셀 기준을 맞춘다.
+                    # 자막은 captions(=고친 SRT 포함)에서 직접 ASS로 구워 픽셀 크기를 정확히 맞춘다.
+                    # video_size 미지정 → 실제 영상 해상도를 자동 측정.
                     # (무음 컷은 원본 해상도를 유지하므로 출력 설정값으로 단정하지 않는다.)
                     burn_subtitles(
-                        current, srt_out, burned, config.subtitle, config.output
+                        current, captions, burned, config.subtitle, config.output
                     )
                     current = burned
                     result.steps.append("자막 번인")

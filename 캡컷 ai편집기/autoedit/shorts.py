@@ -14,7 +14,7 @@ from .audio import overlay_start_sfx
 from .config import OutputConfig, ShortsConfig, SubtitleConfig
 from .ffmpeg import probe_duration, run
 from .subtitles import burn_subtitles
-from .transcribe import Caption, slice_captions, write_srt
+from .transcribe import Caption, slice_captions
 from .utils import fmt_duration, logger
 
 
@@ -143,12 +143,9 @@ def render_short(
         else []
     )
     if clip_caps:
-        srt = write_srt(
-            clip_caps, work_dir / f"short_{index}.srt", cfg.max_line_chars
-        )
         burn_subtitles(
             raw,
-            srt,
+            clip_caps,
             out_path,
             sub_cfg,
             out_cfg,
@@ -156,6 +153,7 @@ def render_short(
             margin_v=cfg.margin_v,
             video_size=(cfg.width, cfg.height),
             background_box=cfg.background_box,
+            max_line_chars=cfg.max_line_chars,
         )
         raw.unlink(missing_ok=True)
     else:
