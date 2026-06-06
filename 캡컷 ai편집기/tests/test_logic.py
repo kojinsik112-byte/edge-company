@@ -14,8 +14,9 @@ from autoedit.transcribe import (
     _parse_timestamp,
     _wrap,
 )
-from autoedit.shorts import _score_windows, _select_non_overlapping
-from autoedit.config import ShortsConfig, Config
+from autoedit.shorts import _score_windows, _select_non_overlapping, _resolve_sfx
+from autoedit.subtitles import build_force_style
+from autoedit.config import ShortsConfig, SubtitleConfig, Config
 
 
 def test_fmt_timestamp():
@@ -83,6 +84,38 @@ def test_config_defaults():
     assert cfg.output.width == 1920 and cfg.output.height == 1080
     # 숏츠 자막은 좁은 세로 화면에 맞게 본편보다 한 줄을 짧게 끊는다.
     assert cfg.shorts.max_line_chars < cfg.subtitle.max_line_chars
+    # 볼륨 균일화는 기본 켜짐, 숏츠 배경 박스도 기본 켜짐.
+    assert cfg.output.normalize_audio is True
+    assert cfg.shorts.background_box is True
+
+
+def test_force_style_background_box():
+    # 박스 모드면 BorderStyle=3 + 박스색을 OutlineColour 로 사용한다.
+    boxed = build_force_style(
+        "맑은고딕", 56, "&H00FFFFFF", "&H00000000", 3, 220,
+        background_box=True, box_color="&H80000000", box_pad=14,
+    )
+    assert "BorderStyle=3" in boxed
+    assert "OutlineColour=&H80000000" in boxed
+    assert "Outline=14" in boxed
+    # 일반 모드면 BorderStyle=1 + 외곽선.
+    plain = build_force_style(
+        "맑은고딕", 48, "&H00FFFFFF", "&H00000000", 3, 60,
+    )
+    assert "BorderStyle=1" in plain and "Outline=3" in plain
+
+
+def test_resolve_sfx(tmp_path):
+    # 효과음 미설정 → None
+    assert _resolve_sfx(ShortsConfig(), tmp_path) is None
+    # 파일이 없으면 None (경고만)
+    cfg = ShortsConfig(start_sfx="없는효과음.wav")
+    assert _resolve_sfx(cfg, tmp_path) is None
+    # assets 폴더에 실제로 있으면 그 경로를 돌려준다
+    sfx = tmp_path / "hook.wav"
+    sfx.write_bytes(b"RIFF")
+    cfg2 = ShortsConfig(start_sfx="hook.wav")
+    assert _resolve_sfx(cfg2, tmp_path) == sfx
 
 
 def test_parse_timestamp():

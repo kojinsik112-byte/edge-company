@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
+from .audio import overlay_start_sfx
 from .config import OutputConfig, ShortsConfig, SubtitleConfig
 from .ffmpeg import probe_duration, run
 from .subtitles import burn_subtitles
@@ -97,6 +98,7 @@ def render_short(
     sub_cfg: SubtitleConfig,
     work_dir: Path,
     index: int,
+    sfx: Optional[Path] = None,
 ) -> Path:
     """하이라이트 구간을 9:16 세로 클립으로 렌더링한다."""
     # 1) 구간을 잘라 세로 비율로 cover-crop (가운데 정렬)
@@ -134,28 +136,50 @@ def render_short(
         show_progress=True,
     )
 
-    # 2) 자막 굽기 (있고, 켜져 있으면)
-    if cfg.burn_subtitles and captions:
-        clip_caps = slice_captions(captions, highlight.start, highlight.end)
-        if clip_caps:
-            srt = write_srt(
-                clip_caps, work_dir / f"short_{index}.srt", cfg.max_line_chars
-            )
-            burn_subtitles(
-                raw,
-                srt,
-                out_path,
-                sub_cfg,
-                out_cfg,
-                font_size=cfg.font_size,
-                margin_v=cfg.margin_v,
-                video_size=(cfg.width, cfg.height),
-            )
-            raw.unlink(missing_ok=True)
-            return out_path
+    # 2) 자막 굽기 (있고, 켜져 있으면). 자막이 없으면 raw 를 그대로 결과로.
+    clip_caps = (
+        slice_captions(captions, highlight.start, highlight.end)
+        if cfg.burn_subtitles and captions
+        else []
+    )
+    if clip_caps:
+        srt = write_srt(
+            clip_caps, work_dir / f"short_{index}.srt", cfg.max_line_chars
+        )
+        burn_subtitles(
+            raw,
+            srt,
+            out_path,
+            sub_cfg,
+            out_cfg,
+            font_size=cfg.font_size,
+            margin_v=cfg.margin_v,
+            video_size=(cfg.width, cfg.height),
+            background_box=cfg.background_box,
+        )
+        raw.unlink(missing_ok=True)
+    else:
+        raw.replace(out_path)
 
-    raw.replace(out_path)
+    # 3) 효과음(옵션) — 숏츠 시작에 한 번 깐다.
+    if sfx is not None:
+        sfx_out = work_dir / f"short_{index}_sfx.mp4"
+        overlay_start_sfx(out_path, sfx, sfx_out, out_cfg, cfg.sfx_volume)
+        sfx_out.replace(out_path)
     return out_path
+
+
+def _resolve_sfx(cfg: ShortsConfig, assets_dir: Optional[Path]) -> Optional[Path]:
+    """숏츠 시작 효과음 경로를 해석한다. 없거나 못 찾으면 None."""
+    if not cfg.start_sfx:
+        return None
+    p = Path(cfg.start_sfx)
+    if not p.is_absolute() and assets_dir is not None:
+        p = assets_dir / p
+    if not p.exists():
+        logger.warning("효과음 파일을 찾을 수 없어 건너뜁니다: %s", p)
+        return None
+    return p
 
 
 def make_shorts(
@@ -167,12 +191,17 @@ def make_shorts(
     out_cfg: OutputConfig,
     sub_cfg: SubtitleConfig,
     stem: str,
+    assets_dir: Optional[Path] = None,
 ) -> List[Path]:
     """숏츠 여러 개를 만들어 경로 목록을 반환한다."""
     highlights = pick_highlights(video, captions, cfg)
     if not highlights:
         logger.warning("숏츠로 만들 구간이 없습니다.")
         return []
+
+    sfx = _resolve_sfx(cfg, assets_dir)
+    if sfx is not None:
+        logger.info("숏츠 시작 효과음: %s", sfx.name)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     results: List[Path] = []
@@ -187,7 +216,7 @@ def make_shorts(
         )
         out_path = out_dir / f"{stem}_short{i}.mp4"
         render_short(
-            video, h, out_path, cfg, out_cfg, captions, sub_cfg, work_dir, i
+            video, h, out_path, cfg, out_cfg, captions, sub_cfg, work_dir, i, sfx
         )
         results.append(out_path)
     return results

@@ -7,8 +7,10 @@ silence:
 
 subtitle:
   enabled: true
-  model: base          # tiny / base / small / medium / large-v3 (클수록 정확하지만 느림)
+  model: small         # tiny / base / small / medium / large-v3 (발음 흐리면 small↑ 권장)
   language: ko
+  # 자주 틀리는 고유명사/용어를 미리 알려주면 오타가 줄어듦 (쉼표로 나열)
+  # initial_prompt: "에지컴퍼니, 오토에딧, 파이썬"
   burn_in: true        # 영상에 자막 굽기
   font: Malgun Gothic  # 한국어 Windows 기본 한글 폰트
   # 아래 크기 값은 모두 "실제 픽셀" 단위(본편 1920x1080 기준)
@@ -16,6 +18,7 @@ subtitle:
   outline: 3           # 외곽선 두께(px)
   margin_v: 60         # 화면 하단 여백(px)
   max_line_chars: 28   # 한 줄 최대 글자수(넘으면 줄바꿈)
+  background_box: false # 글자 뒤 반투명 박스(가독성↑) — 본편은 기본 꺼짐
 
 shorts:
   enabled: true
@@ -26,6 +29,10 @@ shorts:
   font_size: 56        # 숏츠 자막 글자 크기(px)
   margin_v: 220        # 자막 하단 여백(px)
   max_line_chars: 16   # 좁은 세로 화면에 맞춰 한 줄을 짧게
+  background_box: true # 숏츠는 배경이 복잡해 배경 박스 기본 켜짐
+  # 효과음(옵션): assets/ 에 파일을 넣고 이름을 적으면 각 숏츠 시작에 깔림
+  # start_sfx: hook.wav
+  # sfx_volume: 0.9
 
 branding:
   enabled: true
@@ -40,3 +47,5 @@ output:
   fps: 30
   crf: 22              # 화질(낮을수록 고화질)
   preset: veryfast     # 인코딩 속도(veryfast=빠름, medium/slow=고화질·느림)
+  normalize_audio: true   # 볼륨 균일화(영상마다 소리 크기 들쭉날쭉 방지)
+  loudness_target: -14.0  # 목표 음량(LUFS), 유튜브 권장 ≈ -14

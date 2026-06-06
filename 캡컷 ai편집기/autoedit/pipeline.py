@@ -16,6 +16,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
 
+from .audio import normalize_loudness
 from .branding import apply_branding
 from .config import Config
 from .ffmpeg import ensure_ffmpeg, probe_duration
@@ -76,6 +77,18 @@ def process(
         else:
             logger.info("[1/4] 무음 컷 건너뜀 (비활성화)")
 
+        # ── 오디오 볼륨 균일화 (loudnorm) ────────────────────────────
+        # 본편/숏츠가 모두 이 영상에서 갈라져 나오므로 여기서 한 번만 맞춘다.
+        if config.output.normalize_audio:
+            logger.info("오디오 볼륨 균일화 (loudnorm, 목표 %.0f LUFS)", config.output.loudness_target)
+            norm_path = work_dir / "normalized.mp4"
+            normalized = normalize_loudness(
+                current, norm_path, config.output, config.output.loudness_target
+            )
+            if normalized != current:
+                current = normalized
+                result.steps.append("볼륨 균일화")
+
         # ── 2) 자막 생성 ─────────────────────────────────────────────
         captions: Optional[List[Caption]] = None
         if config.subtitle.enabled:
@@ -129,6 +142,7 @@ def process(
                 config.output,
                 config.subtitle,
                 stem,
+                assets_dir,
             )
             if result.shorts:
                 result.steps.append(f"숏츠 {len(result.shorts)}개")

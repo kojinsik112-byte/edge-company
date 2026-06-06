@@ -54,11 +54,16 @@ def transcribe(video: Path, work_dir: Path, cfg: SubtitleConfig) -> List[Caption
     """영상에서 오디오를 추출해 자막 구간을 인식한다."""
     model = _load_model(cfg)
     wav = extract_audio(video, work_dir / "asr.wav")
+    # 발음이 또렷하지 않을수록 탐색 폭을 넓히고(beam/best_of) 앞 문맥을 참고하면
+    # 오타가 줄어든다. initial_prompt 로 고유명사/전문용어를 미리 알려줄 수 있다.
     segments, info = model.transcribe(
         str(wav),
         language=cfg.language,
         vad_filter=True,
         beam_size=5,
+        best_of=5,
+        condition_on_previous_text=True,
+        initial_prompt=cfg.initial_prompt or None,
     )
     logger.info("음성 인식 언어: %s", getattr(info, "language", cfg.language))
 

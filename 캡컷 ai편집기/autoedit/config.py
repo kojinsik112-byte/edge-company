@@ -31,9 +31,13 @@ class SubtitleConfig:
     """자동 자막(번인) 설정."""
 
     enabled: bool = True
-    model: str = "base"          # whisper 모델 크기 (tiny/base/small/medium/large-v3). base=빠름·괜찮은 정확도
+    # 발음이 또렷하지 않으면 작은 모델은 오타가 많다. small 이상을 권장(클수록 정확·느림).
+    model: str = "small"         # whisper 모델 크기 (tiny/base/small/medium/large-v3)
     device: str = "cpu"          # "cpu"(권장, 어디서나 동작) 또는 "cuda"(NVIDIA GPU+CUDA 설치 시)
     language: Optional[str] = "ko"
+    # 자주 틀리는 고유명사/전문용어를 미리 알려주면 인식 정확도가 올라간다.
+    # 예: "에지컴퍼니, 파이썬, 오토에딧" 처럼 쉼표로 나열.
+    initial_prompt: Optional[str] = None
     burn_in: bool = True         # True면 영상에 자막을 구워 넣는다
     font: str = "Malgun Gothic"  # 한국어 Windows 기본 한글 폰트 (맑은 고딕)
     # 아래 크기 값들은 모두 "실제 픽셀" 단위다(가로 1920×세로 1080 본편 기준).
@@ -43,6 +47,10 @@ class SubtitleConfig:
     outline: int = 3             # 외곽선 두께(px) — 배경 위에서도 잘 보이게
     margin_v: int = 60           # 화면 하단 여백 (px)
     max_line_chars: int = 28     # 한 줄 최대 글자수 (넘으면 줄바꿈)
+    # 자막 가독성용 반투명 배경 박스 (캡컷 스타일). 본편 기본 꺼짐.
+    background_box: bool = False
+    box_color: str = "&H80000000"  # 박스 색(ASS &HAABBGGRR, AA=투명도 80≈50%)
+    box_pad: int = 12              # 박스 안쪽 여백(px)
 
 
 @dataclass
@@ -60,6 +68,11 @@ class ShortsConfig:
     font_size: int = 56          # 숏츠 자막 글자 크기(px) — 너무 키우면 양옆이 짤린다
     margin_v: int = 220          # 자막 하단 여백(px) — 하단 UI/진행바 위로 띄움
     max_line_chars: int = 16     # 한 줄 최대 글자수 — 좁은 세로 화면에 맞춰 짧게
+    background_box: bool = True  # 숏츠는 배경이 복잡해 자막 배경 박스 기본 켜짐
+    # 효과음(옵션): assets/ 에 파일을 두고 경로를 적으면 각 숏츠 "시작"에 한 번 깔린다.
+    # 컷마다 자동으로 넣지 않는 이유 — 무음 컷이 많아 휙휙 소리가 과하면 오히려 싸구려.
+    start_sfx: Optional[str] = None   # 예: "hook.wav" (assets/ 기준)
+    sfx_volume: float = 0.9           # 효과음 볼륨(0~1)
 
 
 @dataclass
@@ -84,6 +97,8 @@ class OutputConfig:
     crf: int = 22                # 화질 (낮을수록 고화질, 18~23 권장)
     preset: str = "veryfast"     # 인코딩 속도 (veryfast=빠름. 더 고화질 원하면 medium/slow)
     audio_bitrate: str = "192k"
+    normalize_audio: bool = True    # 볼륨 균일화(loudnorm) — 영상마다 소리 크기 들쭉날쭉 방지
+    loudness_target: float = -14.0  # 목표 음량(LUFS). 유튜브 권장 ≈ -14
 
 
 @dataclass

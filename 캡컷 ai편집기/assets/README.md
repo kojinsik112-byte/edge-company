@@ -7,3 +7,8 @@
 - `bgm.mp3`   — 배경음악
 
 파일 이름/경로는 `config.yaml` 의 `branding` 항목에서 바꿀 수 있습니다.
+
+## 효과음(옵션)
+
+숏츠 시작에 깔 효과음 파일(예: `hook.wav`)을 이 폴더에 넣고,
+`config.yaml` 의 `shorts.start_sfx` 에 파일 이름을 적으면 사용됩니다.

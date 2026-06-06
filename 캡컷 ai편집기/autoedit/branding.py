@@ -16,6 +16,8 @@ def add_bgm(
     """본 영상의 음성은 유지하면서 배경음악을 낮은 볼륨으로 깐다.
 
     BGM은 영상 길이에 맞춰 반복(loop)되고, 영상이 끝나면 함께 끝난다(duration=first).
+    amix 의 normalize=0 으로 본 음성 볼륨이 절반으로 깎이지 않게 한다(BGM은 이미
+    volume 로 낮춰져 있으므로 단순 합산이 의도에 맞다).
     """
     run(
         [
@@ -29,7 +31,7 @@ def add_bgm(
             str(bgm),
             "-filter_complex",
             f"[1:a]volume={volume}[bg];"
-            f"[0:a][bg]amix=inputs=2:duration=first:dropout_transition=0[a]",
+            f"[0:a][bg]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[a]",
             "-map",
             "0:v",
             "-map",

@@ -21,17 +21,29 @@ def build_force_style(
     outline_color: str,
     outline: int,
     margin_v: int,
+    *,
+    background_box: bool = False,
+    box_color: str = "&H80000000",
+    box_pad: int = 12,
 ) -> str:
     """ASS force_style 문자열을 만든다.
 
     여기서 Fontsize/Outline/MarginV 는 subtitles 필터의 original_size 와 같은
     좌표계(=실제 영상 픽셀)에서 해석된다. original_size 를 영상 해상도로 맞춰
     주므로, 이 값들은 사실상 "픽셀 단위"가 된다.
+
+    background_box=True 면 글자 뒤에 반투명 박스(BorderStyle=3)를 깐다. libass 에서
+    BorderStyle=3 의 박스 색은 OutlineColour 를 쓰므로, 박스 색을 거기에 넣고
+    Outline 값을 박스 안쪽 여백으로 사용한다.
     """
+    if background_box:
+        border_style, out_col, out_val = 3, box_color, box_pad
+    else:
+        border_style, out_col, out_val = 1, outline_color, outline
     return (
         f"FontName={font},Fontsize={font_size},"
-        f"PrimaryColour={primary_color},OutlineColour={outline_color},"
-        f"BorderStyle=1,Outline={outline},Shadow=0,Alignment=2,"
+        f"PrimaryColour={primary_color},OutlineColour={out_col},"
+        f"BorderStyle={border_style},Outline={out_val},Shadow=0,Alignment=2,"
         f"MarginV={margin_v}"
     )
 
@@ -46,6 +58,7 @@ def burn_subtitles(
     font_size: int | None = None,
     margin_v: int | None = None,
     video_size: tuple[int, int] | None = None,
+    background_box: bool | None = None,
 ) -> Path:
     """영상에 자막을 구워 넣어 새 파일로 저장한다.
 
@@ -61,6 +74,11 @@ def burn_subtitles(
         outline_color=sub_cfg.outline_color,
         outline=sub_cfg.outline,
         margin_v=margin_v if margin_v is not None else sub_cfg.margin_v,
+        background_box=(
+            background_box if background_box is not None else sub_cfg.background_box
+        ),
+        box_color=sub_cfg.box_color,
+        box_pad=sub_cfg.box_pad,
     )
     # original_size 를 영상 해상도로 고정 → 위 스타일 값이 곧 픽셀 크기가 된다.
     dims = video_size or probe_dimensions(video)
