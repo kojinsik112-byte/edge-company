@@ -58,8 +58,14 @@ def _load_model(cfg: SubtitleConfig):
         raise
 
 
-def transcribe(video: Path, work_dir: Path, cfg: SubtitleConfig) -> List[Caption]:
-    """영상에서 오디오를 추출해 자막 구간을 인식한다."""
+def transcribe(
+    video: Path, work_dir: Path, cfg: SubtitleConfig, *, want_words: bool = False
+) -> List[Caption]:
+    """영상에서 오디오를 추출해 자막 구간을 인식한다.
+
+    want_words=True 면 단어별 타임스탬프도 수집한다(과감한 컷·동적 자막용).
+    """
+    need_words = want_words or cfg.dynamic
     model = _load_model(cfg)
     wav = extract_audio(video, work_dir / "asr.wav")
     segments, info = model.transcribe(
@@ -67,7 +73,7 @@ def transcribe(video: Path, work_dir: Path, cfg: SubtitleConfig) -> List[Caption
         language=cfg.language,
         vad_filter=True,
         beam_size=5,
-        word_timestamps=cfg.dynamic,  # 동적 자막용 단어별 타임스탬프
+        word_timestamps=need_words,
     )
     logger.info("음성 인식 언어: %s", getattr(info, "language", cfg.language))
 
@@ -81,7 +87,7 @@ def transcribe(video: Path, work_dir: Path, cfg: SubtitleConfig) -> List[Caption
         text = s.text.strip()
         if text:
             words = None
-            if cfg.dynamic and getattr(s, "words", None):
+            if need_words and getattr(s, "words", None):
                 words = [
                     Word(start=w.start, end=w.end, text=w.word.strip())
                     for w in s.words

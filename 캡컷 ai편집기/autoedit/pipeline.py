@@ -79,10 +79,11 @@ def _remove_fillers(
 def _speech_only_cut(
     video: Path, captions: List[Caption], work_dir: Path, config: Config
 ) -> tuple[Path, List[Caption]]:
-    """말하는 구간만 남기는 과감한 컷.
+    """말하는 단어만 남기는 과감한 컷.
 
-    제거 대상: ① 말 안 하는 구간(준비·응시·무음) ② 추임새("어/아/음")
-    ③ 같은 말 반복(재촬영 NG, 앞쪽 테이크). 남은 자막은 새 타임라인으로 보정.
+    제거 대상: ① 말 안 하는 구간(준비·응시·무음) ② 단어 사이의 뜸들임/멈춤
+    ③ 추임새("어/아/음") ④ 같은 말 반복(재촬영 NG). 단어별 타임스탬프가 있으면
+    단어 단위로 잘라 문장 내부의 침묵까지 제거한다.
     """
     from .fillers import _shift, is_filler
     from .redundancy import find_duplicate_indices
@@ -101,9 +102,20 @@ def _speech_only_cut(
         return video, captions
 
     pad = sil.speech_pad
-    padded = [
-        (max(0.0, c.start - pad), min(total, c.end + pad)) for c in kept
-    ]
+    # 단어 타임스탬프가 있으면 단어 단위로(문장 내부 침묵까지 컷), 없으면 문장 단위로.
+    raw: List[tuple[float, float]] = []
+    word_level = False
+    for c in kept:
+        if c.words:
+            word_level = True
+            for w in c.words:
+                if is_filler(w.text):
+                    continue
+                raw.append((w.start, w.end))
+        else:
+            raw.append((c.start, c.end))
+
+    padded = [(max(0.0, s - pad), min(total, e + pad)) for s, e in raw]
     keep_ranges = merge_intervals(padded, gap=sil.bridge_gap)
     segments = [Segment(s, e) for s, e in keep_ranges if e - s >= sil.min_keep]
     if not segments:
@@ -111,10 +123,12 @@ def _speech_only_cut(
 
     removed_ranges = invert_intervals([(s.start, s.end) for s in segments], total)
     kept_dur = sum(s.duration for s in segments)
+    n_takes = len(captions) - len(kept)
     logger.info(
-        "과감한 컷: 말하는 %d구간만 유지 (추임새/반복 %d개 제거), 총 %s",
+        "과감한 컷(%s): %d구간 유지, 추임새/반복 %d개 제거, 총 %s",
+        "단어 단위" if word_level else "문장 단위",
         len(segments),
-        len(dup) + (len(captions) - len(kept) - len(dup)),
+        n_takes,
         fmt_duration(kept_dur),
     )
     out = work_dir / "speechcut.mp4"
@@ -231,7 +245,12 @@ def process(
         if config.subtitle.enabled:
             logger.info("[1/5] 음성 분석 (말하는 구간·추임새·반복 찾기)")
             try:
-                captions = transcribe(current, work_dir, config.subtitle)
+                captions = transcribe(
+                    current,
+                    work_dir,
+                    config.subtitle,
+                    want_words=config.silence.speech_only,
+                )
             except WhisperUnavailable as exc:
                 logger.warning("음성 분석 건너뜀: %s", exc)
 
