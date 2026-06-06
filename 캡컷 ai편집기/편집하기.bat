@@ -19,11 +19,21 @@ if not exist ".venv\Scripts\activate.bat" (
   exit /b 1
 )
 
+REM 바탕화면 경로 찾기 (OneDrive 리디렉션까지 대응)
+set "DESKTOP="
+for /f "usebackq tokens=2,*" %%A in (`reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" /v Desktop`) do set "DESKTOP=%%B"
+if not defined DESKTOP set "DESKTOP=%USERPROFILE%\Desktop"
+if not exist "%DESKTOP%" set "DESKTOP=%USERPROFILE%\Desktop"
+
+set "OUT=%DESKTOP%\캡컷_완성본\%~n1"
+if not exist "%OUT%" mkdir "%OUT%"
+
 call .venv\Scripts\activate.bat
 echo 편집 시작: %~1
-echo 영상 길이에 따라 시간이 걸립니다. 창을 닫지 마세요.
+echo 결과 저장 위치: %OUT%
+echo (영상 길이에 따라 시간이 걸립니다. 창을 닫지 마세요.)
 echo.
-python -m autoedit.cli edit "%~1" -o output -v
+python -m autoedit.cli edit "%~1" -o "%OUT%" -v
 if errorlevel 1 (
   echo.
   echo [오류] 편집 중 문제가 발생했습니다. 위 메시지를 확인하세요.
@@ -33,10 +43,8 @@ if errorlevel 1 (
 
 echo.
 echo ============================================
-echo    완료! 결과는 output 폴더에 있습니다.
-echo      - 완성 영상은 output 폴더 안의 _edited.mp4
-echo      - 자막은 .srt 파일
-echo      - 숏츠는 output\shorts\ 폴더
+echo    완료! 결과는 바탕화면의
+echo    "캡컷_완성본\%~n1" 폴더에 있습니다.
 echo ============================================
-explorer "%~dp0output"
+explorer "%OUT%"
 pause
