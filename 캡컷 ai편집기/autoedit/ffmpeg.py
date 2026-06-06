@@ -74,9 +74,27 @@ def ensure_ffmpeg() -> None:
     )
 
 
-def run(args: List[str], *, quiet: bool = True) -> subprocess.CompletedProcess:
-    """ffmpeg/ffprobe 명령을 실행한다. 실패 시 stderr를 담아 예외를 던진다."""
+def run(
+    args: List[str], *, quiet: bool = True, show_progress: bool = False
+) -> subprocess.CompletedProcess:
+    """ffmpeg/ffprobe 명령을 실행한다.
+
+    show_progress=True 면 ffmpeg 출력을 그대로 콘솔에 흘려보내 진행률(frame/time/speed)이
+    실시간으로 보이게 한다. 인코딩처럼 오래 걸리는 단계에서 '멈춘 듯' 보이는 문제를 막는다.
+    그 외에는 출력을 캡처해 실패 시 마지막 로그를 예외에 담는다.
+    """
     logger.debug("실행: %s", " ".join(args))
+    if show_progress:
+        display = args
+        if args and Path(args[0]).name.startswith("ffmpeg"):
+            display = [args[0], "-hide_banner", *args[1:]]
+        proc = subprocess.run(display)
+        if proc.returncode != 0:
+            raise FFmpegError(
+                f"명령 실패 ({args[0]}, code={proc.returncode}). 위 로그를 확인하세요."
+            )
+        return proc
+
     proc = subprocess.run(
         args,
         stdout=subprocess.PIPE,

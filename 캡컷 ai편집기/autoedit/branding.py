@@ -41,7 +41,8 @@ def add_bgm(
             "-b:a",
             out_cfg.audio_bitrate,
             str(out_path),
-        ]
+        ],
+        show_progress=True,
     )
     return out_path
 
@@ -97,7 +98,7 @@ def _normalize_clip(
             *common,
             str(out_path),
         ]
-    run(args)
+    run(args, show_progress=True)
     return out_path
 
 

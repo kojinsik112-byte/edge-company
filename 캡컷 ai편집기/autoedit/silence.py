@@ -108,7 +108,8 @@ def render_cut(
             "-b:a",
             out_cfg.audio_bitrate,
             str(out_path),
-        ]
+        ],
+        show_progress=True,
     )
     return out_path
 

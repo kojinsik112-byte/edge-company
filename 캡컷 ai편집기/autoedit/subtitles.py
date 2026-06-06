@@ -68,6 +68,7 @@ def burn_subtitles(
             "-c:a",
             "copy",
             str(out_path),
-        ]
+        ],
+        show_progress=True,
     )
     return out_path

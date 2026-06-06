@@ -52,11 +52,22 @@ def transcribe(video: Path, work_dir: Path, cfg: SubtitleConfig) -> List[Caption
         beam_size=5,
     )
     logger.info("음성 인식 언어: %s", getattr(info, "language", cfg.language))
-    captions = [
-        Caption(start=s.start, end=s.end, text=s.text.strip())
-        for s in segments
-        if s.text.strip()
-    ]
+
+    # faster-whisper는 세그먼트를 하나씩 생성하므로, 진행률을 실시간으로 보여준다.
+    # (이 단계가 가장 오래 걸려 '멈춘 듯' 보이던 문제를 해결)
+    total = getattr(info, "duration", 0) or 0
+    captions: List[Caption] = []
+    last_pct = -10
+    logger.info("음성 인식 시작... (영상 길이에 비례해 시간이 걸립니다)")
+    for s in segments:
+        text = s.text.strip()
+        if text:
+            captions.append(Caption(start=s.start, end=s.end, text=text))
+        if total:
+            pct = min(100, int(s.end / total * 100))
+            if pct >= last_pct + 10:
+                logger.info("자막 인식 중... %d%%", pct)
+                last_pct = pct
     logger.info("자막 구간 %d개 생성", len(captions))
     return captions
 

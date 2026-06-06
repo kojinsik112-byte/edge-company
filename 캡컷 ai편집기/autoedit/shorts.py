@@ -130,7 +130,8 @@ def render_short(
             "-b:a",
             out_cfg.audio_bitrate,
             str(raw),
-        ]
+        ],
+        show_progress=True,
     )
 
     # 2) 자막 굽기 (있고, 켜져 있으면)
