@@ -134,19 +134,19 @@ def render_short(
         show_progress=True,
     )
 
-    # 2) 자막 굽기 (있고, 켜져 있으면)
+    # 2) 자막 굽기 (있고, 켜져 있으면) — 세로 해상도에 맞춰 크게
     if cfg.burn_subtitles and captions:
         clip_caps = slice_captions(captions, highlight.start, highlight.end)
         if clip_caps:
-            srt = write_srt(
-                clip_caps, work_dir / f"short_{index}.srt", sub_cfg.max_line_chars
-            )
             burn_subtitles(
                 raw,
-                srt,
+                clip_caps,
                 out_path,
                 sub_cfg,
                 out_cfg,
+                work_dir,
+                width=cfg.width,
+                height=cfg.height,
                 font_size=cfg.font_size,
                 margin_v=cfg.margin_v,
             )

@@ -16,7 +16,7 @@ from pathlib import Path
 from . import __version__
 from .config import Config
 from .ffmpeg import FFmpegError
-from .pipeline import process
+from .pipeline import process, reburn
 from .utils import logger, setup_logging
 
 CONFIG_TEMPLATE = """\
@@ -29,17 +29,22 @@ silence:
 
 subtitle:
   enabled: true
-  model: small         # tiny / base / small / medium / large-v3
+  model: base          # tiny / base / small / medium / large-v3 (작을수록 빠름)
+  device: cpu          # cpu(권장) 또는 cuda(NVIDIA GPU+CUDA 설치 시)
   language: ko
   burn_in: true        # 영상에 자막 굽기
-  font: NanumGothic
-  font_size: 22
+  remove_fillers: true # "어/아/음" 추임새 제거
+  font: Malgun Gothic  # 한글 폰트 (맑은 고딕)
+  font_size: 48        # 자막 글자 크기(px)
+  margin_v: 60         # 자막 하단 여백(px)
 
 shorts:
   enabled: true
   count: 3             # 만들 숏츠 개수
   min_duration: 20
   max_duration: 58
+  font_size: 64        # 세로 자막 글자 크기(px)
+  margin_v: 360        # 세로 자막 하단 여백(px)
 
 branding:
   enabled: true
@@ -52,8 +57,8 @@ output:
   width: 1920
   height: 1080
   fps: 30
-  crf: 20              # 화질(낮을수록 고화질)
-  preset: medium
+  crf: 22              # 화질(낮을수록 고화질)
+  preset: veryfast     # 인코딩 속도(veryfast=빠름, medium/slow=고화질)
 """
 
 
@@ -75,10 +80,22 @@ def _build_parser() -> argparse.ArgumentParser:
     p_edit.add_argument("--no-subtitles", action="store_true", help="자막 비활성화")
     p_edit.add_argument("--no-shorts", action="store_true", help="숏츠 비활성화")
     p_edit.add_argument("--no-branding", action="store_true", help="인트로/아웃트로/BGM 비활성화")
+    p_edit.add_argument("--no-fillers", action="store_true", help="추임새 제거 비활성화")
     p_edit.add_argument("--shorts-count", type=int, default=None, help="숏츠 개수")
     p_edit.add_argument("--whisper-model", type=str, default=None, help="Whisper 모델 크기")
     p_edit.add_argument("--keep-temp", action="store_true", help="임시 작업 파일 보존")
     p_edit.add_argument("-v", "--verbose", action="store_true", help="상세 로그")
+
+    # reburn — 수정한 자막(SRT)으로 다시 굽기
+    p_reburn = sub.add_parser("reburn", help="수정한 자막으로 다시 굽기 (오타 수정용)")
+    p_reburn.add_argument("clean_video", type=Path, help="<이름>_clean.mp4 경로")
+    p_reburn.add_argument("srt", type=Path, help="수정한 자막(.srt) 경로")
+    p_reburn.add_argument("-o", "--output", type=Path, default=Path("output"), help="출력 폴더 (기본: output)")
+    p_reburn.add_argument("-c", "--config", type=Path, default=None, help="설정 YAML 경로")
+    p_reburn.add_argument("--assets", type=Path, default=None, help="브랜딩 자원 폴더 (기본: ./assets)")
+    p_reburn.add_argument("--no-shorts", action="store_true", help="숏츠 재생성 비활성화")
+    p_reburn.add_argument("--no-branding", action="store_true", help="브랜딩 비활성화")
+    p_reburn.add_argument("-v", "--verbose", action="store_true", help="상세 로그")
 
     # init-config
     p_init = sub.add_parser("init-config", help="설정 템플릿 파일 생성")
@@ -97,6 +114,8 @@ def _apply_overrides(cfg: Config, args: argparse.Namespace) -> Config:
         cfg.shorts.enabled = False
     if args.no_branding:
         cfg.branding.enabled = False
+    if getattr(args, "no_fillers", False):
+        cfg.subtitle.remove_fillers = False
     if args.shorts_count is not None:
         cfg.shorts.count = args.shorts_count
     if args.whisper_model:
@@ -127,10 +146,40 @@ def cmd_edit(args: argparse.Namespace) -> int:
         print(f"   완성 영상: {result.final_video}")
     if result.srt:
         print(f"   자막 파일: {result.srt}")
+    if result.clean_video:
+        print(f"   (자막수정용 원본: {result.clean_video})")
     if result.shorts:
         print(f"   숏츠 {len(result.shorts)}개:")
         for s in result.shorts:
             print(f"     - {s}")
+    return 0
+
+
+def cmd_reburn(args: argparse.Namespace) -> int:
+    setup_logging(args.verbose)
+    cfg = Config.load(args.config)
+    if args.no_shorts:
+        cfg.shorts.enabled = False
+    if args.no_branding:
+        cfg.branding.enabled = False
+
+    try:
+        result = reburn(
+            args.clean_video,
+            args.srt,
+            args.output,
+            cfg,
+            assets_dir=args.assets,
+        )
+    except (FFmpegError, FileNotFoundError) as exc:
+        logger.error("%s", exc)
+        return 1
+
+    print("\n✅ 자막 재반영 완료")
+    if result.final_video:
+        print(f"   완성 영상: {result.final_video}")
+    if result.shorts:
+        print(f"   숏츠 {len(result.shorts)}개 갱신")
     return 0
 
 
@@ -149,6 +198,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "edit":
         return cmd_edit(args)
+    if args.command == "reburn":
+        return cmd_reburn(args)
     if args.command == "init-config":
         return cmd_init_config(args)
     parser.print_help()

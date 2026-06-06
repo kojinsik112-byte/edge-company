@@ -6,6 +6,7 @@ faster-whisper 미설치 시 명확한 안내와 함께 자막 단계만 건너�
 
 from __future__ import annotations
 
+import re
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
@@ -99,6 +100,41 @@ def write_srt(captions: List[Caption], out_path: Path, max_chars: int = 0) -> Pa
         lines.append("")
     out_path.write_text("\n".join(lines), encoding="utf-8")
     return out_path
+
+
+_SRT_TIME = re.compile(
+    r"(\d+):(\d+):(\d+)[,.](\d+)\s*-->\s*(\d+):(\d+):(\d+)[,.](\d+)"
+)
+
+
+def _srt_seconds(h: str, m: str, s: str, ms: str) -> float:
+    return int(h) * 3600 + int(m) * 60 + int(s) + int(ms) / 1000.0
+
+
+def parse_srt(path: Path) -> List[Caption]:
+    """사용자가 수정한 SRT 파일을 읽어 자막 구간 목록으로 되돌린다.
+
+    오타 수정 워크플로(자막을 손본 뒤 다시 굽기)에서 사용한다.
+    """
+    content = Path(path).read_text(encoding="utf-8-sig")
+    captions: List[Caption] = []
+    for block in re.split(r"\n\s*\n", content.strip()):
+        lines = [ln for ln in block.splitlines() if ln.strip() != ""]
+        if not lines:
+            continue
+        # 첫 줄이 순번이면 건너뛰고, 시간 줄을 찾는다.
+        time_idx = next(
+            (i for i, ln in enumerate(lines) if _SRT_TIME.search(ln)), None
+        )
+        if time_idx is None:
+            continue
+        m = _SRT_TIME.search(lines[time_idx])
+        start = _srt_seconds(m.group(1), m.group(2), m.group(3), m.group(4))
+        end = _srt_seconds(m.group(5), m.group(6), m.group(7), m.group(8))
+        text = " ".join(lines[time_idx + 1 :]).strip()
+        if text:
+            captions.append(Caption(start=start, end=end, text=text))
+    return captions
 
 
 def slice_captions(

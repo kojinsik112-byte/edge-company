@@ -7,17 +7,22 @@ silence:
 
 subtitle:
   enabled: true
-  model: base          # tiny / base / small / medium / large-v3 (클수록 정확하지만 느림)
+  model: base          # tiny / base / small / medium / large-v3 (작을수록 빠름)
+  device: cpu          # cpu(권장) 또는 cuda(NVIDIA GPU+CUDA 설치 시)
   language: ko
   burn_in: true        # 영상에 자막 굽기
-  font: Malgun Gothic  # 한국어 Windows 기본 한글 폰트
-  font_size: 22
+  remove_fillers: true # "어/아/음" 추임새 제거
+  font: Malgun Gothic  # 한글 폰트 (맑은 고딕)
+  font_size: 48        # 자막 글자 크기(px)
+  margin_v: 60         # 자막 하단 여백(px)
 
 shorts:
   enabled: true
   count: 3             # 만들 숏츠 개수
   min_duration: 20
   max_duration: 58
+  font_size: 64        # 세로 자막 글자 크기(px)
+  margin_v: 360        # 세로 자막 하단 여백(px)
 
 branding:
   enabled: true
@@ -31,4 +36,4 @@ output:
   height: 1080
   fps: 30
   crf: 22              # 화질(낮을수록 고화질)
-  preset: veryfast     # 인코딩 속도(veryfast=빠름, medium/slow=고화질·느림)
+  preset: veryfast     # 인코딩 속도(veryfast=빠름, medium/slow=고화질)

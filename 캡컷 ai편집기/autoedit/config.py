@@ -35,13 +35,14 @@ class SubtitleConfig:
     device: str = "cpu"          # "cpu"(권장, 어디서나 동작) 또는 "cuda"(NVIDIA GPU+CUDA 설치 시)
     language: Optional[str] = "ko"
     burn_in: bool = True         # True면 영상에 자막을 구워 넣는다
+    remove_fillers: bool = True  # "어/아/음" 같은 추임새를 영상·자막에서 제거
     font: str = "Malgun Gothic"  # 한국어 Windows 기본 한글 폰트 (맑은 고딕)
-    font_size: int = 22
+    font_size: int = 48          # 자막 글자 크기 (영상 해상도 기준 픽셀)
     primary_color: str = "&H00FFFFFF"   # ASS 색상 (흰색)
     outline_color: str = "&H00000000"   # 검정 외곽선
-    outline: int = 2
-    margin_v: int = 40           # 화면 하단 여백 (px)
-    max_line_chars: int = 28     # 한 줄 최대 글자수 (넘으면 줄바꿈)
+    outline: int = 3             # 외곽선 두께 (px)
+    margin_v: int = 60           # 화면 하단 여백 (px)
+    max_line_chars: int = 28     # SRT 파일 줄바꿈 기준 (번인은 자동 줄바꿈)
 
 
 @dataclass
@@ -55,8 +56,8 @@ class ShortsConfig:
     width: int = 1080
     height: int = 1920
     burn_subtitles: bool = True
-    font_size: int = 14          # 세로 영상은 자막을 더 크게
-    margin_v: int = 320          # 세로 영상 자막 하단 여백
+    font_size: int = 64          # 세로 영상은 글자를 더 크게 (px)
+    margin_v: int = 360          # 세로 영상 자막 하단 여백 (px, 폰 UI 피해 위로)
 
 
 @dataclass
