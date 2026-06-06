@@ -160,3 +160,18 @@ def test_metadata_chapters_and_keywords():
     assert "투자" in kws                  # 빈도 높은 키워드
     titles = suggest_titles(kws, 3)
     assert len(titles) == 3 and all(titles)
+
+
+def test_find_duplicate_takes():
+    from autoedit.redundancy import find_duplicate_indices
+
+    caps = [
+        Caption(0, 3, "오늘은 주식 투자를 배워봅시다"),
+        Caption(3, 6, "오늘은 주식 투자를 배워보겠습니다"),  # 재촬영 NG
+        Caption(6, 9, "분산투자가 정말 중요합니다"),
+        Caption(30, 33, "전혀 다른 주제 영상 편집 이야기"),
+    ]
+    drop = find_duplicate_indices(caps)
+    assert 0 in drop          # 앞 NG 테이크는 버린다
+    assert 1 not in drop      # 마지막 테이크는 유지
+    assert 2 not in drop and 3 not in drop  # 서로 다른 문장은 유지

@@ -30,9 +30,12 @@ audio:
 
 silence:
   enabled: true
-  noise_db: -30.0      # 이보다 조용하면 무음으로 간주 (높일수록(-25 등) 더 과감)
-  min_silence: 0.4     # 잘라낼 무음 최소 길이(초) — 작을수록 과감하게 컷
-  keep_pad: 0.07       # 말 앞뒤로 남길 여유(초)
+  speech_only: true    # 말하는 구간만 남기고 나머지(준비/응시/무음) 전부 컷 (가장 과감)
+  speech_pad: 0.15     # 말 앞뒤로 남길 여유(초). 작을수록 더 타이트하게 컷
+  bridge_gap: 0.35     # 말 사이 이보다 짧은 틈은 유지(초). 작을수록 더 많이 컷
+  # (아래는 speech_only: false 일 때만 쓰는 dB 방식)
+  noise_db: -30.0
+  min_silence: 0.4
 
 subtitle:
   enabled: true        # 음성분석(추임새 제거·메타데이터). 끄려면 false (더 빠름)
