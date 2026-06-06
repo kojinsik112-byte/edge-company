@@ -21,30 +21,44 @@ from .utils import logger, setup_logging
 
 CONFIG_TEMPLATE = """\
 # autoedit 설정 파일 — 필요한 값만 바꿔 쓰면 됩니다.
+# (편집하기.bat 옆에 config.yaml 로 두면 자동 적용됩니다)
+
+audio:
+  enabled: true
+  denoise: true        # 잡음 제거
+  loudnorm: true       # 음량 정규화(유튜브 표준)
+
 silence:
   enabled: true
-  noise_db: -30.0      # 이보다 조용하면 무음으로 간주
-  min_silence: 0.6     # 잘라낼 무음 최소 길이(초)
-  keep_pad: 0.15       # 말 앞뒤로 남길 여유(초)
+  noise_db: -30.0      # 이보다 조용하면 무음으로 간주 (높일수록(-25 등) 더 과감)
+  min_silence: 0.4     # 잘라낼 무음 최소 길이(초) — 작을수록 과감하게 컷
+  keep_pad: 0.07       # 말 앞뒤로 남길 여유(초)
 
 subtitle:
-  enabled: true
+  enabled: true        # 음성분석(추임새 제거·메타데이터). 끄려면 false (더 빠름)
   model: base          # tiny / base / small / medium / large-v3 (작을수록 빠름)
   device: cpu          # cpu(권장) 또는 cuda(NVIDIA GPU+CUDA 설치 시)
   language: ko
-  burn_in: true        # 영상에 자막 굽기
-  remove_fillers: true # "어/아/음" 추임새 제거
-  font: Malgun Gothic  # 한글 폰트 (맑은 고딕)
-  font_size: 48        # 자막 글자 크기(px)
-  margin_v: 60         # 자막 하단 여백(px)
+  burn_in: false       # 화면에 자막 글자 표시 (오타 우려로 기본 끔). 켜려면 true
+  dynamic: false       # 단어가 칠해지는 동적 자막 (burn_in: true 일 때만)
+  remove_fillers: true # "어/아/음" 추임새를 영상에서 잘라냄
 
 shorts:
   enabled: true
   count: 3             # 만들 숏츠 개수
   min_duration: 20
   max_duration: 58
-  font_size: 64        # 세로 자막 글자 크기(px)
-  margin_v: 360        # 세로 자막 하단 여백(px)
+  burn_subtitles: false # 숏츠에 자막 글자 표시 (기본 끔)
+  font_size: 64
+  margin_v: 360
+
+thumbnail:
+  enabled: true
+  text:                # 비워두면 자동 제목 사용
+  font_size: 96
+
+metadata:
+  enabled: true        # 제목/설명/해시태그/챕터 자동 생성
 
 branding:
   enabled: true
@@ -144,6 +158,10 @@ def cmd_edit(args: argparse.Namespace) -> int:
     print(f"   단계: {' → '.join(result.steps) if result.steps else '(없음)'}")
     if result.final_video:
         print(f"   완성 영상: {result.final_video}")
+    if result.thumbnail:
+        print(f"   썸네일: {result.thumbnail}")
+    if result.metadata_file:
+        print(f"   업로드정보(제목/설명/해시태그/챕터): {result.metadata_file}")
     if result.srt:
         print(f"   자막 파일: {result.srt}")
     if result.clean_video:

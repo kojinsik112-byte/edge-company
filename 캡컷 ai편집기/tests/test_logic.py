@@ -143,3 +143,20 @@ def test_write_ass_no_leading_comma(tmp_path):
     # Text는 9번째 필드(0-based 인덱스 8). 콤마가 하나 더 있으면 자막 앞에 ','가 찍힌다.
     text_field = dialogue.split(",", 8)[8]
     assert text_field == "테스트 자막"
+
+
+def test_metadata_chapters_and_keywords():
+    from autoedit.metadata import build_chapters, extract_keywords, suggest_titles
+
+    caps = [
+        Caption(0, 3, "오늘은 주식 투자 기초를 배웁니다"),
+        Caption(60, 63, "분산 투자가 정말 중요합니다"),
+        Caption(140, 143, "마지막으로 투자 원칙을 정리합니다"),
+    ]
+    chapters = build_chapters(caps, min_gap=40)
+    assert chapters[0][0] == 0.0          # 첫 챕터는 0:00
+    assert len(chapters) == 3
+    kws = extract_keywords(caps, 5)
+    assert "투자" in kws                  # 빈도 높은 키워드
+    titles = suggest_titles(kws, 3)
+    assert len(titles) == 3 and all(titles)

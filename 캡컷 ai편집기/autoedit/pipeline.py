@@ -16,12 +16,15 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
 
+from .audio import enhance_audio
 from .branding import apply_branding
 from .config import Config
 from .fillers import find_filler_ranges, remap_captions
 from .ffmpeg import ensure_ffmpeg, probe_duration
+from .metadata import write_metadata
 from .silence import cut_silence, render_cut
 from .subtitles import burn_subtitles
+from .thumbnail import make_thumbnail
 from .transcribe import (
     Caption,
     WhisperUnavailable,
@@ -38,6 +41,8 @@ class PipelineResult:
     final_video: Optional[Path] = None
     srt: Optional[Path] = None
     clean_video: Optional[Path] = None
+    thumbnail: Optional[Path] = None
+    metadata_file: Optional[Path] = None
     shorts: List[Path] = field(default_factory=list)
     steps: List[str] = field(default_factory=list)
 
@@ -151,45 +156,81 @@ def process(
         dur = probe_duration(input_video)
         logger.info("입력 영상: %s (%s)", input_video.name, fmt_duration(dur))
 
-        # ── 1) 무음 컷 ───────────────────────────────────────────────
+        # ── 0) 오디오 음질 개선 ─────────────────────────────────────
         current = input_video
+        if config.audio.enabled:
+            current = enhance_audio(
+                current, work_dir / "audio.mp4", config.audio, config.output
+            )
+            if current != input_video:
+                result.steps.append("음질 개선")
+
+        # ── 1) 무음 컷 ───────────────────────────────────────────────
         if config.silence.enabled:
-            logger.info("[1/4] 무음 구간 자동 컷")
+            logger.info("[1/5] 무음 구간 자동 컷")
             current, _segments = cut_silence(
                 current, work_dir / "cut.mp4", config.silence, config.output
             )
+            new_dur = probe_duration(current)
+            logger.info("무음 컷 결과: %s → %s", fmt_duration(dur), fmt_duration(new_dur))
             result.steps.append("무음 컷")
         else:
-            logger.info("[1/4] 무음 컷 건너뜀 (비활성화)")
+            logger.info("[1/5] 무음 컷 건너뜀 (비활성화)")
 
-        # ── 2) 자막 생성 + 추임새 제거 ──────────────────────────────
+        # ── 2) 자막 분석 + 추임새 제거 (글자 표시는 설정에 따름) ────
         captions: Optional[List[Caption]] = None
         if config.subtitle.enabled:
-            logger.info("[2/4] 자동 자막 생성")
+            logger.info("[2/5] 음성 분석 (추임새 제거·메타데이터용)")
             try:
                 captions = transcribe(current, work_dir, config.subtitle)
                 if config.subtitle.remove_fillers and captions:
                     current, captions = _remove_fillers(
                         current, captions, work_dir, config
                     )
+                    result.steps.append("추임새 제거")
                 srt_out = output_dir / f"{stem}.srt"
                 write_srt(captions, srt_out, config.subtitle.max_line_chars)
                 result.srt = srt_out
-                result.steps.append("자막 생성")
             except WhisperUnavailable as exc:
-                logger.warning("자막 단계 건너뜀: %s", exc)
+                logger.warning("음성 분석 건너뜀: %s", exc)
         else:
-            logger.info("[2/4] 자막 건너뜀 (비활성화)")
+            logger.info("[2/5] 음성 분석 건너뜀 (비활성화)")
 
-        # 자막 수정용으로 '자막 안 구운' 깨끗한 영상을 보관한다.
+        # ── 메타데이터 (제목/설명/해시태그/챕터) ────────────────────
+        if config.metadata.enabled and captions:
+            logger.info("메타데이터 생성 (제목/설명/해시태그/챕터)")
+            meta_out = output_dir / f"{stem}_업로드정보.txt"
+            _, meta = write_metadata(captions, meta_out, config.metadata)
+            result.metadata_file = meta_out
+            result.steps.append("메타데이터")
+        else:
+            meta = None
+
+        # 자막 수정용으로 '깨끗한' 영상을 보관한다.
         clean_out = output_dir / f"{stem}_clean.mp4"
         shutil.copy2(current, clean_out)
         result.clean_video = clean_out
 
-        # ── 3·4) 자막 굽기 / 숏츠 / 브랜딩 ──────────────────────────
+        # ── 3·4) 자막 굽기(선택) / 숏츠 / 브랜딩 ────────────────────
         _finish(
             current, captions, stem, output_dir, work_dir, config, assets_dir, result
         )
+
+        # ── 5) 썸네일 ───────────────────────────────────────────────
+        if config.thumbnail.enabled:
+            logger.info("[5/5] 썸네일 생성")
+            title = meta["titles"][0] if meta and meta.get("titles") else None
+            thumb_out = output_dir / f"{stem}_썸네일.png"
+            try:
+                make_thumbnail(
+                    clean_out, thumb_out, work_dir, captions,
+                    config.thumbnail, dur, title=title,
+                )
+                result.thumbnail = thumb_out
+                result.steps.append("썸네일")
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("썸네일 생성 건너뜀: %s", exc)
+
         return result
     finally:
         if keep_temp:

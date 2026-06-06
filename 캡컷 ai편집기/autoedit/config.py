@@ -21,8 +21,8 @@ class SilenceConfig:
 
     enabled: bool = True
     noise_db: float = -30.0      # 이 값보다 조용하면 무음으로 간주 (dB)
-    min_silence: float = 0.6     # 무음으로 잘라낼 최소 길이 (초)
-    keep_pad: float = 0.15       # 잘라낸 말소리 앞뒤로 남길 여유 (초)
+    min_silence: float = 0.4     # 무음으로 잘라낼 최소 길이 (초) — 작을수록 과감하게 컷
+    keep_pad: float = 0.07       # 잘라낸 말소리 앞뒤로 남길 여유 (초)
     min_keep: float = 0.30       # 이보다 짧은 말 토막은 버린다 (초)
 
 
@@ -34,8 +34,10 @@ class SubtitleConfig:
     model: str = "base"          # whisper 모델 크기 (tiny/base/small/medium/large-v3). base=빠름·괜찮은 정확도
     device: str = "cpu"          # "cpu"(권장, 어디서나 동작) 또는 "cuda"(NVIDIA GPU+CUDA 설치 시)
     language: Optional[str] = "ko"
-    burn_in: bool = True         # True면 영상에 자막을 구워 넣는다
-    remove_fillers: bool = True  # "어/아/음" 같은 추임새를 영상·자막에서 제거
+    burn_in: bool = False        # 화면에 자막 글자 표시 (오타 우려로 기본 끔). 켜려면 true
+    dynamic: bool = False        # 말하는 단어가 칠해지는 동적(노래방) 자막 (burn_in 켤 때만)
+    highlight_color: str = "&H0000FFFF"  # 동적 자막 강조색 (노란색)
+    remove_fillers: bool = True  # "어/아/음" 같은 추임새를 영상에서 잘라냄 (글자 표시와 무관)
     font: str = "Malgun Gothic"  # 한국어 Windows 기본 한글 폰트 (맑은 고딕)
     font_size: int = 48          # 자막 글자 크기 (영상 해상도 기준 픽셀)
     primary_color: str = "&H00FFFFFF"   # ASS 색상 (흰색)
@@ -55,9 +57,11 @@ class ShortsConfig:
     max_duration: float = 58.0   # 숏츠 최대 길이 (초, 60초 미만 권장)
     width: int = 1080
     height: int = 1920
-    burn_subtitles: bool = True
+    burn_subtitles: bool = False  # 숏츠에 자막 글자 표시 (오타 우려로 기본 끔)
     font_size: int = 64          # 세로 영상은 글자를 더 크게 (px)
     margin_v: int = 360          # 세로 영상 자막 하단 여백 (px, 폰 UI 피해 위로)
+    hook_text: Optional[str] = None  # 숏츠 상단 훅 문구 (없으면 첫 자막 사용)
+    hook_font_size: int = 72     # 훅 문구 글자 크기 (px)
 
 
 @dataclass
@@ -85,11 +89,47 @@ class OutputConfig:
 
 
 @dataclass
+class AudioConfig:
+    """오디오 음질 개선 설정."""
+
+    enabled: bool = True
+    denoise: bool = True         # 잡음 제거 (afftdn)
+    loudnorm: bool = True        # 음량 정규화
+    target_lufs: float = -14.0   # 유튜브 표준 음량
+
+
+@dataclass
+class ThumbnailConfig:
+    """썸네일 자동 생성 설정."""
+
+    enabled: bool = True
+    text: Optional[str] = None   # 썸네일 문구 (없으면 자동 생성 제목 사용)
+    font: str = "Malgun Gothic"
+    font_size: int = 96          # 1280x720 기준 픽셀
+    primary_color: str = "&H0000FFFF"   # 노란색 (눈에 띔)
+    outline_color: str = "&H00000000"
+    outline: int = 6
+
+
+@dataclass
+class MetadataConfig:
+    """제목/설명/해시태그/챕터 자동 생성 설정."""
+
+    enabled: bool = True
+    num_titles: int = 5          # 제목 후보 개수
+    num_hashtags: int = 12
+    min_chapter_gap: float = 40.0  # 챕터 최소 간격(초)
+
+
+@dataclass
 class Config:
     silence: SilenceConfig = field(default_factory=SilenceConfig)
+    audio: AudioConfig = field(default_factory=AudioConfig)
     subtitle: SubtitleConfig = field(default_factory=SubtitleConfig)
     shorts: ShortsConfig = field(default_factory=ShortsConfig)
     branding: BrandingConfig = field(default_factory=BrandingConfig)
+    thumbnail: ThumbnailConfig = field(default_factory=ThumbnailConfig)
+    metadata: MetadataConfig = field(default_factory=MetadataConfig)
     output: OutputConfig = field(default_factory=OutputConfig)
 
     @classmethod
@@ -105,9 +145,12 @@ class Config:
         data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
         for section, sub in (
             ("silence", SilenceConfig),
+            ("audio", AudioConfig),
             ("subtitle", SubtitleConfig),
             ("shorts", ShortsConfig),
             ("branding", BrandingConfig),
+            ("thumbnail", ThumbnailConfig),
+            ("metadata", MetadataConfig),
             ("output", OutputConfig),
         ):
             if section in data and isinstance(data[section], dict):

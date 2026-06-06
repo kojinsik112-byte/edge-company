@@ -22,10 +22,18 @@ class WhisperUnavailable(RuntimeError):
 
 
 @dataclass
+class Word:
+    start: float
+    end: float
+    text: str
+
+
+@dataclass
 class Caption:
     start: float
     end: float
     text: str
+    words: Optional[List["Word"]] = None
 
 
 def _load_model(cfg: SubtitleConfig):
@@ -59,6 +67,7 @@ def transcribe(video: Path, work_dir: Path, cfg: SubtitleConfig) -> List[Caption
         language=cfg.language,
         vad_filter=True,
         beam_size=5,
+        word_timestamps=cfg.dynamic,  # 동적 자막용 단어별 타임스탬프
     )
     logger.info("음성 인식 언어: %s", getattr(info, "language", cfg.language))
 
@@ -71,7 +80,14 @@ def transcribe(video: Path, work_dir: Path, cfg: SubtitleConfig) -> List[Caption
     for s in segments:
         text = s.text.strip()
         if text:
-            captions.append(Caption(start=s.start, end=s.end, text=text))
+            words = None
+            if cfg.dynamic and getattr(s, "words", None):
+                words = [
+                    Word(start=w.start, end=w.end, text=w.word.strip())
+                    for w in s.words
+                    if w.word.strip()
+                ]
+            captions.append(Caption(start=s.start, end=s.end, text=text, words=words))
         if total:
             pct = min(100, int(s.end / total * 100))
             if pct >= last_pct + 10:
