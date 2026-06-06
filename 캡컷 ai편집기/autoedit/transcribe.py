@@ -36,9 +36,17 @@ def _load_model(cfg: SubtitleConfig):
             "  pip install faster-whisper\n"
             f"(원인: {exc})"
         ) from exc
-    logger.info("Whisper 모델 로딩: %s", cfg.model)
-    # CPU 환경에서도 합리적으로 동작하도록 int8 양자화 사용.
-    return WhisperModel(cfg.model, device="auto", compute_type="int8")
+    logger.info("Whisper 모델 로딩: %s (장치=%s)", cfg.model, cfg.device)
+    # 기본은 CPU(int8). GPU(CUDA) 라이브러리가 없는 PC에서 cublas 오류가 나는 것을 방지.
+    # cfg.device 가 "cuda" 인데 로딩이 안 되면 자동으로 CPU 로 떨어진다.
+    try:
+        compute = "int8" if cfg.device == "cpu" else "float16"
+        return WhisperModel(cfg.model, device=cfg.device, compute_type=compute)
+    except Exception as exc:  # noqa: BLE001
+        if cfg.device != "cpu":
+            logger.warning("GPU(%s) 로딩 실패 → CPU 로 전환합니다. (%s)", cfg.device, exc)
+            return WhisperModel(cfg.model, device="cpu", compute_type="int8")
+        raise
 
 
 def transcribe(video: Path, work_dir: Path, cfg: SubtitleConfig) -> List[Caption]:

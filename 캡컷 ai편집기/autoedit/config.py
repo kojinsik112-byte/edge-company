@@ -32,6 +32,7 @@ class SubtitleConfig:
 
     enabled: bool = True
     model: str = "base"          # whisper 모델 크기 (tiny/base/small/medium/large-v3). base=빠름·괜찮은 정확도
+    device: str = "cpu"          # "cpu"(권장, 어디서나 동작) 또는 "cuda"(NVIDIA GPU+CUDA 설치 시)
     language: Optional[str] = "ko"
     burn_in: bool = True         # True면 영상에 자막을 구워 넣는다
     font: str = "Malgun Gothic"  # 한국어 Windows 기본 한글 폰트 (맑은 고딕)
