@@ -128,19 +128,19 @@
     return '<span class="stars">' + s + '</span>';
   }
 
+  function storeLink(p) { return (p && p.buyUrl) ? p.buyUrl : SMARTSTORE; }
+
   function card(p) {
     var badges = (p.badges || []).map(function (b) {
       var cls = b === "BEST" ? "b-best" : b === "NEW" ? "b-new" : b === "앵커" ? "b-anchor" : "b-event";
       return '<span class="pbadge ' + cls + '">' + b + '</span>';
     }).join("");
-    var rc = p.reviews ? '후기 ' + p.reviews.toLocaleString("ko-KR") : '신규';
     return '<a class="card" href="product.html?id=' + p.id + '">' +
       '<div class="card__thumb">' + thumb(p) + (badges ? '<div class="card__badges">' + badges + '</div>' : '') + '</div>' +
       '<div class="card__body"><p class="card__cat">' + catName(p.cat) + '</p>' +
       '<h3 class="card__name">' + p.name + '</h3>' +
-      '<div class="card__price"><span class="off">' + discountPct(p) + '%</span>' +
-      '<span class="sale">' + won(p.sale) + '</span><span class="orig">' + won(p.price) + '</span></div>' +
-      '<div class="card__meta">' + stars(p.rate) + '<span class="rcount">' + rc + '</span></div></div></a>';
+      '<p class="card__sum">' + (p.summary || "") + '</p>' +
+      '<span class="card__more">자세히 보기 →</span></div></a>';
   }
   function renderGrid(el, list) { if (el) el.innerHTML = list.map(card).join(""); }
   function dedupe(arr){ var seen={}; return arr.filter(function(p){ if(seen[p.id])return false; seen[p.id]=1; return true;});}
@@ -171,25 +171,24 @@
     return '' +
     '<div class="drawer" data-drawer><div class="drawer__panel">' +
       '<a class="logo" href="index.html">ACRO<small>SMART HOME</small></a>' +
-      '<h4>카테고리</h4><nav data-gnb></nav>' +
+      '<h4>제품</h4><nav data-gnb></nav>' +
       '<h4>바로가기</h4>' +
+      '<a href="videos.html">영상</a><a href="coming.html">신제품 준비</a>' +
       '<a href="fan.html">실링팬</a><a href="landing.html?p=app">아크로 스마트 앱</a>' +
-      '<a href="brand.html">브랜드 스토리</a>' +
-      '<a href="about.html">회사 소개</a><a href="support.html">고객센터</a>' +
-      '<h4>마이</h4><a href="#">로그인 / 회원가입</a><a href="cart.html">장바구니</a>' +
+      '<a href="brand.html">브랜드 스토리</a><a href="about.html">회사 소개</a><a href="support.html">고객센터</a>' +
+      '<h4>구매</h4><a href="' + SMARTSTORE + '" target="_blank" rel="noopener">네이버 스토어팜에서 구매 →</a>' +
     '</div></div>' +
     '<div class="util"><div class="wrap">' +
-      '<a href="about.html">회사소개</a><a href="#">로그인</a><a href="#">회원가입</a>' +
-      '<a href="#">주문조회</a><a href="cart.html">장바구니</a><a href="support.html">고객센터</a>' +
+      '<a href="about.html">회사소개</a><a href="videos.html">영상</a>' +
+      '<a href="support.html">고객센터</a>' +
+      '<a href="' + SMARTSTORE + '" target="_blank" rel="noopener">스토어팜</a>' +
     '</div></div>' +
     '<header class="head"><div class="wrap">' +
       '<button class="burger" data-burger aria-label="메뉴"><span></span><span></span><span></span></button>' +
       '<a class="logo" href="index.html">ACRO<small>SMART HOME</small></a>' +
-      '<div class="search"><form data-search-form><input placeholder="찾으시는 상품을 검색하세요" aria-label="상품 검색"/><button aria-label="검색">⌕</button></form></div>' +
+      '<div class="search"><form data-search-form><input placeholder="제품을 검색하세요" aria-label="제품 검색"/><button aria-label="검색">⌕</button></form></div>' +
       '<div class="headicons">' +
-        '<a class="iconbtn" href="#">' + HEART_SVG + '찜</a>' +
-        '<a class="iconbtn" href="#">' + USER_SVG + '마이</a>' +
-        '<a class="iconbtn" href="cart.html">' + CART_SVG + '장바구니<span class="cartbadge" data-cart-count>0</span></a>' +
+        '<a class="storecta" href="' + SMARTSTORE + '" target="_blank" rel="noopener">' + CART_SVG + '<span>스토어팜 구매</span></a>' +
       '</div>' +
     '</div></header>' +
     '<nav class="gnb"><div class="wrap" data-gnb></div></nav>';
@@ -199,10 +198,10 @@
     return '<footer class="foot"><div class="wrap">' +
       '<div class="foot__top">' +
         '<div class="foot__links">' +
-          '<a href="brand.html">브랜드 스토리</a><a href="about.html">회사 소개</a>' +
-          '<a href="fan.html">실링팬</a><a href="landing.html?p=app">아크로 스마트 앱</a>' +
-          '<a href="support.html">고객센터</a>' +
-          '<a href="#">이용약관</a><a href="#">개인정보처리방침</a>' +
+          '<a href="index.html">제품 소개</a><a href="videos.html">영상</a>' +
+          '<a href="coming.html">신제품 준비</a><a href="brand.html">브랜드 스토리</a>' +
+          '<a href="about.html">회사 소개</a><a href="support.html">고객센터</a>' +
+          '<a href="' + SMARTSTORE + '" target="_blank" rel="noopener">스토어팜 구매</a>' +
         '</div>' +
         '<div class="foot__cs"><b>' + CS_TEL + '</b>' +
           '<span>평일 10:00 – 17:00 · 점심 12:00 – 13:00 · 주말·공휴일 휴무</span></div>' +
@@ -214,8 +213,8 @@
           '<span>본사: 울산</span><span>사업자등록번호: 000-00-00000</span>' +
           '<span>통신판매업: 2026-울산-0000</span></div>' +
         '<div class="biz"><span>고객센터: ' + CS_TEL + '</span><span>이메일: help@acro.kr</span>' +
-          '<span><a href="' + SMARTSTORE + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">네이버 스마트스토어</a></span></div>' +
-        '<p class="foot__copy">© 2026 Edge Company. ACRO는 엣지컴퍼니의 자체 브랜드입니다. (※ 사업자정보·연락처·일부 가격은 샘플 값)</p>' +
+          '<span>구매: <a href="' + SMARTSTORE + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">네이버 스토어팜(edge2050)</a></span></div>' +
+        '<p class="foot__copy">© 2026 Edge Company. ACRO는 엣지컴퍼니의 자체 브랜드입니다. 제품 구매·결제·배송은 네이버 스토어팜에서 진행됩니다. (※ 사업자정보·연락처는 샘플 값)</p>' +
       '</div>' +
     '</div></footer>';
   }
@@ -232,7 +231,8 @@
     if (!hosts.length) return;
     var html = CATEGORIES.map(function (c) { return '<a href="' + catLink(c) + '">' + c.name + '</a>'; }).join("") +
       '<a href="fan.html" class="gnb-strong">✦ 실링팬</a>' +
-      '<a href="category.html?sort=best" class="gnb-strong">베스트</a>' +
+      '<a href="videos.html" class="gnb-strong">영상</a>' +
+      '<a href="coming.html" class="gnb-strong">신제품 준비</a>' +
       '<a href="brand.html" class="gnb-strong">브랜드 스토리</a>';
     [].forEach.call(hosts, function (h){ h.innerHTML = html; });
   }
@@ -306,38 +306,62 @@
     var p = PRODUCTS.filter(function (x){return x.id===param("id");})[0] || PRODUCTS[0];
     var host = document.querySelector("[data-product]");
     if (!host) return;
-    document.title = p.name + " · ACRO STORE";
+    document.title = p.name + " · ACRO";
     var specs = (p.specs && p.specs.length ? p.specs : ["블루투스 전용 · 무계정","DC 36V 저전압 안전","엣지컴퍼니 직접 시공·A/S"]);
+    var badges = (p.badges || []).map(function (b){ return '<span class="pdbadge">' + b + '</span>'; }).join("");
+    var cta = p.soon
+      ? '<button class="btn btn--primary btn--lg" type="button" data-soon>🛠️ 출시 준비중 — 알림받기</button>'
+      : '<a class="btn btn--primary btn--lg" href="' + storeLink(p) + '" target="_blank" rel="noopener">네이버 스토어팜에서 구매하기 →</a>';
     host.innerHTML =
       '<div class="pd__gallery">' + thumb(p, true) + '</div>' +
-      '<div class="pd__info"><p class="pd__cat">' + catName(p.cat) + '</p>' +
+      '<div class="pd__info"><p class="pd__cat">' + catName(p.cat) + (badges?' '+badges:'') + '</p>' +
       '<h1 class="pd__name">' + p.name + '</h1>' +
-      '<div class="pd__meta">' + stars(p.rate) + '<b>' + p.rate.toFixed(1) + '</b><span>· ' + (p.reviews?('후기 '+p.reviews.toLocaleString("ko-KR")+'개'):'신규 상품') + '</span></div>' +
       '<p class="pd__summary">' + p.summary + '</p>' +
-      '<div class="pd__price"><span class="off">' + discountPct(p) + '%</span><span class="sale">' + won(p.sale) + '</span><span class="orig">' + won(p.price) + '</span></div>' +
       '<ul class="pd__promise">' + specs.map(function (s){ return '<li>' + s + '</li>'; }).join("") + '</ul>' +
-      '<div class="pd__qty"><button data-q="-1">−</button><input data-qty value="1" inputmode="numeric"/><button data-q="1">+</button></div>' +
-      '<div class="pd__actions"><button class="btn btn--line" data-add>장바구니</button>' +
-      '<button class="btn btn--primary" data-buy>' + (p.soon ? "출시 알림 받기" : p.buyUrl ? "스마트스토어에서 구매" : "바로 구매") + '</button></div>' +
-      '<p class="pd__ship">무료배송 · 평일 14시 이전 주문 시 당일 출고 · A/S 직접 시공</p></div>';
+      '<div class="pd__cta">' + cta + '</div>' +
+      '<p class="pd__ship">구매·결제·배송은 네이버 스토어팜에서 진행됩니다 · 설치·A/S는 엣지컴퍼니 자체 시공팀</p>' +
+      '<p class="pd__ship"><a href="index.html" style="color:var(--blue);font-weight:700">← 전체 제품 보기</a></p></div>';
 
-    var qtyEl = host.querySelector("[data-qty]");
-    [].forEach.call(host.querySelectorAll("[data-q]"), function (b) {
-      b.addEventListener("click", function () { qtyEl.value = Math.max(1, (parseInt(qtyEl.value,10)||1) + parseInt(b.dataset.q,10)); });
-    });
-    host.querySelector("[data-add]").addEventListener("click", function () {
-      if (p.soon) { alert("출시 준비중인 상품입니다. 출시 알림은 고객센터로 문의해 주세요!"); return; }
-      addToCart(p.id, parseInt(qtyEl.value,10)||1);
-      if (confirm("장바구니에 담았습니다. 장바구니로 이동할까요?")) location.href = "cart.html";
-    });
-    host.querySelector("[data-buy]").addEventListener("click", function () {
-      if (p.soon) { alert("출시 준비중입니다. 출시 알림을 원하시면 고객센터로 문의해 주세요!"); return; }
-      if (p.buyUrl) { window.open(p.buyUrl, "_blank"); return; }
-      addToCart(p.id, parseInt(qtyEl.value,10)||1); location.href = "cart.html";
+    var soonBtn = host.querySelector("[data-soon]");
+    if (soonBtn) soonBtn.addEventListener("click", function () {
+      alert("출시 준비중인 제품입니다. 출시 소식은 고객센터(" + CS_TEL + ") 또는 스토어팜 알림으로 받아보실 수 있어요!");
     });
 
     renderGrid(document.querySelector("[data-grid=related]"),
       dedupe(PRODUCTS.filter(function (x){return x.cat===p.cat && x.id!==p.id;}).concat(PRODUCTS.filter(function(x){return x.id!==p.id;}))).slice(0, 4));
+  }
+
+  /* ---------- 영상 ---------- */
+  var VIDEOS = [
+    { id:"", title:"ACRO 실링팬 설치 & 사용 후기", desc:"실제 설치 현장과 1년 사용 후기" },
+    { id:"", title:"블루투스 스위치 — 인터넷 끊겨도 켜질까?", desc:"직접 테스트 영상" },
+    { id:"", title:"36V 스마트 조명 3색변환 + 디밍", desc:"낮과 밤, 공간이 달라집니다" },
+    { id:"", title:"스마트 전동커튼 설치기", desc:"실측부터 설치까지" },
+    { id:"", title:"아크로 스마트 앱 사용법", desc:"무계정으로 1분 만에 시작" },
+    { id:"", title:"입주박람회 ACRO 부스 현장", desc:"현장에서 직접 보고 사는 법" }
+  ];
+  function renderVideos() {
+    var host = document.querySelector("[data-videos]");
+    if (!host) return;
+    host.innerHTML = VIDEOS.map(function (v, i) {
+      return '<button class="rev" data-yt="' + v.id + '" aria-label="영상 재생">' +
+        '<div class="rev__thumb"><span class="rev__play">▶</span></div>' +
+        '<p class="rev__t">' + v.title + '</p><p class="rev__d">' + v.desc + '</p></button>';
+    }).join("");
+    [].forEach.call(host.querySelectorAll(".rev"), function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-yt");
+        if (!id) { alert("영상 ID가 아직 등록되지 않았습니다.\nshop.js 의 VIDEOS 배열에 유튜브 영상 ID를 넣어주세요."); return; }
+        btn.querySelector(".rev__thumb").innerHTML =
+          '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0" title="ACRO 영상" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+      });
+    });
+  }
+
+  /* ---------- 신제품 준비 ---------- */
+  function renderComing() {
+    renderGrid(document.querySelector("[data-grid=coming]"),
+      PRODUCTS.filter(function (p){ return p.soon || p.new; }));
   }
 
   /* ============================================================
@@ -406,7 +430,7 @@
       hero: { kicker:"ACRO BLUETOOTH WIRED SWITCH", h1:"터치 한 번으로,<br><b>집 전체를 켜고 끈다</b>",
         sub:"화이트 글래스 터치 패널 · 최대 5채널 제어 · 아크로 스마트 앱 연동. 유선으로 안정적이게, 블루투스로 편리하게.",
         tags:["블루투스 연결","유선 스위치","5채널 제어","앱 제어 지원"], icon:"switch",
-        primary:{label:"스위치 구매하기", href:"category.html?cat=switch"} },
+        primary:{label:"스위치 보러가기", href:"category.html?cat=switch"} },
       features: [
         {icon:"bt", t:"블루투스 연결", d:"공유기·계정 없이 스마트폰과 바로 연결."},
         {icon:"switch", t:"유선 스위치", d:"매립 유선 설치로 끊김 없이 안정적인 동작."},
@@ -584,7 +608,10 @@
 
     var C = L.close;
     html += '<section class="lclose"><div class="lwrap lcenter"><h2>' + C.h + '</h2><p>' + C.d + '</p>' +
-      '<a class="lbtn lbtn--solid" href="' + C.cta.href + '">' + C.cta.label + '</a></div></section>';
+      '<div class="lcta lcta--center">' +
+        '<a class="lbtn lbtn--solid" href="' + SMARTSTORE + '" target="_blank" rel="noopener">스토어팜에서 구매하기 →</a>' +
+        '<a class="lbtn lbtn--ghost" href="' + C.cta.href + '">' + C.cta.label + '</a>' +
+      '</div></div></section>';
 
     host.innerHTML = html;
     if (L.cat) renderGrid(document.querySelector("[data-grid=lprod]"), dedupe(PRODUCTS.filter(function (p){return p.cat===L.cat;})).slice(0,4));
@@ -600,8 +627,9 @@
     if (page === "home") renderHome();
     else if (page === "category") renderCategory();
     else if (page === "product") renderProduct();
-    else if (page === "cart") renderCart();
     else if (page === "landing") renderLanding();
+    else if (page === "videos") renderVideos();
+    else if (page === "coming") renderComing();
   });
 
   window.ACRO = { PRODUCTS: PRODUCTS, CATEGORIES: CATEGORIES, LANDINGS: LANDINGS };

@@ -8,6 +8,8 @@
   <url><loc>https://acro.kr/landing.html?p=curtain</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://acro.kr/landing.html?p=outlet</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://acro.kr/landing.html?p=app</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://acro.kr/videos.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://acro.kr/coming.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://acro.kr/category.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://acro.kr/brand.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://acro.kr/about.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>

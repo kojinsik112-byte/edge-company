@@ -142,6 +142,37 @@ section.block { padding: clamp(2.5rem,5vw,4rem) 0; }
 .stars .on { color: #ffb400; }
 .rcount { font-size: .8rem; color: var(--sub); }
 
+/* 쇼케이스 카드 (가격 없음) */
+.card__sum { color: var(--sub); font-size: .9rem; line-height: 1.55; margin: .35rem 0 .6rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.8em; }
+.card__more { font-size: .88rem; font-weight: 800; color: var(--blue); }
+.card:hover .card__more { text-decoration: underline; }
+
+/* 헤더 스토어팜 버튼 */
+.storecta { display: inline-flex; align-items: center; gap: .5rem; background: #03c75a; color: #fff !important; font-weight: 800; padding: .6rem 1.1rem; border-radius: 999px; font-size: .92rem; transition: .18s; }
+.storecta:hover { filter: brightness(.94); transform: translateY(-1px); }
+.storecta svg { width: 20px; height: 20px; }
+@media (max-width: 760px){ .storecta span { display: none; } .storecta { padding: .6rem; border-radius: 50%; } }
+
+/* 상품 상세 (쇼케이스 intro) */
+.pdbadge { display:inline-block; font-size:.72rem; font-weight:800; color:#fff; background:var(--blue); border-radius:6px; padding:.15rem .5rem; margin-left:.3rem; }
+.pd__cta { margin: 1.6rem 0 1rem; }
+.pd__cta .btn--lg { width:100%; }
+
+/* 영상 페이지 */
+.videos-sec { background: var(--navy); color:#fff; }
+.videos-sec .shead h2, .videos-sec .shead p { color:#fff; }
+.vgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.3rem; }
+.rev { background:none; border:0; cursor:pointer; text-align:left; padding:0; color:#fff; }
+.rev__thumb { aspect-ratio:16/9; border-radius:14px; overflow:hidden; position:relative; background:linear-gradient(135deg,#0f254f,#14306a); display:grid; place-items:center; border:1px solid rgba(255,255,255,.1); transition:transform .25s var(--ease); }
+.rev:hover .rev__thumb { transform:translateY(-4px); }
+.rev__play { width:58px; height:58px; border-radius:50%; background:rgba(255,0,0,.85); display:grid; place-items:center; font-size:1.3rem; padding-left:4px; }
+.rev__thumb iframe { width:100%; height:100%; border:0; }
+.rev__t { margin-top:.9rem; font-weight:700; }
+.rev__d { font-size: .85rem; color: rgba(255,255,255,.6); margin-top: .2rem; }
+.lcta--center { justify-content: center; }
+@media (max-width:900px){ .vgrid { grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .vgrid { grid-template-columns:1fr;} }
+
 /* 띠 배너 (기획전) */
 .promo { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .promo a { border-radius: 16px; padding: 2rem; color: #fff; min-height: 160px; display: flex; flex-direction: column; justify-content: center; transition: .2s var(--ease); }
