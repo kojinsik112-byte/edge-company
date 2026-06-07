@@ -34,10 +34,11 @@
 
   <!-- ===================== HERO ===================== -->
   <section class="hero" id="top">
-    <video class="hero__video" autoplay muted loop playsinline poster="assets/hero-poster.svg">
-      <!-- 실제 히어로 영상 파일을 assets/hero.mp4 로 넣으면 자동 재생됩니다. -->
-      <source src="assets/hero.mp4" type="video/mp4" />
-    </video>
+    <!-- 코드로 생성되는 히어로 모션: 블루투스 신호 + 스마트홈 기기 연결 네트워크.
+         mp4 파일 없이 Canvas로 그려지며 4K에서도 선명하고 완벽 루프됩니다.
+         (reduced-motion 환경/구형 브라우저에서는 hero-poster.svg 가 자동 표시) -->
+    <div class="hero__bg" style="background-image:url('assets/hero-poster.svg')"></div>
+    <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
     <div class="hero__overlay"></div>
     <div class="hero__content">
       <p class="hero__eyebrow">엣지컴퍼니가 만들고, 직접 시공하고, 책임지는</p>
@@ -313,32 +314,54 @@
   </section>
 
   <!-- ===================== FOOTER ===================== -->
-  <footer class="foot">
-    <div class="foot__inner">
-      <div class="foot__brand">
-        <span class="nav__logo">ACRO</span>
-        <p>Wi-Fi도, 클라우드 계정도 필요 없는 블루투스 전용 스마트홈.</p>
+  <footer class="foot" id="footer">
+    <canvas class="foot__wave" id="footWave" aria-hidden="true"></canvas>
+
+    <div class="foot__top">
+      <div class="foot__mark">
+        <span class="foot__logo">ACRO</span>
+        <p class="foot__tag">Wi-Fi도, 클라우드 계정도 필요 없는 블루투스 전용 스마트홈.</p>
+        <div class="foot__promises">
+          <span>Bluetooth 전용</span><span>무계정</span><span>DC 36V 저전압</span>
+        </div>
+        <div class="foot__channels">
+          <a href="#" target="_blank" rel="noopener" class="fbtn" aria-label="유튜브">▶ YouTube</a>
+          <a href="#" target="_blank" rel="noopener" class="fbtn" aria-label="네이버 카페">카페</a>
+          <a href="#" target="_blank" rel="noopener" class="fbtn" aria-label="스마트스토어">스마트스토어</a>
+        </div>
       </div>
-      <div class="foot__col">
-        <h4>회사</h4>
-        <p>주식회사 엣지컴퍼니 (Edge Company)</p>
-        <p>대표이사 고진식</p>
-        <p>본사 울산</p>
-      </div>
-      <div class="foot__col">
-        <h4>채널</h4>
-        <p>유튜브 · 네이버 카페</p>
-        <p>네이버 스마트스토어</p>
-      </div>
-      <div class="foot__col">
-        <h4>약속</h4>
-        <p>블루투스 전용 · 무계정</p>
-        <p>DC 36V 저전압 안전</p>
+
+      <div class="foot__cols">
+        <div class="foot__col">
+          <h4>제품</h4>
+          <a href="#products">스위치</a>
+          <a href="#products">실링팬</a>
+          <a href="#products">전동커튼</a>
+          <a href="#products">조명</a>
+        </div>
+        <div class="foot__col">
+          <h4>브랜드</h4>
+          <a href="#promise">3대 약속</a>
+          <a href="#why">왜 ACRO</a>
+          <a href="#app">ACRO 앱</a>
+          <a href="#reviews">리뷰</a>
+        </div>
+        <div class="foot__col">
+          <h4>회사</h4>
+          <p>주식회사 엣지컴퍼니</p>
+          <p>대표이사 고진식</p>
+          <p>본사 울산</p>
+        </div>
       </div>
     </div>
-    <p class="foot__copy">© 2026 Edge Company. ACRO는 엣지컴퍼니의 자체 브랜드입니다.</p>
+
+    <div class="foot__bottom">
+      <p class="foot__copy">© 2026 Edge Company. ACRO는 엣지컴퍼니의 자체 브랜드입니다.</p>
+      <a href="#top" class="foot__totop" aria-label="맨 위로">맨 위로 ↑</a>
+    </div>
   </footer>
 
+  <script src="hero.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

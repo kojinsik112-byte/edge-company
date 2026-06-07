@@ -88,7 +88,8 @@ img, video { max-width: 100%; display: block; }
 
 /* ---------- HERO ---------- */
 .hero { position: relative; min-height: 100svh; display: grid; place-items: center; overflow: hidden; color: #fff; }
-.hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.hero__bg { position: absolute; inset: 0; z-index: -3; background-size: cover; background-position: center; }
+.hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
 .hero__overlay {
   position: absolute; inset: 0; z-index: -1;
   background:
@@ -246,14 +247,37 @@ section { padding: clamp(4rem, 9vw, 7.5rem) 1.5rem; }
 .final h2 { font-size: clamp(1.9rem,4.5vw,3rem); }
 .final p { color: var(--muted); font-size: 1.2rem; margin: 1.2rem 0 2.2rem; }
 
-/* ---------- FOOTER ---------- */
-.foot { background: #07122b; color: rgba(255,255,255,.7); padding: 4rem 1.5rem 2.5rem; }
-.foot__inner { max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 2rem; }
-.foot__brand .nav__logo { color: #fff; }
-.foot__brand p { margin-top: 1rem; max-width: 280px; }
-.foot__col h4 { color: #fff; font-size: 1rem; margin-bottom: 1rem; }
-.foot__col p { font-size: .95rem; margin-bottom: .4rem; }
-.foot__copy { max-width: var(--maxw); margin: 2.5rem auto 0; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,.1); font-size: .85rem; color: rgba(255,255,255,.45); }
+/* ---------- FOOTER (premium) ---------- */
+.foot {
+  position: relative; overflow: hidden;
+  background: radial-gradient(120% 140% at 80% 0%, #0f254f 0%, #07122b 55%);
+  color: rgba(255,255,255,.7); padding: 5rem 1.5rem 2.2rem;
+}
+.foot__wave { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: .9; pointer-events: none; }
+.foot__top, .foot__bottom { position: relative; z-index: 1; max-width: var(--maxw); margin: 0 auto; }
+.foot__top { display: grid; grid-template-columns: 1.5fr 2fr; gap: 3rem; }
+
+.foot__logo {
+  font-weight: 900; font-size: 2.4rem; letter-spacing: .14em; color: #fff;
+  background: linear-gradient(100deg, #fff, #8fb8ff);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.foot__tag { margin-top: .9rem; max-width: 320px; font-size: .98rem; }
+.foot__promises { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.4rem; }
+.foot__promises span { font-size: .8rem; font-weight: 700; color: #8fb8ff; border: 1px solid rgba(143,184,255,.35); padding: .35rem .8rem; border-radius: 999px; }
+.foot__channels { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.6rem; }
+.fbtn { font-size: .9rem; font-weight: 700; color: #fff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); padding: .55rem 1.1rem; border-radius: 999px; transition: background .2s, transform .2s; }
+.fbtn:hover { background: var(--blue); border-color: transparent; transform: translateY(-2px); }
+
+.foot__cols { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
+.foot__col h4 { color: #fff; font-size: 1rem; margin-bottom: 1.1rem; }
+.foot__col a, .foot__col p { display: block; font-size: .95rem; margin-bottom: .55rem; color: rgba(255,255,255,.66); transition: color .2s; }
+.foot__col a:hover { color: #8fb8ff; }
+
+.foot__bottom { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; padding-top: 1.8rem; border-top: 1px solid rgba(255,255,255,.1); }
+.foot__copy { font-size: .85rem; color: rgba(255,255,255,.45); }
+.foot__totop { font-size: .85rem; font-weight: 700; color: rgba(255,255,255,.7); transition: color .2s; }
+.foot__totop:hover { color: #fff; }
 
 /* ============================================================
    RESPONSIVE
@@ -271,10 +295,10 @@ section { padding: clamp(4rem, 9vw, 7.5rem) 1.5rem; }
   .moat__grid { grid-template-columns: repeat(2,1fr); }
   .why__row, .app__inner { grid-template-columns: 1fr; }
   .why__row--rev .why__text { order: 0; }
-  .foot__inner { grid-template-columns: 1fr 1fr; }
+  .foot__top { grid-template-columns: 1fr; gap: 2.4rem; }
 }
 @media (max-width: 520px) {
-  .moat__grid, .foot__inner { grid-template-columns: 1fr; }
+  .moat__grid, .foot__cols { grid-template-columns: 1fr; }
   .hero__actions { flex-direction: column; }
   .btn { width: 100%; justify-content: center; }
 }
