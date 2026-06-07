@@ -1,46 +1,58 @@
-# ACRO STORE — 한국형 스마트홈 쇼핑몰
+# ACRO STORE — 공식 사이트
 
-엣지컴퍼니 ACRO(아크로) 공식 스토어. `changane.com`(창안애) 같은 한국형 커머스 구조를
-ACRO 브랜드로 구현한 정적 사이트입니다. 빌드 도구 없이 바로 열고 배포할 수 있습니다.
+엣지컴퍼니 ACRO(아크로) 공식 사이트. 한국형 커머스 구조 + 제품별 랜딩 + 브랜드 스토리까지
+하나로 묶은 정적 사이트입니다. 빌드 도구 없이 바로 열고 배포할 수 있습니다.
 
-## 페이지 구조
+## 페이지 구성
 ```
 acro-site/
-├─ index.html       # 쇼핑몰 메인 (유틸바·검색헤더·GNB·롤링배너·베스트·기획전·신상품·포토후기·푸터)
-├─ category.html    # 상품 목록 (카테고리/검색/베스트, 정렬 기능)
-├─ product.html     # 상품 상세 (수량·장바구니·바로구매·연관상품)
-├─ cart.html        # 장바구니 (localStorage 저장, 수량변경/삭제/합계)
-├─ brand.html       # 브랜드 스토리 (다크 톤 랜딩 — 코드 생성 히어로 모션 + 푸터 웨이브)
-├─ mall.css         # 쇼핑몰 디자인 (밝은 흰 배경 + 네이비/블루투스 블루, Pretendard)
-├─ shop.js          # 상품 샘플 데이터 + 렌더링 엔진 + 장바구니 + 슬라이더
-├─ hero.js          # brand.html 전용 Canvas 모션
-├─ script.js        # brand.html 전용 스크립트
-└─ assets/hero-poster.svg
+├─ index.html       # 쇼핑몰 메인 (롤링배너·베스트·기획전·신상품·포토후기)
+├─ category.html    # 상품 목록 (카테고리/검색/베스트 + 정렬)
+├─ product.html     # 상품 상세 (수량·장바구니·바로구매/스마트스토어·연관상품)
+├─ cart.html        # 장바구니 (localStorage)
+├─ landing.html     # 제품별 랜딩 (?p=switch|light|curtain|outlet|app) ← 데이터 기반
+├─ fan.html         # 아크로 실링팬 전용 랜딩 (마스터형 / NEW SLIM 준비중)
+├─ brand.html       # 브랜드 스토리 (다크 톤, Canvas 히어로 모션)
+├─ about.html       # 회사 소개 (엣지컴퍼니, 4박자 구조)
+├─ support.html     # 고객센터 (FAQ, A/S, 문의)
+├─ mall.css         # 메인 디자인 시스템 + 랜딩/회사/고객센터 스타일
+├─ fan.css          # 실링팬 페이지 전용
+├─ shop.js          # 통합 엔진 (헤더/푸터 주입·상품데이터·렌더·카트·랜딩)
+├─ hero.js, script.js # brand.html 전용
+├─ robots.txt, sitemap.xml
+└─ assets/
+   ├─ favicon.svg
+   ├─ hero-poster.svg      # brand.html 히어로 폴백
+   └─ products/            # 상품 사진 넣는 곳 (README 참고)
 ```
 
-## 동작 방식
-- **상품 데이터**는 전부 `shop.js` 상단의 `PRODUCTS` / `CATEGORIES` 배열에서 옵니다. (현재 12개 샘플)
-- 상품 **썸네일은 사진 없이** 카테고리별 아이콘 + 그라데이션 SVG로 자동 생성됩니다.
-- **장바구니**는 브라우저 `localStorage` 에 저장됩니다(서버 불필요, 데모용).
-- 카테고리 GNB·검색·정렬·슬라이더 모두 `shop.js` 가 자동 구성합니다.
+## 핵심 구조
+- **공통 헤더/푸터 일원화**: 각 페이지는 `<div data-header></div>` / `<div data-footer></div>` 만 두면
+  `shop.js` 가 헤더·GNB·드로어·푸터를 자동 주입합니다. 메뉴/회사정보 수정은 `shop.js` 한 곳에서.
+- **상품 데이터**: `shop.js` 의 `PRODUCTS` 배열 (현재 14개 샘플). 썸네일은 사진 없으면 SVG 자동 생성,
+  `img` 필드를 넣으면 실제 사진으로 교체 (assets/products/README.md 참고).
+- **제품 랜딩**: `shop.js` 의 `LANDINGS` 객체. `landing.html?p=키` 로 접근하며, 기능/사양/FAQ/연관상품을
+  자동 렌더. 새 제품 랜딩은 `LANDINGS` 에 항목만 추가하면 됩니다.
+- **장바구니**: 브라우저 `localStorage`. 실링팬 마스터형 등은 `buyUrl`(스마트스토어)로 바로 연결.
 
-## 실제 운영 데이터로 바꾸려면
-1. **상품/가격/후기** — `shop.js` 의 `PRODUCTS` 배열 교체 (id·name·price·sale·rate·reviews·badges·cat).
-2. **상품 사진** — `thumb()` 함수를 실제 이미지 `<img>` 로 바꾸거나, 각 상품에 `img` 필드 추가.
-3. **회사/사업자 정보** — 각 페이지 푸터의 샘플 값(사업자등록번호·통신판매업·고객센터 `1670-0000` 등) 교체.
-4. **로그인·결제** — 현재는 데모입니다. 실제 판매는 스마트스토어/박람회 연동 또는 카페24·고도몰 같은
-   커머스 플랫폼 이식이 필요합니다.
+## 실제 운영 데이터로 바꾸기
+1. **상품/가격/후기** — `shop.js` 의 `PRODUCTS` 교체.
+2. **상품 사진** — `assets/products/` 에 파일 업로드 후 상품에 `img` 필드 추가.
+3. **회사/사업자 정보·고객센터 번호** — `shop.js` 의 `footerHTML()` / `CS_TEL`, about/support 페이지.
+4. **스마트스토어 링크** — `shop.js` 상단 `SMARTSTORE`, `FAN_BUY` 상수.
+5. **도메인** — `robots.txt` / `sitemap.xml` 의 `https://acro.kr` 를 실제 도메인으로 교체.
+6. **로그인·결제** — 현재 데모. 실제 판매는 스마트스토어 연동 또는 카페24·고도몰 이식 필요.
 
 ## 로컬에서 보기
 ```bash
 cd acro-site
 python3 -m http.server 8080
-# http://localhost:8080  (메인) · /brand.html (브랜드 스토리)
+# http://localhost:8080
 ```
 
 ## 디자인 가이드 (브랜드 문서 기준 · 고정)
-- 톤: 흰 배경 + 네이비/블루투스 블루 포인트, Pretendard
+- 톤: 흰 배경 + 네이비/블루투스 블루(+제품별 골드/그린 액센트), Pretendard
 - 3대 메시지 필수 노출: **블루투스 전용 · 무계정 · DC 36V 저전압 안전**
 - 금지: 유치하거나 산만한 장식 요소
 
-> ※ 푸터의 사업자등록번호·통신판매업번호·고객센터 번호·이메일은 모두 **샘플 값**입니다. 운영 전 실제 값으로 교체하세요.
+> ※ 사업자등록번호·통신판매업·고객센터 번호·이메일·일부 가격은 **샘플 값**입니다. 운영 전 실제 값으로 교체하세요.

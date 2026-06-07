@@ -5,48 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ACRO STORE · 블루투스 스마트홈 · 전동커튼 · 조명</title>
   <meta name="description" content="ACRO 공식 스토어 — 블루투스 전용 스마트홈 스위치·실링팬·전동커튼·조명. 무계정, DC 36V 저전압 안전. 엣지컴퍼니 직접 시공·A/S." />
+  <meta property="og:title" content="ACRO STORE · 블루투스 스마트홈" />
+  <meta property="og:description" content="Wi-Fi도 계정도 필요 없는 블루투스 스마트홈. 인터넷이 없어도 켜집니다." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
   <link rel="stylesheet" href="mall.css" />
 </head>
 <body data-page="home">
 
-  <!-- 모바일 드로어 -->
-  <div class="drawer" data-drawer>
-    <div class="drawer__panel">
-      <a class="logo" href="index.html">ACRO<small>SMART HOME</small></a>
-      <h4>카테고리</h4>
-      <nav data-gnb></nav>
-      <h4>마이</h4>
-      <a href="#">로그인 / 회원가입</a>
-      <a href="cart.html">장바구니</a>
-      <a href="#">주문조회</a>
-      <a href="brand.html">브랜드 스토리</a>
-    </div>
-  </div>
-
-  <!-- 유틸리티 바 -->
-  <div class="util"><div class="wrap">
-    <a href="#">로그인</a><a href="#">회원가입</a><a href="#">주문조회</a>
-    <a href="cart.html">장바구니</a><a href="#">고객센터</a>
-  </div></div>
-
-  <!-- 헤더 -->
-  <header class="head"><div class="wrap">
-    <button class="burger" data-burger aria-label="메뉴"><span></span><span></span><span></span></button>
-    <a class="logo" href="index.html">ACRO<small>SMART HOME</small></a>
-    <div class="search">
-      <form data-search-form><input placeholder="찾으시는 상품을 검색하세요" aria-label="상품 검색" /><button aria-label="검색">⌕</button></form>
-    </div>
-    <div class="headicons">
-      <a class="iconbtn" href="#" aria-label="위시리스트"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21C-2 11 5-3 12 5 19-3 26 11 12 21z"/></svg>찜</a>
-      <a class="iconbtn" href="#" aria-label="마이페이지"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>마이</a>
-      <a class="iconbtn" href="cart.html" aria-label="장바구니"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 13h11l2-9H6"/></svg>장바구니<span class="cartbadge" data-cart-count>0</span></a>
-    </div>
-  </div></header>
-
-  <!-- GNB -->
-  <nav class="gnb"><div class="wrap" data-gnb></div></nav>
+  <div data-header></div>
 
   <!-- 히어로 슬라이더 -->
   <section class="hero">
@@ -58,7 +27,7 @@
             <p class="slide__tag">NO WI-FI · NO ACCOUNT</p>
             <h2 class="slide__t">인터넷 없이 켜지는<br />블루투스 스마트홈</h2>
             <p class="slide__d">공유기가 죽어도, 회사가 사라져도 내 집 스위치는 그대로.</p>
-            <a class="slide__btn" href="category.html?cat=switch">스위치 보러가기 →</a>
+            <a class="slide__btn" href="landing.html?p=switch">스위치 보러가기 →</a>
           </div>
         </div>
         <div class="slide slide--b">
@@ -67,7 +36,7 @@
             <p class="slide__tag">BEST · 앵커 상품</p>
             <h2 class="slide__t">실링팬, 지금<br />최대 20% 할인</h2>
             <p class="slide__d">옵션·비옵션 세대 모두에서 사랑받는 전천후 냉난방·환기.</p>
-            <a class="slide__btn" href="category.html?cat=fan">실링팬 보러가기 →</a>
+            <a class="slide__btn" href="fan.html">실링팬 보러가기 →</a>
           </div>
         </div>
         <div class="slide slide--c">
@@ -88,51 +57,38 @@
     </div>
   </section>
 
-  <!-- 빠른 카테고리 -->
-  <section class="block"><div class="wrap">
-    <div class="quickcat" data-quickcat></div>
-  </div></section>
+  <section class="block"><div class="wrap"><div class="quickcat" data-quickcat></div></div></section>
 
-  <!-- 베스트 -->
   <section class="block" style="padding-top:0"><div class="wrap">
-    <div class="shead">
-      <div><h2>🔥 베스트 상품</h2><p>지금 가장 많이 찾는 ACRO 제품</p></div>
-      <a href="category.html?sort=best">전체보기 →</a>
-    </div>
+    <div class="shead"><div><h2>🔥 베스트 상품</h2><p>지금 가장 많이 찾는 ACRO 제품</p></div>
+      <a href="category.html?sort=best">전체보기 →</a></div>
     <div class="grid" data-grid="best"></div>
   </div></section>
 
-  <!-- 기획전 띠배너 -->
   <section class="block" style="padding-top:0"><div class="wrap">
     <div class="promo">
       <a class="p1" href="product.html?id=pk1"><h3>첫 집 스타터 패키지</h3><p>스위치+실링팬+조명 풀세트 · 22% OFF</p></a>
-      <a class="p2" href="category.html?cat=curtain"><h3>엣지리브 전동커튼·블라인드</h3><p>실측부터 설치까지 자체 시공팀이 직접</p></a>
+      <a class="p2" href="landing.html?p=curtain"><h3>엣지리브 전동커튼·블라인드</h3><p>실측부터 설치까지 자체 시공팀이 직접</p></a>
     </div>
   </div></section>
 
-  <!-- 신상품 -->
   <section class="block" style="padding-top:0"><div class="wrap">
-    <div class="shead">
-      <div><h2>🆕 신상품</h2><p>새로 입고된 ACRO 라인업</p></div>
-      <a href="category.html">전체보기 →</a>
-    </div>
+    <div class="shead"><div><h2>🆕 신상품</h2><p>새로 입고된 ACRO 라인업</p></div>
+      <a href="category.html">전체보기 →</a></div>
     <div class="grid" data-grid="new"></div>
   </div></section>
 
-  <!-- 신뢰 띠 -->
   <section class="trust"><div class="wrap">
     <div class="trust__i"><b>📶</b><div><h4>블루투스 전용 · 무계정</h4><p>공유기·클라우드·회원가입 불필요</p></div></div>
     <div class="trust__i"><b>⚡</b><div><h4>DC 36V 저전압 안전</h4><p>감전·화재 리스크를 물리적으로 ↓</p></div></div>
     <div class="trust__i"><b>🛠️</b><div><h4>직접 시공 · A/S</h4><p>엣지컴퍼니 자체 전기공사 면허</p></div></div>
   </div></section>
 
-  <!-- 전체 상품 -->
   <section class="block"><div class="wrap">
     <div class="shead"><div><h2>전체 상품</h2><p>ACRO 생태계 전체 라인업</p></div></div>
     <div class="grid" data-grid="all"></div>
   </div></section>
 
-  <!-- 포토 후기 -->
   <section class="block" style="padding-top:0"><div class="wrap">
     <div class="shead"><div><h2>📷 포토 후기</h2><p>실제 입주민이 남긴 생생한 설치 후기</p></div><a href="#">후기 더보기 →</a></div>
     <div class="reviews-strip">
@@ -143,33 +99,7 @@
     </div>
   </div></section>
 
-  <!-- 푸터 -->
-  <footer class="foot">
-    <div class="wrap">
-      <div class="foot__top">
-        <div class="foot__links">
-          <a href="brand.html">브랜드 스토리</a><a href="#">이용약관</a><a href="#">개인정보처리방침</a>
-          <a href="#">고객센터</a><a href="#">제휴·지사문의</a>
-        </div>
-        <div class="foot__cs">
-          <b>1670-0000</b>
-          <span>평일 10:00 – 17:00 · 점심 12:00 – 13:00 · 주말·공휴일 휴무</span>
-        </div>
-      </div>
-      <div class="foot__info">
-        <p class="foot__logo">ACRO</p>
-        <div class="foot__promise-row"><span>Bluetooth 전용</span><span>무계정</span><span>DC 36V 저전압 안전</span></div>
-        <div class="biz">
-          <span>상호: 주식회사 엣지컴퍼니</span><span>대표: 고진식</span>
-          <span>본사: 울산</span><span>사업자등록번호: 000-00-00000</span>
-          <span>통신판매업: 2026-울산-0000</span>
-        </div>
-        <div class="biz"><span>이메일: help@acro.kr</span><span>호스팅: ACRO STORE</span></div>
-        <p class="foot__copy">© 2026 Edge Company. ACRO는 엣지컴퍼니의 자체 브랜드입니다. (※ 사업자정보·연락처는 샘플 값)</p>
-      </div>
-    </div>
-  </footer>
-
+  <div data-footer></div>
   <script src="shop.js"></script>
 </body>
 </html>
