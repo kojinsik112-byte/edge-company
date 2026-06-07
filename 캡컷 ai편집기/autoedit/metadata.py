@@ -209,5 +209,6 @@ def generate_metadata(
 def write_metadata(captions: List[Caption], out_path: Path, cfg: MetadataConfig):
     """메타데이터를 텍스트 파일로 저장하고 (텍스트, 구조)를 반환한다."""
     text, data = generate_metadata(captions, cfg)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(text, encoding="utf-8")
     return text, data

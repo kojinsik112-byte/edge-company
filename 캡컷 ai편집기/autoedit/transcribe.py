@@ -112,6 +112,7 @@ def _wrap(text: str, max_chars: int) -> str:
 
 def write_srt(captions: List[Caption], out_path: Path, max_chars: int = 0) -> Path:
     """자막 구간을 SRT 파일로 저장한다."""
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     lines = []
     for i, cap in enumerate(captions, start=1):
         lines.append(str(i))

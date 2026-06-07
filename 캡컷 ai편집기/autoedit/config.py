@@ -21,8 +21,8 @@ class SilenceConfig:
 
     enabled: bool = True
     speech_only: bool = True     # 말하는 구간만 남기고 나머지(준비·응시·무음) 전부 컷 (가장 과감)
-    speech_pad: float = 0.15     # 말 앞뒤로 남길 여유(초). 작을수록 더 과감/타이트
-    bridge_gap: float = 0.35     # 말 사이 이보다 짧은 틈은 자연스럽게 유지(초). 작을수록 더 많이 컷
+    speech_pad: float = 0.08     # 말 앞뒤로 남길 여유(초). 작을수록 더 과감/타이트
+    bridge_gap: float = 0.18     # 말 사이 이보다 짧은 틈만 유지(초). 작을수록 더 많이 컷
     noise_db: float = -30.0      # (dB 방식 대비용) 이 값보다 조용하면 무음
     min_silence: float = 0.4     # (dB 방식) 잘라낼 무음 최소 길이(초)
     keep_pad: float = 0.07       # (dB 방식) 말 앞뒤 여유(초)
