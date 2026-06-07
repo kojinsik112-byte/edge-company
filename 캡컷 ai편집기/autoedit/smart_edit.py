@@ -26,14 +26,26 @@ class SmartEditUnavailable(RuntimeError):
 
 def _resolve_api_key(cfg: SmartEditConfig) -> Optional[str]:
     if os.environ.get("ANTHROPIC_API_KEY"):
-        return os.environ["ANTHROPIC_API_KEY"]
+        return os.environ["ANTHROPIC_API_KEY"].strip()
     if cfg.api_key:
         return cfg.api_key.strip()
-    key_file = Path.cwd() / "api_key.txt"
-    if key_file.exists():
-        text = key_file.read_text(encoding="utf-8").strip()
-        if text:
-            return text
+    # 파일명을 조금 틀려도 찾도록 여러 후보를 확인 (Windows 확장자 혼동 대비)
+    candidates = [
+        "api_key.txt",
+        "api_key",
+        "api_key.txt.txt",
+        "apikey.txt",
+        "API_KEY.txt",
+        "api key.txt",
+    ]
+    for name in candidates:
+        p = Path.cwd() / name
+        if p.exists():
+            text = p.read_text(encoding="utf-8-sig").strip().strip('"').strip("'")
+            if text.startswith("sk-"):
+                return text
+            if text:  # sk- 로 시작 안 해도 일단 사용
+                return text
     return None
 
 
