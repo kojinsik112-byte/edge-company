@@ -24,28 +24,45 @@ class SmartEditUnavailable(RuntimeError):
     """anthropic 미설치 또는 API 키 없음."""
 
 
+def _read_key_file(p: Path) -> Optional[str]:
+    try:
+        text = p.read_text(encoding="utf-8-sig", errors="ignore")
+    except Exception:  # noqa: BLE001
+        return None
+    text = text.strip().strip('"').strip("'").strip()
+    # 혹시 메모장이 아닌 곳에 키만 들어있다면 sk- 로 시작하는 토큰을 추출
+    if "sk-ant" in text:
+        for token in text.split():
+            if token.startswith("sk-ant"):
+                return token.strip().strip('"').strip("'")
+    if text.startswith("sk-"):
+        return text
+    return None
+
+
 def _resolve_api_key(cfg: SmartEditConfig) -> Optional[str]:
     if os.environ.get("ANTHROPIC_API_KEY"):
         return os.environ["ANTHROPIC_API_KEY"].strip()
     if cfg.api_key:
         return cfg.api_key.strip()
-    # 파일명을 조금 틀려도 찾도록 여러 후보를 확인 (Windows 확장자 혼동 대비)
-    candidates = [
-        "api_key.txt",
-        "api_key",
-        "api_key.txt.txt",
-        "apikey.txt",
-        "API_KEY.txt",
-        "api key.txt",
-    ]
-    for name in candidates:
-        p = Path.cwd() / name
-        if p.exists():
-            text = p.read_text(encoding="utf-8-sig").strip().strip('"').strip("'")
-            if text.startswith("sk-"):
-                return text
-            if text:  # sk- 로 시작 안 해도 일단 사용
-                return text
+
+    # 파일 위치/확장자를 조금 틀려도 찾아낸다:
+    # 작업폴더 · autoedit 폴더 · 그 상위 폴더에서 'api_key*'/'apikey*' 파일을 모두 확인.
+    here = Path(__file__).resolve().parent
+    search_dirs = [Path.cwd(), here, here.parent]
+    seen = set()
+    for d in search_dirs:
+        if not d.exists() or d in seen:
+            continue
+        seen.add(d)
+        for p in sorted(d.iterdir()):
+            if not p.is_file():
+                continue
+            name = p.name.lower().replace(" ", "").replace("_", "")
+            if name.startswith("apikey"):
+                key = _read_key_file(p)
+                if key:
+                    return key
     return None
 
 
