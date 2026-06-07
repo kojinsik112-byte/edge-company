@@ -18,20 +18,48 @@
     { id: "package",  name: "패키지/기획전", icon: "box" }
   ];
 
-  /* ---------- 샘플 상품 데이터 ---------- */
+  /* ---------- 상품 데이터 (실제 ACRO 라인업 기준 · 가격은 샘플) ----------
+     사진을 쓰려면 각 상품에 img: "assets/products/파일명.jpg" 를 추가하세요. */
   var PRODUCTS = [
-    { id:"sw1", cat:"switch",  name:"ACRO 블루투스 스위치 1구", price:39000, sale:29000, rate:4.9, reviews:1284, badges:["BEST"], hue:218, summary:"생태계의 허브. 손으로도 앱으로도 켜고 끄는 가장 기본 제품.", new:false },
-    { id:"sw2", cat:"switch",  name:"ACRO 블루투스 스위치 3구", price:59000, sale:45000, rate:4.8, reviews:842,  badges:[],      hue:222, summary:"방 전체 조명을 한 패널에서. 무계정·블루투스 직접 제어." },
-    { id:"fan1",cat:"fan",     name:"ACRO 실링팬 화이트", price:249000, sale:199000, rate:4.9, reviews:2015, badges:["BEST","앵커"], hue:205, summary:"옵션·비옵션 세대 모두에서 사랑받는 전천후 냉난방·환기." },
-    { id:"fan2",cat:"fan",     name:"ACRO 실링팬 우드에디션", price:289000, sale:229000, rate:4.9, reviews:1120, badges:[], hue:36,  summary:"우드 블레이드로 인테리어까지. DC 36V 저전압 안전 설계." },
-    { id:"cur1",cat:"curtain", name:"엣지리브 전동커튼 풀세트", price:350000, sale:290000, rate:4.7, reviews:640, badges:["NEW"], hue:150, summary:"포레스트 그린 패키지. 실측·설치까지 자체 시공팀이 직접." , new:true},
-    { id:"bl1", cat:"blind",   name:"엣지리브 전동 블라인드", price:180000, sale:149000, rate:4.6, reviews:410, badges:["NEW"], hue:200, summary:"앱으로 채광 조절. 무타공 옵션 지원.", new:true },
-    { id:"li1", cat:"light",   name:"ACRO 우물조명 PVC 키트", price:89000, sale:69000, rate:4.8, reviews:530, badges:["스토어단독"], hue:45, summary:"스마트스토어 단독 라인. 셀프 시공도 가능한 키트 구성." },
-    { id:"li2", cat:"light",   name:"ACRO 간접조명 라인", price:45000, sale:35000, rate:4.7, reviews:320, badges:[], hue:48, summary:"은은한 무드. 블루투스로 밝기·색온도 제어." },
-    { id:"li3", cat:"light",   name:"ACRO T5 슬림 조명", price:25000, sale:19000, rate:4.6, reviews:210, badges:[], hue:210, summary:"주방·붙박이장 어디든. 슬림한 라인 조명." },
-    { id:"ou1", cat:"outlet",  name:"ACRO 스마트 콘센트", price:35000, sale:27000, rate:4.7, reviews:290, badges:[], hue:230, summary:"전원까지 ACRO 앱 한 화면에서. 저전압 안전 설계." },
-    { id:"ve1", cat:"fancoil", name:"ACRO 욕실 환풍기", price:79000, sale:65000, rate:4.6, reviews:180, badges:[], hue:195, summary:"습기·냄새 자동 관리. 조용한 BLDC 모터." },
-    { id:"pk1", cat:"package", name:"ACRO 스타터 패키지 (스위치+실링팬+조명)", price:450000, sale:349000, rate:5.0, reviews:95, badges:["기획전","BEST"], hue:218, summary:"실링팬을 중심으로 묶은 첫 집 풀세트. 가장 합리적인 시작." }
+    { id:"sw5", cat:"switch",  name:"ACRO 5채널 블루투스 유선 스위치", price:89000, sale:69000, rate:4.9, reviews:1284, badges:["BEST","국내최초"], hue:218,
+      summary:"화이트 글래스 터치 패널 · 5채널 제어 · 아크로 스마트 앱 연동. 유선 설치 + 블루투스 제어.",
+      specs:["블루투스 연결","유선 스위치","5채널 제어","ACRO Smart 앱 제어"] },
+    { id:"sw3", cat:"switch",  name:"ACRO 3채널 블루투스 유선 스위치", price:69000, sale:53000, rate:4.8, reviews:842, badges:[], hue:222,
+      summary:"방 조명을 한 패널에서. 글래스 터치 + 블루투스 직접 제어, 무계정.",
+      specs:["블루투스 연결","유선 스위치","3채널 제어","ACRO Smart 앱 제어"] },
+    { id:"fan1",cat:"fan",     name:"ACRO 실링팬 (조명형) 132cm", price:249000, sale:199000, rate:4.9, reviews:2015, badges:["BEST","앵커"], hue:205,
+      summary:"3색변환·밝기조절 조명 일체형. 6단계 풍속, 역방향 회전, 약 20dB 저소음 BLDC.",
+      specs:["블루투스 연결","6단계 풍속","3색변환 조명","약 20dB 저소음","DC 모터"] },
+    { id:"fan2",cat:"fan",     name:"ACRO 실링팬 (비조명형) 132cm", price:199000, sale:159000, rate:4.9, reviews:1120, badges:[], hue:30,
+      summary:"조명 없는 기본형. 심플한 인테리어에. 14.5cm 슬림 바디, 수면풍·타이머.",
+      specs:["블루투스 연결","6단계 풍속","수면 모드","1~8시간 타이머","KC 인증"] },
+    { id:"cur1",cat:"curtain", name:"ACRO 스마트 전동커튼", price:189000, sale:159000, rate:4.7, reviews:640, badges:["NEW"], hue:42,
+      summary:"Smart Motorized Curtain. 블루투스 연결·전용 앱 원격 제어·음성 제어·스케줄·안전 감지.",
+      specs:["블루투스 연결","전용 앱 원격 제어","음성 제어","스케줄 기능","안전 감지"], new:true },
+    { id:"bl1", cat:"blind",   name:"ACRO 전동 블라인드", price:180000, sale:149000, rate:4.6, reviews:410, badges:["NEW"], hue:200,
+      summary:"앱으로 채광 조절. 무타공 옵션 지원. 스케줄·타이머 제어.",
+      specs:["블루투스 연결","앱 채광 제어","무타공 옵션","스케줄"], new:true },
+    { id:"li1", cat:"light",   name:"ACRO 36V 우물조명 PVC 키트", price:89000, sale:69000, rate:4.8, reviews:530, badges:["스토어단독"], hue:45,
+      summary:"디밍·색밝기·조도 조절되는 36V. 국내최초 블루투스 연동, 셀프 시공 가능 키트.",
+      specs:["DC 36V 저전압","디밍 0~100%","색온도 2700~6500K","블루투스 연동","A/S 3년 보장"] },
+    { id:"li2", cat:"light",   name:"ACRO 36V 간접조명 라인", price:45000, sale:35000, rate:4.7, reviews:320, badges:[], hue:48,
+      summary:"낮엔 메인등, 밤엔 은은한 간접조명. 3색변환+디밍 동시 제어.",
+      specs:["DC 36V 저전압","3색변환","디밍 1~100%","블루투스 연동"] },
+    { id:"li3", cat:"light",   name:"ACRO T5 슬림 조명", price:25000, sale:19000, rate:4.6, reviews:210, badges:[], hue:210,
+      summary:"주방·붙박이장 어디든. 슬림 라인 조명, 36V 시스템과 모두 호환.",
+      specs:["DC 36V 호환","슬림 디자인","5년 이상 수명"] },
+    { id:"li4", cat:"light",   name:"ACRO 다운라이트 조명", price:18000, sale:14000, rate:4.6, reviews:160, badges:[], hue:212,
+      summary:"매립형 다운라이트. 3색변환·디밍 시스템과 모두 호환.",
+      specs:["DC 36V 호환","3색변환","디밍"] },
+    { id:"ou1", cat:"outlet",  name:"ACRO 블루투스 콘센트", price:35000, sale:27000, rate:4.7, reviews:290, badges:[], hue:225,
+      summary:"조명·선풍기·히터·커피머신까지 앱으로 ON/OFF. 타이머·스케줄, 과전류·과열 방지.",
+      specs:["블루투스 연결","앱 ON/OFF","타이머·스케줄","과전류·과열 방지"] },
+    { id:"ve1", cat:"fancoil", name:"ACRO 욕실 환풍기", price:79000, sale:65000, rate:4.6, reviews:180, badges:[], hue:195,
+      summary:"습기·냄새 자동 관리. 조용한 BLDC 모터.",
+      specs:["블루투스 연결","저소음 BLDC","타이머"] },
+    { id:"pk1", cat:"package", name:"ACRO 스타터 패키지 (스위치+실링팬+조명)", price:450000, sale:349000, rate:5.0, reviews:95, badges:["기획전","BEST"], hue:218,
+      summary:"실링팬을 중심으로 묶은 첫 집 풀세트. 가장 합리적인 시작.",
+      specs:["블루투스 연결","무계정","DC 36V 저전압","직접 시공·A/S"] }
   ];
 
   /* ---------- 아이콘 (SVG path) ---------- */
@@ -51,8 +79,13 @@
   function catName(id) { var c = CATEGORIES.find(function (x){return x.id===id;}); return c ? c.name : id; }
   function catIcon(id) { var c = CATEGORIES.find(function (x){return x.id===id;}); return c ? c.icon : "box"; }
 
-  /* 상품 썸네일(SVG 그라데이션 + 아이콘) — 사진 없이 일관된 비주얼 */
+  /* 상품 썸네일.
+     p.img 가 있으면 실제 사진을, 없으면 카테고리 아이콘 SVG를 사용한다.
+     사진 파일을 assets/products/ 에 넣고 PRODUCTS 의 img 필드만 채우면 자동 적용. */
   function thumb(p, big) {
+    if (p.img) {
+      return '<img class="thumb__img" src="' + p.img + '" alt="' + p.name + '" loading="lazy" />';
+    }
     var h = p.hue;
     var c1 = "hsl(" + h + ",70%,52%)";
     var c2 = "hsl(" + (h + 20) + ",65%,32%)";
@@ -213,7 +246,10 @@
         '<div class="pd__meta">' + stars(p.rate) + '<b>' + p.rate.toFixed(1) + '</b><span>· 후기 ' + p.reviews.toLocaleString("ko-KR") + '개</span></div>' +
         '<p class="pd__summary">' + p.summary + '</p>' +
         '<div class="pd__price"><span class="off">' + discountPct(p) + '%</span><span class="sale">' + won(p.sale) + '</span><span class="orig">' + won(p.price) + '</span></div>' +
-        '<ul class="pd__promise"><li>블루투스 전용 · 무계정</li><li>DC 36V 저전압 안전</li><li>엣지컴퍼니 직접 시공·A/S</li></ul>' +
+        '<ul class="pd__promise">' +
+          ((p.specs && p.specs.length ? p.specs : ["블루투스 전용 · 무계정","DC 36V 저전압 안전","엣지컴퍼니 직접 시공·A/S"])
+            .map(function (s){ return '<li>' + s + '</li>'; }).join("")) +
+        '</ul>' +
         '<div class="pd__qty"><button data-q="-1">−</button><input data-qty value="1" inputmode="numeric"/><button data-q="1">+</button></div>' +
         '<div class="pd__actions">' +
           '<button class="btn btn--line" data-add>장바구니</button>' +
