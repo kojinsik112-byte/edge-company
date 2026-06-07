@@ -27,12 +27,18 @@
     { id:"sw3", cat:"switch",  name:"ACRO 3채널 블루투스 유선 스위치", price:69000, sale:53000, rate:4.8, reviews:842, badges:[], hue:222,
       summary:"방 조명을 한 패널에서. 글래스 터치 + 블루투스 직접 제어, 무계정.",
       specs:["블루투스 연결","유선 스위치","3채널 제어","ACRO Smart 앱 제어"] },
-    { id:"fan1",cat:"fan",     name:"ACRO 실링팬 (조명형) 132cm", price:249000, sale:199000, rate:4.9, reviews:2015, badges:["BEST","앵커"], hue:205,
-      summary:"3색변환·밝기조절 조명 일체형. 6단계 풍속, 역방향 회전, 약 20dB 저소음 BLDC.",
-      specs:["블루투스 연결","6단계 풍속","3색변환 조명","약 20dB 저소음","DC 모터"] },
-    { id:"fan2",cat:"fan",     name:"ACRO 실링팬 (비조명형) 132cm", price:199000, sale:159000, rate:4.9, reviews:1120, badges:[], hue:30,
-      summary:"조명 없는 기본형. 심플한 인테리어에. 14.5cm 슬림 바디, 수면풍·타이머.",
-      specs:["블루투스 연결","6단계 풍속","수면 모드","1~8시간 타이머","KC 인증"] },
+    { id:"fan1",cat:"fan",     name:"아크로 실링팬 마스터 (조명형) 132cm", price:249000, sale:199000, rate:4.9, reviews:2015, badges:["BEST","앵커"], hue:205,
+      summary:"완성형 마스터. 3색변환·밝기조절 조명 일체형. 6단계 풍속, 사계절 역회전, 약 20dB 저소음 BLDC.",
+      specs:["블루투스 연결","6단계 풍속","3색변환 조명","약 20dB 저소음","DC 모터"],
+      buyUrl:"https://smartstore.naver.com/edge2050/products/11887564363" },
+    { id:"fan2",cat:"fan",     name:"아크로 실링팬 마스터 (비조명형) 132cm", price:199000, sale:159000, rate:4.9, reviews:1120, badges:[], hue:30,
+      summary:"조명 없는 기본형 마스터. 심플한 인테리어에. 수면풍·타이머·메모리 기능.",
+      specs:["블루투스 연결","6단계 풍속","수면 모드","1~8시간 타이머","KC 인증"],
+      buyUrl:"https://smartstore.naver.com/edge2050/products/11887564363" },
+    { id:"fanslim",cat:"fan",  name:"아크로 NEW SLIM 실링팬 (준비중)", price:199000, sale:159000, rate:5.0, reviews:0, badges:["NEW","준비중"], hue:35,
+      summary:"14.5cm 초슬림 바디 저가형. DC모터 저소음, 6단계 풍속, 사계절 역회전, 앱·리모컨. 출시 준비중입니다.",
+      specs:["14.5cm 초슬림","DC 모터 저소음","6단계 풍속","사계절 역회전","앱 & 리모컨"],
+      soon:true, new:true },
     { id:"cur1",cat:"curtain", name:"ACRO 스마트 전동커튼", price:189000, sale:159000, rate:4.7, reviews:640, badges:["NEW"], hue:42,
       summary:"Smart Motorized Curtain. 블루투스 연결·전용 앱 원격 제어·음성 제어·스케줄·안전 감지.",
       specs:["블루투스 연결","전용 앱 원격 제어","음성 제어","스케줄 기능","안전 감지"], new:true },
@@ -160,6 +166,7 @@
     var html = CATEGORIES.map(function (c) {
       return '<a href="category.html?cat=' + c.id + '">' + c.name + '</a>';
     }).join("") +
+    '<a href="fan.html" class="gnb-strong">✦ 실링팬</a>' +
     '<a href="category.html?sort=best" class="gnb-strong">베스트</a>' +
     '<a href="brand.html" class="gnb-strong">브랜드 스토리</a>';
     hosts.forEach(function (h){ h.innerHTML = html; });
@@ -253,7 +260,9 @@
         '<div class="pd__qty"><button data-q="-1">−</button><input data-qty value="1" inputmode="numeric"/><button data-q="1">+</button></div>' +
         '<div class="pd__actions">' +
           '<button class="btn btn--line" data-add>장바구니</button>' +
-          '<button class="btn btn--primary" data-buy>바로 구매</button>' +
+          '<button class="btn btn--primary" data-buy>' +
+            (p.soon ? "출시 알림 받기" : p.buyUrl ? "스마트스토어에서 구매" : "바로 구매") +
+          '</button>' +
         '</div>' +
         '<p class="pd__ship">무료배송 · 평일 14시 이전 주문 시 당일 출고</p>' +
       '</div>';
@@ -266,10 +275,13 @@
       });
     });
     host.querySelector("[data-add]").addEventListener("click", function () {
+      if (p.soon) { alert("출시 준비중인 상품입니다. 출시 알림은 고객센터로 문의해 주세요!"); return; }
       addToCart(p.id, parseInt(qtyEl.value, 10) || 1);
       if (confirm("장바구니에 담았습니다. 장바구니로 이동할까요?")) location.href = "cart.html";
     });
     host.querySelector("[data-buy]").addEventListener("click", function () {
+      if (p.soon) { alert("NEW SLIM 실링팬은 출시 준비중입니다. 출시 알림을 원하시면 고객센터로 문의해 주세요!"); return; }
+      if (p.buyUrl) { window.open(p.buyUrl, "_blank"); return; }
       addToCart(p.id, parseInt(qtyEl.value, 10) || 1); location.href = "cart.html";
     });
 

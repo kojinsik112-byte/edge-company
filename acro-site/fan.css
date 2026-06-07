@@ -1,0 +1,122 @@
+/* ============================================================
+   ACRO 실링팬 전용 랜딩 — fan.css
+   톤: 아이보리/베이지 프리미엄 + 골드 + 네이비/블루투스 블루 포인트
+   (실제 NEW SLIM 상세페이지 무드에 맞춤)
+   ============================================================ */
+:root {
+  --ivory: #f6f2ea;
+  --ivory-2: #efe9df;
+  --char: #2a2521;
+  --char-sub: #6f675e;
+  --gold: #b89968;
+  --gold-deep: #97784a;
+  --navy: #0a1a3f;
+  --blue: #1e6bff;
+}
+
+.fanpage { background: var(--ivory); color: var(--char); }
+.fanpage section { padding: clamp(3rem,7vw,6rem) 1.2rem; }
+.fan-wrap { max-width: 1180px; margin: 0 auto; }
+.fan-kicker { display: inline-block; font-weight: 800; letter-spacing: .2em; font-size: .78rem; color: var(--gold-deep); margin-bottom: 1rem; }
+.fan-h2 { font-size: clamp(1.7rem,4vw,2.8rem); font-weight: 900; letter-spacing: -.02em; }
+.fan-lead { color: var(--char-sub); font-size: clamp(1rem,2vw,1.18rem); margin-top: 1rem; }
+.fan-center { text-align: center; }
+.fan-center .fan-lead { max-width: 640px; margin-left: auto; margin-right: auto; }
+
+/* ---------- HERO ---------- */
+.fan-hero { position: relative; overflow: hidden; background: linear-gradient(160deg, #f8f4ec 0%, #efe7d9 100%); }
+.fan-hero__inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1.05fr .95fr; gap: 2rem; align-items: center; padding: clamp(3rem,7vw,5rem) 1.2rem; }
+.fan-hero h1 { font-size: clamp(2.1rem,5.5vw,3.8rem); font-weight: 900; line-height: 1.15; letter-spacing: -.03em; }
+.fan-hero h1 b { color: var(--gold-deep); }
+.fan-hero p { color: var(--char-sub); font-size: clamp(1rem,2.2vw,1.25rem); margin: 1.2rem 0 2rem; }
+.fan-tags { display: flex; gap: .6rem; flex-wrap: wrap; }
+.fan-tag { font-size: .85rem; font-weight: 700; color: var(--char); background: rgba(255,255,255,.7); border: 1px solid rgba(184,153,104,.4); padding: .5rem 1rem; border-radius: 999px; }
+.fan-cta { display: inline-flex; gap: .8rem; margin-top: 2rem; flex-wrap: wrap; }
+.fan-btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .95rem 1.8rem; border-radius: 999px; font-weight: 800; font-size: 1rem; transition: .2s; border: none; cursor: pointer; }
+.fan-btn--gold { background: var(--char); color: #fff; }
+.fan-btn--gold:hover { background: #000; transform: translateY(-2px); }
+.fan-btn--line { background: transparent; color: var(--char); border: 1.6px solid var(--char); }
+.fan-btn--line:hover { background: var(--char); color: #fff; }
+
+/* 회전하는 실링팬 일러스트 (CSS, 사진 없이) */
+.fanviz { justify-self: center; width: min(420px, 80vw); aspect-ratio: 1; position: relative; }
+.fanviz__halo { position: absolute; inset: 6%; border-radius: 50%; background: radial-gradient(circle, rgba(184,153,104,.18), transparent 70%); }
+.fanviz__spin { position: absolute; inset: 0; animation: fanspin 2.4s linear infinite; transform-origin: 50% 50%; }
+.fanviz__blade { position: absolute; top: 50%; left: 50%; width: 46%; height: 13%; background: linear-gradient(90deg, #ffffff, #e9e2d6); border-radius: 0 50% 50% 0 / 0 100% 100% 0; transform-origin: 0% 50%; box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+.fanviz__blade:nth-child(1) { transform: rotate(0deg); }
+.fanviz__blade:nth-child(2) { transform: rotate(120deg); }
+.fanviz__blade:nth-child(3) { transform: rotate(240deg); }
+.fanviz__hub { position: absolute; top: 50%; left: 50%; width: 18%; height: 18%; transform: translate(-50%,-50%); background: radial-gradient(circle at 35% 30%, #fff, #cfc6b6); border-radius: 50%; box-shadow: 0 8px 20px rgba(0,0,0,.18); z-index: 2; }
+.fanviz__light { position: absolute; top: 50%; left: 50%; width: 8%; height: 8%; transform: translate(-50%,-50%); background: radial-gradient(circle, #fff7e0, #ffd97a); border-radius: 50%; box-shadow: 0 0 30px 8px rgba(255,210,120,.7); z-index: 3; }
+@keyframes fanspin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .fanviz__spin { animation: none; } }
+
+/* ---------- 모델 비교 ---------- */
+.models { background: var(--ivory); }
+.models__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin-top: 2.5rem; }
+.model { position: relative; background: #fff; border: 1px solid var(--ivory-2); border-radius: 20px; padding: 2.2rem; overflow: hidden; }
+.model--master { background: linear-gradient(160deg, #1c1814, #2a2521); color: #fff; }
+.model--slim { background: #fff; }
+.model__badge { display: inline-block; font-size: .76rem; font-weight: 800; letter-spacing: .08em; padding: .35rem .8rem; border-radius: 999px; margin-bottom: 1rem; }
+.model--master .model__badge { background: var(--gold); color: #1c1814; }
+.model--slim .model__badge { background: var(--ivory-2); color: var(--gold-deep); }
+.model h3 { font-size: 1.7rem; font-weight: 900; }
+.model__sub { font-size: .95rem; margin: .3rem 0 1.2rem; opacity: .8; }
+.model--master .model__sub { color: #d8cdb8; }
+.model--slim .model__sub { color: var(--char-sub); }
+.model__price { font-size: 1.9rem; font-weight: 900; margin: 1rem 0; }
+.model__price small { font-size: 1rem; font-weight: 600; opacity: .7; }
+.model__soon { display: inline-block; font-weight: 800; color: var(--gold-deep); border: 1.5px dashed var(--gold); padding: .4rem 1rem; border-radius: 10px; margin: 1rem 0; }
+.model ul { list-style: none; padding: 0; margin: 1.2rem 0 1.6rem; display: grid; gap: .55rem; }
+.model li { padding-left: 1.5rem; position: relative; font-size: .96rem; }
+.model li::before { content: "✓"; position: absolute; left: 0; font-weight: 900; }
+.model--master li::before { color: var(--gold); }
+.model--slim li::before { color: var(--blue); }
+.model .fan-btn { width: 100%; }
+
+/* ---------- 핵심 기능 ---------- */
+.feat { background: linear-gradient(180deg, var(--ivory), #fff); }
+.feat__grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-top: 2.5rem; }
+.fcard { background: #fff; border: 1px solid var(--ivory-2); border-radius: 16px; padding: 1.8rem 1.4rem; transition: .2s; }
+.fcard:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(42,37,33,.08); }
+.fcard__ico { width: 52px; height: 52px; border-radius: 14px; background: var(--ivory); display: grid; place-items: center; color: var(--gold-deep); margin-bottom: 1rem; }
+.fcard__ico svg { width: 26px; height: 26px; }
+.fcard h4 { font-size: 1.1rem; }
+.fcard p { color: var(--char-sub); font-size: .92rem; margin-top: .4rem; }
+
+/* ---------- 옵션 (조명형/비조명형) ---------- */
+.opt { background: #fff; }
+.opt__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin-top: 2.5rem; }
+.optcard { background: var(--ivory); border-radius: 18px; padding: 2.2rem; text-align: center; }
+.optcard h4 { font-size: 1.4rem; font-weight: 900; }
+.optcard .dim { color: var(--char-sub); margin: .3rem 0 1.2rem; font-size: .95rem; }
+.optcard .size { display: inline-block; background: #fff; border: 1px solid var(--ivory-2); border-radius: 99px; padding: .4rem 1.1rem; font-weight: 700; font-size: .9rem; }
+
+/* ---------- 색온도 ---------- */
+.cct { background: var(--ivory); }
+.cct__row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin: 2.5rem 0 1.5rem; }
+.cct__c { border-radius: 16px; padding: 2rem 1rem; text-align: center; color: #3a3024; font-weight: 800; }
+.cct__c span { display: block; font-size: .82rem; font-weight: 600; opacity: .8; margin-top: .3rem; }
+.cct__c.warm { background: linear-gradient(135deg,#ffe6b8,#ffcf85); }
+.cct__c.nat  { background: linear-gradient(135deg,#fff4df,#f3ead6); }
+.cct__c.cool { background: linear-gradient(135deg,#e7f0ff,#cfe0ff); color:#1a2e57; }
+.dimbar { height: 14px; border-radius: 99px; background: linear-gradient(90deg,#3a3024,#ffd97a,#fff); position: relative; }
+.dimbar small { position: absolute; top: 18px; font-size: .8rem; color: var(--char-sub); }
+.dimbar small.l { left: 0; } .dimbar small.r { right: 0; }
+
+/* ---------- 최종 CTA ---------- */
+.fan-final { background: linear-gradient(160deg, #2a2521, #1c1814); color: #fff; text-align: center; }
+.fan-final h2 { font-size: clamp(1.7rem,4vw,2.6rem); font-weight: 900; }
+.fan-final h2 b { color: var(--gold); }
+.fan-final p { color: #d8cdb8; margin: 1rem 0 2rem; font-size: 1.1rem; }
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 860px) {
+  .fan-hero__inner, .models__grid, .opt__grid { grid-template-columns: 1fr; }
+  .feat__grid { grid-template-columns: repeat(2,1fr); }
+  .fanviz { order: -1; }
+  .cct__row { grid-template-columns: 1fr; }
+}
+@media (max-width: 460px) {
+  .feat__grid { grid-template-columns: 1fr; }
+}
