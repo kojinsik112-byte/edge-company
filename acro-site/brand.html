@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ACRO · 블루투스 전용 스마트홈</title>
+  <meta name="description" content="ACRO(아크로) — Wi-Fi도, 클라우드 계정도, 인터넷 연결도 필요 없는 블루투스 전용 스마트홈. DC 36V 저전압 안전 설계. 엣지컴퍼니가 직접 시공하고 책임집니다." />
+  <meta property="og:title" content="ACRO · 블루투스 전용 스마트홈" />
+  <meta property="og:description" content="인터넷이 없어도, 회사가 사라져도, 10년 뒤에도 내 집에서 그대로 작동하는 스마트홈." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===================== NAV ===================== -->
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="#top" aria-label="ACRO 홈">ACRO</a>
+      <nav class="nav__links" aria-label="주요 메뉴">
+        <a href="#promise">3대 약속</a>
+        <a href="#why">왜 ACRO</a>
+        <a href="#products">제품</a>
+        <a href="#app">앱</a>
+        <a href="#reviews">리뷰</a>
+        <a href="index.html" class="nav__cta">스토어 →</a>
+      </nav>
+      <button class="nav__burger" id="burger" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="top">
+    <!-- 코드로 생성되는 히어로 모션: 블루투스 신호 + 스마트홈 기기 연결 네트워크.
+         mp4 파일 없이 Canvas로 그려지며 4K에서도 선명하고 완벽 루프됩니다.
+         (reduced-motion 환경/구형 브라우저에서는 hero-poster.svg 가 자동 표시) -->
+    <div class="hero__bg" style="background-image:url('assets/hero-poster.svg')"></div>
+    <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">엣지컴퍼니가 만들고, 직접 시공하고, 책임지는</p>
+      <h1 class="hero__title">
+        Wi-Fi도 계정도 필요 없는<br /><span class="grad">블루투스 스마트홈</span>
+      </h1>
+      <p class="hero__sub">
+        인터넷이 끊겨도, 회사 서버가 닫혀도 — 내 집 스위치는 그대로 켜집니다.
+      </p>
+      <div class="hero__badges">
+        <span class="badge"><b>Bluetooth</b> 전용 · No Wi-Fi</span>
+        <span class="badge"><b>무계정</b> · 회원가입 없음</span>
+        <span class="badge"><b>DC 36V</b> 저전압 안전</span>
+      </div>
+      <div class="hero__actions">
+        <a href="#products" class="btn btn--primary">제품 보기</a>
+        <a href="#reviews" class="btn btn--ghost">▶ 리뷰 영상</a>
+      </div>
+    </div>
+    <a href="#promise" class="hero__scroll" aria-label="아래로 스크롤">↓</a>
+  </section>
+
+  <!-- ===================== 3대 약속 ===================== -->
+  <section class="promise" id="promise">
+    <div class="section__head">
+      <span class="kicker">3 PROMISES</span>
+      <h2>ACRO의 변하지 않는 3가지 약속</h2>
+      <p class="lead">포장지부터 앱까지, 모든 접점에서 동일하게 약속합니다.</p>
+    </div>
+    <div class="promise__grid">
+      <article class="pcard">
+        <div class="pcard__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10-5 5V2l5 5L7 17"/></svg>
+        </div>
+        <h3>블루투스 전용</h3>
+        <p>공유기·클라우드·회원가입이 필요 없습니다. 모든 제어는 ACRO 앱에서 블루투스로 직접. 인터넷 의존이 없으니 개인정보·서버 종료 리스크가 구조적으로 <b>0</b>입니다.</p>
+      </article>
+      <article class="pcard">
+        <div class="pcard__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h3>무계정 · 무가입</h3>
+        <p>온보딩은 권한 팝업 1회면 끝. 가족과는 홈 단위 QR로 간편 공유. 복잡한 가입 절차도, 비밀번호 분실 걱정도 없습니다.</p>
+      </article>
+      <article class="pcard">
+        <div class="pcard__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+        </div>
+        <h3>DC 36V 저전압 안전</h3>
+        <p>가정용 AC 220V가 아닌 <b>DC 36V 저전압</b> 제어 설계. 감전·화재 리스크를 물리적으로 낮춰, 아이 키우는 집도 안심할 수 있습니다.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== WHY ACRO ===================== -->
+  <section class="why" id="why">
+    <div class="section__head section__head--light">
+      <span class="kicker">WHY ACRO</span>
+      <h2>인터넷이 없어도 완결되는 스마트홈</h2>
+      <p class="lead">클라우드 종속이 만연한 시장에서, ACRO는 거꾸로 갑니다.</p>
+    </div>
+
+    <div class="why__row">
+      <div class="why__text">
+        <span class="why__num">01</span>
+        <h3>공유기가 죽어도, 내 집은 켜집니다</h3>
+        <p>대부분의 스마트홈은 인터넷이 끊기면 불도 못 켭니다. ACRO는 모든 제어가 블루투스로 폰과 기기 사이에서 직접 이뤄지기 때문에, 와이파이가 죽어도 회사 서버가 닫혀도 평소처럼 작동합니다.</p>
+        <ul class="ticks">
+          <li>클라우드 계정 불필요 — 개인정보 수집 최소화</li>
+          <li>서버 종료 리스크 없음 — 회사에 종속되지 않는 내 집</li>
+          <li>물리 스위치는 언제나 손으로도 동작 (앱이 없어도 OK)</li>
+        </ul>
+      </div>
+      <div class="why__visual why__visual--a" aria-hidden="true">
+        <div class="chip">No Wi-Fi</div>
+        <div class="chip">No Cloud</div>
+        <div class="chip">No Account</div>
+      </div>
+    </div>
+
+    <div class="why__row why__row--rev">
+      <div class="why__text">
+        <span class="why__num">02</span>
+        <h3>사양서가 곧 세일즈 무기입니다</h3>
+        <p>블루투스 전용(편의·신뢰)과 DC 36V 저전압(안전)은 마케팅 카피가 아니라 <b>하드웨어 레벨의 차별점</b>입니다. 경쟁사가 제품 하나는 베껴도, 사양 자체를 따라오긴 어렵습니다.</p>
+        <ul class="ticks">
+          <li>DC 36V 저전압 제어 — 감전·화재 리스크 ↓</li>
+          <li>하나의 ACRO 앱으로 묶이는 기기 생태계</li>
+          <li>설치부터 A/S까지 — 엣지컴퍼니 자체 전기공사 면허로 직접</li>
+        </ul>
+      </div>
+      <div class="why__visual why__visual--b" aria-hidden="true">
+        <div class="spec">
+          <div class="spec__row"><span>제어 방식</span><b>Bluetooth</b></div>
+          <div class="spec__row"><span>전압 설계</span><b>DC 36V</b></div>
+          <div class="spec__row"><span>계정</span><b>불필요</b></div>
+          <div class="spec__row"><span>시공·A/S</span><b>자체 면허</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRODUCTS ===================== -->
+  <section class="products" id="products">
+    <div class="section__head">
+      <span class="kicker">PRODUCTS</span>
+      <h2>하나의 앱으로 묶이는 ACRO 생태계</h2>
+      <p class="lead">단품이 아니라, 집 전체를 하나의 경험으로.</p>
+    </div>
+    <div class="prod__grid">
+      <article class="prod prod--feature">
+        <span class="prod__tag">핵심 진입 제품</span>
+        <h3>블루투스 전용 스위치</h3>
+        <p>생태계의 허브 격. 손으로도, 앱으로도 켜고 끄는 가장 기본이자 가장 중요한 제품.</p>
+      </article>
+      <article class="prod">
+        <span class="prod__tag prod__tag--anchor">앵커 상품</span>
+        <h3>실링팬</h3>
+        <p>옵션·비옵션 세대 모두에서 팔리는 전천후 냉난방·환기 제품.</p>
+      </article>
+      <article class="prod">
+        <h3>전동커튼 · 블라인드</h3>
+        <p>엣지리브커튼 연계. 포레스트 그린 전용 슬리브 패키지.</p>
+      </article>
+      <article class="prod">
+        <h3>스마트 콘센트</h3>
+        <p>전원까지 ACRO 앱 한 화면에서 제어.</p>
+      </article>
+      <article class="prod">
+        <h3>욕실 환풍기</h3>
+        <p>습기·냄새 관리를 자동으로.</p>
+      </article>
+      <article class="prod">
+        <h3>조명 라인</h3>
+        <p>간접조명 · 우물조명 PVC 키트 · T5 조명. 스마트스토어 단독 라인 보유.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== APP / PHONE MOCKUP ===================== -->
+  <section class="app" id="app">
+    <div class="app__inner">
+      <div class="app__text">
+        <span class="kicker">ACRO APP</span>
+        <h2>권한 팝업 한 번,<br />그게 설정의 전부입니다</h2>
+        <p class="lead">한국어 전용 인터페이스. 가입도 로그인도 없습니다. 블루투스만 켜면 내 집의 모든 ACRO 기기가 한 화면에.</p>
+        <ul class="ticks ticks--lg">
+          <li>회원가입·로그인 없는 즉시 사용</li>
+          <li>홈 단위 QR로 가족 간편 공유</li>
+          <li>방별 · 기기별 제어와 즐겨찾기</li>
+          <li>인터넷 없이도 동작하는 로컬 제어</li>
+        </ul>
+      </div>
+
+      <div class="phone" aria-hidden="true">
+        <div class="phone__notch"></div>
+        <div class="phone__screen">
+          <div class="appui">
+            <div class="appui__top">
+              <div>
+                <p class="appui__hi">우리 집</p>
+                <p class="appui__bt">● Bluetooth 연결됨</p>
+              </div>
+              <div class="appui__avatar">A</div>
+            </div>
+
+            <div class="appui__scene">
+              <button class="scene scene--on">
+                <span class="scene__ico">⏻</span>
+                <span class="scene__lbl">거실 스위치</span>
+                <span class="scene__state">ON</span>
+              </button>
+              <button class="scene">
+                <span class="scene__ico">❅</span>
+                <span class="scene__lbl">실링팬</span>
+                <span class="scene__state">OFF</span>
+              </button>
+              <button class="scene scene--on">
+                <span class="scene__ico">▤</span>
+                <span class="scene__lbl">전동커튼</span>
+                <span class="scene__state">70%</span>
+              </button>
+              <button class="scene">
+                <span class="scene__ico">◐</span>
+                <span class="scene__lbl">간접조명</span>
+                <span class="scene__state">OFF</span>
+              </button>
+            </div>
+
+            <div class="appui__card">
+              <p class="appui__card-t">안방</p>
+              <div class="appui__slider"><span style="width:62%"></span></div>
+              <p class="appui__card-s">조명 밝기 62%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== REVIEWS / YOUTUBE ===================== -->
+  <section class="reviews" id="reviews">
+    <div class="section__head section__head--light">
+      <span class="kicker">REAL REVIEWS</span>
+      <h2>직접 보고, 확인하고 사세요</h2>
+      <p class="lead">유튜브와 네이버 카페에서 실제 입주민의 후기를 공개합니다.</p>
+    </div>
+    <div class="rev__grid" id="revGrid">
+      <!-- 실제 유튜브 영상 ID를 data-id 에 넣으면 클릭 시 재생됩니다. -->
+      <button class="rev" data-id="" aria-label="리뷰 영상 재생">
+        <div class="rev__thumb"><span class="rev__play">▶</span></div>
+        <p class="rev__t">실제 설치 현장 — 블루투스 스위치 시공기</p>
+      </button>
+      <button class="rev" data-id="" aria-label="리뷰 영상 재생">
+        <div class="rev__thumb"><span class="rev__play">▶</span></div>
+        <p class="rev__t">실링팬 1년 사용 후기</p>
+      </button>
+      <button class="rev" data-id="" aria-label="리뷰 영상 재생">
+        <div class="rev__thumb"><span class="rev__play">▶</span></div>
+        <p class="rev__t">인터넷 끊겨도 켜지는지 직접 테스트</p>
+      </button>
+    </div>
+    <p class="rev__note">※ 영상 ID만 넣으면 자동 임베드됩니다. (assets/script.js 또는 data-id 속성)</p>
+  </section>
+
+  <!-- ===================== MOAT / 4박자 ===================== -->
+  <section class="moat">
+    <div class="section__head">
+      <span class="kicker">WHY HARD TO COPY</span>
+      <h2>제품이 아니라, 회사 구조를 베껴야 합니다</h2>
+      <p class="lead">이 4박자가 동시에 있어야 ACRO가 성립합니다.</p>
+    </div>
+    <div class="moat__grid">
+      <div class="moat__item"><b>01</b><h3>자체 전기공사 면허</h3><p>팔고 남이 시공이 아니라, 우리가 시공하고 우리가 A/S.</p></div>
+      <div class="moat__item"><b>02</b><h3>확정 수요 채널</h3><p>매년 수천 세대가 지나가는 입주박람회를 직접 주관.</p></div>
+      <div class="moat__item"><b>03</b><h3>신뢰 인프라</h3><p>유튜브·네이버 카페로 구매 전 검증 가능.</p></div>
+      <div class="moat__item"><b>04</b><h3>하드웨어 차별점</h3><p>블루투스 전용 · DC 36V — 사양 레벨의 차이.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== BUY / CHANNELS ===================== -->
+  <section class="buy" id="buy">
+    <div class="buy__inner">
+      <div class="section__head section__head--light">
+        <span class="kicker">WHERE TO BUY</span>
+        <h2>세 가지 통로로 만나요</h2>
+      </div>
+      <div class="buy__grid">
+        <a class="buy__card" href="#" target="_blank" rel="noopener">
+          <h3>입주박람회 부스</h3>
+          <p>새 집에 가전·조명을 한 번에 까는 최고의 타이밍. 현장에서 직접 보고 상담하세요.</p>
+          <span class="buy__go">행사 일정 보기 →</span>
+        </a>
+        <a class="buy__card buy__card--accent" href="#" target="_blank" rel="noopener">
+          <h3>네이버 스마트스토어</h3>
+          <p>우물조명 PVC 키트 등 단품 라인 상시 판매. 전국 어디서나 구매 가능.</p>
+          <span class="buy__go">스토어 바로가기 →</span>
+        </a>
+        <a class="buy__card" href="#" target="_blank" rel="noopener">
+          <h3>지사 · 공동구매</h3>
+          <p>권역별 지사와 공동구매 채널. 시공 네트워크로 직접 설치까지.</p>
+          <span class="buy__go">문의하기 →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FINAL CTA ===================== -->
+  <section class="final">
+    <h2>인터넷이 없어도, 회사가 사라져도,<br /><span class="grad">10년 뒤에도 그대로 작동하는 집.</span></h2>
+    <p>그게 ACRO가 만드는 스마트홈입니다.</p>
+    <a href="#buy" class="btn btn--primary btn--lg">ACRO 시작하기</a>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="foot" id="footer">
+    <canvas class="foot__wave" id="footWave" aria-hidden="true"></canvas>
+
+    <div class="foot__top">
+      <div class="foot__mark">
+        <span class="foot__logo">ACRO</span>
+        <p class="foot__tag">Wi-Fi도, 클라우드 계정도 필요 없는 블루투스 전용 스마트홈.</p>
+        <div class="foot__promises">
+          <span>Bluetooth 전용</span><span>무계정</span><span>DC 36V 저전압</span>
+        </div>
+        <div class="foot__channels">
+          <a href="#" target="_blank" rel="noopener" class="fbtn" aria-label="유튜브">▶ YouTube</a>
+          <a href="#" target="_blank" rel="noopener" class="fbtn" aria-label="네이버 카페">카페</a>
+          <a href="#" target="_blank" rel="noopener" class="fbtn" aria-label="스마트스토어">스마트스토어</a>
+        </div>
+      </div>
+
+      <div class="foot__cols">
+        <div class="foot__col">
+          <h4>제품</h4>
+          <a href="#products">스위치</a>
+          <a href="#products">실링팬</a>
+          <a href="#products">전동커튼</a>
+          <a href="#products">조명</a>
+        </div>
+        <div class="foot__col">
+          <h4>브랜드</h4>
+          <a href="#promise">3대 약속</a>
+          <a href="#why">왜 ACRO</a>
+          <a href="#app">ACRO 앱</a>
+          <a href="#reviews">리뷰</a>
+        </div>
+        <div class="foot__col">
+          <h4>회사</h4>
+          <p>주식회사 엣지컴퍼니</p>
+          <p>대표이사 고진식</p>
+          <p>본사 울산</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot__bottom">
+      <p class="foot__copy">© 2026 Edge Company. ACRO는 엣지컴퍼니의 자체 브랜드입니다.</p>
+      <a href="#top" class="foot__totop" aria-label="맨 위로">맨 위로 ↑</a>
+    </div>
+  </footer>
+
+  <script src="hero.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

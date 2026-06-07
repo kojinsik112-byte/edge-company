@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>장바구니 · ACRO STORE</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link rel="stylesheet" href="mall.css" />
+</head>
+<body data-page="cart">
+
+  <div class="drawer" data-drawer>
+    <div class="drawer__panel">
+      <a class="logo" href="index.html">ACRO<small>SMART HOME</small></a>
+      <h4>카테고리</h4><nav data-gnb></nav>
+      <h4>마이</h4>
+      <a href="#">로그인 / 회원가입</a><a href="cart.html">장바구니</a><a href="brand.html">브랜드 스토리</a>
+    </div>
+  </div>
+
+  <div class="util"><div class="wrap">
+    <a href="#">로그인</a><a href="#">회원가입</a><a href="#">주문조회</a><a href="cart.html">장바구니</a><a href="#">고객센터</a>
+  </div></div>
+
+  <header class="head"><div class="wrap">
+    <button class="burger" data-burger aria-label="메뉴"><span></span><span></span><span></span></button>
+    <a class="logo" href="index.html">ACRO<small>SMART HOME</small></a>
+    <div class="search"><form data-search-form><input placeholder="찾으시는 상품을 검색하세요" aria-label="상품 검색" /><button aria-label="검색">⌕</button></form></div>
+    <div class="headicons">
+      <a class="iconbtn" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21C-2 11 5-3 12 5 19-3 26 11 12 21z"/></svg>찜</a>
+      <a class="iconbtn" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>마이</a>
+      <a class="iconbtn" href="cart.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 13h11l2-9H6"/></svg>장바구니<span class="cartbadge" data-cart-count>0</span></a>
+    </div>
+  </div></header>
+
+  <nav class="gnb"><div class="wrap" data-gnb></div></nav>
+
+  <div class="pagehead"><div class="wrap">
+    <p class="crumb"><a href="index.html">홈</a> › 장바구니</p>
+    <h1>장바구니</h1>
+  </div></div>
+
+  <section class="block" style="padding-top:1.5rem"><div class="wrap">
+    <div data-cart></div>
+  </div></section>
+
+  <footer class="foot"><div class="wrap">
+    <div class="foot__info">
+      <p class="foot__logo">ACRO</p>
+      <div class="foot__promise-row"><span>Bluetooth 전용</span><span>무계정</span><span>DC 36V 저전압 안전</span></div>
+      <div class="biz"><span>상호: 주식회사 엣지컴퍼니</span><span>대표: 고진식</span><span>본사: 울산</span><span>고객센터: 1670-0000</span></div>
+      <p class="foot__copy">© 2026 Edge Company. (※ 사업자정보는 샘플 값)</p>
+    </div>
+  </div></footer>
+
+  <script src="shop.js"></script>
+</body>
+</html>
