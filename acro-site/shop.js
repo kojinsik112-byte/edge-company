@@ -173,7 +173,8 @@
       '<a class="logo" href="index.html">ACRO<small>SMART HOME</small></a>' +
       '<h4>카테고리</h4><nav data-gnb></nav>' +
       '<h4>바로가기</h4>' +
-      '<a href="fan.html">실링팬</a><a href="brand.html">브랜드 스토리</a>' +
+      '<a href="fan.html">실링팬</a><a href="landing.html?p=app">아크로 스마트 앱</a>' +
+      '<a href="brand.html">브랜드 스토리</a>' +
       '<a href="about.html">회사 소개</a><a href="support.html">고객센터</a>' +
       '<h4>마이</h4><a href="#">로그인 / 회원가입</a><a href="cart.html">장바구니</a>' +
     '</div></div>' +
@@ -199,7 +200,8 @@
       '<div class="foot__top">' +
         '<div class="foot__links">' +
           '<a href="brand.html">브랜드 스토리</a><a href="about.html">회사 소개</a>' +
-          '<a href="fan.html">실링팬</a><a href="support.html">고객센터</a>' +
+          '<a href="fan.html">실링팬</a><a href="landing.html?p=app">아크로 스마트 앱</a>' +
+          '<a href="support.html">고객센터</a>' +
           '<a href="#">이용약관</a><a href="#">개인정보처리방침</a>' +
         '</div>' +
         '<div class="foot__cs"><b>' + CS_TEL + '</b>' +
