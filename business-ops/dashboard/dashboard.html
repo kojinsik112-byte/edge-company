@@ -103,6 +103,37 @@
     border-top:1px solid var(--line);padding-top:14px;letter-spacing:.06em}
   .legend span{display:inline-flex;align-items:center;gap:6px}
   .legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+  /* 날씨 위젯 */
+  .topright{display:flex;align-items:center;gap:20px}
+  .wx{text-align:right;border-right:1px solid var(--line);padding-right:18px}
+  .wx .t{font-size:23px;font-weight:800;color:#dfe7f3;line-height:1}
+  .wx .t .ic{font-size:18px;margin-right:5px}
+  .wx .c{font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:.06em}
+  /* 부문(조직도 상위) */
+  .bumun{display:flex;align-items:center;gap:12px;margin:28px 0 4px}
+  .bumun .bn{font-size:14px;font-weight:800;letter-spacing:.1em;
+    background:linear-gradient(90deg,#fff,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .bumun .bc{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .bumun .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--gold2),transparent);opacity:.5}
+  .card{cursor:pointer}
+  /* 모달 */
+  .modal{position:fixed;inset:0;background:rgba(3,5,9,.72);backdrop-filter:blur(4px);
+    display:none;align-items:center;justify-content:center;z-index:50;padding:24px}
+  .modal.on{display:flex}
+  .sheet{width:min(560px,94vw);max-height:86vh;overflow:auto;background:linear-gradient(180deg,#10141f,#0a0d15);
+    border:1px solid var(--line);border-radius:18px;padding:22px 24px;
+    box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .sheet .x{float:right;color:var(--muted);cursor:pointer;font-size:20px;line-height:1}
+  .sheet h2{font-size:21px;font-weight:800;letter-spacing:-.01em}
+  .sheet .meta{font-size:11.5px;color:var(--muted);margin-top:4px;letter-spacing:.04em}
+  .sheet .row{margin-top:16px}
+  .sheet .lbl{font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--gold);margin-bottom:6px}
+  .sheet .val{font-size:13.5px;color:#dce3f0;line-height:1.6}
+  .sheet .pillbig{display:inline-block;font-size:11px;font-weight:800;padding:4px 11px;border-radius:999px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{font-size:11.5px;background:rgba(95,216,255,.1);color:var(--cyan);border:1px solid rgba(95,216,255,.2);
+    padding:5px 11px;border-radius:999px;cursor:pointer;transition:background .15s}
+  .chip:hover{background:rgba(95,216,255,.2)}
 </style>
 </head>
 <body>
@@ -116,7 +147,10 @@
         <div class="sub">J · A · R · V · I · S&nbsp;&nbsp;통합 관제실</div>
       </div>
     </div>
-    <div class="clock"><div class="t num" id="clk">--:--:--</div><div class="d" id="dt"></div></div>
+    <div class="topright">
+      <div class="wx" id="wx" style="display:none"><div class="t num" id="wxt"></div><div class="c" id="wxc"></div></div>
+      <div class="clock"><div class="t num" id="clk">--:--:--</div><div class="d" id="dt"></div></div>
+    </div>
   </div>
 
   <div class="kpis" id="kpis"></div>
@@ -130,45 +164,86 @@
     <span><i style="background:#5fd8ff"></i>학습중</span>
     <span><i style="background:#46e0a0"></i>완료</span>
     <span><i style="background:#ff6f7a"></i>막힘</span>
+    <span style="margin-left:auto;color:#5c6478">카드를 클릭하면 그 팀이 하는 일·협업 관계를 봅니다</span>
+  </div>
+
+  <div class="modal" id="modal" onclick="if(event.target===this)closeTeam()">
+    <div class="sheet" id="sheet"></div>
   </div>
 
 <script>
   function stateKo(s){return {idle:"대기",working:"작업중",studying:"학습중",done:"완료",blocked:"막힘"}[s]||s;}
   function esc(x){return (x==null?"":String(x)).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}
 
+  var TEAMMAP={};
   function render(B){
     if(!B) return;
     var teams=B.teams||[];
+    teams.forEach(function(t){TEAMMAP[t.team]=t;});
     var c={working:0,studying:0,done:0,idle:0,blocked:0}, sum=0, n=0;
     teams.forEach(function(t){ c[t.state]=(c[t.state]||0)+1; if(typeof t.score==="number"){sum+=t.score;n++;} });
     var avg = n? Math.round(sum/n):0;
     document.getElementById("kpis").innerHTML =
       kpi("total",teams.length,"전체 팀")+kpi("work",c.working,"작업중")+
-      kpi("study",c.studying,"학습중")+kpi("done",c.done,"오늘 완료")+kpi("avg",avg,"평균 점수");
+      kpi("study",c.studying,"학습·공유 중")+kpi("done",c.done,"오늘 완료")+kpi("avg",avg,"평균 점수");
     document.getElementById("mantra").textContent = B.mantra||"";
     document.getElementById("updated").textContent = "DATA SYNC · "+(B.updated||"")+"  ·  3초 자동 갱신";
+    var w=B.weather||{};
+    if(w.temp){ document.getElementById("wx").style.display="block";
+      document.getElementById("wxt").innerHTML="<span class='ic'>"+esc(w.icon||"")+"</span>"+esc(w.temp);
+      document.getElementById("wxc").textContent="서울 "+(w.cond||"")+(w.hum?(" · 습도 "+w.hum):""); }
 
-    var order=[], g={};
-    teams.forEach(function(t){ if(!g[t.bonbu]){g[t.bonbu]=[];order.push(t.bonbu);} g[t.bonbu].push(t); });
+    // 조직도: 부문 → 본부 → 카드
+    var byB={};
+    teams.forEach(function(t){ var bm=t.bumun||"기타"; if(!byB[bm]){byB[bm]={order:[],g:{}};}
+      if(!byB[bm].g[t.bonbu]){byB[bm].g[t.bonbu]=[];byB[bm].order.push(t.bonbu);} byB[bm].g[t.bonbu].push(t); });
+    var bumuns=(B.bumun_order||[]).filter(function(x){return byB[x];});
+    Object.keys(byB).forEach(function(x){if(bumuns.indexOf(x)<0)bumuns.push(x);});
     var html="";
-    order.forEach(function(b){
-      html+="<div class='sec'><span class='nm'>"+esc(b)+"</span><span class='ct num'>"+g[b].length+"</span><span class='rule'></span></div><div class='grid'>";
-      g[b].forEach(function(t){
-        var gr = t.growth>0?"<span class='gr up'>▲"+t.growth+"</span>":t.growth<0?"<span class='gr dn'>▼"+(-t.growth)+"</span>":"<span class='gr z'>–</span>";
-        var sc = Math.max(0,Math.min(100,t.score||0));
-        html+="<div class='card "+t.state+"'><div class='acc'></div>"
-          +"<div class='nm'>"+esc(t.kr||t.team)+"</div>"
-          +"<div class='sub'>"+esc(t.team)+" · "+esc(t.role||"")+"</div>"
-          +"<div class='msg'>"+esc(t.msg||"")+"</div>"
-          +"<div class='foot'><span class='pill "+t.state+"'>"+stateKo(t.state)+"</span>"
-          +"<span class='sc'><span class='scbar'><i style='width:"+sc+"%'></i></span>"
-          +"<span class='v num'>"+sc+"</span>"+gr+"</span></div></div>";
+    bumuns.forEach(function(bm){
+      var cnt=0; byB[bm].order.forEach(function(b){cnt+=byB[bm].g[b].length;});
+      html+="<div class='bumun'><span class='bn'>"+esc(bm)+"</span><span class='bc num'>"+cnt+"팀</span><span class='rule'></span></div>";
+      byB[bm].order.forEach(function(b){
+        html+="<div class='sec'><span class='nm'>"+esc(b)+"</span><span class='ct num'>"+byB[bm].g[b].length+"</span><span class='rule'></span></div><div class='grid'>";
+        byB[bm].g[b].forEach(function(t){ html+=cardHTML(t); });
+        html+="</div>";
       });
-      html+="</div>";
     });
     document.getElementById("boards").innerHTML=html;
   }
+  function cardHTML(t){
+    var gr = t.growth>0?"<span class='gr up'>▲"+t.growth+"</span>":t.growth<0?"<span class='gr dn'>▼"+(-t.growth)+"</span>":"<span class='gr z'>–</span>";
+    var sc = Math.max(0,Math.min(100,t.score||0));
+    return "<div class='card "+t.state+"' onclick=\"openTeam('"+t.team+"')\"><div class='acc'></div>"
+      +"<div class='nm'>"+esc(t.kr||t.team)+"</div>"
+      +"<div class='sub'>"+esc(t.team)+" · "+esc(t.role||"")+"</div>"
+      +"<div class='msg'>"+esc(t.msg||"")+"</div>"
+      +"<div class='foot'><span class='pill "+t.state+"'>"+stateKo(t.state)+"</span>"
+      +"<span class='sc'><span class='scbar'><i style='width:"+sc+"%'></i></span>"
+      +"<span class='v num'>"+sc+"</span>"+gr+"</span></div></div>";
+  }
   function kpi(cls,v,l){return "<div class='kpi "+cls+"'><div class='spark'></div><div class='v num'>"+v+"</div><div class='l'>"+l+"</div></div>";}
+
+  function openTeam(key){
+    var t=TEAMMAP[key]; if(!t) return;
+    var sc=Math.max(0,Math.min(100,t.score||0));
+    var gr=t.growth>0?"▲"+t.growth:t.growth<0?"▼"+(-t.growth):"–";
+    var links=(t.links||[]).map(function(l){return "<span class='chip' onclick=\"openTeam('"+l.team+"')\">"+esc(l.kr)+"</span>";}).join("");
+    document.getElementById("sheet").innerHTML=
+      "<span class='x' onclick='closeTeam()'>✕</span>"
+      +"<h2>"+esc(t.kr||t.team)+"</h2>"
+      +"<div class='meta'>"+esc(t.team)+"  ·  "+esc(t.bumun||"")+" › "+esc(t.bonbu||"")+"</div>"
+      +"<div class='row'><span class='pill "+t.state+"'>"+stateKo(t.state)+"</span>"
+      +"<span style='margin-left:12px;font-weight:800;font-size:14px'>"+sc+"점 <span class='gr "+(t.growth>0?'up':t.growth<0?'dn':'z')+"'>"+gr+"</span></span></div>"
+      +"<div class='row'><div class='lbl'>지금 하는 일</div><div class='val'>"+esc(t.msg||"대기 중")+"</div></div>"
+      +"<div class='row'><div class='lbl'>이 팀이 하는 일</div><div class='val'>"+esc(t.desc||t.role||"")+"</div></div>"
+      +(t.last_task?"<div class='row'><div class='lbl'>최근 작업</div><div class='val'>"+esc(t.last_task)+"</div></div>":"")
+      +(links?"<div class='row'><div class='lbl'>🔗 협업 · 정보 공유 팀</div><div class='chips'>"+links+"</div></div>":"")
+      +"<div class='row'><div class='lbl'>📚 공유 지식창고</div><div class='val'>business-ops/knowledge/ 에 인사이트를 누적해 전 부서가 함께 봅니다.</div></div>";
+    document.getElementById("modal").classList.add("on");
+  }
+  function closeTeam(){document.getElementById("modal").classList.remove("on");}
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeTeam();});
 
   // 부드러운 자동 갱신 (페이지 깜빡임 없이 status.js 재로딩)
   function loadBoard(){
