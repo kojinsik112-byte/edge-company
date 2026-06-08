@@ -1,4 +1,4 @@
-# 에지 컴퍼니 팀 명부 (45팀)
+# 에지 컴퍼니 팀 명부 (48팀)
 
 > 1인 대표(회장) + 보이는 에이전트 군단. 각 팀은 `.claude/agents/<팀>.md`에 정의.
 > 실시간 현황: `business-ops/dashboard/dashboard.html` · 성과/성장률: `business-ops/performance/`

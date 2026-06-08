@@ -35,7 +35,7 @@
 - **성과·성장률**: `business-ops/performance/scorecard.csv` + `tools/scorecard.py` (list/growth/bonbu/score). 새 점수 넣으면 이전 점수가 prev로 밀려 **성장률** 계산.
 - **규칙**: 모든 작업은 ① 시작 시 team_status로 working 표시 → ② 끝나면 done + pmo가 채점(scorecard) → ③ supervisor/pmo가 '팀별 기여 리포트'를 회장에게. 약팀은 team_coach가 육성.
 
-## 조직 (45개 팀 = Claude Code 서브에이전트, `.claude/agents/`)
+## 조직 (48개 팀 = Claude Code 서브에이전트, `.claude/agents/`)
 **🔍 리서치 본부**
 1. **scout** — 벤치마킹. **반드시 네이버 쇼핑에서 키워드 검색→랭킹순/리뷰순 상위 상품**을 1차 분석.
 2. **seo** — 네이버 키워드·검색최적화
@@ -108,6 +108,9 @@
 43. **social_trends** — 인스타·틱톡·유튜브 숏츠 검색어·해시태그·트렌드 분석
 44. **publisher** — 멀티플랫폼 자동 업로드·예약 게시 (Meta/YouTube/TikTok API·Buffer 등)
 45. **community_manager** — SNS 운영·댓글/DM·콘텐츠 캘린더
+46. **shorts_writer** — 숏폼(릴스/숏츠/틱톡) 대본·스토리보드
+47. **shoot_director** — 1인 휴대폰 촬영 디렉팅 (샷리스트·조명·앵글)
+48. **caption_writer** — 플랫폼별 캡션·해시태그·첫문장 훅
 
 > 영상 엔진 실체: `캡컷 ai편집기/`(autoedit). video팀이 운용.
 > 백오피스 실체: `business-ops/`(catalog·inventory·barcode). inventory/barcode팀이 운용.
