@@ -15,10 +15,12 @@ from .flux import FluxAdapter
 from .ideogram import IdeogramAdapter
 from .fashn import FashnAdapter
 from .claid import ClaidAdapter
+from .openai_image import OpenAIImageAdapter
 
 
 # 어댑터 이름 → (클래스, 키 이름)
 _BUILDERS = {
+    "openai": (OpenAIImageAdapter, "openai"),
     "imagen": (ImagenAdapter, "google"),
     "gemini": (GeminiAdapter, "google"),
     "flux": (FluxAdapter, "fal"),

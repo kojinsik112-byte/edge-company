@@ -43,9 +43,9 @@ class Config:
     # 작업(task) → 선호 어댑터 우선순위. 앞에서부터 사용 가능한 것을 고른다.
     routing: dict[str, list[str]] = field(
         default_factory=lambda: {
-            "scene": ["imagen", "gemini", "flux"],
-            "edit": ["gemini", "flux"],
-            "text_banner": ["ideogram", "gemini"],
+            "scene": ["openai", "imagen", "gemini", "flux"],
+            "edit": ["openai", "gemini", "flux"],
+            "text_banner": ["ideogram", "openai", "gemini"],
             "cleanup": ["claid", "photoroom"],
             "tryon": ["fashn"],
         }
