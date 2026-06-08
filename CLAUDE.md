@@ -35,6 +35,13 @@
 - **성과·성장률**: `business-ops/performance/scorecard.csv` + `tools/scorecard.py` (list/growth/bonbu/score). 새 점수 넣으면 이전 점수가 prev로 밀려 **성장률** 계산.
 - **규칙**: 모든 작업은 ① 시작 시 team_status로 working 표시 → ② 끝나면 done + pmo가 채점(scorecard) → ③ supervisor/pmo가 '팀별 기여 리포트'를 회장에게. 약팀은 team_coach가 육성.
 
+## 자가성장 엔진 (회장 지시: "시키지 않아도 24시간 검색·공부·업그레이드")
+- **일일 자동 루틴**: `business-ops/growth-engine/tools/run_daily.py` — ①competitive_intel(네이버 순위/가격) ②social_trends ③seo·brand_intel(키워드/시장) ④innovation(신규AI) ⑤pmo(채점·성장률) ⑥team_coach(최저팀 플레이북 실제 개선) ⑦supervisor(일일 리포트). 실행 중 관제실에 실시간 표시.
+- **지식창고**(매일 누적, 커밋됨): `business-ops/knowledge/` = competitors·trends·market·reviews·ai_tools·learnings.md. 회장 보고서: `business-ops/reports/daily_YYYYMMDD.md`.
+- **자기개발 루프**: pmo 채점 → team_coach가 최저팀 `.claude/agents/<팀>.md`에 코칭 블록 누적 추가 → 다음 작업 점수↑ → scorecard growth로 검증(매일 ≥1팀 성장).
+- **스케줄**: 데스크탑=Task Scheduler 매일 09:00 / 서버=cron 24h. 사용법·cron 예시 = `growth-engine/README.md`.
+- ①③⑤⑥⑦은 네이버 키만 있으면 항상 실동작. ②④와 코칭문구는 `--with-agents`(claude 헤드리스)면 실웹조사, 없으면 '예약'으로 남기고 루틴은 안 멈춤. 점수는 '활동점수'(실매출 KPI는 등록·발행 후 analytics 합류).
+
 ## 조직 (48개 팀 = Claude Code 서브에이전트, `.claude/agents/`)
 **🔍 리서치 본부**
 1. **scout** — 벤치마킹. **반드시 네이버 쇼핑에서 키워드 검색→랭킹순/리뷰순 상위 상품**을 1차 분석.
