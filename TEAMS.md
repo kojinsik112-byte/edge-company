@@ -1,4 +1,4 @@
-# 엣지컴퍼니 팀 명부 (100팀 — 목표 달성 ✅)
+# 엣지컴퍼니 팀 명부 (104팀 · 100 돌파 ✅)
 
 > ㈜엣지컴퍼니(대표 고진식) · 1인 대표(회장) + 보이는 에이전트 군단. 각 팀 = `.claude/agents/<팀>.md`.
 > 실시간 현황: `business-ops/dashboard/dashboard.html`(한글팀명·작업/학습 실시간) · 성과: `business-ops/performance/scorecard.csv`
@@ -56,8 +56,9 @@
 ## 💡 조명사업 (6) (+전기공사면허)
 - **lighting_designer** 조도·배광 설계 · **electrical_contractor** 전기공사·시공(면허) · **lighting_sales** B2B/현장 영업 · **lighting_sourcing** 소싱·벤더 · **lighting_estimator** 견적·적산 · **lighting_pm** 현장 PM
 
-## 🏠 입주주관사 (6) — 고객확보 깔때기
+## 🏠 입주주관사 (6+4) — 고객확보 깔때기 + 분석 심화
 - **movein_consultant** 입주 상담 · **movein_partnership** 건설사·시행사 제휴 · **movein_funnel** 고객 깔때기 운영 · **movein_event** 입주행사·부스 · **movein_data** 단지 데이터·타겟 · **movein_cs** 입주민 응대·예약
+- **pt_builder** 주관사 PT·제안서 빌더 · **realestate_analyst** 부동산·아파트 단지 분석 · **cafe_insight** 입주민 카페 인사이트(네이버) · **jugansa_scholar** 주관사 사업·경쟁 전략 연구
 
 ## 🪟 엣지리브커튼 (6) — 커튼·블라인드
 - **curtain_designer** 디자인·패브릭 · **curtain_measure** 실측·견적 · **curtain_sourcing** 원단·전동 소싱 · **curtain_sales** 영업·상담 · **curtain_install** 시공 · **curtain_estimator** 견적·원가

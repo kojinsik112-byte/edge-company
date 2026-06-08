@@ -2,94 +2,192 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="refresh" content="3">  <!-- 3초마다 자동 새로고침 = 실시간 -->
-<title>엣지컴퍼니 · 에이전트 관제실</title>
-<script src="status.js"></script>
+<title>EDGE COMPANY · JARVIS 관제실</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
+  :root{
+    --bg:#05060a; --gold:#e3c178; --gold2:#bd9a52; --cyan:#5fd8ff; --green:#46e0a0;
+    --red:#ff6f7a; --ink:#eef2f8; --muted:#8a93a8; --line:rgba(227,193,120,.14);
+    --glass:rgba(20,24,35,.55);
+  }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#0b0d12;color:#e7ecf3;font-family:"Pretendard",system-ui,sans-serif;padding:22px 26px}
-  .top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1d2330;padding-bottom:14px;margin-bottom:8px}
-  h1{font-size:20px;font-weight:800;letter-spacing:-.01em}
-  h1 .dot{color:#2bd4a4}
-  .stat{display:flex;gap:18px;font-size:13px;color:#8b93a4}
-  .stat b{color:#e7ecf3}
-  .updated{font-size:12px;color:#5a6273;margin-bottom:10px}
-  .bonbu{margin:18px 0 8px;font-size:12px;font-weight:700;letter-spacing:.12em;color:#7b8398;text-transform:uppercase}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:10px}
-  .card{background:#12161f;border:1px solid #1e2533;border-radius:12px;padding:13px 14px;position:relative;overflow:hidden}
-  .card .name{font-size:14px;font-weight:700}
-  .card .role{font-size:11px;color:#737b8c;margin-top:2px;height:14px;overflow:hidden}
-  .card .msg{font-size:12px;color:#aab2c2;margin-top:9px;min-height:30px;line-height:1.45}
-  .card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
-  .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px}
-  .badge.idle{background:#1b2230;color:#737b8c}
-  .badge.working{background:#3a2e08;color:#ffcf4d}
-  .badge.done{background:#0f3a2c;color:#34e3a8}
-  .badge.blocked{background:#3a1414;color:#ff6b6b}
-  .badge.studying{background:#1b2747;color:#7aa2ff}
-  .score{font-size:13px;font-weight:800}
-  .grow-up{color:#34e3a8;font-size:11px}
-  .grow-dn{color:#ff6b6b;font-size:11px}
-  .grow-0{color:#5a6273;font-size:11px}
-  .bar{position:absolute;left:0;bottom:0;height:3px;background:#2bd4a4}
-  .card.working .bar{background:#ffcf4d;animation:pulse 1.2s infinite}
-  .card.studying .bar{background:#7aa2ff;animation:pulse 1.8s infinite}
-  @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
-  .leg{display:flex;gap:14px;font-size:11px;color:#737b8c;margin-top:16px}
-  .leg span{display:inline-flex;align-items:center;gap:5px}
-  .leg i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(1100px 600px at 12% -8%, rgba(227,193,120,.10), transparent 60%),
+      radial-gradient(1000px 700px at 110% 10%, rgba(95,216,255,.08), transparent 55%),
+      radial-gradient(900px 900px at 50% 120%, rgba(70,224,160,.05), transparent 60%),
+      var(--bg);
+    color:var(--ink); font-family:"Pretendard",system-ui,sans-serif;
+    padding:26px 30px 40px; min-height:100%;
+    background-attachment:fixed;
+  }
+  body::before{ /* 미세 그리드 HUD */
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+    background-size:46px 46px;mask:radial-gradient(circle at 50% 30%,#000 60%,transparent 100%);
+  }
+  .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+  /* ── 헤더 ── */
+  .hd{display:flex;align-items:flex-end;justify-content:space-between;
+    border-bottom:1px solid var(--line);padding-bottom:16px;position:relative}
+  .hd::after{content:"";position:absolute;left:0;bottom:-1px;width:220px;height:1px;
+    background:linear-gradient(90deg,var(--gold),transparent)}
+  .brand{display:flex;align-items:center;gap:13px}
+  .hex{width:34px;height:34px;flex:none;filter:drop-shadow(0 0 10px rgba(227,193,120,.5))}
+  .brand h1{font-size:21px;font-weight:800;letter-spacing:.14em;
+    background:linear-gradient(90deg,#fff,var(--gold) 60%,var(--gold2));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand .sub{font-size:11px;letter-spacing:.34em;color:var(--muted);margin-top:3px;font-weight:600}
+  .clock{text-align:right}
+  .clock .t{font-size:30px;font-weight:800;letter-spacing:.04em;color:#fff;line-height:1}
+  .clock .d{font-size:12px;color:var(--muted);margin-top:5px;letter-spacing:.1em}
+  /* ── KPI ── */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:18px 0 6px}
+  .kpi{background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:14px 16px;
+    position:relative;overflow:hidden;backdrop-filter:blur(8px)}
+  .kpi .v{font-size:27px;font-weight:800;line-height:1}
+  .kpi .l{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.12em}
+  .kpi .spark{position:absolute;right:-6px;top:-6px;width:54px;height:54px;border-radius:50%;
+    opacity:.16;filter:blur(8px)}
+  .kpi.total .v{color:#fff}      .kpi.total .spark{background:var(--gold)}
+  .kpi.work .v{color:var(--gold)} .kpi.work .spark{background:var(--gold)}
+  .kpi.study .v{color:var(--cyan)}.kpi.study .spark{background:var(--cyan)}
+  .kpi.done .v{color:var(--green)}.kpi.done .spark{background:var(--green)}
+  .kpi.avg .v{color:#fff}        .kpi.avg .spark{background:#a98bff}
+  /* ── 멘트 ── */
+  .mantra{display:flex;align-items:center;gap:11px;margin:14px 0 6px;
+    background:linear-gradient(90deg,rgba(227,193,120,.12),rgba(227,193,120,.02));
+    border:1px solid var(--line);border-left:3px solid var(--gold);
+    border-radius:12px;padding:13px 16px;font-size:14.5px;font-weight:700;color:#f4e9cf}
+  .mantra .ic{font-size:17px}
+  .updated{font-size:11px;color:#5c6478;margin:4px 2px 2px;letter-spacing:.08em}
+  /* ── 섹션/그리드 ── */
+  .sec{margin:22px 0 9px;display:flex;align-items:center;gap:12px}
+  .sec .nm{font-size:12.5px;font-weight:800;letter-spacing:.16em;color:#cdd4e2;white-space:nowrap}
+  .sec .ct{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .sec .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:11px}
+  .card{background:var(--glass);border:1px solid rgba(255,255,255,.06);border-radius:14px;
+    padding:14px 15px 13px;position:relative;overflow:hidden;backdrop-filter:blur(7px);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
+  .card:hover{transform:translateY(-3px);border-color:var(--line);
+    box-shadow:0 14px 30px rgba(0,0,0,.4)}
+  .card .acc{position:absolute;left:0;top:0;bottom:0;width:3px;background:#222a39}
+  .card.working .acc{background:linear-gradient(var(--gold),var(--gold2));box-shadow:0 0 14px var(--gold)}
+  .card.studying .acc{background:linear-gradient(var(--cyan),#2b9fd0);box-shadow:0 0 14px var(--cyan)}
+  .card.done .acc{background:linear-gradient(var(--green),#2bae7e);box-shadow:0 0 12px var(--green)}
+  .card.blocked .acc{background:linear-gradient(var(--red),#c0444e);box-shadow:0 0 12px var(--red)}
+  .card .nm{font-size:14.5px;font-weight:700;letter-spacing:-.01em}
+  .card .sub{font-size:10.5px;color:#69718a;margin-top:3px;height:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .card .msg{font-size:12px;color:#b6bdcd;margin-top:9px;min-height:31px;line-height:1.46}
+  .card.studying .msg{color:#acd9f2}
+  .foot{display:flex;align-items:center;justify-content:space-between;margin-top:11px}
+  .pill{font-size:10px;font-weight:800;padding:3px 9px;border-radius:999px;letter-spacing:.04em}
+  .pill.idle{background:#19202e;color:#7b8398}
+  .pill.working{background:rgba(227,193,120,.14);color:var(--gold)}
+  .pill.studying{background:rgba(95,216,255,.13);color:var(--cyan)}
+  .pill.done{background:rgba(70,224,160,.13);color:var(--green)}
+  .pill.blocked{background:rgba(255,111,122,.14);color:var(--red)}
+  .sc{display:flex;align-items:center;gap:7px}
+  .scbar{width:46px;height:4px;border-radius:3px;background:#1b2231;overflow:hidden}
+  .scbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--cyan))}
+  .sc .v{font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums}
+  .gr{font-size:10.5px;font-weight:700}
+  .gr.up{color:var(--green)} .gr.dn{color:var(--red)} .gr.z{color:#5a6273}
+  .card.working .acc, .card.studying .acc{animation:breathe 2.2s ease-in-out infinite}
+  @keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}}
+  .legend{display:flex;gap:16px;font-size:11px;color:var(--muted);margin-top:22px;
+    border-top:1px solid var(--line);padding-top:14px;letter-spacing:.06em}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
 </style>
 </head>
 <body>
-  <div class="top">
-    <h1><span class="dot">●</span> 엣지컴퍼니 · 에이전트 관제실</h1>
-    <div class="stat" id="stat"></div>
+  <div class="hd">
+    <div class="brand">
+      <svg class="hex" viewBox="0 0 100 100"><polygon points="50,4 92,28 92,72 50,96 8,72 8,28"
+        fill="none" stroke="#e3c178" stroke-width="5"/><polygon points="50,24 74,38 74,62 50,76 26,62 26,38"
+        fill="#e3c178" opacity=".85"/></svg>
+      <div>
+        <h1>EDGE&nbsp;COMPANY</h1>
+        <div class="sub">J · A · R · V · I · S&nbsp;&nbsp;통합 관제실</div>
+      </div>
+    </div>
+    <div class="clock"><div class="t num" id="clk">--:--:--</div><div class="d" id="dt"></div></div>
   </div>
+
+  <div class="kpis" id="kpis"></div>
+  <div class="mantra"><span class="ic">🤖</span><span id="mantra">시스템 부팅 중…</span></div>
   <div class="updated" id="updated"></div>
-  <div id="mantra" style="background:#0f1722;border:1px solid #1e2b3a;border-radius:10px;padding:11px 14px;margin:6px 0 14px;font-size:14px;font-weight:700;color:#34e3a8;letter-spacing:-.01em"></div>
   <div id="boards"></div>
-  <div class="leg">
-    <span><i style="background:#737b8c"></i>대기</span>
-    <span><i style="background:#ffcf4d"></i>작업중</span>
-    <span><i style="background:#7aa2ff"></i>학습중</span>
-    <span><i style="background:#34e3a8"></i>완료</span>
-    <span><i style="background:#ff6b6b"></i>막힘</span>
+
+  <div class="legend">
+    <span><i style="background:#7b8398"></i>대기</span>
+    <span><i style="background:#e3c178"></i>작업중</span>
+    <span><i style="background:#5fd8ff"></i>학습중</span>
+    <span><i style="background:#46e0a0"></i>완료</span>
+    <span><i style="background:#ff6f7a"></i>막힘</span>
   </div>
 
 <script>
-  var B = (window.TEAM_BOARD || {updated:"-", teams:[]});
-  var teams = B.teams;
-  var working = teams.filter(function(t){return t.state==="working";}).length;
-  var studying = teams.filter(function(t){return t.state==="studying";}).length;
-  var done = teams.filter(function(t){return t.state==="done";}).length;
-  document.getElementById("stat").innerHTML =
-    "총 <b>"+teams.length+"</b>팀 · 작업중 <b style='color:#ffcf4d'>"+working+"</b> · 학습중 <b style='color:#7aa2ff'>"+studying+"</b> · 완료 <b style='color:#34e3a8'>"+done+"</b>";
-  document.getElementById("updated").textContent = "갱신: " + B.updated + "  (3초마다 자동)";
-  document.getElementById("mantra").textContent = B.mantra || "";
-
-  var groups = {};
-  teams.forEach(function(t){ (groups[t.bonbu]=groups[t.bonbu]||[]).push(t); });
-  var html = "";
-  Object.keys(groups).forEach(function(bonbu){
-    html += "<div class='bonbu'>"+bonbu+"</div><div class='grid'>";
-    groups[bonbu].forEach(function(t){
-      var g = (t.growth>0 ? "<span class='grow-up'>▲"+t.growth+"</span>"
-             : t.growth<0 ? "<span class='grow-dn'>▼"+(-t.growth)+"</span>"
-             : "<span class='grow-0'>–</span>");
-      var pct = t.score||0;
-      html += "<div class='card "+t.state+"'>"
-        + "<div class='name'>"+(t.kr||t.team)+"</div>"
-        + "<div class='role'>"+t.team+" · "+(t.role||"")+"</div>"
-        + "<div class='msg'>"+(t.msg||"")+"</div>"
-        + "<div class='foot'><span class='badge "+t.state+"'>"+stateKo(t.state)+"</span>"
-        + "<span class='score'>"+pct+"점 "+g+"</span></div>"
-        + "<div class='bar' style='width:"+pct+"%'></div>"
-        + "</div>";
-    });
-    html += "</div>";
-  });
-  document.getElementById("boards").innerHTML = html;
   function stateKo(s){return {idle:"대기",working:"작업중",studying:"학습중",done:"완료",blocked:"막힘"}[s]||s;}
+  function esc(x){return (x==null?"":String(x)).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}
+
+  function render(B){
+    if(!B) return;
+    var teams=B.teams||[];
+    var c={working:0,studying:0,done:0,idle:0,blocked:0}, sum=0, n=0;
+    teams.forEach(function(t){ c[t.state]=(c[t.state]||0)+1; if(typeof t.score==="number"){sum+=t.score;n++;} });
+    var avg = n? Math.round(sum/n):0;
+    document.getElementById("kpis").innerHTML =
+      kpi("total",teams.length,"전체 팀")+kpi("work",c.working,"작업중")+
+      kpi("study",c.studying,"학습중")+kpi("done",c.done,"오늘 완료")+kpi("avg",avg,"평균 점수");
+    document.getElementById("mantra").textContent = B.mantra||"";
+    document.getElementById("updated").textContent = "DATA SYNC · "+(B.updated||"")+"  ·  3초 자동 갱신";
+
+    var order=[], g={};
+    teams.forEach(function(t){ if(!g[t.bonbu]){g[t.bonbu]=[];order.push(t.bonbu);} g[t.bonbu].push(t); });
+    var html="";
+    order.forEach(function(b){
+      html+="<div class='sec'><span class='nm'>"+esc(b)+"</span><span class='ct num'>"+g[b].length+"</span><span class='rule'></span></div><div class='grid'>";
+      g[b].forEach(function(t){
+        var gr = t.growth>0?"<span class='gr up'>▲"+t.growth+"</span>":t.growth<0?"<span class='gr dn'>▼"+(-t.growth)+"</span>":"<span class='gr z'>–</span>";
+        var sc = Math.max(0,Math.min(100,t.score||0));
+        html+="<div class='card "+t.state+"'><div class='acc'></div>"
+          +"<div class='nm'>"+esc(t.kr||t.team)+"</div>"
+          +"<div class='sub'>"+esc(t.team)+" · "+esc(t.role||"")+"</div>"
+          +"<div class='msg'>"+esc(t.msg||"")+"</div>"
+          +"<div class='foot'><span class='pill "+t.state+"'>"+stateKo(t.state)+"</span>"
+          +"<span class='sc'><span class='scbar'><i style='width:"+sc+"%'></i></span>"
+          +"<span class='v num'>"+sc+"</span>"+gr+"</span></div></div>";
+      });
+      html+="</div>";
+    });
+    document.getElementById("boards").innerHTML=html;
+  }
+  function kpi(cls,v,l){return "<div class='kpi "+cls+"'><div class='spark'></div><div class='v num'>"+v+"</div><div class='l'>"+l+"</div></div>";}
+
+  // 부드러운 자동 갱신 (페이지 깜빡임 없이 status.js 재로딩)
+  function loadBoard(){
+    var s=document.createElement("script");
+    s.src="status.js?t="+Date.now();
+    s.onload=function(){ render(window.TEAM_BOARD); s.remove(); };
+    s.onerror=function(){ s.remove(); };
+    document.body.appendChild(s);
+  }
+  // 시계
+  function tick(){
+    var d=new Date();
+    var p=function(x){return (x<10?"0":"")+x;};
+    document.getElementById("clk").textContent=p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());
+    var wd=["일","월","화","수","목","금","토"][d.getDay()];
+    document.getElementById("dt").textContent=d.getFullYear()+". "+p(d.getMonth()+1)+". "+p(d.getDate())+" ("+wd+")";
+  }
+  tick(); setInterval(tick,1000);
+  loadBoard(); setInterval(loadBoard,3000);
 </script>
 </body>
 </html>

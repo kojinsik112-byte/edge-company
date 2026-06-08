@@ -63,9 +63,22 @@ TEAM_KR = {
     "copy_scholar": "카피연구팀", "design_scholar": "디자인연구팀", "data_analyst": "데이터분석팀",
     "growth_hacker": "그로스해커팀", "export_research": "해외수출리서치팀", "offline_channel": "오프라인채널연구팀",
     "ux_writer": "UX라이팅팀", "trend_scholar": "트렌드연구팀",
+    # 🏢 입주주관사 분석 심화
+    "pt_builder": "주관사PT제작팀", "realestate_analyst": "부동산·단지분석팀",
+    "cafe_insight": "입주민카페분석팀", "jugansa_scholar": "주관사전략연구팀",
 }
 
 
+# 채용(hire_team.py)으로 추가되는 팀명은 여기에 누적 — 소스 수정 없이 동적 등록
+import json as _json
+from pathlib import Path as _Path
+_EXTRA_PATH = _Path(__file__).resolve().parent / "team_names_extra.json"
+try:
+    _EXTRA = _json.loads(_EXTRA_PATH.read_text(encoding="utf-8")) if _EXTRA_PATH.exists() else {}
+except Exception:
+    _EXTRA = {}
+
+
 def kr(team: str) -> str:
-    """영문 키 → 한글 팀명(없으면 키 그대로)."""
-    return TEAM_KR.get(team, team)
+    """영문 키 → 한글 팀명(없으면 동적등록 → 키 그대로)."""
+    return TEAM_KR.get(team) or _EXTRA.get(team) or team
