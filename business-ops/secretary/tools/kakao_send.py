@@ -79,9 +79,12 @@ def authorize_url() -> str:
 def exchange(code: str) -> None:
     key = _env("KAKAO_REST_API_KEY")
     redirect = _env("KAKAO_REDIRECT_URI", "https://localhost")
-    r = requests.post(f"{AUTH}/token", data={
-        "grant_type": "authorization_code", "client_id": key,
-        "redirect_uri": redirect, "code": code}, timeout=20)
+    data = {"grant_type": "authorization_code", "client_id": key,
+            "redirect_uri": redirect, "code": code}
+    secret = _env("KAKAO_CLIENT_SECRET")
+    if secret:
+        data["client_secret"] = secret
+    r = requests.post(f"{AUTH}/token", data=data, timeout=20)
     d = r.json()
     if "refresh_token" not in d:
         sys.exit(f"토큰 발급 실패: {d}")
@@ -109,8 +112,11 @@ def _refresh_access() -> str:
     key = _env("KAKAO_REST_API_KEY")
     if not rt:
         sys.exit("KAKAO_REFRESH_TOKEN 없음 → 먼저 authorize-url → exchange 로 1회 인증하세요.")
-    r = requests.post(f"{AUTH}/token", data={
-        "grant_type": "refresh_token", "client_id": key, "refresh_token": rt}, timeout=20)
+    data = {"grant_type": "refresh_token", "client_id": key, "refresh_token": rt}
+    secret = _env("KAKAO_CLIENT_SECRET")
+    if secret:
+        data["client_secret"] = secret
+    r = requests.post(f"{AUTH}/token", data=data, timeout=20)
     d = r.json()
     if "access_token" not in d:
         sys.exit(f"토큰 갱신 실패: {d}")
