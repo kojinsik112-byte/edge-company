@@ -10,7 +10,7 @@ from pathlib import Path
 
 from .config import Config
 from .pipeline.brief import load_brief
-from .pipeline import designer, compose
+from .pipeline import designer, compose, mangoboard
 
 
 def cmd_build(args: argparse.Namespace) -> None:
@@ -29,11 +29,16 @@ def cmd_build(args: argparse.Namespace) -> None:
     print("\n[2/3] 이미지 생성 (Designer · 갈락티코 라인업)")
     designer.render_images(sections, brief, cfg, outdir)
 
-    print("\n[3/3] 조판 (Compose)")
+    print("\n[3/4] 조판 (Compose · HTML 미리보기)")
     html = compose.compose_html(brief, sections, outdir)
     compose.render_png(html, outdir)
 
+    print("\n[4/4] 망고보드 마감 패키지 (작업지시서 + 슬라이드 + 에셋)")
+    mangoboard.export_pack(brief, sections, outdir)
+
     print(f"\n완료 → {outdir}")
+    print("  · HTML 미리보기: detail_page.html")
+    print("  · 망고보드 조립: mangoboard/작업지시서.md (+ assets/)")
 
 
 def _print_status(cfg: Config) -> None:
