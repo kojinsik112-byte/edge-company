@@ -25,6 +25,13 @@ PERF = ROOT.parent / "performance" / "scorecard.csv"   # 점수 원장
 STATUS = ROOT / "status.json"
 STATUS_JS = ROOT / "status.js"
 
+sys.path.insert(0, str(ROOT.parent))                   # business-ops (team_names)
+try:
+    from team_names import kr as _kr
+except Exception:
+    def _kr(t):  # 폴백
+        return t
+
 
 def _scorecard() -> dict:
     out = {}
@@ -54,14 +61,20 @@ def _save_status(s: dict) -> None:
 def _render() -> None:
     cards, status = _scorecard(), _load_status()
     teams = []
+    working = 0
     for team, sc in cards.items():
         st = status.get(team, {})
+        if st.get("state") == "working":
+            working += 1
         teams.append({
-            "team": team, "bonbu": sc["bonbu"], "role": sc["role"],
+            "team": team, "kr": _kr(team), "bonbu": sc["bonbu"], "role": sc["role"],
             "score": sc["score"], "growth": sc["growth"],
             "state": st.get("state", "idle"), "msg": st.get("msg", ""),
         })
-    board = {"updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "teams": teams}
+    now = datetime.now()
+    mantra = (f"오늘은 {now.month}월 {now.day}일. 엣지컴퍼니 {len(teams)}개 팀 모두 "
+              + (f"열심히 일하고 있습니다 ({working}팀 작업 중) 💪" if working else "대기 중입니다. 곧 움직입니다 ⚡"))
+    board = {"updated": now.strftime("%Y-%m-%d %H:%M:%S"), "mantra": mantra, "teams": teams}
     STATUS_JS.write_text("window.TEAM_BOARD = " + json.dumps(board, ensure_ascii=False) + ";\n", encoding="utf-8")
 
 

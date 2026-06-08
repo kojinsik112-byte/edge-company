@@ -44,6 +44,7 @@
     <div class="stat" id="stat"></div>
   </div>
   <div class="updated" id="updated"></div>
+  <div id="mantra" style="background:#0f1722;border:1px solid #1e2b3a;border-radius:10px;padding:11px 14px;margin:6px 0 14px;font-size:14px;font-weight:700;color:#34e3a8;letter-spacing:-.01em"></div>
   <div id="boards"></div>
   <div class="leg">
     <span><i style="background:#737b8c"></i>대기</span>
@@ -60,6 +61,7 @@
   document.getElementById("stat").innerHTML =
     "총 <b>"+teams.length+"</b>팀 · 작업중 <b style='color:#ffcf4d'>"+working+"</b> · 완료 <b style='color:#34e3a8'>"+done+"</b>";
   document.getElementById("updated").textContent = "갱신: " + B.updated + "  (3초마다 자동)";
+  document.getElementById("mantra").textContent = B.mantra || "";
 
   var groups = {};
   teams.forEach(function(t){ (groups[t.bonbu]=groups[t.bonbu]||[]).push(t); });
@@ -72,8 +74,8 @@
              : "<span class='grow-0'>–</span>");
       var pct = t.score||0;
       html += "<div class='card "+t.state+"'>"
-        + "<div class='name'>"+t.team+"</div>"
-        + "<div class='role'>"+(t.role||"")+"</div>"
+        + "<div class='name'>"+(t.kr||t.team)+"</div>"
+        + "<div class='role'>"+t.team+" · "+(t.role||"")+"</div>"
         + "<div class='msg'>"+(t.msg||"")+"</div>"
         + "<div class='foot'><span class='badge "+t.state+"'>"+stateKo(t.state)+"</span>"
         + "<span class='score'>"+pct+"점 "+g+"</span></div>"

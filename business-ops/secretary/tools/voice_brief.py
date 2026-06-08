@@ -64,13 +64,33 @@ def actors() -> None:
         print(data)
 
 
+def speak_windows(text: str) -> bool:
+    """윈도우 내장 TTS(SAPI)로 즉시 말하기 — 타입캐스트 키 없어도 자비스 음성 작동.
+    한글 보이스(예: Heami)가 설치돼 있으면 한국어로, 없으면 기본 보이스로 읽는다."""
+    import subprocess
+    ps = ("Add-Type -AssemblyName System.Speech;"
+          "$s=New-Object System.Speech.Synthesis.SpeechSynthesizer;"
+          "$s.Rate=0; $s.Volume=100;"
+          "$t=[Console]::In.ReadToEnd(); $s.Speak($t);")
+    try:
+        subprocess.run(["powershell", "-NoProfile", "-Command", ps],
+                       input=text, text=True, encoding="utf-8", timeout=90)
+        print("🔊 윈도우 내장 음성으로 보고 완료(자비스).")
+        return True
+    except Exception as e:
+        print(f"음성(SAPI) 스킵: {e}")
+        return False
+
+
 def speak(text: str, play: bool = False) -> Path | None:
-    """텍스트 → mp3. 성공 시 파일경로 반환, 실패/미설정 시 None(멈추지 않음)."""
+    """텍스트 → 음성. ①타입캐스트 키 있으면 mp3 생성·재생, ②없으면 윈도우 내장 음성으로 즉시 말함.
+    실패해도 None 반환하고 멈추지 않는다."""
+    # 타입캐스트 미설정 → 윈도우 내장 음성 폴백(오늘 바로 작동)
+    if not os.environ.get("TYPECAST_API_KEY", "").strip() or not os.environ.get("TYPECAST_ACTOR_ID", "").strip():
+        speak_windows(text)
+        return None
     try:
         actor = os.environ.get("TYPECAST_ACTOR_ID", "").strip()
-        if not actor:
-            print("⚠️ TYPECAST_ACTOR_ID 없음 → 'python voice_brief.py actors'로 보이스 id 확인 후 .env에 설정.")
-            return None
         # 1) 합성 요청(비동기)
         payload = {
             "actor_id": actor,
