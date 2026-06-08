@@ -27,9 +27,10 @@ API = "https://www.googleapis.com/youtube/v3"
 
 
 def search(q: str, n: int = 12) -> list[dict]:
-    key = os.environ.get("GOOGLE_API_KEY", "").strip()
+    # 유튜브 전용 키 우선, 없으면 GOOGLE_API_KEY
+    key = (os.environ.get("YOUTUBE_API_KEY", "") or os.environ.get("GOOGLE_API_KEY", "")).strip()
     if not key:
-        raise SystemExit("GOOGLE_API_KEY 가 .env 에 없습니다.")
+        raise SystemExit("YOUTUBE_API_KEY(또는 GOOGLE_API_KEY) 가 .env 에 없습니다.")
     r = requests.get(f"{API}/search", params={
         "part": "snippet", "q": q, "type": "video", "maxResults": n,
         "regionCode": "KR", "relevanceLanguage": "ko", "order": "relevance", "key": key}, timeout=20)
