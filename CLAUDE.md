@@ -33,6 +33,12 @@
 - **한국형 마감(보조)**: 망고보드. 공개 API 없음 → `design-division`이 **작업지시서 패키지**를 만들어 사람이 망고보드에 꽂는다.
 - **이미지 생성 API(선택)**: Imagen(포토리얼)·Gemini·Flux·Ideogram(한글배너)·FASHN(피팅)·Claid(누끼/4K). `design-division/edge_design/adapters/`에 어댑터로 연결. 키 없으면 드라이런.
 
+## 웹 접근 / Scout 크롤링 (중요)
+- **클라우드(claude.ai/code) 세션은 컨테이너 외부 인터넷이 전면 차단**된다(모든 도메인 403). 이 환경에서 Scout가 쓸 수 있는 건 WebSearch뿐이고, WebFetch는 네이버 스마트스토어 등 일부 사이트가 봇차단한다. → **네이버 상세페이지를 직접 못 연다.**
+- 해결: **회장 PC에서 Claude Code를 실행**하면 실제 IP/브라우저로 나가 네이버 접근 가능. 이때 `.mcp.json`에 등록된 **playwright MCP**(브라우저 자동화)로 페이지를 직접 열어 읽는다.
+- 즉시 대안: 회장이 **스크린샷/텍스트**를 주면 Scout가 완전 분석한다.
+- 등록된 MCP: `canva`(원격, OAuth 로그인 완료), `playwright`(로컬/허용네트워크에서 작동).
+
 ## 디자인 파이프라인 사용법 (`design-division/`)
 ```bash
 cd design-division
