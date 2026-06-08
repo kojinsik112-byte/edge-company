@@ -1,0 +1,14 @@
+# 두뇌
+anthropic>=0.40
+
+# 설정/입출력
+pyyaml>=6.0
+python-dotenv>=1.0
+requests>=2.31
+
+# 조판/시각화
+jinja2>=3.1
+pillow>=10.0
+
+# HTML→이미지 렌더 (선택: 없으면 HTML만 저장)
+# playwright>=1.44   # 설치 후: python -m playwright install chromium
