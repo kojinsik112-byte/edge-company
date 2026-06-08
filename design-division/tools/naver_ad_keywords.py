@@ -59,7 +59,8 @@ def _n(v):
 
 def keyword_volumes(seeds: list[str]) -> list[dict]:
     uri = "/keywordstool"
-    params = {"hintKeywords": ",".join(s.replace(" ", "") for s in seeds), "showDetail": "1"}
+    # 힌트 키워드는 최대 5개 — 초과 시 결과가 비므로 잘라낸다
+    params = {"hintKeywords": ",".join(s.replace(" ", "") for s in seeds[:5]), "showDetail": "1"}
     r = requests.get(BASE + uri, params=params, headers=_headers("GET", uri), timeout=20)
     r.raise_for_status()
     out = []
