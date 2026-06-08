@@ -77,7 +77,7 @@ def _weather() -> dict:
         pass
     try:
         import urllib.request
-        url = "https://wttr.in/Seoul?format=%c|%t|%C|%h&m&lang=ko"
+        url = "https://wttr.in/Ulsan?format=%c|%t|%C|%h&m&lang=ko"
         req = urllib.request.Request(url, headers={"User-Agent": "curl/8"})
         raw = urllib.request.urlopen(req, timeout=8).read().decode("utf-8").strip()
         ic, temp, cond, hum = (raw.split("|") + ["", "", "", ""])[:4]

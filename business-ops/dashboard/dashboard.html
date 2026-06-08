@@ -207,7 +207,7 @@
     var w=B.weather||{};
     if(w.temp){ document.getElementById("wx").style.display="block";
       document.getElementById("wxt").innerHTML="<span class='ic'>"+esc(w.icon||"")+"</span>"+esc(w.temp);
-      document.getElementById("wxc").textContent="서울 "+(w.cond||"")+(w.hum?(" · 습도 "+w.hum):""); }
+      document.getElementById("wxc").textContent="울산 "+(w.cond||"")+(w.hum?(" · 습도 "+w.hum):""); }
 
     // 🏆 성과 랭킹 TOP 8 (점수 높은 팀)
     var rank=teams.slice().sort(function(a,b){return (b.score||0)-(a.score||0);}).slice(0,8);
