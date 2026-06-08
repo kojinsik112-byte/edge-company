@@ -80,6 +80,7 @@
 - 해결: **회장 PC에서 Claude Code를 실행**하면 실제 IP/브라우저로 나가 네이버 접근 가능. 이때 `.mcp.json`에 등록된 **playwright MCP**(브라우저 자동화)로 페이지를 직접 열어 읽는다.
 - 즉시 대안: 회장이 **스크린샷/텍스트**를 주면 Scout가 완전 분석한다.
 - 등록된 MCP: `canva`(원격, OAuth 로그인 완료), `playwright`(로컬/허용네트워크에서 작동).
+- **네이버 검색 API**: 경쟁사 *상세페이지 본문*은 API로 못 가져온다(로그인/봇차단). 하지만 **순위·가격·판매처·키워드**는 `design-division/tools/naver_search.py`(검색 API)로 봇차단 없이 수집한다. 키는 `.env`의 `NAVER_CLIENT_ID/SECRET`. → scout는 이걸로 경쟁세트를 잡고, 상세 분석은 스크린샷/브라우저로 보완.
 
 ## 디자인 파이프라인 사용법 (`design-division/`)
 ```bash
