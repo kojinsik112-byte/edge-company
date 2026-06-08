@@ -134,6 +134,20 @@
   .chip{font-size:11.5px;background:rgba(95,216,255,.1);color:var(--cyan);border:1px solid rgba(95,216,255,.2);
     padding:5px 11px;border-radius:999px;cursor:pointer;transition:background .15s}
   .chip:hover{background:rgba(95,216,255,.2)}
+  /* 성과 랭킹 */
+  .ranklbl{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--gold);margin:16px 2px 8px}
+  .rankrow{display:grid;grid-template-columns:repeat(8,1fr);gap:9px}
+  @media(max-width:1100px){.rankrow{grid-template-columns:repeat(4,1fr)}}
+  .rk{background:linear-gradient(180deg,rgba(227,193,120,.12),rgba(227,193,120,.02));
+    border:1px solid var(--line);border-radius:12px;padding:11px 12px;cursor:pointer;
+    display:flex;flex-direction:column;gap:5px;transition:transform .15s,box-shadow .15s}
+  .rk:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,0,0,.4)}
+  .rk .rn{font-size:11px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+  .rk:nth-child(1) .rn::before{content:"🥇 "}
+  .rk:nth-child(2) .rn::before{content:"🥈 "}
+  .rk:nth-child(3) .rn::before{content:"🥉 "}
+  .rk .rkn{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rk .rks{font-size:18px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -156,6 +170,8 @@
   <div class="kpis" id="kpis"></div>
   <div class="mantra"><span class="ic">🤖</span><span id="mantra">시스템 부팅 중…</span></div>
   <div class="updated" id="updated"></div>
+  <div class="ranklbl">🏆 성과 랭킹 — 가장 일 잘하는 팀</div>
+  <div class="rankrow" id="rank"></div>
   <div id="boards"></div>
 
   <div class="legend">
@@ -182,10 +198,10 @@
     teams.forEach(function(t){TEAMMAP[t.team]=t;});
     var c={working:0,studying:0,done:0,idle:0,blocked:0}, sum=0, n=0;
     teams.forEach(function(t){ c[t.state]=(c[t.state]||0)+1; if(typeof t.score==="number"){sum+=t.score;n++;} });
-    var avg = n? Math.round(sum/n):0;
+    var avgScore = n? Math.round(sum/n):0;
     document.getElementById("kpis").innerHTML =
       kpi("total",teams.length,"전체 팀")+kpi("work",c.working,"작업중")+
-      kpi("study",c.studying,"학습·공유 중")+kpi("done",c.done,"오늘 완료")+kpi("avg",avg,"평균 점수");
+      kpi("study",c.studying,"학습·공유 중")+kpi("done",c.done,"오늘 완료")+kpi("avg",avgScore,"평균 점수");
     document.getElementById("mantra").textContent = B.mantra||"";
     document.getElementById("updated").textContent = "DATA SYNC · "+(B.updated||"")+"  ·  3초 자동 갱신";
     var w=B.weather||{};
@@ -193,18 +209,31 @@
       document.getElementById("wxt").innerHTML="<span class='ic'>"+esc(w.icon||"")+"</span>"+esc(w.temp);
       document.getElementById("wxc").textContent="서울 "+(w.cond||"")+(w.hum?(" · 습도 "+w.hum):""); }
 
-    // 조직도: 부문 → 본부 → 카드
+    // 🏆 성과 랭킹 TOP 8 (점수 높은 팀)
+    var rank=teams.slice().sort(function(a,b){return (b.score||0)-(a.score||0);}).slice(0,8);
+    document.getElementById("rank").innerHTML = rank.map(function(t){
+      return "<div class='rk' onclick=\"openTeam('"+t.team+"')\"><span class='rn'>"+esc(t.bonbu||"")+"</span>"
+        +"<span class='rkn'>"+esc(t.kr||t.team)+"</span><span class='rks num'>"+(t.score||0)+"</span></div>";
+    }).join("");
+
+    // 조직도: 부문 → 본부 → 카드 (점수 높은 곳이 위로)
+    function avg(arr){var s=0;arr.forEach(function(t){s+=t.score||0;});return arr.length?s/arr.length:0;}
     var byB={};
-    teams.forEach(function(t){ var bm=t.bumun||"기타"; if(!byB[bm]){byB[bm]={order:[],g:{}};}
-      if(!byB[bm].g[t.bonbu]){byB[bm].g[t.bonbu]=[];byB[bm].order.push(t.bonbu);} byB[bm].g[t.bonbu].push(t); });
-    var bumuns=(B.bumun_order||[]).filter(function(x){return byB[x];});
-    Object.keys(byB).forEach(function(x){if(bumuns.indexOf(x)<0)bumuns.push(x);});
+    teams.forEach(function(t){ var bm=t.bumun||"기타"; if(!byB[bm]){byB[bm]={g:{}};}
+      (byB[bm].g[t.bonbu]=byB[bm].g[t.bonbu]||[]).push(t); });
+    var bumuns=Object.keys(byB);
+    bumuns.forEach(function(bm){
+      var all=[]; Object.keys(byB[bm].g).forEach(function(b){all=all.concat(byB[bm].g[b]);});
+      byB[bm].avg=avg(all); byB[bm].cnt=all.length;
+      byB[bm].bonbus=Object.keys(byB[bm].g).sort(function(x,y){return avg(byB[bm].g[y])-avg(byB[bm].g[x]);});
+      byB[bm].bonbus.forEach(function(b){ byB[bm].g[b].sort(function(x,y){return (y.score||0)-(x.score||0);}); });
+    });
+    bumuns.sort(function(x,y){return byB[y].avg-byB[x].avg;});
     var html="";
     bumuns.forEach(function(bm){
-      var cnt=0; byB[bm].order.forEach(function(b){cnt+=byB[bm].g[b].length;});
-      html+="<div class='bumun'><span class='bn'>"+esc(bm)+"</span><span class='bc num'>"+cnt+"팀</span><span class='rule'></span></div>";
-      byB[bm].order.forEach(function(b){
-        html+="<div class='sec'><span class='nm'>"+esc(b)+"</span><span class='ct num'>"+byB[bm].g[b].length+"</span><span class='rule'></span></div><div class='grid'>";
+      html+="<div class='bumun'><span class='bn'>"+esc(bm)+"</span><span class='bc num'>"+byB[bm].cnt+"팀 · 평균 "+Math.round(byB[bm].avg)+"점</span><span class='rule'></span></div>";
+      byB[bm].bonbus.forEach(function(b){
+        html+="<div class='sec'><span class='nm'>"+esc(b)+"</span><span class='ct num'>"+byB[bm].g[b].length+"팀 · 평균 "+Math.round(avg(byB[bm].g[b]))+"</span><span class='rule'></span></div><div class='grid'>";
         byB[bm].g[b].forEach(function(t){ html+=cardHTML(t); });
         html+="</div>";
       });
