@@ -50,6 +50,19 @@ TEAM_KR = {
     # 📡 채널
     "instagram_ops": "인스타운영팀", "youtube_ops": "유튜브운영팀", "tiktok_ops": "틱톡운영팀",
     "naver_ops": "네이버운영팀", "buffer_ops": "버퍼발행팀",
+    # 🧩 프롬프트
+    "prompt_imagen": "이미지프롬프트팀(포토리얼)", "prompt_flux": "이미지프롬프트팀(편집)",
+    "prompt_video": "영상프롬프트팀", "prompt_banner": "배너프롬프트팀",
+    # 🎯 고객유치
+    "naver_place": "네이버플레이스팀", "local_seo": "지역SEO팀", "lead_gen": "리드젠팀",
+    "crm": "CRM팀", "partnership_biz": "제휴영업팀",
+    # 🪟 커튼 확장
+    "blind_specialist": "블라인드전문팀", "smart_curtain": "스마트커튼연구팀", "curtain_trend": "커튼트렌드팀",
+    # 📚 연구학습
+    "market_researcher": "시장리서치팀", "ai_researcher": "AI리서치팀", "competitor_scholar": "경쟁분석연구팀",
+    "copy_scholar": "카피연구팀", "design_scholar": "디자인연구팀", "data_analyst": "데이터분석팀",
+    "growth_hacker": "그로스해커팀", "export_research": "해외수출리서치팀", "offline_channel": "오프라인채널연구팀",
+    "ux_writer": "UX라이팅팀", "trend_scholar": "트렌드연구팀",
 }
 
 

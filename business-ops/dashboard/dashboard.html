@@ -26,12 +26,14 @@
   .badge.working{background:#3a2e08;color:#ffcf4d}
   .badge.done{background:#0f3a2c;color:#34e3a8}
   .badge.blocked{background:#3a1414;color:#ff6b6b}
+  .badge.studying{background:#1b2747;color:#7aa2ff}
   .score{font-size:13px;font-weight:800}
   .grow-up{color:#34e3a8;font-size:11px}
   .grow-dn{color:#ff6b6b;font-size:11px}
   .grow-0{color:#5a6273;font-size:11px}
   .bar{position:absolute;left:0;bottom:0;height:3px;background:#2bd4a4}
   .card.working .bar{background:#ffcf4d;animation:pulse 1.2s infinite}
+  .card.studying .bar{background:#7aa2ff;animation:pulse 1.8s infinite}
   @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
   .leg{display:flex;gap:14px;font-size:11px;color:#737b8c;margin-top:16px}
   .leg span{display:inline-flex;align-items:center;gap:5px}
@@ -49,6 +51,7 @@
   <div class="leg">
     <span><i style="background:#737b8c"></i>대기</span>
     <span><i style="background:#ffcf4d"></i>작업중</span>
+    <span><i style="background:#7aa2ff"></i>학습중</span>
     <span><i style="background:#34e3a8"></i>완료</span>
     <span><i style="background:#ff6b6b"></i>막힘</span>
   </div>
@@ -57,9 +60,10 @@
   var B = (window.TEAM_BOARD || {updated:"-", teams:[]});
   var teams = B.teams;
   var working = teams.filter(function(t){return t.state==="working";}).length;
+  var studying = teams.filter(function(t){return t.state==="studying";}).length;
   var done = teams.filter(function(t){return t.state==="done";}).length;
   document.getElementById("stat").innerHTML =
-    "총 <b>"+teams.length+"</b>팀 · 작업중 <b style='color:#ffcf4d'>"+working+"</b> · 완료 <b style='color:#34e3a8'>"+done+"</b>";
+    "총 <b>"+teams.length+"</b>팀 · 작업중 <b style='color:#ffcf4d'>"+working+"</b> · 학습중 <b style='color:#7aa2ff'>"+studying+"</b> · 완료 <b style='color:#34e3a8'>"+done+"</b>";
   document.getElementById("updated").textContent = "갱신: " + B.updated + "  (3초마다 자동)";
   document.getElementById("mantra").textContent = B.mantra || "";
 
@@ -85,7 +89,7 @@
     html += "</div>";
   });
   document.getElementById("boards").innerHTML = html;
-  function stateKo(s){return {idle:"대기",working:"작업중",done:"완료",blocked:"막힘"}[s]||s;}
+  function stateKo(s){return {idle:"대기",working:"작업중",studying:"학습중",done:"완료",blocked:"막힘"}[s]||s;}
 </script>
 </body>
 </html>

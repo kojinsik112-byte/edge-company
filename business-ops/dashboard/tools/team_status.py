@@ -61,19 +61,23 @@ def _save_status(s: dict) -> None:
 def _render() -> None:
     cards, status = _scorecard(), _load_status()
     teams = []
-    working = 0
+    working = studying = 0
     for team, sc in cards.items():
         st = status.get(team, {})
         if st.get("state") == "working":
             working += 1
+        elif st.get("state") == "studying":
+            studying += 1
         teams.append({
             "team": team, "kr": _kr(team), "bonbu": sc["bonbu"], "role": sc["role"],
             "score": sc["score"], "growth": sc["growth"],
             "state": st.get("state", "idle"), "msg": st.get("msg", ""),
         })
     now = datetime.now()
-    mantra = (f"오늘은 {now.month}월 {now.day}일. 엣지컴퍼니 {len(teams)}개 팀 모두 "
-              + (f"열심히 일하고 있습니다 ({working}팀 작업 중) 💪" if working else "대기 중입니다. 곧 움직입니다 ⚡"))
+    active = working + studying
+    mantra = (f"오늘은 {now.month}월 {now.day}일. 엣지컴퍼니 {len(teams)}개 팀 "
+              + (f"모두 열심히 — {working}팀 작업 중, {studying}팀 학습 중 💪" if active
+                 else "대기 중입니다. 곧 움직입니다 ⚡"))
     board = {"updated": now.strftime("%Y-%m-%d %H:%M:%S"), "mantra": mantra, "teams": teams}
     STATUS_JS.write_text("window.TEAM_BOARD = " + json.dumps(board, ensure_ascii=False) + ";\n", encoding="utf-8")
 
@@ -94,8 +98,24 @@ def main() -> None:
         _save_status({}); _render(); print("전부 대기(idle)로 초기화")
     elif cmd == "board":
         _render(); print(f"status.js 재생성 완료 → {STATUS_JS}")
+    elif cmd == "studyall":
+        # 유휴(working/done 아닌) 팀 전체에 오늘의 학습주제 배정 → 관제실에 '학습중' 표시
+        try:
+            import study_topics  # business-ops (path 등록됨)
+        except Exception as e:
+            sys.exit(f"study_topics 로드 실패: {e}")
+        s, cards, n = _load_status(), _scorecard(), 0
+        for team, sc in cards.items():
+            if s.get(team, {}).get("state") in ("working", "done"):
+                continue
+            topic = study_topics.pick(team, sc.get("role", ""))
+            s[team] = {"state": "studying", "msg": f"📚 {topic}",
+                       "ts": datetime.now().isoformat(timespec="seconds")}
+            n += 1
+        _save_status(s); _render()
+        print(f"studyall: {n}개 유휴 팀에 학습주제 배정 완료")
     else:
-        sys.exit("명령: set | board | reset")
+        sys.exit("명령: set | board | reset | studyall")
 
 
 if __name__ == "__main__":

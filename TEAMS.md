@@ -1,8 +1,9 @@
-# 엣지컴퍼니 팀 명부 (77팀 · 목표 100)
+# 엣지컴퍼니 팀 명부 (100팀 — 목표 달성 ✅)
 
 > ㈜엣지컴퍼니(대표 고진식) · 1인 대표(회장) + 보이는 에이전트 군단. 각 팀 = `.claude/agents/<팀>.md`.
-> 실시간 현황: `business-ops/dashboard/dashboard.html` · 성과/성장률: `business-ops/performance/scorecard.csv`
-> **신규 팀 생성 전 이 명부를 확인해 중복 금지.** 구성 = 공통 본부 48 + 사업부 전용 24 + 채널 5.
+> 실시간 현황: `business-ops/dashboard/dashboard.html`(한글팀명·작업/학습 실시간) · 성과: `business-ops/performance/scorecard.csv`
+> **신규 팀 생성 전 이 명부를 확인해 중복 금지.**
+> 구성 = 공통본부 48 + 사업부전용 24 + 채널 5 + 프롬프트 4 + 고객유치 5 + 커튼확장 3 + 연구학습 11 = **100**.
 
 ---
 # 공통 본부 (48) — 4사업부 공유 본사 서비스
@@ -69,4 +70,20 @@
 - **instagram_ops** 인스타 운영 · **youtube_ops** 유튜브 운영 · **tiktok_ops** 틱톡 운영 · **naver_ops** 네이버(스토어·블로그·모먼트) · **buffer_ops** Buffer 통합 예약발행 허브
 
 ---
-> **100팀 로드맵**: 다음 확장 후보 = 사업부 심화팀(B2B세일즈옵스·CS세분화)·데이터/그로스 세분·해외/오프라인 채널 등. 만들 때마다 이 명부와 scorecard.csv 동시 갱신.
+# 성장·학습형 팀 (23) — 할 일 적을 땐 계속 공부(관제실에 '학습중' 표시)
+
+## 🧩 프롬프트 (4) — "프롬프트 짜주는 팀"
+- **prompt_imagen** 포토리얼 프롬프트 · **prompt_flux** 편집 프롬프트 · **prompt_video** 영상 프롬프트 · **prompt_banner** 한글배너 프롬프트
+
+## 🎯 고객유치 (5) — 네이버플레이스·리드
+- **naver_place** 네이버플레이스 최적화 · **local_seo** 지역SEO·지도노출 · **lead_gen** 리드 수집 · **crm** 재구매·CRM · **partnership_biz** B2B 제휴
+
+## 🪟 엣지리브커튼 확장 (3) — 커튼·블라인드
+- **blind_specialist** 블라인드 전문 · **smart_curtain** 스마트커튼 연동 · **curtain_trend** 커튼 트렌드 연구
+
+## 📚 연구학습 (11) — 상시 학습 → knowledge/ 누적
+- **market_researcher** 시장 리서치 · **ai_researcher** AI 신모델 학습 · **competitor_scholar** 경쟁 케이스 · **copy_scholar** 카피 학습 · **design_scholar** 디자인 레퍼런스 · **data_analyst** 데이터 분석 · **growth_hacker** 그로스 실험 · **export_research** 해외/수출 · **offline_channel** 오프라인 채널 · **ux_writer** UX라이팅 · **trend_scholar** 글로벌 트렌드
+
+---
+> **학습 커리큘럼**: `business-ops/study_topics.py` (요일별 로테이션). 아침 루틴이 유휴 팀에 오늘 주제를 배정 → 관제실 '학습중' 표시.
+> **다음(100 이후)**: 필요 시 사업부 심화·해외법인·오프라인 등. 만들 때 이 명부 + scorecard.csv 동시 갱신.

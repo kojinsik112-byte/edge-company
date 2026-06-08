@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<title>ACRO · AGENT OPS 실시간 팀 모니터</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Pretendard Variable",Pretendard,sans-serif;background:#0a0e14;color:#e6edf3;padding:22px 26px}
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .brand{font-size:22px;font-weight:800;letter-spacing:.04em}
+  .brand b{color:#2bd4b5}
+  .brand .sub{font-size:13px;color:#7d8896;font-weight:500;margin-left:10px}
+  .stat{display:flex;gap:10px;align-items:center}
+  .pill{font-size:13px;font-weight:700;padding:7px 13px;border-radius:999px;background:#161b24;border:1px solid #232a36}
+  .pill .n{font-weight:800}
+  .pill.work{color:#37e0a6;border-color:#1d3b34}
+  .pill.wait{color:#8b95a3}
+  .pill.done{color:#5ab0ff;border-color:#1c3450}
+  #clock{color:#7d8896;font-size:13px;font-variant-numeric:tabular-nums}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  @media(max-width:1400px){.grid{grid-template-columns:repeat(4,1fr)}}
+  .card{background:#0f1520;border:1px solid #1c2430;border-radius:14px;padding:15px 15px 13px;position:relative;overflow:hidden;transition:.3s}
+  .card.work{border-color:#2bd4b5;box-shadow:0 0 0 1px #2bd4b540,0 8px 30px -12px #2bd4b540}
+  .card.work::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#2bd4b5,transparent);animation:scan 1.6s linear infinite}
+  @keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+  .card.done{opacity:.92}.card.standby{opacity:.5}
+  .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .nm{font-size:15px;font-weight:800}
+  .dv{font-size:11px;color:#6b7686;font-weight:600}
+  .badge{font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:.02em}
+  .badge.work{background:#10261f;color:#37e0a6}
+  .badge.done{background:#11243a;color:#5ab0ff}
+  .badge.standby{background:#1a1f29;color:#7d8896}
+  .dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .dot.work{background:#37e0a6;animation:blink 1s infinite}
+  .dot.done{background:#5ab0ff}.dot.standby{background:#566072}
+  @keyframes blink{50%{opacity:.25}}
+  .task{font-size:12.5px;color:#aeb8c6;line-height:1.45;min-height:34px;margin-bottom:10px}
+  .scorerow{display:flex;align-items:center;gap:8px}
+  .bar{flex:1;height:6px;background:#1a212d;border-radius:4px;overflow:hidden}
+  .fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#2bd4b5,#37e0a6)}
+  .sc{font-size:12px;font-weight:800;color:#cdd6e0;width:30px;text-align:right}
+  .gr{font-size:11px;font-weight:700;margin-left:4px}
+  .gr.up{color:#37e0a6}
+</style></head><body>
+  <div class="top">
+    <div class="brand">ACRO <b>· AGENT OPS</b><span class="sub">실시간 팀 모니터</span></div>
+    <div class="stat">
+      <div class="pill work">작업중 <span class="n" id="cw">0</span></div>
+      <div class="pill wait">대기 <span class="n" id="cs">0</span></div>
+      <div class="pill done">완료 <span class="n" id="cd">0</span></div>
+      <div id="clock"></div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+<script>
+  function tick(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString('ko-KR');}
+  setInterval(tick,1000);tick();
+  async function load(){
+    try{
+      const r=await fetch('team_status.json?'+Date.now());
+      const data=await r.json();
+      const g=document.getElementById('grid');g.innerHTML='';
+      let w=0,s=0,dn=0;
+      data.sort((a,b)=>({work:0,done:1,standby:2}[a.status]-{work:0,done:1,standby:2}[b.status]) || b.score-a.score);
+      for(const t of data){
+        if(t.status=='work')w++;else if(t.status=='done')dn++;else s++;
+        const growth=t.score-(t.baseline||70);
+        const lbl={work:'작업중',done:'완료',standby:'대기'}[t.status];
+        const el=document.createElement('div');el.className='card '+t.status;
+        el.innerHTML=`<div class="ch"><div><div class="nm">${t.team}</div><div class="dv">${t.division}</div></div>
+          <div class="badge ${t.status}"><span class="dot ${t.status}"></span>${lbl}</div></div>
+          <div class="task">${t.task||'-'}</div>
+          <div class="scorerow"><div class="bar"><div class="fill" style="width:${t.score}%"></div></div>
+          <div class="sc">${t.score}</div>${growth>0?`<span class="gr up">▲${growth}</span>`:''}</div>`;
+        g.appendChild(el);
+      }
+      document.getElementById('cw').textContent=w;
+      document.getElementById('cs').textContent=s;
+      document.getElementById('cd').textContent=dn;
+    }catch(e){}
+  }
+  load();setInterval(load,1500);
+</script>
+</body></html>

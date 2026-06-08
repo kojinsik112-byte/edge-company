@@ -97,6 +97,13 @@ def main():
     except Exception as e:
         print("카톡 스킵:", e)
     rd.status("supervisor", "done", "아침 브리핑 발송")
+
+    # ③-b 유휴 팀 전체에 오늘의 학습주제 배정 → 관제실에 100팀 모두 활동(작업/학습) 표시
+    try:
+        subprocess.run([rd.PY, str(rd.TEAM_STATUS), "studyall"],
+                       cwd=str(rd.TEAM_STATUS.parent), capture_output=True, timeout=30)
+    except Exception:
+        pass
     board()
     voice_mantra()
 
