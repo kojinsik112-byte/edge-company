@@ -48,7 +48,7 @@ def cmd_list(rows, key=None):
     else:
         rows = sorted(rows, key=lambda r: -( _i(r["last_score"]) or 0))
         title = "점수 순"
-    print(f"\n[ 에지 컴퍼니 팀 성적표 — {title} ]")
+    print(f"\n[ 엣지컴퍼니 팀 성적표 — {title} ]")
     print(f"{'팀':<18}{'본부':<8}{'점수':>5}{'성장':>7}{'작업':>5}  최근 작업")
     print("-" * 78)
     for r in rows:

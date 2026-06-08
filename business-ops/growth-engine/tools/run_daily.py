@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""에지 컴퍼니 자가성장 엔진 — 일일 자동 루틴 (run_daily).
+"""엣지컴퍼니 자가성장 엔진 — 일일 자동 루틴 (run_daily).
 
 회장이 시키지 않아도 매일 한 번 돌면서:
   ① competitive_intel  네이버 검색API로 실링팬·조명·스위치·커튼 순위/가격 → knowledge/competitors.md
@@ -90,7 +90,7 @@ def agent(team: str, prompt: str, timeout: int = 240) -> str | None:
     claude = shutil.which("claude")
     if not claude:
         return None
-    sysline = f"너는 에지 컴퍼니의 '{team}' 팀이다. 결과만 한국어로 간결히. 추정은 '추정' 표기, 숫자 지어내기 금지."
+    sysline = f"너는 엣지컴퍼니의 '{team}' 팀이다. 결과만 한국어로 간결히. 추정은 '추정' 표기, 숫자 지어내기 금지."
     try:
         r = subprocess.run(
             [claude, "-p", prompt, "--append-system-prompt", sysline,
@@ -302,7 +302,7 @@ def step_report(results: dict) -> Path:
     acro = comp.get("acro") or []
     rpt = REPORTS / f"daily_{TODAY.replace('-', '')}.md"
     body = [
-        f"# 에지 컴퍼니 일일 리포트 — {TODAY}",
+        f"# 엣지컴퍼니 일일 리포트 — {TODAY}",
         f"> 자가성장 엔진 자동 생성 ({NOW}) · 회장 보고용 · supervisor",
         "",
         "## 1. 오늘 자동 수집 (지식창고에 누적)",
@@ -338,7 +338,7 @@ def step_report(results: dict) -> Path:
 # ── 메인 ────────────────────────────────────────────────────────────────
 def main() -> None:
     global USE_CLAUDE
-    ap = argparse.ArgumentParser(description="에지 컴퍼니 자가성장 엔진 — 일일 루틴")
+    ap = argparse.ArgumentParser(description="엣지컴퍼니 자가성장 엔진 — 일일 루틴")
     ap.add_argument("--with-agents", action="store_true", help="②④⑥를 claude 헤드리스로 실제 실행")
     ap.add_argument("--step", type=int, default=0, help="특정 단계만(1~7), 0=전체")
     args = ap.parse_args()

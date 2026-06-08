@@ -90,7 +90,7 @@ def compose() -> str:
     worked_sorted = sorted(worked, key=lambda r: r.get("updated", ""), reverse=True)[:5]
 
     L = []
-    L.append(f"🤖 에지컴퍼니 아침보고 {datetime.now().strftime('%m/%d')}")
+    L.append(f"🤖 엣지컴퍼니 아침보고 {datetime.now().strftime('%m/%d')}")
     L.append("— 비서실(supervisor·pmo)")
     L.append("")
     L.append("📌 어제 한 일")
