@@ -51,15 +51,16 @@
 - **일일 자동 루틴**: `business-ops/growth-engine/tools/run_daily.py` — ①competitive_intel(네이버 순위/가격) ②social_trends ③seo·brand_intel(키워드/시장) ④innovation(신규AI) ⑤pmo(채점·성장률) ⑥team_coach(최저팀 플레이북 실제 개선) ⑦supervisor(일일 리포트). 실행 중 관제실에 실시간 표시.
 - **지식창고**(매일 누적, 커밋됨): `business-ops/knowledge/` = competitors·trends·market·reviews·ai_tools·learnings.md. 회장 보고서: `business-ops/reports/daily_YYYYMMDD.md`.
 - **자기개발 루프**: pmo 채점 → team_coach가 최저팀 `.claude/agents/<팀>.md`에 코칭 블록 누적 추가 → 다음 작업 점수↑ → scorecard growth로 검증(매일 ≥1팀 성장).
-- **스케줄**: 데스크탑=Task Scheduler 매일 09:00 / 서버=cron 24h. 사용법·cron 예시 = `growth-engine/README.md`.
+- **하루 2회 루틴(자기개발 루프)**: `growth-engine/tools/morning_routine.py`(08:30 수집·채점·JARVIS카톡·음성) + `evening_routine.py`(21:00 채점·team_coach 개선·요약). 각 단계 team_status로 관제실 표시, 끝나면 git push. 등록=EdgeMorningRoutine/EdgeEveningRoutine. 시간변경·끄기 = `growth-engine/ROUTINES.md`.
+- **작업 가시성 규칙(필수)**: 팀이 시작=team_status set working, 끝=done, 막힘=blocked. 관제실 `dashboard.html`(3초 자동, 한글팀명+멘트). 끝나면 pmo가 scorecard 채점.
 - ①③⑤⑥⑦은 네이버 키만 있으면 항상 실동작. ②④와 코칭문구는 `--with-agents`(claude 헤드리스)면 실웹조사, 없으면 '예약'으로 남기고 루틴은 안 멈춤. 점수는 '활동점수'(실매출 KPI는 등록·발행 후 analytics 합류).
 
 ## 비서실 (JARVIS) — 아침 8:30 카톡 보고 (회장 지시: "팀장들이 아침에 카톡으로 보고")
 - `business-ops/secretary/tools/morning_brief.py`: 감독관팀(supervisor·pmo)이 전 팀 현황을 취합 → **회장 카카오톡**으로 1건 보고(어제 한 일·특이사항·성과 좋은 팀·성장팀·제안). 데이터는 자가성장 엔진의 scorecard·knowledge·reports에서 자동 취합.
 - 전송: `kakao_send.py` = 카카오톡 **'나에게 보내기'** API(REST키+talk_message 동의, refresh_token 자동갱신). 토큰은 `.env`·`secretary/state/`(둘 다 gitignore)에만 — **깃에 안 올라감**. 길면 자동 분할.
 - 음성(선택): `voice_brief.py` = **타입캐스트**로 mp3 생성·데스크탑 재생(자비스 목소리). `morning_brief.py --voice`.
-- 스케줄: Task Scheduler 08:00 run_daily(수집) + 08:30 morning_brief(보고). 세팅·키발급 = `secretary/README.md`.
-- 키 없으면 드라이런(파일·콘솔)로 안 멈춤. 회장이 카카오/타입캐스트 키 넣으면 즉시 실발송.
+- **카카오 실연동 완료**(2026-06-08). 음성: 타입캐스트 키 있으면 그 목소리, 없으면 **윈도우 내장 음성(SAPI)** 폴백으로 "오늘은 N월N일… 모두 열심히 일하고 있습니다" 멘트. 발송은 하루 2회 루틴(아침/저녁)이 자동 수행.
+- 세팅·키발급 = `secretary/README.md`. 키 없으면 드라이런으로 안 멈춤.
 
 ## 조직 (77개 팀 = Claude Code 서브에이전트, `.claude/agents/` · 목표 100 · 명부=TEAMS.md)
 > 공통 본부 48 + 사업부 전용 24 + 채널 5 = 77. **중복 생성 금지**(만들기 전 TEAMS.md 확인).
