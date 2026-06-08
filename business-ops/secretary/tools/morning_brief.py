@@ -75,48 +75,138 @@ def _acro_line() -> str:
 def _coach_line() -> str:
     blk = _last_block("learnings.md")
     m = re.search(r"대상: \*\*(\w+)\*\* \((\d+)점", blk)
-    return f"{m.group(1)}({m.group(2)}점) 코칭" if m else ""
+    return f"{m.group(1)}({m.group(2)}점)" if m else ""
+
+
+def _know_summary(fname: str) -> str:
+    """지식창고 파일 최신 블록에서 대표 1줄 요약 추출."""
+    blk = _last_block(fname)
+    for ln in blk.splitlines()[1:]:
+        s = ln.strip().lstrip("-*> ").strip()
+        if s and not s.startswith("|") and not s.startswith("##") and "수집 예약" not in s:
+            return s.replace("**", "")[:70]
+    # 폴백(예약 등)도 한 줄
+    for ln in blk.splitlines()[1:]:
+        s = ln.strip().lstrip("-*> ").strip()
+        if s and not s.startswith("|"):
+            return s.replace("**", "")[:70]
+    return "기록 없음"
+
+
+def _top_competitor() -> str:
+    """competitors.md 최신 블록의 '실링팬' 표 1위 추출."""
+    blk = _last_block("competitors.md")
+    in_fan = False
+    for ln in blk.splitlines():
+        if "[실링팬]" in ln:
+            in_fan = True
+            continue
+        if in_fan and ln.startswith("| 1 |"):
+            c = [x.strip() for x in ln.split("|")]
+            if len(c) >= 5:
+                return f"1위 {c[2][:18]} {c[3]}원"
+    return ""
+
+
+def _bonbu_avg(rows: list[dict]) -> list[tuple]:
+    agg = {}
+    for r in rows:
+        s = _i(r["last_score"])
+        if s is None:
+            continue
+        agg.setdefault(r["bonbu"], []).append(s)
+    out = [(b, sum(v) / len(v), len(v)) for b, v in agg.items()]
+    return sorted(out, key=lambda x: -x[1])
+
+
+# 사업부 본부명(공통본부와 구분)
+_DIVISIONS = {"조명사업", "입주주관사", "엣지리브커튼", "아크로", "채널"}
+
+# 펜딩(회장 헌법 8번) — 다음 할 일 우선순위
+_PENDING = [
+    "신형 슬림 실링팬 판매가 확정(pricing) — 원가 ~70k, 미끼전략",
+    "Buffer 어댑터 연동 → 인스타·유튜브 자동발행(publisher·buffer_ops)",
+    "슬림 실링팬 1호 상세페이지 + 숏폼 제작(실물사진 확보 시 퀄↑)",
+]
+_NEED_HELP = [
+    "네이버 로그인 필요 작업 발생 시 → 카톡으로 실시간 요청드림",
+    "회장만 줄 수 있는 것: 실측 dB·소비전력, 추가 실물사진, 슬림 판매가 결정",
+]
 
 
 def compose() -> str:
     rows = _rows()
     scored = [r for r in rows if _i(r["last_score"]) is not None]
-    top = sorted(scored, key=lambda r: -_i(r["last_score"]))[:3]
+    top = sorted(scored, key=lambda r: -_i(r["last_score"]))[:5]
     grown = sorted([r for r in scored if (_i(r["prev_score"]) is not None
                     and _i(r["last_score"]) - _i(r["prev_score"]) > 0)],
-                   key=lambda r: -(_i(r["last_score"]) - _i(r["prev_score"])))[:3]
+                   key=lambda r: -(_i(r["last_score"]) - _i(r["prev_score"])))[:4]
+    weak = sorted(scored, key=lambda r: _i(r["last_score"]))[:3]
     worked = [r for r in scored if r.get("updated") and _i(r["tasks_done"]) and r["last_task"]]
-    # 최근 작업한 팀장 한 줄(최대 5)
-    worked_sorted = sorted(worked, key=lambda r: r.get("updated", ""), reverse=True)[:5]
+    worked_sorted = sorted(worked, key=lambda r: r.get("updated", ""), reverse=True)[:8]
+    wd = ["월", "화", "수", "목", "금", "토", "일"][datetime.now().weekday()]
 
     L = []
-    L.append(f"🤖 엣지컴퍼니 아침보고 {datetime.now().strftime('%m/%d')}")
-    L.append("— 비서실(supervisor·pmo)")
+    L.append(f"🤖 엣지컴퍼니 아침보고 — {datetime.now().strftime('%m/%d')}({wd})")
+    L.append("비서실(supervisor·pmo)이 전 팀 현황을 취합했습니다, 회장님.")
     L.append("")
-    L.append("📌 어제 한 일")
+    L.append(f"━━ 한눈에 ━━")
+    L.append(f"· 총 {len(scored)}팀 가동 · 어제 작업 {len(worked)}팀 · 오늘 성장 {len(grown)}팀")
+    L.append("")
+
+    L.append("📌 어제 한 일 (최근 작업)")
     if worked_sorted:
         for r in worked_sorted:
-            L.append(f"· {r['team']}: {r['last_task'][:24]}")
+            L.append(f"· [{r['bonbu']}] {r['team']} — {r['last_task'][:26]}")
     else:
-        L.append("· (기록된 작업 없음 — run_daily 먼저)")
+        L.append("· 기록된 작업 없음 (run_daily 먼저 실행)")
     L.append("")
+
+    L.append("🧠 지식창고 업데이트 (매일 누적)")
+    L.append(f"· 경쟁: {_know_summary('competitors.md')}")
+    L.append(f"· 트렌드: {_know_summary('trends.md')}")
+    L.append(f"· 시장/키워드: {_know_summary('market.md')}")
+    L.append(f"· 신규AI: {_know_summary('ai_tools.md')}")
+    L.append("")
+
     L.append("⚠️ 특이사항")
     acro = _acro_line()
     if acro:
         L.append(f"· {acro[:60]}")
-    L.append("· (경쟁 가격·순위 변동은 knowledge/competitors.md)")
+    tc = _top_competitor()
+    if tc:
+        L.append(f"· 실링팬 검색 {tc} (경쟁 최상위)")
+    L.append("· 상세 변동은 knowledge/competitors.md")
     L.append("")
-    L.append("🏆 성과 좋은 팀")
-    L.append("· " + " / ".join(f"{r['team']} {r['last_score']}" for r in top))
+
+    L.append("🏆 성과 좋은 팀 TOP5")
+    for r in top:
+        L.append(f"· {r['team']} {r['last_score']} ({r['bonbu']})")
     if grown:
-        g = " / ".join(f"{r['team']} ▲{_i(r['last_score'])-_i(r['prev_score'])}" for r in grown)
-        L.append(f"🌱 오늘 성장: {g}")
+        L.append("🌱 오늘 성장: " + " / ".join(
+            f"{r['team']} ▲{_i(r['last_score'])-_i(r['prev_score'])}" for r in grown))
     coach = _coach_line()
-    if coach:
-        L.append(f"🔧 코칭: {coach}")
+    if coach or weak:
+        wt = coach or f"{weak[0]['team']}({weak[0]['last_score']}점)"
+        L.append(f"🔧 오늘 육성(최저): {wt} → team_coach 플레이북 개선")
     L.append("")
-    L.append("👉 본부장 제안")
-    L.append("· 네이버 등록·발행 진행하면 analytics가 실매출 KPI 합류")
+
+    L.append("🏢 본부/사업부 평균점수")
+    for b, avg, n in _bonbu_avg(rows):
+        tag = "🏭" if b in _DIVISIONS else "🏢"
+        L.append(f"· {tag} {b} {avg:.0f}점 ({n}팀)")
+    L.append("")
+
+    L.append("🚩 막힌 것·회장님 도움 필요")
+    for x in _NEED_HELP:
+        L.append(f"· {x}")
+    L.append("")
+
+    L.append("👉 오늘 본부장 제안 (펜딩 우선순위)")
+    for i, x in enumerate(_PENDING, 1):
+        L.append(f"{i}. {x}")
+    L.append("")
+    L.append("— 데이터 출처: scorecard·knowledge·reports (자가성장 엔진)")
     return "\n".join(L)
 
 
