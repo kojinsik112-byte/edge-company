@@ -34,6 +34,9 @@ class Config:
             "fashn": _env("FASHN_API_KEY"),
             "claid": _env("CLAID_API_KEY"),
             "photoroom": _env("PHOTOROOM_API_KEY"),
+            # 네이버 (scout·seo·operator) — 순위/키워드 수집, 우리 상품 등록
+            "naver_id": _env("NAVER_CLIENT_ID"),
+            "naver_secret": _env("NAVER_CLIENT_SECRET"),
         }
     )
 
