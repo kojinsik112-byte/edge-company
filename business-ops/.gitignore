@@ -1,3 +1,5 @@
 # 생성물 (자동 생성 — 버전관리 제외)
 barcodes/
 data/inventory_log.csv
+dashboard/status.json
+dashboard/_preview.html

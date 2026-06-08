@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="refresh" content="3">  <!-- 3초마다 자동 새로고침 = 실시간 -->
+<title>에지 컴퍼니 · 에이전트 관제실</title>
+<script src="status.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0b0d12;color:#e7ecf3;font-family:"Pretendard",system-ui,sans-serif;padding:22px 26px}
+  .top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1d2330;padding-bottom:14px;margin-bottom:8px}
+  h1{font-size:20px;font-weight:800;letter-spacing:-.01em}
+  h1 .dot{color:#2bd4a4}
+  .stat{display:flex;gap:18px;font-size:13px;color:#8b93a4}
+  .stat b{color:#e7ecf3}
+  .updated{font-size:12px;color:#5a6273;margin-bottom:10px}
+  .bonbu{margin:18px 0 8px;font-size:12px;font-weight:700;letter-spacing:.12em;color:#7b8398;text-transform:uppercase}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:10px}
+  .card{background:#12161f;border:1px solid #1e2533;border-radius:12px;padding:13px 14px;position:relative;overflow:hidden}
+  .card .name{font-size:14px;font-weight:700}
+  .card .role{font-size:11px;color:#737b8c;margin-top:2px;height:14px;overflow:hidden}
+  .card .msg{font-size:12px;color:#aab2c2;margin-top:9px;min-height:30px;line-height:1.45}
+  .card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+  .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px}
+  .badge.idle{background:#1b2230;color:#737b8c}
+  .badge.working{background:#3a2e08;color:#ffcf4d}
+  .badge.done{background:#0f3a2c;color:#34e3a8}
+  .badge.blocked{background:#3a1414;color:#ff6b6b}
+  .score{font-size:13px;font-weight:800}
+  .grow-up{color:#34e3a8;font-size:11px}
+  .grow-dn{color:#ff6b6b;font-size:11px}
+  .grow-0{color:#5a6273;font-size:11px}
+  .bar{position:absolute;left:0;bottom:0;height:3px;background:#2bd4a4}
+  .card.working .bar{background:#ffcf4d;animation:pulse 1.2s infinite}
+  @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+  .leg{display:flex;gap:14px;font-size:11px;color:#737b8c;margin-top:16px}
+  .leg span{display:inline-flex;align-items:center;gap:5px}
+  .leg i{width:9px;height:9px;border-radius:50%;display:inline-block}
+</style>
+</head>
+<body>
+  <div class="top">
+    <h1><span class="dot">●</span> 에지 컴퍼니 · 에이전트 관제실</h1>
+    <div class="stat" id="stat"></div>
+  </div>
+  <div class="updated" id="updated"></div>
+  <div id="boards"></div>
+  <div class="leg">
+    <span><i style="background:#737b8c"></i>대기</span>
+    <span><i style="background:#ffcf4d"></i>작업중</span>
+    <span><i style="background:#34e3a8"></i>완료</span>
+    <span><i style="background:#ff6b6b"></i>막힘</span>
+  </div>
+
+<script>
+  var B = (window.TEAM_BOARD || {updated:"-", teams:[]});
+  var teams = B.teams;
+  var working = teams.filter(function(t){return t.state==="working";}).length;
+  var done = teams.filter(function(t){return t.state==="done";}).length;
+  document.getElementById("stat").innerHTML =
+    "총 <b>"+teams.length+"</b>팀 · 작업중 <b style='color:#ffcf4d'>"+working+"</b> · 완료 <b style='color:#34e3a8'>"+done+"</b>";
+  document.getElementById("updated").textContent = "갱신: " + B.updated + "  (3초마다 자동)";
+
+  var groups = {};
+  teams.forEach(function(t){ (groups[t.bonbu]=groups[t.bonbu]||[]).push(t); });
+  var html = "";
+  Object.keys(groups).forEach(function(bonbu){
+    html += "<div class='bonbu'>"+bonbu+"</div><div class='grid'>";
+    groups[bonbu].forEach(function(t){
+      var g = (t.growth>0 ? "<span class='grow-up'>▲"+t.growth+"</span>"
+             : t.growth<0 ? "<span class='grow-dn'>▼"+(-t.growth)+"</span>"
+             : "<span class='grow-0'>–</span>");
+      var pct = t.score||0;
+      html += "<div class='card "+t.state+"'>"
+        + "<div class='name'>"+t.team+"</div>"
+        + "<div class='role'>"+(t.role||"")+"</div>"
+        + "<div class='msg'>"+(t.msg||"")+"</div>"
+        + "<div class='foot'><span class='badge "+t.state+"'>"+stateKo(t.state)+"</span>"
+        + "<span class='score'>"+pct+"점 "+g+"</span></div>"
+        + "<div class='bar' style='width:"+pct+"%'></div>"
+        + "</div>";
+    });
+    html += "</div>";
+  });
+  document.getElementById("boards").innerHTML = html;
+  function stateKo(s){return {idle:"대기",working:"작업중",done:"완료",blocked:"막힘"}[s]||s;}
+</script>
+</body>
+</html>

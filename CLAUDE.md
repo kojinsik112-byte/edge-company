@@ -29,7 +29,13 @@
 - **신형 실링팬**: 저가형 / **몸통 14.5cm 슬림(저천장 대응)** / **블루투스** / 입고원가 약 70,000원(원가 65,000+화물 5,000, 부가세별도). 판매가는 pricing팀이 미끼전략으로 확정.
 - 그래서 우리는 상세페이지 공장이 아니라 **아크로 브랜드 커머스 본사**: 상품전략·생태계·재고·바코드까지 (`business-ops/`).
 
-## 조직 (39개 팀 = Claude Code 서브에이전트, `.claude/agents/`)
+## 작업 가시성·성과 시스템 (회장 지시: "뭉뚱그리지 말고 누가 뭘 했는지 보이게")
+- **실시간 관제실**: `business-ops/dashboard/dashboard.html` (3초 자동 새로고침). 팀이 일하면 상태(대기/작업중/완료/막힘)가 실시간 표시.
+  - 상태 갱신: `python business-ops/dashboard/tools/team_status.py set <team> working "지금 하는 일"`
+- **성과·성장률**: `business-ops/performance/scorecard.csv` + `tools/scorecard.py` (list/growth/bonbu/score). 새 점수 넣으면 이전 점수가 prev로 밀려 **성장률** 계산.
+- **규칙**: 모든 작업은 ① 시작 시 team_status로 working 표시 → ② 끝나면 done + pmo가 채점(scorecard) → ③ supervisor/pmo가 '팀별 기여 리포트'를 회장에게. 약팀은 team_coach가 육성.
+
+## 조직 (45개 팀 = Claude Code 서브에이전트, `.claude/agents/`)
 **🔍 리서치 본부**
 1. **scout** — 벤치마킹. **반드시 네이버 쇼핑에서 키워드 검색→랭킹순/리뷰순 상위 상품**을 1차 분석.
 2. **seo** — 네이버 키워드·검색최적화
@@ -92,6 +98,16 @@
 
 **💰 경영지원 본부**
 39. **finance** — 정산·수수료·부가세·마진·손익분기 (남는 돈 관리)
+
+**🧠 조직개발 본부 (메타 — 팀이 스스로 분석·성장)**
+40. **pmo** — 성과율·성장률 측정, 실시간 관제실 운용
+41. **team_coach** — 약점 진단→플레이북 개선 (팀 육성)
+
+**📹 콘텐츠·소셜 본부**
+42. **content_director** — 촬영 아이디어·숏폼 대본·콘티·샷리스트 (회장 촬영 디렉션)
+43. **social_trends** — 인스타·틱톡·유튜브 숏츠 검색어·해시태그·트렌드 분석
+44. **publisher** — 멀티플랫폼 자동 업로드·예약 게시 (Meta/YouTube/TikTok API·Buffer 등)
+45. **community_manager** — SNS 운영·댓글/DM·콘텐츠 캘린더
 
 > 영상 엔진 실체: `캡컷 ai편집기/`(autoedit). video팀이 운용.
 > 백오피스 실체: `business-ops/`(catalog·inventory·barcode). inventory/barcode팀이 운용.
