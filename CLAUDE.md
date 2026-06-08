@@ -111,6 +111,7 @@
 - 즉시 대안: 회장이 **스크린샷/텍스트**를 주면 Scout가 완전 분석한다.
 - 등록된 MCP: `canva`(원격, OAuth 로그인 완료), `playwright`(로컬/허용네트워크에서 작동).
 - **네이버 검색 API**: 경쟁사 *상세페이지 본문*은 API로 못 가져온다(로그인/봇차단). 하지만 **순위·가격·판매처·키워드**는 `design-division/tools/naver_search.py`(검색 API)로 봇차단 없이 수집한다. 키는 `.env`의 `NAVER_CLIENT_ID/SECRET`. → scout는 이걸로 경쟁세트를 잡고, 상세 분석은 스크린샷/브라우저로 보완.
+- **상세페이지 소스화(봇차단 우회)**: ①회장이 playwright 브라우저에 네이버 로그인 1회(에이전트는 비번 입력 금지) → 로그인 상태로 상품 페이지 열어 읽기, 또는 ②회장이 브라우저에서 페이지 저장(HTML) → `design-division/tools/naver_page_parser.py`로 구조(이미지수·텍스트·가격) 변환 → scout 해부. 상세 본문은 대부분 이미지라 '이미지 URL+텍스트'가 추출된다.
 
 ## 디자인 파이프라인 사용법 (`design-division/`)
 ```bash
