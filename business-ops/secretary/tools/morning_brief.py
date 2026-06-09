@@ -206,6 +206,16 @@ def compose() -> str:
     for i, x in enumerate(_PENDING, 1):
         L.append(f"{i}. {x}")
     L.append("")
+    L.append("🔒 키 보안 (보안감시팀)")
+    try:
+        sys.path.insert(0, str(ROOT / "business-ops" / "security"))
+        import key_watch  # type: ignore
+        leaks = key_watch.scan_tracked()
+        L.append("· " + (f"🚨 유출 위험 {len(leaks)}건 — 즉시 확인!" if leaks
+                         else "이상 없음 ✅ (키 .env 분리·깃 안전)"))
+    except Exception:
+        L.append("· 점검 모듈 오류")
+    L.append("")
     L.append("— 데이터 출처: scorecard·knowledge·reports (자가성장 엔진)")
     return "\n".join(L)
 
