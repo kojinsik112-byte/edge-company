@@ -5,5 +5,9 @@
   "ui_developer": "UI개발자",
   "cad_engineer": "캐드설계개발자",
   "dev_liaison": "수정요청디렉터",
-  "search_director": "검색지배총괄"
+  "search_director": "검색지배총괄",
+  "ohou_ops": "오늘의집운영팀",
+  "threads_ops": "스레드운영팀",
+  "naver_cafe_ops": "네이버카페운영팀",
+  "kakao_channel_ops": "카카오채널운영팀"
 }

@@ -67,8 +67,9 @@
 - **acro_rnd** 제품 R&D(슬림팬·BLDC·BT) · **acro_production** 생산·QC · **acro_sourcing** 부품·OEM · **acro_certification** KC·전안법 인증 · **acro_sales** 유통·채널 · **acro_logistics** 물류·화물
 
 ---
-# 채널팀 (5) — 플랫폼 운영 실무
-- **instagram_ops** 인스타 운영 · **youtube_ops** 유튜브 운영 · **tiktok_ops** 틱톡 운영 · **naver_ops** 네이버(스토어·블로그·모먼트) · **buffer_ops** Buffer 통합 예약발행 허브
+# 채널팀 (9) — 플랫폼 운영 실무
+- **instagram_ops** 인스타 · **youtube_ops** 유튜브 · **tiktok_ops** 틱톡 · **naver_ops** 네이버(스토어·블로그·모먼트) · **buffer_ops** Buffer 발행허브
+- **ohou_ops** 오늘의집(인테리어 1위·커머스) · **threads_ops** 스레드 · **naver_cafe_ops** 맘/입주카페 · **kakao_channel_ops** 카카오톡 채널
 
 ---
 # 성장·학습형 팀 (23) — 할 일 적을 땐 계속 공부(관제실에 '학습중' 표시)
