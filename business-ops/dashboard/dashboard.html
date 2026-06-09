@@ -2,7 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="refresh" content="15">
 <title>EDGE COMPANY · JARVIS 관제실</title>
+<script src="status.js"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
@@ -274,15 +276,7 @@
   function closeTeam(){document.getElementById("modal").classList.remove("on");}
   document.addEventListener("keydown",function(e){if(e.key==="Escape")closeTeam();});
 
-  // 부드러운 자동 갱신 (페이지 깜빡임 없이 status.js 재로딩)
-  function loadBoard(){
-    var s=document.createElement("script");
-    s.src="status.js?t="+Date.now();
-    s.onload=function(){ render(window.TEAM_BOARD); s.remove(); };
-    s.onerror=function(){ s.remove(); };
-    document.body.appendChild(s);
-  }
-  // 시계
+  // 시계 (1초 갱신)
   function tick(){
     var d=new Date();
     var p=function(x){return (x<10?"0":"")+x;};
@@ -291,7 +285,9 @@
     document.getElementById("dt").textContent=d.getFullYear()+". "+p(d.getMonth()+1)+". "+p(d.getDate())+" ("+wd+")";
   }
   tick(); setInterval(tick,1000);
-  loadBoard(); setInterval(loadBoard,3000);
+  // status.js 는 <head>에서 정적 로드됨(file:// 더블클릭 호환). 데이터 갱신은 상단 meta refresh.
+  if(window.TEAM_BOARD){ render(window.TEAM_BOARD); }
+  else { document.getElementById("mantra").textContent="status.js 를 찾지 못했습니다 — team_status.py board 실행 필요"; }
 </script>
 </body>
 </html>
