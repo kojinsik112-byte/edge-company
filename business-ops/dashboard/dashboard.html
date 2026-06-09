@@ -186,10 +186,15 @@
 <script>
   function esc(x){return (x==null?"":String(x)).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}
   function stateKo(s){return {idle:"대기",working:"작업중",studying:"학습중",done:"완료",blocked:"막힘"}[s]||s;}
+  // file:// 에서 localStorage 차단돼도 안 죽게 안전 래퍼
+  function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function ssGet(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
+  function ssSet(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
   var TEAMMAP={}, B=window.TEAM_BOARD||{teams:[]};
   var TABS=["한눈에","작업중","사업부","전체"];
-  var TAB=localStorage.getItem("jv_tab")||"한눈에";
-  var COL=JSON.parse(localStorage.getItem("jv_col")||"{}");
+  var TAB=lsGet("jv_tab")||"한눈에";
+  var COL={}; try{COL=JSON.parse(lsGet("jv_col")||"{}");}catch(e){COL={};}
   var Q="";
 
   function avgOf(a){var s=0,n=0;a.forEach(function(t){if(typeof t.score==="number"){s+=t.score;n++;}});return n?Math.round(s/n):0;}
@@ -256,8 +261,8 @@
     TABS.map(function(t){return "<button class='tab"+(t===TAB?" on":"")+"' onclick=\"setTab('"+t+"')\">"+t+"</button>";}).join("")
     +"<span class='srch'><input id='q' placeholder='🔍 팀 검색…' value='"+esc(Q)+"' oninput=\"Q=this.value;renderMain();\"></span>";
     var q=document.getElementById("q"); if(q&&Q){q.focus();q.setSelectionRange(Q.length,Q.length);}}
-  function setTab(t){TAB=t;localStorage.setItem("jv_tab",t);renderTabs();renderMain();}
-  function toggle(k){COL[k]=!COL[k];localStorage.setItem("jv_col",JSON.stringify(COL));renderMain();}
+  function setTab(t){TAB=t;lsSet("jv_tab",t);renderTabs();renderMain();}
+  function toggle(k){COL[k]=!COL[k];lsSet("jv_col",JSON.stringify(COL));renderMain();}
 
   function render(){
     if(!B||!B.teams){document.getElementById("mantra").textContent="status.js 없음 — team_status.py board 실행";return;}
@@ -304,8 +309,8 @@
   tick();setInterval(tick,1000);
   render();
   // 자동 새로고침 시 스크롤 위치 유지(회장님 보던 자리 그대로)
-  window.addEventListener("beforeunload",function(){sessionStorage.setItem("jv_y",window.scrollY);});
-  var y=sessionStorage.getItem("jv_y"); if(y)window.scrollTo(0,+y);
+  window.addEventListener("beforeunload",function(){ssSet("jv_y",window.scrollY);});
+  var y=ssGet("jv_y"); if(y)window.scrollTo(0,+y);
 </script>
 </body>
 </html>
