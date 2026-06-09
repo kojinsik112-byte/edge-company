@@ -1,62 +1,36 @@
-# 인수인계서 (HANDOVER) — 아크로 슬림 상세페이지 프로젝트
-> 작성: 본부장(Claude) · 2026-06-08 · 새 세션이 이 문서 + `memory/`를 읽고 그대로 이어받는다.
+# 인수인계서 (HANDOVER) — 엣지컴퍼니 현황
+> 본부장(Claude) · **갱신 2026-06-09** · 새 세션은 이 문서 + `CLAUDE.md` + `memory/MEMORY.md`를 읽고 그대로 이어받는다.
+> 빌더 규칙: 데스크탑(나)=유일 빌더. **시작 시 `git pull`, 끝나면 `git push`.** 키는 `.env`(gitignore)에만.
 
-## 0. 회장 지시 (최신 방향)
-- **팀 가시성 필수**: "어느 팀이 어떤 일을 했는지" 보여야 한다. 뭉뚱그린 결과물 = 감점(75점). → **모든 결과물에 '팀 기여 로그'를 붙인다.**
-- **팀 확장**: 현재 **39팀** → 30·50·100팀으로 키운다. (회장은 1인 대표, 팀=에이전트)
-- 과대광고 금지, 결론부터 솔직히, 실사·실데이터 우선(AI는 임시).
+## 0. 한 줄 현황
+**116팀·4독립사업부 운영체계(OS) 완성.** 자가성장엔진·JARVIS비서·럭셔리관제실·채용시스템·보안감시·검색API·디자인API(fal.ai) 다 가동. **남은 병목 = 회장님 실제 자산(실측 스펙·실사·가격 결정).**
 
-## 1. 현재 산출물 (아크로 슬림 상세페이지)
-- 본 파일: `design-division/output/슬림아크로/slim_final.html` → 렌더 `slim_final.png` (약 30섹션, 화이트·시원 톤, ARCO 단독)
-- 모션: `arco_motor_spin.gif`(BLDC, 채택) / `arco_slim_spin.gif`(팬, 약함→페이지서 제외)
-- 실사: `ai/real_install.jpg`(시공) `real_blades.jpg`(오크·월넛) `real_chrome.jpg` — 회장 제공, Downloads에서 복사
-- 색상 4종(실사 기준 생성): `ai/r_white/r_oak/r_walnut/r_chrome.png`
+## 1. 작동 중인 시스템 (전부 git 저장됨)
+- **관제실(JARVIS)**: `business-ops/dashboard/dashboard.html` (바탕화면 「JARVIS 관제실」 아이콘). 한눈에/작업중/사업부/전체 탭·KPI·성과랭킹·날씨(울산)·시계·막힘경보·클릭상세·작업🟡/학습🔵/완료🟢 실시간. **file:// 더블클릭 작동**(localStorage 안전래퍼). 팀이 일하면 `team_status.py set <팀> working/done` → 15~20초 내 표시.
+- **자가성장엔진 하루 2회**: `growth-engine/tools/morning_routine.py`(08:30 수집·채점·카톡·음성) + `evening_routine.py`(21:00 채점·코칭·요약) + `naver_monitor.py`(2시간마다 순위). 등록=EdgeMorningRoutine/EdgeEveningRoutine/EdgeNaverMonitor.
+- **JARVIS 비서**: 아침8:30 카톡 보고(`secretary/morning_brief.py`+`kakao_send.py`). 음성=윈도우SAPI(타입캐스트키 넣으면 성우). 카카오 실연동됨.
+- **채용시스템**: `business-ops/hr/hire_team.py` — "아! ○○팀 필요합니다, 채용하겠습니다" → 에이전트·점수판·한글명·채용대장 일괄+관제실 자동반영. 명부=`TEAMS.md`(만들기 전 확인, 중복금지).
+- **보안감시팀**: `business-ops/security/key_watch.py` + pre-commit 훅 — 키가 커밋에 섞이면 차단+카톡경보. 새PC=`install_hook.py` 1회.
+- **지식창고**: `business-ops/knowledge/`(매일 누적) — competitors·naver_keywords·naver_sweep·naver_monitor·trends·market·ai_tools·learnings·reviews.
 
-## 2. 팀 기여 로그 (이번 프로젝트 — 누가 뭘 했나)
-| 팀 | 한 일 | 산출물 |
-|---|---|---|
-| scout | 네이버 경쟁사 9곳 직접 정독(CDP) + 갭 분석 | `scout_reports/competitors/`, `competitor_sove_ver3.md` |
-| planner | 30섹션 롱폼 구조·배치 설계 | 페이지 섹션 순서 |
-| writer | 전 섹션 카피(오리지널), 실Q&A 기반 FAQ | 본문 카피 |
-| art_director | 화이트·시원 톤 디자인시스템(Pretendard·틸) | 브랜드킷 적용 |
-| designer | AI 이미지(제품/연출/모터) + 모션 GIF | `ai/*.png`, `*.gif` |
-| infographic | 14.5 하우징 3단비교·dB·스펙 | 인포그래픽 섹션 |
-| cro | 가격 앵커링(309↔159), 저렴반론, 신뢰배지 | 전환 섹션 |
-| product_strategy/ecosystem | 생태계 Before/After, ONLY ARCO | 차별화 섹션 |
-| scout+창의 | 선풍기vs실링팬·계절별·전기료 아이디어 | 신규 섹션 |
-| auditor/legal | 과대광고 0 검수, 엣지컴퍼니 표기 제거 | 컴플라이언스 |
+## 2. 연동된 API (`.env`, gitignore)
+✅ 네이버검색(naver_search) · 네이버검색광고/검색량(naver_ad_keywords) · 카카오(나에게보내기) · 유튜브Data(youtube_search) · 구글Gemini(이미지) · **fal.ai**(Flux실사컷+Ideogram, $10충전, `design-division/output/api_test/`에 검증샷).
+⬜ 미연동(필요시): OpenAI·Photoroom/Claid(누끼·4K)·타입캐스트(음성). 인스타=Buffer경유(직접API·브라우저 둘다 차단).
+> ⚠️ AI는 **제품을 지어내지 말 것**. 제품 비주얼은 회장 실제자산(`Desktop\아크로 사진` NEW SLIM 흰팬) ref. AI는 배경/공간만. 한글은 HTML/Pillow 오버레이(AI 한글 깨짐).
 
-## 2-B. 소셜·콘텐츠 본부 신설 + 첫 콘텐츠팩 (2026-06-08 추가)
-회장 지시("촬영 대본·검색어분석·1인촬영지원·바로업로드 팀이 필요")로 **6팀 신설(39→45팀)**, 즉시 아크로 슬림 런칭 콘텐츠팩 제작.
+## 3. 핵심 데이터·인사이트 (실측)
+- **검색량**: 실링팬 12.2만 · **실링팬조명 2.7만** · **블라인드 22.8만(실링팬 2배!)** · 거실7.7천·안방4.6천·작은방3.4천·아이방2천. **저천장/블루투스/슬림 = 검색 거의 0**(우리가 밀던 말이 검색 안 됨).
+- **우리 아크로 시그니처**: "실링팬" 정확도순 **7위**(8→7 상승), 309,000원=TOP10 최고가. 판매처 edge2050(아크로스튜디오).
+- **네이버 캡처**: 우리+경쟁사9곳 상세 풀캡처 `scout_reports/`(원본 로컬, 썸네일 git). 🔴 **상품페이지 캡처는 반드시 "상세정보 펼쳐보기" 클릭**(`tools/scraper/acro_detail.js`, 로그인프로필 `%TEMP%\arco_cdp`).
 
-| 팀(신규) | 한 일 | 산출물 |
-|---|---|---|
-| content_director | 5기둥 전략 + 8편 캘린더 + batch촬영 설계 | `content/calendar_2026-W23.md` |
-| social_trend | IG/틱톡/유튜브숏츠/네이버 실웹조사(해시태그·포맷) | `content/trend/2026-W23_trendpack.md` |
-| shorts_writer | 런칭3편 컷대본(후킹3안·컷시트·자막·CTA) | `content/scripts/01·02·05*.md` |
-| shoot_director | 1인 폰촬영 샷리스트·조명·체크리스트 | `content/shootlist/batchA·B*.md` |
-| caption_writer | 3편×4플랫폼 복붙 캡션·해시태그 | `content/captions/*.md` |
-| social_publisher | 규격·업로드패키지·자동발행 가이드(현실판) | `content/publish/PUBLISH_GUIDE.md` |
+## 4. 상세페이지 진단(1위 따라잡기) — `naver_listing/아크로_상세페이지_진단서.md`
+우리 상세 = 1위의 **1/3 길이**(5,699자/42,961px vs 17,037자/10만px). 빠진것: **숫자 스펙표**(우리 '승부처'인데!)·세일/혜택배너·고객 실사진 리뷰·공간별컷. 강점: **앱·생태계**(1위보다 우월).
 
-**회장 결정/제공 필요(콘텐츠 발행 막는 2개):**
-- ⚠️ 자동발행 연동: 인스타 Graph API(프로계정+페북+토큰)·유튜브 Data API(OAuth) 먼저. 미연동 시 수동 패키지로 발행은 가능.
-- ⚠️ 실측 콘텐츠(소음dB·전기료 ASMR/정보영상)는 실측값 받아야 촬영 가능.
+## 5. 다음 할 일
+**회장님만 제공**: ①실측 dB·풍량(CMM)·소비전력 ②공간별 실사(또는 촬영, 샷리스트 준비됨) ③슬림 판매가 ④가격/조명키트 결정.
+**팀이 지금 가능**: 스펙표 레이아웃(132cm·실측칸)·조명키트 혜택배너·앱생태계 히어로·체험단(포토리뷰)·상품명 반영(`아크로_실링팬_랭킹상승.md`)·100→ 추가채용·멀티플랫폼(오늘의집 등) 콘텐츠.
 
-## 3. 남은 일 (TODO)
-- [ ] 실데이터: 소음 dB·소비전력 **실측값**, 시공비 정확단가, **실제 구매후기**
-- [ ] 회장 실사 추가 촬영 → AI 이미지 100% 실물 교체 (제품단독/4색상/설치과정/공간연출)
-- [ ] 실제 동영상 파일 → 영상 섹션 삽입
-- [ ] operator: 네이버 등록 패키지(SEO 상품명·태그·옵션·필수표기) ← **다음 우선순위**
-- [ ] 소셜 자동발행 연동(인스타 Graph API → 유튜브 Data API) + 실측 콘텐츠 촬영
-- [~] 팀 확장(39→**45** 완료, 목표 100) / 팀 가시성=팀기여로그 운영 중
-
-## 4. 핵심 인프라 (작동 확인됨 — `memory/` 참조)
-- 네이버 접근: 디버그 Chrome(포트 9222) + Playwright `connectOverCDP` → `tools/scraper/naver_cdp.js` ([[naver-data-infra]])
-- AI 이미지: Gemini 결제키(`.env GOOGLE_API_KEY`) + `tools/gen_image.py`, 한글은 HTML로 ([[ai-image-pipeline]])
-- 검색 API: `tools/naver_search.py`
-- 비용원칙: 이미지 생성만 결제 OK, **Veo 영상 금지**
-
-## 5. 새 세션 시작 시
+## 6. 새 세션 시작 시
 1. 이 문서 + `CLAUDE.md` + `memory/MEMORY.md` 읽기
-2. `git pull`로 팀 최신 동기화 (현재 45팀)
+2. `git pull` (현재 116팀)
 3. 회장에게 "어디서 이어갈지" 확인 후 진행
