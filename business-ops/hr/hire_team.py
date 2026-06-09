@@ -73,7 +73,15 @@ def hire(name, bonbu, kr, role, duties, tools="Read, Write", reason="", proposer
                        encoding="utf-8")
     with open(LOG, "a", encoding="utf-8") as f:
         f.write(f"| {date.today()} | {kr} | `{name}` | {bonbu} | {reason} | {proposer} |\n")
-    print(f"✅ 채용: {kr} ({name}) · {bonbu} · 사유: {reason}")
+    # ⑤ 관제실 자동 갱신 — 채용 즉시 대시보드에 새 팀 반영(회장 재다운로드 불필요)
+    try:
+        import subprocess
+        ts = ROOT / "business-ops" / "dashboard" / "tools" / "team_status.py"
+        subprocess.run([sys.executable or "python", str(ts), "board"],
+                       cwd=str(ts.parent), capture_output=True, timeout=20)
+    except Exception:
+        pass
+    print(f"✅ 채용: {kr} ({name}) · {bonbu} · 사유: {reason} · 관제실 반영됨")
     return name
 
 
