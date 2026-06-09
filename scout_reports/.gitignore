@@ -1,0 +1,5 @@
+# 대용량 원본 캡처는 로컬 보관(깃 제외). 썸네일(_thumbs)·텍스트(.txt)는 커밋.
+competitors/*/fullpage.png
+acro_gather/*.png
+acro_gather/아크로_상세_세그먼트/
+acro/*.png

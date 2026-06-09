@@ -163,6 +163,7 @@ instagram_ops·youtube_ops·tiktok_ops·naver_ops·buffer_ops(Buffer 통합 발�
 - **이미지 생성 API(선택)**: Imagen(포토리얼)·Gemini·Flux·Ideogram(한글배너)·FASHN(피팅)·Claid(누끼/4K). `design-division/edge_design/adapters/`에 어댑터로 연결. 키 없으면 드라이런.
 
 ## 웹 접근 / Scout 크롤링 (중요)
+- 🔴🔴 **네이버 상품 페이지 캡처 규칙(회장 반복 지시 — 절대 잊지 말 것)**: 캡처 전 **반드시 "상세정보 펼쳐보기" 버튼을 클릭**한다. 안 누르면 인트로+요약만 나오고 본문이 빈칸(회색)으로 캡처된다. 펼친 뒤 페이지가 매우 길어 통짜 스크린샷은 캔버스 한계 초과로 실패 → **화면 단위 분할 캡처**(scroll+viewport). 로그인 세션 필요(어제 프로필 `%TEMP%\arco_cdp` 재사용). 도구: `tools/scraper/naver_cdp.js`(경쟁사), `acro_detail.js`(우리, 펼쳐보기+분할). 캡처물은 `scout_reports/`에 경쟁사별 저장.
 - **클라우드(claude.ai/code) 세션은 컨테이너 외부 인터넷이 전면 차단**된다(모든 도메인 403). 이 환경에서 Scout가 쓸 수 있는 건 WebSearch뿐이고, WebFetch는 네이버 스마트스토어 등 일부 사이트가 봇차단한다. → **네이버 상세페이지를 직접 못 연다.**
 - 해결: **회장 PC에서 Claude Code를 실행**하면 실제 IP/브라우저로 나가 네이버 접근 가능. 이때 `.mcp.json`에 등록된 **playwright MCP**(브라우저 자동화)로 페이지를 직접 열어 읽는다.
 - 즉시 대안: 회장이 **스크린샷/텍스트**를 주면 Scout가 완전 분석한다.
