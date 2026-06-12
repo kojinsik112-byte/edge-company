@@ -5,7 +5,7 @@ const dir = path.join(__dirname, '..', '..', 'design-division', 'output', '아�
 (async () => {
   const b = await chromium.launch();
   const page = await b.newPage({ viewport: { width: 1080, height: 900 }, deviceScaleFactor: 2 });
-  const jobs = [['스펙표', null], ['혜택배너', { x: 0, y: 0, width: 1080, height: 430 }]];
+  const jobs = [['스펙표', null], ['혜택배너', { x: 0, y: 0, width: 1080, height: 430 }], ['스펙시안', { x: 0, y: 0, width: 1280, height: 720 }]];
   for (const [name, clip] of jobs) {
     await page.goto('file://' + path.join(dir, name + '.html'), { waitUntil: 'networkidle' });
     await page.waitForTimeout(900);

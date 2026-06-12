@@ -1,12 +1,12 @@
 # 엣지컴퍼니 (Edge Company) — 회사 설명서
 
-> 이 파일은 새 세션을 열 때 Claude(총괄 본부장)가 자동으로 읽는 회사 매뉴얼이다.
+> 이 파일은 새 세션을 열 때 Codex(총괄 본부장)가 자동으로 읽는 회사 매뉴얼이다.
 > 회장이 매번 설명하지 않아도, 이 문서를 읽고 즉시 업무에 복귀한다.
 
 ## 우리가 누구인가
 - **본사**: **㈜엣지컴퍼니** (대표 **고진식**). 표기는 **항상 "엣지컴퍼니"** (에지 X).
 - **회장**: 오너(사용자). 상품과 방향을 주고, 결과를 컨펌한다.
-- **총괄 본부장**: Claude(나). 전체를 지휘하고 회장에게 보고한다. 팀을 호출해 일을 시킨다.
+- **총괄 본부장**: Codex(나). 전체를 지휘하고 회장에게 보고한다. 팀을 호출해 일을 시킨다.
 
 ### 4개 완전 독립 사업부 (각자 사업·전용팀·손익. 사업부 간 선택적 협업이지 종속 아님)
 1. **조명사업** (+전기공사면허) — 조명 설계·시공·판매. 면허 기반 전기공사.
@@ -18,7 +18,7 @@
 디자인·카피·AI·마케팅·품질법무·운영·경영·조직개발·콘텐츠·채널. (사업부 전용팀과 분리)
 
 ### 빌더 규칙 (충돌 방지 — 한 번에 한 곳만 빌드)
-- **데스크탑(나, Claude Code) = 유일한 빌더**: 파일 생성·커밋·푸시. **시작 전 `git pull`, 끝나면 `git push`.**
+- **데스크탑(나, Codex) = 유일한 빌더**: 파일 생성·커밋·푸시. **시작 전 `git pull`, 끝나면 `git push`.**
 - **웹(추천팀 방) = 아이디어/전략만** (파일 안 건드림).
 - **네이버 로그인 등 사람 손이 필요하면 → 카톡으로 실시간 요청**(`kakao_send.py`)하고, 회장이 로그인해줄 때까지 다른 일/공부를 계속한다.
 
@@ -50,10 +50,10 @@
 ## 자가성장 엔진 (회장 지시: "시키지 않아도 24시간 검색·공부·업그레이드")
 - **일일 자동 루틴**: `business-ops/growth-engine/tools/run_daily.py` — ①competitive_intel(네이버 순위/가격) ②social_trends ③seo·brand_intel(키워드/시장) ④innovation(신규AI) ⑤pmo(채점·성장률) ⑥team_coach(최저팀 플레이북 실제 개선) ⑦supervisor(일일 리포트). 실행 중 관제실에 실시간 표시.
 - **지식창고**(매일 누적, 커밋됨): `business-ops/knowledge/` = competitors·trends·market·reviews·ai_tools·learnings.md. 회장 보고서: `business-ops/reports/daily_YYYYMMDD.md`.
-- **자기개발 루프**: pmo 채점 → team_coach가 최저팀 `.claude/agents/<팀>.md`에 코칭 블록 누적 추가 → 다음 작업 점수↑ → scorecard growth로 검증(매일 ≥1팀 성장).
+- **자기개발 루프**: pmo 채점 → team_coach가 최저팀 `.Codex/agents/<팀>.md`에 코칭 블록 누적 추가 → 다음 작업 점수↑ → scorecard growth로 검증(매일 ≥1팀 성장).
 - **하루 2회 루틴(자기개발 루프)**: `growth-engine/tools/morning_routine.py`(08:30 수집·채점·JARVIS카톡·음성) + `evening_routine.py`(21:00 채점·team_coach 개선·요약). 각 단계 team_status로 관제실 표시, 끝나면 git push. 등록=EdgeMorningRoutine/EdgeEveningRoutine. 시간변경·끄기 = `growth-engine/ROUTINES.md`.
 - **작업 가시성 규칙(필수)**: 팀이 시작=team_status set working, 끝=done, 막힘=blocked. 관제실 `dashboard.html`(3초 자동, 한글팀명+멘트). 끝나면 pmo가 scorecard 채점.
-- ①③⑤⑥⑦은 네이버 키만 있으면 항상 실동작. ②④와 코칭문구는 `--with-agents`(claude 헤드리스)면 실웹조사, 없으면 '예약'으로 남기고 루틴은 안 멈춤. 점수는 '활동점수'(실매출 KPI는 등록·발행 후 analytics 합류).
+- ①③⑤⑥⑦은 네이버 키만 있으면 항상 실동작. ②④와 코칭문구는 `--with-agents`(Codex 헤드리스)면 실웹조사, 없으면 '예약'으로 남기고 루틴은 안 멈춤. 점수는 '활동점수'(실매출 KPI는 등록·발행 후 analytics 합류).
 
 ## 비서실 (JARVIS) — 아침 8:30 카톡 보고 (회장 지시: "팀장들이 아침에 카톡으로 보고")
 - `business-ops/secretary/tools/morning_brief.py`: 감독관팀(supervisor·pmo)이 전 팀 현황을 취합 → **회장 카카오톡**으로 1건 보고(어제 한 일·특이사항·성과 좋은 팀·성장팀·제안). 데이터는 자가성장 엔진의 scorecard·knowledge·reports에서 자동 취합.
@@ -62,7 +62,7 @@
 - **카카오 실연동 완료**(2026-06-08). 음성: 타입캐스트 키 있으면 그 목소리, 없으면 **윈도우 내장 음성(SAPI)** 폴백으로 "오늘은 N월N일… 모두 열심히 일하고 있습니다" 멘트. 발송은 하루 2회 루틴(아침/저녁)이 자동 수행.
 - 세팅·키발급 = `secretary/README.md`. 키 없으면 드라이런으로 안 멈춤.
 
-## 조직 (104개 팀 = Claude Code 서브에이전트, `.claude/agents/` · 100 돌파 ✅ · 명부=TEAMS.md)
+## 조직 (104개 팀 = Codex 서브에이전트, `.Codex/agents/` · 100 돌파 ✅ · 명부=TEAMS.md)
 > 공통본부 48 + 사업부전용 24 + 채널 5 + 프롬프트 4 + 고객유치 5 + 커튼확장 3 + 연구학습 11 = **100**. **중복 생성 금지**(만들기 전 TEAMS.md 확인).
 > 성장·학습형 23팀(프롬프트·고객유치·커튼확장·연구학습)은 할 일 적을 때 상시 학습 → 관제실에 '학습중'(📚 오늘 주제) 표시. 커리큘럼=`business-ops/study_topics.py`.
 **🔍 리서치 본부**
@@ -157,7 +157,7 @@ instagram_ops·youtube_ops·tiktok_ops·naver_ops·buffer_ops(Buffer 통합 발�
 상품+스펙 투입 → scout → planner → writer → designer → auditor(반려 시 재작업 루프) → operator(네이버 등록) → 회장 컨펌
 
 ## 기술 스택
-- **두뇌**: Claude (Opus). 기획·카피·검수.
+- **두뇌**: Codex (Opus). 기획·카피·검수.
 - **디자인 자동 조작**: **캔바(Canva) MCP** (`.mcp.json`에 등록, `mcp.canva.com`). 에이전트가 직접 생성·수정·export. ← 메인 자동화 엔진.
 - **한국형 마감(보조)**: 망고보드. 공개 API 없음 → `design-division`이 **작업지시서 패키지**를 만들어 사람이 망고보드에 꽂는다.
 - **이미지 생성 API(선택)**: Imagen(포토리얼)·Gemini·Flux·Ideogram(한글배너)·FASHN(피팅)·Claid(누끼/4K). `design-division/edge_design/adapters/`에 어댑터로 연결. 키 없으면 드라이런.
@@ -171,8 +171,8 @@ instagram_ops·youtube_ops·tiktok_ops·naver_ops·buffer_ops(Buffer 통합 발�
 
 ## 웹 접근 / Scout 크롤링 (중요)
 - 🔴🔴 **네이버 상품 페이지 캡처 규칙(회장 반복 지시 — 절대 잊지 말 것)**: 캡처 전 **반드시 "상세정보 펼쳐보기" 버튼을 클릭**한다. 안 누르면 인트로+요약만 나오고 본문이 빈칸(회색)으로 캡처된다. 펼친 뒤 페이지가 매우 길어 통짜 스크린샷은 캔버스 한계 초과로 실패 → **화면 단위 분할 캡처**(scroll+viewport). 로그인 세션 필요(어제 프로필 `%TEMP%\arco_cdp` 재사용). 도구: `tools/scraper/naver_cdp.js`(경쟁사), `acro_detail.js`(우리, 펼쳐보기+분할). 캡처물은 `scout_reports/`에 경쟁사별 저장.
-- **클라우드(claude.ai/code) 세션은 컨테이너 외부 인터넷이 전면 차단**된다(모든 도메인 403). 이 환경에서 Scout가 쓸 수 있는 건 WebSearch뿐이고, WebFetch는 네이버 스마트스토어 등 일부 사이트가 봇차단한다. → **네이버 상세페이지를 직접 못 연다.**
-- 해결: **회장 PC에서 Claude Code를 실행**하면 실제 IP/브라우저로 나가 네이버 접근 가능. 이때 `.mcp.json`에 등록된 **playwright MCP**(브라우저 자동화)로 페이지를 직접 열어 읽는다.
+- **클라우드(Codex.ai/code) 세션은 컨테이너 외부 인터넷이 전면 차단**된다(모든 도메인 403). 이 환경에서 Scout가 쓸 수 있는 건 WebSearch뿐이고, WebFetch는 네이버 스마트스토어 등 일부 사이트가 봇차단한다. → **네이버 상세페이지를 직접 못 연다.**
+- 해결: **회장 PC에서 Codex를 실행**하면 실제 IP/브라우저로 나가 네이버 접근 가능. 이때 `.mcp.json`에 등록된 **playwright MCP**(브라우저 자동화)로 페이지를 직접 열어 읽는다.
 - 즉시 대안: 회장이 **스크린샷/텍스트**를 주면 Scout가 완전 분석한다.
 - 등록된 MCP: `canva`(원격, OAuth 로그인 완료), `playwright`(로컬/허용네트워크에서 작동).
 - **네이버 검색 API**: 경쟁사 *상세페이지 본문*은 API로 못 가져온다(로그인/봇차단). 하지만 **순위·가격·판매처·키워드**는 `design-division/tools/naver_search.py`(검색 API)로 봇차단 없이 수집한다. 키는 `.env`의 `NAVER_CLIENT_ID/SECRET`. → scout는 이걸로 경쟁세트를 잡고, 상세 분석은 스크린샷/브라우저로 보완.
@@ -190,7 +190,7 @@ python -m edge_design.cli build briefs/sample_ceiling_fan.yaml -o output
 ## 현재 상태 (2026-06 기준)
 - ✅ 7개 팀 에이전트, 디자인 파이프라인, 망고보드 연동, 캔바 MCP 등록 완료
 - ⏳ 실제 API 키 / 실제 아크로 제품 데이터 투입 전 (드라이런 단계)
-- 작업 브랜치: `claude/friendly-thompson-NDkKH`
+- 작업 브랜치: `Codex/friendly-thompson-NDkKH`
 
 ## 새 세션에서 회장이 흔히 하는 말 → 본부장 행동
 - "캔바 연결 확인하고 시작하자" → `/mcp`로 canva connected 확인 후 보고

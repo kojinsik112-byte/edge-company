@@ -1,0 +1,9 @@
+{
+  "_comment": "결제·크레딧 감시 대장 (finance). 유료 프로그램 등록. 아침 브리핑이 매일 점검.",
+  "watch": [
+    {"name": "fal.ai (Flux·이미지 생성)", "auto": "fal", "topup": "fal.ai/dashboard/billing", "note": "선불충전. 잔액 소진 시 생성 중단"},
+    {"name": "타입캐스트 (자비스 음성)", "auto": null, "action": "API 키 미연동(지금은 윈도우 기본 음성). 연동 시 성우 목소리", "topup": "typecast.ai"},
+    {"name": "구글 Gemini (이미지)", "auto": null, "action": "", "topup": "console.cloud.google.com/billing", "note": "종량제 카드결제"},
+    {"name": "네이버 검색광고비", "auto": null, "action": "", "topup": "searchad.naver.com", "note": "광고 집행 시 비즈머니 충전"}
+  ]
+}

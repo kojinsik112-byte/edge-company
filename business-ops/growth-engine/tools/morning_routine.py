@@ -75,7 +75,7 @@ def voice_mantra():
 
 
 def main():
-    rd.USE_CLAUDE = True  # claude CLI 있으면 실웹조사, 없으면 자동 폴백
+    rd.USE_CLAUDE = False  # 🔴 비용절감(회장지시 2026-06-11): claude 웹조사 OFF. 카톡브리핑·음성·채점·git은 그대로. 웹조사 필요시 회장이 직접 지시.
     print(f"=== 🌅 아침 루틴 {datetime.now():%Y-%m-%d %H:%M} ===")
     open_dashboard()
 

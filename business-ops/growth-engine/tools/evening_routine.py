@@ -68,7 +68,7 @@ def voice_mantra(coached: str):
 
 
 def main():
-    rd.USE_CLAUDE = True
+    rd.USE_CLAUDE = False  # 🔴 비용절감(회장지시 2026-06-11): claude 웹조사 OFF. 채점·요약·git은 그대로.
     print(f"=== 🌙 저녁 루틴 {datetime.now():%Y-%m-%d %H:%M} ===")
     open_dashboard()
 
