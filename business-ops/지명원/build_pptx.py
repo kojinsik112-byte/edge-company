@@ -270,45 +270,82 @@ rows26=[["1","사송 데시앙 3차","양산 사송","672","확정"],
 rec_table(s,0.7,1.8,12.0,["NO","단지명","지역","세대수","구분"],rows26,[0.9,5.0,2.9,1.6,1.5],rowh=0.295,hh=0.34)
 totbar(s,0.7,6.1,12.0,[("22","'25~'26 누적"),("19,294","누적 세대수"),("90%","사송·에코델타 수임률")])
 
+# ============ S9b 협력 단지 브랜드 로고월 ============
+s=slide(); header(s,"06","협력 · 공동구매 추진 단지 브랜드","Partner Brands")
+txt(s,0.7,1.82,12,0.35,[[("공동구매·제품 공급으로 함께한 입주 단지 브랜드입니다.   ",12,RGBColor(0x3A,0x44,0x56),False),
+                        ("※ 각 칸에 실제 브랜드 로고 삽입",10,RGBColor(0xAE,0xB7,0xC6),True)]])
+brands=["자이","SK뷰","두산위브","e편한세상","푸르지오","더샵","디에트르","롯데캐슬","중흥S클래스","데시앙","우미린","풍경채","유보라","노르웨이숲","LH"]
+cols=5; cw=2.2; ch=1.02; gx=0.25; gy=0.2; x0=0.7; y0=2.35
+for i,b in enumerate(brands):
+    r=i//cols; c=i%cols
+    cx=x0+c*(cw+gx); cy=y0+r*(ch+gy)
+    rect(s,cx,cy,cw,ch,fill=WHITE,line=LINE,lw=1,round_=True)
+    txt(s,cx,cy+0.2,cw,0.4,[[(b,13,INK,True)]],align=PP_ALIGN.CENTER)
+    txt(s,cx,cy+0.62,cw,0.28,[[("로고",9,RGBColor(0xAE,0xB7,0xC6),True)]],align=PP_ALIGN.CENTER)
+capy=y0+3*(ch+gy)+0.05
+rect(s,0.7,capy,12.0,0.92,fill=NAVY,round_=True)
+txt(s,0.7,capy,12.0,0.92,[[("협력 및 공동구매 추진 연혁 다수",21,WHITE,True)]],align=PP_ALIGN.CENTER,anchor=MSO_ANCHOR.MIDDLE)
+
 # ============ S10 ACRO 실링팬 ============
 s=slide(); header(s,"07","ACRO 제품 ① 실링팬","Ceiling Fan")
-def prod(s,x,y,w,h,name,tag,tagc,specs,price,old=None):
+def prod(s,x,y,w,h,name,tag,tagc,specs,imglabel):
     rect(s,x,y,w,h,fill=WHITE,line=LINE,lw=1,round_=True)
-    imgbox(s,x+0.18,y+0.17,3.0,h-0.34,"🌀",name.split()[-1],"회장 실제 사진","AI 생성 금지")
+    imgbox(s,x+0.18,y+0.17,3.0,h-0.34,"🌀",imglabel,"회장 실제 사진","AI 생성 금지")
     tx=x+3.45
-    txt(s,tx,y+0.22,w-3.7,0.4,[[(name,15,INK,True)]])
-    txt(s,tx,y+0.66,w-3.7,0.3,[[(tag,10.5,tagc,True)]])
-    yy=y+1.05
+    txt(s,tx,y+0.24,w-3.7,0.4,[[(name,16,INK,True)]])
+    txt(s,tx,y+0.72,w-3.7,0.3,[[(tag,11,tagc,True)]])
+    yy=y+1.18
     for k,v in specs:
-        txt(s,tx,yy,1.55,0.3,[[(k,10,SUB,True)]])
-        txt(s,tx+1.6,yy,w-3.7-1.6,0.3,[[(v,10,INK,False)]])
-        yy+=0.29
-    pr=[("정상 "+old+"  ",10.5,RGBColor(0xAA,0xB3,0xC2),False),(price,15,INK,True)] if old else [(price,15,INK,True)]
-    txt(s,tx,yy+0.02,w-3.7,0.4,[pr])
-prod(s,0.7,1.8,12.0,2.6,"ACRO 시그니처 실링팬","★ 프리미엄 · 블루투스 · 초슬림",GOLD,
+        txt(s,tx,yy,1.7,0.3,[[(k,10.5,SUB,True)]])
+        txt(s,tx+1.75,yy,w-3.7-1.75,0.3,[[(v,10.5,INK,False)]])
+        yy+=0.31
+prod(s,0.7,1.85,12.0,2.45,"아크로 프리미엄 실링팬","★ 프리미엄 · 블루투스 · 초슬림",GOLD,
      [("날개 지름","132cm (52인치)"),("모터/풍속","BLDC DC모터 · 6단"),("제어","블루투스 앱+리모컨 · 1~6시간 타이머"),("A/S","5년")],
-     "309,000원")
-prod(s,0.7,4.55,12.0,2.6,"ACRO 슬림 실링팬","저천장 특화 · 합리형",BLUE,
+     "프리미엄")
+prod(s,0.7,4.55,12.0,2.45,"아크로 슬림 실링팬","저천장 특화 · 우드 4색",BLUE,
      [("몸통 높이","14.5cm급 초슬림 (저천장 밀착)"),("모터/풍속","BLDC DC모터 · 6단"),("색상","우드톤 4색 / 조명 없음"),("A/S","5년")],
-     "159,000원",old="189,000원")
+     "슬림")
 
-# ============ S11 ACRO 조명·스위치·커튼·환기 ============
-s=slide(); header(s,"08","ACRO 제품 ② 조명·스위치·커튼·환기","Lighting · Switch · Curtain · ERV")
-items=[("🔆","ACRO 조명 · 디밍","COB 고연색 조명 + 앱/스위치로 밝기·색온도 무단계 디밍. 우물천장 간접조명 등."),
-("🎛️","ACRO 스위치","실링팬·조명·디밍을 통합 제어하는 스위치. 아크로로 통일되는 스마트홈 허브."),
-("🪟","ACRO 전동커튼","모터·앱 연동 전동커튼. 조명·실링팬과 함께 앱 하나로 제어."),
-("💨","ACRO 욕실 전열교환기","욕실 환기·제습·열회수(ERV) 시스템. 결로·곰팡이 저감, 앱 연동 제어.")]
-positions=[(0.7,1.95),(6.75,1.95),(0.7,4.45),(6.75,4.45)]
-for (ic,t,b),(x,y) in zip(items,positions):
-    rect(s,x,y,5.85,2.3,fill=WHITE,line=LINE,lw=1,round_=True)
-    imgbox(s,x+0.2,y+0.2,1.9,1.9,ic,t.split()[-1],"실제 사진 우선","제품/공간컷")
-    txt(s,x+2.3,y+0.3,3.35,0.5,[[(t,13.5,INK,True)]])
-    txt(s,x+2.3,y+0.85,3.35,1.0,[[(b,10.3,SUB,False)]],sp=1.15)
-    txt(s,x+2.3,y+1.85,3.35,0.3,[[("가격/스펙 회장 확정",9.5,FILLT,True)]])
-note(s,0.7,6.95,12.0,"조명 디밍·스위치·전동커튼·욕실 전열교환기 정확 모델·스펙·가격은 회장 확정 후 채웁니다.",h=0.42)
+# ============ S11~S15 ACRO 제품 개별 페이지 ============
+def product_page(no,title,en,icon,tagline,tagc,desc,feats,imglabel,imgdesc):
+    s=slide(); header(s,no,title,en)
+    imgbox(s,0.7,1.95,5.45,4.55,icon,imglabel,imgdesc,"실제 사진 우선 (없으면 ChatGPT 공간컷)")
+    rx=6.55; rw=6.1
+    rect(s,rx,1.95,0.62,0.62,fill=ICE,round_=True)
+    txt(s,rx,1.95,0.62,0.62,[[(icon,24,BLUE,False)]],align=PP_ALIGN.CENTER,anchor=MSO_ANCHOR.MIDDLE)
+    txt(s,rx+0.8,2.0,rw-0.8,0.55,[[(tagline,15,tagc,True)]],anchor=MSO_ANCHOR.MIDDLE)
+    txt(s,rx,2.85,rw,0.9,[[(desc,12,RGBColor(0x3A,0x44,0x56),False)]],sp=1.35)
+    txt(s,rx,3.9,rw,0.35,[[("주요 특징",13,INK,True)]])
+    fy=4.45
+    for ft in feats:
+        rect(s,rx,fy+0.05,0.13,0.13,fill=BLUE,round_=True)
+        txt(s,rx+0.3,fy,rw-0.3,0.4,[[(ft,11.5,RGBColor(0x33,0x40,0x4F),False)]],sp=1.1)
+        fy+=0.5
+    note(s,rx,6.6,rw,"정확 모델·치수·전기 사양은 회장 확정 후 기재 (가격 미표기).",h=0.42)
+
+product_page("08","ACRO 조명 · 디밍","Dimming Light","🔆","무단계 디밍 · 고연색 조명",BLUE,
+  "COB 고연색 LED 조명에 앱·스위치 디밍을 더해, 공간 분위기에 맞춰 밝기와 색온도를 무단계로 조절합니다.",
+  ["COB 고연색 LED · 높은 연색성(Ra)","앱·스위치로 밝기/색온도 무단계 디밍","우물천장 간접조명 등 공간 연출","플리커 프리 · 저눈부심 설계"],
+  "조명 디밍","디밍 조명 점등 공간컷")
+product_page("09","ACRO 스위치","Smart Switch","🎛️","집 안을 하나로 묶는 허브",BLUE,
+  "실링팬·조명·디밍을 한 패널과 앱으로 통합 제어하는 스마트 스위치. 아크로로 통일되는 스마트홈의 허브입니다.",
+  ["실링팬·조명·디밍 통합 제어","터치 + 물리 버튼 · 모던 패널","ACRO 앱 연동 · 원격 제어","기존 매입형 교체 호환"],
+  "스위치","월 스위치 패널 클로즈업")
+product_page("10","ACRO 전동커튼","Motorized Curtain","🪟","앱·음성으로 여닫는 커튼",BLUE,
+  "정숙한 모터로 부드럽게 여닫히는 전동커튼. 조명·실링팬과 함께 앱 하나로 제어되는 스마트홈을 완성합니다.",
+  ["정숙 BLDC 모터 · 부드러운 개폐","앱·음성·리모컨 제어","개폐 시간 예약 · 자동화 시나리오","창 사이즈 맞춤 레일"],
+  "전동커튼","전동커튼 개폐 공간컷")
+product_page("11","ACRO 욕실 전열교환기","Bathroom ERV","💨","환기·제습·열회수 ERV",BLUE,
+  "욕실의 환기·제습·열회수(ERV)를 한 번에. 결로와 곰팡이를 줄이고, 빼앗기는 열을 회수해 쾌적·효율을 높입니다.",
+  ["환기 + 제습 + 열회수(ERV)","결로·곰팡이·습기 저감","저소음 운전 · 욕실 천장 매립","ACRO 앱 연동 자동 환기"],
+  "전열교환기","욕실 천장 환기 유닛")
+product_page("12","ACRO SMPS 전원공급","SMPS Power","🔌","안정적인 전원의 심장",BLUE,
+  "스마트홈·조명 기기를 구동하는 전원공급장치(SMPS). 안정된 정전압·정전류와 보호회로로 기기 수명을 지킵니다.",
+  ["스마트홈·조명 구동 전원공급장치","정전압·정전류 안정 출력","과부하·과열·단락 보호 회로","고효율 · 장수명 설계"],
+  "SMPS","SMPS 전원 모듈 제품컷")
 
 # ============ S12 스마트홈 앱 ============
-s=slide(); header(s,"09","ACRO 스마트홈 — 국내 최초 통합 앱","Smart-Home System")
+s=slide(); header(s,"13","ACRO 스마트홈 — 국내 최초 통합 앱","Smart-Home System")
 rect(s,0.7,1.9,12.0,1.25,fill=NAVY,round_=True)
 txt(s,1.0,2.05,11.4,0.35,[[("KOREA FIRST · 자체 개발",11,RGBColor(0xCA,0xDC,0xFC),True)]])
 txt(s,1.0,2.4,11.4,0.7,[[("실링팬 · 전동커튼 · 스위치 · 조명 디밍을 하나의 앱으로 통합 제어",17,WHITE,True)],
@@ -323,7 +360,7 @@ for i,(ic,l,d) in enumerate(phs):
 note(s,0.7,6.1,12.0,"📸 위 3컷은 회장 실제 앱 화면 자리 (주관사PT/img/app1~3.png · Desktop\\아크로 사진 · ACRO_App_Prototype_KR.html 캡처).",h=0.5)
 
 # ============ S13 강점·협력 ============
-s=slide(); header(s,"10","왜 엣지컴퍼니인가","Why Edge Company")
+s=slide(); header(s,"14","왜 엣지컴퍼니인가","Why Edge Company")
 adv=[("🌀 자체 제품 제조","실링팬·조명·스위치·커튼·환기를 자체 브랜드로 제조·공급. 마진·하자 일원화."),
 ("📱 국내 최초 스마트홈","팬·커튼·스위치·디밍 통합 앱 자체 개발. 경쟁사가 못 따라오는 기술."),
 ("💡 실내·경관 조명","주거·상업 실내조명 + 야간 경관조명 설계·시공·납품 일괄."),
@@ -341,7 +378,7 @@ txt(s,0.95,6.4,11.5,0.65,[
 ],sp=1.25)
 
 # ============ S14 연락처 ============
-s=slide(); header(s,"11","연락처","Contact")
+s=slide(); header(s,"15","연락처","Contact")
 ct=[("대표이사","고진식"),("대표번호","1533-3210"),("대표이사 직통","010-3345-6107"),
 ("본사","울산광역시 울주군 청량읍 상남1길 28, 2동 (전국 22개 지사)"),("이메일/홈페이지","[ 회장 확정 ]")]
 ty=2.0
