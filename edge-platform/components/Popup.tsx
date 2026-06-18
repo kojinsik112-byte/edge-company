@@ -59,15 +59,17 @@ export default function Popup() {
             <img src={popup.image} alt={popup.title} className="w-full" />
           </Link>
         )}
-        <div className="p-6">
-          {popup.title && <p className="text-[17px] font-bold text-ink">{popup.title}</p>}
-          {popup.content && <p className="mt-2 whitespace-pre-wrap text-[14px] leading-relaxed text-ink/80">{popup.content}</p>}
-          {popup.link && (
-            <Link href={popup.link} onClick={close} className="mt-4 block rounded-lg bg-ink py-3 text-center text-[14px] font-semibold text-white">
-              자세히 보기
-            </Link>
-          )}
-        </div>
+        {(popup.title || popup.content || popup.link) && (
+          <div className="p-6">
+            {popup.title && <p className="text-[17px] font-bold text-ink">{popup.title}</p>}
+            {popup.content && <p className={`${popup.title ? "mt-2" : ""} whitespace-pre-wrap text-[14px] leading-relaxed text-ink/80`}>{popup.content}</p>}
+            {popup.link && (
+              <Link href={popup.link} onClick={close} className="mt-4 block rounded-lg bg-ink py-3 text-center text-[14px] font-semibold text-white">
+                자세히 보기
+              </Link>
+            )}
+          </div>
+        )}
         <div className="flex items-center justify-between border-t border-line px-6 py-3">
           <label className="flex cursor-pointer items-center gap-2 text-[13px] text-muted">
             <input type="checkbox" checked={dontToday} onChange={(e) => setDontToday(e.target.checked)} className="h-4 w-4" />
