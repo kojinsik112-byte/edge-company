@@ -89,7 +89,8 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
 
       {/* 메인 배너 */}
       <Section title="메인 배너 (히어로)" onSave={() => save("hero")} saving={saving === "hero"}>
-        <ImageField label="배너 이미지" hint="1920 × 1080px (가로형, 좌측에 텍스트가 얹히므로 우측에 여백 있는 사진 권장)" url={s.hero.image} onPick={(f) => pick(f, (url) => patch("hero", { image: url }))} />
+        <ImageField label="PC 배너 (가로)" hint="1920 × 1080px (16:9). 텍스트는 이미지에 포함 가능" url={s.hero.image} onPick={(f) => pick(f, (url) => patch("hero", { image: url }))} />
+        <ImageField label="모바일 배너 (세로)" hint="1080 × 1350px (4:5). 비우면 PC 배너 사용 — 휴대폰에서 글자 안 잘리려면 권장" url={s.hero.imageMobile} onPick={(f) => pick(f, (url) => patch("hero", { imageMobile: url }))} />
         <Field label="상단 지역 문구"><Inp value={s.hero.eyebrow} onChange={(v) => patch("hero", { eyebrow: v })} /></Field>
         <Field label="헤드라인 (줄바꿈 가능)"><Area value={s.hero.title} onChange={(v) => patch("hero", { title: v })} /></Field>
         <Field label="서브 타이틀"><Inp value={s.hero.subline} onChange={(v) => patch("hero", { subline: v })} /></Field>

@@ -19,7 +19,8 @@ export interface Notice {
   link: string;
 }
 export interface Hero {
-  image: string;
+  image: string; // PC(가로) 배너
+  imageMobile: string; // 모바일(세로) 배너 — 비우면 PC 이미지 사용
   eyebrow: string;
   title: string;
   subline: string;
@@ -69,6 +70,7 @@ export const DEFAULT_SETTINGS: Settings = {
   notice: { enabled: false, text: "울산 쇼룸 예약 상담 진행중", link: "/contact" },
   hero: {
     image: "/img/living-hero.webp",
+    imageMobile: "",
     eyebrow: "울산 · 부산 · 포항 · 경주",
     title: "빛과 바람으로 완성하는\n프리미엄 공간",
     subline: "실링팬 · 간접조명 · 스마트조명 전문 쇼룸",

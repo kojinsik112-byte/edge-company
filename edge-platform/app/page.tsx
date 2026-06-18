@@ -48,9 +48,12 @@ export default async function Home() {
     <>
       <Popup />
 
-      {/* ===== HERO (이미지 배너만 — 문구·버튼은 이미지에 포함, 관리자에서 이미지 교체) ===== */}
+      {/* ===== HERO (이미지 배너 — PC/모바일 분리, 관리자에서 교체) ===== */}
       <section className="relative h-[calc(100svh-72px)] min-h-[560px] overflow-hidden bg-warm">
-        <Image src={hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="object-cover" />
+        {/* PC(가로) */}
+        <Image src={hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="hidden object-cover md:block" />
+        {/* 모바일(세로) — 없으면 PC 이미지 */}
+        <Image src={hero.imageMobile || hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="object-cover md:hidden" />
         <h1 className="sr-only">{hero.title} · {hero.subline}</h1>
       </section>
 
