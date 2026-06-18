@@ -24,15 +24,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [settings, fanCases, indirectCases, smartCases, reviews, faqs] = await Promise.all([
+  const [settings, allCases, fanCases, indirectCases, smartCases, reviews, faqs] = await Promise.all([
     getSettings(),
+    getCases({ limit: 6 }),
     getCases({ category: "실링팬", limit: 6 }),
     getCases({ category: "간접조명", limit: 6 }),
     getCases({ category: "스마트조명", limit: 6 }),
     getReviews(3),
     getFaqs(),
   ]);
-  const { site, hero, showroom } = settings;
+  const { site, hero, showroom, company } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
   const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/area/${REGION_SLUG["울산"]}-${CATEGORY_SLUG[cat]}`;
 
@@ -61,7 +62,10 @@ export default async function Home() {
       </section>
 
       {/* ===== 회사소개 (Why Edge Company) ===== */}
-      <WhySection />
+      <WhySection image={company.image} />
+
+      {/* ===== 대표 시공사례 (가장 눈에 띄게) ===== */}
+      <CategoryCases title="시공사례" desc="실제 고객 시공 현장을 그대로 담았습니다" cases={allCases} moreHref="/cases" bg="bg-bg" />
 
       {/* ===== SNS 채널 ===== */}
       <SnsSection site={site} />
@@ -69,10 +73,10 @@ export default async function Home() {
       {/* ===== 쇼룸 갤러리 ===== */}
       <ShowroomGallery showroom={showroom} />
 
-      {/* ===== 카테고리별 시공사례 ===== */}
-      <CategoryCases title="실링팬 시공사례" desc="실제 고객 시공 현장" cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" />
-      <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
-      <CategoryCases title="스마트조명 시공사례" desc="앱 하나로 완성하는 스마트 라이프" cases={smartCases} moreHref={moreHref("스마트조명")} bg="bg-bg" />
+      {/* ===== 카테고리별 시공사례 (데이터 있을 때만) ===== */}
+      {fanCases.length > 0 && <CategoryCases title="실링팬 시공사례" desc="실제 고객 시공 현장" cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-surface" />}
+      {indirectCases.length > 0 && <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-bg" />}
+      {smartCases.length > 0 && <CategoryCases title="스마트조명 시공사례" desc="앱 하나로 완성하는 스마트 라이프" cases={smartCases} moreHref={moreHref("스마트조명")} bg="bg-surface" />}
 
       {/* ===== 고객후기 ===== */}
       {reviews.length > 0 && (

@@ -1,4 +1,6 @@
-const CARDS = [
+import Image from "next/image";
+
+const FEATURES = [
   {
     title: "직접 체험 가능한 쇼룸",
     desc: "실링팬의 바람과 간접조명의 색온도를 울산 쇼룸에서 직접 켜 보고 비교하세요.",
@@ -21,45 +23,51 @@ const CARDS = [
   },
 ];
 
-const STATS = [
-  ["3종", "ISO 9001·14001·45001 인증"],
-  ["울산-00821", "전기공사업 등록 면허"],
-  ["22개", "전국 지사 네트워크"],
-  ["2022~", "법인 직영 운영"],
-];
+const TRUST = ["ISO 인증기업", "전기공사 면허 보유", "전국 네트워크", "전문 시공 운영"];
 
-export default function WhySection() {
+export default function WhySection({ image }: { image: string }) {
   return (
     <section className="bg-surface py-16 md:py-24">
       <div className="mx-auto max-w-[1200px] px-6">
-        <div className="mx-auto mb-12 max-w-[680px] text-center">
-          <p className="kicker">Why Edge Company</p>
-          <h2 className="mt-3 text-[24px] font-bold leading-snug text-ink md:text-[30px]">왜 엣지컴퍼니일까요?</h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-muted">
-            실링팬과 간접조명을 단순 설치하는 것이 아니라, 고객의 라이프스타일에 맞는 공간의 분위기를 제안합니다.
-          </p>
-        </div>
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          {/* 좌측 비주얼 */}
+          <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-bg md:aspect-[4/4.2]">
+            <Image src={image} alt="엣지컴퍼니 시공 공간" fill sizes="(max-width:1024px) 100vw, 560px" className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/25 to-transparent" />
+          </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {CARDS.map((c) => (
-            <div key={c.title} className="rounded-2xl border border-line bg-bg p-7 transition hover:border-gold">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-navy/[0.06] text-navy">
-                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-                  <path d={c.icon} />
-                </svg>
-              </span>
-              <h3 className="mt-5 text-[16.5px] font-bold text-ink">{c.title}</h3>
-              <p className="mt-2 text-[13.5px] leading-relaxed text-muted">{c.desc}</p>
+          {/* 우측 소개 */}
+          <div>
+            <p className="kicker">Why Edge Company</p>
+            <h2 className="mt-3 text-[26px] font-bold leading-snug text-ink md:text-[34px]">왜 엣지컴퍼니일까요?</h2>
+            <p className="mt-4 text-[15.5px] leading-relaxed text-muted">
+              실링팬과 간접조명을 단순 설치하는 것이 아니라, 고객의 라이프스타일에 맞는 <b className="font-semibold text-ink">공간의 분위기</b>를 제안합니다.
+            </p>
+
+            <div className="mt-8 space-y-6">
+              {FEATURES.map((f) => (
+                <div key={f.title} className="flex gap-4">
+                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold-d">
+                    <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+                      <path d={f.icon} />
+                    </svg>
+                  </span>
+                  <div>
+                    <h3 className="text-[17px] font-bold text-ink">{f.title}</h3>
+                    <p className="mt-1 text-[14px] leading-relaxed text-muted">{f.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
 
-        {/* 신뢰 숫자 영역 */}
-        <div className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
-          {STATS.map(([num, label]) => (
-            <div key={label} className="bg-surface px-5 py-8 text-center">
-              <div className="text-[22px] font-extrabold tracking-tight text-navy">{num}</div>
-              <div className="mt-2 text-[12.5px] leading-relaxed text-muted">{label}</div>
+        {/* 신뢰도 (문구형) */}
+        <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
+          {TRUST.map((t) => (
+            <div key={t} className="flex items-center justify-center gap-2.5 bg-surface px-5 py-6 text-center">
+              <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-gold-d" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+              <span className="text-[14.5px] font-bold text-ink">{t}</span>
             </div>
           ))}
         </div>
