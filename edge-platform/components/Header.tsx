@@ -21,29 +21,29 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
       <header className="sticky top-0 z-50 border-b border-line bg-surface">
         <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between px-6">
           {/* 로고 */}
-          <Link href="/" className="flex items-center gap-2.5" aria-label="엣지컴퍼니 홈">
-            <span className="flex h-[38px] w-[38px] items-center justify-center rounded-[8px] bg-navy font-serif text-[18px] font-bold text-gold">
+          <Link href="/" className="flex shrink-0 items-center gap-3.5" aria-label="엣지컴퍼니 홈">
+            <span className="font-lux flex h-[44px] w-[44px] items-center justify-center rounded-[9px] bg-navy text-[25px] font-semibold text-gold">
               E
             </span>
             <span className="leading-none">
-              <span className="block text-[20px] font-extrabold tracking-tight text-ink">엣지컴퍼니</span>
-              <span className="mt-1 block text-[10px] font-medium tracking-[2.5px] text-muted">
-                LIGHTING · CEILING FAN · SHOWROOM
+              <span className="block text-[22px] font-extrabold tracking-tight text-ink">엣지컴퍼니</span>
+              <span className="font-lux mt-1.5 block whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.28em] text-gold-d">
+                Edge Company · Lighting Showroom
               </span>
             </span>
           </Link>
 
           {/* 데스크탑 메뉴 */}
-          <nav className="hidden items-center gap-8 lg:flex">
+          <nav className="hidden items-center gap-6 xl:flex">
             {NAV.filter((n) => n.label !== "상담문의").map((n) => (
-              <Link key={n.href} href={n.href} className="text-[14px] font-medium text-[#333333] transition hover:text-gold">
+              <Link key={n.href} href={n.href} className="whitespace-nowrap text-[14px] font-medium text-[#333333] transition hover:text-gold">
                 {n.label}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-2">
-            <a href={tel} className="hidden items-center gap-2 rounded-[8px] bg-navy px-6 py-3.5 text-[15px] font-bold text-white transition hover:bg-navy-d lg:inline-flex">
+            <a href={tel} className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-[8px] bg-navy px-5 py-3 text-[14px] font-bold text-white transition hover:bg-navy-d xl:inline-flex">
               <PhoneIcon className="h-4 w-4 text-gold" />
               전화상담 {site.phone}
             </a>
@@ -51,7 +51,7 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
               aria-label="메뉴"
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-lg border border-line bg-surface lg:hidden"
+              className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-lg border border-line bg-surface xl:hidden"
             >
               <span className={`h-[1.6px] w-[18px] bg-ink transition ${open ? "translate-y-[6.6px] rotate-45" : ""}`} />
               <span className={`h-[1.6px] w-[18px] bg-ink transition ${open ? "opacity-0" : ""}`} />
@@ -61,7 +61,7 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
         </div>
 
         {open && (
-          <nav className="border-t border-line bg-surface px-6 pb-6 pt-2 lg:hidden">
+          <nav className="border-t border-line bg-surface px-6 pb-6 pt-2 xl:hidden">
             {NAV.map((n) => (
               <Link key={n.href} href={n.href} onClick={() => setOpen(false)} className="flex items-center justify-between border-b border-line py-4 text-lg font-semibold text-ink">
                 {n.label}

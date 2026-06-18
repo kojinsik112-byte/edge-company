@@ -33,7 +33,7 @@ export default function Footer({ site }: { site: SiteInfo }) {
         <div className="flex flex-col gap-4 border-t border-line pt-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="mb-3 flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-navy font-serif text-base font-bold text-gold">E</span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-navy font-lux text-base font-bold text-gold">E</span>
               <span className="font-extrabold tracking-tight text-ink">{site.bizName}</span>
             </div>
             {socials.length > 0 && (

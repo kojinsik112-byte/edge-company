@@ -10,6 +10,7 @@ import SnsSection from "@/components/SnsSection";
 import ShowroomGallery from "@/components/ShowroomGallery";
 import CategoryCases from "@/components/CategoryCases";
 import WhySection from "@/components/WhySection";
+import { DEMO_REVIEWS } from "@/lib/demo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getSettings();
@@ -24,17 +25,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [settings, allCases, fanCases, indirectCases, smartCases, reviews, faqs] = await Promise.all([
+  const [settings, fanCases, indirectCases, smartCases, reviews, faqs] = await Promise.all([
     getSettings(),
-    getCases({ limit: 6 }),
     getCases({ category: "실링팬", limit: 6 }),
     getCases({ category: "간접조명", limit: 6 }),
     getCases({ category: "스마트조명", limit: 6 }),
-    getReviews(3),
+    getReviews(12),
     getFaqs(),
   ]);
   const { site, hero, showroom, company } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
+  const reviewList = reviews.length >= 4 ? reviews : [...reviews, ...DEMO_REVIEWS].slice(0, 8);
   const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/area/${REGION_SLUG["울산"]}-${CATEGORY_SLUG[cat]}`;
 
   return (
@@ -49,9 +50,9 @@ export default async function Home() {
           <div className="mx-auto w-full max-w-[1200px] px-6 md:px-20">
             <div className="max-w-[620px]">
               <p className="mb-[18px] text-[14px] font-semibold tracking-[0.5px] text-gold">{hero.eyebrow}</p>
-              <h1 className="mb-[22px] whitespace-pre-line text-[34px] font-extrabold leading-[1.25] tracking-[-1.2px] text-white md:text-[48px]">{hero.title}</h1>
-              <p className="mb-[12px] text-[17px] font-bold text-white">{hero.subline}</p>
-              <p className="whitespace-pre-line text-[15px] font-normal leading-[1.8] text-white/90">{hero.lead}</p>
+              <h1 className="mb-[22px] whitespace-pre-line text-[36px] font-extrabold leading-[1.15] tracking-[-1.2px] text-white md:text-[52px] lg:text-[64px]">{hero.title}</h1>
+              <p className="mb-[12px] text-[17px] font-bold text-white md:text-[18px]">{hero.subline}</p>
+              <p className="whitespace-pre-line text-[15px] font-normal leading-[1.8] text-white/90 md:text-[17px]">{hero.lead}</p>
               <div className="mt-[30px] flex flex-wrap gap-3">
                 <a href={tel} className="rounded-[8px] bg-navy px-[30px] py-4 text-[16px] font-bold text-white transition hover:bg-navy-d">무료 상담</a>
                 <Link href="/contact" className="rounded-[8px] bg-gold px-[30px] py-4 text-[16px] font-bold text-ink transition hover:bg-gold-d">쇼룸 예약</Link>
@@ -61,54 +62,50 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ===== SNS 채널 (히어로 바로 아래) ===== */}
+      <SnsSection site={site} />
+
       {/* ===== 회사소개 (Why Edge Company) ===== */}
       <WhySection image={company.image} />
 
-      {/* ===== 대표 시공사례 (가장 눈에 띄게) ===== */}
-      <CategoryCases title="시공사례" desc="실제 고객 시공 현장을 그대로 담았습니다" cases={allCases} moreHref="/cases" bg="bg-bg" />
-
-      {/* ===== SNS 채널 ===== */}
-      <SnsSection site={site} />
+      {/* ===== 카테고리별 시공사례 (사진 중심·전면 배치) ===== */}
+      <CategoryCases title="실링팬 시공사례" desc="실제 고객 시공 현장" cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" />
+      <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
+      <CategoryCases title="스마트조명 시공사례" desc="앱 하나로 완성하는 스마트 라이프" cases={smartCases} moreHref={moreHref("스마트조명")} bg="bg-bg" />
 
       {/* ===== 쇼룸 갤러리 ===== */}
       <ShowroomGallery showroom={showroom} />
 
-      {/* ===== 카테고리별 시공사례 (데이터 있을 때만) ===== */}
-      {fanCases.length > 0 && <CategoryCases title="실링팬 시공사례" desc="실제 고객 시공 현장" cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-surface" />}
-      {indirectCases.length > 0 && <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-bg" />}
-      {smartCases.length > 0 && <CategoryCases title="스마트조명 시공사례" desc="앱 하나로 완성하는 스마트 라이프" cases={smartCases} moreHref={moreHref("스마트조명")} bg="bg-surface" />}
-
       {/* ===== 고객후기 ===== */}
-      {reviews.length > 0 && (
-        <section className="bg-surface py-16 md:py-24">
-          <div className="mx-auto max-w-[1200px] px-6">
-            <div className="mx-auto mb-12 max-w-[640px] text-center">
-              <p className="kicker">Reviews</p>
-              <h2 className="mt-3 text-[24px] font-bold text-ink md:text-[30px]">고객 후기</h2>
-              <p className="mt-3 text-[14.5px] text-muted">실제 시공 고객님들의 이야기입니다.</p>
-            </div>
-            <div className="grid gap-5 md:grid-cols-3">
-              {reviews.map((r) => (
-                <div key={r.id} className="overflow-hidden rounded-2xl border border-line bg-surface">
-                  {r.image && (
-                    <div className="relative aspect-[16/10] bg-bg">
-                      <Image src={r.image} alt={`${r.name} 후기`} fill sizes="(max-width:768px) 100vw, 380px" className="object-cover" />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <Stars n={r.rating} />
-                    <p className="mt-3 text-[15px] leading-relaxed text-ink">“{r.content}”</p>
-                    <p className="mt-4 text-[13px] font-semibold text-muted">{r.region ? `${r.region} · ` : ""}{r.name}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-10 text-center">
-              <Link href="/reviews" className="text-sm font-semibold text-gold-d">후기 더 보기 →</Link>
-            </div>
+      <section className="bg-[#f8f5f0] py-16 md:py-24">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mx-auto mb-10 max-w-[640px] text-center">
+            <p className="kicker">Reviews</p>
+            <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">고객 후기</h2>
+            <p className="mt-3 text-[14.5px] text-muted">실제 시공 고객님들의 이야기입니다. 옆으로 넘겨 더 많은 후기를 확인하세요.</p>
           </div>
-        </section>
-      )}
+        </div>
+        <div className="no-scrollbar flex snap-x gap-5 overflow-x-auto px-6 pb-3 md:[padding-inline:max(24px,calc((100vw-1200px)/2))]">
+          {reviewList.map((r) => (
+            <div key={r.id} className="relative w-[290px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-surface">
+              {"demo" in r && <span className="absolute right-3 top-3 z-10 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold text-ink/60 backdrop-blur-sm">예시</span>}
+              {r.image && (
+                <div className="relative aspect-[16/10] bg-bg">
+                  <Image src={r.image} alt={`${r.name} 후기`} fill sizes="290px" className="object-cover" />
+                </div>
+              )}
+              <div className="p-6">
+                <Stars n={r.rating} />
+                <p className="mt-3 line-clamp-4 text-[14.5px] leading-relaxed text-ink">“{r.content}”</p>
+                <p className="mt-4 text-[13px] font-semibold text-muted">{r.region ? `${r.region} · ` : ""}{r.name}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-9 text-center">
+          <Link href="/reviews" className="text-sm font-semibold text-gold-d">후기 더 보기 →</Link>
+        </div>
+      </section>
 
       {/* ===== FAQ ===== */}
       {faqs.length > 0 && (
@@ -134,15 +131,15 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ===== 상담 CTA ===== */}
-      <section className="bg-navy-d py-20 text-center text-white">
+      {/* ===== 상담 CTA (라이트) ===== */}
+      <section className="bg-warm py-20 text-center md:py-28">
         <div className="mx-auto max-w-[1200px] px-6">
-          <p className="kicker text-gold">Contact</p>
-          <h2 className="mt-4 whitespace-pre-line text-2xl font-bold leading-snug md:text-3xl">실링팬 · 간접조명 시공{"\n"}지금 상담받으세요</h2>
-          <a href={tel} className="mt-7 block text-3xl font-extrabold tracking-tight md:text-4xl">{site.phone}</a>
-          <div className="mt-7 flex justify-center gap-3">
-            <a href={tel} className="rounded-lg bg-gold px-6 py-3.5 text-[15px] font-bold text-ink">무료 상담</a>
-            <Link href="/contact" className="rounded-lg border border-white/30 px-6 py-3.5 text-[15px] font-semibold text-white">쇼룸 예약</Link>
+          <p className="kicker">Contact</p>
+          <h2 className="mt-4 whitespace-pre-line text-[30px] font-extrabold leading-[1.2] text-ink md:text-[48px]">실링팬 · 간접조명 시공{"\n"}지금 상담받으세요</h2>
+          <a href={tel} className="mt-6 block text-[40px] font-extrabold tracking-tight text-navy md:text-[64px]">{site.phone}</a>
+          <div className="mt-8 flex justify-center gap-3">
+            <a href={tel} className="rounded-lg bg-gold px-7 py-4 text-[16px] font-bold text-white transition hover:bg-gold-d">무료 상담</a>
+            <Link href="/contact" className="rounded-lg border border-gold bg-surface px-7 py-4 text-[16px] font-bold text-ink transition hover:bg-bg">쇼룸 예약</Link>
           </div>
         </div>
       </section>

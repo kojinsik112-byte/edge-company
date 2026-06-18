@@ -6,7 +6,7 @@ export default function MobileBar({ site }: { site: SiteInfo }) {
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
   const kakao = site.kakao || `sms:${site.phone.replace(/-/g, "")}`;
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 border-t border-line bg-surface/97 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 border-t border-line bg-surface/97 pb-[env(safe-area-inset-bottom)] backdrop-blur-md xl:hidden">
       <a href={tel} className="flex items-center justify-center gap-1.5 bg-navy py-3.5 text-sm font-semibold text-white">
         <Ic d="M6.5 3h-.8A2.7 2.7 0 0 0 3 5.8C3 14 10 21 18.2 21a2.7 2.7 0 0 0 2.8-2.7v-.8a1 1 0 0 0-.7-1l-3.2-1a1 1 0 0 0-1.1.4l-.9 1.3a13.4 13.4 0 0 1-5.8-5.8l1.3-.9a1 1 0 0 0 .4-1.1l-1-3.2a1 1 0 0 0-1-.7z" cls="text-gold" />
         전화상담
