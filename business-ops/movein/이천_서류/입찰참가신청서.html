@@ -3,41 +3,41 @@
 <style>
 @page { size: A4; margin: 0; }
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-body { font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1f2933; margin:0; }
+body { font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1a1a1a; margin:0; }
 .page { width:210mm; height:297mm; padding:12mm 16mm 9mm; position:relative; overflow:hidden; }
 /* 헤더 */
-.brandbar { height:7px; background:linear-gradient(90deg,#0f3d70 0%,#1f6fc0 55%,#3a93e0 100%); border-radius:4px; }
+.brandbar { height:7px; background:linear-gradient(90deg,#15233d 0%,#15233d 55%,#15233d 100%); border-radius:4px; }
 .head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:12px; }
-.brand { font-size:15px; font-weight:800; letter-spacing:1px; color:#0f3d70; }
+.brand { font-size:15px; font-weight:800; letter-spacing:1px; color:#15233d; }
 .brand small { display:block; font-size:10.5px; font-weight:600; letter-spacing:3px; color:#6b7a8d; margin-top:2px; }
-.doctype { font-size:11px; font-weight:700; color:#1f6fc0; border:1px solid #cfe0f2; background:#f2f8ff; padding:5px 12px; border-radius:20px; }
+.doctype { font-size:11px; font-weight:700; color:#15233d; border:1px solid #d3d3d8; background:#f3f3f4; padding:5px 12px; border-radius:20px; }
 .recv { text-align:center; font-size:13px; font-weight:700; color:#445; margin:18px 0 4px; letter-spacing:1px; }
-h1 { text-align:center; font-size:29px; font-weight:800; letter-spacing:10px; color:#0f3d70; margin:5px 0 5px; }
-.titleline { width:78px; height:4px; background:#1f6fc0; border-radius:3px; margin:0 auto 18px; }
+h1 { text-align:center; font-size:29px; font-weight:800; letter-spacing:10px; color:#15233d; margin:5px 0 5px; }
+.titleline { width:78px; height:4px; background:#15233d; border-radius:3px; margin:0 auto 18px; }
 /* 표 */
-table { width:100%; border-collapse:separate; border-spacing:0; font-size:12.5px; border:1.5px solid #b9cbe0; border-radius:10px; overflow:hidden; }
-td { border-bottom:1px solid #dce5ef; border-right:1px solid #dce5ef; padding:8px 10px; }
+table { width:100%; border-collapse:separate; border-spacing:0; font-size:12.5px; border:1.5px solid #c9c9cd; border-radius:10px; overflow:hidden; }
+td { border-bottom:1px solid #e0e0e3; border-right:1px solid #e0e0e3; padding:8px 10px; }
 tr:last-child td { border-bottom:none; }
-.lab { background:#eef5fc; text-align:center; font-weight:700; color:#28425e; width:128px; white-space:nowrap; }
-.grp { background:#dfeaf6; text-align:center; font-weight:800; color:#0f3d70; width:60px; letter-spacing:1px; }
+.lab { background:#f3f3f4; text-align:center; font-weight:700; color:#15233d; width:128px; white-space:nowrap; }
+.grp { background:#ebebed; text-align:center; font-weight:800; color:#15233d; width:60px; letter-spacing:1px; }
 td.val { text-align:center; }
 td.sub { white-space:nowrap; }
-td.sub b { color:#0f3d70; }
+td.sub b { color:#15233d; }
 /* 본문 */
-.body-txt { margin:18px 0 6px; padding:15px 20px; background:#f6f9fd; border-left:4px solid #1f6fc0; border-radius:6px; text-align:center; font-size:13px; line-height:1.85; color:#33424f; }
-.body-txt b { color:#0f3d70; font-weight:800; }
+.body-txt { margin:18px 0 6px; padding:15px 20px; background:#f5f5f6; border-left:4px solid #15233d; border-radius:6px; text-align:center; font-size:13px; line-height:1.85; color:#1a1a1a; }
+.body-txt b { color:#15233d; font-weight:800; }
 /* 서명 */
 .row { display:flex; justify-content:space-between; align-items:flex-end; margin-top:20px; }
 .sign { font-size:13.5px; line-height:2; }
-.sign b { color:#0f3d70; font-weight:800; }
-.stampbox { border:1.5px solid #b9cbe0; border-radius:8px; overflow:hidden; }
+.sign b { color:#15233d; font-weight:800; }
+.stampbox { border:1.5px solid #c9c9cd; border-radius:8px; overflow:hidden; }
 .stampbox td { border:none; }
-.stamp-lab { background:#eef5fc; font-weight:800; color:#28425e; text-align:center; width:58px; font-size:12px; letter-spacing:2px; }
+.stamp-lab { background:#f3f3f4; font-weight:800; color:#15233d; text-align:center; width:58px; font-size:12px; letter-spacing:2px; }
 .stamp-cell { width:150px; height:80px; position:relative; }
 .stamp-img { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:64px; height:64px; opacity:.9; }
-.date { text-align:center; font-size:14px; margin:20px 0 6px; letter-spacing:3px; color:#33424f; }
-.foot { text-align:center; font-size:15px; font-weight:800; color:#0f3d70; margin-top:12px; }
-.botbar { position:absolute; left:18mm; right:18mm; bottom:11mm; border-top:1px solid #d7e1ec; padding-top:6px; display:flex; justify-content:space-between; font-size:9.5px; color:#90a0b2; }
+.date { text-align:center; font-size:14px; margin:20px 0 6px; letter-spacing:3px; color:#1a1a1a; }
+.foot { text-align:center; font-size:15px; font-weight:800; color:#15233d; margin-top:12px; }
+.botbar { position:absolute; left:18mm; right:18mm; bottom:11mm; border-top:1px solid #e0e0e3; padding-top:6px; display:flex; justify-content:space-between; font-size:9.5px; color:#90a0b2; }
 </style></head>
 <body><div class="page">
   <div class="brandbar"></div>
@@ -51,7 +51,7 @@ td.sub b { color:#0f3d70; }
   <div class="titleline"></div>
 
   <table>
-    <tr><td class="lab">입 찰 명</td><td colspan="3" class="val" style="font-weight:700;color:#0f3d70;">이천 자이더레브 입주예정자협의회</td></tr>
+    <tr><td class="lab">입 찰 명</td><td colspan="3" class="val" style="font-weight:700;color:#15233d;">이천 자이더레브 입주예정자협의회</td></tr>
     <tr><td class="grp" rowspan="5">신청<br>업체</td><td class="lab">업 체 명</td><td colspan="2" class="val">주식회사 엣지컴퍼니</td></tr>
     <tr><td class="lab">대 표 자 명</td><td class="val">고진식</td><td class="val sub"><b>참여인력</b> &nbsp; 12명</td></tr>
     <tr><td class="lab">사업자등록번호</td><td colspan="2" class="val">508-81-42798</td></tr>
