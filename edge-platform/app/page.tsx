@@ -14,7 +14,7 @@ import ShowroomGallery from "@/components/ShowroomGallery";
 import CategoryCases from "@/components/CategoryCases";
 import WhySection from "@/components/WhySection";
 import { DEMO_REVIEWS } from "@/lib/demo";
-import DragScroll from "@/components/DragScroll";
+import ScrollRow from "@/components/ScrollRow";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getSettings();
@@ -89,7 +89,7 @@ export default async function Home() {
             <p className="mt-3 text-[14.5px] text-muted">실제 시공 고객님들의 이야기입니다. 옆으로 넘겨 더 많은 후기를 확인하세요.</p>
           </div>
         </div>
-        <DragScroll className="no-scrollbar mx-auto max-w-[1320px] overflow-x-auto px-6">
+        <ScrollRow fade="#f8f5f0">
           <div className="mx-auto flex w-max gap-5 pb-3">
             {reviewList.map((r) => (
               <div key={r.id} className="relative w-[290px] shrink-0 overflow-hidden rounded-2xl border border-line bg-surface">
@@ -107,7 +107,7 @@ export default async function Home() {
               </div>
             ))}
           </div>
-        </DragScroll>
+        </ScrollRow>
         <div className="mt-9 text-center">
           <Link href="/reviews" className="text-sm font-semibold text-gold-d">후기 더 보기 →</Link>
         </div>

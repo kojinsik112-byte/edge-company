@@ -1,5 +1,5 @@
 import Image from "next/image";
-import DragScroll from "@/components/DragScroll";
+import ScrollRow from "@/components/ScrollRow";
 import type { ProductRow } from "@/lib/types";
 
 const DEMO: { name: string; category: string; body: string; image: string }[] = [
@@ -16,10 +16,10 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
       <div className="reveal mx-auto mb-10 max-w-[640px] px-6 text-center">
         <p className="kicker">Products</p>
         <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">엣지컴퍼니 제품 소개</h2>
-        <p className="mt-3 text-[14.5px] text-muted">유선스위치 · 실링팬 · COB조명까지. 항목이 많으면 옆으로 넘겨보세요.</p>
+        <p className="mt-3 text-[14.5px] text-muted">유선스위치 · 실링팬 · COB조명까지. 옆으로 넘기면 더 많은 제품을 볼 수 있어요.</p>
       </div>
-      {/* 적으면 가운데 정렬, 많으면 옆으로 스크롤 */}
-      <DragScroll className="no-scrollbar mx-auto max-w-[1320px] overflow-x-auto px-6">
+      {/* 적으면 가운데 정렬, 많으면 옆으로 스크롤 (화살표·페이드 자동) */}
+      <ScrollRow fade="#ffffff">
         <div className="mx-auto flex w-max gap-5 pb-3">
           {items.map((p, i) => (
             <div key={"id" in p ? p.id : i} className="w-[300px] shrink-0 overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_30px_-20px_rgba(15,35,66,0.2)]">
@@ -35,7 +35,7 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
             </div>
           ))}
         </div>
-      </DragScroll>
+      </ScrollRow>
     </section>
   );
 }
