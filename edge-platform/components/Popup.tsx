@@ -54,10 +54,16 @@ export default function Popup() {
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-5" role="dialog" aria-modal="true">
       <div className="max-h-[88vh] w-full max-w-md overflow-y-auto overflow-hidden rounded-2xl bg-surface shadow-2xl">
         {popup.image && (
-          <Link href={popup.link || "#"} onClick={close}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={popup.image} alt={popup.title} className="w-full" />
-          </Link>
+          popup.link ? (
+            <Link href={popup.link} onClick={close}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={popup.image} alt={popup.title} className="w-full" />
+            </Link>
+          ) : (
+            // 링크 없는 이미지 팝업: 클릭하면 그냥 닫힘 (깨진 # 이동 방지)
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={popup.image} alt={popup.title} className="w-full cursor-pointer" onClick={close} />
+          )
         )}
         {(popup.title || popup.content || popup.link) && (
           <div className="p-6">

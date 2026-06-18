@@ -23,27 +23,35 @@ export default function SnsSection({ site }: { site: SiteInfo }) {
     <section className="border-b border-line bg-surface py-14 md:py-16">
       <div className="reveal mx-auto max-w-[1240px] px-6">
         <div className="grid gap-5 sm:grid-cols-3">
-          {channels.map((c) => (
-            <a
-              key={c.key}
-              href={c.href || "#"}
-              target={c.href ? "_blank" : undefined}
-              rel="noopener noreferrer"
-              className="group flex flex-col rounded-[20px] border border-line p-7 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_45px_-22px_rgba(15,35,66,0.22)]"
-              style={{ backgroundColor: c.bg }}
-            >
-              <div className="flex items-center gap-3">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm" style={{ color: c.brand }}>
-                  {c.icon}
-                </span>
-                <span className="text-[17px] font-bold text-ink">{c.title}</span>
-              </div>
-              <p className="mt-4 text-[13.5px] leading-relaxed text-muted">{c.desc}</p>
-              <span className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg border border-line bg-white py-3 text-[14px] font-bold text-ink transition group-hover:border-transparent group-hover:bg-[#dcc7ae]">
-                {c.cta} <span className="transition group-hover:translate-x-0.5">→</span>
-              </span>
-            </a>
-          ))}
+          {channels.map((c) => {
+            const live = Boolean(c.href);
+            const Tag = live ? "a" : "div";
+            return (
+              <Tag
+                key={c.key}
+                {...(live ? { href: c.href, target: "_blank", rel: "noopener noreferrer" } : {})}
+                className={`group flex flex-col rounded-[20px] border border-line p-7 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition duration-300 ${live ? "cursor-pointer hover:-translate-y-1.5 hover:shadow-[0_22px_45px_-22px_rgba(15,35,66,0.22)]" : ""}`}
+                style={{ backgroundColor: c.bg }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm" style={{ color: live ? c.brand : "#9ca3af" }}>
+                    {c.icon}
+                  </span>
+                  <span className="text-[17px] font-bold text-ink">{c.title}</span>
+                </div>
+                <p className="mt-4 text-[13.5px] leading-relaxed text-muted">{c.desc}</p>
+                {live ? (
+                  <span className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg border border-line bg-white py-3 text-[14px] font-bold text-ink transition group-hover:border-transparent group-hover:bg-[#dcc7ae]">
+                    {c.cta} <span className="transition group-hover:translate-x-0.5">→</span>
+                  </span>
+                ) : (
+                  <span className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-line bg-white/60 py-3 text-[13.5px] font-semibold text-muted">
+                    준비 중
+                  </span>
+                )}
+              </Tag>
+            );
+          })}
         </div>
       </div>
     </section>
