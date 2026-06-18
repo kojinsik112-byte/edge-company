@@ -101,7 +101,8 @@ export default async function Home() {
                 )}
                 <div className="p-6">
                   <Stars n={r.rating} />
-                  <p className="mt-3 text-[14.5px] leading-relaxed text-ink">“{r.content}”</p>
+                  {r.title && <p className="mt-3 text-[16px] font-bold leading-snug text-ink">{r.title}</p>}
+                  <p className={`${r.title ? "mt-1.5" : "mt-3"} text-[14.5px] leading-relaxed text-muted`}>“{r.content}”</p>
                   <p className="mt-4 text-[13px] font-semibold text-muted">{[r.region, r.apartment, r.name].filter(Boolean).join(" · ")}</p>
                 </div>
               </div>

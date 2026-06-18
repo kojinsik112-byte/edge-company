@@ -11,7 +11,7 @@ export default function ReviewsAdmin({ rows }: { rows: ReviewRow[] }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [list, setList] = useState(rows);
-  const [f, setF] = useState({ name: "", apartment: "", region: "울산", rating: 5, content: "" });
+  const [f, setF] = useState({ title: "", name: "", apartment: "", region: "울산", rating: 5, content: "" });
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -25,7 +25,7 @@ export default function ReviewsAdmin({ rows }: { rows: ReviewRow[] }) {
     setBusy(false);
     if (!error && data) {
       setList([data as ReviewRow, ...list]);
-      setF({ name: "", apartment: "", region: "울산", rating: 5, content: "" });
+      setF({ title: "", name: "", apartment: "", region: "울산", rating: 5, content: "" });
       setFile(null);
       router.refresh();
     }
@@ -48,6 +48,7 @@ export default function ReviewsAdmin({ rows }: { rows: ReviewRow[] }) {
     <>
       <form onSubmit={add} className="mb-8 space-y-3 rounded-2xl border border-line bg-surface p-5">
         <p className="text-[14px] font-bold text-ink">+ 후기 추가</p>
+        <input className={`${inp} w-full`} placeholder="제목 (예: 거실 분위기가 완전히 달라졌어요)" value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />
         <div className="grid gap-3 sm:grid-cols-2">
           <input className={inp} placeholder="아파트명 (예: 문수로 롯데캐슬)" value={f.apartment} onChange={(e) => setF({ ...f, apartment: e.target.value })} />
           <input className={inp} placeholder="작성자 (예: 김○○ 고객님)" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
@@ -65,7 +66,8 @@ export default function ReviewsAdmin({ rows }: { rows: ReviewRow[] }) {
           <div key={r.id} className="flex items-start justify-between gap-3 rounded-xl border border-line bg-surface p-4">
             <div>
               <p className="text-[13px] font-bold text-gold-d">{"★".repeat(r.rating)} <span className="text-ink">{[r.region, r.apartment, r.name].filter(Boolean).join(" · ")}</span> {!r.published && <span className="ml-1 text-[11px] text-muted">(비공개)</span>}</p>
-              <p className="mt-1 text-[13.5px] text-ink">{r.content}</p>
+              {r.title && <p className="mt-1 text-[14px] font-bold text-ink">{r.title}</p>}
+              <p className="mt-1 text-[13.5px] text-muted">{r.content}</p>
             </div>
             <div className="flex shrink-0 gap-2">
               <button onClick={() => toggle(r)} className="text-[12px] font-semibold text-muted hover:text-navy">{r.published ? "비공개" : "공개"}</button>

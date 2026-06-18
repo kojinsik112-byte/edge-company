@@ -21,6 +21,7 @@ export interface CaseRow {
 export interface ReviewRow {
   id: string;
   created_at: string;
+  title: string | null; // 한 줄 제목(헤드라인)
   name: string; // 작성자
   apartment: string | null; // 아파트명
   region: Region | null;

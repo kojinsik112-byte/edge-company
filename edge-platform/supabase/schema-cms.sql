@@ -92,6 +92,9 @@ alter table public.popups add column if not exists content text;
 -- 5-1) 후기 아파트명 컬럼 추가 ----------------------------------------
 alter table public.reviews add column if not exists apartment text;
 
+-- 5-2) 후기 제목(한 줄 헤드라인) 컬럼 추가 ---------------------------
+alter table public.reviews add column if not exists title text;
+
 -- 6) 제품 소개 (유선스위치·실링팬·COB조명 등) -------------------------
 create table if not exists public.products (
   id uuid primary key default gen_random_uuid(),
