@@ -11,6 +11,7 @@ import ShowroomGallery from "@/components/ShowroomGallery";
 import CategoryCases from "@/components/CategoryCases";
 import WhySection from "@/components/WhySection";
 import { DEMO_REVIEWS } from "@/lib/demo";
+import DragScroll from "@/components/DragScroll";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getSettings();
@@ -45,7 +46,7 @@ export default async function Home() {
       {/* ===== HERO ===== */}
       <section className="relative h-[calc(100svh-72px)] min-h-[680px] overflow-hidden bg-navy">
         <Image src={hero.image} alt="엣지컴퍼니 프리미엄 조명 쇼룸" fill priority sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(8,16,32,0.72) 0%, rgba(8,16,32,0.48) 42%, rgba(8,16,32,0.18) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(31,41,55,0.62) 0%, rgba(31,41,55,0.32) 45%, rgba(31,41,55,0.06) 100%)" }} />
         <div className="relative z-10 flex h-full items-center">
           <div className="mx-auto w-full max-w-[1200px] px-6 md:px-20">
             <div className="max-w-[620px]">
@@ -68,13 +69,13 @@ export default async function Home() {
       {/* ===== 회사소개 (Why Edge Company) ===== */}
       <WhySection image={company.image} />
 
+      {/* ===== 쇼룸 갤러리 (WHY 바로 아래) ===== */}
+      <ShowroomGallery showroom={showroom} />
+
       {/* ===== 카테고리별 시공사례 (사진 중심·전면 배치) ===== */}
       <CategoryCases title="실링팬 시공사례" desc="실제 고객 시공 현장" cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" />
       <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
       <CategoryCases title="스마트조명 시공사례" desc="앱 하나로 완성하는 스마트 라이프" cases={smartCases} moreHref={moreHref("스마트조명")} bg="bg-bg" />
-
-      {/* ===== 쇼룸 갤러리 ===== */}
-      <ShowroomGallery showroom={showroom} />
 
       {/* ===== 고객후기 ===== */}
       <section className="bg-[#f8f5f0] py-16 md:py-24">
@@ -85,9 +86,9 @@ export default async function Home() {
             <p className="mt-3 text-[14.5px] text-muted">실제 시공 고객님들의 이야기입니다. 옆으로 넘겨 더 많은 후기를 확인하세요.</p>
           </div>
         </div>
-        <div className="no-scrollbar flex snap-x gap-5 overflow-x-auto px-6 pb-3 md:[padding-inline:max(24px,calc((100vw-1200px)/2))]">
+        <DragScroll className="no-scrollbar flex snap-x gap-5 overflow-x-auto px-6 pb-3 md:[padding-inline:max(24px,calc((100vw-1200px)/2))]">
           {reviewList.map((r) => (
-            <div key={r.id} className="relative w-[290px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-surface">
+            <div key={r.id} className="pointer-events-none relative w-[290px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-surface">
               {"demo" in r && <span className="absolute right-3 top-3 z-10 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold text-ink/60 backdrop-blur-sm">예시</span>}
               {r.image && (
                 <div className="relative aspect-[16/10] bg-bg">
@@ -101,7 +102,7 @@ export default async function Home() {
               </div>
             </div>
           ))}
-        </div>
+        </DragScroll>
         <div className="mt-9 text-center">
           <Link href="/reviews" className="text-sm font-semibold text-gold-d">후기 더 보기 →</Link>
         </div>
