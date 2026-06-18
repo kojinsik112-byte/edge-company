@@ -43,24 +43,10 @@ export default async function Home() {
     <>
       <Popup />
 
-      {/* ===== HERO ===== */}
-      <section className="relative h-[calc(100svh-72px)] min-h-[680px] overflow-hidden bg-navy">
-        <Image src={hero.image} alt="엣지컴퍼니 프리미엄 조명 쇼룸" fill priority sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(31,41,55,0.48) 0%, rgba(31,41,55,0.28) 45%, rgba(250,248,245,0.08) 100%)" }} />
-        <div className="relative z-10 flex h-full items-center">
-          <div className="mx-auto w-full max-w-[1200px] px-6 md:px-20">
-            <div className="max-w-[620px]">
-              <p className="mb-[18px] text-[14px] font-semibold tracking-[0.5px] text-gold">{hero.eyebrow}</p>
-              <h1 className="mb-[22px] whitespace-pre-line text-[34px] font-extrabold leading-[1.18] tracking-[-1.2px] text-white md:text-[46px] lg:text-[56px]">{hero.title}</h1>
-              <p className="mb-[12px] text-[17px] font-bold text-white md:text-[18px]">{hero.subline}</p>
-              <p className="whitespace-pre-line text-[15px] font-normal leading-[1.8] text-white/90 md:text-[17px]">{hero.lead}</p>
-              <div className="mt-[30px] flex flex-wrap gap-3">
-                <a href={tel} className="rounded-[10px] border border-white/60 bg-white px-[30px] py-4 text-[16px] font-bold text-ink transition hover:bg-warm">무료 상담</a>
-                <Link href="/contact" className="rounded-[10px] bg-[#dcc7ae] px-[30px] py-4 text-[16px] font-bold text-ink transition hover:bg-gold">쇼룸 예약</Link>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* ===== HERO (이미지 배너만 — 문구·버튼은 이미지에 포함, 관리자에서 이미지 교체) ===== */}
+      <section className="relative h-[calc(100svh-72px)] min-h-[560px] overflow-hidden bg-warm">
+        <Image src={hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="object-cover" />
+        <h1 className="sr-only">{hero.title} · {hero.subline}</h1>
       </section>
 
       {/* ===== SNS 채널 (히어로 바로 아래) ===== */}
@@ -79,14 +65,14 @@ export default async function Home() {
 
       {/* ===== 고객후기 ===== */}
       <section className="bg-[#f8f5f0] py-16 md:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
+        <div className="mx-auto max-w-[1320px] px-6">
           <div className="mx-auto mb-10 max-w-[640px] text-center">
             <p className="kicker">Reviews</p>
             <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">고객 후기</h2>
             <p className="mt-3 text-[14.5px] text-muted">실제 시공 고객님들의 이야기입니다. 옆으로 넘겨 더 많은 후기를 확인하세요.</p>
           </div>
         </div>
-        <DragScroll className="no-scrollbar flex snap-x gap-5 overflow-x-auto px-6 pb-3 md:[padding-inline:max(24px,calc((100vw-1200px)/2))]">
+        <DragScroll className="no-scrollbar flex snap-x gap-5 overflow-x-auto px-6 pb-3 md:[padding-inline:max(24px,calc((100vw-1320px)/2))]">
           {reviewList.map((r) => (
             <div key={r.id} className="pointer-events-none relative w-[290px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-surface">
               {"demo" in r && <span className="absolute right-3 top-3 z-10 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold text-ink/60 backdrop-blur-sm">예시</span>}
@@ -134,7 +120,7 @@ export default async function Home() {
 
       {/* ===== 상담 CTA (라이트) ===== */}
       <section className="bg-warm py-20 text-center md:py-28">
-        <div className="mx-auto max-w-[1200px] px-6">
+        <div className="mx-auto max-w-[1320px] px-6">
           <p className="kicker">Contact</p>
           <h2 className="mt-4 whitespace-pre-line text-[30px] font-extrabold leading-[1.2] text-ink md:text-[48px]">실링팬 · 간접조명 시공{"\n"}지금 상담받으세요</h2>
           <a href={tel} className="mt-6 block text-[40px] font-extrabold tracking-tight text-navy md:text-[64px]">{site.phone}</a>

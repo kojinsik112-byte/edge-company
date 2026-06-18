@@ -12,17 +12,17 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
     <>
       {/* 상단 공지바 */}
       {notice.enabled && notice.text && (
-        <Link href={notice.link || "/contact"} className="block bg-navy py-2 text-center text-[12.5px] font-medium text-white">
+        <Link href={notice.link || "/contact"} className="block bg-ink py-2 text-center text-[12.5px] font-medium text-white">
           {notice.text}
           <span className="ml-2 text-gold">자세히 →</span>
         </Link>
       )}
 
       <header className="sticky top-0 z-50 border-b border-line bg-surface">
-        <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between px-6">
+        <div className="mx-auto flex h-[72px] max-w-[1320px] items-center justify-between px-6">
           {/* 로고 */}
           <Link href="/" className="flex shrink-0 items-center gap-3.5" aria-label="엣지컴퍼니 홈">
-            <span className="font-lux flex h-[44px] w-[44px] items-center justify-center rounded-[9px] bg-navy text-[25px] font-semibold text-gold">
+            <span className="font-lux flex h-[44px] w-[44px] items-center justify-center rounded-[9px] bg-ink text-[25px] font-semibold text-gold">
               E
             </span>
             <span className="leading-none">
@@ -46,7 +46,7 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
           </nav>
 
           <div className="flex items-center gap-2">
-            <a href={tel} className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-[14px] bg-navy px-5 py-3 text-[14px] font-bold text-white transition hover:bg-navy-d xl:inline-flex">
+            <a href={tel} className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-[14px] bg-ink px-5 py-3 text-[14px] font-bold text-white transition hover:bg-[#111827] xl:inline-flex">
               <PhoneIcon className="h-4 w-4 text-gold" />
               전화상담 {site.phone}
             </a>
@@ -70,7 +70,7 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
                 {n.label}
               </Link>
             ))}
-            <a href={tel} className="mt-5 flex items-center justify-center gap-2 rounded-[14px] bg-navy py-3.5 font-bold text-white">
+            <a href={tel} className="mt-5 flex items-center justify-center gap-2 rounded-[14px] bg-ink py-3.5 font-bold text-white">
               <PhoneIcon className="h-4 w-4 text-gold" /> 전화 상담 {site.phone}
             </a>
           </nav>

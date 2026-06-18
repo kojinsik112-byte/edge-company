@@ -12,7 +12,7 @@ const TRUST = ["ISO 인증기업", "전기공사 면허 보유", "전국 네트�
 export default function WhySection({ image }: { image: string }) {
   return (
     <section className="bg-surface py-16 md:py-24">
-      <div className="mx-auto max-w-[1200px] px-6">
+      <div className="mx-auto max-w-[1320px] px-6">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
           {/* 좌측 비주얼 */}
           <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-warm md:aspect-[4/4.4]">

@@ -11,7 +11,7 @@ export default function Footer({ site }: { site: SiteInfo }) {
 
   return (
     <footer className="border-t border-line bg-surface">
-      <div className="mx-auto max-w-[1200px] px-6 py-12">
+      <div className="mx-auto max-w-[1320px] px-6 py-12">
         {/* 지역 SEO 내부링크 */}
         <div className="mb-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
           {REGIONS.map((r) => (

@@ -21,7 +21,7 @@ export default function SnsSection({ site }: { site: SiteInfo }) {
 
   return (
     <section className="border-b border-line bg-surface py-14 md:py-16">
-      <div className="mx-auto max-w-[1100px] px-6">
+      <div className="mx-auto max-w-[1240px] px-6">
         <div className="grid gap-5 sm:grid-cols-3">
           {channels.map((c) => (
             <a
