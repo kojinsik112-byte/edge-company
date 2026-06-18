@@ -6,7 +6,7 @@ export const SITE = {
   tagline: "울산·부산·포항·경주 실링팬·간접조명·스마트조명 전문 쇼룸",
   phone: "010-4900-6107",
   phoneRep: "1533-3210",
-  address: "울산광역시 울주군 청량읍 상남1길 28",
+  address: "울산광역시 울주군 온산로 615-1",
   // 배포 후 실제 도메인으로 교체 (env NEXT_PUBLIC_SITE_URL 우선)
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://edge-company.vercel.app",
   // 카카오톡 채널 채팅 URL (예: https://pf.kakao.com/_xxxx/chat) — 없으면 문자로 폴백

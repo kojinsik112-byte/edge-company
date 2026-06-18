@@ -115,6 +115,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
           onAdd={addShowroomImages}
           onRemove={(i) => patch("showroom", { images: (s.showroom.images ?? []).filter((_, j) => j !== i) })}
         />
+        <ImageField label="오시는 길 지도 이미지" hint="가로형 권장 (예: 1320 × 500px) · 직접 만든 지도 캡처" url={s.showroom.map} onPick={(f) => pick(f, (url) => patch("showroom", { map: url }))} />
       </Section>
 
       {/* 카테고리 대표이미지 */}

@@ -11,8 +11,7 @@ export const metadata: Metadata = {
 export default async function ShowroomPage() {
   const { showroom, site } = await getSettings();
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
-  const mapQuery = encodeURIComponent(site.address);
-  const mapUrl = `https://map.naver.com/p/search/${mapQuery}`;
+  const mapUrl = `https://map.naver.com/p/search/${encodeURIComponent(site.address)}`;
   const mainImg = showroom.images?.[0] || showroom.image;
 
   return (
@@ -44,19 +43,24 @@ export default async function ShowroomPage() {
         </div>
       </div>
 
-      {/* 오시는 길 (지도) */}
+      {/* 오시는 길 (지도 이미지 — 관리자 업로드) */}
       <div className="mt-14">
         <h2 className="mb-4 text-[18px] font-bold text-ink">오시는 길</h2>
-        <div className="overflow-hidden rounded-2xl border border-line">
-          <iframe
-            title="엣지컴퍼니 쇼룸 위치"
-            src={`https://maps.google.com/maps?q=${mapQuery}&hl=ko&z=16&output=embed`}
-            className="h-[360px] w-full md:h-[440px]"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+        <div className="overflow-hidden rounded-2xl border border-line bg-warm">
+          {showroom.map ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={showroom.map} alt="엣지컴퍼니 쇼룸 오시는 길 지도" className="w-full" />
+          ) : (
+            <div className="flex h-[280px] flex-col items-center justify-center gap-2 text-muted md:h-[360px]">
+              <svg viewBox="0 0 24 24" className="h-8 w-8 text-gold" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
+              <p className="text-[13px]">지도 이미지 자리 — 관리자 → 사이트설정 → 쇼룸에서 업로드</p>
+            </div>
+          )}
         </div>
-        <p className="mt-3 text-[13px] text-muted">{site.address}</p>
+        <p className="mt-3 flex flex-wrap items-center gap-3 text-[13px] text-muted">
+          {site.address}
+          <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-gold-d hover:text-gold">네이버 지도에서 보기 →</a>
+        </p>
       </div>
     </div>
   );

@@ -36,6 +36,7 @@ export interface Showroom {
   body: string;
   hours: string;
   images: string[]; // 쇼룸 갤러리 (4~6장)
+  map: string; // 오시는 길 지도 이미지 (관리자 업로드)
 }
 export type Categories = Record<string, string>; // 카테고리명 → 대표이미지 URL
 export interface SeoSettings {
@@ -56,7 +57,7 @@ export const DEFAULT_SETTINGS: Settings = {
   site: {
     phone: SITE.phone,
     phoneRep: SITE.phoneRep,
-    address: SITE.address,
+    address: "울산광역시 울주군 온산로 615-1",
     kakao: "",
     instagram: "",
     youtube: "",
@@ -84,6 +85,7 @@ export const DEFAULT_SETTINGS: Settings = {
     body: "실링팬, 간접조명, 스마트조명을 직접 체험하고 비교할 수 있는 울산 프리미엄 쇼룸입니다.",
     hours: "방문 전 연락 주시면 대기 없이 안내해 드립니다",
     images: ["/img/living-hero.webp", "/img/indirect.webp", "/img/fan.webp", "/img/curtain.webp", "/img/sofa.webp"],
+    map: "",
   },
   categories: {
     실링팬: "/img/fan.webp",

@@ -19,7 +19,7 @@ create policy settings_admin_all on public.settings for all to authenticated usi
 insert into public.settings (key, value) values
 ('site', '{
   "phone":"010-4900-6107","phoneRep":"1533-3210",
-  "address":"울산광역시 울주군 청량읍 상남1길 28",
+  "address":"울산광역시 울주군 온산로 615-1",
   "kakao":"","instagram":"","youtube":"","blog":"",
   "bizName":"㈜엣지컴퍼니","ceo":"고진식","bizNo":"508-81-42798"
 }'),
