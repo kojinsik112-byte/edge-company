@@ -11,13 +11,13 @@ export default function ReviewsAdmin({ rows }: { rows: ReviewRow[] }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [list, setList] = useState(rows);
-  const [f, setF] = useState({ name: "", region: "울산", rating: 5, content: "" });
+  const [f, setF] = useState({ name: "", apartment: "", region: "울산", rating: 5, content: "" });
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function add(e: React.FormEvent) {
     e.preventDefault();
-    if (!f.name || !f.content) return;
+    if (!f.content || (!f.name && !f.apartment)) return;
     setBusy(true);
     let image: string | null = null;
     if (file) image = await uploadImage(supabase, file);
@@ -25,7 +25,7 @@ export default function ReviewsAdmin({ rows }: { rows: ReviewRow[] }) {
     setBusy(false);
     if (!error && data) {
       setList([data as ReviewRow, ...list]);
-      setF({ name: "", region: "울산", rating: 5, content: "" });
+      setF({ name: "", apartment: "", region: "울산", rating: 5, content: "" });
       setFile(null);
       router.refresh();
     }
@@ -48,10 +48,11 @@ export default function ReviewsAdmin({ rows }: { rows: ReviewRow[] }) {
     <>
       <form onSubmit={add} className="mb-8 space-y-3 rounded-2xl border border-line bg-surface p-5">
         <p className="text-[14px] font-bold text-ink">+ 후기 추가</p>
-        <div className="grid gap-3 sm:grid-cols-3">
-          <input className={inp} placeholder="이름/아파트명" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
+        <div className="grid gap-3 sm:grid-cols-2">
+          <input className={inp} placeholder="아파트명 (예: 문수로 롯데캐슬)" value={f.apartment} onChange={(e) => setF({ ...f, apartment: e.target.value })} />
+          <input className={inp} placeholder="작성자 (예: 김○○ 고객님)" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
           <select className={inp} value={f.region} onChange={(e) => setF({ ...f, region: e.target.value })}>{REGIONS.map((r) => <option key={r}>{r}</option>)}</select>
-          <select className={inp} value={f.rating} onChange={(e) => setF({ ...f, rating: Number(e.target.value) })}>{[5, 4, 3, 2, 1].map((n) => <option key={n} value={n}>{"★".repeat(n)}</option>)}</select>
+          <select className={inp} value={f.rating} onChange={(e) => setF({ ...f, rating: Number(e.target.value) })}>{[5, 4, 3, 2, 1].map((n) => <option key={n} value={n}>{"★".repeat(n)} ({n}점)</option>)}</select>
         </div>
         <textarea className={`${inp} w-full`} placeholder="후기 내용" value={f.content} onChange={(e) => setF({ ...f, content: e.target.value })} />
         <p className="text-[11.5px] text-gold-d">후기 사진 권장 크기 1200 × 750px (16:10)</p>
@@ -63,7 +64,7 @@ export default function ReviewsAdmin({ rows }: { rows: ReviewRow[] }) {
         {list.map((r) => (
           <div key={r.id} className="flex items-start justify-between gap-3 rounded-xl border border-line bg-surface p-4">
             <div>
-              <p className="text-[13px] font-bold text-gold-d">{"★".repeat(r.rating)} <span className="text-ink">{r.region} · {r.name}</span> {!r.published && <span className="ml-1 text-[11px] text-muted">(비공개)</span>}</p>
+              <p className="text-[13px] font-bold text-gold-d">{"★".repeat(r.rating)} <span className="text-ink">{[r.region, r.apartment, r.name].filter(Boolean).join(" · ")}</span> {!r.published && <span className="ml-1 text-[11px] text-muted">(비공개)</span>}</p>
               <p className="mt-1 text-[13.5px] text-ink">{r.content}</p>
             </div>
             <div className="flex shrink-0 gap-2">

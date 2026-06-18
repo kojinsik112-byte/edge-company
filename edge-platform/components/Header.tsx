@@ -27,7 +27,7 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
             </span>
             <span className="leading-none">
               <span className="block text-[22px] font-extrabold tracking-tight text-ink">엣지컴퍼니</span>
-              <span className="font-lux mt-1.5 block whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.28em] text-gold-d">
+              <span className="font-lux mt-1.5 hidden whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.28em] text-gold-d sm:block">
                 Edge Company · Lighting Showroom
               </span>
             </span>

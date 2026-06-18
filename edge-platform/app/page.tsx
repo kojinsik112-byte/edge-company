@@ -89,22 +89,24 @@ export default async function Home() {
             <p className="mt-3 text-[14.5px] text-muted">실제 시공 고객님들의 이야기입니다. 옆으로 넘겨 더 많은 후기를 확인하세요.</p>
           </div>
         </div>
-        <DragScroll className="no-scrollbar flex snap-x gap-5 overflow-x-auto px-6 pb-3 md:[padding-inline:max(24px,calc((100vw-1320px)/2))]">
-          {reviewList.map((r) => (
-            <div key={r.id} className="pointer-events-none relative w-[290px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-surface">
-              {"demo" in r && <span className="absolute right-3 top-3 z-10 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold text-ink/60 backdrop-blur-sm">예시</span>}
-              {r.image && (
-                <div className="relative aspect-[16/10] bg-bg">
-                  <Image src={r.image} alt={`${r.name} 후기`} fill sizes="290px" className="object-cover" />
+        <DragScroll className="no-scrollbar mx-auto max-w-[1320px] overflow-x-auto px-6">
+          <div className="mx-auto flex w-max gap-5 pb-3">
+            {reviewList.map((r) => (
+              <div key={r.id} className="relative w-[290px] shrink-0 overflow-hidden rounded-2xl border border-line bg-surface">
+                {"demo" in r && <span className="absolute right-3 top-3 z-10 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold text-ink/60 backdrop-blur-sm">예시</span>}
+                {r.image && (
+                  <div className="relative aspect-[16/10] bg-bg">
+                    <Image src={r.image} alt={`${r.name} 후기`} fill sizes="290px" className="object-cover" />
+                  </div>
+                )}
+                <div className="p-6">
+                  <Stars n={r.rating} />
+                  <p className="mt-3 text-[14.5px] leading-relaxed text-ink">“{r.content}”</p>
+                  <p className="mt-4 text-[13px] font-semibold text-muted">{[r.region, r.apartment, r.name].filter(Boolean).join(" · ")}</p>
                 </div>
-              )}
-              <div className="p-6">
-                <Stars n={r.rating} />
-                <p className="mt-3 line-clamp-4 text-[14.5px] leading-relaxed text-ink">“{r.content}”</p>
-                <p className="mt-4 text-[13px] font-semibold text-muted">{r.region ? `${r.region} · ` : ""}{r.name}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </DragScroll>
         <div className="mt-9 text-center">
           <Link href="/reviews" className="text-sm font-semibold text-gold-d">후기 더 보기 →</Link>

@@ -30,7 +30,7 @@ export default async function ReviewsPage() {
                 <Stars n={r.rating} />
                 <p className="mt-3 text-[15px] leading-relaxed text-ink">“{r.content}”</p>
                 <p className="mt-4 text-[13px] font-semibold text-muted">
-                  {r.region ? `${r.region} · ` : ""}{r.name}
+                  {[r.region, r.apartment, r.name].filter(Boolean).join(" · ")}
                 </p>
               </div>
             </div>
