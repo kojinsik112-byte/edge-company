@@ -46,17 +46,17 @@ export default async function Home() {
       {/* ===== HERO ===== */}
       <section className="relative h-[calc(100svh-72px)] min-h-[680px] overflow-hidden bg-navy">
         <Image src={hero.image} alt="엣지컴퍼니 프리미엄 조명 쇼룸" fill priority sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(31,41,55,0.62) 0%, rgba(31,41,55,0.32) 45%, rgba(31,41,55,0.06) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(31,41,55,0.48) 0%, rgba(31,41,55,0.28) 45%, rgba(250,248,245,0.08) 100%)" }} />
         <div className="relative z-10 flex h-full items-center">
           <div className="mx-auto w-full max-w-[1200px] px-6 md:px-20">
             <div className="max-w-[620px]">
               <p className="mb-[18px] text-[14px] font-semibold tracking-[0.5px] text-gold">{hero.eyebrow}</p>
-              <h1 className="mb-[22px] whitespace-pre-line text-[36px] font-extrabold leading-[1.15] tracking-[-1.2px] text-white md:text-[52px] lg:text-[64px]">{hero.title}</h1>
+              <h1 className="mb-[22px] whitespace-pre-line text-[34px] font-extrabold leading-[1.18] tracking-[-1.2px] text-white md:text-[46px] lg:text-[56px]">{hero.title}</h1>
               <p className="mb-[12px] text-[17px] font-bold text-white md:text-[18px]">{hero.subline}</p>
               <p className="whitespace-pre-line text-[15px] font-normal leading-[1.8] text-white/90 md:text-[17px]">{hero.lead}</p>
               <div className="mt-[30px] flex flex-wrap gap-3">
-                <a href={tel} className="rounded-[8px] bg-navy px-[30px] py-4 text-[16px] font-bold text-white transition hover:bg-navy-d">무료 상담</a>
-                <Link href="/contact" className="rounded-[8px] bg-gold px-[30px] py-4 text-[16px] font-bold text-ink transition hover:bg-gold-d">쇼룸 예약</Link>
+                <a href={tel} className="rounded-[10px] border border-white/60 bg-white px-[30px] py-4 text-[16px] font-bold text-ink transition hover:bg-warm">무료 상담</a>
+                <Link href="/contact" className="rounded-[10px] bg-[#dcc7ae] px-[30px] py-4 text-[16px] font-bold text-ink transition hover:bg-gold">쇼룸 예약</Link>
               </div>
             </div>
           </div>

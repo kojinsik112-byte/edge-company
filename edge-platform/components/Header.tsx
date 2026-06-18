@@ -36,14 +36,17 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
           {/* 데스크탑 메뉴 */}
           <nav className="hidden items-center gap-6 xl:flex">
             {NAV.filter((n) => n.label !== "상담문의").map((n) => (
-              <Link key={n.href} href={n.href} className="whitespace-nowrap text-[14px] font-medium text-[#333333] transition hover:text-gold">
+              <Link key={n.href} href={n.href} className="inline-flex items-center gap-1 whitespace-nowrap text-[14px] font-medium text-[#333333] transition hover:text-gold">
+                {n.label === "유튜브" && (
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.7-1.8C18.3 5 12 5 12 5s-6.3 0-7.9.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.7 1.8C5.7 19 12 19 12 19s6.3 0 7.9-.4a2.5 2.5 0 0 0 1.7-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5 3z" /></svg>
+                )}
                 {n.label}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-2">
-            <a href={tel} className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-[8px] bg-navy px-5 py-3 text-[14px] font-bold text-white transition hover:bg-navy-d xl:inline-flex">
+            <a href={tel} className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-[14px] bg-navy px-5 py-3 text-[14px] font-bold text-white transition hover:bg-navy-d xl:inline-flex">
               <PhoneIcon className="h-4 w-4 text-gold" />
               전화상담 {site.phone}
             </a>
@@ -67,7 +70,7 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
                 {n.label}
               </Link>
             ))}
-            <a href={tel} className="mt-5 flex items-center justify-center gap-2 rounded-[8px] bg-navy py-3.5 font-bold text-white">
+            <a href={tel} className="mt-5 flex items-center justify-center gap-2 rounded-[14px] bg-navy py-3.5 font-bold text-white">
               <PhoneIcon className="h-4 w-4 text-gold" /> 전화 상담 {site.phone}
             </a>
           </nav>
