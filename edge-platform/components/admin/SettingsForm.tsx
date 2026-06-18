@@ -67,11 +67,12 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
           <Field label="대표번호"><Inp value={s.site.phoneRep} onChange={(v) => patch("site", { phoneRep: v })} /></Field>
         </Grid>
         <Field label="주소"><Inp value={s.site.address} onChange={(v) => patch("site", { address: v })} /></Field>
+        <p className="pt-1 text-[12px] font-bold text-gold-d">SNS · 채널 링크 (주소 입력 시 버튼/아이콘 자동 노출)</p>
         <Grid>
-          <Field label="카카오톡 상담 링크"><Inp value={s.site.kakao} onChange={(v) => patch("site", { kakao: v })} placeholder="https://pf.kakao.com/_xxxx/chat" /></Field>
-          <Field label="인스타그램"><Inp value={s.site.instagram} onChange={(v) => patch("site", { instagram: v })} /></Field>
-          <Field label="유튜브"><Inp value={s.site.youtube} onChange={(v) => patch("site", { youtube: v })} /></Field>
-          <Field label="네이버 블로그"><Inp value={s.site.blog} onChange={(v) => patch("site", { blog: v })} /></Field>
+          <Field label="인스타그램 주소"><Inp value={s.site.instagram} onChange={(v) => patch("site", { instagram: v })} placeholder="https://instagram.com/..." /></Field>
+          <Field label="유튜브 주소"><Inp value={s.site.youtube} onChange={(v) => patch("site", { youtube: v })} placeholder="https://youtube.com/@..." /></Field>
+          <Field label="네이버 블로그 주소"><Inp value={s.site.blog} onChange={(v) => patch("site", { blog: v })} placeholder="https://blog.naver.com/..." /></Field>
+          <Field label="카카오톡 채널 링크"><Inp value={s.site.kakao} onChange={(v) => patch("site", { kakao: v })} placeholder="https://pf.kakao.com/_xxxx/chat (카톡 상담 버튼 연결)" /></Field>
         </Grid>
         <Grid>
           <Field label="상호"><Inp value={s.site.bizName} onChange={(v) => patch("site", { bizName: v })} /></Field>
