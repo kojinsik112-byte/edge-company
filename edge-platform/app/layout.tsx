@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MobileBar from "@/components/MobileBar";
+import RevealInit from "@/components/RevealInit";
 import { SITE } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
 
@@ -42,6 +43,7 @@ export default async function RootLayout({
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="flex min-h-full flex-col pb-[56px] xl:pb-0">
+        <RevealInit />
         <Header site={site} notice={notice} />
         <main className="flex-1">{children}</main>
         <Footer site={site} />

@@ -33,6 +33,11 @@ body {
 /* 명품 세리프 영문 워드마크 (Cormorant Garamond) */
 .font-lux { font-family: 'Cormorant Garamond', 'Times New Roman', serif; }
 
+/* 스크롤 등장 애니메이션 — JS(reveal-ready) 있을 때만 숨겼다 나타남 (JS 없으면 항상 보임) */
+html.reveal-ready .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+html.reveal-ready .reveal.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { html.reveal-ready .reveal { opacity: 1 !important; transform: none !important; } }
+
 /* utility: section kicker */
 .kicker {
   font-size: 11px;

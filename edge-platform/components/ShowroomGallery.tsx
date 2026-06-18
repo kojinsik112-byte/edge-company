@@ -6,7 +6,7 @@ export default function ShowroomGallery({ showroom }: { showroom: Showroom }) {
   const images = (showroom.images?.length ? showroom.images : [showroom.image]).filter(Boolean).slice(0, 6);
   return (
     <section className="bg-warm py-16 md:py-24">
-      <div className="mx-auto max-w-[1320px] px-6">
+      <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="mx-auto mb-12 max-w-[680px] text-center">
           <p className="kicker">Showroom</p>
           <h2 className="mt-3 text-[28px] font-extrabold leading-snug text-ink md:text-[40px]">{showroom.title}</h2>

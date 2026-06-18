@@ -20,7 +20,7 @@ export default function CategoryCases({
   const showDemo = cases.length === 0;
   return (
     <section className={`${bg} py-16 md:py-24`}>
-      <div className="mx-auto max-w-[1320px] px-6">
+      <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="mb-10 flex items-end justify-between gap-4">
           <div>
             <h2 className="text-[24px] font-extrabold leading-snug text-ink md:text-[32px]">{title}</h2>

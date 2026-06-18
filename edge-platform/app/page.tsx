@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
-import { getCases, getReviews, getFaqs, getProducts } from "@/lib/data";
+import { getCases, getReviews, getFaqs, getProducts, getYoutube } from "@/lib/data";
+import YoutubeSection from "@/components/YoutubeSection";
 import ProductsSection from "@/components/ProductsSection";
 import ProcessSection from "@/components/ProcessSection";
 import Stars from "@/components/Stars";
@@ -28,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [settings, fanCases, indirectCases, smartCases, reviews, faqs, products] = await Promise.all([
+  const [settings, fanCases, indirectCases, smartCases, reviews, faqs, products, videos] = await Promise.all([
     getSettings(),
     getCases({ category: "실링팬", limit: 6 }),
     getCases({ category: "간접조명", limit: 6 }),
@@ -36,6 +37,7 @@ export default async function Home() {
     getReviews(12),
     getFaqs(),
     getProducts(),
+    getYoutube(),
   ]);
   const { site, hero, showroom, company } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
@@ -69,12 +71,15 @@ export default async function Home() {
       <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
       <CategoryCases title="스마트조명 시공사례" desc="앱 하나로 완성하는 스마트 라이프" cases={smartCases} moreHref={moreHref("스마트조명")} bg="bg-bg" />
 
+      {/* ===== 시공 영상 (인페이지 재생) ===== */}
+      <YoutubeSection videos={videos} />
+
       {/* ===== 시공 절차 ===== */}
       <ProcessSection />
 
       {/* ===== 고객후기 ===== */}
       <section className="bg-[#f8f5f0] py-16 md:py-24">
-        <div className="mx-auto max-w-[1320px] px-6">
+        <div className="reveal mx-auto max-w-[1320px] px-6">
           <div className="mx-auto mb-10 max-w-[640px] text-center">
             <p className="kicker">Reviews</p>
             <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">고객 후기</h2>
@@ -105,7 +110,7 @@ export default async function Home() {
 
       {/* ===== FAQ ===== */}
       {faqs.length > 0 && (
-        <section className="mx-auto max-w-[1080px] px-6 py-16 md:py-24">
+        <section className="reveal mx-auto max-w-[1080px] px-6 py-16 md:py-24">
           <div className="mx-auto mb-12 max-w-[640px] text-center">
             <p className="kicker">FAQ</p>
             <h2 className="mt-3 text-[24px] font-bold text-ink md:text-[30px]">자주 묻는 질문</h2>
@@ -129,7 +134,7 @@ export default async function Home() {
 
       {/* ===== 상담 CTA (라이트) ===== */}
       <section className="bg-warm py-20 text-center md:py-28">
-        <div className="mx-auto max-w-[1320px] px-6">
+        <div className="reveal mx-auto max-w-[1320px] px-6">
           <p className="kicker">Contact</p>
           <h2 className="mt-4 whitespace-pre-line text-[30px] font-extrabold leading-[1.2] text-ink md:text-[48px]">실링팬 · 간접조명 시공{"\n"}지금 상담받으세요</h2>
           <a href={tel} className="mt-6 block text-[40px] font-extrabold tracking-tight text-navy md:text-[64px]">{site.phone}</a>

@@ -12,7 +12,7 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
   const items = showDemo ? DEMO : products;
   return (
     <section className="bg-surface py-16 md:py-24">
-      <div className="mx-auto max-w-[1320px] px-6">
+      <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="mx-auto mb-12 max-w-[640px] text-center">
           <p className="kicker">Products</p>
           <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">엣지컴퍼니 제품 소개</h2>

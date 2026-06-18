@@ -9,7 +9,7 @@ const STEPS = [
 export default function ProcessSection() {
   return (
     <section className="bg-warm py-16 md:py-24">
-      <div className="mx-auto max-w-[1320px] px-6">
+      <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="mx-auto mb-12 max-w-[640px] text-center">
           <p className="kicker">Process</p>
           <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">상담부터 사후관리까지</h2>
