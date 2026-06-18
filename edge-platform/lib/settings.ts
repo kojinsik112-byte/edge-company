@@ -1,0 +1,112 @@
+import { createClient } from "./supabase/server";
+import { SITE } from "./constants";
+
+export interface SiteInfo {
+  phone: string;
+  phoneRep: string;
+  address: string;
+  kakao: string;
+  instagram: string;
+  youtube: string;
+  blog: string;
+  bizName: string;
+  ceo: string;
+  bizNo: string;
+}
+export interface Notice {
+  enabled: boolean;
+  text: string;
+  link: string;
+}
+export interface Hero {
+  image: string;
+  eyebrow: string;
+  title: string;
+  subline: string;
+  lead: string;
+}
+export interface Company {
+  image: string;
+  title: string;
+  body: string;
+}
+export interface Showroom {
+  image: string;
+  title: string;
+  body: string;
+  hours: string;
+}
+export type Categories = Record<string, string>; // 카테고리명 → 대표이미지 URL
+export interface SeoSettings {
+  home: { title: string; description: string; keywords: string; og: string };
+}
+
+export interface Settings {
+  site: SiteInfo;
+  notice: Notice;
+  hero: Hero;
+  company: Company;
+  showroom: Showroom;
+  categories: Categories;
+  seo: SeoSettings;
+}
+
+export const DEFAULT_SETTINGS: Settings = {
+  site: {
+    phone: SITE.phone,
+    phoneRep: SITE.phoneRep,
+    address: SITE.address,
+    kakao: "",
+    instagram: "",
+    youtube: "",
+    blog: "",
+    bizName: "㈜엣지컴퍼니",
+    ceo: "고진식",
+    bizNo: "508-81-42798",
+  },
+  notice: { enabled: false, text: "울산 쇼룸 예약 상담 진행중", link: "/contact" },
+  hero: {
+    image: "/img/living-hero.webp",
+    eyebrow: "울산 · 부산 · 포항 · 경주",
+    title: "빛과 바람으로 완성하는\n프리미엄 공간",
+    subline: "실링팬 · 간접조명 · 스마트조명 전문 쇼룸",
+    lead: "직접 보고, 비교하고, 체험한 뒤 선택할 수 있는 엣지컴퍼니 조명 쇼룸입니다.",
+  },
+  company: {
+    image: "/img/sofa.webp",
+    title: "엣지컴퍼니 소개",
+    body: "전기공사업 면허를 보유한 법인이 직접 시공하는 프리미엄 조명 쇼룸입니다.",
+  },
+  showroom: {
+    image: "/img/fan.webp",
+    title: "울산 조명 쇼룸에서 직접 체험하세요",
+    body: "실링팬의 바람과 소음, 간접조명의 색온도와 깊이는 사진만으로 알 수 없습니다. 실제로 켜 보고 비교하고 우리 집에 맞는 조합을 찾으실 수 있도록 쇼룸을 운영합니다.",
+    hours: "방문 전 연락 주시면 대기 없이 안내해 드립니다",
+  },
+  categories: {
+    실링팬: "/img/fan.webp",
+    간접조명: "/img/indirect.webp",
+    스마트조명: "/img/curtain.webp",
+  },
+  seo: { home: { title: "", description: "", keywords: "", og: "" } },
+};
+
+/** 모든 설정을 한 번에 읽어 기본값과 병합 (Supabase 미연결/누락 키는 기본값) */
+export async function getSettings(): Promise<Settings> {
+  const supabase = await createClient();
+  const merged: Settings = structuredClone(DEFAULT_SETTINGS);
+  if (!supabase) return merged;
+  try {
+    const { data } = await supabase.from("settings").select("key,value");
+    for (const row of data ?? []) {
+      const key = row.key as string;
+      if (key in merged) {
+        const m = merged as unknown as Record<string, Record<string, unknown>>;
+        m[key] = { ...m[key], ...(row.value ?? {}) };
+      }
+    }
+  } catch {
+    // 무시 — 기본값 사용
+  }
+  return merged;
+}
