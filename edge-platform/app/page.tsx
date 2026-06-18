@@ -5,6 +5,7 @@ import { REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
 import { getCases, getReviews, getFaqs, getProducts } from "@/lib/data";
 import ProductsSection from "@/components/ProductsSection";
+import ProcessSection from "@/components/ProcessSection";
 import Stars from "@/components/Stars";
 import Popup from "@/components/Popup";
 import SnsSection from "@/components/SnsSection";
@@ -67,6 +68,9 @@ export default async function Home() {
       <CategoryCases title="실링팬 시공사례" desc="실제 고객 시공 현장" cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" />
       <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
       <CategoryCases title="스마트조명 시공사례" desc="앱 하나로 완성하는 스마트 라이프" cases={smartCases} moreHref={moreHref("스마트조명")} bg="bg-bg" />
+
+      {/* ===== 시공 절차 ===== */}
+      <ProcessSection />
 
       {/* ===== 고객후기 ===== */}
       <section className="bg-[#f8f5f0] py-16 md:py-24">

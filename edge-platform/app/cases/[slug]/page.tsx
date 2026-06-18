@@ -4,7 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCaseBySlug, getCases } from "@/lib/data";
 import { autoSeoTitle, autoSeoDescription, abs } from "@/lib/seo";
-import { SITE, REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
+import { REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
+import { getSettings } from "@/lib/settings";
 import { FALLBACK_IMAGES } from "@/lib/types";
 import CaseCard from "@/components/CaseCard";
 
@@ -36,7 +37,10 @@ export default async function CaseDetail({ params }: Props) {
   if (!c) notFound();
 
   const cover = c.cover || FALLBACK_IMAGES.hero;
-  const related = (await getCases({ region: c.region, limit: 4 })).filter((x) => x.id !== c.id).slice(0, 3);
+  const [related, { site }] = await Promise.all([
+    getCases({ region: c.region, limit: 4 }).then((r) => r.filter((x) => x.id !== c.id).slice(0, 3)),
+    getSettings(),
+  ]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -100,8 +104,8 @@ export default async function CaseDetail({ params }: Props) {
       <div className="mt-10 rounded-2xl bg-warm px-6 py-8 text-center">
         <p className="text-[15px] font-semibold text-ink">{c.region} {c.category} 시공, 우리 집은 어떨까요?</p>
         <p className="mt-1 text-[13px] text-muted">문자·카톡으로 남기시면 바로 전화드립니다.</p>
-        <a href={`tel:${SITE.phone.replace(/-/g, "")}`} className="mt-4 inline-block rounded-lg bg-ink px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#111827]">
-          {SITE.phone} 전화 상담
+        <a href={`tel:${site.phone.replace(/-/g, "")}`} className="mt-4 inline-block rounded-lg bg-ink px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#111827]">
+          {site.phone} 전화 상담
         </a>
       </div>
 

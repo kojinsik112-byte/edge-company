@@ -7,6 +7,7 @@ import { REGIONS, CATEGORIES } from "@/lib/constants";
 export default function ContactForm() {
   const supabase = useMemo(() => createClient(), []);
   const [form, setForm] = useState({ name: "", phone: "", region: "울산", category: "실링팬", message: "" });
+  const [agree, setAgree] = useState(false);
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -15,6 +16,10 @@ export default function ContactForm() {
     e.preventDefault();
     if (!form.name || !form.phone) {
       setErr("이름과 연락처를 입력해 주세요.");
+      return;
+    }
+    if (!agree) {
+      setErr("개인정보 수집·이용에 동의해 주세요.");
       return;
     }
     setBusy(true);
@@ -49,6 +54,10 @@ export default function ContactForm() {
         </select>
       </div>
       <textarea className={`${inp} mt-3 min-h-[90px]`} placeholder="문의 내용 (선택)" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
+      <label className="mt-3 flex items-start gap-2 text-[12.5px] text-muted">
+        <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0" />
+        <span>상담을 위한 <b className="font-semibold text-ink">개인정보(이름·연락처) 수집·이용</b>에 동의합니다. 수집된 정보는 상담 목적 외 사용하지 않습니다.</span>
+      </label>
       {err && <p className="mt-2 text-[13px] text-red-600">{err}</p>}
       <button type="submit" disabled={busy} className="mt-4 w-full rounded-lg bg-ink py-3.5 text-[15px] font-bold text-white transition hover:bg-[#111827] disabled:opacity-60">
         {busy ? "접수 중…" : "상담 신청하기"}

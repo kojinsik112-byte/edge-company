@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  REGIONS, CATEGORIES, REGION_SLUG, CATEGORY_SLUG, CATEGORY_DESC, SITE,
+  REGIONS, CATEGORIES, REGION_SLUG, CATEGORY_SLUG, CATEGORY_DESC,
   type Region, type Category,
 } from "@/lib/constants";
 import { areaSeo } from "@/lib/seo";
 import { getCases } from "@/lib/data";
+import { getSettings } from "@/lib/settings";
 import CaseCard from "@/components/CaseCard";
 
 // 지역×카테고리 = 12개 SEO 페이지 자동 생성
@@ -44,7 +45,7 @@ export default async function AreaPage({ params }: Props) {
   if (!combo) notFound();
   const { region, category } = combo;
   const seo = areaSeo(region, category);
-  const cases = await getCases({ region, category, limit: 24 });
+  const [cases, { site }] = await Promise.all([getCases({ region, category, limit: 24 }), getSettings()]);
 
   return (
     <div className="mx-auto max-w-[1180px] px-5 py-12 md:py-16">
@@ -55,8 +56,8 @@ export default async function AreaPage({ params }: Props) {
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">
-        <a href={`tel:${SITE.phone.replace(/-/g, "")}`} className="rounded-lg bg-ink px-5 py-3 text-[14px] font-semibold text-white transition hover:bg-[#111827]">
-          {region} {category} 상담 {SITE.phone}
+        <a href={`tel:${site.phone.replace(/-/g, "")}`} className="rounded-lg bg-ink px-5 py-3 text-[14px] font-semibold text-white transition hover:bg-[#111827]">
+          {region} {category} 상담 {site.phone}
         </a>
         <Link href="/contact" className="rounded-lg border border-gold bg-surface px-5 py-3 text-[14px] font-semibold text-ink transition hover:bg-warm">쇼룸 예약</Link>
       </div>
