@@ -9,6 +9,7 @@ import Popup from "@/components/Popup";
 import SnsSection from "@/components/SnsSection";
 import ShowroomGallery from "@/components/ShowroomGallery";
 import CategoryCases from "@/components/CategoryCases";
+import WhySection from "@/components/WhySection";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getSettings();
@@ -59,22 +60,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ===== 신뢰 스트립 (얇게) ===== */}
-      <div className="border-b border-line bg-surface">
-        <div className="mx-auto grid max-w-[1200px] grid-cols-2 md:grid-cols-4">
-          {[
-            ["울산-00821", "전기공사업 등록 면허"],
-            ["ISO 3종", "9001 · 14001 · 45001"],
-            ["22개 지사", "전국 네트워크"],
-            ["2022~", "법인 직영 · 기술사 보유"],
-          ].map(([a, b], i) => (
-            <div key={i} className="border-line px-4 py-6 text-center [&:not(:first-child)]:border-l [&:nth-child(n+3)]:border-t md:[&:nth-child(n+3)]:border-t-0">
-              <div className="text-[17px] font-extrabold text-ink">{a}</div>
-              <div className="mt-1 text-[12px] text-muted">{b}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* ===== 회사소개 (Why Edge Company) ===== */}
+      <WhySection />
 
       {/* ===== SNS 채널 ===== */}
       <SnsSection site={site} />
@@ -121,14 +108,14 @@ export default async function Home() {
 
       {/* ===== FAQ ===== */}
       {faqs.length > 0 && (
-        <section className="mx-auto max-w-[760px] px-6 py-16 md:py-24">
+        <section className="mx-auto max-w-[1080px] px-6 py-16 md:py-24">
           <div className="mx-auto mb-12 max-w-[640px] text-center">
             <p className="kicker">FAQ</p>
             <h2 className="mt-3 text-[24px] font-bold text-ink md:text-[30px]">자주 묻는 질문</h2>
           </div>
-          <div>
-            {faqs.slice(0, 5).map((f) => (
-              <details key={f.id} className="border-b border-line">
+          <div className="grid gap-x-8 md:grid-cols-2">
+            {faqs.slice(0, 8).map((f) => (
+              <details key={f.id} className="h-fit border-b border-line">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[16px] font-semibold text-ink">
                   {f.question}
                   <span className="text-xl font-light text-gold">+</span>
