@@ -44,6 +44,18 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
     }
   }
 
+  async function addShowroomImages(files: FileList) {
+    setMsg("이미지 변환·업로드 중…");
+    try {
+      const urls: string[] = [];
+      for (const f of Array.from(files)) urls.push(await uploadImage(supabase, f));
+      patch("showroom", { images: [...(s.showroom.images ?? []), ...urls] });
+      setMsg("업로드 완료 — 저장 버튼을 누르세요.");
+    } catch (e) {
+      setMsg(`이미지 오류: ${e instanceof Error ? e.message : ""}`);
+    }
+  }
+
   return (
     <div className="space-y-10">
       {msg && <p className="sticky top-2 z-10 rounded-lg bg-gold/15 px-4 py-2.5 text-[13px] font-medium text-gold-d">{msg}</p>}
@@ -77,7 +89,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
 
       {/* 메인 배너 */}
       <Section title="메인 배너 (히어로)" onSave={() => save("hero")} saving={saving === "hero"}>
-        <ImageField label="배너 이미지" url={s.hero.image} onPick={(f) => pick(f, (url) => patch("hero", { image: url }))} />
+        <ImageField label="배너 이미지" hint="1920 × 1080px (가로형, 좌측에 텍스트가 얹히므로 우측에 여백 있는 사진 권장)" url={s.hero.image} onPick={(f) => pick(f, (url) => patch("hero", { image: url }))} />
         <Field label="상단 지역 문구"><Inp value={s.hero.eyebrow} onChange={(v) => patch("hero", { eyebrow: v })} /></Field>
         <Field label="헤드라인 (줄바꿈 가능)"><Area value={s.hero.title} onChange={(v) => patch("hero", { title: v })} /></Field>
         <Field label="서브 타이틀"><Inp value={s.hero.subline} onChange={(v) => patch("hero", { subline: v })} /></Field>
@@ -86,24 +98,30 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
 
       {/* 회사소개 */}
       <Section title="회사소개" onSave={() => save("company")} saving={saving === "company"}>
-        <ImageField label="회사소개 이미지" url={s.company.image} onPick={(f) => pick(f, (url) => patch("company", { image: url }))} />
+        <ImageField label="회사소개 이미지" hint="1200 × 900px (4:3)" url={s.company.image} onPick={(f) => pick(f, (url) => patch("company", { image: url }))} />
         <Field label="제목"><Inp value={s.company.title} onChange={(v) => patch("company", { title: v })} /></Field>
         <Field label="소개글"><Area value={s.company.body} onChange={(v) => patch("company", { body: v })} /></Field>
       </Section>
 
       {/* 쇼룸 */}
       <Section title="쇼룸 안내" onSave={() => save("showroom")} saving={saving === "showroom"}>
-        <ImageField label="쇼룸 이미지" url={s.showroom.image} onPick={(f) => pick(f, (url) => patch("showroom", { image: url }))} />
         <Field label="제목"><Inp value={s.showroom.title} onChange={(v) => patch("showroom", { title: v })} /></Field>
         <Field label="소개글"><Area value={s.showroom.body} onChange={(v) => patch("showroom", { body: v })} /></Field>
         <Field label="예약 안내"><Inp value={s.showroom.hours} onChange={(v) => patch("showroom", { hours: v })} /></Field>
+        <MultiImage
+          label="쇼룸 갤러리 (4~6장)"
+          hint="1200 × 900px (4:3) · 첫 사진이 크게 노출됩니다"
+          urls={s.showroom.images ?? []}
+          onAdd={addShowroomImages}
+          onRemove={(i) => patch("showroom", { images: (s.showroom.images ?? []).filter((_, j) => j !== i) })}
+        />
       </Section>
 
       {/* 카테고리 대표이미지 */}
       <Section title="카테고리 대표 이미지" onSave={() => save("categories")} saving={saving === "categories"}>
         <div className="grid gap-4 sm:grid-cols-3">
           {CATEGORIES.map((c) => (
-            <ImageField key={c} label={c} url={s.categories[c]} onPick={(f) => pick(f, (url) => patch("categories", { [c]: url } as Partial<Settings["categories"]>))} />
+            <ImageField key={c} label={c} hint="1200 × 900px (4:3)" url={s.categories[c]} onPick={(f) => pick(f, (url) => patch("categories", { [c]: url } as Partial<Settings["categories"]>))} />
           ))}
         </div>
       </Section>
@@ -114,7 +132,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
         <Field label="Title"><Inp value={s.seo.home.title} onChange={(v) => setS((p) => ({ ...p, seo: { home: { ...p.seo.home, title: v } } }))} /></Field>
         <Field label="Description"><Area value={s.seo.home.description} onChange={(v) => setS((p) => ({ ...p, seo: { home: { ...p.seo.home, description: v } } }))} /></Field>
         <Field label="Keywords (쉼표 구분)"><Inp value={s.seo.home.keywords} onChange={(v) => setS((p) => ({ ...p, seo: { home: { ...p.seo.home, keywords: v } } }))} /></Field>
-        <ImageField label="OG 이미지" url={s.seo.home.og} onPick={(f) => pick(f, (url) => setS((p) => ({ ...p, seo: { home: { ...p.seo.home, og: url } } })))} />
+        <ImageField label="OG 이미지 (공유 썸네일)" hint="1200 × 630px" url={s.seo.home.og} onPick={(f) => pick(f, (url) => setS((p) => ({ ...p, seo: { home: { ...p.seo.home, og: url } } })))} />
       </Section>
     </div>
   );
@@ -152,10 +170,11 @@ const Area = ({ value, onChange }: { value: string; onChange: (v: string) => voi
 function Check({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
   return <label className="flex items-center gap-2.5 text-[14px] font-medium text-ink"><input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4" />{label}</label>;
 }
-function ImageField({ label, url, onPick }: { label: string; url?: string; onPick: (f: File | undefined) => void }) {
+function ImageField({ label, url, onPick, hint }: { label: string; url?: string; onPick: (f: File | undefined) => void; hint?: string }) {
   return (
     <div>
-      <span className="mb-1.5 block text-[13px] font-semibold text-ink">{label}</span>
+      <span className="mb-1 block text-[13px] font-semibold text-ink">{label}</span>
+      {hint && <span className="mb-1.5 block text-[11.5px] text-gold-d">권장 크기 {hint}</span>}
       <div className="flex items-center gap-3">
         {url && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -163,6 +182,27 @@ function ImageField({ label, url, onPick }: { label: string; url?: string; onPic
         )}
         <input type="file" accept="image/*" onChange={(e) => onPick(e.target.files?.[0])} className="text-[12.5px] text-muted file:mr-2 file:rounded-md file:border-0 file:bg-navy file:px-3 file:py-2 file:text-white" />
       </div>
+    </div>
+  );
+}
+
+function MultiImage({ label, urls, onAdd, onRemove, hint }: { label: string; urls: string[]; onAdd: (files: FileList) => void; onRemove: (i: number) => void; hint?: string }) {
+  return (
+    <div>
+      <span className="mb-1 block text-[13px] font-semibold text-ink">{label}</span>
+      {hint && <span className="mb-1.5 block text-[11.5px] text-gold-d">권장 크기 {hint}</span>}
+      {urls.length > 0 && (
+        <div className="mb-2 flex flex-wrap gap-2">
+          {urls.map((u, i) => (
+            <div key={i} className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={u} alt="" className="h-16 w-24 rounded-lg border border-line object-cover" />
+              <button type="button" onClick={() => onRemove(i)} className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[11px] text-white">×</button>
+            </div>
+          ))}
+        </div>
+      )}
+      <input type="file" accept="image/*" multiple onChange={(e) => e.target.files && onAdd(e.target.files)} className="text-[12.5px] text-muted file:mr-2 file:rounded-md file:border-0 file:bg-navy file:px-3 file:py-2 file:text-white" />
     </div>
   );
 }

@@ -125,6 +125,7 @@ export default function CaseForm({ initial }: { initial?: CaseRow }) {
       {/* 대표 이미지 */}
       <div>
         <label className={label}>대표 이미지 (1장)</label>
+        <p className="mb-2 text-[11.5px] text-gold-d">권장 크기 1200 × 900px (4:3) — 시공사례 카드·대표 이미지로 사용됩니다.</p>
         <input type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} className="block w-full text-[13px] text-muted file:mr-3 file:rounded-lg file:border-0 file:bg-navy file:px-4 file:py-2.5 file:text-white" />
         {(coverFile || cover) && (
           <div className="mt-3 flex items-center gap-3">
@@ -140,6 +141,7 @@ export default function CaseForm({ initial }: { initial?: CaseRow }) {
       {/* 상세 이미지 다중 */}
       <div>
         <label className={label}>상세 사진 (여러 장)</label>
+        <p className="mb-2 text-[11.5px] text-gold-d">권장 크기 1200 × 900px (4:3) 이상</p>
         <input type="file" accept="image/*" multiple onChange={(e) => setImageFiles(Array.from(e.target.files ?? []))} className="block w-full text-[13px] text-muted file:mr-3 file:rounded-lg file:border-0 file:bg-navy file:px-4 file:py-2.5 file:text-white" />
         {(images.length > 0 || imageFiles.length > 0) && (
           <div className="mt-3 flex flex-wrap gap-2">

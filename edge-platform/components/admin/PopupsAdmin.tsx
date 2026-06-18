@@ -69,6 +69,7 @@ export default function PopupsAdmin({ rows }: { rows: PopupRow[] }) {
           <label className="text-[12.5px] text-muted">시작일<input type="date" className={inp} value={f.start_at} onChange={(e) => setF({ ...f, start_at: e.target.value })} /></label>
           <label className="text-[12.5px] text-muted">종료일<input type="date" className={inp} value={f.end_at} onChange={(e) => setF({ ...f, end_at: e.target.value })} /></label>
         </div>
+        <p className="text-[11.5px] text-gold-d">팝업 이미지 권장 크기 800 × 1000px (세로형 4:5)</p>
         <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-[12.5px] text-muted file:mr-2 file:rounded-md file:border-0 file:bg-navy file:px-3 file:py-2 file:text-white" />
         <label className="flex items-center gap-2 text-[14px] font-medium text-ink"><input type="checkbox" checked={f.enabled} onChange={(e) => setF({ ...f, enabled: e.target.checked })} className="h-4 w-4" />노출 ON</label>
         <button disabled={busy} className="rounded-lg bg-navy px-5 py-2.5 text-[14px] font-semibold text-white disabled:opacity-60">{busy ? "저장 중…" : "팝업 등록"}</button>

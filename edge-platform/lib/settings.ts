@@ -35,6 +35,7 @@ export interface Showroom {
   title: string;
   body: string;
   hours: string;
+  images: string[]; // 쇼룸 갤러리 (4~6장)
 }
 export type Categories = Record<string, string>; // 카테고리명 → 대표이미지 URL
 export interface SeoSettings {
@@ -79,9 +80,10 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   showroom: {
     image: "/img/fan.webp",
-    title: "울산 조명 쇼룸에서 직접 체험하세요",
-    body: "실링팬의 바람과 소음, 간접조명의 색온도와 깊이는 사진만으로 알 수 없습니다. 실제로 켜 보고 비교하고 우리 집에 맞는 조합을 찾으실 수 있도록 쇼룸을 운영합니다.",
+    title: "직접 보고 비교하는 엣지컴퍼니 쇼룸",
+    body: "실링팬, 간접조명, 스마트조명을 직접 체험하고 비교할 수 있는 울산 프리미엄 쇼룸입니다.",
     hours: "방문 전 연락 주시면 대기 없이 안내해 드립니다",
+    images: ["/img/living-hero.webp", "/img/indirect.webp", "/img/fan.webp", "/img/curtain.webp", "/img/sofa.webp"],
   },
   categories: {
     실링팬: "/img/fan.webp",

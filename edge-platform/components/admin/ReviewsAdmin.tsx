@@ -54,6 +54,7 @@ export default function ReviewsAdmin({ rows }: { rows: ReviewRow[] }) {
           <select className={inp} value={f.rating} onChange={(e) => setF({ ...f, rating: Number(e.target.value) })}>{[5, 4, 3, 2, 1].map((n) => <option key={n} value={n}>{"★".repeat(n)}</option>)}</select>
         </div>
         <textarea className={`${inp} w-full`} placeholder="후기 내용" value={f.content} onChange={(e) => setF({ ...f, content: e.target.value })} />
+        <p className="text-[11.5px] text-gold-d">후기 사진 권장 크기 1200 × 750px (16:10)</p>
         <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-[12.5px] text-muted file:mr-2 file:rounded-md file:border-0 file:bg-navy file:px-3 file:py-2 file:text-white" />
         <button disabled={busy} className="rounded-lg bg-navy px-5 py-2.5 text-[14px] font-semibold text-white disabled:opacity-60">{busy ? "저장 중…" : "후기 등록"}</button>
       </form>
