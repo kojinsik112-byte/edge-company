@@ -1,63 +1,89 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
 <style>
-@page { size: A4; margin: 14mm 18mm; }
-* { box-sizing: border-box; }
-body { font-family: 'Malgun Gothic','맑은 고딕',sans-serif; color:#111; font-size:13.5px; line-height:1.45; }
-.tag { font-size:13px; font-weight:700; }
-h1 { text-align:center; font-size:28px; letter-spacing:8px; margin:8px 0 16px; }
-.recv { text-align:center; font-size:15px; font-weight:700; margin-bottom:4px; }
-table { width:100%; border-collapse:collapse; }
-td,th { border:1px solid #222; padding:8px 10px; font-size:13.5px; }
-.lab { background:#f3f3f3; text-align:center; font-weight:700; width:120px; }
-.grp { background:#f3f3f3; text-align:center; font-weight:700; width:70px; }
-.body-txt { text-align:center; margin:18px 8px; font-size:14px; line-height:1.75; }
-.body-txt b { font-weight:800; }
-.sign { margin-top:20px; font-size:14px; line-height:1.95; }
-.sign b { font-weight:800; }
-.date { text-align:center; font-size:15px; margin:16px 0; letter-spacing:2px; }
-.foot { text-align:center; font-size:16px; font-weight:800; margin-top:18px; }
-.stampbox { display:inline-block; border:1px solid #222; vertical-align:middle; }
-.stampbox td { text-align:center; }
-.stamp-cell { width:150px; height:84px; position:relative; }
-.stamp-img { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:62px; height:62px; opacity:.92; }
-.row { display:flex; justify-content:space-between; align-items:flex-end; }
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1f2933; margin:0; }
+.page { width:210mm; height:297mm; padding:12mm 16mm 9mm; position:relative; overflow:hidden; }
+/* 헤더 */
+.brandbar { height:7px; background:linear-gradient(90deg,#0f3d70 0%,#1f6fc0 55%,#3a93e0 100%); border-radius:4px; }
+.head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:12px; }
+.brand { font-size:15px; font-weight:800; letter-spacing:1px; color:#0f3d70; }
+.brand small { display:block; font-size:10.5px; font-weight:600; letter-spacing:3px; color:#6b7a8d; margin-top:2px; }
+.doctype { font-size:11px; font-weight:700; color:#1f6fc0; border:1px solid #cfe0f2; background:#f2f8ff; padding:5px 12px; border-radius:20px; }
+.recv { text-align:center; font-size:13px; font-weight:700; color:#445; margin:18px 0 4px; letter-spacing:1px; }
+h1 { text-align:center; font-size:29px; font-weight:800; letter-spacing:10px; color:#0f3d70; margin:5px 0 5px; }
+.titleline { width:78px; height:4px; background:#1f6fc0; border-radius:3px; margin:0 auto 18px; }
+/* 표 */
+table { width:100%; border-collapse:separate; border-spacing:0; font-size:12.5px; border:1.5px solid #b9cbe0; border-radius:10px; overflow:hidden; }
+td { border-bottom:1px solid #dce5ef; border-right:1px solid #dce5ef; padding:8px 10px; }
+tr:last-child td { border-bottom:none; }
+.lab { background:#eef5fc; text-align:center; font-weight:700; color:#28425e; width:128px; white-space:nowrap; }
+.grp { background:#dfeaf6; text-align:center; font-weight:800; color:#0f3d70; width:60px; letter-spacing:1px; }
+td.val { text-align:center; }
+td.sub { white-space:nowrap; }
+td.sub b { color:#0f3d70; }
+/* 본문 */
+.body-txt { margin:18px 0 6px; padding:15px 20px; background:#f6f9fd; border-left:4px solid #1f6fc0; border-radius:6px; text-align:center; font-size:13px; line-height:1.85; color:#33424f; }
+.body-txt b { color:#0f3d70; font-weight:800; }
+/* 서명 */
+.row { display:flex; justify-content:space-between; align-items:flex-end; margin-top:20px; }
+.sign { font-size:13.5px; line-height:2; }
+.sign b { color:#0f3d70; font-weight:800; }
+.stampbox { border:1.5px solid #b9cbe0; border-radius:8px; overflow:hidden; }
+.stampbox td { border:none; }
+.stamp-lab { background:#eef5fc; font-weight:800; color:#28425e; text-align:center; width:58px; font-size:12px; letter-spacing:2px; }
+.stamp-cell { width:150px; height:80px; position:relative; }
+.stamp-img { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:64px; height:64px; opacity:.9; }
+.date { text-align:center; font-size:14px; margin:20px 0 6px; letter-spacing:3px; color:#33424f; }
+.foot { text-align:center; font-size:15px; font-weight:800; color:#0f3d70; margin-top:12px; }
+.botbar { position:absolute; left:18mm; right:18mm; bottom:11mm; border-top:1px solid #d7e1ec; padding-top:6px; display:flex; justify-content:space-between; font-size:9.5px; color:#90a0b2; }
 </style></head>
-<body>
-<div class="tag">[별지 서식 제1호]</div>
-<div class="recv">이천 자이더레브 입주예정자협의회 귀하</div>
-<h1>입찰 참가 신청서</h1>
-<table>
-  <tr><td class="lab">입 찰 명</td><td colspan="3" style="text-align:center;font-weight:700;">이천 자이더레브 입주예정자협의회</td></tr>
-  <tr><td class="grp" rowspan="5">신청업체</td><td class="lab">업 체 명</td><td colspan="2" style="text-align:center;">주식회사 엣지컴퍼니</td></tr>
-  <tr><td class="lab">대 표 자 명</td><td style="text-align:center;">고진식</td><td style="text-align:center;"><b>참여인력</b> &nbsp; 12명</td></tr>
-  <tr><td class="lab">사업자등록번호</td><td colspan="2" style="text-align:center;">508-81-42798</td></tr>
-  <tr><td class="lab">법인등록번호</td><td colspan="2" style="text-align:center;">230111-0369271</td></tr>
-  <tr><td class="lab">주 소</td><td colspan="2" style="text-align:center;">울산광역시 울주군 청량읍 상남1길 28, 2동 / 청주시 흥덕구 직지대로 642</td></tr>
-  <tr><td class="grp" rowspan="4">책임자</td><td class="lab">성 명</td><td style="text-align:center;">한이섬</td><td style="text-align:center;"><b>생년월일</b> &nbsp; 1989.05.21</td></tr>
-  <tr><td class="lab">부 서</td><td style="text-align:center;">영업이사</td><td style="text-align:center;"><b>휴대전화</b> &nbsp; 010-3345-6107</td></tr>
-  <tr><td class="lab">직 위</td><td style="text-align:center;">이사</td><td style="text-align:center;"><b>전 화</b> &nbsp; 1533-3210</td></tr>
-  <tr><td class="lab">전자메일</td><td style="text-align:center;">EDGE_COMPANY@NAVER.COM</td><td style="text-align:center;"><b>F A X</b></td></tr>
-</table>
-
-<div class="body-txt">
-본 업체는 <b>“주관사 선정”</b> 입찰에 참여하고자<br>
-<b>“이천 자이더레브 입주예정자협의회”</b>에서 정한<br>
-입찰공고 사항을 모두 승낙하고 제출 서류를 첨부하여 주관사 선정 조건 및<br>
-지시 사항을 준수하겠음을 확약하며 입찰에 참가 신청합니다.
-</div>
-
-<div class="row">
-  <div class="sign">
-    <b>업체명 :</b> 주식회사 엣지컴퍼니<br>
-    <b>주 &nbsp;소 :</b> 울산광역시 울주군 청량읍 상남1길 28, 2동 / 청주시 흥덕구 직지대로 642<br>
-    <b>대표자 :</b> 고진식
+<body><div class="page">
+  <div class="brandbar"></div>
+  <div class="head">
+    <div class="brand">주식회사 엣지컴퍼니<small>EDGE COMPANY</small></div>
+    <div class="doctype">입주박람회 주관사 선정 입찰</div>
   </div>
-  <table class="stampbox">
-    <tr><td class="lab" style="width:60px;">인 감<br>대조필</td><td class="stamp-cell"><img class="stamp-img" src="file:///C:/Users/win11/AppData/Local/Temp/edge_stamp/stamp.png"></td></tr>
-  </table>
-</div>
 
-<div class="date">2026년 &nbsp; 06월 &nbsp; 18일</div>
-<div class="foot">이천 자이더레브 입주예정자협의회 귀하</div>
-</body></html>
+  <div class="recv">이천 자이더레브 입주예정자협의회 귀하</div>
+  <h1>입찰 참가 신청서</h1>
+  <div class="titleline"></div>
+
+  <table>
+    <tr><td class="lab">입 찰 명</td><td colspan="3" class="val" style="font-weight:700;color:#0f3d70;">이천 자이더레브 입주예정자협의회</td></tr>
+    <tr><td class="grp" rowspan="5">신청<br>업체</td><td class="lab">업 체 명</td><td colspan="2" class="val">주식회사 엣지컴퍼니</td></tr>
+    <tr><td class="lab">대 표 자 명</td><td class="val">고진식</td><td class="val sub"><b>참여인력</b> &nbsp; 12명</td></tr>
+    <tr><td class="lab">사업자등록번호</td><td colspan="2" class="val">508-81-42798</td></tr>
+    <tr><td class="lab">법인등록번호</td><td colspan="2" class="val">230111-0369271</td></tr>
+    <tr><td class="lab">주 소</td><td colspan="2" class="val">울산광역시 울주군 청량읍 상남1길 28, 2동 / 청주시 흥덕구 직지대로 642</td></tr>
+    <tr><td class="grp" rowspan="4">책임자</td><td class="lab">성 명</td><td class="val">한이섬</td><td class="val sub"><b>생년월일</b> &nbsp; 1989.05.21</td></tr>
+    <tr><td class="lab">부 서</td><td class="val">영업이사</td><td class="val sub"><b>휴대전화</b> &nbsp; 010-3345-6107</td></tr>
+    <tr><td class="lab">직 위</td><td class="val">이사</td><td class="val sub"><b>전 화</b> &nbsp; 1533-3210</td></tr>
+    <tr><td class="lab">전자메일</td><td class="val">EDGE_COMPANY@NAVER.COM</td><td class="val sub"><b>F A X</b></td></tr>
+  </table>
+
+  <div class="body-txt">
+    본 업체는 <b>“주관사 선정”</b> 입찰에 참여하고자 <b>“이천 자이더레브 입주예정자협의회”</b>에서 정한<br>
+    입찰공고 사항을 모두 승낙하고, 제출 서류를 첨부하여 주관사 선정 조건 및 지시 사항을<br>
+    준수하겠음을 확약하며 입찰에 참가 신청합니다.
+  </div>
+
+  <div class="row">
+    <div class="sign">
+      <b>업체명</b> &nbsp; 주식회사 엣지컴퍼니<br>
+      <b>주&nbsp;&nbsp;소</b> &nbsp; 울산광역시 울주군 청량읍 상남1길 28, 2동<br>
+      <span style="display:inline-block;width:48px"></span>/ 청주시 흥덕구 직지대로 642<br>
+      <b>대표자</b> &nbsp; 고진식
+    </div>
+    <table class="stampbox"><tr>
+      <td class="stamp-lab">인 감<br>대조필</td>
+      <td class="stamp-cell"><img class="stamp-img" src="file:///C:/Users/win11/AppData/Local/Temp/edge_stamp/stamp.png"></td>
+    </tr></table>
+  </div>
+
+  <div class="date">2026년 &nbsp; 06월 &nbsp; 18일</div>
+  <div class="foot">이천 자이더레브 입주예정자협의회 귀하</div>
+
+  <div class="botbar"><span>주식회사 엣지컴퍼니 · 대표이사 고진식</span><span>입주박람회 주관사 선정 입찰 제출서류</span></div>
+</div></body></html>

@@ -1,48 +1,65 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
 <style>
-@page { size: A4; margin: 22mm 20mm; }
-* { box-sizing: border-box; }
-body { font-family: 'Malgun Gothic','맑은 고딕',sans-serif; color:#111; font-size:14px; line-height:1.5; }
-.tag { font-size:13px; font-weight:700; }
-.recv { text-align:center; font-size:15px; font-weight:700; margin-bottom:6px; }
-h1 { text-align:center; font-size:28px; letter-spacing:4px; margin:14px 0 24px; }
-table { width:100%; border-collapse:collapse; }
-td { border:1px solid #222; padding:10px 12px; font-size:13.5px; }
-.lab { background:#f3f3f3; text-align:center; font-weight:700; width:150px; letter-spacing:4px; }
-.intro { margin:26px 4px 18px; font-size:14.5px; }
-ol.terms { margin:0 6px; padding-left:22px; }
-ol.terms li { margin:14px 0; font-size:14px; line-height:1.85; }
-.date { text-align:center; font-size:15px; margin:46px 0 26px; letter-spacing:2px; }
-.sign { text-align:right; font-size:15px; line-height:2.3; margin-right:30px; }
-.sign b { font-weight:800; }
-.stamp-wrap { display:inline-block; position:relative; }
-.stamp-img { position:absolute; right:-12px; top:-16px; width:58px; height:58px; opacity:.9; }
-.foot { text-align:center; font-size:16px; font-weight:800; margin-top:40px; }
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1f2933; margin:0; }
+.page { width:210mm; height:297mm; padding:12mm 16mm 9mm; position:relative; overflow:hidden; }
+.brandbar { height:7px; background:linear-gradient(90deg,#0f3d70 0%,#1f6fc0 55%,#3a93e0 100%); border-radius:4px; }
+.head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:12px; }
+.brand { font-size:15px; font-weight:800; letter-spacing:1px; color:#0f3d70; }
+.brand small { display:block; font-size:10.5px; font-weight:600; letter-spacing:3px; color:#6b7a8d; margin-top:2px; }
+.doctype { font-size:11px; font-weight:700; color:#1f6fc0; border:1px solid #cfe0f2; background:#f2f8ff; padding:5px 12px; border-radius:20px; }
+.recv { text-align:center; font-size:13px; font-weight:700; color:#445; margin:22px 0 4px; letter-spacing:1px; }
+h1 { text-align:center; font-size:27px; font-weight:800; letter-spacing:5px; color:#0f3d70; margin:5px 0 5px; }
+.titleline { width:78px; height:4px; background:#1f6fc0; border-radius:3px; margin:0 auto 24px; }
+table.info { width:100%; border-collapse:separate; border-spacing:0; font-size:13px; border:1.5px solid #b9cbe0; border-radius:10px; overflow:hidden; }
+table.info td { border-bottom:1px solid #dce5ef; padding:11px 14px; }
+table.info tr:last-child td { border-bottom:none; }
+.lab { background:#eef5fc; text-align:center; font-weight:700; color:#28425e; width:160px; letter-spacing:3px; border-right:1px solid #dce5ef; }
+.intro { margin:26px 2px 16px; font-size:14px; color:#33424f; font-weight:600; }
+.term { display:flex; gap:14px; margin:14px 0; align-items:flex-start; }
+.num { flex:none; width:26px; height:26px; border-radius:50%; background:#1f6fc0; color:#fff; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+.txt { font-size:13.5px; line-height:1.8; color:#2b3742; }
+.txt b { color:#0f3d70; }
+.date { text-align:center; font-size:14px; margin:40px 0 24px; letter-spacing:3px; color:#33424f; }
+.sign { text-align:right; font-size:14.5px; line-height:2.2; margin-right:24px; }
+.sign b { color:#0f3d70; font-weight:800; }
+.stamp-wrap { position:relative; display:inline-block; }
+.stamp-img { position:absolute; right:-14px; top:-16px; width:60px; height:60px; opacity:.9; }
+.foot { text-align:center; font-size:15px; font-weight:800; color:#0f3d70; margin-top:34px; }
+.botbar { position:absolute; left:16mm; right:16mm; bottom:9mm; border-top:1px solid #d7e1ec; padding-top:6px; display:flex; justify-content:space-between; font-size:9.5px; color:#90a0b2; }
 </style></head>
-<body>
-<div class="tag">[별지 서식 제10호]</div>
-<div class="recv">이천 자이더레브 입주예정자협의회 귀하</div>
-<h1>상시 제안 내용에 대한 업무 이행각서</h1>
-<table>
-  <tr><td class="lab">각 서 인</td><td>대표이사 고진식</td></tr>
-  <tr><td class="lab">법 인 명</td><td>주식회사 엣지컴퍼니</td></tr>
-  <tr><td class="lab">주 소</td><td>울산광역시 울주군 청량읍 상남1길 28, 2동 / 청주시 흥덕구 직지대로 642</td></tr>
-  <tr><td class="lab">사업자등록번호</td><td>508-81-42798</td></tr>
-</table>
+<body><div class="page">
+  <div class="brandbar"></div>
+  <div class="head">
+    <div class="brand">주식회사 엣지컴퍼니<small>EDGE COMPANY</small></div>
+    <div class="doctype">입주박람회 주관사 선정 입찰</div>
+  </div>
 
-<div class="intro">상기 각서인은 아래와 같이 이행할 것을 서약합니다.</div>
-<ol class="terms">
-  <li>본 입찰에 제출한 제안서 및 계획 내용은 상호 신뢰를 바탕으로 한 약속으로서 반드시 이행할 것이며, 이를 위반할 경우 입주예정자협의회의 조치(계약 해지 등)에 대하여 어떠한 이의도 제기하지 않을 것을 서약합니다.</li>
-  <li>공동구매 및 입주박람회와 관련하여 발생하는 하자에 대하여 하자보증기간 내 책임지고 보수 또는 이에 상응하는 조치를 이행하겠습니다.</li>
-  <li>참여업체의 하자 및 A/S 발생 시 관리·감독 책임을 성실히 수행하며, 문제 발생 시 해결을 위한 조치를 적극적으로 이행하겠습니다.</li>
-  <li>주관사로 선정될 경우 선정일로부터 1개월 이내에 운영에 착수하며, 시공사·시행사와의 협의 채널을 가동하여 입주예정자협의회의 안건을 운영 계획에 즉시 반영하겠습니다.</li>
-</ol>
+  <div class="recv">이천 자이더레브 입주예정자협의회 귀하</div>
+  <h1>상시 제안 내용에 대한 업무 이행각서</h1>
+  <div class="titleline"></div>
 
-<div class="date">2026년 &nbsp; 06월 &nbsp; 18일</div>
-<div class="sign">
-  주관사 : 주식회사 엣지컴퍼니<br>
-  대표자 : <span class="stamp-wrap">고진식 (인)<img class="stamp-img" src="file:///C:/Users/win11/AppData/Local/Temp/edge_stamp/stamp.png"></span>
-</div>
-<div class="foot">이천 자이더레브 입주예정자협의회 귀하</div>
-</body></html>
+  <table class="info">
+    <tr><td class="lab">각 서 인</td><td>대표이사 고진식</td></tr>
+    <tr><td class="lab">법 인 명</td><td>주식회사 엣지컴퍼니</td></tr>
+    <tr><td class="lab">주 소</td><td>울산광역시 울주군 청량읍 상남1길 28, 2동 / 청주시 흥덕구 직지대로 642</td></tr>
+    <tr><td class="lab">사업자등록번호</td><td>508-81-42798</td></tr>
+  </table>
+
+  <div class="intro">상기 각서인은 아래와 같이 이행할 것을 서약합니다.</div>
+  <div class="term"><div class="num">1</div><div class="txt">본 입찰에 제출한 제안서 및 계획 내용은 상호 신뢰를 바탕으로 한 약속으로서 <b>반드시 이행</b>할 것이며, 이를 위반할 경우 입주예정자협의회의 조치(계약 해지 등)에 대하여 어떠한 이의도 제기하지 않을 것을 서약합니다.</div></div>
+  <div class="term"><div class="num">2</div><div class="txt">공동구매 및 입주박람회와 관련하여 발생하는 하자에 대하여 <b>하자보증기간 내 책임지고</b> 보수 또는 이에 상응하는 조치를 이행하겠습니다.</div></div>
+  <div class="term"><div class="num">3</div><div class="txt">참여업체의 하자 및 A/S 발생 시 <b>관리·감독 책임</b>을 성실히 수행하며, 문제 발생 시 해결을 위한 조치를 적극적으로 이행하겠습니다.</div></div>
+  <div class="term"><div class="num">4</div><div class="txt">주관사로 선정될 경우 <b>선정일로부터 1개월 이내에 운영에 착수</b>하며, 시공사·시행사와의 협의 채널을 가동하여 입주예정자협의회의 안건을 운영 계획에 즉시 반영하겠습니다.</div></div>
+
+  <div class="date">2026년 &nbsp; 06월 &nbsp; 18일</div>
+  <div class="sign">
+    <b>주관사</b> &nbsp; 주식회사 엣지컴퍼니<br>
+    <b>대표자</b> &nbsp; <span class="stamp-wrap">고진식 (인)<img class="stamp-img" src="file:///C:/Users/win11/AppData/Local/Temp/edge_stamp/stamp.png"></span>
+  </div>
+  <div class="foot">이천 자이더레브 입주예정자협의회 귀하</div>
+
+  <div class="botbar"><span>주식회사 엣지컴퍼니 · 대표이사 고진식</span><span>입주박람회 주관사 선정 입찰 제출서류</span></div>
+</div></body></html>

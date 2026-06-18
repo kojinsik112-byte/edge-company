@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<style>
+@page { size:A4; margin:0; }
+*{ box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; margin:0; padding:0; }
+body{ font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1f2933; }
+.sheet{ width:210mm; height:297mm; padding:15mm 16mm 12mm; position:relative; overflow:hidden; page-break-after:always; }
+.sheet:last-child{ page-break-after:auto; }
+/* 공통 헤더/푸터 */
+.brandbar{ height:6px; background:linear-gradient(90deg,#0f3d70,#1f6fc0 55%,#3a93e0); border-radius:4px; }
+.mini-head{ display:flex; justify-content:space-between; align-items:center; margin-top:9px; font-size:10.5px; color:#6b7a8d; font-weight:700; letter-spacing:1px; }
+.mini-head b{ color:#0f3d70; }
+.botbar{ position:absolute; left:16mm; right:16mm; bottom:9mm; border-top:1px solid #d7e1ec; padding-top:6px; display:flex; justify-content:space-between; font-size:9px; color:#9aa8b8; }
+/* 섹션 제목 */
+.sec{ display:flex; align-items:center; gap:11px; margin:22px 0 14px; }
+.sec .no{ width:30px; height:30px; border-radius:8px; background:#0f3d70; color:#fff; font-weight:800; font-size:15px; display:flex; align-items:center; justify-content:center; }
+.sec h2{ font-size:18px; color:#0f3d70; font-weight:800; letter-spacing:.5px; }
+.sec .en{ font-size:10px; color:#9aa8b8; font-weight:700; letter-spacing:2px; margin-left:auto; }
+/* 표 */
+table{ width:100%; border-collapse:separate; border-spacing:0; font-size:12px; border:1.5px solid #b9cbe0; border-radius:9px; overflow:hidden; }
+td{ border-bottom:1px solid #dce5ef; border-right:1px solid #dce5ef; padding:8px 11px; }
+tr:last-child td{ border-bottom:none; }
+.lab{ background:#eef5fc; font-weight:700; color:#28425e; text-align:center; white-space:nowrap; }
+.hl{ color:#1f6fc0; font-weight:800; }
+/* 빅넘버 카드 */
+.kpis{ display:flex; gap:10px; margin:14px 0; }
+.kpi{ flex:1; background:linear-gradient(160deg,#f4f9ff,#e9f2fc); border:1px solid #cfe0f2; border-radius:11px; padding:14px 10px; text-align:center; }
+.kpi .big{ font-size:25px; font-weight:800; color:#0f3d70; line-height:1.1; }
+.kpi .big small{ font-size:13px; }
+.kpi .cap{ font-size:10.5px; color:#5c6b7c; margin-top:5px; font-weight:600; line-height:1.4; }
+/* 카드 그리드 */
+.cards{ display:grid; grid-template-columns:1fr 1fr; gap:11px; margin:6px 0; }
+.card{ border:1px solid #d3e0ee; border-radius:11px; padding:13px 15px; background:#fafcff; }
+.card .ct{ font-size:13px; font-weight:800; color:#0f3d70; margin-bottom:5px; display:flex; align-items:center; gap:7px; }
+.card .ci{ width:20px;height:20px;border-radius:6px;background:#1f6fc0;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center; }
+.card .cb{ font-size:11.3px; color:#46535f; line-height:1.6; }
+.card .cb b{ color:#0f3d70; }
+/* 리스트 박스 */
+.lead{ background:#f6f9fd; border-left:4px solid #1f6fc0; border-radius:6px; padding:13px 17px; font-size:12.5px; line-height:1.75; color:#33424f; margin:10px 0; }
+.lead b{ color:#0f3d70; }
+ul.chk{ list-style:none; margin:6px 0; }
+ul.chk li{ font-size:11.8px; color:#3c4a57; padding:5px 0 5px 22px; position:relative; line-height:1.5; border-bottom:1px dashed #e3eaf2; }
+ul.chk li:before{ content:"✓"; position:absolute; left:2px; color:#1f6fc0; font-weight:800; }
+ul.chk li b{ color:#0f3d70; }
+.note{ font-size:10.5px; color:#8a98a8; margin-top:8px; line-height:1.5; }
+/* 표지 */
+.cover{ width:210mm; height:297mm; position:relative; overflow:hidden; background:linear-gradient(160deg,#0c2f57 0%,#10406f 45%,#1a5da0 100%); color:#fff; page-break-after:always; }
+.cover .glow{ position:absolute; width:520px;height:520px;border-radius:50%; background:radial-gradient(circle,rgba(90,160,230,.35),transparent 70%); top:-120px; right:-120px; }
+.cover .glow2{ position:absolute; width:420px;height:420px;border-radius:50%; background:radial-gradient(circle,rgba(60,120,200,.25),transparent 70%); bottom:-120px; left:-100px; }
+.cover .inner{ position:absolute; inset:0; padding:24mm 20mm; display:flex; flex-direction:column; }
+.cover .ctop{ font-size:14px; font-weight:700; letter-spacing:4px; color:#aacdf0; }
+.cover .ctop small{ display:block; font-size:10px; letter-spacing:5px; color:#7fb0e0; margin-top:4px; }
+.cover .badge{ display:inline-block; margin-top:60px; font-size:12px; font-weight:700; letter-spacing:2px; color:#cfe6ff; border:1px solid rgba(180,215,250,.5); border-radius:24px; padding:7px 18px; align-self:flex-start; }
+.cover h1{ font-size:46px; font-weight:800; line-height:1.25; margin-top:24px; letter-spacing:1px; }
+.cover h1 .sub{ display:block; font-size:21px; font-weight:600; color:#bcdcff; margin-top:12px; letter-spacing:3px; }
+.cover .danji{ margin-top:30px; display:flex; gap:24px; font-size:13px; color:#d6e8fb; }
+.cover .danji div b{ display:block; font-size:11px; color:#8fb8e2; font-weight:600; margin-bottom:3px; letter-spacing:1px; }
+.cover .cfoot{ margin-top:auto; border-top:1px solid rgba(160,195,235,.3); padding-top:18px; display:flex; justify-content:space-between; align-items:flex-end; }
+.cover .cfoot .co{ font-size:20px; font-weight:800; letter-spacing:1px; }
+.cover .cfoot .co small{ display:block; font-size:11px; font-weight:600; color:#9cc2e8; letter-spacing:3px; margin-top:3px; }
+.cover .cfoot .dt{ font-size:13px; color:#bcd6f0; }
+.stamp-final{ position:relative; display:inline-block; }
+.stamp-final img{ position:absolute; right:-66px; top:50%; transform:translateY(-50%); width:58px; height:58px; opacity:.9; }
+</style></head>
+<body>
+
+<!-- 표지 -->
+<div class="cover">
+  <div class="glow"></div><div class="glow2"></div>
+  <div class="inner">
+    <div class="ctop">주식회사 엣지컴퍼니<small>EDGE COMPANY</small></div>
+    <div class="badge">입주박람회 주관사 선정 입찰</div>
+    <h1>이천 자이더레브<span class="sub">입주박람회 주관사 공동구매 입찰제안서</span></h1>
+    <div class="danji">
+      <div><b>단지규모</b>635세대 · 7개동</div>
+      <div><b>시공 / 시행</b>GS건설 / ㈜엘앤에스파트너스</div>
+      <div><b>입주예정</b>2027년 4월</div>
+    </div>
+    <div class="cfoot">
+      <div class="co">주식회사 엣지컴퍼니<small>대표이사 고 진 식</small></div>
+      <div class="dt">2026. 06. 18.</div>
+    </div>
+  </div>
+</div>
+
+<!-- P2: 개요 + 단지이해 -->
+<div class="sheet">
+  <div class="brandbar"></div>
+  <div class="mini-head"><span><b>이천 자이더레브</b> 입주박람회 주관사 공동구매 입찰제안서</span><span>EDGE COMPANY</span></div>
+
+  <div class="sec"><div class="no">1</div><h2>제안 개요</h2><span class="en">OVERVIEW</span></div>
+  <div class="lead">
+    <b>“입주박람회 전체를 기획·운영하고, 자체 전기공사 면허로 직접 시공·A/S까지 끝까지 책임지는 운영 주체.”</b><br>
+    자리만 빌려주는 중개가 아니라, <b>선정 후 1개월 내 현장에 들어가 입주가 끝날 때까지 책임지는</b> 주관사입니다.
+  </div>
+
+  <div class="sec"><div class="no">2</div><h2>이천 자이더레브 — 단지 이해</h2><span class="en">SITE</span></div>
+  <table>
+    <tr><td class="lab" style="width:110px;">단지 규모</td><td>635세대 / 7개동 / 지하4~지상25층</td><td class="lab" style="width:90px;">입주 예정</td><td><b class="hl">2027년 4월</b></td></tr>
+    <tr><td class="lab">시공 / 시행</td><td>GS건설 / ㈜엘앤에스파트너스</td><td class="lab">학 군</td><td>송정초·송정중 도보 5분</td></tr>
+    <tr><td class="lab">평형 구성</td><td colspan="3"><b class="hl">84㎡ 545세대(86%)</b> · 117㎡ 88세대 · 185P 2세대 &nbsp;→ 3040 실거주·신혼 핵심층</td></tr>
+  </table>
+
+  <div class="kpis">
+    <div class="kpi"><div class="big">86<small>%</small></div><div class="cap">84㎡ 단일 규격<br>(545세대)</div></div>
+    <div class="kpi"><div class="big">약 42,000<small>세대</small></div><div class="cap">최근 8년<br>입주 주관 실적</div></div>
+    <div class="kpi"><div class="big">1<small>개월 내</small></div><div class="cap">선정 후<br>운영 착수</div></div>
+  </div>
+
+  <div class="lead">
+    <b>★ 이 단지의 핵심 = “84㎡ 545세대” 동일 규격</b><br>
+    전체의 86%가 같은 84㎡ — 같은 도면·같은 시공 사양입니다. 공동구매 물량이 한 규격으로 모여
+    <b>단가 협상력이 극대화</b>되고, 조명·중문·줄눈·도장을 <b>표준 패키지로 정밀 견적</b>할 수 있어,
+    평형이 제각각인 단지보다 <b>입주민이 받는 단가 혜택이 더 커지는 구조</b>입니다.
+  </div>
+  <div class="botbar"><span>주식회사 엣지컴퍼니 · 대표이사 고진식</span><span>2026.06.18 · 02</span></div>
+</div>
+
+<!-- P3: 4대 특화 -->
+<div class="sheet">
+  <div class="brandbar"></div>
+  <div class="mini-head"><span><b>이천 자이더레브</b> 입주박람회 주관사 공동구매 입찰제안서</span><span>EDGE COMPANY</span></div>
+  <div class="sec"><div class="no">3</div><h2>핵심 특화 제안 4 — 이 단지 전용</h2><span class="en">PROPOSAL</span></div>
+  <div class="cards">
+    <div class="card"><div class="ct"><span class="ci">1</span>시공사·시행사 현장소장 즉시 미팅</div><div class="cb">선정 즉시 <b>GS건설 현장소장·시행사(㈜엘앤에스파트너스) 담당과의 미팅을 주선</b>합니다. 공용부 시공 동선·사전점검·하자 창구를 현장과 직접 맞추고, <b>협의회·시공사·주관사 3자 정례 협의 채널</b>을 가동합니다.</div></div>
+    <div class="card"><div class="ct"><span class="ci">2</span>시공·시행사 관계 유지 운영</div><div class="cb">행사 한 번으로 끝이 아니라 <b>준공·입주·하자보수 기간 내내 관계를 유지</b>합니다. 세대 하자가 시공사 책임인지 입주민 시공 책임인지 <b>명확히 구분·중재</b>해 입주민이 떠넘김에 시달리지 않게 합니다.</div></div>
+    <div class="card"><div class="ct"><span class="ci">3</span>입예협 성과 즉시 적용</div><div class="cb">협의회가 쌓아온 안건(희망 품목·하자 우선순위·행사 요구)을 <b>선정 즉시 운영계획에 반영</b>합니다. 협의회 전용 앱·카페를 즉시 개설해 <b>공지·성과가 전 세대에 바로 전달</b>됩니다.</div></div>
+    <div class="card"><div class="ct"><span class="ci">4</span>선정 후 1개월 내 착수</div><div class="cb"><b>D+3일</b> 시공/시행사 미팅·전용 앱 개설 → <b>D+1주</b> 84㎡ 표준 단가 1차 견적·협력사 풀 → <b>D+2주</b> 박람회 계획안 제출 → <b>D+1개월</b> 베이스캠프 가동·세부 실행안 확정.</div></div>
+  </div>
+
+  <div class="sec"><div class="no">4</div><h2>운영 역량 — 4박자</h2><span class="en">CAPABILITY</span></div>
+  <table>
+    <tr><td class="lab" style="width:150px;">자체 전기공사 면허</td><td>(+건설업·소방시설업) — “연결만”이 아니라 <b class="hl">직접 시공·A/S 합법 수행</b></td></tr>
+    <tr><td class="lab">물리적 사무실·14개 지사</td><td>도망갈 수 없는 실체 · <b class="hl">수도권 단지도 지사망으로 현장 대응</b></td></tr>
+    <tr><td class="lab">소유 채널</td><td>입주민 앱 · 네이버 카페 · 유튜브 — 행사 끝나도 안 끊기는 신뢰 인프라</td></tr>
+    <tr><td class="lab">트랙레코드</td><td><b class="hl">최근 8년 약 42,000세대</b> 입주 주관(전부 1,000세대↑ 대단지)</td></tr>
+  </table>
+  <div class="botbar"><span>주식회사 엣지컴퍼니 · 대표이사 고진식</span><span>2026.06.18 · 03</span></div>
+</div>
+
+<!-- P4: 입주민지원 + 신뢰안전망 -->
+<div class="sheet">
+  <div class="brandbar"></div>
+  <div class="mini-head"><span><b>이천 자이더레브</b> 입주박람회 주관사 공동구매 입찰제안서</span><span>EDGE COMPANY</span></div>
+  <div class="sec"><div class="no">5</div><h2>입주민 지원 — 박람회·공동구매 운영</h2><span class="en">BENEFIT</span></div>
+  <ul class="chk">
+    <li><b>방문(체크인)만 해도 받는 혜택</b> 중심 — 계약·신청을 강요하지 않습니다</li>
+    <li><b>시공형 혜택</b>(집에 남는 것) 우선 — 소모성 사은품이 아니라 입주 후 가치가 되는 품목</li>
+    <li>84㎡ 표준 규격 기반 <b>조명·중문·줄눈·도장·청소 공동구매 단가 협상</b></li>
+    <li>공용부 무료 시공 · 하자점검 · 점등식 등 <b>단지 전체 혜택</b></li>
+  </ul>
+  <div class="note">※ 구체 품목·금액 구성은 협의회 협의 후 단지 맞춤으로 확정합니다.</div>
+
+  <div class="sec"><div class="no">6</div><h2>신뢰·안전망 — “말이 아니라 증명”</h2><span class="en">TRUST</span></div>
+  <table>
+    <tr><td class="lab" style="width:150px;">하자 예치금 현금 1억</td><td><b class="hl">엣지 순수 자산</b> · 협의회+주관사 <b>공동통장</b> 예치 → 하자 시 <b>즉시 집행</b></td></tr>
+    <tr><td class="lab">이행보증보험 5억</td><td>업체 도산 시 엣지 100% 지급 + 동종업체 이관</td></tr>
+    <tr><td class="lab">48시간 하자보수 / 10년 A/S</td><td>최소 2년 무상 · CRM 24시간 피드백</td></tr>
+    <tr><td class="lab">지역·검증 협력사만 입점</td><td>사업자·재무·예치금 통과 업체만 — 미검증·외주 배제</td></tr>
+    <tr><td class="lab">자격박탈 확약서</td><td>외주·검증 위반 시 <b>주관사 자격 박탈 + 손해배상 청구 가능</b> 명문화·서명</td></tr>
+    <tr><td class="lab">시공 전 100% 환불</td><td>계약금 한도 동의서 — 입주민 자금 보호</td></tr>
+  </table>
+  <div class="botbar"><span>주식회사 엣지컴퍼니 · 대표이사 고진식</span><span>2026.06.18 · 04</span></div>
+</div>
+
+<!-- P5: 운영시스템 + 실적 + 도장 -->
+<div class="sheet">
+  <div class="brandbar"></div>
+  <div class="mini-head"><span><b>이천 자이더레브</b> 입주박람회 주관사 공동구매 입찰제안서</span><span>EDGE COMPANY</span></div>
+  <div class="sec"><div class="no">7</div><h2>운영 시스템 — 그 자리에서 돌아가는 증거</h2><span class="en">SYSTEM</span></div>
+  <div class="cards">
+    <div class="card"><div class="ct"><span class="ci">A</span>입주민 앱</div><div class="cb">실거주(동·호수) 인증자만 입장 → <b>가짜 후기 차단</b> · 검증 협력사만 입점·별점·랭킹 · 앱 내 견적/A/S · 업체 24h 미응답 시 <b>주관사 직접 개입</b></div></div>
+    <div class="card"><div class="ct"><span class="ci">B</span>클린벤더 검증 시스템</div><div class="cb">업체명 입력 → 실시간 스캔으로 신호등 표시. “검증한다는 말을 시스템으로 증명.”</div></div>
+    <div class="card"><div class="ct"><span class="ci">C</span>매일 아침 자동 모니터링</div><div class="cb">선정 후에도 입주가 끝날 때까지 협력사를 <b>상시 감시</b>하고 보고합니다.</div></div>
+    <div class="card"><div class="ct"><span class="ci">D</span>3자 협의 채널</div><div class="cb">협의회·시공사·주관사 정례 협의로 민원이 시공사에 빠르게 전달·해결되는 라인.</div></div>
+  </div>
+
+  <div class="sec"><div class="no">8</div><h2>실적·자격</h2><span class="en">RECORD</span></div>
+  <ul class="chk">
+    <li><b>최근 8년간 약 42,000세대</b> 입주 주관(전부 1,000세대↑ 대단지)</li>
+    <li>전국 14개 지사 운영 · 삼성전자 MOU · ISO 9001·14001·45001</li>
+    <li>자본금 2억 · 전기공사업 등록 울산-00821 · 기업신용평가 보유 · 이행보증보험 발행 이력</li>
+    <li>입주민 앱·클린벤더 검증 시스템 자체 개발·운영</li>
+  </ul>
+
+  <div class="lead" style="margin-top:18px;">
+    <b>이천 자이더레브에 우리가 맞는 이유 —</b> ① 84㎡ 86% 단일 규격 = 공동구매 단가 협상력이 우리 강점과 정확히 일치
+    ② GS·시행사 현장 관계를 즉시 여는 실행력 ③ 선정 1개월 내 착수
+    ④ 현금 1억·이행보증 5억·직접시공 면허·입주민 앱으로 <b>“끝까지 책임”을 서류와 시스템으로 증명.</b>
+  </div>
+
+  <div style="text-align:right; margin-top:30px; font-size:14px; line-height:2; color:#33424f;">
+    2026년 06월 18일<br>
+    <b style="color:#0f3d70;">주식회사 엣지컴퍼니</b><br>
+    대표이사 <span class="stamp-final">고 진 식 (인)<img src="file:///C:/Users/win11/AppData/Local/Temp/edge_stamp/stamp.png"></span>
+  </div>
+  <div class="botbar"><span>주식회사 엣지컴퍼니 · 대표이사 고진식</span><span>2026.06.18 · 05</span></div>
+</div>
+
+</body></html>
