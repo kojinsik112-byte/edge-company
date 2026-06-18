@@ -27,17 +27,17 @@ export default function ContactForm() {
 
   if (done)
     return (
-      <div className="rounded-2xl bg-white/10 p-8 text-center">
-        <p className="text-[17px] font-bold text-white">상담 신청이 접수되었습니다.</p>
-        <p className="mt-2 text-[14px] text-white/70">빠른 시간 안에 연락드리겠습니다. 감사합니다.</p>
+      <div className="rounded-2xl border border-line bg-surface p-8 text-center">
+        <p className="text-[17px] font-bold text-ink">상담 신청이 접수되었습니다.</p>
+        <p className="mt-2 text-[14px] text-muted">빠른 시간 안에 연락드리겠습니다. 감사합니다.</p>
       </div>
     );
 
-  const inp = "w-full rounded-lg border border-white/20 bg-white/10 px-3.5 py-3 text-[14px] text-white placeholder:text-white/45 outline-none focus:border-gold";
+  const inp = "w-full rounded-lg border border-line bg-bg px-3.5 py-3 text-[14px] text-ink placeholder:text-muted outline-none focus:border-gold";
 
   return (
-    <form onSubmit={submit} className="rounded-2xl bg-white/[0.06] p-6 text-left sm:p-8">
-      <p className="mb-4 text-center text-[15px] font-bold text-white">온라인 상담 신청</p>
+    <form onSubmit={submit} className="rounded-2xl border border-line bg-surface p-6 text-left sm:p-8">
+      <p className="mb-4 text-center text-[15px] font-bold text-ink">온라인 상담 신청</p>
       <div className="grid gap-3 sm:grid-cols-2">
         <input className={inp} placeholder="이름" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
         <input className={inp} placeholder="연락처 (예: 010-0000-0000)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
@@ -49,11 +49,11 @@ export default function ContactForm() {
         </select>
       </div>
       <textarea className={`${inp} mt-3 min-h-[90px]`} placeholder="문의 내용 (선택)" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
-      {err && <p className="mt-2 text-[13px] text-gold">{err}</p>}
-      <button type="submit" disabled={busy} className="mt-4 w-full rounded-lg bg-gold py-3.5 text-[15px] font-bold text-ink disabled:opacity-60">
+      {err && <p className="mt-2 text-[13px] text-red-600">{err}</p>}
+      <button type="submit" disabled={busy} className="mt-4 w-full rounded-lg bg-ink py-3.5 text-[15px] font-bold text-white transition hover:bg-[#111827] disabled:opacity-60">
         {busy ? "접수 중…" : "상담 신청하기"}
       </button>
-      <p className="mt-3 text-center text-[11.5px] text-white/45">접수 즉시 관리자에게 전달되며, 빠르게 연락드립니다.</p>
+      <p className="mt-3 text-center text-[11.5px] text-muted">접수 즉시 관리자에게 전달되며, 빠르게 연락드립니다.</p>
     </form>
   );
 }

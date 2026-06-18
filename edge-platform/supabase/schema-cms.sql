@@ -85,3 +85,23 @@ create policy inquiries_admin_delete on public.inquiries for delete to authentic
 -- 4) 정렬 컬럼 추가 (후기·시공사례) -----------------------------------
 alter table public.reviews add column if not exists sort int not null default 0;
 alter table public.cases   add column if not exists sort int not null default 0;
+
+-- 5) 팝업 본문(메모/공지형 텍스트) 컬럼 추가 --------------------------
+alter table public.popups add column if not exists content text;
+
+-- 6) 제품 소개 (유선스위치·실링팬·COB조명 등) -------------------------
+create table if not exists public.products (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  name text not null default '',
+  category text not null default '',
+  image text,
+  body text not null default '',
+  sort int not null default 0,
+  published boolean not null default true
+);
+alter table public.products enable row level security;
+drop policy if exists products_public_read on public.products;
+create policy products_public_read on public.products for select using (published = true);
+drop policy if exists products_admin_all on public.products;
+create policy products_admin_all on public.products for all to authenticated using (true) with check (true);

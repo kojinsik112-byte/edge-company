@@ -8,6 +8,7 @@ import { uploadImage } from "@/lib/upload";
 interface PopupRow {
   id: string;
   title: string;
+  content: string | null;
   image: string | null;
   link: string | null;
   enabled: boolean;
@@ -19,7 +20,7 @@ export default function PopupsAdmin({ rows }: { rows: PopupRow[] }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [list, setList] = useState(rows);
-  const [f, setF] = useState({ title: "", link: "", start_at: "", end_at: "", enabled: true });
+  const [f, setF] = useState({ title: "", content: "", link: "", start_at: "", end_at: "", enabled: true });
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -30,6 +31,7 @@ export default function PopupsAdmin({ rows }: { rows: PopupRow[] }) {
     if (file) image = await uploadImage(supabase, file);
     const rec = {
       title: f.title,
+      content: f.content || null,
       link: f.link || null,
       image,
       enabled: f.enabled,
@@ -40,7 +42,7 @@ export default function PopupsAdmin({ rows }: { rows: PopupRow[] }) {
     setBusy(false);
     if (!error && data) {
       setList([data as PopupRow, ...list]);
-      setF({ title: "", link: "", start_at: "", end_at: "", enabled: true });
+      setF({ title: "", content: "", link: "", start_at: "", end_at: "", enabled: true });
       setFile(null);
       router.refresh();
     }
@@ -64,7 +66,8 @@ export default function PopupsAdmin({ rows }: { rows: PopupRow[] }) {
       <form onSubmit={add} className="mb-8 space-y-3 rounded-2xl border border-line bg-surface p-5">
         <p className="text-[14px] font-bold text-ink">+ 팝업 추가</p>
         <input className={inp} placeholder="제목" value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />
-        <input className={inp} placeholder="클릭 시 이동 링크 (예: /contact)" value={f.link} onChange={(e) => setF({ ...f, link: e.target.value })} />
+        <textarea className={inp} placeholder="공지/메모 내용 (텍스트만으로도 팝업 가능, 이미지 없어도 됨)" value={f.content} onChange={(e) => setF({ ...f, content: e.target.value })} />
+        <input className={inp} placeholder="클릭 시 이동 링크 (예: /contact) — 선택" value={f.link} onChange={(e) => setF({ ...f, link: e.target.value })} />
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="text-[12.5px] text-muted">시작일<input type="date" className={inp} value={f.start_at} onChange={(e) => setF({ ...f, start_at: e.target.value })} /></label>
           <label className="text-[12.5px] text-muted">종료일<input type="date" className={inp} value={f.end_at} onChange={(e) => setF({ ...f, end_at: e.target.value })} /></label>

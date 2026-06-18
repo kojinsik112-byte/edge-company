@@ -7,14 +7,18 @@ import { createClient } from "@/lib/supabase/client";
 interface PopupRow {
   id: string;
   title: string;
+  content: string | null;
   image: string | null;
   link: string | null;
   start_at: string | null;
   end_at: string | null;
 }
 
+const today = () => new Date().toISOString().slice(0, 10);
+
 export default function Popup() {
   const [popup, setPopup] = useState<PopupRow | null>(null);
+  const [dontToday, setDontToday] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -22,18 +26,17 @@ export default function Popup() {
         const supabase = createClient();
         const { data } = await supabase
           .from("popups")
-          .select("id,title,image,link,start_at,end_at")
+          .select("id,title,content,image,link,start_at,end_at")
           .eq("enabled", true)
           .order("sort", { ascending: true });
-        const today = new Date().toISOString().slice(0, 10);
+        const t = today();
         const active = (data ?? []).find((p: PopupRow) => {
-          const okStart = !p.start_at || p.start_at <= today;
-          const okEnd = !p.end_at || p.end_at >= today;
-          return okStart && okEnd;
+          const okStart = !p.start_at || p.start_at <= t;
+          const okEnd = !p.end_at || p.end_at >= t;
+          const hidden = localStorage.getItem(`popup_${p.id}_until`) === t;
+          return okStart && okEnd && !hidden;
         });
-        if (active && sessionStorage.getItem(`popup_${active.id}`) !== "1") {
-          setPopup(active as PopupRow);
-        }
+        if (active) setPopup(active as PopupRow);
       } catch {
         /* 무시 */
       }
@@ -43,31 +46,34 @@ export default function Popup() {
   if (!popup) return null;
 
   const close = () => {
-    sessionStorage.setItem(`popup_${popup.id}`, "1");
+    if (dontToday) localStorage.setItem(`popup_${popup.id}_until`, today());
     setPopup(null);
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-5" role="dialog" aria-modal="true">
-      <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-surface shadow-2xl">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-5" role="dialog" aria-modal="true">
+      <div className="max-h-[88vh] w-full max-w-md overflow-y-auto overflow-hidden rounded-2xl bg-surface shadow-2xl">
         {popup.image && (
           <Link href={popup.link || "#"} onClick={close}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={popup.image} alt={popup.title} className="w-full" />
           </Link>
         )}
-        <div className="p-5">
-          {popup.title && <p className="text-[15px] font-bold text-ink">{popup.title}</p>}
-          <div className="mt-4 flex gap-2">
-            {popup.link && (
-              <Link href={popup.link} onClick={close} className="flex-1 rounded-lg bg-navy py-2.5 text-center text-[14px] font-semibold text-white">
-                자세히 보기
-              </Link>
-            )}
-            <button onClick={close} className="flex-1 rounded-lg border border-line py-2.5 text-[14px] font-semibold text-ink">
-              닫기
-            </button>
-          </div>
+        <div className="p-6">
+          {popup.title && <p className="text-[17px] font-bold text-ink">{popup.title}</p>}
+          {popup.content && <p className="mt-2 whitespace-pre-wrap text-[14px] leading-relaxed text-ink/80">{popup.content}</p>}
+          {popup.link && (
+            <Link href={popup.link} onClick={close} className="mt-4 block rounded-lg bg-ink py-3 text-center text-[14px] font-semibold text-white">
+              자세히 보기
+            </Link>
+          )}
+        </div>
+        <div className="flex items-center justify-between border-t border-line px-6 py-3">
+          <label className="flex cursor-pointer items-center gap-2 text-[13px] text-muted">
+            <input type="checkbox" checked={dontToday} onChange={(e) => setDontToday(e.target.checked)} className="h-4 w-4" />
+            오늘 하루 보지 않기
+          </label>
+          <button onClick={close} className="text-[13px] font-semibold text-ink">닫기 ✕</button>
         </div>
       </div>
     </div>

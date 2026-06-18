@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
-import { getCases, getReviews, getFaqs } from "@/lib/data";
+import { getCases, getReviews, getFaqs, getProducts } from "@/lib/data";
+import ProductsSection from "@/components/ProductsSection";
 import Stars from "@/components/Stars";
 import Popup from "@/components/Popup";
 import SnsSection from "@/components/SnsSection";
@@ -26,13 +27,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [settings, fanCases, indirectCases, smartCases, reviews, faqs] = await Promise.all([
+  const [settings, fanCases, indirectCases, smartCases, reviews, faqs, products] = await Promise.all([
     getSettings(),
     getCases({ category: "실링팬", limit: 6 }),
     getCases({ category: "간접조명", limit: 6 }),
     getCases({ category: "스마트조명", limit: 6 }),
     getReviews(12),
     getFaqs(),
+    getProducts(),
   ]);
   const { site, hero, showroom, company } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
@@ -55,7 +57,10 @@ export default async function Home() {
       {/* ===== 회사소개 (Why Edge Company) ===== */}
       <WhySection image={company.image} />
 
-      {/* ===== 쇼룸 갤러리 (WHY 바로 아래) ===== */}
+      {/* ===== 제품 소개 (WHY 바로 아래) ===== */}
+      <ProductsSection products={products} />
+
+      {/* ===== 쇼룸 갤러리 ===== */}
       <ShowroomGallery showroom={showroom} />
 
       {/* ===== 카테고리별 시공사례 (사진 중심·전면 배치) ===== */}
@@ -125,7 +130,7 @@ export default async function Home() {
           <h2 className="mt-4 whitespace-pre-line text-[30px] font-extrabold leading-[1.2] text-ink md:text-[48px]">실링팬 · 간접조명 시공{"\n"}지금 상담받으세요</h2>
           <a href={tel} className="mt-6 block text-[40px] font-extrabold tracking-tight text-navy md:text-[64px]">{site.phone}</a>
           <div className="mt-8 flex justify-center gap-3">
-            <a href={tel} className="rounded-lg bg-gold px-7 py-4 text-[16px] font-bold text-white transition hover:bg-gold-d">무료 상담</a>
+            <a href={tel} className="rounded-lg bg-ink px-7 py-4 text-[16px] font-bold text-white transition hover:bg-[#111827]">무료 상담</a>
             <Link href="/contact" className="rounded-lg border border-gold bg-surface px-7 py-4 text-[16px] font-bold text-ink transition hover:bg-bg">쇼룸 예약</Link>
           </div>
         </div>

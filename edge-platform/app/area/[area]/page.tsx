@@ -55,10 +55,10 @@ export default async function AreaPage({ params }: Props) {
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">
-        <a href={`tel:${SITE.phone.replace(/-/g, "")}`} className="rounded-lg bg-navy px-5 py-3 text-[14px] font-semibold text-white">
+        <a href={`tel:${SITE.phone.replace(/-/g, "")}`} className="rounded-lg bg-ink px-5 py-3 text-[14px] font-semibold text-white transition hover:bg-[#111827]">
           {region} {category} 상담 {SITE.phone}
         </a>
-        <Link href="/contact" className="rounded-lg bg-gold px-5 py-3 text-[14px] font-semibold text-navy">쇼룸 예약</Link>
+        <Link href="/contact" className="rounded-lg border border-gold bg-surface px-5 py-3 text-[14px] font-semibold text-ink transition hover:bg-warm">쇼룸 예약</Link>
       </div>
 
       {/* 다른 지역/카테고리 내부링크 (SEO) */}

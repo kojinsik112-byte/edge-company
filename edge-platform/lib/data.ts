@@ -1,5 +1,5 @@
 import { createClient } from "./supabase/server";
-import type { CaseRow, ReviewRow, FaqRow, YoutubeRow } from "./types";
+import type { CaseRow, ReviewRow, FaqRow, YoutubeRow, ProductRow } from "./types";
 import type { Region, Category } from "./constants";
 
 // 모든 fetch 는 Supabase 미연결/에러 시 빈 배열을 반환해 사이트가 죽지 않게 한다.
@@ -92,6 +92,21 @@ export async function getFaqs(): Promise<FaqRow[]> {
       .eq("published", true)
       .order("sort", { ascending: true });
     return (data as FaqRow[]) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getProducts(): Promise<ProductRow[]> {
+  const supabase = await createClient();
+  if (!supabase) return [];
+  try {
+    const { data } = await supabase
+      .from("products")
+      .select("*")
+      .eq("published", true)
+      .order("sort", { ascending: true });
+    return (data as ProductRow[]) ?? [];
   } catch {
     return [];
   }

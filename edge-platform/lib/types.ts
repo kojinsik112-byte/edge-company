@@ -38,6 +38,17 @@ export interface FaqRow {
   published: boolean;
 }
 
+export interface ProductRow {
+  id: string;
+  created_at: string;
+  name: string;
+  category: string;
+  image: string | null;
+  body: string;
+  sort: number;
+  published: boolean;
+}
+
 export interface YoutubeRow {
   id: string;
   created_at: string;

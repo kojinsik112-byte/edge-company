@@ -26,13 +26,14 @@ export default async function AdminDashboard() {
       newInquiries = count ?? 0;
     } catch {}
   }
-  const [cases, reviews, faqs, videos, popups] = await Promise.all([
-    count("cases"), count("reviews"), count("faq"), count("youtube"), count("popups"),
+  const [cases, reviews, faqs, videos, popups, products] = await Promise.all([
+    count("cases"), count("reviews"), count("faq"), count("youtube"), count("popups"), count("products"),
   ]);
 
   const cards = [
     { href: "/admin/settings", title: "사이트 설정", desc: "배너·회사·쇼룸·카테고리 이미지, 기본정보, 공지바, SEO", badge: "" },
     { href: "/admin/cases", title: "시공사례", desc: "등록·수정·삭제", badge: `${cases}건` },
+    { href: "/admin/products", title: "제품 소개", desc: "유선스위치·실링팬·COB조명 등", badge: `${products}건` },
     { href: "/admin/reviews", title: "고객후기", desc: "별점·후기·사진 관리", badge: `${reviews}건` },
     { href: "/admin/inquiries", title: "상담문의", desc: "접수 확인·상태·엑셀", badge: newInquiries ? `신규 ${newInquiries}` : "" },
     { href: "/admin/popups", title: "팝업 관리", desc: "이벤트/공지 팝업·기간", badge: `${popups}건` },
