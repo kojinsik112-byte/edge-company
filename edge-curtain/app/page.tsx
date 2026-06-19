@@ -13,6 +13,7 @@ import SnsSection from "@/components/SnsSection";
 import ShowroomGallery from "@/components/ShowroomGallery";
 import CategoryCases from "@/components/CategoryCases";
 import WhySection from "@/components/WhySection";
+import LineupSection from "@/components/LineupSection";
 import { DEMO_REVIEWS } from "@/lib/demo";
 import ScrollRow from "@/components/ScrollRow";
 
@@ -65,6 +66,9 @@ export default async function Home() {
 
       {/* ===== 제품 소개 (WHY 바로 아래) ===== */}
       <ProductsSection products={products} />
+
+      {/* ===== 커튼·블라인드 종류 안내 (커튼 특화·SEO) ===== */}
+      <LineupSection />
 
       {/* ===== 쇼룸 갤러리 ===== */}
       <ShowroomGallery showroom={showroom} />
