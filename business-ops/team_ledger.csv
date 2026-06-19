@@ -1,0 +1,40 @@
+team,division,score,baseline,tasks,recent,status
+scout,리서치,93,70,4,"네이버 경쟁사 9곳 CDP 정독+갭분석",active
+seo,리서치,74,70,1,"실링팬 키워드 수집",standby
+review_miner,리서치,82,70,1,"인디에어 리뷰2629 인사이트 추출",active
+persona,리서치,72,70,0,"-",standby
+creative_director,크리에이티브,86,70,2,"벤치마크 초월 +α 빅아이디어",active
+art_director,크리에이티브,87,70,3,"화이트·시원 디자인시스템 락인",active
+planner,기획,89,70,4,"30섹션 롱폼 구조·배치 설계",active
+writer,기획,88,70,5,"전섹션 오리지널 카피+실Q&A FAQ",active
+cro,기획,91,70,4,"가격앵커(309↔159)·저렴반론·전환",active
+designer,디자인,85,70,6,"AI 제품/연출/모터 이미지·모션GIF",active
+infographic,디자인,89,70,3,"14.5 하우징3단비교·dB·스펙",active
+photo_studio,디자인,71,70,0,"-",standby
+interior,디자인,76,70,1,"공간 연출 디렉션",standby
+cgi_3d,디자인,70,70,0,"-",standby
+motion,디자인,73,70,1,"회전 GIF 검토(약점 식별)",active
+video,디자인,68,70,0,"Veo 영상 보류(비용)",standby
+prompt_engineer,AI,84,70,3,"Gemini 이미지 프롬프트 최적화",active
+model_trainer,AI,70,70,0,"-",standby
+ai_ops,AI,88,70,5,"CDP접근·gen_image·파이프라인 구축",active
+innovation,AI,79,70,1,"신규 이미지/영상모델 평가",active
+auditor,품질법무,90,70,4,"과대광고0 검수·엣지표기제거",active
+legal,품질법무,86,70,2,"표시광고법·KC 표기 점검",active
+visual_qa,품질법무,80,70,2,"픽셀·모바일 렌더 점검",active
+operator,운영성과,70,70,0,"네이버 등록 대기",standby
+analytics,운영성과,72,70,0,"등록 후 성과분석 대기",standby
+experiment_lab,운영성과,74,70,1,"A/B 가설 후보",standby
+competitive_intel,전략,85,70,2,"경쟁 가격·순위·하우징 추적",active
+product_strategy,전략,86,70,3,"슬림 포지셔닝·미끼→락인",active
+pricing,전략,81,70,1,"159k 미끼가 검토",active
+brand_intel,전략,78,70,1,"아크로 자사 강약점 분석",active
+ecosystem,커머스,87,70,2,"생태계 Before/After·ONLY ARCO",active
+inventory,경영운영,70,70,0,"-",standby
+barcode,경영운영,70,70,0,"-",standby
+supervisor,경영운영,83,70,3,"팀 산출물 감독·조율",active
+growth,마케팅,72,70,0,"광고 운영 대기",standby
+thumbnail,마케팅,75,70,1,"대표이미지 후보 검토",standby
+influencer,마케팅,70,70,0,"-",standby
+cs,마케팅,73,70,1,"FAQ용 반복질문 정리",active
+finance,경영지원,76,70,1,"원가7만·마진 점검",active

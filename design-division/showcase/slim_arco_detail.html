@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>슬림 아크로 — ARCO SLIM SERIES</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15171E; --graphite:#5B6270; --line:#E7E9EF;
+    --accent:#0E7C66; --warm:#E8A33D; --bg:#F6F7F9; --dark:#0C0E14;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;color:var(--ink);background:#eceef2;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .page{max-width:860px;margin:0 auto;background:#fff}
+  section{padding:84px 56px;border-bottom:1px solid var(--line)}
+  .eyebrow{color:var(--accent);font-weight:700;letter-spacing:.16em;font-size:13px;text-transform:uppercase}
+  h1{font-size:54px;font-weight:800;letter-spacing:-.025em;line-height:1.15;margin:16px 0}
+  h2{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.3;margin-bottom:8px}
+  .lead{font-size:20px;color:var(--graphite);font-weight:500}
+  p.body{font-size:17px;color:#3a3f4b;margin-top:14px}
+  .muted{color:var(--graphite)}
+  .center{text-align:center}
+
+  /* HERO */
+  .hero{text-align:center;padding-top:76px;background:radial-gradient(120% 90% at 50% 0%,#fff 0%,#f4f6f8 100%)}
+  .price-row{margin:22px 0 8px;font-size:18px;color:var(--graphite)}
+  .price-row b{font-size:34px;color:var(--ink);font-weight:800;letter-spacing:-.02em}
+  .pill{display:inline-block;background:#fff6e6;color:#b9802a;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:6px}
+  .product-frame{margin:34px auto 8px;max-width:560px;aspect-ratio:4/3;border-radius:20px;
+    background:linear-gradient(160deg,#fafbfc,#eef1f5);border:1px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;position:relative;overflow:hidden}
+  .product-frame .tag{position:absolute;top:14px;left:14px;background:rgba(21,23,30,.06);color:var(--graphite);font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px}
+
+  /* FEATURE STRIP */
+  .strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:26px}
+  .strip .it{text-align:center}
+  .strip .it small{display:block;color:var(--graphite);font-size:13px;margin-top:8px;font-weight:600}
+
+  /* INFOGRAPHIC CARD */
+  .card{background:var(--dark);border-radius:22px;padding:40px;color:#fff;margin-top:26px}
+  .card h3{font-size:21px;font-weight:700;margin-bottom:4px}
+  .card .sub{color:#9aa3b2;font-size:14px;margin-bottom:26px}
+  .bignum{font-size:60px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .bignum span{font-size:20px;color:#9aa3b2;font-weight:600}
+
+  .compare .row{display:flex;align-items:center;gap:14px;margin:14px 0}
+  .compare .name{width:120px;font-size:14px;color:#c8cfdb}
+  .compare .bar{height:30px;border-radius:8px;background:#2a2f3a}
+  .compare .bar.ours{background:var(--accent)}
+  .compare .val{font-size:14px;font-weight:700}
+
+  .bars{display:flex;align-items:flex-end;gap:12px;height:170px;margin-top:8px}
+  .bars .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+  .bars .b{width:100%;border-radius:7px 7px 0 0;background:linear-gradient(#2bb89a,#0E7C66)}
+  .bars .lbl{color:#c8cfdb;font-size:12px;margin-top:8px}
+  .bars .db{color:#fff;font-size:13px;font-weight:700;margin-bottom:6px}
+
+  .gradbar{height:46px;border-radius:10px;background:linear-gradient(90deg,#ffd9a0,#fff3e0 45%,#dcebff 75%,#bcd4ff);margin-top:8px;position:relative}
+  .gradbar .end{position:absolute;top:54px;font-size:13px;color:#c8cfdb;font-weight:600}
+
+  .specs{width:100%;border-collapse:collapse;margin-top:8px}
+  .specs td{padding:15px 4px;border-bottom:1px solid var(--line);font-size:16px}
+  .specs td.k{color:var(--graphite);width:42%}
+
+  .eco{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+  .eco .e{border:1px solid var(--line);border-radius:14px;padding:20px 12px;text-align:center}
+  .eco .e b{display:block;font-size:15px;margin-top:6px}
+  .eco .e small{color:var(--graphite);font-size:12px}
+
+  .cta{background:var(--ink);color:#fff;text-align:center}
+  .cta h2{color:#fff}
+  .btn{display:inline-block;margin-top:20px;background:var(--accent);color:#fff;font-weight:700;
+    padding:17px 46px;border-radius:999px;font-size:18px;text-decoration:none}
+  .note{font-size:12px;color:#8c93a1;margin-top:18px}
+  @media(max-width:640px){
+    section{padding:56px 22px}
+    h1{font-size:38px}.bignum{font-size:46px}
+    .strip,.eco{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 01 HERO -->
+  <section class="hero">
+    <div class="eyebrow">ARCO · SLIM SERIES</div>
+    <h1>슬림 아크로</h1>
+    <p class="lead">14.5cm, 천장에 더 가깝게.<br>낮은 천장에도 부담 없는 슬림 실링팬.</p>
+    <div class="price-row">출시가 <b>99,000원</b><span class="pill">가격 확정 전</span></div>
+    <div class="product-frame">
+      <span class="tag">실제 제품컷 적용 예정</span>
+      <!-- 원본 라인 일러스트 (실링팬) -->
+      <svg width="200" height="150" viewBox="0 0 200 150" fill="none" stroke="#b9c0cc" stroke-width="2.4">
+        <line x1="100" y1="6" x2="100" y2="40"/>
+        <circle cx="100" cy="54" r="15" fill="#eef1f5"/>
+        <circle cx="100" cy="54" r="4" fill="#b9c0cc" stroke="none"/>
+        <path d="M100 54 C60 40 28 48 20 64 C44 70 80 66 100 54 Z" fill="#f4f6f8"/>
+        <path d="M100 54 C140 40 172 48 180 64 C156 70 120 66 100 54 Z" fill="#f4f6f8"/>
+        <path d="M100 54 C96 92 104 120 116 132 C112 104 110 78 100 54 Z" fill="#f4f6f8"/>
+        <rect x="86" y="62" width="28" height="9" rx="4.5" fill="#fff3e0" stroke="#e8c99a"/>
+      </svg>
+      <small class="muted">슬림 측면 · 정면 45° · 화이트 거실 배경</small>
+    </div>
+  </section>
+
+  <!-- 02 PROBLEM -->
+  <section>
+    <div class="eyebrow">WHY SLIM</div>
+    <h2>“우리 집 천장, 실링팬 달아도 될까?”</h2>
+    <p class="body">기존 실링팬은 모터 몸통이 두꺼워 천장이 낮은 아파트·원룸·상가에서는
+      답답하거나 머리에 닿을까 망설이게 됩니다. 슬림 아크로는 <b>몸통을 14.5cm로 낮춰</b>
+      그 고민을 줄였습니다. 같은 바람, 더 가까운 천장.</p>
+  </section>
+
+  <!-- 03 SLIM COMPARE -->
+  <section>
+    <div class="eyebrow">14.5CM SLIM BODY</div>
+    <h2>몸통 길이를 확 낮췄습니다</h2>
+    <p class="body muted">천장에서 내려오는 몸통(모터 하우징) 길이 비교 — 짧을수록 낮은 천장에 유리합니다.</p>
+    <div class="card compare">
+      <div class="row">
+        <div class="name">일반 실링팬</div>
+        <div class="bar" style="width:78%"></div>
+        <div class="val muted" style="color:#c8cfdb">약 25cm</div>
+      </div>
+      <div class="row">
+        <div class="name" style="color:#fff;font-weight:700">슬림 아크로</div>
+        <div class="bar ours" style="width:45%"></div>
+        <div class="val" style="color:#3fd6b4">14.5cm</div>
+      </div>
+      <p style="color:#7e8694;font-size:12px;margin-top:14px">※ 비교값은 일반형 평균 기준 샘플 — 실측 확정 시 교체</p>
+    </div>
+  </section>
+
+  <!-- 04 NOISE -->
+  <section>
+    <div class="eyebrow">QUIET · BLDC MOTOR</div>
+    <h2>바람은 세게, 소리는 낮게</h2>
+    <p class="body muted">BLDC 모터로 단계별 소음을 잡았습니다. 취침 1단은 도서관 수준의 정숙함.</p>
+    <div class="card">
+      <h3>단계별 소음 (dB)</h3>
+      <div class="sub">샘플 수치 — 실측값 입력 시 자동 교체</div>
+      <div class="bars">
+        <div class="col"><div class="db">24</div><div class="b" style="height:40%"></div><div class="lbl">1단</div></div>
+        <div class="col"><div class="db">28</div><div class="b" style="height:52%"></div><div class="lbl">2단</div></div>
+        <div class="col"><div class="db">31</div><div class="b" style="height:62%"></div><div class="lbl">3단</div></div>
+        <div class="col"><div class="db">35</div><div class="b" style="height:74%"></div><div class="lbl">4단</div></div>
+        <div class="col"><div class="db">39</div><div class="b" style="height:86%"></div><div class="lbl">5단</div></div>
+        <div class="col"><div class="db">42</div><div class="b" style="height:100%"></div><div class="lbl">6단</div></div>
+      </div>
+      <p style="color:#9aa3b2;font-size:13px;margin-top:18px">취침 1단 <b style="color:#fff">24dB</b> ≈ 조용한 도서관</p>
+    </div>
+  </section>
+
+  <!-- 05 DIMMING -->
+  <section>
+    <div class="eyebrow">LED · DIMMING</div>
+    <h2>빛도 분위기대로</h2>
+    <p class="body muted">전구색(따뜻함)부터 주광색(시원함)까지, 한 대로 거실 무드를 바꿉니다.</p>
+    <div class="card">
+      <h3>색온도 조절 범위</h3>
+      <div class="sub">3000K 전구색 ↔ 6000K 주광색</div>
+      <div class="gradbar">
+        <span class="end" style="left:0">3000K · 아늑한 저녁</span>
+        <span class="end" style="right:0">6000K · 환한 낮</span>
+      </div>
+      <div style="height:34px"></div>
+    </div>
+  </section>
+
+  <!-- 06 BLUETOOTH -->
+  <section>
+    <div class="eyebrow">BLUETOOTH</div>
+    <h2>리모컨 없이, 폰으로</h2>
+    <p class="body">블루투스로 스마트폰에서 풍량·조명·색온도·타이머를 제어합니다.
+      벽 스위치·리모컨도 그대로 함께. 아크로끼리는 <b>같은 앱 하나로 통일</b>됩니다.</p>
+    <div class="strip">
+      <div class="it"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><path d="M7 7l10 10-5 4V3l5 4L7 17"/></svg><small>블루투스 제어</small></div>
+      <div class="it"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><small>타이머</small></div>
+      <div class="it"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><path d="M4 12a8 8 0 0 1 8-8"/><path d="M20 12a8 8 0 0 1-8 8"/><path d="M9 9l-5 3 5 3M15 15l5-3-5-3"/></svg><small>역방향(겨울순환)</small></div>
+      <div class="it"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><path d="M9 18V5l9-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><small>3색 LED</small></div>
+      <div class="it"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><small>KC · AS</small></div>
+    </div>
+  </section>
+
+  <!-- 07 SPEC -->
+  <section>
+    <div class="eyebrow">SPECIFICATION</div>
+    <h2>상세 스펙</h2>
+    <table class="specs">
+      <tr><td class="k">모터</td><td>BLDC 브러시리스</td></tr>
+      <tr><td class="k">몸통(하우징) 길이</td><td><b>14.5cm 슬림</b></td></tr>
+      <tr><td class="k">풍량</td><td>6단 (역방향 지원)</td></tr>
+      <tr><td class="k">조명</td><td>LED 일체형 · 디밍 3000~6000K</td></tr>
+      <tr><td class="k">제어</td><td>블루투스 · 리모컨 · 벽스위치</td></tr>
+      <tr><td class="k">인증</td><td>KC 인증</td></tr>
+      <tr><td class="k">A/S</td><td>제품 하자 보증</td></tr>
+    </table>
+    <p class="note">※ 수치는 디자인 샘플입니다. 실측·인증 정보 확정 후 교체합니다. (auditor·legal 검수 대상)</p>
+  </section>
+
+  <!-- 08 ECOSYSTEM -->
+  <section style="background:var(--bg)">
+    <div class="eyebrow">ONE ARCO</div>
+    <h2>실링팬 하나로 시작, 집 전체를 아크로로</h2>
+    <p class="body muted">같은 브랜드라 색온도·디자인·앱이 통일됩니다. 따로 노는 제품 없이 깔끔하게.</p>
+    <div class="eco">
+      <div class="e"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12c.7.6 1 1.2 1 2h6c0-.8.3-1.4 1-2a7 7 0 0 0-4-12z"/></svg><b>COB·디밍 조명</b><small>같은 색온도로 통일</small></div>
+      <div class="e"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><circle cx="12" cy="9" r="2"/></svg><b>유선 스위치</b><small>벽에서 한 번에</small></div>
+      <div class="e"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><path d="M3 4h18M5 4v16M12 4v16M19 4v16M5 20h14"/></svg><b>전동 커튼</b><small>앱으로 함께 제어</small></div>
+      <div class="e"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><path d="M7 7l10 10-5 4V3l5 4L7 17"/></svg><b>하나의 앱</b><small>블루투스로 통합</small></div>
+    </div>
+  </section>
+
+  <!-- 09 CTA -->
+  <section class="cta">
+    <div class="eyebrow" style="color:#5fd8bd">SLIM ARCO</div>
+    <h2>낮은 천장에도, 슬림하게.</h2>
+    <p class="muted" style="color:#aeb4c0;margin-top:8px">14.5cm 슬림 · BLDC 정숙 · 블루투스 · 디밍 LED</p>
+    <a class="btn" href="#">구매하러 가기</a>
+    <p class="note">제조사·원산지·KC 인증번호·A/S 안내 등 필수표기는 등록 시 operator·legal이 삽입.</p>
+  </section>
+
+</div>
+</body>
+</html>

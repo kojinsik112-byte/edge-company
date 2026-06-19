@@ -1,0 +1,7 @@
+sku,name,category,cost,price,barcode,stock,reorder_point
+ACRO-CF-STD,아크로 실링팬 (기존),실링팬,,309000,,0,10
+ACRO-CF-145,아크로 신형 실링팬 14.5cm 블루투스 (미끼),실링팬,70000,,,0,30
+ACRO-LT-COB,아크로 COB조명,조명,,,,0,20
+ACRO-LT-DIM,아크로 디밍조명,조명,,,,0,20
+ACRO-SW,아크로 유선스위치,스위치,,,,0,20
+ACRO-CT,아크로 전동커튼,전동커튼,,,,0,10

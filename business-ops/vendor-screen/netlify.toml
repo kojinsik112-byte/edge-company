@@ -1,0 +1,13 @@
+# 엣지컴퍼니 클린벤더 스크리닝 — Netlify 배포 설정
+[build]
+  publish = "."
+
+# 함수 디렉터리 (최신 키 — 드래그&드롭 배포에서 함수가 잡히게)
+[functions]
+  directory = "netlify/functions"
+
+# 프론트엔드의 /api/screen 호출을 서버리스 함수로 연결
+[[redirects]]
+  from = "/api/screen"
+  to = "/.netlify/functions/screen"
+  status = 200

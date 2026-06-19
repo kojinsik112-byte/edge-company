@@ -1,0 +1,13 @@
+# 비밀키
+.env
+
+# 산출물
+output/
+*.png
+!templates/**/*.png
+
+# 파이썬
+__pycache__/
+*.pyc
+.venv/
+venv/

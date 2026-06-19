@@ -1,0 +1,17 @@
+# 의존성·캐시 (자동 생성 — 버전관리 제외)
+node_modules/
+__pycache__/
+*.pyc
+
+# 키·로컬 상태 (보안 — 절대 커밋 금지)
+.env
+.playwright-mcp/
+
+# 브라우저 로그인 프로필 (세션 쿠키 포함 — 절대 커밋 금지)
+tools/scraper/naver_profile/
+
+# 인스타 매크로 — 로그인세션·활동상태·로그 (보안·로컬 전용)
+business-ops/insta-growth/.browser_profile/
+business-ops/insta-growth/state.json
+business-ops/insta-growth/logs/
+business-ops/insta-growth/.env

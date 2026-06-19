@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>클린벤더 발표 시연 가이드</title>
+<style>
+  @page{size:A4;margin:14mm;}
+  *{box-sizing:border-box;}
+  body{font-family:'Pretendard','맑은 고딕','Malgun Gothic',sans-serif;color:#16243a;margin:0;
+    line-height:1.5;font-size:12.5px;background:#fff;}
+  .sheet{max-width:200mm;margin:0 auto;padding:22px 26px;}
+  .head{display:flex;align-items:center;gap:12px;border-bottom:2.5px solid #0d9488;padding-bottom:12px;margin-bottom:16px;}
+  .shield{width:38px;height:38px;border-radius:10px;background:linear-gradient(140deg,#2dd4bf,#0d9488);
+    display:flex;align-items:center;justify-content:center;flex:none;}
+  .shield svg{width:22px;height:22px;}
+  .head h1{margin:0;font-size:20px;font-weight:800;letter-spacing:-.4px;}
+  .head .sub{margin:2px 0 0;color:#5e6e85;font-size:11.5px;letter-spacing:1px;font-weight:700;}
+  .head .url{margin-left:auto;text-align:right;font-size:11px;color:#0d9488;font-weight:700;}
+  h2{font-size:13.5px;font-weight:800;color:#0c2741;margin:18px 0 8px;padding-left:9px;border-left:4px solid #2dd4bf;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  ul{margin:0;padding-left:0;list-style:none;}
+  .chk li{padding:5px 0 5px 24px;position:relative;}
+  .chk li::before{content:'';position:absolute;left:0;top:5px;width:14px;height:14px;border:1.5px solid #9bb0c4;border-radius:3px;}
+  table{width:100%;border-collapse:collapse;margin-top:4px;}
+  th,td{border:1px solid #e3e9f0;padding:7px 9px;text-align:left;vertical-align:top;}
+  th{background:#0c2741;color:#fff;font-size:11.5px;font-weight:700;}
+  td .num{display:inline-flex;width:20px;height:20px;border-radius:50%;background:#e6f7f6;color:#0d9488;
+    font-weight:800;align-items:center;justify-content:center;font-size:11px;}
+  .say{color:#0d9488;font-style:italic;}
+  .box{border:1px solid #e3e9f0;border-radius:8px;padding:11px 13px;background:#f8fafc;}
+  .warn{border-color:#f3c4c6;background:#fdf1f1;}
+  .warn b{color:#d23a3a;}
+  .green b{color:#0d9488;}
+  .foot{margin-top:18px;border-top:1px solid #e3e9f0;padding-top:9px;color:#7a899c;font-size:10.5px;display:flex;justify-content:space-between;}
+  b{font-weight:800;}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="head">
+    <span class="shield"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4.4-3 8.3-7 9.4C8 19.3 5 15.4 5 11V5l7-3z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 11.8l2.3 2.3 4.4-4.6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <div>
+      <h1>클린벤더 — 발표 시연 가이드</h1>
+      <div class="sub">CLEANVENDOR · 엣지컴퍼니 업체선정 인텔리전스 · 노트북 라이브 시연용</div>
+    </div>
+    <div class="url">aquamarine-cajeta-<br>ee235f.netlify.app</div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <h2>① 사전 세팅 (발표 전날 + 당일 아침)</h2>
+      <ul class="chk">
+        <li><b>그 노트북에서</b> 사이트 미리 열고 검색·엑셀 업로드 1회 테스트</li>
+        <li><b>휴대폰 핫스팟 ON</b> (행사장 와이파이 백업)</li>
+        <li>데모 엑셀을 노트북에 저장<br>(<b>유림노르웨이숲_업체리스트_샘플.xlsx</b>)</li>
+        <li>깨끗하게 나오는 <b>시연용 업체명 1~2개</b> 미리 확인</li>
+        <li>브라우저 즐겨찾기에 사이트 등록 (빠른 접속)</li>
+        <li>화면 밝기·글자 확대(필요 시 Ctrl + +)</li>
+      </ul>
+    </div>
+    <div>
+      <h2>② 언제 시연하나</h2>
+      <div class="box green">
+        <b>업체 선별 기준(리조트형) 설명 직후.</b><br><br>
+        "저희는 '검증한다'고 <b>말로만</b> 하지 않습니다.<br>
+        지금 <b>직접 보여드리겠습니다.</b>"<br>
+        <span style="color:#7a899c">→ 노트북 화면으로 전환</span>
+      </div>
+      <h2 style="margin-top:14px">⏱ 시간</h2>
+      <div class="box">전체 <b>60~90초</b> 안에. 길게 끌지 않기 — 짧고 강하게.</div>
+    </div>
+  </div>
+
+  <h2>③ 시연 흐름 (순서대로)</h2>
+  <table>
+    <tr><th style="width:34px"></th><th style="width:32%">동작</th><th style="width:28%">화면에 뜨는 것</th><th>한 마디 (예시 — 회장님 말로)</th></tr>
+    <tr><td><span class="num">1</span></td><td><b>단일 업체 검증</b><br>업체명 입력 → "검증 실행"</td><td>레이더 스캔 → 신호등 판정 + 카페·블로그 글</td><td class="say">"지금 네이버 카페를 <b>실시간으로</b> 뒤집니다. 가짜 시연 아닙니다."</td></tr>
+    <tr><td><span class="num">2</span></td><td><b>리스트 일괄</b> 탭 클릭<br>→ 엑셀 업로드</td><td>참여업체 명단이 자동으로 좌르륵 입력</td><td class="say">"유림 노르웨이숲 <b>참여업체 전부</b>를 한 번에 검증합니다."</td></tr>
+    <tr><td><span class="num">3</span></td><td>"일괄 검증 시작"</td><td>신호등 표 실시간 채워짐 (위험 업체 맨 위로)</td><td class="say">"사고 이력이 있는 업체는 <b>입주민 앞에 못 섭니다.</b>"</td></tr>
+  </table>
+
+  <div class="grid" style="margin-top:14px">
+    <div>
+      <h2>④ 돌발 대비 (Plan B)</h2>
+      <ul class="chk">
+        <li>인터넷 끊김 → <b>핫스팟</b>으로 즉시 전환</li>
+        <li>그래도 안 되면 → 미리 찍어둔 <b>스크린샷</b>으로 설명</li>
+        <li>동명 업체·이상한 결과 →<br><span class="say">"이래서 마지막은 <b>사람이 교차검증</b>합니다"</span> 로 받기</li>
+      </ul>
+    </div>
+    <div>
+      <h2>⑤ 절대 하지 말 것</h2>
+      <div class="box warn">
+        🔴 <b>실제 경쟁업체명을 무대에서 즉흥 검색 금지</b><br>
+        (빨간불 뜨면 공개 석상 명예훼손 위험)<br><br>
+        ✅ 데모는 <b>깨끗하게 나오는 업체</b>로만.<br>
+        "특정 업체 저격"이 아니라 <b>"시스템이 전 업체를 한 번에 훑는다"</b>를 보여주는 것.
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>엣지컴퍼니 · 입주주관사 업체선정 인텔리전스 시스템</span>
+    <span>일광노르웨이숲 입주박람회 주관사 PT · 2026-06-14</span>
+  </div>
+</div>
+</body>
+</html>

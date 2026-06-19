@@ -1,0 +1,314 @@
+[
+ {
+  "team": "scout",
+  "division": "리서치",
+  "score": 93,
+  "baseline": 70,
+  "task": "경쟁사 가격·신제품 재정찰 중",
+  "status": "work"
+ },
+ {
+  "team": "seo",
+  "division": "리서치",
+  "score": 74,
+  "baseline": 70,
+  "task": "실링팬 키워드 수집",
+  "status": "standby"
+ },
+ {
+  "team": "review_miner",
+  "division": "리서치",
+  "score": 82,
+  "baseline": 70,
+  "task": "인디에어 리뷰2629 인사이트 추출",
+  "status": "done"
+ },
+ {
+  "team": "persona",
+  "division": "리서치",
+  "score": 72,
+  "baseline": 70,
+  "task": "대기",
+  "status": "standby"
+ },
+ {
+  "team": "creative_director",
+  "division": "크리에이티브",
+  "score": 86,
+  "baseline": 70,
+  "task": "벤치마크 초월 +α 빅아이디어",
+  "status": "done"
+ },
+ {
+  "team": "art_director",
+  "division": "크리에이티브",
+  "score": 87,
+  "baseline": 70,
+  "task": "화이트·시원 디자인시스템 락인",
+  "status": "done"
+ },
+ {
+  "team": "planner",
+  "division": "기획",
+  "score": 89,
+  "baseline": 70,
+  "task": "30섹션 롱폼 구조·배치 설계",
+  "status": "done"
+ },
+ {
+  "team": "writer",
+  "division": "기획",
+  "score": 88,
+  "baseline": 70,
+  "task": "전섹션 오리지널 카피+실Q&A FAQ",
+  "status": "done"
+ },
+ {
+  "team": "cro",
+  "division": "기획",
+  "score": 91,
+  "baseline": 70,
+  "task": "가격앵커(309↔159)·저렴반론·전환",
+  "status": "done"
+ },
+ {
+  "team": "designer",
+  "division": "디자인",
+  "score": 85,
+  "baseline": 70,
+  "task": "AI 제품/연출/모터 이미지·모션GIF",
+  "status": "done"
+ },
+ {
+  "team": "infographic",
+  "division": "디자인",
+  "score": 89,
+  "baseline": 70,
+  "task": "14.5 하우징3단비교·dB·스펙",
+  "status": "done"
+ },
+ {
+  "team": "photo_studio",
+  "division": "디자인",
+  "score": 71,
+  "baseline": 70,
+  "task": "대기",
+  "status": "standby"
+ },
+ {
+  "team": "interior",
+  "division": "디자인",
+  "score": 76,
+  "baseline": 70,
+  "task": "공간 연출 디렉션",
+  "status": "standby"
+ },
+ {
+  "team": "cgi_3d",
+  "division": "디자인",
+  "score": 70,
+  "baseline": 70,
+  "task": "대기",
+  "status": "standby"
+ },
+ {
+  "team": "motion",
+  "division": "디자인",
+  "score": 73,
+  "baseline": 70,
+  "task": "회전 GIF 검토(약점 식별)",
+  "status": "done"
+ },
+ {
+  "team": "video",
+  "division": "디자인",
+  "score": 68,
+  "baseline": 70,
+  "task": "Veo 영상 보류(비용)",
+  "status": "standby"
+ },
+ {
+  "team": "prompt_engineer",
+  "division": "AI",
+  "score": 84,
+  "baseline": 70,
+  "task": "Gemini 이미지 프롬프트 최적화",
+  "status": "done"
+ },
+ {
+  "team": "model_trainer",
+  "division": "AI",
+  "score": 70,
+  "baseline": 70,
+  "task": "대기",
+  "status": "standby"
+ },
+ {
+  "team": "ai_ops",
+  "division": "AI",
+  "score": 88,
+  "baseline": 70,
+  "task": "실시간 팀 모니터 대시보드 구축 중",
+  "status": "work"
+ },
+ {
+  "team": "innovation",
+  "division": "AI",
+  "score": 79,
+  "baseline": 70,
+  "task": "신규 이미지/영상모델 평가",
+  "status": "done"
+ },
+ {
+  "team": "auditor",
+  "division": "품질법무",
+  "score": 90,
+  "baseline": 70,
+  "task": "과대광고0 검수·엣지표기제거",
+  "status": "done"
+ },
+ {
+  "team": "legal",
+  "division": "품질법무",
+  "score": 86,
+  "baseline": 70,
+  "task": "표시광고법·KC 표기 점검",
+  "status": "done"
+ },
+ {
+  "team": "visual_qa",
+  "division": "품질법무",
+  "score": 80,
+  "baseline": 70,
+  "task": "픽셀·모바일 렌더 점검",
+  "status": "done"
+ },
+ {
+  "team": "operator",
+  "division": "운영성과",
+  "score": 70,
+  "baseline": 70,
+  "task": "네이버 등록 패키지 완료",
+  "status": "done"
+ },
+ {
+  "team": "analytics",
+  "division": "운영성과",
+  "score": 72,
+  "baseline": 70,
+  "task": "슬림 페이지 섹션별 효과 분석 중",
+  "status": "work"
+ },
+ {
+  "team": "experiment_lab",
+  "division": "운영성과",
+  "score": 74,
+  "baseline": 70,
+  "task": "후킹 A/B 가설 설계 중",
+  "status": "work"
+ },
+ {
+  "team": "competitive_intel",
+  "division": "전략",
+  "score": 85,
+  "baseline": 70,
+  "task": "경쟁 가격·순위·하우징 추적",
+  "status": "done"
+ },
+ {
+  "team": "product_strategy",
+  "division": "전략",
+  "score": 86,
+  "baseline": 70,
+  "task": "슬림 포지셔닝·미끼→락인",
+  "status": "done"
+ },
+ {
+  "team": "pricing",
+  "division": "전략",
+  "score": 81,
+  "baseline": 70,
+  "task": "159k 미끼가 검토",
+  "status": "done"
+ },
+ {
+  "team": "brand_intel",
+  "division": "전략",
+  "score": 78,
+  "baseline": 70,
+  "task": "아크로 자사 강약점 분석",
+  "status": "done"
+ },
+ {
+  "team": "ecosystem",
+  "division": "커머스",
+  "score": 87,
+  "baseline": 70,
+  "task": "생태계 Before/After·ONLY ARCO",
+  "status": "done"
+ },
+ {
+  "team": "inventory",
+  "division": "경영운영",
+  "score": 70,
+  "baseline": 70,
+  "task": "대기",
+  "status": "standby"
+ },
+ {
+  "team": "barcode",
+  "division": "경영운영",
+  "score": 70,
+  "baseline": 70,
+  "task": "대기",
+  "status": "standby"
+ },
+ {
+  "team": "supervisor",
+  "division": "경영운영",
+  "score": 83,
+  "baseline": 70,
+  "task": "39팀 성과·성장률 집계 중",
+  "status": "work"
+ },
+ {
+  "team": "growth",
+  "division": "마케팅",
+  "score": 72,
+  "baseline": 70,
+  "task": "쇼핑검색광고 캠페인 세팅 중",
+  "status": "work"
+ },
+ {
+  "team": "thumbnail",
+  "division": "마케팅",
+  "score": 75,
+  "baseline": 70,
+  "task": "대표이미지 A/B안 제작 중",
+  "status": "work"
+ },
+ {
+  "team": "influencer",
+  "division": "마케팅",
+  "score": 70,
+  "baseline": 70,
+  "task": "대기",
+  "status": "standby"
+ },
+ {
+  "team": "cs",
+  "division": "마케팅",
+  "score": 73,
+  "baseline": 70,
+  "task": "FAQ용 반복질문 정리",
+  "status": "done"
+ },
+ {
+  "team": "finance",
+  "division": "경영지원",
+  "score": 76,
+  "baseline": 70,
+  "task": "원가7만·마진 점검",
+  "status": "done"
+ }
+]

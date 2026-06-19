@@ -1,0 +1,14 @@
+# 생성물 (자동 생성 — 버전관리 제외)
+barcodes/
+data/inventory_log.csv
+dashboard/status.json
+dashboard/_preview.html
+dashboard/weather.json
+dashboard/index.html
+
+# 비서실 — 토큰(보안)·음성파일(바이너리)은 커밋 금지. 브리핑 md는 커밋(누적)
+secretary/state/
+secretary/briefs/*.mp3
+
+# 자가성장 엔진 휘발성 로그
+growth-engine/state/*.log

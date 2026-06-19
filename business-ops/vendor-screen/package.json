@@ -1,0 +1,7 @@
+{
+  "name": "edge-vendor-screen",
+  "version": "1.0.0",
+  "private": true,
+  "description": "엣지컴퍼니 클린벤더 스크리닝 — 입주박람회 업체 평판 검증 (네이버 카페/블로그 검색)",
+  "engines": { "node": ">=18" }
+}
