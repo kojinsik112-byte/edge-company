@@ -29,7 +29,7 @@ export default function WhySection({ image }: { image: string }) {
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {FEATURES.map((f) => (
                 <div key={f.title} className="rounded-2xl border border-line bg-surface p-6 transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_45px_-24px_rgba(15,35,66,0.3)]">
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e6ecd9] text-gold-d">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f1e4da] text-gold-d">
                     <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round"><path d={f.icon} /></svg>
                   </span>
                   <h3 className="mt-4 text-[16px] font-bold text-ink">{f.title}</h3>

@@ -21,7 +21,7 @@ export default function ShowroomGallery({ showroom }: { showroom: Showroom }) {
           ))}
 
           {/* 마지막 칸: 쇼룸 안내 CTA 타일 (베이지) */}
-          <Link href="/showroom" className="group flex aspect-[4/3] flex-col items-center justify-center gap-3.5 rounded-[20px] bg-[#cbd5b6] p-6 text-center text-ink transition hover:brightness-[0.97]">
+          <Link href="/showroom" className="group flex aspect-[4/3] flex-col items-center justify-center gap-3.5 rounded-[20px] bg-[#e6cdbb] p-6 text-center text-ink transition hover:brightness-[0.97]">
             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-gold shadow-sm transition group-hover:scale-110">
               <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </span>

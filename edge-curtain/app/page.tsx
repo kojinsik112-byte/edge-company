@@ -81,7 +81,7 @@ export default async function Home() {
       <ProcessSection />
 
       {/* ===== 고객후기 ===== */}
-      <section className="bg-[#f4f5f0] py-16 md:py-24">
+      <section className="bg-[#f6efe8] py-16 md:py-24">
         <div className="reveal mx-auto max-w-[1320px] px-6">
           <div className="mx-auto mb-10 max-w-[640px] text-center">
             <p className="kicker">Reviews</p>
@@ -89,7 +89,7 @@ export default async function Home() {
             <p className="mt-3 text-[14.5px] text-muted">실제 시공 고객님들의 이야기입니다. 옆으로 넘겨 더 많은 후기를 확인하세요.</p>
           </div>
         </div>
-        <ScrollRow fade="#f4f5f0">
+        <ScrollRow fade="#f6efe8">
           <div className="mx-auto flex w-max gap-5 pb-3">
             {reviewList.map((r) => (
               <div key={r.id} className="relative w-[290px] shrink-0 overflow-hidden rounded-2xl border border-line bg-surface">
@@ -145,7 +145,7 @@ export default async function Home() {
           <h2 className="mt-4 whitespace-pre-line text-[30px] font-extrabold leading-[1.2] text-ink md:text-[48px]">맞춤 커튼 · 블라인드 시공{"\n"}지금 상담받으세요</h2>
           <a href={tel} className="mt-6 block text-[40px] font-extrabold tracking-tight text-navy md:text-[64px]">{site.phone}</a>
           <div className="mt-8 flex justify-center gap-3">
-            <a href={tel} className="rounded-lg bg-ink px-7 py-4 text-[16px] font-bold text-white transition hover:bg-[#161b15]">무료 상담</a>
+            <a href={tel} className="rounded-lg bg-ink px-7 py-4 text-[16px] font-bold text-white transition hover:bg-[#1f1916]">무료 상담</a>
             <Link href="/contact" className="rounded-lg border border-gold bg-surface px-7 py-4 text-[16px] font-bold text-ink transition hover:bg-bg">쇼룸 예약</Link>
           </div>
         </div>

@@ -46,7 +46,7 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
           </nav>
 
           <div className="flex items-center gap-2">
-            <a href={tel} className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-[14px] bg-ink px-5 py-3 text-[14px] font-bold text-white transition hover:bg-[#161b15] xl:inline-flex">
+            <a href={tel} className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-[14px] bg-ink px-5 py-3 text-[14px] font-bold text-white transition hover:bg-[#1f1916] xl:inline-flex">
               <PhoneIcon className="h-4 w-4 text-gold" />
               전화상담 {site.phone}
             </a>
