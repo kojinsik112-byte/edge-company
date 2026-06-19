@@ -4,18 +4,41 @@ export default function SnsSection({ site }: { site: SiteInfo }) {
   const channels = [
     {
       key: "instagram", title: "인스타그램", desc: "실제 시공사진과 최신 시공현장", cta: "인스타그램 보기",
-      href: site.instagram, brand: "#E1306C", bg: "#FFF8FA",
-      icon: (<svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.8}><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg>),
+      href: site.instagram, bg: "#FFF5F8",
+      icon: (
+        <svg viewBox="0 0 56 56" className="h-full w-full" aria-hidden="true">
+          <defs>
+            <linearGradient id="ig-grad" x1="0" y1="56" x2="56" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="#FEDA75" /><stop offset="0.25" stopColor="#FA7E1E" />
+              <stop offset="0.5" stopColor="#D62976" /><stop offset="0.75" stopColor="#962FBF" /><stop offset="1" stopColor="#4F5BD5" />
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="52" height="52" rx="16" fill="url(#ig-grad)" />
+          <rect x="16" y="16" width="24" height="24" rx="7" fill="none" stroke="#fff" strokeWidth="3" />
+          <circle cx="28" cy="28" r="6.5" fill="none" stroke="#fff" strokeWidth="3" />
+          <circle cx="38" cy="18" r="2.4" fill="#fff" />
+        </svg>
+      ),
     },
     {
       key: "youtube", title: "유튜브", desc: "실링팬 · 간접조명 영상 리뷰", cta: "유튜브 보기",
-      href: site.youtube, brand: "#FF0000", bg: "#FFF8F6",
-      icon: (<svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.8}><rect x="2.5" y="5.5" width="19" height="13" rx="3.5" /><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor" stroke="none" /></svg>),
+      href: site.youtube, bg: "#FFF5F4",
+      icon: (
+        <svg viewBox="0 0 56 56" className="h-full w-full" aria-hidden="true">
+          <rect x="4" y="12" width="48" height="32" rx="9" fill="#FF0000" />
+          <path d="M24 20l13 8-13 8z" fill="#fff" />
+        </svg>
+      ),
     },
     {
       key: "blog", title: "네이버 블로그", desc: "상세 시공 후기와 정보", cta: "블로그 보기",
-      href: site.blog, brand: "#03C75A", bg: "#F8FFF9",
-      icon: <span className="text-[18px] font-extrabold leading-none">N</span>,
+      href: site.blog, bg: "#F3FCF6",
+      icon: (
+        <svg viewBox="0 0 56 56" className="h-full w-full" aria-hidden="true">
+          <rect x="2" y="2" width="52" height="52" rx="14" fill="#03C75A" />
+          <path d="M18 17h7.6l5.2 7.6V17H38v22h-7.6L25.2 31.4V39H18z" fill="#fff" />
+        </svg>
+      ),
     },
   ];
 
@@ -33,11 +56,11 @@ export default function SnsSection({ site }: { site: SiteInfo }) {
                 className={`group flex flex-col rounded-[20px] border border-line p-7 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition duration-300 ${live ? "cursor-pointer hover:-translate-y-1.5 hover:shadow-[0_22px_45px_-22px_rgba(15,35,66,0.22)]" : ""}`}
                 style={{ backgroundColor: c.bg }}
               >
-                <div className="flex items-center gap-3">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm" style={{ color: live ? c.brand : "#9ca3af" }}>
+                <div className="flex items-center gap-3.5">
+                  <span className="flex h-16 w-16 shrink-0 items-center justify-center">
                     {c.icon}
                   </span>
-                  <span className="text-[17px] font-bold text-ink">{c.title}</span>
+                  <span className="text-[18px] font-bold text-ink">{c.title}</span>
                 </div>
                 <p className="mt-4 text-[13.5px] leading-relaxed text-muted">{c.desc}</p>
                 {live ? (
