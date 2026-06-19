@@ -2,18 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
-/* ===== Edge Company — Premium Lighting Showroom design tokens ===== */
+/* ===== 엣지리브커튼 — Clean White + Sage accent design tokens ===== */
+/* 베이스는 화이트/오프화이트(시원·세련), 세이지는 포인트(글자·아이콘·작은 타일)에만 */
 @theme {
-  --color-bg: #faf8f5;
+  --color-bg: #fafaf8;
   --color-surface: #ffffff;
-  --color-warm: #f3eee8;
-  --color-ink: #1f2937;
-  --color-muted: #6b7280;
-  --color-navy: #0f2342;
-  --color-navy-d: #0a1830;
-  --color-gold: #d6a85c;
-  --color-gold-d: #b98a45;
-  --color-line: #e8e2da;
+  --color-warm: #f3f4ef;
+  --color-ink: #242a23;
+  --color-muted: #6c7268;
+  --color-navy: #3a4730;
+  --color-navy-d: #283120;
+  --color-gold: #8a9b72;
+  --color-gold-d: #5e6e44;
+  --color-line: #e9e9e3;
   --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 

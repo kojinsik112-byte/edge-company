@@ -64,7 +64,7 @@ export default function SnsSection({ site }: { site: SiteInfo }) {
                 </div>
                 <p className="mt-4 text-[13.5px] leading-relaxed text-muted">{c.desc}</p>
                 {live ? (
-                  <span className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg border border-line bg-white py-3 text-[14px] font-bold text-ink transition group-hover:border-transparent group-hover:bg-[#dcc7ae]">
+                  <span className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg border border-line bg-white py-3 text-[14px] font-bold text-ink transition group-hover:border-transparent group-hover:bg-[#cbd5b6]">
                     {c.cta} <span className="transition group-hover:translate-x-0.5">→</span>
                   </span>
                 ) : (

@@ -59,7 +59,7 @@ export default function ContactForm() {
         <span>상담을 위한 <b className="font-semibold text-ink">개인정보(이름·연락처) 수집·이용</b>에 동의합니다. 수집된 정보는 상담 목적 외 사용하지 않습니다.</span>
       </label>
       {err && <p className="mt-2 text-[13px] text-red-600">{err}</p>}
-      <button type="submit" disabled={busy} className="mt-4 w-full rounded-lg bg-ink py-3.5 text-[15px] font-bold text-white transition hover:bg-[#111827] disabled:opacity-60">
+      <button type="submit" disabled={busy} className="mt-4 w-full rounded-lg bg-ink py-3.5 text-[15px] font-bold text-white transition hover:bg-[#161b15] disabled:opacity-60">
         {busy ? "접수 중…" : "상담 신청하기"}
       </button>
       <p className="mt-3 text-center text-[11.5px] text-muted">접수 즉시 관리자에게 전달되며, 빠르게 연락드립니다.</p>

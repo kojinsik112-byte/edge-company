@@ -104,7 +104,7 @@ export default async function CaseDetail({ params }: Props) {
       <div className="mt-10 rounded-2xl bg-warm px-6 py-8 text-center">
         <p className="text-[15px] font-semibold text-ink">{c.region} {c.category} 시공, 우리 집은 어떨까요?</p>
         <p className="mt-1 text-[13px] text-muted">문자·카톡으로 남기시면 바로 전화드립니다.</p>
-        <a href={`tel:${site.phone.replace(/-/g, "")}`} className="mt-4 inline-block rounded-lg bg-ink px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#111827]">
+        <a href={`tel:${site.phone.replace(/-/g, "")}`} className="mt-4 inline-block rounded-lg bg-ink px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#161b15]">
           {site.phone} 전화 상담
         </a>
       </div>

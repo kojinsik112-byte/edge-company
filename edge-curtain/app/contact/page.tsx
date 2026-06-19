@@ -25,7 +25,7 @@ export default async function ContactPage() {
           </p>
           <a href={tel} className="mt-7 block text-[38px] font-extrabold tracking-tight text-navy md:text-[60px]">{site.phone}</a>
           <div className="mx-auto mt-7 flex max-w-md flex-col gap-3 sm:flex-row sm:justify-center">
-            <a href={tel} className="rounded-lg bg-ink px-6 py-3.5 text-[15px] font-semibold text-white transition hover:bg-[#111827]">전화 상담</a>
+            <a href={tel} className="rounded-lg bg-ink px-6 py-3.5 text-[15px] font-semibold text-white transition hover:bg-[#161b15]">전화 상담</a>
             <a href={kakao} className="rounded-lg border border-gold bg-surface px-6 py-3.5 text-[15px] font-semibold text-ink transition hover:bg-bg">카톡·문자</a>
             <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-gold bg-surface px-6 py-3.5 text-[15px] font-semibold text-ink transition hover:bg-bg">길찾기</a>
           </div>

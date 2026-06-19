@@ -37,7 +37,7 @@ export default async function ShowroomPage() {
             ))}
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a href={tel} className="rounded-lg bg-ink px-6 py-3.5 text-[15px] font-semibold text-white transition hover:bg-[#111827]">전화 상담</a>
+            <a href={tel} className="rounded-lg bg-ink px-6 py-3.5 text-[15px] font-semibold text-white transition hover:bg-[#161b15]">전화 상담</a>
             <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-gold bg-surface px-6 py-3.5 text-[15px] font-semibold text-ink transition hover:bg-warm">네이버 지도 길찾기</a>
           </div>
         </div>
