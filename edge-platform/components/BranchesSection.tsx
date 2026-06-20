@@ -15,14 +15,14 @@ export default function BranchesSection({ branches }: { branches: Branches }) {
           {branches.desc && <p className="mt-3 text-[14.5px] text-muted">{branches.desc}</p>}
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 md:items-center">
+        <div className="space-y-6">
           {branches.mapImage && (
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-bg">
-              <Image src={branches.mapImage} alt="엣지컴퍼니 전국 지사 지도" fill sizes="(max-width:768px) 100vw, 520px" className="object-contain" />
+            <div className="relative aspect-[2/1] overflow-hidden rounded-2xl border border-line bg-bg">
+              <Image src={branches.mapImage} alt="엣지컴퍼니 전국 지사 지도" fill sizes="(max-width:1080px) 100vw, 1080px" className="object-contain" />
             </div>
           )}
           {rows.length > 0 && (
-            <div className={`overflow-hidden rounded-2xl border border-line ${branches.mapImage ? "" : "md:col-span-2"}`}>
+            <div className="overflow-hidden rounded-2xl border border-line">
               <table className="w-full border-collapse text-left text-[14px]">
                 <thead>
                   <tr className="bg-bg">

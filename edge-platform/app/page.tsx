@@ -60,7 +60,10 @@ export default async function Home() {
         <h1 className="sr-only">{hero.title} · {hero.subline}</h1>
       </section>
 
-      {/* ===== 쇼룸 갤러리 (메인 바로 아래) ===== */}
+      {/* ===== SNS 채널 (메인 바로 아래 — 유튜브·블로그·인스타) ===== */}
+      <SnsSection site={site} />
+
+      {/* ===== 쇼룸 갤러리 ===== */}
       <ShowroomGallery showroom={showroom} />
 
       {/* ===== 회사소개 (왜 엣지컴퍼니일까요?) ===== */}
@@ -88,9 +91,6 @@ export default async function Home() {
 
       {/* ===== 시공 절차 ===== */}
       <ProcessSection />
-
-      {/* ===== SNS 채널 ===== */}
-      <SnsSection site={site} />
 
       {/* ===== 고객후기 ===== */}
       <section className="bg-[#f8f5f0] py-16 md:py-24">
