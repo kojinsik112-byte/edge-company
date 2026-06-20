@@ -4,7 +4,7 @@ import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "쇼룸안내 — 울산 조명 쇼룸 직접 체험",
-  description: "울산 엣지컴퍼니 조명 쇼룸에서 실링팬·간접조명·스마트조명을 직접 보고 비교하고 체험하세요. 부산·포항·경주 방문 상담 가능.",
+  description: "울산 엣지컴퍼니 조명 쇼룸에서 실링팬·간접조명·센서조명을 직접 보고 비교하고 체험하세요. 부산·포항·경주 방문 상담 가능.",
   alternates: { canonical: "/showroom" },
 };
 

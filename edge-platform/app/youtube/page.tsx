@@ -4,7 +4,7 @@ import YoutubeGrid from "@/components/YoutubeGrid";
 
 export const metadata: Metadata = {
   title: "시공 영상 (유튜브) — 실링팬·간접조명 시공",
-  description: "엣지컴퍼니 실링팬·간접조명·스마트조명 시공 영상 모음.",
+  description: "엣지컴퍼니 실링팬·간접조명·센서조명 시공 영상 모음.",
   alternates: { canonical: "/youtube" },
 };
 

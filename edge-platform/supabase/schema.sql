@@ -11,7 +11,7 @@ create table if not exists public.cases (
   title text not null,
   slug text not null unique,
   region text not null check (region in ('울산','부산','포항','경주')),
-  category text not null check (category in ('실링팬','간접조명','스마트조명')),
+  category text not null check (category in ('실링팬','간접조명','센서조명')),
   apartment text not null default '',
   cover text,
   images jsonb not null default '[]'::jsonb,
@@ -120,7 +120,7 @@ insert into public.faq (question, answer, sort) values
   ('실링팬, 머리에 부딪히지 않나요?', '천장고와 날개 위치를 고려해 안전 높이로 설치합니다. 14.5cm 슬림 보디는 저천장에도 부담이 적어 일반 거실에서 머리에 닿지 않습니다. 현장 실측 시 정확한 높이를 안내드립니다.', 1),
   ('전기요금이 많이 나오나요?', 'BLDC(DC) 모터 실링팬은 소비전력이 낮아 24시간 가동해도 전기요금 부담이 크지 않습니다. 형광등 대비 LED 조명까지 함께 교체하면 오히려 절감되는 경우가 많습니다.', 2),
   ('간접조명, 생각보다 어둡지 않나요?', '간접조명은 분위기용이며, 메인 조명·다운라이트와 함께 설계해 밝기를 확보합니다. 색온도(전구색/주백색)와 디밍을 조합하면 낮에는 밝게, 밤에는 은은하게 사용할 수 있습니다.', 3),
-  ('스마트조명은 어떻게 제어하나요?', '전용 앱과 리모컨, 음성(스마트스피커 연동)으로 제어합니다. 실링팬·전동커튼·스위치까지 하나의 앱으로 묶어 통합 제어가 가능합니다.', 4)
+  ('센서조명은 어떻게 제어하나요?', '전용 앱과 리모컨, 음성(스마트스피커 연동)으로 제어합니다. 실링팬·전동커튼·스위치까지 하나의 앱으로 묶어 통합 제어가 가능합니다.', 4)
 on conflict do nothing;
 
 insert into public.reviews (name, region, rating, content) values

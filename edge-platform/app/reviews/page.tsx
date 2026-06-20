@@ -5,7 +5,7 @@ import Stars from "@/components/Stars";
 
 export const metadata: Metadata = {
   title: "고객 후기 — 울산·부산·포항·경주 실링팬·간접조명",
-  description: "엣지컴퍼니 실링팬·간접조명·스마트조명 시공 고객 후기. 실제 시공 만족도를 확인하세요.",
+  description: "엣지컴퍼니 실링팬·간접조명·센서조명 시공 고객 후기. 실제 시공 만족도를 확인하세요.",
   alternates: { canonical: "/reviews" },
 };
 

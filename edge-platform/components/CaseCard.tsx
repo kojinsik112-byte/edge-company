@@ -6,7 +6,7 @@ import { FALLBACK_IMAGES } from "@/lib/types";
 const FALLBACK_BY_CATEGORY: Record<string, string> = {
   실링팬: FALLBACK_IMAGES.fan,
   간접조명: FALLBACK_IMAGES.indirect,
-  스마트조명: FALLBACK_IMAGES.curtain,
+  센서조명: FALLBACK_IMAGES.curtain,
 };
 
 export default function CaseCard({ c }: { c: CaseRow }) {

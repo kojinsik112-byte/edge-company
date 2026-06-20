@@ -18,6 +18,18 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
     setS((prev) => ({ ...prev, [key]: { ...prev[key], ...val } }));
   }
 
+  // 배열형 섹션 편집 헬퍼 (면허증·전국지사·협력사)
+  const setLicenseItem = (i: number, p: Partial<Settings["license"]["items"][number]>) =>
+    patch("license", { items: s.license.items.map((it, j) => (j === i ? { ...it, ...p } : it)) });
+  const setBranch = (i: number, p: Partial<Settings["branches"]["rows"][number]>) =>
+    patch("branches", { rows: s.branches.rows.map((b, j) => (j === i ? { ...b, ...p } : b)) });
+  const addBranch = () => patch("branches", { rows: [...s.branches.rows, { name: "", area: "", phone: "" }] });
+  const delBranch = (i: number) => patch("branches", { rows: s.branches.rows.filter((_, j) => j !== i) });
+  const setLogo = (i: number, p: Partial<Settings["partners"]["logos"][number]>) =>
+    patch("partners", { logos: s.partners.logos.map((l, j) => (j === i ? { ...l, ...p } : l)) });
+  const addLogo = () => patch("partners", { logos: [...s.partners.logos, { image: "", name: "" }] });
+  const delLogo = (i: number) => patch("partners", { logos: s.partners.logos.filter((_, j) => j !== i) });
+
   async function save(key: keyof Settings) {
     setSaving(key);
     setMsg("");
@@ -129,6 +141,57 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
         </div>
       </Section>
 
+      {/* 전기 면허 등록증 */}
+      <Section title="전기 면허 등록증" onSave={() => save("license")} saving={saving === "license"}>
+        <Field label="제목"><Inp value={s.license.title} onChange={(v) => patch("license", { title: v })} /></Field>
+        <Field label="설명"><Inp value={s.license.desc} onChange={(v) => patch("license", { desc: v })} /></Field>
+        <p className="text-[12px] font-bold text-gold-d">등록증 사진 (1열 2개 · 세로형 권장)</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {s.license.items.map((it, i) => (
+            <div key={i} className="space-y-2 rounded-xl border border-line p-3">
+              <ImageField label={`등록증 ${i + 1}`} hint="세로형 (A4 비율)" url={it.image} onPick={(f) => pick(f, (url) => setLicenseItem(i, { image: url }))} />
+              <Inp value={it.caption} onChange={(v) => setLicenseItem(i, { caption: v })} placeholder="등록증 이름 (예: 전기공사업 등록증)" />
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* 전국 지사 */}
+      <Section title="전국 지사" onSave={() => save("branches")} saving={saving === "branches"}>
+        <Field label="제목"><Inp value={s.branches.title} onChange={(v) => patch("branches", { title: v })} /></Field>
+        <Field label="설명"><Inp value={s.branches.desc} onChange={(v) => patch("branches", { desc: v })} /></Field>
+        <ImageField label="전국 지사 지도 이미지" hint="가로형 · 직접 만든 지도 캡처" url={s.branches.mapImage} onPick={(f) => pick(f, (url) => patch("branches", { mapImage: url }))} />
+        <p className="text-[12px] font-bold text-gold-d">지사 목록 (표 · 무제한)</p>
+        <div className="space-y-2">
+          {s.branches.rows.map((b, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <input className={inputCls} value={b.name ?? ""} onChange={(e) => setBranch(i, { name: e.target.value })} placeholder="지사명" />
+              <input className={inputCls} value={b.area ?? ""} onChange={(e) => setBranch(i, { area: e.target.value })} placeholder="담당 지역" />
+              <input className={inputCls} value={b.phone ?? ""} onChange={(e) => setBranch(i, { phone: e.target.value })} placeholder="연락처" />
+              <button type="button" onClick={() => delBranch(i)} className="shrink-0 rounded-lg border border-line px-3 py-2.5 text-[13px] font-semibold text-red-600">삭제</button>
+            </div>
+          ))}
+          <button type="button" onClick={addBranch} className="rounded-lg border border-dashed border-line px-4 py-2 text-[13px] font-semibold text-navy">+ 지사 추가</button>
+        </div>
+      </Section>
+
+      {/* 협력사 */}
+      <Section title="협력사" onSave={() => save("partners")} saving={saving === "partners"}>
+        <Field label="제목"><Inp value={s.partners.title} onChange={(v) => patch("partners", { title: v })} /></Field>
+        <Field label="설명"><Inp value={s.partners.desc} onChange={(v) => patch("partners", { desc: v })} /></Field>
+        <p className="text-[12px] font-bold text-gold-d">협력사 로고 (3열 그리드 · 무제한, 9개 권장)</p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {s.partners.logos.map((l, i) => (
+            <div key={i} className="relative space-y-2 rounded-xl border border-line p-3">
+              <button type="button" onClick={() => delLogo(i)} className="absolute -right-1.5 -top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[11px] text-white">×</button>
+              <ImageField label={`로고 ${i + 1}`} url={l.image} onPick={(f) => pick(f, (url) => setLogo(i, { image: url }))} />
+              <Inp value={l.name} onChange={(v) => setLogo(i, { name: v })} placeholder="협력사명" />
+            </div>
+          ))}
+        </div>
+        <button type="button" onClick={addLogo} className="rounded-lg border border-dashed border-line px-4 py-2 text-[13px] font-semibold text-navy">+ 협력사 추가</button>
+      </Section>
+
       {/* SEO (메인) */}
       <Section title="SEO (메인 페이지)" onSave={() => save("seo")} saving={saving === "seo"}>
         <p className="text-[12px] text-muted">비워두면 기본값이 적용됩니다.</p>
@@ -144,6 +207,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
 const LABEL: Record<string, string> = {
   site: "기본 정보", notice: "공지바", hero: "메인 배너", company: "회사소개",
   showroom: "쇼룸", categories: "카테고리 이미지", seo: "SEO",
+  license: "면허 등록증", branches: "전국 지사", partners: "협력사",
 };
 
 function Section({ title, children, onSave, saving }: { title: string; children: React.ReactNode; onSave: () => void; saving: boolean }) {

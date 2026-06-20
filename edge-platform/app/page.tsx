@@ -13,6 +13,9 @@ import SnsSection from "@/components/SnsSection";
 import ShowroomGallery from "@/components/ShowroomGallery";
 import CategoryCases from "@/components/CategoryCases";
 import WhySection from "@/components/WhySection";
+import LicenseSection from "@/components/LicenseSection";
+import BranchesSection from "@/components/BranchesSection";
+import PartnersSection from "@/components/PartnersSection";
 import { DEMO_REVIEWS } from "@/lib/demo";
 import ScrollRow from "@/components/ScrollRow";
 
@@ -29,17 +32,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [settings, fanCases, indirectCases, smartCases, reviews, faqs, products, videos] = await Promise.all([
+  const [settings, fanCases, indirectCases, sensorCases, reviews, faqs, products, videos] = await Promise.all([
     getSettings(),
     getCases({ category: "실링팬", limit: 6 }),
     getCases({ category: "간접조명", limit: 6 }),
-    getCases({ category: "스마트조명", limit: 6 }),
+    getCases({ category: "센서조명", limit: 6 }),
     getReviews(12),
     getFaqs(),
     getProducts(),
     getYoutube(),
   ]);
-  const { site, hero, showroom, company } = settings;
+  const { site, hero, showroom, company, license, branches, partners } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
   const reviewList = reviews.length >= 4 ? reviews : [...reviews, ...DEMO_REVIEWS].slice(0, 8);
   const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/area/${REGION_SLUG["울산"]}-${CATEGORY_SLUG[cat]}`;
@@ -57,28 +60,37 @@ export default async function Home() {
         <h1 className="sr-only">{hero.title} · {hero.subline}</h1>
       </section>
 
-      {/* ===== SNS 채널 (히어로 바로 아래) ===== */}
-      <SnsSection site={site} />
-
-      {/* ===== 회사소개 (Why Edge Company) ===== */}
-      <WhySection image={company.image} />
-
-      {/* ===== 제품 소개 (WHY 바로 아래) ===== */}
-      <ProductsSection products={products} />
-
-      {/* ===== 쇼룸 갤러리 ===== */}
+      {/* ===== 쇼룸 갤러리 (메인 바로 아래) ===== */}
       <ShowroomGallery showroom={showroom} />
 
-      {/* ===== 시공 영상 (쇼룸 바로 밑, 인페이지 재생) ===== */}
+      {/* ===== 회사소개 (왜 엣지컴퍼니일까요?) ===== */}
+      <WhySection image={company.image} />
+
+      {/* ===== 엣지컴퍼니 전기 면허 등록증 (1열 2개) ===== */}
+      <LicenseSection license={license} />
+
+      {/* ===== 엣지컴퍼니 전국 지사 (표 + 지도) ===== */}
+      <BranchesSection branches={branches} />
+
+      {/* ===== 엣지컴퍼니 협력사 소개 (로고 3열) ===== */}
+      <PartnersSection partners={partners} />
+
+      {/* ===== 제품 소개 (한 줄 4개·무제한) ===== */}
+      <ProductsSection products={products} />
+
+      {/* ===== 시공 영상 (인페이지 재생) ===== */}
       <YoutubeSection videos={videos} />
 
       {/* ===== 카테고리별 시공사례 (사진 중심·전면 배치) ===== */}
       <CategoryCases title="실링팬 시공사례" desc="실제 고객 시공 현장" cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" />
       <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
-      <CategoryCases title="스마트조명 시공사례" desc="앱 하나로 완성하는 스마트 라이프" cases={smartCases} moreHref={moreHref("스마트조명")} bg="bg-bg" />
+      <CategoryCases title="센서조명 시공사례" desc="사람을 따라 켜지는 똑똑한 빛" cases={sensorCases} moreHref={moreHref("센서조명")} bg="bg-bg" />
 
       {/* ===== 시공 절차 ===== */}
       <ProcessSection />
+
+      {/* ===== SNS 채널 ===== */}
+      <SnsSection site={site} />
 
       {/* ===== 고객후기 ===== */}
       <section className="bg-[#f8f5f0] py-16 md:py-24">

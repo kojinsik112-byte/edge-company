@@ -28,12 +28,12 @@ insert into public.settings (key, value) values
   "image":"/img/living-hero.webp",
   "eyebrow":"울산 · 부산 · 포항 · 경주",
   "title":"빛과 바람으로 완성하는\nプ리미엄 공간",
-  "subline":"실링팬 · 간접조명 · 스마트조명 전문 쇼룸",
+  "subline":"실링팬 · 간접조명 · 센서조명 전문 쇼룸",
   "lead":"직접 보고, 비교하고, 체험한 뒤 선택할 수 있는 엣지컴퍼니 조명 쇼룸입니다."
 }'),
 ('company', '{"image":"/img/sofa.webp","title":"엣지컴퍼니 소개","body":"전기공사업 면허를 보유한 법인이 직접 시공하는 프리미엄 조명 쇼룸입니다."}'),
 ('showroom', '{"image":"/img/fan.webp","title":"울산 조명 쇼룸에서 직접 체험하세요","body":"실링팬의 바람과 소음, 간접조명의 색온도와 깊이는 사진만으로 알 수 없습니다. 실제로 켜 보고 비교하고 우리 집에 맞는 조합을 찾으실 수 있도록 쇼룸을 운영합니다.","hours":"방문 전 연락 주시면 대기 없이 안내해 드립니다"}'),
-('categories', '{"실링팬":"/img/fan.webp","간접조명":"/img/indirect.webp","스마트조명":"/img/curtain.webp"}'),
+('categories', '{"실링팬":"/img/fan.webp","간접조명":"/img/indirect.webp","센서조명":"/img/curtain.webp"}'),
 ('seo', '{"home":{"title":"","description":"","keywords":"","og":""}}')
 on conflict (key) do nothing;
 

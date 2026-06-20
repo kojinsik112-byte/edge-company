@@ -4,7 +4,7 @@ import ContactForm from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   title: "상담문의 · 쇼룸 예약 — 울산·부산·포항·경주",
-  description: "엣지컴퍼니 실링팬·간접조명·스마트조명 상담 및 쇼룸 예약. 전화·문자·카카오톡·온라인으로 문의하세요.",
+  description: "엣지컴퍼니 실링팬·간접조명·센서조명 상담 및 쇼룸 예약. 전화·문자·카카오톡·온라인으로 문의하세요.",
   alternates: { canonical: "/contact" },
 };
 

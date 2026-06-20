@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { getFaqs } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "자주 묻는 질문 (FAQ) — 실링팬·간접조명·스마트조명",
-  description: "실링팬 설치, 전기요금, 간접조명 밝기, 스마트조명 제어 등 자주 묻는 질문과 답변.",
+  title: "자주 묻는 질문 (FAQ) — 실링팬·간접조명·센서조명",
+  description: "실링팬 설치, 전기요금, 간접조명 밝기, 센서조명 제어 등 자주 묻는 질문과 답변.",
   alternates: { canonical: "/faq" },
 };
 

@@ -7,7 +7,7 @@ import CaseCard from "@/components/CaseCard";
 export const metadata: Metadata = {
   title: "시공사례 — 울산·부산·포항·경주 실링팬·간접조명",
   description:
-    "엣지컴퍼니 실링팬·간접조명·스마트조명 시공사례 모음. 울산·부산·포항·경주 지역별, 카테고리별로 확인하세요.",
+    "엣지컴퍼니 실링팬·간접조명·센서조명 시공사례 모음. 울산·부산·포항·경주 지역별, 카테고리별로 확인하세요.",
   alternates: { canonical: "/cases" },
 };
 

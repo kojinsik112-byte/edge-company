@@ -36,7 +36,7 @@ export function autoSeoDescription(c: {
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, 90);
-  const base = `${c.region} ${c.apartment} ${c.category} 시공 사례. 엣지컴퍼니는 울산·부산·포항·경주 실링팬·간접조명·스마트조명 전문 쇼룸입니다.`;
+  const base = `${c.region} ${c.apartment} ${c.category} 시공 사례. 엣지컴퍼니는 울산·부산·포항·경주 실링팬·간접조명·센서조명 전문 쇼룸입니다.`;
   return excerpt ? `${excerpt} … ${base}` : base;
 }
 
@@ -45,7 +45,7 @@ export function areaSeo(region: Region, category: Category) {
   return {
     h1: `${region} ${category} 전문 시공`,
     title: `${region} ${category} 시공 전문 | 엣지컴퍼니 조명 쇼룸`,
-    description: `${region} ${category} 시공은 엣지컴퍼니. 울산·부산·포항·경주 실링팬·간접조명·스마트조명 전문 쇼룸에서 직접 보고 비교하고 체험한 뒤 선택하세요.`,
+    description: `${region} ${category} 시공은 엣지컴퍼니. 울산·부산·포항·경주 실링팬·간접조명·센서조명 전문 쇼룸에서 직접 보고 비교하고 체험한 뒤 선택하세요.`,
   };
 }
 

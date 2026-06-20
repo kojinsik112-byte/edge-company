@@ -3,7 +3,7 @@
 export const SITE = {
   name: "엣지컴퍼니",
   legalName: "㈜엣지컴퍼니",
-  tagline: "울산·부산·포항·경주 실링팬·간접조명·스마트조명 전문 쇼룸",
+  tagline: "울산·부산·포항·경주 실링팬·간접조명·센서조명 전문 쇼룸",
   phone: "010-4900-6107",
   phoneRep: "1533-3210",
   address: "울산광역시 울주군 온산로 615-1",
@@ -18,7 +18,7 @@ export const SITE = {
 export const REGIONS = ["울산", "부산", "포항", "경주"] as const;
 export type Region = (typeof REGIONS)[number];
 
-export const CATEGORIES = ["실링팬", "간접조명", "스마트조명"] as const;
+export const CATEGORIES = ["실링팬", "간접조명", "센서조명"] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 // 한글 ↔ URL 슬러그 (지역 SEO 페이지 /area/<region>-<category>)
@@ -31,7 +31,7 @@ export const REGION_SLUG: Record<Region, string> = {
 export const CATEGORY_SLUG: Record<Category, string> = {
   실링팬: "ceiling-fan",
   간접조명: "indirect-lighting",
-  스마트조명: "smart-lighting",
+  센서조명: "sensor-lighting",
 };
 
 export const REGION_BY_SLUG = Object.fromEntries(
@@ -47,14 +47,14 @@ export const CATEGORY_DESC: Record<Category, string> = {
     "저소음 BLDC 실링팬. 천장이 낮아도 부담 없는 슬림 보디로 공기 순환과 인테리어를 함께 잡습니다.",
   간접조명:
     "우물천장·커튼박스 간접조명. 은은한 빛으로 거실에 호텔 라운지의 깊이를 더합니다.",
-  스마트조명:
-    "색온도·밝기를 앱과 음성으로. 실링팬·커튼까지 하나로 묶는 스마트 라이팅.",
+  센서조명:
+    "현관·복도·드레스룸에 사람이 다가오면 자동으로 켜지는 센서조명. 손대지 않아도 켜지고 꺼져 편리하고 전기도 아낍니다.",
 };
 
 export const NAV = [
   { label: "실링팬", href: "/area/ulsan-ceiling-fan" },
   { label: "간접조명", href: "/area/ulsan-indirect-lighting" },
-  { label: "스마트조명", href: "/area/ulsan-smart-lighting" },
+  { label: "센서조명", href: "/area/ulsan-sensor-lighting" },
   { label: "시공사례", href: "/cases" },
   { label: "고객후기", href: "/reviews" },
   { label: "쇼룸안내", href: "/showroom" },
