@@ -14,8 +14,9 @@ if "%~1"=="" (
   exit /b 0
 )
 
-if not exist ".venv\Scripts\activate.bat" (
-  echo [오류] 먼저 "설치.bat" 을 실행해 주세요.
+set "VPY=.venv\Scripts\python.exe"
+if not exist "%VPY%" (
+  echo [오류] 설치가 없거나 깨졌습니다. "설치.bat" 을 먼저 실행하세요.
   pause
   exit /b 1
 )
@@ -34,10 +35,9 @@ if not exist "%OUT%\%~n1_clean.mp4" (
   exit /b 1
 )
 
-call .venv\Scripts\activate.bat
 echo 수정된 자막을 반영하는 중: %~n1
 echo.
-python -m autoedit.cli reburn "%OUT%\%~n1_clean.mp4" "%OUT%\%~n1.srt" -o "%OUT%" -v
+"%VPY%" -m autoedit.cli reburn "%OUT%\%~n1_clean.mp4" "%OUT%\%~n1.srt" -o "%OUT%" -v
 if errorlevel 1 (
   echo.
   echo [오류] 처리 중 문제가 발생했습니다. 위 메시지를 확인하세요.
