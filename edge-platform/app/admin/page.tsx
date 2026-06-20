@@ -31,7 +31,7 @@ export default async function AdminDashboard() {
   ]);
 
   const cards = [
-    { href: "/admin/settings", title: "사이트 설정", desc: "배너·회사·쇼룸·카테고리 이미지, 기본정보, 공지바, SEO", badge: "" },
+    { href: "/admin/settings", title: "사이트 설정", desc: "배너·회사·쇼룸·면허 등록증·전국 지사·협력사·카테고리·공지바·SEO", badge: "" },
     { href: "/admin/cases", title: "시공사례", desc: "등록·수정·삭제", badge: `${cases}건` },
     { href: "/admin/products", title: "제품 소개", desc: "유선스위치·실링팬·COB조명 등", badge: `${products}건` },
     { href: "/admin/reviews", title: "고객후기", desc: "별점·후기·사진 관리", badge: `${reviews}건` },
