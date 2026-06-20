@@ -36,15 +36,22 @@ export async function getCases(opts?: {
 export async function getCaseBySlug(slug: string): Promise<CaseRow | null> {
   const supabase = await createClient();
   if (!supabase) return null;
+  // 한글 슬러그가 인코딩/디코딩 어느 상태로 들어와도 매칭되도록 후보를 모두 시도
+  const candidates = new Set<string>([slug]);
+  try { candidates.add(decodeURIComponent(slug)); } catch {}
+  try { candidates.add(encodeURIComponent(slug)); } catch {}
   try {
-    const { data, error } = await supabase
-      .from("cases")
-      .select("*")
-      .eq("slug", slug)
-      .eq("published", true)
-      .maybeSingle();
-    if (error) return null;
-    return (data as CaseRow) ?? null;
+    for (const s of candidates) {
+      const { data, error } = await supabase
+        .from("cases")
+        .select("*")
+        .eq("slug", s)
+        .eq("published", true)
+        .limit(1);
+      if (error) continue;
+      if (data && data[0]) return data[0] as CaseRow;
+    }
+    return null;
   } catch {
     return null;
   }
