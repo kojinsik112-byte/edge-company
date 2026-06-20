@@ -11,6 +11,9 @@ import CaseCard from "@/components/CaseCard";
 
 type Props = { params: Promise<{ slug: string }> };
 
+// 새로 등록한 시공사례가 캐시 때문에 404 나지 않도록 항상 최신 조회
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const c = await getCaseBySlug(slug);
