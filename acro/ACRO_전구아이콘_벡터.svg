@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="32 28 56 62" width="112" height="124">
+  <!-- ACRO 일괄소등 전구 아이콘 · 가는 선 라인아트(다른 5개 버튼과 동일 선 굵기) · 단일 path + 필라멘트 · 속 채움/관통 금지 · 바닥 평평 -->
+  <!-- ACRO 一键关灯 灯泡图标 · 细线(同其余5键) · 单一path+灯丝 · 禁止填实/穿透 · 平底 -->
+  <g fill="none" stroke="#1A1A1A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 글래스+소켓 한붓그리기 / 玻璃+灯头 一笔成型 -->
+    <path d="M68 75 A22 22 0 1 0 52 75 L54 86 L66 86 Z"/>
+    <!-- 나사선 1줄 / 螺纹 -->
+    <line x1="55.5" y1="81" x2="64.5" y2="81"/>
+    <!-- 필라멘트 / 灯丝 -->
+    <path d="M55 70 C55 60 65 60 65 70"/>
+  </g>
+</svg>

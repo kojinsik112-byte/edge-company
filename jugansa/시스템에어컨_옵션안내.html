@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+@page { size: A4; margin: 0; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR','맑은 고딕',sans-serif;color:#1f2733;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.page{width:210mm;padding:7mm 13mm 5mm;}
+.page.brk{page-break-before:always;}
+/* header */
+.hd{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0e4a8a;padding-bottom:7px;}
+.hd .t1{font-size:11px;color:#0e4a8a;font-weight:700;letter-spacing:2px;}
+.hd h1{font-size:22px;font-weight:900;color:#10243f;margin-top:3px;letter-spacing:-0.5px;}
+.hd .sub{font-size:11px;color:#7a8597;margin-top:5px;}
+.hd .brand{text-align:right;font-size:11px;color:#7a8597;line-height:1.5;}
+.hd .brand b{color:#0e4a8a;font-size:13px;}
+/* intro */
+.intro{background:#f1f6fc;border-left:4px solid #2f7ad6;border-radius:0 6px 6px 0;padding:9px 14px;margin:9px 0 11px;font-size:11.5px;line-height:1.5;color:#314a66;}
+.intro b{color:#0e4a8a;}
+/* section */
+.sec{margin-bottom:3px;}
+.sec h2{font-size:12.5px;font-weight:800;color:#10243f;display:flex;align-items:center;gap:7px;margin-bottom:3px;}
+.sec h2 .num{background:#0e4a8a;color:#fff;width:21px;height:21px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:0 0 21px;}
+/* table */
+table{width:100%;border-collapse:collapse;font-size:10.2px;}
+th{background:#10243f;color:#fff;font-weight:600;padding:3px 8px;text-align:center;}
+td{border:1px solid #dde3ec;padding:2.6px 8px;text-align:center;color:#2c3a4d;}
+td.l{text-align:left;}
+tr:nth-child(even) td{background:#f7f9fc;}
+.price{font-weight:800;color:#0e4a8a;}
+.tag{font-size:9.5px;color:#c0392b;}
+.cap{font-size:10px;color:#9aa3b2;text-align:right;margin-bottom:2px;}
+.banner{background:#fff6e9;border:1px solid #f0d49a;border-radius:7px;padding:7px 12px;font-size:10.8px;color:#7a5a1e;line-height:1.45;margin-bottom:6px;}
+.banner b{color:#a8730f;}
+.sm{font-size:9px;color:#7a8597;}
+/* trap highlight */
+.trap td{border-color:#f0d2c4;}
+.trap th{background:#b5471f;}
+.trap tr:nth-child(even) td{background:#fcf3ee;}
+.warnword{color:#c0392b;font-weight:800;}
+/* two col */
+.two{display:flex;gap:12px;}
+.col{flex:1;border:1px solid #dde3ec;border-radius:8px;overflow:hidden;}
+.col .ch{padding:8px 12px;font-size:12.5px;font-weight:800;color:#fff;}
+.col.a .ch{background:#0e4a8a;}
+.col.b .ch{background:#2c7a4b;}
+.col ul{list-style:none;padding:6px 12px;}
+.col li{font-size:10.5px;color:#37475c;padding:2px 0 2px 14px;position:relative;line-height:1.4;}
+.col li:before{content:"·";position:absolute;left:2px;color:#9aa3b2;font-weight:700;}
+/* unit price chips */
+.chips{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{flex:1;min-width:150px;border:1px solid #dde3ec;border-radius:8px;padding:6px 12px;background:#f7f9fc;}
+.chip .h{font-size:11px;color:#0e4a8a;font-weight:700;margin-bottom:3px;}
+.chip .b{font-size:11px;color:#3a485c;line-height:1.5;}
+.chip .b b{color:#10243f;}
+/* notes */
+.notes{background:#fbfbfc;border:1px solid #e7ebf1;border-radius:8px;padding:7px 14px;}
+.notes li{font-size:10.5px;color:#46566b;list-style:none;padding:2.5px 0 2.5px 20px;position:relative;line-height:1.4;}
+.notes li:before{content:attr(data-i);position:absolute;left:0;}
+/* summary */
+.summary{background:#10243f;color:#fff;border-radius:9px;padding:9px 18px;margin-top:1px;}
+.summary .lab{font-size:10px;letter-spacing:3px;color:#7fb0e6;font-weight:700;}
+.summary p{font-size:12px;line-height:1.55;margin-top:5px;}
+.summary b{color:#ffd479;}
+.foot{margin-top:5px;font-size:9px;color:#aab2bf;text-align:center;line-height:1.45;}
+</style></head>
+<body>
+<div class="page">
+
+  <div class="hd">
+    <div>
+      <div class="t1">입주예정자협의회 · 입주 가전 안내</div>
+      <h1>시스템에어컨 옵션 안내</h1>
+      <div class="sub">선택은 각 세대의 몫입니다. 정확한 정보와 비용만 정리했습니다.</div>
+    </div>
+    <div class="brand">제조사 <b>삼성전자</b> 단일<br><span style="font-size:10px;">단위: 원 · 부가세 포함</span></div>
+  </div>
+
+  <div class="intro">
+    분양 아파트는 계약부터 입주까지 <b>2~3년</b>이 걸려, 입주할 때쯤이면 옵션 가전이 <b>구형 모델</b>이 되는 경우가 많습니다.
+    그래서 "옵션으로 할지, 최신형으로 직접(개별) 설치할지" 고민이 생깁니다. 아래 정보를 보고 <b>각 세대가 직접</b> 판단하시면 됩니다.
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">1</span>옵션 가격표</h2>
+    <div class="cap">▷ 59타입 (59A·B·C·D·E)</div>
+    <table>
+      <tr><th style="width:14%">안</th><th style="width:14%">실내기 대수</th><th>설치 장소</th><th style="width:20%">금액</th></tr>
+      <tr><td>2안</td><td>2대</td><td class="l">거실 + 침실1</td><td class="price">2,900,000</td></tr>
+      <tr><td>3안</td><td>4대</td><td class="l">거실 + 침실1 + 침실2 + 침실3</td><td class="price">5,500,000</td></tr>
+    </table>
+    <div class="cap" style="margin-top:4px;">▷ 84타입 (84A·B·C)</div>
+    <table>
+      <tr><th style="width:11%">평면</th><th style="width:11%">안</th><th style="width:13%">대수</th><th>설치 장소</th><th style="width:16%">금액</th><th style="width:15%">비고</th></tr>
+      <tr><td>84A</td><td>2안</td><td>2대</td><td class="l">거실 + 침실1</td><td class="price">3,300,000</td><td></td></tr>
+      <tr><td>84A</td><td>2-1안</td><td>3대</td><td class="l">거실 + 침실1 + 주방</td><td class="price">4,500,000</td><td class="tag">주방특화</td></tr>
+      <tr><td>84A</td><td>3-1안</td><td>5대</td><td class="l">거실 + 침실1+2+3+4</td><td class="price">7,000,000</td><td></td></tr>
+      <tr><td>84A</td><td>3-2안</td><td>5대</td><td class="l">거실 + 침실1+2+3 + 주방</td><td class="price">7,000,000</td><td class="tag">주방특화</td></tr>
+      <tr><td>84B</td><td>2안</td><td>3대</td><td class="l">거실 + 침실1 + 주방</td><td class="price">4,500,000</td><td></td></tr>
+      <tr><td>84B</td><td>3안</td><td>5대</td><td class="l">거실 + 침실1+2+3 + 주방</td><td class="price">7,000,000</td><td></td></tr>
+      <tr><td>84C</td><td>2안</td><td>2대</td><td class="l">거실 + 침실1</td><td class="price">3,300,000</td><td></td></tr>
+      <tr><td>84C</td><td>3안</td><td>5대</td><td class="l">거실 + 침실1+2+3 + 알파룸</td><td class="price">7,000,000</td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">2</span>꼭 알아둘 "대수 함정" — 딱 필요한 대수가 없습니다</h2>
+    <table class="trap">
+      <tr><th style="width:18%">평형</th><th style="width:20%">보통 적정 대수</th><th style="width:24%">옵션에 있는 대수</th><th>그래서 아쉬운 점</th></tr>
+      <tr><td><b>59타입</b></td><td class="warnword">3대</td><td>2대 / 4대만</td><td class="l"><b>3대가 없음</b> → 2대는 부족, 4대는 1대 과지출</td></tr>
+      <tr><td><b>84타입</b></td><td class="warnword">4대</td><td>2대 / 3대 / 5대만</td><td class="l"><b>4대가 없음</b> → 3대는 부족, 5대는 1대 과지출</td></tr>
+    </table>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">3</span>대당 단가로 보면 (가성비)</h2>
+    <div class="chips">
+      <div class="chip"><div class="h">59타입</div><div class="b">2대 = 대당 <b>145만</b> · 4대 = 대당 <b>137.5만</b></div></div>
+      <div class="chip"><div class="h">84타입</div><div class="b">2대 <b>165만</b> · 3대 <b>150만</b> · 5대 <b>140만</b> (대당)</div></div>
+    </div>
+    <div style="font-size:10.3px;color:#46566b;margin-top:4px;line-height:1.45;">
+      👉 <b>많이 살수록 대당 가격은 싸지지만</b>, 잘 안 쓰는 방까지 사는 셈입니다. "대당 싸다"에 끌려 5대를 고르면 <b>안 쓰는 1대 값(약 140만)</b>을 더 내는 것일 수 있습니다.
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">4</span>옵션(선시공) vs 개별(후시공) — 중립 비교</h2>
+    <div class="two">
+      <div class="col a">
+        <div class="ch">선시공 옵션 (삼성)</div>
+        <ul>
+          <li>배관이 천장 속에 숨어 <b>가장 깔끔</b></li>
+          <li>입주하면 <b>바로 사용</b></li>
+          <li>단, 위 대수 함정 + 모델 구형 우려</li>
+        </ul>
+      </div>
+      <div class="col b">
+        <div class="ch">개별 후시공</div>
+        <ul>
+          <li><b>딱 필요한 대수</b>로 맞춤 (예: 59에 3대)</li>
+          <li><b>삼성 외 브랜드·최신형</b> 선택 가능</li>
+          <li>단, 배관 일부 노출·천장 단내림 가능</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">5</span>꼭 알아둘 점 (쉬운 말로)</h2>
+    <div class="notes">
+      <li data-i="❄️"><b>냉방 전용입니다. 난방은 안 됩니다.</b> 운전 소음이 날 수 있습니다.</li>
+      <li data-i="🔧">에어컨 배관 때문에 <b>조명 위치·우물천장 크기·천장 높이</b>가 일부 바뀔 수 있습니다.</li>
+      <li data-i="📍"><b>실내기 위치는 세대마다 다르고</b>, 옵션 후 위치 변경·추가는 보통 안 됩니다.</li>
+      <li data-i="🔁">계약 후 입주까지 길어 <b>모델 단종·공급 차질</b> 등이 생기면 <b>같은 등급 이상 다른 제품으로 바뀔 수</b> 있습니다. (삼성 100% 확정 아님 → 사전점검 때 실제 모델 확인)</li>
+      <li data-i="🔎"><span class="warnword">모델명 꼭 확인 → 최신형인지 확인.</span> (분양은 입주까지 기간이 길어 구형일 수 있음)</li>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="lab">한 줄 요약</div>
+    <p>에어컨 옵션은 <b>삼성 단일</b>이고, 배관이 깔끔한 게 장점입니다. 다만 <b>59타입은 3대, 84타입은 4대가 옵션에 없는</b> 점이 아쉽습니다.
+    <b>배관 깔끔함이 우선이면 옵션(선시공)</b>, <b>원하는 대수·브랜드·최신형이 우선이면 개별(후시공)</b>입니다.
+    옵션을 고르시더라도 <b>모델명과 최신형 여부는 꼭 확인</b>하세요.</p>
+  </div>
+
+  <div class="foot" style="color:#c0392b;font-weight:700;font-size:10px;">🗓️ 옵션 신청·취소 기간이 짧습니다 — 마감일을 꼭 확인하고 신중히 결정하세요 &nbsp;·&nbsp; (1 / 2) 시스템에어컨 편</div>
+
+</div>
+
+<!-- ===================== PAGE 2 : 키친핏 가전 개별시공 ===================== -->
+<div class="page brk">
+
+  <div class="hd">
+    <div>
+      <div class="t1">입주예정자협의회 · 입주 가전 안내</div>
+      <h1>키친핏 가전 — 옵션 vs 개별시공</h1>
+      <div class="sub">식기세척기 · 인덕션/오븐 · 빌트인 냉장고 — 정확한 정보와 비용. 선택은 각 세대의 몫입니다.</div>
+    </div>
+    <div class="brand">참고: 대략적 시세<br><span style="font-size:10px;">제품·브랜드·단지별로 다름</span></div>
+  </div>
+
+  <div class="intro">
+    빌트인 옵션 가전이 입주 시점엔 <b>구형</b>인 경우가 많아 "최신형으로 직접 바꿀까?" 고민이 생깁니다.
+    아래는 가전별로 <b>개별시공이 되는지·무엇을 조심할지·비용은 얼마인지</b>를 쉬운 말로 정리한 것입니다.
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">1</span>가전별 한눈에 — 가능 여부 · 주의점 · 비용</h2>
+    <table>
+      <tr><th style="width:20%">가전</th><th style="width:16%">개별시공</th><th>꼭 조심할 점 (쉬운 말)</th><th style="width:27%">대략 비용</th></tr>
+      <tr><td class="l"><b>식기세척기</b></td><td>가능<br><span style="font-size:9px;color:#7a8597;">(자리·배수 맞으면)</span></td><td class="l">물 빠지는 위치가 안 맞으면 <b>싱크로 역류</b> / 배수관 거리 / 하부장 한 칸 필요</td><td class="l">설치 <b>약 22만</b> + 배수·배선 <b>5~20만</b></td></tr>
+      <tr><td class="l"><b>인덕션·전기레인지</b></td><td>가능</td><td class="l"><b>전용 전기선</b> 필요(요즘 아파트는 대개 있음, 없으면 공사)</td><td class="l">제품 <b>30~100만</b> + 설치 <b>약 22만</b> + 전기 <b>5~20만</b></td></tr>
+      <tr><td class="l"><b>전기오븐</b></td><td>가능</td><td class="l">전력이 커서 <b>전용 회로·용량</b> 확인 필요</td><td class="l">제품값 + 전용배선(상황별)</td></tr>
+      <tr><td class="l"><b>빌트인·키친핏 냉장고</b></td><td>가능<br><span style="font-size:9px;color:#7a8597;">(치수 확인 필수)</span></td><td class="l">옵션 칸에 맞춰 가구가 짜여 <b>새 모델이 안 들어갈 수</b> 있음 / 방열공간(상·하·뒤 1~5cm)</td><td class="l">제품값 + <b>가구장 수정 시 별도</b></td></tr>
+      <tr><td class="l"><b>주방 후드</b> (필요 시)</td><td>—</td><td class="l">교체하면 본체+시공비 발생</td><td class="l">본체 <b>30~100만</b> + 시공 <b>10~20만</b></td></tr>
+    </table>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">2</span>선시공(마감 전) vs 후시공(입주 후) — 둘 다 가능합니다</h2>
+    <div class="banner">⚠️ <b>선시공이 의무가 아닙니다.</b> 거의 모두 <b>입주 후(후시공)도 가능</b>합니다. 차이는 "<b>얼마나 깔끔하고 편하냐</b>"일 뿐 — 선시공은 깔끔, 후시공은 자유롭지만 마감 처리(노출·단내림)를 감수합니다.</div>
+    <table>
+      <tr><th style="width:23%">항목</th><th>선시공 (천장·벽 마감 전)</th><th>후시공 (입주 후)</th></tr>
+      <tr><td class="l"><b>시스템에어컨</b> <span class="sm">(천장형)</span></td><td class="l">배관이 천장 속에 숨어 <b>가장 깔끔</b>. 정석 방식</td><td class="l"><b>가능</b> · 단 천장 일부 내림(단내림)·노출배관 감수, 비용↑</td></tr>
+      <tr><td class="l"><b>전기선·배관</b> <span class="sm">(인덕션·오븐)</span></td><td class="l">벽 속에 깔끔하게, 작업도 쉬움</td><td class="l"><b>가능</b> · 분전반에 차단기 추가+배선(노출 몰딩·부분 작업)</td></tr>
+      <tr><td class="l"><b>식기세척기</b></td><td class="l">싱크 짤 때 자리 잡으면 깔끔</td><td class="l"><b>가능</b> · 자리·배수 높이만 맞으면 됨</td></tr>
+      <tr><td class="l"><b>냉장고</b></td><td class="l">가구장 치수만 맞추면 됨</td><td class="l"><b>자유롭게 가능</b> · 들어갈 칸 크기만 확인</td></tr>
+    </table>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">3</span>공통으로 꼭 기억할 점 (쉬운 말로)</h2>
+    <div class="notes">
+      <li data-i="⚡"><b>전기 작업은 반드시 자격 있는 업체에.</b> 인덕션·오븐 전기선은 잘못하면 감전·화재 위험이 있습니다.</li>
+      <li data-i="🧊"><b>냉장고는 "들어갈 칸"부터 재세요.</b> (가로·세로·깊이·콘센트 위치) 옵션 칸에 신형이 안 맞는 경우가 많습니다.</li>
+      <li data-i="💧"><b>식기세척기는 배수 높이·거리</b>를 먼저 확인해야 물이 역류하지 않습니다.</li>
+      <li data-i="🔌"><b>고출력·수입 제품</b>은 별도 전기공사(단독회로·승압)가 필요할 수 있습니다.</li>
+      <li data-i="💸"><span class="warnword">옵션비를 이미 냈다면</span>, 개별로 바꿔도 <b>그 옵션비는 돌려받기 어려운</b> 경우가 많습니다(이중 지출). 시기를 보고 결정하세요.</li>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="lab">마무리 안내</div>
+    <p><b>시공은 본인의 자유</b>입니다. 다만 <b>선시공의 장점과 단점은 분명하게 나뉩니다.</b>
+    꼭 고민해 보시고 신중하게 선택하세요. 그리고 <b style="color:#ff8a80;">옵션 신청·취소 기간이 얼마 안 되니, 취소(신청) 기간을 반드시 확인하고 결정</b>하시기 바랍니다.
+    (전기 작업은 꼭 자격 업체에, 옵션비를 이미 냈다면 이중 지출 여부도 확인)</p>
+  </div>
+
+  <div class="foot">
+    ※ 본 안내문은 입주민의 합리적 판단을 돕기 위한 참고 자료이며, 특정 선택·업체를 권유하지 않습니다. 비용은 일반 시세로 제품·단지·세대별로 다를 수 있습니다.<br>
+    입주예정자협의회 · 2 / 2 · 키친핏 가전 편
+  </div>
+
+</div>
+</body></html>
