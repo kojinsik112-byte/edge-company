@@ -52,7 +52,7 @@ export default async function Home() {
       <Popup />
 
       {/* ===== HERO (광고영상 자동재생 루프 또는 이미지 — 관리자에서 교체) ===== */}
-      <section className="relative h-[calc(100svh-72px)] min-h-[560px] overflow-hidden bg-ink">
+      <section className={`relative overflow-hidden bg-warm ${hero.video ? "aspect-video max-h-[calc(100svh-72px)]" : "h-[calc(100svh-72px)] min-h-[560px]"}`}>
         {hero.video ? (
           <video src={hero.video} autoPlay muted loop playsInline poster={hero.image || undefined} className="absolute inset-0 h-full w-full object-contain" />
         ) : (
