@@ -1,16 +1,46 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function HeroVideo({ src, poster }: { src: string; poster?: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
 
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    // 버튼 상태를 실제 영상 상태와 동기화
+    const sync = () => setMuted(v.muted);
+    v.addEventListener("volumechange", sync);
+
+    // 가능하면 처음부터 소리 ON 시도 (브라우저가 허용하면)
+    v.muted = false;
+    v.play().catch(() => {
+      // 차단되면 무음으로 재생 유지
+      v.muted = true;
+      v.play().catch(() => {});
+    });
+
+    // 방문자가 화면을 건드리는 즉시 소리 ON (브라우저 정책 우회의 표준)
+    const onGesture = () => {
+      v.muted = false;
+      v.play().catch(() => {});
+      cleanup();
+    };
+    const evts = ["pointerdown", "keydown", "touchstart", "wheel"] as const;
+    const cleanup = () => evts.forEach((e) => window.removeEventListener(e, onGesture));
+    evts.forEach((e) => window.addEventListener(e, onGesture, { passive: true }));
+
+    return () => {
+      v.removeEventListener("volumechange", sync);
+      cleanup();
+    };
+  }, []);
+
   function toggle() {
     const v = ref.current;
     if (!v) return;
     v.muted = !v.muted;
-    setMuted(v.muted);
     if (!v.muted) v.play().catch(() => {});
   }
 
