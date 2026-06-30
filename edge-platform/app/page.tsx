@@ -12,6 +12,7 @@ import Popup from "@/components/Popup";
 import SnsSection from "@/components/SnsSection";
 import ShowroomGallery from "@/components/ShowroomGallery";
 import LightSimulator from "@/components/LightSimulator";
+import HeroVideo from "@/components/HeroVideo";
 import CategoryCases from "@/components/CategoryCases";
 import WhySection from "@/components/WhySection";
 import LicenseSection from "@/components/LicenseSection";
@@ -52,9 +53,9 @@ export default async function Home() {
       <Popup />
 
       {/* ===== HERO (광고영상 자동재생 루프 또는 이미지 — 관리자에서 교체) ===== */}
-      <section className={`relative overflow-hidden bg-warm ${hero.video ? "aspect-video max-h-[calc(100svh-72px)]" : "h-[calc(100svh-72px)] min-h-[560px]"}`}>
+      <section className={`relative overflow-hidden bg-warm ${hero.video ? "aspect-video" : "h-[calc(100svh-72px)] min-h-[560px]"}`}>
         {hero.video ? (
-          <video src={hero.video} autoPlay muted loop playsInline poster={hero.image || undefined} className="absolute inset-0 h-full w-full object-contain" />
+          <HeroVideo src={hero.video} poster={hero.image || undefined} />
         ) : (
           <>
             <Image src={hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="hidden object-cover md:block" />
