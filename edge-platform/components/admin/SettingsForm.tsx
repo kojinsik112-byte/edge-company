@@ -252,7 +252,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
       </Section>
 
       {/* 숏츠 (세로 영상) */}
-      <Section title="숏츠 (세로 영상)" onSave={() => save("shorts")} saving={saving === "shorts"}>
+      <Section title="숏츠 (가로 영상 16:9)" onSave={() => save("shorts")} saving={saving === "shorts"}>
         <Check checked={s.shorts.enabled} onChange={(v) => patch("shorts", { enabled: v })} label="숏츠 섹션 노출 ON" />
         <Field label="제목"><Inp value={s.shorts.title} onChange={(v) => patch("shorts", { title: v })} /></Field>
         <Field label="설명"><Inp value={s.shorts.desc} onChange={(v) => patch("shorts", { desc: v })} /></Field>
@@ -276,7 +276,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
                 </div>
               )}
               <Inp value={it.title} onChange={(v) => setShort(i, { title: v })} placeholder="제목 (예: 거실 조명 비포애프터)" />
-              <ImageField label="세로 썸네일 (9:16) — 직접 올린 영상은 썸네일 꼭 올려주세요" hint="유튜브는 비워도 자동 썸네일" url={it.thumb} onPick={(f) => pick(f, (url) => setShort(i, { thumb: url }))} />
+              <ImageField label="가로 썸네일 (16:9) — 직접 올린 영상·인스타는 썸네일 꼭 올려주세요" hint="1280 × 720px (16:9) · 유튜브는 비워도 자동 썸네일" url={it.thumb} onPick={(f) => pick(f, (url) => setShort(i, { thumb: url }))} />
             </div>
           ))}
           <button type="button" onClick={addShort} className="rounded-lg border border-dashed border-line px-4 py-2 text-[13px] font-semibold text-navy">+ 숏츠 추가</button>

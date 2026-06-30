@@ -27,7 +27,7 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
         <div className="mx-auto flex w-max gap-4 px-6 pb-3">
           {empty
             ? [0, 1, 2, 3].map((i) => (
-                <div key={i} className="relative aspect-[9/16] w-[224px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-b from-navy to-ink">
+                <div key={i} className="relative aspect-video w-[360px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-b from-navy to-ink">
                   <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/45">
                     <svg viewBox="0 0 24 24" className="h-9 w-9" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
                     <span className="text-[12px] font-semibold">곧 공개</span>
@@ -60,7 +60,7 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
                   </>
                 );
                 return (
-                  <div key={i} className="relative aspect-[9/16] w-[224px] shrink-0 overflow-hidden rounded-2xl bg-ink shadow-[0_18px_40px_-22px_rgba(15,35,66,0.5)]">
+                  <div key={i} className="relative aspect-video w-[360px] shrink-0 overflow-hidden rounded-2xl bg-ink shadow-[0_18px_40px_-22px_rgba(15,35,66,0.5)]">
                     {playing ? (
                       yt ? (
                         <iframe src={`https://www.youtube.com/embed/${yt}?autoplay=1&rel=0`} title={s.title} className="h-full w-full" allow="autoplay; encrypted-media; fullscreen" allowFullScreen />
