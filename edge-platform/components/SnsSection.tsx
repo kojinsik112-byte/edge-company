@@ -53,18 +53,17 @@ export default function SnsSection({ site }: { site: SiteInfo }) {
               <Tag
                 key={c.key}
                 {...(live ? { href: c.href, target: "_blank", rel: "noopener noreferrer" } : {})}
-                className={`group flex flex-col rounded-[20px] border border-line p-7 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition duration-300 ${live ? "cursor-pointer hover:-translate-y-1.5 hover:shadow-[0_22px_45px_-22px_rgba(15,35,66,0.22)]" : ""}`}
-                style={{ backgroundColor: c.bg }}
+                className={`group flex flex-col rounded-[20px] border border-line bg-surface p-7 shadow-[0_12px_32px_-20px_rgba(15,35,66,0.14)] transition duration-300 ${live ? "cursor-pointer hover:-translate-y-1.5 hover:border-gold/50 hover:shadow-[0_22px_45px_-22px_rgba(15,35,66,0.18)]" : ""}`}
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="flex h-16 w-16 shrink-0 items-center justify-center">
+                  <span className="flex h-[50px] w-[50px] shrink-0 items-center justify-center overflow-hidden rounded-[14px] ring-1 ring-line">
                     {c.icon}
                   </span>
-                  <span className="text-[18px] font-bold text-ink">{c.title}</span>
+                  <span className="text-[17px] font-bold text-ink">{c.title}</span>
                 </div>
                 <p className="mt-4 text-[13.5px] leading-relaxed text-muted">{c.desc}</p>
                 {live ? (
-                  <span className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg border border-line bg-white py-3 text-[14px] font-bold text-ink transition group-hover:border-transparent group-hover:bg-[#dcc7ae]">
+                  <span className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg border border-line bg-bg py-3 text-[14px] font-bold text-ink transition group-hover:border-gold group-hover:bg-warm group-hover:text-gold-d">
                     {c.cta} <span className="transition group-hover:translate-x-0.5">→</span>
                   </span>
                 ) : (
