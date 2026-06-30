@@ -37,7 +37,7 @@ const PRESETS = [
 ];
 
 export default function LightSimulator({
-  image = "/img/living-hero.webp",
+  image = "/img/sofa.webp",
   title = "색온도를 직접 바꿔보세요",
   subtitle = "전구색부터 주광색까지 — 슬라이더를 움직여 우리 집 조명을 미리 경험하세요.",
 }: {
@@ -52,16 +52,16 @@ export default function LightSimulator({
   const d = dim / 100;
 
   return (
-    <section className="bg-ink py-16 md:py-24">
+    <section className="bg-warm py-16 md:py-24">
       <div className="reveal mx-auto max-w-[1100px] px-6">
         <div className="mx-auto mb-9 max-w-[680px] text-center">
-          <p className="kicker text-gold">Light Experience</p>
-          <h2 className="mt-3 text-[28px] font-extrabold leading-snug text-white md:text-[40px]">{title}</h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-white/65">{subtitle}</p>
+          <p className="kicker">Light Experience</p>
+          <h2 className="mt-3 text-[28px] font-extrabold leading-snug text-ink md:text-[40px]">{title}</h2>
+          <p className="mt-3 text-[15px] leading-relaxed text-muted">{subtitle}</p>
         </div>
 
         {/* 시뮬레이션 화면 */}
-        <div className="relative overflow-hidden rounded-[28px] shadow-[0_40px_90px_-30px_rgba(0,0,0,0.7)]">
+        <div className="relative overflow-hidden rounded-[28px] shadow-[0_30px_70px_-30px_rgba(15,35,66,0.4)] ring-1 ring-line">
           <div className="relative aspect-[16/10]" style={{ filter: `brightness(${0.52 + d * 0.48}) contrast(${1 + (1 - d) * 0.06}) saturate(${0.96 + d * 0.12})` }}>
             <Image src={image} alt="조명 색온도 시뮬레이션" fill priority sizes="(max-width:1100px) 100vw, 1100px" className="object-cover" style={{ objectPosition: "center 68%" }} />
             {/* 색온도 — 곱하기 블렌드(빛이 공간을 물들이듯, 시원한 빛에서도 안 뜸) */}
@@ -82,28 +82,28 @@ export default function LightSimulator({
         {/* 컨트롤 */}
         <div className="mt-7 grid gap-6 md:grid-cols-2">
           <div>
-            <div className="mb-2 flex items-center justify-between text-[13px] font-semibold text-white/80">
+            <div className="mb-2 flex items-center justify-between text-[13px] font-semibold text-ink/75">
               <span>색온도 (Color Temperature)</span>
-              <span className="text-gold">{k}K</span>
+              <span className="text-gold-d">{k}K</span>
             </div>
             <input
               type="range" min={2700} max={6500} step={100} value={k} onChange={(e) => setK(Number(e.target.value))}
               className="ct-slider h-2.5 w-full cursor-pointer appearance-none rounded-full"
               style={{ background: "linear-gradient(90deg,#ff9b4d,#ffd9a8,#fff4e6,#eef4ff,#cfe2ff)" }}
             />
-            <div className="mt-1.5 flex justify-between text-[11px] text-white/45"><span>따뜻한 빛</span><span>시원한 빛</span></div>
+            <div className="mt-1.5 flex justify-between text-[11px] text-muted"><span>따뜻한 빛</span><span>시원한 빛</span></div>
           </div>
           <div>
-            <div className="mb-2 flex items-center justify-between text-[13px] font-semibold text-white/80">
+            <div className="mb-2 flex items-center justify-between text-[13px] font-semibold text-ink/75">
               <span>밝기 (Dimming)</span>
-              <span className="text-gold">{dim}%</span>
+              <span className="text-gold-d">{dim}%</span>
             </div>
             <input
               type="range" min={20} max={100} step={1} value={dim} onChange={(e) => setDim(Number(e.target.value))}
               className="ct-slider h-2.5 w-full cursor-pointer appearance-none rounded-full"
-              style={{ background: "linear-gradient(90deg,#3a3a3a,#d4b97a,#fff6df)" }}
+              style={{ background: "linear-gradient(90deg,#cdbfa6,#d4b97a,#fff6df)" }}
             />
-            <div className="mt-1.5 flex justify-between text-[11px] text-white/45"><span>은은하게</span><span>환하게</span></div>
+            <div className="mt-1.5 flex justify-between text-[11px] text-muted"><span>은은하게</span><span>환하게</span></div>
           </div>
         </div>
 
@@ -113,13 +113,13 @@ export default function LightSimulator({
             const active = k === p.k && dim === p.dim;
             return (
               <button key={p.label} onClick={() => { setK(p.k); setDim(p.dim); }}
-                className={`rounded-full px-4 py-2 text-[13px] font-bold transition ${active ? "bg-gold text-ink" : "bg-white/10 text-white/80 hover:bg-white/20"}`}>
+                className={`rounded-full px-4 py-2 text-[13px] font-bold transition ${active ? "bg-gold text-white shadow-sm" : "border border-line bg-surface text-ink/70 hover:border-gold hover:text-ink"}`}>
                 {p.label}
               </button>
             );
           })}
         </div>
-        <p className="mt-6 text-center text-[12.5px] text-white/45">* 실제 시공은 색온도·디밍을 앱·리모컨으로 자유롭게 조절할 수 있습니다.</p>
+        <p className="mt-6 text-center text-[12.5px] text-muted">* 실제 시공은 색온도·디밍을 앱·리모컨으로 자유롭게 조절할 수 있습니다.</p>
       </div>
     </section>
   );
