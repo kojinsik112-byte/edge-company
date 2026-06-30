@@ -64,13 +64,13 @@ export default async function Home() {
         {/* 라이브 텍스트 오버레이 (관리자 입력 — 이미지에 글자 안 박아 안 잘림·선명) */}
         {(hero.overlayTitle || hero.overlaySub) && (
           <div className="absolute inset-0 flex flex-col justify-center bg-gradient-to-r from-black/80 via-black/45 to-transparent px-8 md:px-20">
-            {hero.eyebrow && <p className="mb-5 text-[13px] font-medium tracking-[0.06em] text-white/85 md:text-[15px]">{hero.eyebrow}</p>}
+            {hero.eyebrow && <p className="mb-5 text-[13px] font-medium tracking-[0.06em] opacity-85 md:text-[15px]" style={{ color: hero.overlayColor }}>{hero.eyebrow}</p>}
             {hero.overlayTitle && (
-              <h1 className="max-w-[640px] whitespace-pre-line text-[38px] font-semibold leading-[1.22] tracking-[-0.01em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)] md:text-[62px]">{hero.overlayTitle}</h1>
+              <h1 className={`max-w-[640px] whitespace-pre-line leading-[1.22] tracking-[-0.01em] [text-shadow:0_2px_24px_rgba(0,0,0,0.35)] ${hero.overlaySerif ? "font-lux" : ""}`} style={{ color: hero.overlayColor, fontWeight: Number(hero.overlayWeight) || 600, fontSize: `clamp(28px, 7vw, ${hero.overlayTitleSize || 56}px)` }}>{hero.overlayTitle}</h1>
             )}
-            <span className="mt-6 block h-px w-[180px] bg-white/45" />
-            {hero.overlaySub && <p className="mt-6 max-w-[460px] whitespace-pre-line text-[15px] font-light leading-relaxed text-white/85 md:text-[17px]">{hero.overlaySub}</p>}
-            <p className="mt-5 font-lux text-[15px] font-semibold tracking-[0.34em] text-white/75 md:text-[17px]">EDGE COMPANY</p>
+            <span className="mt-6 block h-px w-[180px]" style={{ backgroundColor: hero.overlayColor, opacity: 0.45 }} />
+            {hero.overlaySub && <p className="mt-6 max-w-[460px] whitespace-pre-line text-[15px] font-light leading-relaxed opacity-90 md:text-[17px]" style={{ color: hero.overlayColor }}>{hero.overlaySub}</p>}
+            <p className="mt-5 font-lux text-[15px] font-semibold tracking-[0.34em] opacity-75 md:text-[17px]" style={{ color: hero.overlayColor }}>EDGE COMPANY</p>
             <div className="mt-8">
               <Link href="/cases" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-7 py-3.5 text-[15px] font-semibold text-white backdrop-blur-sm transition hover:bg-white hover:text-ink">시공사례 보기 <span aria-hidden>→</span></Link>
             </div>

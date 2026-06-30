@@ -150,7 +150,38 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
         </div>
         <Field label="배너 위 큰 글자 (라이브 텍스트 · 줄바꿈 가능)"><Area value={s.hero.overlayTitle} onChange={(v) => patch("hero", { overlayTitle: v })} /></Field>
         <Field label="배너 위 작은 글자"><Area value={s.hero.overlaySub} onChange={(v) => patch("hero", { overlaySub: v })} /></Field>
-        <p className="text-[11.5px] text-gold-d">※ 위 글자를 입력하면 영상/이미지 위에 선명하게 얹힙니다. (이미지에 글자를 넣지 마세요 — 안 잘립니다)</p>
+        <div className="rounded-xl border border-line bg-bg p-3">
+          <p className="mb-2 text-[12px] font-bold text-gold-d">배너 글자 꾸미기 (크기·색상·굵기·글꼴)</p>
+          <Grid>
+            <Field label="글자 색상">
+              <div className="flex items-center gap-2">
+                <input type="color" value={s.hero.overlayColor || "#ffffff"} onChange={(e) => patch("hero", { overlayColor: e.target.value })} className="h-10 w-12 shrink-0 cursor-pointer rounded border border-line bg-white" />
+                <Inp value={s.hero.overlayColor} onChange={(v) => patch("hero", { overlayColor: v })} placeholder="#ffffff" />
+              </div>
+            </Field>
+            <Field label={`큰 글자 크기 — ${s.hero.overlayTitleSize || 56}px`}>
+              <input type="range" min={28} max={88} value={s.hero.overlayTitleSize || 56} onChange={(e) => patch("hero", { overlayTitleSize: Number(e.target.value) })} className="w-full cursor-pointer" />
+            </Field>
+          </Grid>
+          <Grid>
+            <Field label="굵기">
+              <select className={inputCls} value={s.hero.overlayWeight || "600"} onChange={(e) => patch("hero", { overlayWeight: e.target.value })}>
+                <option value="300">가늘게</option>
+                <option value="500">보통</option>
+                <option value="600">약간 굵게</option>
+                <option value="700">굵게</option>
+                <option value="800">매우 굵게</option>
+              </select>
+            </Field>
+            <Field label="글꼴">
+              <select className={inputCls} value={s.hero.overlaySerif ? "serif" : "sans"} onChange={(e) => patch("hero", { overlaySerif: e.target.value === "serif" })}>
+                <option value="sans">고딕 (기본)</option>
+                <option value="serif">명조 (세리프 · 고급)</option>
+              </select>
+            </Field>
+          </Grid>
+        </div>
+        <p className="text-[11.5px] text-gold-d">※ 위 글자를 입력하면 영상/이미지 위에 선명하게 얹힙니다. 모바일에선 크기가 자동으로 작아집니다.</p>
         <ImageField label="PC 배너 이미지 (영상 없을 때)" hint="1920 × 1080px (16:9). 글자 없는 깔끔한 거실 사진 권장" url={s.hero.image} onPick={(f) => pick(f, (url) => patch("hero", { image: url }))} />
         <ImageField label="모바일 배너 (세로)" hint="1080 × 1350px (4:5). 비우면 PC 배너 사용 — 휴대폰에서 글자 안 잘리려면 권장" url={s.hero.imageMobile} onPick={(f) => pick(f, (url) => patch("hero", { imageMobile: url }))} />
         <Field label="상단 지역 문구"><Inp value={s.hero.eyebrow} onChange={(v) => patch("hero", { eyebrow: v })} /></Field>

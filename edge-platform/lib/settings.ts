@@ -24,6 +24,10 @@ export interface Hero {
   imageMobile: string; // 모바일(세로) 배너 — 비우면 PC 이미지 사용
   overlayTitle: string; // 영상/이미지 위에 얹는 라이브 텍스트 (비우면 미표시)
   overlaySub: string;
+  overlayColor: string; // 글자 색상 (hex)
+  overlayTitleSize: number; // 큰 글자 크기 (데스크탑 px)
+  overlayWeight: string; // 굵기 "300"|"500"|"600"|"700"|"800"
+  overlaySerif: boolean; // true면 명조(세리프) 글꼴
   eyebrow: string;
   title: string;
   subline: string;
@@ -156,6 +160,10 @@ export const DEFAULT_SETTINGS: Settings = {
     imageMobile: "",
     overlayTitle: "빛과 바람으로\n집을 완성하다",
     overlaySub: "공간의 본질을 이해하고, 빛과 바람을 디자인합니다.",
+    overlayColor: "#ffffff",
+    overlayTitleSize: 56,
+    overlayWeight: "600",
+    overlaySerif: false,
     eyebrow: "/ edgecompany",
     title: "빛과 바람으로 완성하는\n프리미엄 공간",
     subline: "실링팬 · 간접조명 · 센서조명 전문 쇼룸",
