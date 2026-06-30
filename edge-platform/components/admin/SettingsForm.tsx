@@ -13,6 +13,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
   const [s, setS] = useState<Settings>(initial);
   const [saving, setSaving] = useState<string>("");
   const [msg, setMsg] = useState("");
+  const [shortUp, setShortUp] = useState<{ i: number; s: string; err?: boolean } | null>(null);
 
   function patch<K extends keyof Settings>(key: K, val: Partial<Settings[K]>) {
     setS((prev) => ({ ...prev, [key]: { ...prev[key], ...val } }));
@@ -82,13 +83,14 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
 
   async function pickShortVideo(i: number, file: File | undefined) {
     if (!file) return;
-    setMsg("숏츠 영상 업로드 중… (용량이 크면 시간이 걸립니다)");
+    const mb = Math.round(file.size / 1048576);
+    setShortUp({ i, s: `업로드 중… (${mb}MB)` });
     try {
       const url = await uploadVideo(supabase, file);
       setShort(i, { url });
-      setMsg("숏츠 영상 업로드 완료 — 저장 버튼을 누르세요.");
+      setShortUp({ i, s: "✓ 영상 업로드 완료 — [저장] 누르세요" });
     } catch (e) {
-      setMsg(`영상 오류: ${e instanceof Error ? e.message : ""}`);
+      setShortUp({ i, s: `업로드 실패: ${e instanceof Error ? e.message : "오류"} — 용량이 크면 유튜브 사용 권장`, err: true });
     }
   }
 
@@ -237,7 +239,8 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
               <div className="flex flex-wrap items-center gap-2 rounded-lg bg-bg px-3 py-2">
                 <span className="text-[12px] font-semibold text-gold-d">영상 파일 직접 올리기:</span>
                 <input type="file" accept="video/*" onChange={(e) => pickShortVideo(i, e.target.files?.[0])} className="text-[12px] text-muted file:mr-2 file:rounded-md file:border-0 file:bg-navy file:px-3 file:py-1.5 file:text-white" />
-                {it.url && !/youtu/i.test(it.url) && <span className="text-[11.5px] font-semibold text-navy">✓ 영상 등록됨</span>}
+                {it.url && !/youtu/i.test(it.url) && !(shortUp?.i === i) && <span className="text-[11.5px] font-semibold text-navy">✓ 영상 등록됨</span>}
+                {shortUp?.i === i && <span className={`w-full text-[12px] font-bold ${shortUp.err ? "text-red-600" : "text-navy"}`}>{shortUp.s}</span>}
               </div>
               <Inp value={it.title} onChange={(v) => setShort(i, { title: v })} placeholder="제목 (예: 거실 조명 비포애프터)" />
               <ImageField label="세로 썸네일 (9:16) — 직접 올린 영상은 썸네일 꼭 올려주세요" hint="유튜브는 비워도 자동 썸네일" url={it.thumb} onPick={(f) => pick(f, (url) => setShort(i, { thumb: url }))} />
