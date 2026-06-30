@@ -78,6 +78,18 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
     }
   }
 
+  async function pickShortVideo(i: number, file: File | undefined) {
+    if (!file) return;
+    setMsg("숏츠 영상 업로드 중… (용량이 크면 시간이 걸립니다)");
+    try {
+      const url = await uploadVideo(supabase, file);
+      setShort(i, { url });
+      setMsg("숏츠 영상 업로드 완료 — 저장 버튼을 누르세요.");
+    } catch (e) {
+      setMsg(`영상 오류: ${e instanceof Error ? e.message : ""}`);
+    }
+  }
+
   async function addShowroomImages(files: FileList) {
     setMsg("이미지 변환·업로드 중…");
     try {
@@ -188,9 +200,14 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
           {s.shorts.items.map((it, i) => (
             <div key={i} className="relative space-y-2 rounded-xl border border-line p-3">
               <button type="button" onClick={() => delShort(i)} className="absolute -right-1.5 -top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[11px] text-white">×</button>
-              <Inp value={it.url} onChange={(v) => setShort(i, { url: v })} placeholder="유튜브 숏츠 URL (https://youtube.com/shorts/...) 또는 mp4 URL" />
+              <Inp value={it.url} onChange={(v) => setShort(i, { url: v })} placeholder="유튜브 숏츠 URL — 또는 아래에서 영상 파일 직접 업로드" />
+              <div className="flex flex-wrap items-center gap-2 rounded-lg bg-bg px-3 py-2">
+                <span className="text-[12px] font-semibold text-gold-d">영상 파일 직접 올리기:</span>
+                <input type="file" accept="video/*" onChange={(e) => pickShortVideo(i, e.target.files?.[0])} className="text-[12px] text-muted file:mr-2 file:rounded-md file:border-0 file:bg-navy file:px-3 file:py-1.5 file:text-white" />
+                {it.url && !/youtu/i.test(it.url) && <span className="text-[11.5px] font-semibold text-navy">✓ 영상 등록됨</span>}
+              </div>
               <Inp value={it.title} onChange={(v) => setShort(i, { title: v })} placeholder="제목 (예: 거실 조명 비포애프터)" />
-              <ImageField label="세로 썸네일 (9:16)" hint="유튜브는 비워도 자동 썸네일 / 직접 업로드 가능" url={it.thumb} onPick={(f) => pick(f, (url) => setShort(i, { thumb: url }))} />
+              <ImageField label="세로 썸네일 (9:16) — 직접 올린 영상은 썸네일 꼭 올려주세요" hint="유튜브는 비워도 자동 썸네일" url={it.thumb} onPick={(f) => pick(f, (url) => setShort(i, { thumb: url }))} />
             </div>
           ))}
           <button type="button" onClick={addShort} className="rounded-lg border border-dashed border-line px-4 py-2 text-[13px] font-semibold text-navy">+ 숏츠 추가</button>
