@@ -235,7 +235,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
           {s.shorts.items.map((it, i) => (
             <div key={i} className="relative space-y-2 rounded-xl border border-line p-3">
               <button type="button" onClick={() => delShort(i)} className="absolute -right-1.5 -top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[11px] text-white">×</button>
-              <Inp value={it.url} onChange={(v) => setShort(i, { url: v })} placeholder="유튜브 숏츠 URL — 또는 아래에서 영상 파일 직접 업로드" />
+              <Inp value={it.url} onChange={(v) => setShort(i, { url: v })} placeholder="유튜브 URL(재생) · 인스타/틱톡 URL(클릭 시 이동) · 또는 아래 mp4 업로드" />
               <div className="flex flex-wrap items-center gap-2 rounded-lg bg-bg px-3 py-2">
                 <span className="text-[12px] font-semibold text-gold-d">영상 파일 직접 올리기:</span>
                 <input type="file" accept="video/*" onChange={(e) => pickShortVideo(i, e.target.files?.[0])} className="text-[12px] text-muted file:mr-2 file:rounded-md file:border-0 file:bg-navy file:px-3 file:py-1.5 file:text-white" />

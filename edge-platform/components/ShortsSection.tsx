@@ -35,19 +35,13 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
                 </div>
               ))
             : items.map((s, i) => {
-            const yt = ytId(s.url);
-            const playing = play === i;
-            const thumb = s.thumb || (yt ? `https://img.youtube.com/vi/${yt}/hqdefault.jpg` : "");
-            return (
-              <div key={i} className="relative aspect-[9/16] w-[224px] shrink-0 overflow-hidden rounded-2xl bg-ink shadow-[0_18px_40px_-22px_rgba(15,35,66,0.5)]">
-                {playing ? (
-                  yt ? (
-                    <iframe src={`https://www.youtube.com/embed/${yt}?autoplay=1&rel=0`} title={s.title} className="h-full w-full" allow="autoplay; encrypted-media; fullscreen" allowFullScreen />
-                  ) : (
-                    <video src={s.url} autoPlay controls playsInline className="h-full w-full bg-black object-contain" />
-                  )
-                ) : (
-                  <button onClick={() => setPlay(i)} className="group block h-full w-full text-left">
+                const yt = ytId(s.url);
+                const isFile = /\.(mp4|mov|webm|m4v)(\?|$)/i.test(s.url);
+                const isExternal = !yt && !isFile; // 인스타·틱톡 등 → 클릭 시 새 탭 이동
+                const playing = play === i && !isExternal;
+                const thumb = s.thumb || (yt ? `https://img.youtube.com/vi/${yt}/hqdefault.jpg` : "");
+                const preview = (
+                  <>
                     {thumb ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={thumb} alt={s.title || "엣지컴퍼니 숏츠"} className="absolute inset-0 h-full w-full object-cover" />
@@ -55,15 +49,32 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
                       <span className="absolute inset-0 bg-gradient-to-b from-navy to-ink" />
                     )}
                     <span className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10 transition group-hover:from-black/50" />
-                    <span className="absolute left-1/2 top-1/2 flex h-15 w-15 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-lg transition group-hover:scale-110" style={{ width: 60, height: 60 }}>
-                      <svg viewBox="0 0 24 24" className="ml-0.5 h-6 w-6 text-ink" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                    <span className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-lg transition group-hover:scale-110" style={{ width: 60, height: 60 }}>
+                      {isExternal ? (
+                        <svg viewBox="0 0 24 24" className="h-6 w-6 text-ink" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M7 17 17 7M9 7h8v8" /></svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" className="ml-0.5 h-6 w-6 text-ink" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                      )}
                     </span>
                     {s.title && <span className="absolute inset-x-0 bottom-0 line-clamp-2 px-4 pb-4 text-[14px] font-bold leading-snug text-white">{s.title}</span>}
-                  </button>
-                )}
-              </div>
-            );
-          })}
+                  </>
+                );
+                return (
+                  <div key={i} className="relative aspect-[9/16] w-[224px] shrink-0 overflow-hidden rounded-2xl bg-ink shadow-[0_18px_40px_-22px_rgba(15,35,66,0.5)]">
+                    {playing ? (
+                      yt ? (
+                        <iframe src={`https://www.youtube.com/embed/${yt}?autoplay=1&rel=0`} title={s.title} className="h-full w-full" allow="autoplay; encrypted-media; fullscreen" allowFullScreen />
+                      ) : (
+                        <video src={s.url} autoPlay controls playsInline className="h-full w-full bg-black object-contain" />
+                      )
+                    ) : isExternal ? (
+                      <a href={s.url} target="_blank" rel="noopener noreferrer" className="group block h-full w-full text-left">{preview}</a>
+                    ) : (
+                      <button onClick={() => setPlay(i)} className="group block h-full w-full text-left">{preview}</button>
+                    )}
+                  </div>
+                );
+              })}
         </div>
       </ScrollRow>
       <div className="mt-9 text-center">
