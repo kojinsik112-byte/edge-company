@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import type { Shorts } from "@/lib/settings";
 import ScrollRow from "./ScrollRow";
@@ -65,6 +66,9 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
           })}
         </div>
       </ScrollRow>
+      <div className="mt-9 text-center">
+        <Link href="/youtube" className="inline-block rounded-lg border border-line bg-surface px-7 py-3.5 text-[15px] font-semibold text-ink transition hover:border-gold">더 많은 영상 보기</Link>
+      </div>
     </section>
   );
 }

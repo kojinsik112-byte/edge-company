@@ -54,7 +54,7 @@ export default async function Home() {
       {/* ===== HERO (광고영상 자동재생 루프 또는 이미지 — 관리자에서 교체) ===== */}
       <section className="relative h-[calc(100svh-72px)] min-h-[560px] overflow-hidden bg-ink">
         {hero.video ? (
-          <video src={hero.video} autoPlay muted loop playsInline poster={hero.image || undefined} className="absolute inset-0 h-full w-full object-cover" />
+          <video src={hero.video} autoPlay muted loop playsInline poster={hero.image || undefined} className="absolute inset-0 h-full w-full object-contain" />
         ) : (
           <>
             <Image src={hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="hidden object-cover md:block" />
