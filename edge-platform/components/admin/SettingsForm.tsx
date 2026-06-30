@@ -39,6 +39,8 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
     patch("company", { trust: s.company.trust.map((t, j) => (j === i ? v : t)) });
   const setStep = (i: number, p: Partial<Settings["process"]["steps"][number]>) =>
     patch("process", { steps: s.process.steps.map((st, j) => (j === i ? { ...st, ...p } : st)) });
+  const setCatSec = (cat: string, p: Partial<Settings["categorySections"][string]>) =>
+    patch("categorySections", { [cat]: { ...(s.categorySections[cat] ?? { title: "", desc: "" }), ...p } });
 
   async function save(key: keyof Settings) {
     setSaving(key);
@@ -255,6 +257,20 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
         </div>
       </Section>
 
+      {/* 카테고리 이름 (시공사례 섹션 제목) */}
+      <Section title="카테고리 이름 (시공사례 섹션 제목)" onSave={() => save("categorySections")} saving={saving === "categorySections"}>
+        <p className="text-[12px] text-muted">홈 화면의 “○○ 시공사례” 섹션 <b>제목·설명</b>을 자유롭게 바꿉니다.</p>
+        <div className="space-y-3">
+          {CATEGORIES.map((c) => (
+            <div key={c} className="space-y-2 rounded-xl border border-line p-3">
+              <span className="text-[12px] font-bold text-navy">{c}</span>
+              <Inp value={s.categorySections[c]?.title ?? ""} onChange={(v) => setCatSec(c, { title: v })} placeholder="섹션 제목 (예: 실링팬 시공사례)" />
+              <Inp value={s.categorySections[c]?.desc ?? ""} onChange={(v) => setCatSec(c, { desc: v })} placeholder="섹션 설명" />
+            </div>
+          ))}
+        </div>
+      </Section>
+
       {/* 전기 면허 등록증 */}
       <Section title="전기 면허 등록증" onSave={() => save("license")} saving={saving === "license"}>
         <Field label="제목"><Inp value={s.license.title} onChange={(v) => patch("license", { title: v })} /></Field>
@@ -321,7 +337,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
 const LABEL: Record<string, string> = {
   site: "기본 정보", notice: "공지바", hero: "메인 배너", company: "회사소개",
   simulator: "조명 시뮬레이터", process: "시공 절차", shorts: "숏츠",
-  showroom: "쇼룸", categories: "카테고리 이미지", seo: "SEO",
+  showroom: "쇼룸", categories: "카테고리 이미지", categorySections: "카테고리 이름", seo: "SEO",
   license: "면허 등록증", branches: "전국 지사", partners: "협력사",
 };
 

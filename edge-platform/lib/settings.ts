@@ -79,6 +79,11 @@ export interface Showroom {
   map: string; // 오시는 길 지도 이미지 (관리자 업로드)
 }
 export type Categories = Record<string, string>; // 카테고리명 → 대표이미지 URL
+export interface CategorySection {
+  title: string; // 홈 시공사례 섹션 제목 (관리자 변경 가능)
+  desc: string;
+}
+export type CategorySections = Record<string, CategorySection>;
 export interface SeoSettings {
   home: { title: string; description: string; keywords: string; og: string };
 }
@@ -124,6 +129,7 @@ export interface Settings {
   shorts: Shorts;
   showroom: Showroom;
   categories: Categories;
+  categorySections: CategorySections;
   seo: SeoSettings;
   license: License;
   branches: Branches;
@@ -205,6 +211,11 @@ export const DEFAULT_SETTINGS: Settings = {
     실링팬: "/img/fan.webp",
     간접조명: "/img/indirect.webp",
     기타: "/img/curtain.webp",
+  },
+  categorySections: {
+    실링팬: { title: "실링팬 시공사례", desc: "실제 고객 시공 현장" },
+    간접조명: { title: "간접조명 시공사례", desc: "빛의 분위기가 달라지는 공간" },
+    기타: { title: "기타 시공사례", desc: "센서조명 · 스위치 · 전동커튼 등 다양한 시공" },
   },
   seo: { home: { title: "", description: "", keywords: "", og: "" } },
   license: {

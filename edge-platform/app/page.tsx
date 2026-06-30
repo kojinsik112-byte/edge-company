@@ -42,7 +42,7 @@ export default async function Home() {
     getFaqs(),
     getProducts(),
   ]);
-  const { site, hero, showroom, company, process, simulator, shorts, license, branches, partners } = settings;
+  const { site, hero, showroom, company, process, simulator, shorts, categorySections: cs, license, branches, partners } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
   const reviewList = (reviews.length >= 9 ? reviews : [...reviews, ...DEMO_REVIEWS]).slice(0, 9);
   const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/area/${REGION_SLUG["울산"]}-${CATEGORY_SLUG[cat]}`;
@@ -107,9 +107,9 @@ export default async function Home() {
       <ShortsSection shorts={shorts} />
 
       {/* ===== 카테고리별 시공사례 (사진 중심·전면 배치) ===== */}
-      <CategoryCases title="실링팬 시공사례" desc="실제 고객 시공 현장" cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" />
-      <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
-      <CategoryCases title="기타 시공사례" desc="센서조명 · 스위치 · 전동커튼 등 다양한 시공" cases={etcCases} moreHref={moreHref("기타")} bg="bg-bg" />
+      <CategoryCases title={cs["실링팬"]?.title ?? "실링팬 시공사례"} desc={cs["실링팬"]?.desc ?? ""} cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" />
+      <CategoryCases title={cs["간접조명"]?.title ?? "간접조명 시공사례"} desc={cs["간접조명"]?.desc ?? ""} cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
+      <CategoryCases title={cs["기타"]?.title ?? "기타 시공사례"} desc={cs["기타"]?.desc ?? ""} cases={etcCases} moreHref={moreHref("기타")} bg="bg-bg" />
 
       {/* ===== 시공 절차 ===== */}
       <ProcessSection process={process} />
