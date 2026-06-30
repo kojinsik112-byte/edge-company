@@ -54,3 +54,16 @@ html.reveal-ready .reveal.is-visible { opacity: 1; transform: none; }
 /* hide scrollbar for filter chips row on mobile */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* 조명 시뮬레이터 슬라이더 손잡이 */
+.ct-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 26px; height: 26px; border-radius: 9999px;
+  background: #fff; border: 3px solid var(--color-gold);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35); cursor: pointer;
+}
+.ct-slider::-moz-range-thumb {
+  width: 24px; height: 24px; border-radius: 9999px;
+  background: #fff; border: 3px solid var(--color-gold);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35); cursor: pointer;
+}

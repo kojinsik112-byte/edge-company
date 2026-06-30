@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Showroom } from "@/lib/settings";
 
 export default function ShowroomGallery({ showroom }: { showroom: Showroom }) {
-  const images = (showroom.images?.length ? showroom.images : [showroom.image]).filter(Boolean).slice(0, 6);
+  const images = (showroom.images?.length ? showroom.images : [showroom.image]).filter(Boolean).slice(0, 8);
   return (
     <section className="bg-warm py-16 md:py-24">
       <div className="reveal mx-auto max-w-[1320px] px-6">

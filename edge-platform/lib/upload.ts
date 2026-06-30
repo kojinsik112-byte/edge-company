@@ -31,6 +31,20 @@ export async function fileToWebp(
   );
 }
 
+/** 영상 파일(mp4 등)을 변환 없이 Supabase Storage(media) 업로드 → 공개 URL 반환 */
+export async function uploadVideo(
+  supabase: SupabaseClient,
+  file: File,
+): Promise<string> {
+  const ext = (file.name.split(".").pop() || "mp4").toLowerCase();
+  const name = `video/${crypto.randomUUID()}.${ext}`;
+  const { error } = await supabase.storage
+    .from("media")
+    .upload(name, file, { contentType: file.type || "video/mp4", upsert: false });
+  if (error) throw new Error(`영상 업로드 실패: ${error.message}`);
+  return supabase.storage.from("media").getPublicUrl(name).data.publicUrl;
+}
+
 /** WebP 변환 후 Supabase Storage(media) 업로드 → 공개 URL 반환 */
 export async function uploadImage(
   supabase: SupabaseClient,

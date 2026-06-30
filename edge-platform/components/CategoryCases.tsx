@@ -33,7 +33,7 @@ export default function CategoryCases({
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
           {showDemo
-            ? demoTiles(6).map((t, i) => (
+            ? demoTiles(9).map((t, i) => (
                 <div key={i} className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface shadow-[0_10px_30px_-18px_rgba(15,35,66,0.2)]">
                   <Image src={t.img} alt={`${title} 예시 ${i + 1}`} fill sizes="(max-width:768px) 50vw, 400px" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
                   <span className="absolute left-3 top-3 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold text-ink/70 backdrop-blur-sm">예시</span>

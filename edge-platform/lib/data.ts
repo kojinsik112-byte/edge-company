@@ -119,6 +119,21 @@ export async function getProducts(): Promise<ProductRow[]> {
   }
 }
 
+export async function getProductById(id: string): Promise<ProductRow | null> {
+  const supabase = await createClient();
+  if (!supabase) return null;
+  try {
+    const { data } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    return (data as ProductRow) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function getYoutube(): Promise<YoutubeRow[]> {
   const supabase = await createClient();
   if (!supabase) return [];

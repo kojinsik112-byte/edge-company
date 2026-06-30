@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { uploadImage } from "@/lib/upload";
+import { uploadImage, uploadVideo } from "@/lib/upload";
 import { CATEGORIES } from "@/lib/constants";
 import type { Settings } from "@/lib/settings";
 
@@ -29,6 +29,16 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
     patch("partners", { logos: s.partners.logos.map((l, j) => (j === i ? { ...l, ...p } : l)) });
   const addLogo = () => patch("partners", { logos: [...s.partners.logos, { image: "", name: "" }] });
   const delLogo = (i: number) => patch("partners", { logos: s.partners.logos.filter((_, j) => j !== i) });
+  const setShort = (i: number, p: Partial<Settings["shorts"]["items"][number]>) =>
+    patch("shorts", { items: s.shorts.items.map((it, j) => (j === i ? { ...it, ...p } : it)) });
+  const addShort = () => patch("shorts", { items: [...s.shorts.items, { url: "", title: "", thumb: "" }] });
+  const delShort = (i: number) => patch("shorts", { items: s.shorts.items.filter((_, j) => j !== i) });
+  const setFeature = (i: number, p: Partial<Settings["company"]["features"][number]>) =>
+    patch("company", { features: s.company.features.map((f, j) => (j === i ? { ...f, ...p } : f)) });
+  const setTrust = (i: number, v: string) =>
+    patch("company", { trust: s.company.trust.map((t, j) => (j === i ? v : t)) });
+  const setStep = (i: number, p: Partial<Settings["process"]["steps"][number]>) =>
+    patch("process", { steps: s.process.steps.map((st, j) => (j === i ? { ...st, ...p } : st)) });
 
   async function save(key: keyof Settings) {
     setSaving(key);
@@ -53,6 +63,18 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
       setMsg("이미지 업로드 완료 — 저장 버튼을 누르세요.");
     } catch (e) {
       setMsg(`이미지 오류: ${e instanceof Error ? e.message : ""}`);
+    }
+  }
+
+  async function pickVideo(file: File | undefined) {
+    if (!file) return;
+    setMsg("영상 업로드 중… (용량이 크면 시간이 걸립니다)");
+    try {
+      const url = await uploadVideo(supabase, file);
+      patch("hero", { video: url });
+      setMsg("영상 업로드 완료 — 저장 버튼을 누르세요.");
+    } catch (e) {
+      setMsg(`영상 오류: ${e instanceof Error ? e.message : ""}`);
     }
   }
 
@@ -102,7 +124,20 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
 
       {/* 메인 배너 */}
       <Section title="메인 배너 (히어로)" onSave={() => save("hero")} saving={saving === "hero"}>
-        <ImageField label="PC 배너 (가로)" hint="1920 × 1080px (16:9). 텍스트는 이미지에 포함 가능" url={s.hero.image} onPick={(f) => pick(f, (url) => patch("hero", { image: url }))} />
+        <div className="rounded-xl border border-gold/40 bg-gold/5 p-4">
+          <span className="mb-1 block text-[13px] font-bold text-gold-d">⭐ 메인 광고영상 (mp4)</span>
+          <span className="mb-2 block text-[11.5px] text-muted">영상을 올리면 메인 상단에서 <b>음소거·자동재생·무한반복</b>으로 돕니다. (없으면 아래 이미지 배너 사용) · 가로 16:9 권장</span>
+          <div className="flex flex-wrap items-center gap-3">
+            {s.hero.video && <video src={s.hero.video} muted playsInline className="h-16 w-28 rounded-lg border border-line object-cover" />}
+            <input type="file" accept="video/*" onChange={(e) => pickVideo(e.target.files?.[0])} className="text-[12.5px] text-muted file:mr-2 file:rounded-md file:border-0 file:bg-navy file:px-3 file:py-2 file:text-white" />
+            {s.hero.video && <button type="button" onClick={() => patch("hero", { video: "" })} className="text-[12px] font-semibold text-red-600">영상 제거</button>}
+          </div>
+          <input className={`${inputCls} mt-2`} value={s.hero.video ?? ""} onChange={(e) => patch("hero", { video: e.target.value })} placeholder="또는 영상 URL 직접 입력 (https://....mp4)" />
+        </div>
+        <Field label="배너 위 큰 글자 (라이브 텍스트 · 줄바꿈 가능)"><Area value={s.hero.overlayTitle} onChange={(v) => patch("hero", { overlayTitle: v })} /></Field>
+        <Field label="배너 위 작은 글자"><Area value={s.hero.overlaySub} onChange={(v) => patch("hero", { overlaySub: v })} /></Field>
+        <p className="text-[11.5px] text-gold-d">※ 위 글자를 입력하면 영상/이미지 위에 선명하게 얹힙니다. (이미지에 글자를 넣지 마세요 — 안 잘립니다)</p>
+        <ImageField label="PC 배너 이미지 (영상 없을 때)" hint="1920 × 1080px (16:9). 글자 없는 깔끔한 거실 사진 권장" url={s.hero.image} onPick={(f) => pick(f, (url) => patch("hero", { image: url }))} />
         <ImageField label="모바일 배너 (세로)" hint="1080 × 1350px (4:5). 비우면 PC 배너 사용 — 휴대폰에서 글자 안 잘리려면 권장" url={s.hero.imageMobile} onPick={(f) => pick(f, (url) => patch("hero", { imageMobile: url }))} />
         <Field label="상단 지역 문구"><Inp value={s.hero.eyebrow} onChange={(v) => patch("hero", { eyebrow: v })} /></Field>
         <Field label="헤드라인 (줄바꿈 가능)"><Area value={s.hero.title} onChange={(v) => patch("hero", { title: v })} /></Field>
@@ -110,11 +145,73 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
         <Field label="설명 문구"><Area value={s.hero.lead} onChange={(v) => patch("hero", { lead: v })} /></Field>
       </Section>
 
-      {/* 회사소개 */}
-      <Section title="회사소개" onSave={() => save("company")} saving={saving === "company"}>
-        <ImageField label="회사소개 이미지" hint="1200 × 900px (4:3)" url={s.company.image} onPick={(f) => pick(f, (url) => patch("company", { image: url }))} />
-        <Field label="제목"><Inp value={s.company.title} onChange={(v) => patch("company", { title: v })} /></Field>
-        <Field label="소개글"><Area value={s.company.body} onChange={(v) => patch("company", { body: v })} /></Field>
+      {/* 회사소개 (왜 엣지컴퍼니) */}
+      <Section title="회사소개 (왜 엣지컴퍼니일까요?)" onSave={() => save("company")} saving={saving === "company"}>
+        <ImageField label="대표 이미지 (좌측 비주얼)" hint="1200 × 1500px (4:5 세로)" url={s.company.image} onPick={(f) => pick(f, (url) => patch("company", { image: url }))} />
+        <Grid>
+          <Field label="상단 영문"><Inp value={s.company.eyebrow} onChange={(v) => patch("company", { eyebrow: v })} placeholder="Why Edge Company" /></Field>
+          <Field label="큰 제목"><Inp value={s.company.heading} onChange={(v) => patch("company", { heading: v })} placeholder="왜 엣지컴퍼니일까요?" /></Field>
+        </Grid>
+        <Field label="리드 문구"><Area value={s.company.lead} onChange={(v) => patch("company", { lead: v })} /></Field>
+        <p className="text-[12px] font-bold text-gold-d">강점 카드 (4개 · 제목 + 설명)</p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {s.company.features.map((f, i) => (
+            <div key={i} className="space-y-2 rounded-xl border border-line p-3">
+              <Inp value={f.title} onChange={(v) => setFeature(i, { title: v })} placeholder={`카드 ${i + 1} 제목`} />
+              <Inp value={f.desc} onChange={(v) => setFeature(i, { desc: v })} placeholder="카드 설명" />
+            </div>
+          ))}
+        </div>
+        <p className="text-[12px] font-bold text-gold-d">하단 신뢰 문구 (4개)</p>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {s.company.trust.map((t, i) => (
+            <Inp key={i} value={t} onChange={(v) => setTrust(i, v)} placeholder={`신뢰 ${i + 1}`} />
+          ))}
+        </div>
+      </Section>
+
+      {/* 조명 시뮬레이터 (색온도·디밍 체험) */}
+      <Section title="조명 시뮬레이터 (색온도 체험)" onSave={() => save("simulator")} saving={saving === "simulator"}>
+        <Check checked={s.simulator.enabled} onChange={(v) => patch("simulator", { enabled: v })} label="시뮬레이터 노출 ON" />
+        <ImageField label="거실 전체 사진 (시뮬레이션 배경)" hint="1600 × 1000px (16:10) · 천장보다 거실 전체가 보이는 사진 권장" url={s.simulator.image} onPick={(f) => pick(f, (url) => patch("simulator", { image: url }))} />
+        <Field label="제목"><Inp value={s.simulator.title} onChange={(v) => patch("simulator", { title: v })} /></Field>
+        <Field label="설명"><Area value={s.simulator.subtitle} onChange={(v) => patch("simulator", { subtitle: v })} /></Field>
+      </Section>
+
+      {/* 숏츠 (세로 영상) */}
+      <Section title="숏츠 (세로 영상)" onSave={() => save("shorts")} saving={saving === "shorts"}>
+        <Check checked={s.shorts.enabled} onChange={(v) => patch("shorts", { enabled: v })} label="숏츠 섹션 노출 ON" />
+        <Field label="제목"><Inp value={s.shorts.title} onChange={(v) => patch("shorts", { title: v })} /></Field>
+        <Field label="설명"><Inp value={s.shorts.desc} onChange={(v) => patch("shorts", { desc: v })} /></Field>
+        <p className="text-[12px] font-bold text-gold-d">숏츠 목록 (유튜브 숏츠 URL 또는 mp4 · 무제한)</p>
+        <div className="space-y-3">
+          {s.shorts.items.map((it, i) => (
+            <div key={i} className="relative space-y-2 rounded-xl border border-line p-3">
+              <button type="button" onClick={() => delShort(i)} className="absolute -right-1.5 -top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[11px] text-white">×</button>
+              <Inp value={it.url} onChange={(v) => setShort(i, { url: v })} placeholder="유튜브 숏츠 URL (https://youtube.com/shorts/...) 또는 mp4 URL" />
+              <Inp value={it.title} onChange={(v) => setShort(i, { title: v })} placeholder="제목 (예: 거실 조명 비포애프터)" />
+              <ImageField label="세로 썸네일 (9:16)" hint="유튜브는 비워도 자동 썸네일 / 직접 업로드 가능" url={it.thumb} onPick={(f) => pick(f, (url) => setShort(i, { thumb: url }))} />
+            </div>
+          ))}
+          <button type="button" onClick={addShort} className="rounded-lg border border-dashed border-line px-4 py-2 text-[13px] font-semibold text-navy">+ 숏츠 추가</button>
+        </div>
+      </Section>
+
+      {/* 시공 절차 (단계별 사진) */}
+      <Section title="시공 절차 (단계별 사진)" onSave={() => save("process")} saving={saving === "process"}>
+        <Field label="제목"><Inp value={s.process.title} onChange={(v) => patch("process", { title: v })} /></Field>
+        <Field label="설명"><Inp value={s.process.desc} onChange={(v) => patch("process", { desc: v })} /></Field>
+        <p className="text-[12px] font-bold text-gold-d">단계별 (사진 올리면 카드에 사진이 표시됩니다)</p>
+        <div className="space-y-3">
+          {s.process.steps.map((st, i) => (
+            <div key={i} className="space-y-2 rounded-xl border border-line p-3">
+              <span className="text-[12px] font-bold text-navy">STEP {String(i + 1).padStart(2, "0")}</span>
+              <ImageField label="단계 사진" hint="1200 × 900px (4:3)" url={st.image} onPick={(f) => pick(f, (url) => setStep(i, { image: url }))} />
+              <Inp value={st.title} onChange={(v) => setStep(i, { title: v })} placeholder="단계 제목" />
+              <Inp value={st.desc} onChange={(v) => setStep(i, { desc: v })} placeholder="단계 설명" />
+            </div>
+          ))}
+        </div>
       </Section>
 
       {/* 쇼룸 */}
@@ -206,6 +303,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
 
 const LABEL: Record<string, string> = {
   site: "기본 정보", notice: "공지바", hero: "메인 배너", company: "회사소개",
+  simulator: "조명 시뮬레이터", process: "시공 절차", shorts: "숏츠",
   showroom: "쇼룸", categories: "카테고리 이미지", seo: "SEO",
   license: "면허 등록증", branches: "전국 지사", partners: "협력사",
 };

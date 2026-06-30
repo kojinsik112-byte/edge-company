@@ -45,8 +45,9 @@ export interface ProductRow {
   created_at: string;
   name: string;
   category: string;
-  image: string | null;
-  body: string;
+  image: string | null; // 대표 이미지
+  images: string[]; // 상세 사진 (여러 장)
+  body: string; // 상세 설명
   sort: number;
   published: boolean;
 }

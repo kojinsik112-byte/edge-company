@@ -3,14 +3,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
-import { getCases, getReviews, getFaqs, getProducts, getYoutube } from "@/lib/data";
-import YoutubeSection from "@/components/YoutubeSection";
+import { getCases, getReviews, getFaqs, getProducts } from "@/lib/data";
+import ShortsSection from "@/components/ShortsSection";
 import ProductsSection from "@/components/ProductsSection";
 import ProcessSection from "@/components/ProcessSection";
 import Stars from "@/components/Stars";
 import Popup from "@/components/Popup";
 import SnsSection from "@/components/SnsSection";
 import ShowroomGallery from "@/components/ShowroomGallery";
+import LightSimulator from "@/components/LightSimulator";
 import CategoryCases from "@/components/CategoryCases";
 import WhySection from "@/components/WhySection";
 import LicenseSection from "@/components/LicenseSection";
@@ -32,32 +33,50 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [settings, fanCases, indirectCases, sensorCases, reviews, faqs, products, videos] = await Promise.all([
+  const [settings, fanCases, indirectCases, etcCases, reviews, faqs, products] = await Promise.all([
     getSettings(),
-    getCases({ category: "실링팬", limit: 6 }),
-    getCases({ category: "간접조명", limit: 6 }),
-    getCases({ category: "센서조명", limit: 6 }),
+    getCases({ category: "실링팬", limit: 9 }),
+    getCases({ category: "간접조명", limit: 9 }),
+    getCases({ category: "기타", limit: 9 }),
     getReviews(12),
     getFaqs(),
     getProducts(),
-    getYoutube(),
   ]);
-  const { site, hero, showroom, company, license, branches, partners } = settings;
+  const { site, hero, showroom, company, process, simulator, shorts, license, branches, partners } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
-  const reviewList = reviews.length >= 4 ? reviews : [...reviews, ...DEMO_REVIEWS].slice(0, 8);
+  const reviewList = (reviews.length >= 9 ? reviews : [...reviews, ...DEMO_REVIEWS]).slice(0, 9);
   const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/area/${REGION_SLUG["울산"]}-${CATEGORY_SLUG[cat]}`;
 
   return (
     <>
       <Popup />
 
-      {/* ===== HERO (이미지 배너 — PC/모바일 분리, 관리자에서 교체) ===== */}
-      <section className="relative h-[calc(100svh-72px)] min-h-[560px] overflow-hidden bg-warm">
-        {/* PC(가로) */}
-        <Image src={hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="hidden object-cover md:block" />
-        {/* 모바일(세로) — 없으면 PC 이미지 */}
-        <Image src={hero.imageMobile || hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="object-cover md:hidden" />
-        <h1 className="sr-only">{hero.title} · {hero.subline}</h1>
+      {/* ===== HERO (광고영상 자동재생 루프 또는 이미지 — 관리자에서 교체) ===== */}
+      <section className="relative h-[calc(100svh-72px)] min-h-[560px] overflow-hidden bg-ink">
+        {hero.video ? (
+          <video src={hero.video} autoPlay muted loop playsInline poster={hero.image || undefined} className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <>
+            <Image src={hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="hidden object-cover md:block" />
+            <Image src={hero.imageMobile || hero.image} alt={`${hero.subline} — 엣지컴퍼니`} fill priority sizes="100vw" className="object-cover md:hidden" />
+          </>
+        )}
+        {/* 라이브 텍스트 오버레이 (관리자 입력 — 이미지에 글자 안 박아 안 잘림·선명) */}
+        {(hero.overlayTitle || hero.overlaySub) && (
+          <div className="absolute inset-0 flex flex-col justify-center bg-gradient-to-r from-black/80 via-black/45 to-transparent px-8 md:px-20">
+            {hero.eyebrow && <p className="mb-5 text-[13px] font-medium tracking-[0.06em] text-white/85 md:text-[15px]">{hero.eyebrow}</p>}
+            {hero.overlayTitle && (
+              <h1 className="max-w-[640px] whitespace-pre-line text-[38px] font-semibold leading-[1.22] tracking-[-0.01em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)] md:text-[62px]">{hero.overlayTitle}</h1>
+            )}
+            <span className="mt-6 block h-px w-[180px] bg-white/45" />
+            {hero.overlaySub && <p className="mt-6 max-w-[460px] whitespace-pre-line text-[15px] font-light leading-relaxed text-white/85 md:text-[17px]">{hero.overlaySub}</p>}
+            <p className="mt-5 font-lux text-[15px] font-semibold tracking-[0.34em] text-white/75 md:text-[17px]">EDGE COMPANY</p>
+            <div className="mt-8">
+              <Link href="/cases" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-7 py-3.5 text-[15px] font-semibold text-white backdrop-blur-sm transition hover:bg-white hover:text-ink">시공사례 보기 <span aria-hidden>→</span></Link>
+            </div>
+          </div>
+        )}
+        {!hero.overlayTitle && <h1 className="sr-only">{hero.title} · {hero.subline}</h1>}
       </section>
 
       {/* ===== SNS 채널 (메인 바로 아래 — 유튜브·블로그·인스타) ===== */}
@@ -66,8 +85,11 @@ export default async function Home() {
       {/* ===== 쇼룸 갤러리 ===== */}
       <ShowroomGallery showroom={showroom} />
 
+      {/* ===== 색온도·디밍 체험 시뮬레이터 ===== */}
+      {simulator.enabled && <LightSimulator image={simulator.image} title={simulator.title} subtitle={simulator.subtitle} />}
+
       {/* ===== 회사소개 (왜 엣지컴퍼니일까요?) ===== */}
-      <WhySection image={company.image} />
+      <WhySection company={company} />
 
       {/* ===== 엣지컴퍼니 전기 면허 등록증 (1열 2개) ===== */}
       <LicenseSection license={license} />
@@ -81,16 +103,16 @@ export default async function Home() {
       {/* ===== 제품 소개 (한 줄 4개·무제한) ===== */}
       <ProductsSection products={products} />
 
-      {/* ===== 시공 영상 (인페이지 재생) ===== */}
-      <YoutubeSection videos={videos} />
+      {/* ===== 숏츠 (세로 영상 — 패러디·비포애프터) ===== */}
+      <ShortsSection shorts={shorts} />
 
       {/* ===== 카테고리별 시공사례 (사진 중심·전면 배치) ===== */}
       <CategoryCases title="실링팬 시공사례" desc="실제 고객 시공 현장" cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" />
       <CategoryCases title="간접조명 시공사례" desc="빛의 분위기가 달라지는 공간" cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
-      <CategoryCases title="센서조명 시공사례" desc="사람을 따라 켜지는 똑똑한 빛" cases={sensorCases} moreHref={moreHref("센서조명")} bg="bg-bg" />
+      <CategoryCases title="기타 시공사례" desc="센서조명 · 스위치 · 전동커튼 등 다양한 시공" cases={etcCases} moreHref={moreHref("기타")} bg="bg-bg" />
 
       {/* ===== 시공 절차 ===== */}
-      <ProcessSection />
+      <ProcessSection process={process} />
 
       {/* ===== 고객후기 ===== */}
       <section className="bg-[#f8f5f0] py-16 md:py-24">
