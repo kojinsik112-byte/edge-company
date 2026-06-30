@@ -14,6 +14,7 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
   const [saving, setSaving] = useState<string>("");
   const [msg, setMsg] = useState("");
   const [shortUp, setShortUp] = useState<{ i: number; s: string; err?: boolean } | null>(null);
+  const [shortFiles, setShortFiles] = useState<Record<number, string>>({}); // 업로드한 영상의 blob URL (썸네일 캡처용)
 
   function patch<K extends keyof Settings>(key: K, val: Partial<Settings[K]>) {
     setS((prev) => ({ ...prev, [key]: { ...prev[key], ...val } }));
@@ -81,8 +82,33 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
     }
   }
 
+  async function captureFrame(i: number) {
+    const v = document.getElementById(`shortvid-${i}`) as HTMLVideoElement | null;
+    if (!v || !v.videoWidth) {
+      setShortUp({ i, s: "영상을 잠깐 재생/이동한 뒤 다시 눌러주세요", err: true });
+      return;
+    }
+    const c = document.createElement("canvas");
+    c.width = v.videoWidth;
+    c.height = v.videoHeight;
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(v, 0, 0);
+    setShortUp({ i, s: "썸네일 만드는 중…" });
+    try {
+      const b = await new Promise<Blob | null>((r) => c.toBlob(r, "image/webp", 0.85));
+      if (!b) throw new Error("캡처 실패");
+      const url = await uploadImage(supabase, new File([b], "thumb.webp", { type: "image/webp" }));
+      setShort(i, { thumb: url });
+      setShortUp({ i, s: "✓ 썸네일 생성 완료 — [저장] 누르세요" });
+    } catch (e) {
+      setShortUp({ i, s: `썸네일 오류: ${e instanceof Error ? e.message : ""}`, err: true });
+    }
+  }
+
   async function pickShortVideo(i: number, file: File | undefined) {
     if (!file) return;
+    setShortFiles((p) => ({ ...p, [i]: URL.createObjectURL(file) }));
     const mb = Math.round(file.size / 1048576);
     setShortUp({ i, s: `업로드 중… (${mb}MB)` });
     try {
@@ -242,6 +268,13 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
                 {it.url && !/youtu/i.test(it.url) && !(shortUp?.i === i) && <span className="text-[11.5px] font-semibold text-navy">✓ 영상 등록됨</span>}
                 {shortUp?.i === i && <span className={`w-full text-[12px] font-bold ${shortUp.err ? "text-red-600" : "text-navy"}`}>{shortUp.s}</span>}
               </div>
+              {shortFiles[i] && (
+                <div className="space-y-1.5 rounded-lg border border-gold/40 bg-gold/5 p-2.5">
+                  <p className="text-[11.5px] font-bold text-gold-d">🎬 영상에서 썸네일 고르기 — 원하는 장면에서 멈추고(▶/일시정지) 아래 버튼</p>
+                  <video id={`shortvid-${i}`} src={shortFiles[i]} controls playsInline className="h-44 w-auto rounded-md bg-black" />
+                  <button type="button" onClick={() => captureFrame(i)} className="block rounded-md bg-navy px-3 py-1.5 text-[12.5px] font-semibold text-white">📸 현재 화면을 썸네일로 만들기</button>
+                </div>
+              )}
               <Inp value={it.title} onChange={(v) => setShort(i, { title: v })} placeholder="제목 (예: 거실 조명 비포애프터)" />
               <ImageField label="세로 썸네일 (9:16) — 직접 올린 영상은 썸네일 꼭 올려주세요" hint="유튜브는 비워도 자동 썸네일" url={it.thumb} onPick={(f) => pick(f, (url) => setShort(i, { thumb: url }))} />
             </div>
