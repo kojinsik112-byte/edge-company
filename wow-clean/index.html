@@ -285,6 +285,44 @@
   .vf-dur{position:absolute;z-index:3;bottom:12px;right:12px;background:rgba(6,26,36,.72);color:#fff;font-size:11.5px;font-weight:700;padding:6px 10px;border-radius:8px;backdrop-filter:blur(4px);transition:opacity .4s}
   .vf-cap{text-align:center;font-size:12px;color:var(--muted);margin-top:14px;line-height:1.6}
 
+  /* ===== About ===== */
+  .about-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .about-card::before{content:"";position:absolute;top:-46px;right:-46px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--aqua-soft),transparent 70%)}
+  .about-card .mk{position:relative;font-family:var(--serif);font-size:44px;line-height:0;color:var(--aqua);opacity:.5;height:20px}
+  .about-card .q{font-family:var(--serif);font-size:20px;line-height:1.55;color:var(--ink);font-weight:500;position:relative;margin-top:6px}
+  .about-card .q b{color:var(--aqua-d);font-weight:700}
+  .about-card .sign{margin-top:20px;font-size:13px;color:var(--ink-2);position:relative}
+  .about-card .sign b{color:var(--ink);font-size:15px;font-family:var(--serif)}
+  .about-promise{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}
+  .about-promise div{text-align:center;background:var(--bg-warm);border:1px solid var(--line);border-radius:13px;padding:15px 8px}
+  .about-promise .icon{width:23px;height:23px;color:var(--aqua-d);margin:0 auto 8px;display:block}
+  .about-promise b{display:block;font-size:12.5px;color:var(--ink);font-weight:700}
+
+  /* ===== Before / After ===== */
+  .ba-grid{display:grid;gap:13px}
+  .ba{background:var(--card);border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:var(--shadow-sm)}
+  .ba .imgs{display:grid;grid-template-columns:1fr 1fr;gap:2px;position:relative}
+  .ba .half{aspect-ratio:4/3;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:10px}
+  .ba .before{background:radial-gradient(circle at 30% 40%,#6b5640,#3a2c20)}
+  .ba .after{background:radial-gradient(circle at 60% 45%,#0f3a4b,#061a24)}
+  .ba .half .lbl{font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,.42);padding:4px 10px;border-radius:100px;backdrop-filter:blur(3px);z-index:3}
+  .ba .after .lbl{background:rgba(25,194,214,.4)}
+  .ba .g{position:absolute;border-radius:50%;filter:blur(1px)}
+  .ba .before .g{background:rgba(30,20,12,.65)}
+  .ba .after .g{background:radial-gradient(circle,rgba(255,255,255,.8),transparent 70%)}
+  .ba .arrow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;width:36px;height:36px;border-radius:50%;background:#fff;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center}
+  .ba .arrow .icon{width:19px;height:19px;color:var(--aqua-d)}
+  .ba .txt{padding:14px 16px}
+  .ba .txt h4{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .ba .txt p{font-size:12.5px;color:var(--ink-2);margin-top:3px;line-height:1.6}
+
+  /* ===== B2B dark list ===== */
+  .b2b-list{display:grid;gap:11px;margin-top:8px}
+  .b2b-list li{list-style:none;display:flex;gap:11px;align-items:flex-start;font-size:13.5px;color:#d7e6ea;line-height:1.6}
+  .b2b-list .icon{flex:0 0 auto;width:20px;height:20px;color:#5fdcea;margin-top:2px}
+  .b2b-targets{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 4px}
+  .b2b-targets span{font-size:12px;font-weight:600;color:#bcd3da;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:7px 13px}
+
   @media(min-width:601px){
     .hero h1{font-size:40px}
     .pain-grid{grid-template-columns:repeat(2,1fr)}
@@ -312,8 +350,11 @@
   <a class="m-item" href="#symptoms">이런 증상 <span class="en">SYMPTOMS</span></a>
   <a class="m-item" href="#video">시공 영상 <span class="en">VIDEO</span></a>
   <a class="m-item" href="#services">시공 서비스 <span class="en">SERVICES</span></a>
-  <a class="m-item" href="#process">시공 과정 <span class="en">PROCESS</span></a>
-  <a class="m-item" href="#why">와우클린인 이유 <span class="en">WHY US</span></a>
+  <a class="m-item" href="#about">회사 소개 <span class="en">ABOUT</span></a>
+  <a class="m-item" href="#equipment">전문 장비 <span class="en">EQUIPMENT</span></a>
+  <a class="m-item" href="#cases">시공 사례 <span class="en">BEFORE·AFTER</span></a>
+  <a class="m-item" href="#warranty">A/S 보증 <span class="en">WARRANTY</span></a>
+  <a class="m-item" href="#b2b">정기 관리 <span class="en">FOR BUSINESS</span></a>
   <a class="m-item" href="#area">시공 지역 <span class="en">AREA</span></a>
   <a class="m-item" href="#reviews">고객 후기 <span class="en">REVIEWS</span></a>
   <a class="m-item" href="#faq">자주 묻는 질문 <span class="en">FAQ</span></a>
@@ -551,6 +592,108 @@
   </div>
 </section>
 
+<!-- ===== About ===== -->
+<section class="sec pain" id="about">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">ABOUT US</span>
+      <h2>와우클린은 <span class="a">이렇게 일합니다</span></h2>
+      <p>급할 때 부르는 곳일수록, 정직해야 한다고 믿습니다.</p>
+    </div>
+    <div class="about-card reveal">
+      <div class="mk">&ldquo;</div>
+      <p class="q">막혔을 때 제일 무서운 건 <b>부르고 나서 얼마 나올지 모른다는 것</b>입니다. 그래서 와우클린은 <b>보기 전에 함부로 뜯지 않고</b>, 원인을 확인한 뒤 <b>시공 전에 비용을 확정</b>해서 알려드립니다. 작업이 끝나면 사진으로 남기고, 문제가 생기면 다시 봐드립니다. 오래 볼 고객을 만드는 방법은 그것뿐이라 생각합니다.</p>
+      <div class="sign">와우클린 시공팀 드림<br/><b>정직한 견적 · 확실한 시공 · 끝까지 책임</b></div>
+      <div class="about-promise">
+        <div><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><b>시공 전<br/>견적 확정</b></div>
+        <div><svg class="icon" viewBox="0 0 24 24"><path d="M4 16l4.5-6 3.5 4 3-4 5 6M3 20h18"/></svg><b>작업 전후<br/>사진 기록</b></div>
+        <div><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg><b>작업 후<br/>A/S 보증</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Equipment ===== -->
+<section class="sec" id="equipment">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">EQUIPMENT</span>
+      <h2>장비가 <span class="a">실력</span>입니다</h2>
+      <p>맨손으로 뚫지 않습니다. 상황에 맞는 전문 장비로 원인을 잡습니다.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 12h10M14 8c3 0 3 8 0 8M4 9v6"/></svg></div>
+        <h3>전동 관통기</h3>
+        <p>스프링으로 깊은 관 막힘을 뚫는 기본 주력 장비.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M3 12h12M15 8l5 4-5 4M5 6v0M5 18v0"/></svg></div>
+        <h3>고압 세척기</h3>
+        <p>강한 물살로 기름때·스케일을 벗겨내는 청소 장비.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 1 20 0M12 12l4-2M8 16a4 4 0 0 1 8 0"/></svg></div>
+        <h3>CCTV 관로 카메라</h3>
+        <p>관 속을 눈으로 확인해 막힘·파손 위치를 특정.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/><path d="M9 20h6"/></svg></div>
+        <h3>누수 탐지기</h3>
+        <p>소리·습도로 새는 지점을 찾아 뜯는 범위 최소화.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2v6M8 6l4-4 4 4M5 22V12a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10"/></svg></div>
+        <h3>에어건 · 펌프</h3>
+        <p>압축 공기로 순간 압력을 주어 막힘을 밀어냄.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 9h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM8 9V6a4 4 0 0 1 8 0v3"/></svg></div>
+        <h3>정화조 흡입 장비</h3>
+        <p>오수·정화조를 위생적으로 처리하는 전용 장비.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Before / After ===== -->
+<section class="sec pain" id="cases">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">BEFORE · AFTER</span>
+      <h2>시공 <span class="a">전후</span>, 눈으로 보세요</h2>
+      <p>말보다 확실한 건 결과입니다. 실제 시공 사례입니다.</p>
+    </div>
+    <div class="ba-grid">
+      <article class="ba reveal">
+        <div class="imgs">
+          <div class="half before"><span class="g" style="width:34px;height:34px;top:22%;left:24%"></span><span class="g" style="width:22px;height:22px;top:48%;left:56%"></span><span class="g" style="width:16px;height:16px;top:64%;left:34%"></span><span class="lbl">BEFORE</span></div>
+          <div class="half after"><span class="g" style="width:10px;height:10px;top:30%;left:30%"></span><span class="g" style="width:7px;height:7px;top:55%;left:62%"></span><span class="lbl">AFTER</span></div>
+          <div class="arrow"><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        </div>
+        <div class="txt"><h4>주방 배관 기름때 고압세척</h4><p>내벽에 눌어붙은 기름때 제거 후 배수 정상화.</p></div>
+      </article>
+      <article class="ba reveal">
+        <div class="imgs">
+          <div class="half before"><span class="g" style="width:30px;height:30px;top:30%;left:52%"></span><span class="g" style="width:20px;height:20px;top:58%;left:26%"></span><span class="lbl">BEFORE</span></div>
+          <div class="half after"><span class="g" style="width:9px;height:9px;top:38%;left:44%"></span><span class="lbl">AFTER</span></div>
+          <div class="arrow"><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        </div>
+        <div class="txt"><h4>화장실 하수구 이물질 제거</h4><p>머리카락·이물질 엉킴을 관통기로 완전 제거.</p></div>
+      </article>
+      <article class="ba reveal">
+        <div class="imgs">
+          <div class="half before"><span class="g" style="width:26px;height:26px;top:26%;left:30%"></span><span class="g" style="width:18px;height:18px;top:52%;left:60%"></span><span class="g" style="width:14px;height:14px;top:70%;left:44%"></span><span class="lbl">BEFORE</span></div>
+          <div class="half after"><span class="g" style="width:11px;height:11px;top:34%;left:52%"></span><span class="g" style="width:6px;height:6px;top:60%;left:30%"></span><span class="lbl">AFTER</span></div>
+          <div class="arrow"><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        </div>
+        <div class="txt"><h4>누수 지점 탐지 후 부분 방수</h4><p>천장 물자국 원인 특정, 필요한 부위만 방수 보수.</p></div>
+      </article>
+    </div>
+    <p class="vf-cap">※ 위 사례 이미지는 표현용입니다. 실제 시공 사진으로 교체하면 신뢰도가 크게 올라갑니다.</p>
+  </div>
+</section>
+
 <!-- ===== Stats band ===== -->
 <section class="band">
   <div class="wrap">
@@ -584,6 +727,56 @@
       <a class="btn btn-navy btn-block" href="#contact" style="margin-top:6px"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>내 상황 견적 문의하기</a>
       <div class="price-foot">※ 정확한 비용은 현장 상태(막힘 위치·배관 상태·작업 난이도)에 따라 달라집니다. 전화·상담 시 최대한 정확한 예상 범위를 먼저 안내해 드립니다.</div>
     </div>
+  </div>
+</section>
+
+<!-- ===== Warranty / A/S ===== -->
+<section class="sec" id="warranty">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">WARRANTY</span>
+      <h2>끝나고가 <span class="a">진짜 시작</span>입니다</h2>
+      <p>시공보다 그 다음이 중요합니다. 와우클린의 약속입니다.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div><h4>작업 후 A/S 보증</h4><p>시공한 부위에 같은 문제가 재발하면 보증 기준에 따라 다시 확인해 드립니다. 보증 범위·기간은 시공 전에 명확히 안내합니다.</p></div>
+      </div>
+      <div class="why reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 16l4.5-6 3.5 4 3-4 5 6M3 20h18"/></svg></div>
+        <div><h4>사진·영상 리포트 제공</h4><p>작업 전·후를 기록으로 남겨 드립니다. 무엇을 어떻게 처리했는지 눈으로 확인하고 보관하실 수 있습니다.</p></div>
+      </div>
+      <div class="why reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div><h4>추가 비용 사전 동의 원칙</h4><p>시공 중 예상 못 한 상황이 생기면 반드시 먼저 알려드리고, 동의 없이는 추가 작업·추가 비용을 진행하지 않습니다.</p></div>
+      </div>
+      <div class="why reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2M4 7h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></div>
+        <div><h4>영수증 · 정식 발행</h4><p>현금영수증·세금계산서 등 정식 증빙을 발행합니다. 사업자 정식 등록 업체로 안심하고 맡기실 수 있습니다.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== B2B ===== -->
+<section class="sec proc" id="b2b">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">FOR BUSINESS</span>
+      <h2>상가 · 건물 · 식당<br/>정기 관리 계약</h2>
+      <p>막히고 나서가 아니라, 막히기 전에 관리합니다.</p>
+    </div>
+    <div class="b2b-targets reveal">
+      <span>식당 · 카페</span><span>프랜차이즈</span><span>상가 건물</span><span>사무실</span><span>병원 · 요양원</span><span>숙박 · 펜션</span>
+    </div>
+    <ul class="b2b-list reveal">
+      <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>정기 방문으로 배관을 미리 청소해 갑작스러운 막힘·영업 중단을 예방합니다.</li>
+      <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>계약처는 긴급 상황 시 <b style="color:#fff">우선 출동</b>으로 대응합니다.</li>
+      <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>방문 주기·비용을 규모에 맞춰 설계하고, 매 방문 리포트를 남깁니다.</li>
+      <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>세금계산서 정식 발행, 다점포·건물 단위 통합 관리 가능.</li>
+    </ul>
+    <a class="btn btn-aqua btn-block reveal" href="#contact" style="margin-top:22px"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>정기 관리 계약 문의</a>
   </div>
 </section>
 
@@ -632,6 +825,8 @@
       <div class="rv"><div class="stars">★★★★★</div><p>식당 주방 배관이 자주 막혔는데 고압세척 후 확실히 잘 내려갑니다. 사진으로 전후를 보여주셔서 좋았어요.</p><div class="who"><div class="av">이</div><div><b>이○○ 사장님</b><small>배관청소 · 상가</small></div></div></div>
       <div class="rv"><div class="stars">★★★★★</div><p>천장 물자국 원인을 못 찾고 있었는데 탐지로 정확히 잡아주셨어요. 필요한 부분만 방수해서 비용도 합리적.</p><div class="who"><div class="av">박</div><div><b>박○○ 고객님</b><small>누수탐지 · 주택</small></div></div></div>
       <div class="rv"><div class="stars">★★★★★</div><p>견적이 시공 후에 안 바뀌어서 신뢰가 갔습니다. 작업도 깔끔하고 뒷정리까지 해주셨어요.</p><div class="who"><div class="av">최</div><div><b>최○○ 고객님</b><small>하수구 막힘 · 빌라</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>카페 정기관리 계약했는데 미리미리 봐주시니 막힐 걱정이 없어요. 영업 중에 안 막히는 게 제일 큽니다.</p><div class="who"><div class="av">정</div><div><b>정○○ 사장님</b><small>정기 관리 · 카페</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>관로 카메라로 안을 보여주면서 설명해주셔서 이해가 확 됐어요. 필요한 것만 하자고 하셔서 믿음이 갔습니다.</p><div class="who"><div class="av">한</div><div><b>한○○ 고객님</b><small>CCTV 관로조사 · 주택</small></div></div></div>
     </div>
   </div>
 </section>
@@ -649,6 +844,9 @@
       <details class="qa reveal"><summary>출장 지역이 어디까지인가요?<span class="pl"></span></summary><div class="ans">전국 출동 네트워크를 운영합니다. 지역에 따라 방문 시간이 다를 수 있어, 접수 시 예상 방문 시간을 함께 안내해 드립니다.</div></details>
       <details class="qa reveal"><summary>작업 후 다시 막히면 어떻게 하나요?<span class="pl"></span></summary><div class="ans">시공한 부위에 문제가 재발할 경우 A/S 보증 기준에 따라 다시 확인해 드립니다. 자세한 보증 범위는 시공 전에 안내해 드립니다.</div></details>
       <details class="qa reveal"><summary>가정집도 되고 상가·건물도 되나요?<span class="pl"></span></summary><div class="ans">네. 아파트·빌라·주택 등 가정은 물론 식당·상가·건물 배관까지 대응합니다. 건물·상가는 정기 관리 계약도 가능합니다.</div></details>
+      <details class="qa reveal"><summary>누수는 어디서 새는지 어떻게 찾나요?<span class="pl"></span></summary><div class="ans">소리·습도 탐지 장비와 관로 카메라로 새는 지점을 먼저 특정합니다. 무턱대고 뜯지 않고 원인을 확인한 뒤, 꼭 필요한 범위만 방수·보수해 비용과 손상을 줄입니다.</div></details>
+      <details class="qa reveal"><summary>결제는 어떻게 하나요? 증빙 발행되나요?<span class="pl"></span></summary><div class="ans">현금·카드·계좌이체 모두 가능합니다. 현금영수증, 세금계산서 등 정식 증빙도 발행해 드립니다. 사업자 정식 등록 업체입니다.</div></details>
+      <details class="qa reveal"><summary>야간·주말·공휴일에도 오나요?<span class="pl"></span></summary><div class="ans">접수는 연중무휴 24시간 가능합니다. 야간·주말 긴급 상황은 전화로 접수하시면 가장 빠르게 안내해 드립니다. 지역·시간대에 따라 방문 시간은 달라질 수 있습니다.</div></details>
     </div>
   </div>
 </section>
