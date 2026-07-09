@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>와우클린 | 하수구막힘·배관청소·누수탐지 전문 · 전국 24시간 출동</title>
+<meta name="description" content="와우클린은 하수구 막힘 뚫음, 고압 배관청소, 누수탐지·방수를 전문으로 하는 전국 24시간 출동 시공 기업입니다. 시공 전 투명 견적, 작업 후 A/S 보증." />
+<meta name="keywords" content="하수구막힘, 배관청소, 하수구뚫음, 누수탐지, 누수공사, 고압세척, 변기막힘, 싱크대막힘, 관로조사, 정화조, 전국 하수구, 24시간 하수구, 와우클린" />
+<meta name="robots" content="index, follow" />
+<meta name="author" content="와우클린" />
+<meta name="theme-color" content="#08222e" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="와우클린 | 하수구막힘·배관청소·누수 전문 · 전국 24시간 출동" />
+<meta property="og:description" content="막힘부터 누수까지, 전국 어디든 24시간. 시공 전 투명 견적과 작업 후 보증으로 믿고 맡기는 배관 전문 시공." />
+<meta property="og:locale" content="ko_KR" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2308222e'/%3E%3Cpath d='M16 6c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z' fill='%2333d6e6'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root{
+    --bg:#f4f8f9; --bg-warm:#eaf1f3; --card:#ffffff;
+    --ink:#0d2129; --ink-2:#4c626b; --muted:#8698a0;
+    --deep:#08222e; --deep-2:#0c2f3f; --deep-3:#061a24;
+    --aqua:#19c2d6; --aqua-d:#0e9fb2; --aqua-soft:#d3f1f5;
+    --gold:#c8a86a; --gold-d:#ac8c4c;
+    --line:#e2ebee; --line-2:#d0dee2;
+    --serif:'Noto Serif KR',serif;
+    --shadow:0 30px 64px -34px rgba(8,34,46,.42);
+    --shadow-sm:0 14px 34px -20px rgba(8,34,46,.28);
+    --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:'Pretendard',-apple-system,sans-serif;color:var(--ink);background:var(--bg);line-height:1.72;-webkit-font-smoothing:antialiased;letter-spacing:-.01em;overflow-x:hidden}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:100%;max-width:600px;margin:0 auto;padding:0 22px}
+  section{scroll-margin-top:64px}
+  .serif{font-family:var(--serif)}
+  .icon{width:1em;height:1em;display:inline-block;vertical-align:-.14em;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .kicker{font-size:11px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--aqua-d)}
+
+  /* ===== Header ===== */
+  header{position:sticky;top:0;z-index:80;background:rgba(244,248,249,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{display:flex;align-items:center;gap:9px}
+  .brand .logo{width:36px;height:36px;border-radius:9px;background:linear-gradient(150deg,var(--deep),var(--deep-2));display:flex;align-items:center;justify-content:center}
+  .brand .logo .icon{width:20px;height:20px;stroke:var(--aqua);fill:none}
+  .brand .bt{font-family:var(--serif);font-weight:700;font-size:19px;letter-spacing:.01em;line-height:1.05;color:var(--ink)}
+  .brand .bt small{display:block;font-family:'Pretendard';font-size:9px;font-weight:600;color:var(--muted);letter-spacing:.2em;margin-top:3px}
+  .nav-right{display:flex;align-items:center;gap:8px}
+  .nav-call{display:inline-flex;align-items:center;gap:6px;background:var(--deep);color:#fff;font-weight:700;font-size:13px;padding:9px 13px;border-radius:8px}
+  .nav-call .icon{color:var(--aqua);width:1.05em;height:1.05em}
+  .hamb{width:42px;height:40px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+  .hamb span{width:18px;height:1.7px;background:var(--ink);transition:.25s}
+  body.nav-open .hamb span:nth-child(1){transform:translateY(5.7px) rotate(45deg)}
+  body.nav-open .hamb span:nth-child(2){opacity:0}
+  body.nav-open .hamb span:nth-child(3){transform:translateY(-5.7px) rotate(-45deg)}
+
+  /* Mobile drawer */
+  .mobile-menu{position:fixed;inset:60px 0 0;z-index:75;background:var(--bg);transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);padding:16px 22px 40px;display:flex;flex-direction:column;overflow-y:auto}
+  body.nav-open .mobile-menu{transform:translateX(0)}
+  .mobile-menu a.m-item{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--ink);padding:17px 4px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .mobile-menu a.m-item .en{font-family:'Pretendard';font-size:11px;color:var(--muted);letter-spacing:.12em;font-weight:600}
+  .mobile-menu .m-cta{margin-top:24px;display:grid;gap:10px}
+  .mobile-menu .m-cta a{text-align:center;padding:15px;border-radius:10px;font-weight:700;font-size:15px}
+  .m-book{background:var(--aqua);color:var(--deep-3)}
+  .m-call{background:var(--deep);color:#fff}
+  .mobile-menu .m-info{margin-top:auto;padding-top:24px;font-size:12.5px;color:var(--muted);line-height:1.9}
+
+  /* ===== Buttons ===== */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:15.5px;padding:16px 24px;border-radius:11px;transition:.18s;letter-spacing:-.01em;cursor:pointer;border:none}
+  .btn .icon{width:1.1em;height:1.1em}
+  .btn-aqua{background:linear-gradient(140deg,var(--aqua),var(--aqua-d));color:#04222b;box-shadow:0 16px 34px -16px rgba(25,194,214,.7)}
+  .btn-aqua:active{transform:translateY(1px)}
+  .btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.26)}
+  .btn-navy{background:var(--deep);color:#fff}
+  .btn-block{width:100%}
+
+  /* ===== Hero ===== */
+  .hero{position:relative;background:linear-gradient(165deg,#0a2733 0%,#08222e 45%,#061a24 100%);color:#fff;overflow:hidden;padding:40px 0 44px}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(120% 60% at 85% 0%,rgba(25,194,214,.22),transparent 60%),
+    radial-gradient(90% 50% at 0% 100%,rgba(25,194,214,.1),transparent 55%);pointer-events:none}
+  .hero .wave{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:54px;display:block}
+  .hero-in{position:relative;z-index:2}
+  .hero .tag{display:inline-flex;align-items:center;gap:7px;background:rgba(25,194,214,.13);border:1px solid rgba(25,194,214,.34);color:#8fe6f0;font-size:12px;font-weight:700;letter-spacing:.02em;padding:7px 13px;border-radius:100px;margin-bottom:20px}
+  .hero .tag .dot{width:7px;height:7px;border-radius:50%;background:#33d6e6;box-shadow:0 0 0 0 rgba(51,214,230,.7);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(51,214,230,.6)}70%{box-shadow:0 0 0 9px rgba(51,214,230,0)}100%{box-shadow:0 0 0 0 rgba(51,214,230,0)}}
+  .hero h1{font-family:var(--serif);font-weight:700;font-size:35px;line-height:1.28;letter-spacing:-.02em;margin-bottom:16px}
+  .hero h1 .hl{color:#43dced;position:relative;white-space:nowrap}
+  .hero p.lead{font-size:15.5px;color:#c2d6dd;line-height:1.8;margin-bottom:26px;max-width:34ch}
+  .hero .cta{display:grid;gap:11px;margin-bottom:28px}
+  .hero-badges{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .hb{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:14px 10px;text-align:center}
+  .hb .n{font-family:var(--serif);font-weight:700;font-size:21px;color:#fff;line-height:1}
+  .hb .n b{color:var(--aqua);font-weight:700}
+  .hb .l{font-size:11px;color:#9fb6bd;margin-top:6px;letter-spacing:.01em}
+
+  /* trust strip */
+  .trust{background:var(--deep-3);color:#cfe6ea;padding:13px 0}
+  .trust .row{display:flex;gap:20px;overflow-x:auto;scrollbar-width:none;font-size:12.5px;font-weight:600}
+  .trust .row::-webkit-scrollbar{display:none}
+  .trust .row span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex:0 0 auto}
+  .trust .icon{color:var(--aqua);width:1.05em;height:1.05em}
+
+  /* ===== Section base ===== */
+  .sec{padding:52px 0}
+  .sec-head{margin-bottom:28px}
+  .sec-head .kicker{margin-bottom:11px;display:block}
+  .sec-head h2{font-family:var(--serif);font-weight:700;font-size:26px;line-height:1.34;letter-spacing:-.02em;color:var(--ink)}
+  .sec-head h2 .a{color:var(--aqua-d)}
+  .sec-head p{font-size:14.5px;color:var(--ink-2);margin-top:12px;line-height:1.8}
+
+  /* ===== Pain (증상) chips ===== */
+  .pain{background:linear-gradient(180deg,var(--bg-warm),var(--bg))}
+  .pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .pain-card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px 15px;box-shadow:var(--shadow-sm)}
+  .pain-card .ic{width:42px;height:42px;border-radius:11px;background:var(--aqua-soft);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+  .pain-card .ic .icon{width:22px;height:22px;color:var(--aqua-d)}
+  .pain-card h3{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px}
+  .pain-card p{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+
+  /* ===== Services ===== */
+  .svc-list{display:grid;gap:14px}
+  .svc{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm)}
+  .svc-top{display:flex;align-items:center;gap:14px;padding:18px 18px 14px}
+  .svc-ic{flex:0 0 auto;width:54px;height:54px;border-radius:14px;background:linear-gradient(150deg,var(--deep),var(--deep-2));display:flex;align-items:center;justify-content:center}
+  .svc-ic .icon{width:27px;height:27px;color:var(--aqua)}
+  .svc-tt h3{font-size:17px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .svc-tt .en{font-size:10.5px;color:var(--muted);letter-spacing:.14em;font-weight:600;text-transform:uppercase;margin-top:3px}
+  .svc-body{padding:0 18px 18px}
+  .svc-body p{font-size:13.5px;color:var(--ink-2);line-height:1.72;margin-bottom:12px}
+  .svc-tags{display:flex;flex-wrap:wrap;gap:7px}
+  .svc-tags span{font-size:11.5px;font-weight:600;color:var(--aqua-d);background:var(--aqua-soft);border-radius:100px;padding:5px 11px}
+
+  /* ===== Process ===== */
+  .proc{background:linear-gradient(175deg,var(--deep-2),var(--deep) 60%,var(--deep-3));color:#fff;border-radius:0}
+  .proc .sec-head h2{color:#fff}
+  .proc .sec-head .kicker{color:#5fdcea}
+  .proc .sec-head p{color:#a9c4cc}
+  .steps{display:grid;gap:13px}
+  .step{display:flex;gap:15px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:15px;padding:16px 16px}
+  .step .num{flex:0 0 auto;width:38px;height:38px;border-radius:11px;background:rgba(25,194,214,.16);border:1px solid rgba(25,194,214,.4);color:#5fdcea;font-family:var(--serif);font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center}
+  .step .tx h4{font-size:15.5px;font-weight:700;color:#fff;margin-bottom:4px}
+  .step .tx p{font-size:13px;color:#a9c4cc;line-height:1.66}
+
+  /* ===== Why (차별점) ===== */
+  .why-grid{display:grid;gap:12px}
+  .why{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:17px 16px;box-shadow:var(--shadow-sm)}
+  .why .ic{flex:0 0 auto;width:46px;height:46px;border-radius:12px;background:var(--aqua-soft);display:flex;align-items:center;justify-content:center}
+  .why .ic .icon{width:23px;height:23px;color:var(--aqua-d)}
+  .why h4{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .why p{font-size:13px;color:var(--ink-2);line-height:1.68}
+
+  /* ===== Stats band ===== */
+  .band{background:var(--deep-3);color:#fff;padding:40px 0}
+  .band .grid{display:grid;grid-template-columns:1fr 1fr;gap:26px 14px}
+  .stat{text-align:center}
+  .stat .n{font-family:var(--serif);font-weight:700;font-size:34px;line-height:1;color:#fff}
+  .stat .n b{color:var(--aqua)}
+  .stat .l{font-size:12.5px;color:#9fb6bd;margin-top:9px}
+
+  /* ===== Pricing note ===== */
+  .price-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 20px;box-shadow:var(--shadow);text-align:center}
+  .price-card .pk{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--aqua-d);text-transform:uppercase}
+  .price-card h3{font-family:var(--serif);font-size:23px;font-weight:700;color:var(--ink);margin:12px 0 6px}
+  .price-card p{font-size:13.5px;color:var(--ink-2);line-height:1.75}
+  .price-list{text-align:left;margin:20px 0 4px;display:grid;gap:11px}
+  .price-list li{list-style:none;display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--ink)}
+  .price-list .icon{flex:0 0 auto;width:19px;height:19px;color:var(--aqua-d);margin-top:2px}
+  .price-foot{margin-top:18px;font-size:11.5px;color:var(--muted);line-height:1.7;border-top:1px dashed var(--line-2);padding-top:14px}
+
+  /* ===== Area ===== */
+  .area{background:linear-gradient(180deg,var(--bg-warm),var(--bg))}
+  .area-map{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px;box-shadow:var(--shadow-sm);text-align:center}
+  .area-map .kr{max-width:190px;margin:0 auto 16px}
+  .area-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .area-chips span{font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg-warm);border:1px solid var(--line-2);border-radius:100px;padding:7px 13px}
+  .area-chips span.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+
+  /* ===== Reviews ===== */
+  .rv-scroll{display:flex;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -22px;padding:4px 22px 8px;scrollbar-width:none}
+  .rv-scroll::-webkit-scrollbar{display:none}
+  .rv{flex:0 0 82%;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px;box-shadow:var(--shadow-sm)}
+  .rv .stars{color:var(--gold);font-size:14px;letter-spacing:2px;margin-bottom:11px}
+  .rv p{font-size:13.5px;color:var(--ink);line-height:1.72;margin-bottom:15px}
+  .rv .who{display:flex;align-items:center;gap:10px}
+  .rv .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(150deg,var(--deep),var(--aqua-d));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .rv .who b{font-size:13px;font-weight:700;color:var(--ink);display:block}
+  .rv .who small{font-size:11.5px;color:var(--muted)}
+
+  /* ===== FAQ ===== */
+  .faq{display:grid;gap:10px}
+  .qa{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .qa summary{list-style:none;cursor:pointer;padding:17px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:14.5px;font-weight:700;color:var(--ink)}
+  .qa summary::-webkit-details-marker{display:none}
+  .qa summary .pl{flex:0 0 auto;width:22px;height:22px;position:relative;transition:.25s}
+  .qa summary .pl::before,.qa summary .pl::after{content:"";position:absolute;background:var(--aqua-d);border-radius:2px;top:50%;left:50%;transform:translate(-50%,-50%)}
+  .qa summary .pl::before{width:13px;height:2px}
+  .qa summary .pl::after{width:2px;height:13px;transition:.25s}
+  .qa[open] summary .pl::after{transform:translate(-50%,-50%) rotate(90deg);opacity:0}
+  .qa .ans{padding:0 18px 18px;font-size:13.5px;color:var(--ink-2);line-height:1.78}
+
+  /* ===== Contact / form ===== */
+  .contact{background:linear-gradient(170deg,var(--deep-2),var(--deep) 55%,var(--deep-3));color:#fff}
+  .contact .sec-head h2{color:#fff}
+  .contact .sec-head .kicker{color:#5fdcea}
+  .contact .sec-head p{color:#a9c4cc}
+  .form{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:22px 18px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:#bcd3da;margin-bottom:7px}
+  .field input,.field textarea,.field select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:11px;padding:14px 14px;color:#fff;font-size:15px;font-family:inherit;-webkit-appearance:none}
+  .field input::placeholder,.field textarea::placeholder{color:#7d9199}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--aqua);background:rgba(25,194,214,.08)}
+  .field select option{color:#0d2129}
+  .form .btn{margin-top:6px}
+  .form-note{font-size:11px;color:#8ba4ac;text-align:center;margin-top:13px;line-height:1.6}
+  .contact-alt{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .ca{display:flex;flex-direction:column;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:16px 10px;text-align:center}
+  .ca .icon{width:24px;height:24px;color:var(--aqua)}
+  .ca b{font-size:14px;color:#fff}
+  .ca small{font-size:11px;color:#9fb6bd}
+
+  /* ===== Footer ===== */
+  footer{background:var(--deep-3);color:#89a2aa;padding:34px 0 calc(96px + var(--safe-b))}
+  .f-brand{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+  .f-brand .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(150deg,var(--deep),var(--deep-2));display:flex;align-items:center;justify-content:center}
+  .f-brand .logo .icon{width:19px;height:19px;stroke:var(--aqua)}
+  .f-brand b{font-family:var(--serif);font-size:18px;color:#fff;font-weight:700}
+  footer p{font-size:12px;line-height:1.85}
+  footer .fnav{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0;font-size:12.5px}
+  footer .fnav a{color:#a9c4cc;font-weight:600}
+  footer .legal{font-size:11px;color:#5f7982;margin-top:14px;line-height:1.8;border-top:1px solid rgba(255,255,255,.07);padding-top:16px}
+
+  /* ===== Sticky bottom bar ===== */
+  .dock{position:fixed;left:0;right:0;bottom:0;z-index:70;background:rgba(6,26,36,.94);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.09);padding:9px 14px calc(9px + var(--safe-b));display:grid;grid-template-columns:1fr 1.25fr;gap:9px}
+  .dock a{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:700;font-size:14.5px;padding:14px;border-radius:11px}
+  .dock .d-chat{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18)}
+  .dock .d-call{background:linear-gradient(140deg,var(--aqua),var(--aqua-d));color:#04222b}
+  .dock .icon{width:1.15em;height:1.15em}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(min-width:601px){
+    .hero h1{font-size:40px}
+    .pain-grid{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="brand" aria-label="와우클린 홈">
+      <span class="logo"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/></svg></span>
+      <span class="bt">와우클린<small>WOW CLEAN · 배관 전문</small></span>
+    </a>
+    <div class="nav-right">
+      <a href="tel:15330000" class="nav-call"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg>1533-0000</a>
+      <button class="hamb" id="hamb" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Mobile drawer ===== -->
+<nav class="mobile-menu" id="drawer">
+  <a class="m-item" href="#symptoms">이런 증상 <span class="en">SYMPTOMS</span></a>
+  <a class="m-item" href="#services">시공 서비스 <span class="en">SERVICES</span></a>
+  <a class="m-item" href="#process">시공 과정 <span class="en">PROCESS</span></a>
+  <a class="m-item" href="#why">와우클린인 이유 <span class="en">WHY US</span></a>
+  <a class="m-item" href="#area">시공 지역 <span class="en">AREA</span></a>
+  <a class="m-item" href="#reviews">고객 후기 <span class="en">REVIEWS</span></a>
+  <a class="m-item" href="#faq">자주 묻는 질문 <span class="en">FAQ</span></a>
+  <div class="m-cta">
+    <a class="m-book" href="#contact">시공 상담 신청</a>
+    <a class="m-call" href="tel:15330000">전화 상담 1533-0000</a>
+  </div>
+  <div class="m-info">전국 24시간 출동 · 시공 전 투명 견적<br/>하수구막힘 · 배관청소 · 누수탐지 · 방수</div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="top">
+  <div class="wrap hero-in">
+    <span class="tag"><span class="dot"></span>전국 24시간 긴급 출동 접수 중</span>
+    <h1>막힘부터 <span class="hl">누수</span>까지,<br/>전국 어디든<br/>깔끔하게 뚫어드립니다.</h1>
+    <p class="lead">하수구 막힘 · 고압 배관청소 · 누수탐지 · 방수 전문. 현장 확인 후 <b style="color:#fff">시공 전 투명 견적</b>, 작업이 끝나면 <b style="color:#fff">A/S 보증</b>까지. 급하실 때 지금 바로 접수하세요.</p>
+    <div class="cta">
+      <a class="btn btn-aqua" href="tel:15330000"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg>지금 전화로 긴급 접수</a>
+      <a class="btn btn-ghost" href="#contact"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>온라인 시공 상담 신청</a>
+    </div>
+    <div class="hero-badges">
+      <div class="hb"><div class="n"><b>24</b>시</div><div class="l">연중무휴 접수</div></div>
+      <div class="hb"><div class="n">전<b>국</b></div><div class="l">어디든 출동</div></div>
+      <div class="hb"><div class="n"><b>A/S</b></div><div class="l">작업 후 보증</div></div>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 600 54" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C120 6 220 6 300 26 C380 46 480 46 600 22 L600 54 L0 54 Z" fill="#f4f8f9"/></svg>
+</section>
+
+<!-- ===== Trust strip ===== -->
+<div class="trust">
+  <div class="wrap row">
+    <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>시공 전 투명 견적</span>
+    <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>작업 후 A/S 보증</span>
+    <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>사업자 정식 등록</span>
+    <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>현장 사진 리포트</span>
+    <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>가정·상가·건물 대응</span>
+  </div>
+</div>
+
+<!-- ===== Symptoms ===== -->
+<section class="sec pain" id="symptoms">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">SYMPTOMS</span>
+      <h2>혹시 <span class="a">이런 상황</span>이신가요?</h2>
+      <p>참으면 더 커집니다. 아래 증상 중 하나라도 해당되면 지금 접수하세요.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M6 3h12l-1 7a5 5 0 0 1-10 0z"/><path d="M12 15v6M8 21h8"/></svg></div>
+        <h3>물이 안 내려가요</h3>
+        <p>싱크대·세면대·욕실 물이 고이고 역류합니다.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/></svg></div>
+        <h3>변기가 막혔어요</h3>
+        <p>뚫어도 다시 막히고 물이 넘칠 것 같습니다.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20s2-8 8-8 8 8 8 8M9 8a3 3 0 1 0 6 0 3 3 0 0 0-6 0z"/></svg></div>
+        <h3>하수구 악취</h3>
+        <p>배관 속 찌꺼기·기름때에서 냄새가 올라옵니다.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2v4M6 8l8 8M4 14l6 6M8 20h12"/></svg></div>
+        <h3>천장·벽 물자국</h3>
+        <p>누수 의심, 어디서 새는지 원인부터 찾아야 합니다.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
+        <h3>배관 정기청소</h3>
+        <p>상가·식당·건물 배관을 오래 방치했습니다.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg></div>
+        <h3>정화조·오수</h3>
+        <p>정화조 막힘·역류로 위생이 걱정됩니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Services ===== -->
+<section class="sec" id="services">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">SERVICES</span>
+      <h2>와우클린 <span class="a">전문 시공</span></h2>
+      <p>장비와 경험으로, 원인부터 정확히 잡습니다.</p>
+    </div>
+    <div class="svc-list">
+      <article class="svc reveal">
+        <div class="svc-top">
+          <span class="svc-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 8h16M6 8v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8M9 4h6M12 12v4"/></svg></span>
+          <div class="svc-tt"><h3>하수구 막힘 뚫음</h3><div class="en">Drain Unclogging</div></div>
+        </div>
+        <div class="svc-body">
+          <p>싱크대·세면대·욕실·변기·베란다까지. 스프링·관통기·에어건 등 상황에 맞는 장비로 막힌 원인을 찾아 해결합니다.</p>
+          <div class="svc-tags"><span>싱크대</span><span>세면대</span><span>변기</span><span>욕실 바닥</span></div>
+        </div>
+      </article>
+
+      <article class="svc reveal">
+        <div class="svc-top">
+          <span class="svc-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M3 12h13M16 8l4 4-4 4M6 6v0M6 18v0"/></svg></span>
+          <div class="svc-tt"><h3>고압 배관청소</h3><div class="en">High-pressure Cleaning</div></div>
+        </div>
+        <div class="svc-body">
+          <p>고압 세척으로 배관 내벽의 기름때·찌꺼기·스케일을 벗겨냅니다. 식당·상가·건물 정기 관리에 적합합니다.</p>
+          <div class="svc-tags"><span>고압세척</span><span>기름때 제거</span><span>정기 관리</span></div>
+        </div>
+      </article>
+
+      <article class="svc reveal">
+        <div class="svc-top">
+          <span class="svc-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/><path d="M12 20v0"/></svg></span>
+          <div class="svc-tt"><h3>누수탐지 · 방수</h3><div class="en">Leak Detection</div></div>
+        </div>
+        <div class="svc-body">
+          <p>탐지 장비로 새는 지점부터 정확히 찾습니다. 무턱대고 뜯지 않고, 원인을 확인한 뒤 필요한 방수·보수만 진행합니다.</p>
+          <div class="svc-tags"><span>누수탐지</span><span>방수</span><span>보수</span></div>
+        </div>
+      </article>
+
+      <article class="svc reveal">
+        <div class="svc-top">
+          <span class="svc-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 1 20 0M12 12l4-2M12 12v0M8 16a4 4 0 0 1 8 0"/></svg></span>
+          <div class="svc-tt"><h3>CCTV 관로 조사</h3><div class="en">Pipe Inspection</div></div>
+        </div>
+        <div class="svc-body">
+          <p>관 내부 카메라로 막힘·파손·역구배 위치를 눈으로 확인합니다. 추측 대신 영상으로 상태를 보고 시공을 결정합니다.</p>
+          <div class="svc-tags"><span>관로 카메라</span><span>파손 확인</span><span>영상 리포트</span></div>
+        </div>
+      </article>
+
+      <article class="svc reveal">
+        <div class="svc-top">
+          <span class="svc-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <div class="svc-tt"><h3>정화조 · 오수 처리</h3><div class="en">Septic & Sewage</div></div>
+        </div>
+        <div class="svc-body">
+          <p>정화조 막힘·역류, 오수관 청소를 위생적으로 처리합니다. 주택·상가·건물 단위 대응이 가능합니다.</p>
+          <div class="svc-tags"><span>정화조</span><span>오수관</span><span>역류 해결</span></div>
+        </div>
+      </article>
+
+      <article class="svc reveal">
+        <div class="svc-top">
+          <span class="svc-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-6 7 6v11M9 21v-6h6v6"/></svg></span>
+          <div class="svc-tt"><h3>건물 · 상가 계약 관리</h3><div class="en">Building Care</div></div>
+        </div>
+        <div class="svc-body">
+          <p>건물·상가·프랜차이즈 배관을 정기적으로 관리합니다. 막히기 전에 예방, 문제 발생 시 우선 대응합니다.</p>
+          <div class="svc-tags"><span>정기 계약</span><span>예방 관리</span><span>우선 출동</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Process ===== -->
+<section class="sec proc" id="process">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">PROCESS</span>
+      <h2>이렇게 진행됩니다</h2>
+      <p>접수부터 보증까지, 숨은 비용 없이 투명하게.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="num">1</div><div class="tx"><h4>전화 · 온라인 접수</h4><p>증상과 위치를 알려주시면 24시간 접수됩니다.</p></div></div>
+      <div class="step reveal"><div class="num">2</div><div class="tx"><h4>전국 기사 출동</h4><p>가까운 지역 기사가 신속히 방문합니다.</p></div></div>
+      <div class="step reveal"><div class="num">3</div><div class="tx"><h4>현장 진단</h4><p>원인을 정확히 확인하고 상태를 함께 봅니다.</p></div></div>
+      <div class="step reveal"><div class="num">4</div><div class="tx"><h4>시공 전 투명 견적</h4><p>작업 전 비용을 확정해 안내합니다. 동의 후 시공합니다.</p></div></div>
+      <div class="step reveal"><div class="num">5</div><div class="tx"><h4>전문 시공</h4><p>장비로 깔끔하게 마무리하고 현장을 정리합니다.</p></div></div>
+      <div class="step reveal"><div class="num">6</div><div class="tx"><h4>확인 · A/S 보증</h4><p>결과를 함께 확인하고 작업 후 보증으로 마무리합니다.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Why us ===== -->
+<section class="sec" id="why">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">WHY WOW CLEAN</span>
+      <h2>왜 <span class="a">와우클린</span>일까요?</h2>
+      <p>급할수록 믿을 수 있는 곳이 필요합니다.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/></svg></div>
+        <div><h4>전국 24시간 접수</h4><p>연중무휴로 접수하고, 가까운 지역 기사가 출동합니다. 새벽 긴급 상황도 대응합니다.</p></div>
+      </div>
+      <div class="why reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div><h4>시공 전 투명 견적</h4><p>작업 전에 비용을 확정해 안내합니다. 동의하신 뒤 시작하니, 끝나고 금액이 달라지는 일이 없습니다.</p></div>
+      </div>
+      <div class="why reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2M4 7h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM9 12h6"/></svg></div>
+        <div><h4>원인부터 진단</h4><p>무작정 뜯지 않습니다. 관로 카메라·탐지 장비로 원인을 확인한 뒤 꼭 필요한 시공만 진행합니다.</p></div>
+      </div>
+      <div class="why reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg></div>
+        <div><h4>작업 후 A/S 보증</h4><p>시공 후 같은 부위 문제가 생기면 보증 기준에 따라 다시 봐드립니다. 사업자 정식 등록 업체입니다.</p></div>
+      </div>
+      <div class="why reveal">
+        <div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 16l4.5-6 3.5 4 3-4 5 6M3 20h18"/></svg></div>
+        <div><h4>현장 사진 리포트</h4><p>작업 전·후를 사진으로 남겨 드립니다. 무엇을 어떻게 했는지 눈으로 확인하실 수 있습니다.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Stats band ===== -->
+<section class="band">
+  <div class="wrap">
+    <div class="grid">
+      <div class="stat reveal"><div class="n"><b>24</b>h</div><div class="l">연중무휴 접수</div></div>
+      <div class="stat reveal"><div class="n">전<b>국</b></div><div class="l">출동 네트워크</div></div>
+      <div class="stat reveal"><div class="n"><b>6</b>대</div><div class="l">전문 시공 분야</div></div>
+      <div class="stat reveal"><div class="n"><b>A/S</b></div><div class="l">작업 후 보증</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Pricing note ===== -->
+<section class="sec" id="pricing">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">ESTIMATE</span>
+      <h2>비용, <span class="a">먼저 알려드립니다</span></h2>
+      <p>현장마다 상태가 다릅니다. 그래서 확인 후 정직하게 안내합니다.</p>
+    </div>
+    <div class="price-card reveal">
+      <div class="pk">TRANSPARENT ESTIMATE</div>
+      <h3>시공 전 투명 견적제</h3>
+      <p>현장을 확인한 뒤 작업 전 비용을 확정해 안내합니다. 동의하신 후에만 시공을 시작합니다.</p>
+      <ul class="price-list">
+        <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>증상·위치에 따라 예상 범위 먼저 안내</li>
+        <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>현장 확인 후 최종 금액 확정</li>
+        <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>동의 없이 추가 작업·추가 비용 없음</li>
+        <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>현금·카드·계좌이체 결제 가능</li>
+      </ul>
+      <a class="btn btn-navy btn-block" href="#contact" style="margin-top:6px"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>내 상황 견적 문의하기</a>
+      <div class="price-foot">※ 정확한 비용은 현장 상태(막힘 위치·배관 상태·작업 난이도)에 따라 달라집니다. 전화·상담 시 최대한 정확한 예상 범위를 먼저 안내해 드립니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Area ===== -->
+<section class="sec area" id="area">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">SERVICE AREA</span>
+      <h2>전국 <span class="a">어디든 출동</span></h2>
+      <p>수도권부터 지방까지, 가까운 지역 기사가 방문합니다.</p>
+    </div>
+    <div class="area-map reveal">
+      <svg class="kr" viewBox="0 0 120 150" fill="none" aria-hidden="true">
+        <path d="M52 8c6-2 12 2 13 8s6 8 11 10 9 8 6 14-8 6-6 13 7 9 5 16-9 7-9 14 5 10 1 16-11 5-15 11-5 12-11 12-9-6-14-9-12-3-15-9-1-13-5-18-11-6-11-14 8-9 8-16-6-10-3-16 10-5 12-12-1-13 4-18 9-2 14-6 9-14 15-16z" fill="#dceef1" stroke="#19c2d6" stroke-width="1.4"/>
+        <circle cx="55" cy="46" r="3.4" fill="#08222e"/><circle cx="55" cy="46" r="7" fill="none" stroke="#19c2d6" stroke-width="1.2" opacity=".6"/>
+        <circle cx="68" cy="70" r="2.6" fill="#0e9fb2"/>
+        <circle cx="48" cy="88" r="2.6" fill="#0e9fb2"/>
+        <circle cx="74" cy="104" r="2.6" fill="#0e9fb2"/>
+        <circle cx="58" cy="120" r="2.6" fill="#0e9fb2"/>
+      </svg>
+      <div class="area-chips">
+        <span class="on">서울·경기·인천</span>
+        <span>강원</span>
+        <span>대전·충청</span>
+        <span>대구·경북</span>
+        <span>부산·울산·경남</span>
+        <span>광주·전라</span>
+        <span>제주</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Reviews ===== -->
+<section class="sec" id="reviews">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">REVIEWS</span>
+      <h2>고객 <span class="a">후기</span></h2>
+      <p>실제 시공을 받으신 분들의 이야기입니다.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="rv-scroll">
+      <div class="rv"><div class="stars">★★★★★</div><p>새벽에 변기가 넘쳤는데 바로 전화 받고 와주셨어요. 오기 전에 대략 비용을 알려주셔서 안심됐습니다.</p><div class="who"><div class="av">김</div><div><b>김○○ 고객님</b><small>변기 막힘 · 아파트</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>식당 주방 배관이 자주 막혔는데 고압세척 후 확실히 잘 내려갑니다. 사진으로 전후를 보여주셔서 좋았어요.</p><div class="who"><div class="av">이</div><div><b>이○○ 사장님</b><small>배관청소 · 상가</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>천장 물자국 원인을 못 찾고 있었는데 탐지로 정확히 잡아주셨어요. 필요한 부분만 방수해서 비용도 합리적.</p><div class="who"><div class="av">박</div><div><b>박○○ 고객님</b><small>누수탐지 · 주택</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>견적이 시공 후에 안 바뀌어서 신뢰가 갔습니다. 작업도 깔끔하고 뒷정리까지 해주셨어요.</p><div class="who"><div class="av">최</div><div><b>최○○ 고객님</b><small>하수구 막힘 · 빌라</small></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="sec pain" id="faq">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">FAQ</span>
+      <h2>자주 묻는 <span class="a">질문</span></h2>
+    </div>
+    <div class="faq">
+      <details class="qa reveal"><summary>정말 24시간 접수되나요?<span class="pl"></span></summary><div class="ans">네, 접수는 연중무휴 24시간 가능합니다. 야간·새벽 긴급 상황은 전화 접수를 이용하시면 가장 빠르게 안내해 드립니다.</div></details>
+      <details class="qa reveal"><summary>비용은 언제 알 수 있나요?<span class="pl"></span></summary><div class="ans">전화·상담 시 증상과 위치를 바탕으로 예상 범위를 먼저 안내합니다. 현장 확인 후 작업 전에 최종 금액을 확정하며, 동의하신 뒤에만 시공을 시작합니다.</div></details>
+      <details class="qa reveal"><summary>출장 지역이 어디까지인가요?<span class="pl"></span></summary><div class="ans">전국 출동 네트워크를 운영합니다. 지역에 따라 방문 시간이 다를 수 있어, 접수 시 예상 방문 시간을 함께 안내해 드립니다.</div></details>
+      <details class="qa reveal"><summary>작업 후 다시 막히면 어떻게 하나요?<span class="pl"></span></summary><div class="ans">시공한 부위에 문제가 재발할 경우 A/S 보증 기준에 따라 다시 확인해 드립니다. 자세한 보증 범위는 시공 전에 안내해 드립니다.</div></details>
+      <details class="qa reveal"><summary>가정집도 되고 상가·건물도 되나요?<span class="pl"></span></summary><div class="ans">네. 아파트·빌라·주택 등 가정은 물론 식당·상가·건물 배관까지 대응합니다. 건물·상가는 정기 관리 계약도 가능합니다.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Contact ===== -->
+<section class="sec contact" id="contact">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">CONTACT</span>
+      <h2>시공 상담 신청</h2>
+      <p>증상만 남겨주세요. 확인 후 가장 빠르게 연락드립니다.</p>
+    </div>
+    <form class="form reveal" id="leadForm" novalidate>
+      <div class="field">
+        <label for="name">성함</label>
+        <input id="name" name="name" type="text" placeholder="성함을 입력해 주세요" autocomplete="name" required />
+      </div>
+      <div class="field">
+        <label for="phone">연락처</label>
+        <input id="phone" name="phone" type="tel" placeholder="010-0000-0000" autocomplete="tel" inputmode="numeric" required />
+      </div>
+      <div class="field">
+        <label for="type">필요한 시공</label>
+        <select id="type" name="type">
+          <option>하수구 막힘 뚫음</option>
+          <option>고압 배관청소</option>
+          <option>누수탐지 · 방수</option>
+          <option>CCTV 관로 조사</option>
+          <option>정화조 · 오수 처리</option>
+          <option>건물 · 상가 정기 관리</option>
+          <option>기타 / 잘 모르겠어요</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="msg">증상 · 위치 (선택)</label>
+        <textarea id="msg" name="msg" rows="3" placeholder="예) 아파트 3층 화장실 변기가 계속 막혀요"></textarea>
+      </div>
+      <button type="submit" class="btn btn-aqua btn-block"><svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>상담 신청 보내기</button>
+      <div class="form-note">신청 시 접수 확인을 위해 연락드립니다. 상담은 무료이며, 입력하신 정보는 상담 목적 외 사용하지 않습니다.</div>
+    </form>
+    <div class="contact-alt">
+      <a class="ca" href="tel:15330000"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg><b>전화 상담</b><small>1533-0000</small></a>
+      <a class="ca" href="sms:15330000"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><b>문자 상담</b><small>사진 첨부 가능</small></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer>
+  <div class="wrap">
+    <div class="f-brand">
+      <span class="logo"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/></svg></span>
+      <b>와우클린</b>
+    </div>
+    <p>하수구 막힘 · 배관청소 · 누수탐지 · 방수 · 정화조<br/>전국 24시간 출동 · 시공 전 투명 견적 · 작업 후 A/S 보증</p>
+    <div class="fnav">
+      <a href="#services">시공 서비스</a>
+      <a href="#process">시공 과정</a>
+      <a href="#area">시공 지역</a>
+      <a href="#faq">자주 묻는 질문</a>
+      <a href="#contact">상담 신청</a>
+    </div>
+    <div class="legal">
+      상호 와우클린 · 대표 000 · 사업자등록번호 000-00-00000<br/>
+      대표전화 1533-0000 · 이메일 help@wowclean.co.kr<br/>
+      ⓒ 와우클린 (WOW CLEAN). All rights reserved.<br/>
+      ※ 본 페이지의 전화번호·사업자 정보·수치는 오픈 전 실제 정보로 교체가 필요합니다.
+    </div>
+  </div>
+</footer>
+
+<!-- ===== Sticky dock ===== -->
+<div class="dock">
+  <a class="d-chat" href="#contact"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>상담신청</a>
+  <a class="d-call" href="tel:15330000"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg>24시 전화접수</a>
+</div>
+
+<script>
+  // Drawer
+  var hamb=document.getElementById('hamb');
+  hamb.addEventListener('click',function(){document.body.classList.toggle('nav-open');});
+  document.querySelectorAll('#drawer a').forEach(function(a){
+    a.addEventListener('click',function(){document.body.classList.remove('nav-open');});
+  });
+
+  // Reveal on scroll
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+  // Lead form (no backend yet — graceful UX)
+  var form=document.getElementById('leadForm');
+  form.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var name=document.getElementById('name').value.trim();
+    var phone=document.getElementById('phone').value.trim();
+    if(!name||!phone){ alert('성함과 연락처를 입력해 주세요.'); return; }
+    var btn=form.querySelector('button[type=submit]');
+    btn.textContent='접수되었습니다 ✓';
+    btn.style.background='#0e9fb2';btn.style.color='#fff';
+    setTimeout(function(){
+      alert('상담 신청이 접수되었습니다.\n확인 후 빠르게 연락드리겠습니다.\n\n급하신 경우 1533-0000 으로 전화 주세요.');
+      form.reset();
+      btn.innerHTML='<svg class="icon" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"></path></svg>상담 신청 보내기';
+      btn.style.background='';btn.style.color='';
+    },300);
+  });
+</script>
+</body>
+</html>
