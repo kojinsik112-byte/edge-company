@@ -332,9 +332,49 @@
   .b2b-targets{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 4px}
   .b2b-targets span{font-size:12px;font-weight:600;color:#bcdad0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:7px 13px}
 
+  /* ===== Video gallery ===== */
+  .vgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}
+  .vcard{position:relative;border-radius:15px;overflow:hidden;aspect-ratio:16/12;background:#0a1f1b;cursor:pointer;border:1px solid var(--line-2);box-shadow:var(--shadow-sm)}
+  .vcard .vp{position:absolute;inset:0;overflow:hidden;transition:opacity .3s}
+  .vcard .vp .bigic{position:absolute;right:-14px;bottom:-14px;width:96px;height:96px;color:rgba(255,255,255,.09);stroke-width:1.2}
+  .vcard .vp .sweep{position:absolute;top:0;bottom:0;width:45%;background:linear-gradient(90deg,transparent,rgba(16,179,154,.18),transparent);animation:sweep 3.6s ease-in-out infinite}
+  .vcard .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.17);border:1.5px solid rgba(255,255,255,.55);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:3;transition:.2s}
+  .vcard .play::after{content:"";margin-left:3px;border-style:solid;border-width:7px 0 7px 12px;border-color:transparent transparent transparent #fff}
+  .vcard:hover .play{background:rgba(16,179,154,.5);transform:translate(-50%,-50%) scale(1.08)}
+  .vcard .vlabel{position:absolute;left:10px;right:10px;bottom:9px;z-index:3;color:#fff;font-size:12px;font-weight:700;line-height:1.3;text-shadow:0 1px 6px rgba(0,0,0,.55);transition:opacity .3s}
+  .vcard .vdur{position:absolute;right:9px;top:9px;z-index:3;background:rgba(6,20,15,.72);color:#fff;font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:6px;backdrop-filter:blur(3px);transition:opacity .3s}
+  .vcard video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s;z-index:2}
+  .vcard.playing video{opacity:1}
+  .vcard.playing .vp,.vcard.playing .play,.vcard.playing .vlabel,.vcard.playing .vdur{opacity:0;pointer-events:none}
+
+  /* ===== Certifications ===== */
+  .cert{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .cert div{display:flex;gap:11px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 13px;box-shadow:var(--shadow-sm)}
+  .cert .ic{flex:0 0 auto;width:38px;height:38px;border-radius:10px;background:var(--aqua-soft);display:flex;align-items:center;justify-content:center}
+  .cert .ic .icon{width:20px;height:20px;color:var(--aqua-d)}
+  .cert b{font-size:13px;color:var(--ink);font-weight:700;display:block;line-height:1.3}
+  .cert small{font-size:11px;color:var(--muted)}
+
+  /* ===== Price table ===== */
+  .ptable{width:100%;border-collapse:collapse;margin-top:2px;font-size:13.5px}
+  .ptable th,.ptable td{text-align:left;padding:13px 6px;border-bottom:1px solid var(--line)}
+  .ptable thead th{color:var(--muted);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+  .ptable td.svc-nm{color:var(--ink);font-weight:600}
+  .ptable td.amt{text-align:right;font-weight:700;color:var(--aqua-d);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .ptable tr:last-child td{border-bottom:none}
+
+  /* ===== Kakao / dock 3-col ===== */
+  .dock{grid-template-columns:.85fr .85fr 1.15fr}
+  .dock .d-kakao{background:#FEE500;color:#3b2a1a}
+  .dock .d-kakao .icon{color:#3b2a1a}
+  .contact-alt{grid-template-columns:repeat(3,1fr)}
+  .ca.kakao{background:#FEE500;border-color:#f5d800}
+  .ca.kakao .icon,.ca.kakao b,.ca.kakao small{color:#3b2a1a}
+
   @media(min-width:601px){
     .hero h1{font-size:40px}
     .pain-grid{grid-template-columns:repeat(2,1fr)}
+    .vgrid{grid-template-columns:repeat(3,1fr)}
   }
 </style>
 </head>
@@ -390,11 +430,7 @@
           <linearGradient id="counter" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6faf8"/><stop offset="1" stop-color="#e6ede9"/></linearGradient>
         </defs>
         <rect width="400" height="250" fill="url(#wall)"/>
-        <circle cx="342" cy="34" r="52" fill="#10b39a" opacity=".10"/>
-        <line x1="0" y1="60" x2="400" y2="60" stroke="#ffffff" stroke-width="2" opacity=".7"/>
-        <line x1="0" y1="118" x2="400" y2="118" stroke="#ffffff" stroke-width="2" opacity=".7"/>
-        <line x1="150" y1="0" x2="150" y2="118" stroke="#ffffff" stroke-width="1.5" opacity=".55"/>
-        <line x1="270" y1="0" x2="270" y2="118" stroke="#ffffff" stroke-width="1.5" opacity=".55"/>
+        <circle cx="344" cy="30" r="56" fill="#10b39a" opacity=".08"/>
         <!-- counter -->
         <rect x="0" y="196" width="400" height="54" fill="url(#counter)"/>
         <rect x="0" y="192" width="400" height="6" fill="#dbe6e1"/>
@@ -425,9 +461,8 @@
         </circle>
         <!-- P-trap plumbing under basin -->
         <path d="M204 202 L204 224 C204 236 232 236 232 224 L232 208" fill="none" stroke="url(#chrome)" stroke-width="9" stroke-linecap="round"/>
-        <!-- sparkles -->
-        <path d="M304 150 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#10b39a" opacity=".8"/>
-        <path d="M120 96 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 z" fill="#35d2b8" opacity=".8"/>
+        <!-- sparkle -->
+        <path d="M306 150 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#10b39a" opacity=".7"/>
       </svg>
       <span class="cap"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>깔끔하게 시공 완료</span>
     </div>
@@ -475,7 +510,33 @@
       <div class="vf-play" aria-hidden="true"></div>
       <video id="siteVideo" playsinline preload="none" controls></video>
     </div>
-    <p class="vf-cap">▶ 재생을 누르면 시공 영상이 나옵니다. (실제 영상 파일은 <b>assets/wowclean-intro.mp4</b>로 넣으면 자동 연결)</p>
+    <div class="vgrid">
+      <div class="vcard reveal" data-src="assets/wc-drain.mp4">
+        <div class="vp" style="background:linear-gradient(150deg,#12352d,#0a1f1b)"><div class="sweep"></div><svg class="icon bigic" viewBox="0 0 24 24"><path d="M6 3h12l-1 7a5 5 0 0 1-10 0z"/><path d="M12 15v6M8 21h8"/></svg></div>
+        <div class="vdur">0:38</div><div class="play"></div>
+        <div class="vlabel">하수구 막힘 뚫기</div>
+        <video playsinline preload="none" controls></video>
+      </div>
+      <div class="vcard reveal" data-src="assets/wc-wash.mp4">
+        <div class="vp" style="background:linear-gradient(150deg,#0e2f28,#081b16)"><div class="sweep"></div><svg class="icon bigic" viewBox="0 0 24 24"><path d="M3 12h13M16 8l4 4-4 4"/></svg></div>
+        <div class="vdur">0:52</div><div class="play"></div>
+        <div class="vlabel">고압 배관 세척</div>
+        <video playsinline preload="none" controls></video>
+      </div>
+      <div class="vcard reveal" data-src="assets/wc-leak.mp4">
+        <div class="vp" style="background:linear-gradient(150deg,#143a31,#0a231d)"><div class="sweep"></div><svg class="icon bigic" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/></svg></div>
+        <div class="vdur">1:10</div><div class="play"></div>
+        <div class="vlabel">누수탐지 현장</div>
+        <video playsinline preload="none" controls></video>
+      </div>
+      <div class="vcard reveal" data-src="assets/wc-toilet.mp4">
+        <div class="vp" style="background:linear-gradient(150deg,#0e2a25,#08201a)"><div class="sweep"></div><svg class="icon bigic" viewBox="0 0 24 24"><path d="M6 4h12v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6zM12 15v5M8 20h8"/></svg></div>
+        <div class="vdur">0:29</div><div class="play"></div>
+        <div class="vlabel">변기막힘 해결</div>
+        <video playsinline preload="none" controls></video>
+      </div>
+    </div>
+    <p class="vf-cap">▶ 각 영상을 누르면 재생됩니다. 실제 촬영본을 <b>assets/</b> 폴더에 넣으면 자동 연결됩니다 (wowclean-intro / wc-drain / wc-wash / wc-leak / wc-toilet .mp4).</p>
   </div>
 </section>
 
@@ -810,6 +871,23 @@
   </div>
 </section>
 
+<!-- ===== Certifications ===== -->
+<section class="sec pain" id="trust">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">TRUST</span>
+      <h2>안심하고 <span class="a">맡기세요</span></h2>
+      <p>급할 때 부르는 곳, 신뢰가 먼저입니다.</p>
+    </div>
+    <div class="cert">
+      <div class="reveal"><span class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2M4 7h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM9 12h6"/></svg></span><div><b>사업자 정식 등록</b><small>등록된 정식 업체</small></div></div>
+      <div class="reveal"><span class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div><b>정찰 투명 견적</b><small>시공 전 금액 확정</small></div></div>
+      <div class="reveal"><span class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="M9 12l2 2 4-4"/></svg></span><div><b>작업 후 A/S 보증</b><small>재발 시 재점검</small></div></div>
+      <div class="reveal"><span class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M2 7h20v10H2zM2 11h20M6 15h4"/></svg></span><div><b>카드·세금계산서</b><small>정식 증빙 발행</small></div></div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== Pricing note ===== -->
 <section class="sec" id="pricing">
   <div class="wrap">
@@ -828,8 +906,18 @@
         <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>동의 없이 추가 작업·추가 비용 없음</li>
         <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>현금·카드·계좌이체 결제 가능</li>
       </ul>
-      <a class="btn btn-navy btn-block" href="#contact" style="margin-top:6px"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>내 상황 견적 문의하기</a>
-      <div class="price-foot">※ 정확한 비용은 현장 상태(막힘 위치·배관 상태·작업 난이도)에 따라 달라집니다. 전화·상담 시 최대한 정확한 예상 범위를 먼저 안내해 드립니다.</div>
+      <table class="ptable">
+        <thead><tr><th>시공 항목</th><th style="text-align:right">예상 범위 (참고)</th></tr></thead>
+        <tbody>
+          <tr><td class="svc-nm">세면대·싱크대 막힘</td><td class="amt">5만원~</td></tr>
+          <tr><td class="svc-nm">변기 막힘</td><td class="amt">8만원~</td></tr>
+          <tr><td class="svc-nm">하수구·배관 고압세척</td><td class="amt">15만원~</td></tr>
+          <tr><td class="svc-nm">누수탐지</td><td class="amt">10만원~</td></tr>
+          <tr><td class="svc-nm">정화조·오수 처리</td><td class="amt">현장 견적</td></tr>
+        </tbody>
+      </table>
+      <a class="btn btn-navy btn-block" href="#contact" style="margin-top:18px"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>내 상황 견적 문의하기</a>
+      <div class="price-foot">※ 위 금액은 <b>참고용 예상 범위</b>이며, 실제 비용은 현장 상태(막힘 위치·배관 상태·작업 난이도)에 따라 달라집니다. 시공 전 정확한 금액을 확정해 안내합니다. <b>(오픈 전 실제 요금으로 교체 필요)</b></div>
     </div>
   </div>
 </section>
@@ -993,7 +1081,8 @@
     </form>
     <div class="contact-alt">
       <a class="ca" href="tel:15882424"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg><b>전화 상담</b><small>1588-2424</small></a>
-      <a class="ca" href="sms:15882424"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><b>문자 상담</b><small>사진 첨부 가능</small></a>
+      <a class="ca kakao" href="#contact"><svg class="icon" viewBox="0 0 24 24"><path d="M12 4C7 4 3 7.2 3 11.2c0 2.5 1.7 4.7 4.2 6l-.9 3.3 3.7-2.1c.6.1 1.3.1 2 .1 5 0 9-3.2 9-7.3S17 4 12 4z"/></svg><b>카톡 상담</b><small>1:1 채팅</small></a>
+      <a class="ca" href="sms:15882424"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><b>문자 상담</b><small>사진 첨부</small></a>
     </div>
   </div>
 </section>
@@ -1024,8 +1113,9 @@
 
 <!-- ===== Sticky dock ===== -->
 <div class="dock">
+  <a class="d-kakao" href="#contact"><svg class="icon" viewBox="0 0 24 24"><path d="M12 4C7 4 3 7.2 3 11.2c0 2.5 1.7 4.7 4.2 6l-.9 3.3 3.7-2.1c.6.1 1.3.1 2 .1 5 0 9-3.2 9-7.3S17 4 12 4z"/></svg>카톡상담</a>
   <a class="d-chat" href="#contact"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>상담신청</a>
-  <a class="d-call" href="tel:15882424"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg>24시 전화접수</a>
+  <a class="d-call" href="tel:15882424"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg>24시 전화</a>
 </div>
 
 <script>
@@ -1058,6 +1148,21 @@
   });
   vframe.addEventListener('click',playVideo);
   vframe.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();playVideo();}});
+
+  // Video gallery cards
+  document.querySelectorAll('.vcard[data-src]').forEach(function(card){
+    var cv=card.querySelector('video');
+    card.addEventListener('click',function(){
+      if(card.classList.contains('playing'))return;
+      cv.src=card.getAttribute('data-src');
+      card.classList.add('playing');
+      var p=cv.play(); if(p&&p.catch){p.catch(function(){});}
+    });
+    cv.addEventListener('error',function(){
+      card.classList.remove('playing');
+      var lb=card.querySelector('.vlabel'); if(lb)lb.textContent='영상 준비 중';
+    });
+  });
 
   // Lead form (no backend yet — graceful UX)
   var form=document.getElementById('leadForm');
