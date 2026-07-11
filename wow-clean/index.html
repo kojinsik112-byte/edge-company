@@ -371,6 +371,18 @@
   .ca.kakao{background:#FEE500;border-color:#f5d800}
   .ca.kakao .icon,.ca.kakao b,.ca.kakao small{color:#3b2a1a}
 
+  /* ===== Real photo gallery ===== */
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .shot{position:relative;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#e7f0ec,#d4e4dd);border:1px solid var(--line);box-shadow:var(--shadow-sm);aspect-ratio:4/3;margin:0}
+  .shot.big{grid-column:1 / -1;aspect-ratio:16/10}
+  .shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+  .shot .ph{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}
+  .shot .ph .icon{width:32px;height:32px;color:var(--aqua-d);opacity:.55}
+  .shot .ph span{font-size:11px;color:var(--muted);font-weight:600}
+  .shot figcaption{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:22px 12px 10px;background:linear-gradient(180deg,transparent,rgba(6,26,20,.74));color:#fff;font-size:12px;font-weight:700;line-height:1.3}
+  .shot .live{position:absolute;top:10px;left:10px;z-index:3;font-size:10px;font-weight:700;color:#fff;background:rgba(6,26,20,.55);padding:4px 9px;border-radius:100px;backdrop-filter:blur(3px);display:inline-flex;gap:5px;align-items:center}
+  .shot .live .rdot{width:6px;height:6px;border-radius:50%;background:#35d2b8}
+
   /* ===== Chat reviews ===== */
   .chats{display:flex;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -22px 6px;padding:4px 22px 12px;scrollbar-width:none}
   .chats::-webkit-scrollbar{display:none}
@@ -418,6 +430,7 @@
   <a class="m-item" href="#about">회사 소개 <span class="en">ABOUT</span></a>
   <a class="m-item" href="#equipment">전문 장비 <span class="en">EQUIPMENT</span></a>
   <a class="m-item" href="#cases">시공 사례 <span class="en">BEFORE·AFTER</span></a>
+  <a class="m-item" href="#gallery">실제 시공현장 <span class="en">ON-SITE</span></a>
   <a class="m-item" href="#warranty">A/S 보증 <span class="en">WARRANTY</span></a>
   <a class="m-item" href="#b2b">정기 관리 <span class="en">FOR BUSINESS</span></a>
   <a class="m-item" href="#area">시공 지역 <span class="en">AREA</span></a>
@@ -872,6 +885,46 @@
       </article>
     </div>
     <p class="vf-cap">※ 위 사례 이미지는 표현용입니다. 실제 시공 사진으로 교체하면 신뢰도가 크게 올라갑니다.</p>
+  </div>
+</section>
+
+<!-- ===== Real photo gallery ===== -->
+<section class="sec" id="gallery">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">ON-SITE</span>
+      <h2>실제 <span class="a">시공 현장</span></h2>
+      <p>연출이 아닌 진짜 현장입니다. 전문 장비로 이렇게 작업합니다.</p>
+    </div>
+    <div class="pgrid">
+      <figure class="shot big reveal">
+        <img src="assets/photos/shot-equipment.jpg" alt="RIDGID 관통기와 CCTV 관로카메라로 주방 배수관을 뚫는 시공 현장" loading="lazy" onerror="this.style.display='none'">
+        <span class="ph"><svg class="icon" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg><span>실장비 시공 사진</span></span>
+        <span class="live"><span class="rdot"></span>RIDGID 관통기 + CCTV 관로조사</span>
+        <figcaption>전문 장비로 주방 배수관 관통 · 관로 카메라로 내부 확인</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <img src="assets/photos/shot-drain-before.jpg" alt="식당 주방 배수 트렌치 청소 현장" loading="lazy" onerror="this.style.display='none'">
+        <span class="ph"><svg class="icon" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg><span>시공 사진</span></span>
+        <figcaption>주방 배수 트렌치 청소</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <img src="assets/photos/shot-pipe1.jpg" alt="싱크대 하부 배관 연결부 점검" loading="lazy" onerror="this.style.display='none'">
+        <span class="ph"><svg class="icon" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg><span>시공 사진</span></span>
+        <figcaption>배관 연결부 점검</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <img src="assets/photos/shot-clean.jpg" alt="온수분배기 및 배관 청소 작업" loading="lazy" onerror="this.style.display='none'">
+        <span class="ph"><svg class="icon" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg><span>시공 사진</span></span>
+        <figcaption>배관·분배기 청소</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <img src="assets/photos/shot-trap.jpg" alt="세면대 배수 P트랩 배관 시공" loading="lazy" onerror="this.style.display='none'">
+        <span class="ph"><svg class="icon" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg><span>시공 사진</span></span>
+        <figcaption>세면대 배수 배관 시공</figcaption>
+      </figure>
+    </div>
+    <p class="vf-cap" style="text-align:left"><b>사진 넣는 법:</b> 저장소 <b>wow-clean/assets/photos/</b> 에 안내된 파일명으로 올리면 자동으로 실사진이 뜹니다 (README 참고).</p>
   </div>
 </section>
 
