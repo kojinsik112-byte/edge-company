@@ -400,9 +400,107 @@
   .msg.me time{color:rgba(255,255,255,.8)}
 
   @media(min-width:601px){
-    .hero h1{font-size:40px}
     .pain-grid{grid-template-columns:repeat(2,1fr)}
-    .vgrid{grid-template-columns:repeat(3,1fr)}
+  }
+
+  /* ============================================================
+     CLEAN REFINEMENT v2  —  all-Pretendard, white, airy, desktop
+     ============================================================ */
+  :root{
+    --serif:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+    --bg:#ffffff; --bg-warm:#f6f9f8; --card:#ffffff;
+    --line:#eaeef0; --line-2:#dfe6e8;
+    --shadow:0 18px 44px -30px rgba(8,34,46,.24);
+    --shadow-sm:0 6px 20px -16px rgba(8,34,46,.16);
+  }
+  body{background:var(--bg);letter-spacing:-.017em}
+  .serif{letter-spacing:-.03em}
+  .hero h1{font-weight:800;letter-spacing:-.038em;line-height:1.24}
+  .sec-head h2{font-weight:800;letter-spacing:-.032em;font-size:25px;line-height:1.32}
+  .hb .n,.stat .n,.price-card h3,.about-card .q{font-weight:800!important}
+  .about-card .q{letter-spacing:-.02em;font-size:19px;line-height:1.6}
+  .kicker{letter-spacing:.2em;font-size:10.5px;color:var(--aqua-d);opacity:.9}
+  .pain{background:var(--bg)!important}
+  .area{background:var(--bg)!important}
+  .videosec{background:var(--bg)!important}
+  .videosec .sec-head h2{color:var(--ink)}
+  .videosec .sec-head p{color:var(--ink-2)}
+  .videosec .vf-cap{color:var(--muted)}
+  .sec{padding:56px 0;border-top:1px solid var(--line)}
+  .band,.trust,.contact{border-top:none}
+  .proc{background:var(--bg-warm)!important}
+  .proc .sec-head h2{color:var(--ink)}
+  .proc .sec-head p{color:var(--ink-2)}
+  .proc .sec-head .kicker{color:var(--aqua-d)}
+  .step{background:var(--card)!important;border:1px solid var(--line)!important}
+  .step .num{background:var(--aqua-soft)!important;border:1px solid var(--line-2)!important;color:var(--aqua-d)!important}
+  .step .tx h4{color:var(--ink)}
+  .step .tx p{color:var(--ink-2)}
+  .b2b-list li{color:var(--ink)}
+  .b2b-list .icon{color:var(--aqua-d)}
+  .b2b-targets span{color:var(--ink);background:var(--bg-warm);border:1px solid var(--line-2)}
+  .band{background:var(--bg-warm)!important}
+  .stat .n{color:var(--ink)!important}
+  .stat .n b{color:var(--aqua-d)!important}
+  .stat .l{color:var(--muted)!important}
+  .svc,.pain-card,.why,.about-card,.price-card,.cert div,.rv,.chat,.shot,.video-frame,.vcard,.area-map{box-shadow:none!important;border-color:var(--line)!important}
+  .svc,.pain-card,.why,.rv,.area-map{border-radius:16px}
+  .svc-img{background:#f2f7f5!important}
+  .pain-card .ic{background:#eef5f2}
+  .trust{background:var(--deep-3)}
+  .vcard .vp .sweep,.vf-poster .sweep{opacity:.5}
+  .dnav{display:none}
+
+  /* ===================== DESKTOP ===================== */
+  @media(min-width:601px){ .hero h1{font-size:38px} }
+
+  @media(min-width:720px){
+    .pain-grid{grid-template-columns:repeat(3,1fr)}
+    .svc-list{grid-template-columns:repeat(2,1fr)}
+    .vgrid{grid-template-columns:repeat(4,1fr)}
+    .cert{grid-template-columns:repeat(4,1fr)}
+    .why-grid{grid-template-columns:repeat(2,1fr)}
+    .steps{grid-template-columns:repeat(2,1fr)}
+    .band .grid{grid-template-columns:repeat(4,1fr)}
+    .pgrid{grid-template-columns:repeat(3,1fr)}
+    .shot.big{grid-column:span 2}
+  }
+
+  @media(min-width:920px){
+    .wrap{max-width:1120px;padding:0 40px}
+    .sec{padding:84px 0}
+    .sec-head{max-width:640px;margin-bottom:40px}
+    .sec-head h2{font-size:33px}
+    .nav{height:72px}
+    .hamb{display:none}
+    .dnav{display:flex;align-items:center;gap:30px;margin:0 auto}
+    .dnav a{font-size:15px;font-weight:600;color:var(--ink-2);transition:.15s}
+    .dnav a:hover{color:var(--aqua-d)}
+    .nav-call{font-size:14px;padding:11px 16px}
+    .hero{padding:20px 0 30px}
+    .hero-in{display:grid!important;grid-template-columns:1.02fr .98fr;gap:56px;align-items:center;min-height:520px}
+    .hero-copy{order:1}
+    .hero-img{order:2;margin:0!important;aspect-ratio:5/4;align-self:center}
+    .hero h1{font-size:50px;margin-bottom:20px}
+    .hero p.lead{font-size:17px;max-width:44ch;margin-bottom:26px}
+    .hero .cta{grid-template-columns:auto auto;justify-content:start;gap:12px}
+    .hero .cta .btn{padding:16px 26px}
+    .hero-badges{max-width:440px}
+    .hero .wave{display:none}
+    .price-card{max-width:640px;margin:0 auto}
+    .form{max-width:620px;margin:0 auto}
+    .contact-alt{max-width:620px;margin:16px auto 0}
+    .rv-scroll{flex-wrap:wrap;overflow:visible;margin:0;padding:0}
+    .rv{flex:0 0 calc(33.333% - 9px)}
+    .chats{flex-wrap:wrap;overflow:visible;margin:0 0 10px;padding:0}
+    .chat{flex:0 0 calc(33.333% - 9px)}
+    .dock{display:none}
+    footer{padding-bottom:44px}
+  }
+
+  @media(min-width:1180px){
+    .hero h1{font-size:56px}
+    .sec-head h2{font-size:36px}
   }
 </style>
 </head>
@@ -415,6 +513,13 @@
       <span class="logo"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/></svg></span>
       <span class="bt">와우클린<small>WOW CLEAN · 배관 전문</small></span>
     </a>
+    <nav class="dnav" aria-label="주 메뉴">
+      <a href="#services">시공 서비스</a>
+      <a href="#gallery">시공 현장</a>
+      <a href="#pricing">비용 안내</a>
+      <a href="#reviews">후기</a>
+      <a href="#faq">FAQ</a>
+    </nav>
     <div class="nav-right">
       <a href="tel:15882424" class="nav-call"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg>1588-2424</a>
       <button class="hamb" id="hamb" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
@@ -448,11 +553,23 @@
 <!-- ===== Hero ===== -->
 <section class="hero" id="top">
   <div class="wrap hero-in">
+    <div class="hero-copy">
     <span class="tag"><span class="dot"></span>전국 24시간 긴급 출동 접수 중</span>
     <h1>막힘부터 <span class="hl">누수</span>까지,<br/>전국 어디든 깔끔하게.</h1>
     <p class="lead">하수구 막힘 · 고압 배관청소 · 누수탐지 · 방수 전문. 현장 확인 후 <b>시공 전 투명 견적</b>, 작업이 끝나면 <b>A/S 보증</b>까지. 급하실 때 지금 바로 접수하세요.</p>
 
-    <div class="hero-img">
+
+    <div class="cta">
+      <a class="btn btn-aqua" href="tel:15882424"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg>지금 전화로 긴급 접수</a>
+      <a class="btn btn-navy" href="#contact"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>온라인 시공 상담 신청</a>
+    </div>
+    <div class="hero-badges">
+      <div class="hb"><div class="n"><b>24</b>시</div><div class="l">연중무휴 접수</div></div>
+      <div class="hb"><div class="n">전<b>국</b></div><div class="l">어디든 출동</div></div>
+      <div class="hb"><div class="n"><b>A/S</b></div><div class="l">작업 후 보증</div></div>
+    </div>
+    </div>
+        <div class="hero-img">
       <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-label="깨끗하게 시공된 욕실 배관 이미지">
         <defs>
           <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3f9f6"/><stop offset="1" stop-color="#e4efea"/></linearGradient>
@@ -496,16 +613,6 @@
         <path d="M306 150 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#10b39a" opacity=".7"/>
       </svg>
       <span class="cap"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>깔끔하게 시공 완료</span>
-    </div>
-
-    <div class="cta">
-      <a class="btn btn-aqua" href="tel:15882424"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5c0 8 7 15 15 15l2-3-4-2-2 2c-3-1-6-4-7-7l2-2-2-4z"/></svg>지금 전화로 긴급 접수</a>
-      <a class="btn btn-navy" href="#contact"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>온라인 시공 상담 신청</a>
-    </div>
-    <div class="hero-badges">
-      <div class="hb"><div class="n"><b>24</b>시</div><div class="l">연중무휴 접수</div></div>
-      <div class="hb"><div class="n">전<b>국</b></div><div class="l">어디든 출동</div></div>
-      <div class="hb"><div class="n"><b>A/S</b></div><div class="l">작업 후 보증</div></div>
     </div>
   </div>
   <svg class="wave" viewBox="0 0 600 54" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C120 6 220 6 300 26 C380 46 480 46 600 22 L600 54 L0 54 Z" fill="#f4f8f9"/></svg>
