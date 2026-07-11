@@ -371,6 +371,22 @@
   .ca.kakao{background:#FEE500;border-color:#f5d800}
   .ca.kakao .icon,.ca.kakao b,.ca.kakao small{color:#3b2a1a}
 
+  /* ===== Chat reviews ===== */
+  .chats{display:flex;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -22px 6px;padding:4px 22px 12px;scrollbar-width:none}
+  .chats::-webkit-scrollbar{display:none}
+  .chat{flex:0 0 84%;scroll-snap-align:start;background:#e9eef1;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
+  .chat-head{display:flex;align-items:center;gap:9px;background:var(--card);padding:11px 14px;border-bottom:1px solid var(--line)}
+  .chat-head .av{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:linear-gradient(150deg,var(--deep),var(--aqua-d));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .chat-head b{font-size:13px;color:var(--ink);font-weight:700;line-height:1.2}
+  .chat-head small{display:block;font-size:10.5px;color:var(--muted);font-weight:500}
+  .chat-head .cbadge{margin-left:auto;flex:0 0 auto;font-size:10px;font-weight:700;color:var(--aqua-d);background:var(--aqua-soft);padding:4px 9px;border-radius:100px}
+  .chat-body{padding:14px 12px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .msg{max-width:80%;font-size:12.5px;line-height:1.5;padding:9px 12px;border-radius:15px}
+  .msg time{display:block;font-size:9px;opacity:.62;margin-top:4px}
+  .msg.them{align-self:flex-start;background:#fff;color:var(--ink);border-bottom-left-radius:5px;box-shadow:0 1px 2px rgba(8,34,46,.06)}
+  .msg.me{align-self:flex-end;background:var(--aqua-d);color:#fff;border-bottom-right-radius:5px}
+  .msg.me time{color:rgba(255,255,255,.8)}
+
   @media(min-width:601px){
     .hero h1{font-size:40px}
     .pain-grid{grid-template-columns:repeat(2,1fr)}
@@ -1007,10 +1023,38 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="kicker">REVIEWS</span>
-      <h2>고객 <span class="a">후기</span></h2>
-      <p>실제 시공을 받으신 분들의 이야기입니다.</p>
+      <h2>실제로 <span class="a">이렇게 소통</span>합니다</h2>
+      <p>시공 후 고객님들이 직접 보내주신 감사 메시지입니다.</p>
     </div>
   </div>
+  <div class="chats">
+    <div class="chat reveal">
+      <div class="chat-head"><span class="av">김</span><div><b>김○○ 고객님</b><small>변기 막힘 · 아파트</small></div><span class="cbadge">문자 상담</span></div>
+      <div class="chat-body">
+        <div class="msg them">안녕하세요, 아까 전화드렸던 곳인데요. 화장실 변기가 자꾸 막혀요 ㅠㅠ<time>오후 1:27</time></div>
+        <div class="msg me">네! 가까운 기사님이 바로 연락드릴 거예요. 빠르게 출동하겠습니다<time>오후 1:28</time></div>
+        <div class="msg them">기사님 빠르게 해결해주시고 설명도 잘 해주셔서 감사해요 😊<time>오후 3:40</time></div>
+        <div class="msg me">만족해주셔서 감사합니다^^ 같은 문제 또 생기면 언제든 연락주세요!<time>오후 3:41</time></div>
+      </div>
+    </div>
+    <div class="chat reveal">
+      <div class="chat-head"><span class="av">이</span><div><b>이○○ 사장님</b><small>싱크대·배관 · 상가</small></div><span class="cbadge">카톡 상담</span></div>
+      <div class="chat-body">
+        <div class="msg them">사장님 작업 완료 잘 봤습니다. 이물질이 많아 시간 걸렸는데 지금은 시원하게 잘 내려가네요~<time>오후 1:23</time></div>
+        <div class="msg me">네! 오래 쌓여 있었어요. 앞으로 관리법도 설명드렸습니다. 또 막히면 편하게 연락주세요<time>오후 1:24</time></div>
+        <div class="msg them">비용도 합리적이고 뒷정리까지 깔끔해서 좋았어요. 감사합니다<time>오후 1:44</time></div>
+      </div>
+    </div>
+    <div class="chat reveal">
+      <div class="chat-head"><span class="av">박</span><div><b>박○○ 고객님</b><small>누수·수전 · 주택</small></div><span class="cbadge">문자 상담</span></div>
+      <div class="chat-body">
+        <div class="msg them">저희가 바꾸려던 수전까지 봐주셔서 너무 감사해요. 따뜻한 저녁 되세요~<time>오후 3:11</time></div>
+        <div class="msg me">아닙니다^^ 도움 되어서 다행입니다. 만족해주셔서 감사합니다<time>오후 3:12</time></div>
+        <div class="msg them">주변에도 꼭 소개할게요 👍<time>오후 3:15</time></div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap"><p class="vf-cap" style="text-align:left;margin:0 0 14px">※ 위 대화는 톤 참고용 예시입니다. <b>개인정보를 가린 실제 상담 캡처</b>로 교체하면 신뢰도가 크게 올라갑니다.</p></div>
   <div class="wrap">
     <div class="rv-scroll">
       <div class="rv"><div class="stars">★★★★★</div><p>새벽에 변기가 넘쳤는데 바로 전화 받고 와주셨어요. 오기 전에 대략 비용을 알려주셔서 안심됐습니다.</p><div class="who"><div class="av">김</div><div><b>김○○ 고객님</b><small>변기 막힘 · 아파트</small></div></div></div>
