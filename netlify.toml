@@ -1,0 +1,19 @@
+# Netlify 배포 설정 — 와우클린 사이트
+# wow-clean/ 폴더를 사이트 루트로 게시 (index.html이 첫 화면)
+# 별도 빌드 과정 없는 정적 사이트라 build command 불필요.
+
+[build]
+  publish = "wow-clean"
+
+# 보안·성능 기본 헤더
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# 이미지·정적 자원 캐시
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
