@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ACRO 전동 빨래건조대 · 앱 제어 UI (한/중) | ACRO 电动晾衣架 App UI</title>
+<title>ACRO 전동 빨래건조대 · 앱 UI (한/중) | ACRO 电动晾衣架 App UI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
@@ -14,7 +14,7 @@
     --bg-primary:#0A0A0C; --bg-card:rgba(255,255,255,0.025); --bg-card-active:rgba(212,175,106,0.1);
     --border:rgba(255,255,255,0.06); --border-active:rgba(212,175,106,0.3);
     --text-primary:#F5F2EC; --text-secondary:#8A8782; --text-tertiary:#6B6864;
-    --gold:#D4AF6A; --blue-led:#3B8FFF; --danger:#E24B4A; --bt-green:#4ADE80; --purple:#B98AE0;
+    --gold:#D4AF6A; --blue-led:#3B8FFF; --danger:#E24B4A; --bt-green:#4ADE80; --purple:#B98AE0; --off:#5A5854;
   }
   body{
     font-family:'Pretendard','PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFont,sans-serif;
@@ -26,21 +26,52 @@
   .page-head .cn{ font-size:14px; color:#9a978f; margin-top:5px; font-weight:400; }
   .page-head .sub{ font-size:12px; color:#6B6864; margin-top:9px; }
   .toolbar{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  .toolbar button{
-    display:flex; align-items:center; gap:7px; font-family:inherit; cursor:pointer;
-    background:var(--gold); color:#1a1408; border:none; border-radius:11px;
-    font-size:13px; font-weight:600; padding:11px 18px;
-  }
+  .toolbar button{ display:flex; align-items:center; gap:7px; font-family:inherit; cursor:pointer; background:var(--gold); color:#1a1408; border:none; border-radius:11px; font-size:13px; font-weight:600; padding:11px 18px; }
   .toolbar button.ghost{ background:rgba(255,255,255,0.06); color:#F5F2EC; }
   .toolbar button i{ font-size:16px; }
 
-  /* ===== 폰 목업 ===== */
-  .phone{
-    width:344px; background:var(--bg-primary); border:9px solid #1c1c20;
-    border-radius:42px; padding:14px 0 20px; overflow:hidden;
-    box-shadow:0 20px 60px rgba(0,0,0,.5);
-  }
-  .app-head{ display:flex; align-items:center; justify-content:space-between; padding:6px 20px 15px; }
+  .phones{ display:flex; gap:24px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+  .phone-col{ display:flex; flex-direction:column; align-items:center; gap:11px; }
+  .phone-cap{ font-size:12px; color:#9a978f; font-weight:500; }
+  .phone-cap b{ color:var(--gold); font-weight:600; }
+
+  .phone{ width:344px; background:var(--bg-primary); border:9px solid #1c1c20; border-radius:42px; padding:14px 0 18px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.5); }
+
+  /* status / bt */
+  .status{ display:flex; align-items:center; justify-content:space-between; padding:2px 22px 10px; font-size:11px; color:var(--text-secondary); }
+  .status .r{ display:flex; gap:5px; }
+  .btbar{ display:flex; align-items:center; justify-content:space-between; margin:0 16px 14px; padding:9px 14px; background:rgba(74,222,128,.08); border:.5px solid rgba(74,222,128,.2); border-radius:11px; }
+  .btbar .l{ font-size:11px; color:var(--bt-green); display:flex; align-items:center; gap:5px; }
+  .btbar .c{ font-size:10px; color:var(--text-tertiary); }
+
+  /* ===== 홈 화면 ===== */
+  .greet{ padding:0 22px 12px; }
+  .greet .eye{ font-size:11px; color:var(--text-secondary); }
+  .greet .tt{ font-size:20px; font-weight:600; margin-top:2px; }
+  .greet .tt .cn{ font-size:12px; color:var(--text-tertiary); font-weight:400; }
+  .rooms{ display:flex; gap:16px; padding:0 22px 14px; font-size:12px; }
+  .rooms .on{ color:var(--gold); font-weight:500; border-bottom:1.5px solid var(--gold); padding-bottom:4px; }
+  .rooms span:not(.on){ color:var(--text-tertiary); }
+  .seclbl{ padding:0 22px 8px; font-size:11px; color:var(--text-tertiary); letter-spacing:.5px; }
+  .dev-grid{ display:grid; grid-template-columns:1fr 1fr; gap:9px; padding:0 16px; }
+  .dev{ background:rgba(255,255,255,.03); border:.5px solid var(--border); border-radius:15px; padding:13px 13px 12px; position:relative; }
+  .dev.on{ background:rgba(212,175,106,.06); border-color:var(--border-active); }
+  .dev-ic{ height:32px; display:flex; align-items:center; justify-content:space-between; }
+  .dev-nm{ font-size:13px; font-weight:500; margin-top:8px; }
+  .dev-nm .cn{ font-size:9px; color:var(--text-tertiary); }
+  .dev.off .dev-nm{ color:#B8B5B0; }
+  .dev.off .dev-nm .cn{ color:#565450; }
+  .dev-st{ font-size:10px; color:var(--text-secondary); margin-top:2px; }
+  .dev.off .dev-st{ color:var(--text-tertiary); }
+  .new{ position:absolute; top:9px; right:9px; font-size:8px; font-weight:600; color:#1a1408; background:var(--gold); border-radius:5px; padding:2px 6px; }
+  .navbar{ display:flex; justify-content:space-around; margin-top:16px; padding:12px 0 2px; border-top:.5px solid var(--border); }
+  .navbar .n{ text-align:center; color:var(--text-tertiary); }
+  .navbar .n.on{ color:var(--gold); }
+  .navbar .n i{ font-size:19px; }
+  .navbar .n div{ font-size:9px; margin-top:2px; }
+
+  /* ===== 제어 화면 ===== */
+  .app-head{ display:flex; align-items:center; justify-content:space-between; padding:2px 20px 15px; }
   .app-head .left{ display:flex; align-items:center; gap:10px; }
   .app-head .ic{ width:36px; height:36px; border-radius:11px; background:rgba(212,175,106,.12); display:flex; align-items:center; justify-content:center; }
   .app-head .ic i{ font-size:20px; color:var(--gold); }
@@ -105,12 +136,12 @@
   .scene .ko{ font-size:10px; margin-top:5px; }
   .scene .cn{ font-size:8px; color:var(--text-tertiary); margin-top:1px; }
 
-  /* ===== 기능 설명표 ===== */
+  /* 기능 설명표 */
   .legend{ width:100%; max-width:720px; background:#1b1b21; border:.5px solid rgba(255,255,255,.07); border-radius:16px; padding:20px 22px; }
   .legend h2{ font-size:15px; font-weight:600; margin-bottom:3px; }
   .legend h2 .cn{ font-size:12px; color:#9a978f; font-weight:400; margin-left:6px; }
   .legend table{ width:100%; border-collapse:collapse; margin-top:14px; font-size:12.5px; }
-  .legend th, .legend td{ text-align:left; padding:8px 8px; border-bottom:.5px solid rgba(255,255,255,.06); vertical-align:top; }
+  .legend th, .legend td{ text-align:left; padding:8px; border-bottom:.5px solid rgba(255,255,255,.06); vertical-align:top; }
   .legend th{ color:var(--gold); font-weight:600; font-size:11px; }
   .legend td.ko{ color:#F5F2EC; white-space:nowrap; }
   .legend td.zh{ color:#c9c6bf; white-space:nowrap; }
@@ -118,131 +149,202 @@
   .legend .tag{ font-size:10px; color:var(--gold); border:1px dashed rgba(212,175,106,.4); border-radius:5px; padding:1px 5px; margin-left:5px; }
   .foot-note{ font-size:11px; color:#6B6864; max-width:720px; text-align:center; line-height:1.7; }
 
-  @media print{
-    body{ background:#fff; }
-    .toolbar, .no-print{ display:none !important; }
-  }
+  @media print{ body{ background:#fff; } .toolbar, .no-print{ display:none !important; } }
 </style>
 </head>
 <body>
 
   <div class="page-head no-print">
-    <h1>ACRO 전동 빨래건조대 · 스마트 앱 제어 화면</h1>
-    <div class="cn">ACRO 电动升降晾衣架 · 智能 App 控制界面</div>
+    <h1>ACRO 전동 빨래건조대 · 스마트 앱 (홈 + 제어)</h1>
+    <div class="cn">ACRO 电动升降晾衣架 · 智能 App（主页 + 控制）</div>
     <div class="sub">블루투스 통합 제어 · 한국어/中文 병기 · Bluetooth Edition</div>
   </div>
 
   <div class="toolbar no-print">
-    <button onclick="savePNG()"><i class="ti ti-download"></i>이미지 저장 PNG</button>
-    <button class="ghost" onclick="window.print()"><i class="ti ti-printer"></i>인쇄 · PDF 저장</button>
+    <button onclick="savePNG('phoneHome','ACRO_빨래건조대_홈화면_한중')"><i class="ti ti-download"></i>홈 화면 PNG</button>
+    <button onclick="savePNG('phoneCtrl','ACRO_빨래건조대_제어화면_한중')"><i class="ti ti-download"></i>제어 화면 PNG</button>
+    <button class="ghost" onclick="window.print()"><i class="ti ti-printer"></i>인쇄 · PDF</button>
   </div>
 
-  <!-- ========== 폰 목업 ========== -->
-  <div class="phone" id="phone">
+  <div class="phones">
 
-    <div class="app-head">
-      <div class="left">
-        <div class="ic"><i class="ti ti-hanger"></i></div>
-        <div>
-          <div class="title">아크로 빨래건조대 <div class="cn">ACRO 电动晾衣架</div></div>
-          <div class="conn"><i class="ti ti-bluetooth" style="font-size:11px"></i>연결됨 · 거실 <span style="color:#6B6864">已连接·客厅</span></div>
+    <!-- ===== ① 홈(전체 기기) ===== -->
+    <div class="phone-col">
+      <div class="phone-cap"><b>①</b> 홈 · 전체 기기 <span style="color:#6B6864">主页·全部设备</span></div>
+      <div class="phone" id="phoneHome">
+        <div class="status"><span style="font-weight:500;color:#F5F2EC">9:41</span><span class="r"><i class="ti ti-bluetooth"></i><i class="ti ti-battery-3"></i></span></div>
+        <div class="btbar"><span class="l"><i class="ti ti-bluetooth" style="font-size:13px"></i>블루투스 연결됨</span><span class="c">4개 장치</span></div>
+        <div class="greet">
+          <div class="eye">좋은 저녁이에요</div>
+          <div class="tt">우리 집 <span class="cn">我的家</span></div>
+        </div>
+        <div class="rooms"><span class="on">전체</span><span>거실</span><span>주방</span><span>침실</span></div>
+        <div class="seclbl">장치 · 设备</div>
+        <div class="dev-grid">
+
+          <div class="dev on">
+            <div class="dev-ic">
+              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" style="transform:translateY(-3px)"><circle cx="50" cy="50" r="9" stroke="#D4AF6A" stroke-width="2.5"/><circle cx="50" cy="50" r="4" fill="#D4AF6A"/><path d="M 47 41.5 L 44 14 Q 50 11, 56 14 L 53 41.5 Z" fill="rgba(212,175,106,0.25)" stroke="#D4AF6A" stroke-width="2.5"/><g transform="rotate(120 50 50)"><path d="M 47 41.5 L 44 14 Q 50 11, 56 14 L 53 41.5 Z" fill="rgba(212,175,106,0.25)" stroke="#D4AF6A" stroke-width="2.5"/></g><g transform="rotate(240 50 50)"><path d="M 47 41.5 L 44 14 Q 50 11, 56 14 L 53 41.5 Z" fill="rgba(212,175,106,0.25)" stroke="#D4AF6A" stroke-width="2.5"/></g></svg>
+            </div>
+            <div class="dev-nm">실링팬 <span class="cn">吊扇</span></div>
+            <div class="dev-st">1단 · 거실</div>
+          </div>
+
+          <div class="dev on">
+            <div class="dev-ic"><i class="ti ti-bulb" style="font-size:26px;color:#D4AF6A"></i></div>
+            <div class="dev-nm">스마트 조명 <span class="cn">照明</span></div>
+            <div class="dev-st">4500K · 80%</div>
+          </div>
+
+          <div class="dev on">
+            <div class="dev-ic">
+              <svg width="26" height="26" viewBox="0 0 56 56" fill="none" stroke="#D4AF6A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="13" x2="48" y2="13" stroke-width="2.5"/><path d="M12 13 L 12 44 M16 13 Q 15 28 14 44 M20 13 Q 19 28 18 44 M24 13 L 24 44"/><path d="M32 13 L 32 44 M36 13 Q 37 28 38 44 M40 13 Q 41 28 42 44 M44 13 L 44 44"/></svg>
+              <span style="font-size:12px;color:#D4AF6A;font-weight:500">68%</span>
+            </div>
+            <div class="dev-nm">전동 커튼 <span class="cn">电动窗帘</span></div>
+            <div class="dev-st">열림 68%</div>
+          </div>
+
+          <div class="dev off">
+            <div class="dev-ic">
+              <svg width="25" height="25" viewBox="0 0 56 56" fill="none" stroke="#5A5854" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="10" width="28" height="36" rx="3"/><rect x="19" y="15" width="18" height="5" rx="1"/><rect x="19" y="22" width="18" height="5" rx="1"/><rect x="19" y="29" width="18" height="5" rx="1"/><rect x="19" y="36" width="18" height="5" rx="1"/></svg>
+            </div>
+            <div class="dev-nm">유선 스위치 <span class="cn">开关</span></div>
+            <div class="dev-st">전체 꺼짐 · 5채널</div>
+          </div>
+
+          <div class="dev off">
+            <div class="dev-ic">
+              <svg width="25" height="25" viewBox="0 0 56 56" fill="none" stroke="#5A5854" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="11" width="34" height="34" rx="8"/><circle cx="28" cy="28" r="11"/><rect x="22" y="24" width="2.5" height="8" rx="1" fill="#5A5854"/><rect x="31.5" y="24" width="2.5" height="8" rx="1" fill="#5A5854"/></svg>
+            </div>
+            <div class="dev-nm">콘센트 <span class="cn">插座</span></div>
+            <div class="dev-st">대기 중</div>
+          </div>
+
+          <div class="dev on">
+            <div class="new">NEW</div>
+            <div class="dev-ic">
+              <svg width="26" height="26" viewBox="0 0 56 56" fill="none" stroke="#D4AF6A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="11" y1="13" x2="45" y2="13" stroke-width="2.5"/><line x1="18" y1="13" x2="18" y2="21"/><line x1="38" y1="13" x2="38" y2="21"/><line x1="14" y1="22" x2="14" y2="40"/><line x1="42" y1="22" x2="42" y2="40"/><line x1="14" y1="22" x2="42" y2="22"/><line x1="14" y1="31" x2="42" y2="31"/><line x1="14" y1="40" x2="42" y2="40"/></svg>
+            </div>
+            <div class="dev-nm">빨래건조대 <span class="cn">晾衣架</span></div>
+            <div class="dev-st">높이 60% · 건조 중</div>
+          </div>
+
+        </div>
+        <div class="navbar">
+          <div class="n on"><i class="ti ti-home"></i><div>장치</div></div>
+          <div class="n"><i class="ti ti-layout-grid"></i><div>시나리오</div></div>
+          <div class="n"><i class="ti ti-user"></i><div>나의</div></div>
         </div>
       </div>
-      <i class="ti ti-dots-vertical" style="font-size:18px;color:#6B6864"></i>
     </div>
 
-    <!-- ① 승하강 -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title">① 승하강 <span class="cn">升降</span></div>
-        <div class="val-gold">현재 높이 60% <span style="color:#6B6864">当前高度</span></div>
-      </div>
-      <div class="hbar"><i></i></div>
-      <div class="row3">
-        <button class="btn" data-lift><span class="ko"><i class="ti ti-chevron-up"></i>상승</span><span class="cn">上升</span></button>
-        <button class="btn stop" data-lift><span class="ko"><i class="ti ti-player-stop"></i>정지</span><span class="cn">停止</span></button>
-        <button class="btn" data-lift><span class="ko"><i class="ti ti-chevron-down"></i>하강</span><span class="cn">下降</span></button>
-      </div>
-      <div class="lift-foot">
-        <span class="note"><i class="ti ti-info-circle"></i>재탭 시 정지 <span class="cn">再次按下即停止</span></span>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="rec">추천 推荐</span>
-          <button class="mini">M1</button>
-          <button class="mini off">M2</button>
+    <!-- ===== ② 빨래건조대 제어 ===== -->
+    <div class="phone-col">
+      <div class="phone-cap"><b>②</b> 빨래건조대 제어 <span style="color:#6B6864">晾衣架控制</span></div>
+      <div class="phone" id="phoneCtrl">
+        <div class="app-head">
+          <div class="left">
+            <div class="ic"><i class="ti ti-hanger"></i></div>
+            <div>
+              <div class="title">아크로 빨래건조대 <div class="cn">ACRO 电动晾衣架</div></div>
+              <div class="conn"><i class="ti ti-bluetooth" style="font-size:11px"></i>연결됨 · 거실 <span style="color:#6B6864">已连接·客厅</span></div>
+            </div>
+          </div>
+          <i class="ti ti-dots-vertical" style="font-size:18px;color:#6B6864"></i>
         </div>
-      </div>
-    </div>
 
-    <!-- ② 조명 -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title">② 조명 <span class="cn">照明</span></div>
-        <div style="display:flex;align-items:center;gap:11px">
-          <button class="memo"><i class="ti ti-star"></i>메모리 记忆</button>
-          <div class="toggle" data-pow="lctl"><i></i></div>
-        </div>
-      </div>
-      <div id="lctl">
-        <div class="slider-row">
-          <i class="ti ti-temperature"></i>
-          <span class="slabel">색온도 <span class="cn">色温</span></span>
-          <input type="range" min="3000" max="6500" step="100" value="4500" id="cct">
-          <span class="sval" id="cctv">4500K</span>
-        </div>
-        <div class="slider-row">
-          <i class="ti ti-brightness-up"></i>
-          <span class="slabel">밝기 <span class="cn">亮度</span></span>
-          <input type="range" min="0" max="100" step="1" value="80" id="dim">
-          <span class="sval" id="dimv">80%</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ③ 건조·바람 -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title">③ 건조 · 바람 <span class="cn">烘干 · 送风</span></div>
-        <div class="toggle" data-pow="dctl"><i></i></div>
-      </div>
-      <div id="dctl">
-        <div class="row2" style="margin-bottom:9px">
-          <button class="btn warm on" data-mode><span class="ko"><i class="ti ti-flame"></i>열풍</span><span class="cn">热风</span></button>
-          <button class="btn" data-mode><span class="ko"><i class="ti ti-wind"></i>자연풍</span><span class="cn">自然风</span></button>
-        </div>
-        <div class="row3" style="margin-bottom:10px">
-          <button class="btn spd" data-spd><span class="num">1</span><span class="cn">약 弱</span></button>
-          <button class="btn spd on" data-spd><span class="num">2</span><span class="cn">중 中</span></button>
-          <button class="btn spd" data-spd><span class="num">3</span><span class="cn">강 强</span></button>
-        </div>
-        <div class="tmr-wrap">
-          <i class="ti ti-clock" title="타이머 定时"></i>
-          <div class="tmr-grid">
-            <button class="tmr" data-tmr>30분<br><span style="font-size:8px;color:#6B6864">30分钟</span></button>
-            <button class="tmr" data-tmr>1시간<br><span style="font-size:8px;color:#6B6864">1小时</span></button>
-            <button class="tmr on" data-tmr>2시간<br><span style="font-size:8px;color:rgba(212,175,106,.6)">2小时</span></button>
-            <button class="tmr" data-tmr>3시간<br><span style="font-size:8px;color:#6B6864">3小时</span></button>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">① 승하강 <span class="cn">升降</span></div>
+            <div class="val-gold">현재 높이 60% <span style="color:#6B6864">当前高度</span></div>
+          </div>
+          <div class="hbar"><i></i></div>
+          <div class="row3">
+            <button class="btn" data-lift><span class="ko"><i class="ti ti-chevron-up"></i>상승</span><span class="cn">上升</span></button>
+            <button class="btn stop" data-lift><span class="ko"><i class="ti ti-player-stop"></i>정지</span><span class="cn">停止</span></button>
+            <button class="btn" data-lift><span class="ko"><i class="ti ti-chevron-down"></i>하강</span><span class="cn">下降</span></button>
+          </div>
+          <div class="lift-foot">
+            <span class="note"><i class="ti ti-info-circle"></i>재탭 시 정지 <span class="cn">再次按下即停止</span></span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span class="rec">추천 推荐</span>
+              <button class="mini">M1</button>
+              <button class="mini off">M2</button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- ④ 원터치 씬 -->
-    <div class="card">
-      <div class="card-head" style="margin-bottom:10px">
-        <div class="card-title">④ 원터치 씬 <span class="cn">一键场景</span></div>
-        <span class="rec">추천 推荐</span>
-      </div>
-      <div class="scene-grid">
-        <div class="scene"><i class="ti ti-basket" style="color:#3B8FFF"></i><div class="ko">널기</div><div class="cn">晾晒</div></div>
-        <div class="scene" style="background:rgba(212,175,106,.1);border-color:rgba(212,175,106,.3)"><i class="ti ti-flame" style="color:#D4AF6A"></i><div class="ko" style="color:#D4AF6A">건조</div><div class="cn" style="color:rgba(212,175,106,.7)">烘干</div></div>
-        <div class="scene"><i class="ti ti-check" style="color:#4ADE80"></i><div class="ko">정리</div><div class="cn">收纳</div></div>
-        <div class="scene" style="background:rgba(155,89,217,.12);border-color:rgba(155,89,217,.35)"><i class="ti ti-shield-check" style="color:#B98AE0"></i><div class="ko" style="color:#B98AE0">UV살균</div><div class="cn" style="color:rgba(185,138,224,.75)">UV杀菌</div></div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">② 조명 <span class="cn">照明</span></div>
+            <div style="display:flex;align-items:center;gap:11px">
+              <button class="memo"><i class="ti ti-star"></i>메모리 记忆</button>
+              <div class="toggle" data-pow="lctl"><i></i></div>
+            </div>
+          </div>
+          <div id="lctl">
+            <div class="slider-row">
+              <i class="ti ti-temperature"></i>
+              <span class="slabel">색온도 <span class="cn">色温</span></span>
+              <input type="range" min="3000" max="6500" step="100" value="4500" id="cct">
+              <span class="sval" id="cctv">4500K</span>
+            </div>
+            <div class="slider-row">
+              <i class="ti ti-brightness-up"></i>
+              <span class="slabel">밝기 <span class="cn">亮度</span></span>
+              <input type="range" min="0" max="100" step="1" value="80" id="dim">
+              <span class="sval" id="dimv">80%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">③ 건조 · 바람 <span class="cn">烘干 · 送风</span></div>
+            <div class="toggle" data-pow="dctl"><i></i></div>
+          </div>
+          <div id="dctl">
+            <div class="row2" style="margin-bottom:9px">
+              <button class="btn warm on" data-mode><span class="ko"><i class="ti ti-flame"></i>열풍</span><span class="cn">热风</span></button>
+              <button class="btn" data-mode><span class="ko"><i class="ti ti-wind"></i>자연풍</span><span class="cn">自然风</span></button>
+            </div>
+            <div class="row3" style="margin-bottom:10px">
+              <button class="btn spd" data-spd><span class="num">1</span><span class="cn">약 弱</span></button>
+              <button class="btn spd on" data-spd><span class="num">2</span><span class="cn">중 中</span></button>
+              <button class="btn spd" data-spd><span class="num">3</span><span class="cn">강 强</span></button>
+            </div>
+            <div class="tmr-wrap">
+              <i class="ti ti-clock" title="타이머 定时"></i>
+              <div class="tmr-grid">
+                <button class="tmr" data-tmr>30분<br><span style="font-size:8px;color:#6B6864">30分钟</span></button>
+                <button class="tmr" data-tmr>1시간<br><span style="font-size:8px;color:#6B6864">1小时</span></button>
+                <button class="tmr on" data-tmr>2시간<br><span style="font-size:8px;color:rgba(212,175,106,.6)">2小时</span></button>
+                <button class="tmr" data-tmr>3시간<br><span style="font-size:8px;color:#6B6864">3小时</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head" style="margin-bottom:10px">
+            <div class="card-title">④ 원터치 씬 <span class="cn">一键场景</span></div>
+            <span class="rec">추천 推荐</span>
+          </div>
+          <div class="scene-grid">
+            <div class="scene"><i class="ti ti-basket" style="color:#3B8FFF"></i><div class="ko">널기</div><div class="cn">晾晒</div></div>
+            <div class="scene" style="background:rgba(212,175,106,.1);border-color:rgba(212,175,106,.3)"><i class="ti ti-flame" style="color:#D4AF6A"></i><div class="ko" style="color:#D4AF6A">건조</div><div class="cn" style="color:rgba(212,175,106,.7)">烘干</div></div>
+            <div class="scene"><i class="ti ti-check" style="color:#4ADE80"></i><div class="ko">정리</div><div class="cn">收纳</div></div>
+            <div class="scene" style="background:rgba(155,89,217,.12);border-color:rgba(155,89,217,.35)"><i class="ti ti-shield-check" style="color:#B98AE0"></i><div class="ko" style="color:#B98AE0">UV살균</div><div class="cn" style="color:rgba(185,138,224,.75)">UV杀菌</div></div>
+          </div>
+        </div>
+
       </div>
     </div>
 
   </div>
 
-  <!-- ========== 기능 설명표 ========== -->
+  <!-- ===== 기능 설명표 ===== -->
   <div class="legend no-print">
     <h2>기능 설명 <span class="cn">功能说明 · Function Guide</span></h2>
     <div style="overflow-x:auto">
@@ -293,12 +395,12 @@
     b.onclick=function(){ document.querySelectorAll('.mini').forEach(function(x){x.classList.add('off');}); b.classList.remove('off'); };
   });
 
-  function savePNG(){
-    var el=document.getElementById('phone');
+  function savePNG(id, fname){
+    var el=document.getElementById(id);
     if(typeof html2canvas==='undefined'){ alert('이미지 저장 라이브러리를 불러오지 못했습니다. 인쇄→PDF를 이용해 주세요.\n无法加载截图库，请使用打印→PDF。'); return; }
     html2canvas(el,{backgroundColor:'#0A0A0C',scale:3,useCORS:true}).then(function(canvas){
       var a=document.createElement('a');
-      a.download='ACRO_빨래건조대_앱UI_한중.png';
+      a.download=fname+'.png';
       a.href=canvas.toDataURL('image/png');
       a.click();
     }).catch(function(){ alert('이미지 저장에 실패했습니다. 인쇄→PDF를 이용해 주세요.'); });
