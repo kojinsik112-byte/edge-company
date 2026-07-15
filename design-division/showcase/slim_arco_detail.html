@@ -12,12 +12,12 @@
     --accent:#0E7C66; --warm:#E8A33D; --bg:#F6F7F9; --dark:#0C0E14;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;color:var(--ink);background:#eceef2;line-height:1.6;-webkit-font-smoothing:antialiased}
+  body{font-family:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕","Noto Sans KR",system-ui,sans-serif;color:var(--ink);background:#eceef2;line-height:1.6;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
   .page{max-width:860px;margin:0 auto;background:#fff}
   section{padding:84px 56px;border-bottom:1px solid var(--line)}
   .eyebrow{color:var(--accent);font-weight:700;letter-spacing:.16em;font-size:13px;text-transform:uppercase}
-  h1{font-size:54px;font-weight:800;letter-spacing:-.025em;line-height:1.15;margin:16px 0}
-  h2{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.3;margin-bottom:8px}
+  h1{font-size:54px;font-weight:800;letter-spacing:-.01em;line-height:1.2;margin:16px 0}
+  h2{font-size:30px;font-weight:800;letter-spacing:-.01em;line-height:1.35;margin-bottom:8px}
   .lead{font-size:20px;color:var(--graphite);font-weight:500}
   p.body{font-size:17px;color:#3a3f4b;margin-top:14px}
   .muted{color:var(--graphite)}
@@ -26,7 +26,7 @@
   /* HERO */
   .hero{text-align:center;padding-top:76px;background:radial-gradient(120% 90% at 50% 0%,#fff 0%,#f4f6f8 100%)}
   .price-row{margin:22px 0 8px;font-size:18px;color:var(--graphite)}
-  .price-row b{font-size:34px;color:var(--ink);font-weight:800;letter-spacing:-.02em}
+  .price-row b{font-size:34px;color:var(--ink);font-weight:800;letter-spacing:-.01em}
   .pill{display:inline-block;background:#fff6e6;color:#b9802a;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:6px}
   .product-frame{margin:34px auto 8px;max-width:560px;aspect-ratio:4/3;border-radius:20px;
     background:linear-gradient(160deg,#fafbfc,#eef1f5);border:1px solid var(--line);
@@ -42,7 +42,7 @@
   .card{background:var(--dark);border-radius:22px;padding:40px;color:#fff;margin-top:26px}
   .card h3{font-size:21px;font-weight:700;margin-bottom:4px}
   .card .sub{color:#9aa3b2;font-size:14px;margin-bottom:26px}
-  .bignum{font-size:60px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .bignum{font-size:60px;font-weight:800;letter-spacing:-.01em;line-height:1}
   .bignum span{font-size:20px;color:#9aa3b2;font-weight:600}
 
   .compare .row{display:flex;align-items:center;gap:14px;margin:14px 0}
@@ -225,5 +225,19 @@
   </section>
 
 </div>
+<script>
+  /* 캡쳐 안전장치: 웹폰트 로딩이 끝나면 <html>에 fonts-ready 클래스를 붙인다.
+     스크린샷 도구는 'html.fonts-ready'가 나타날 때까지 기다렸다 캡쳐하면
+     폰트 로딩 경쟁으로 글자가 깨지는 일이 없다. (미지원 도구여도 무해) */
+  (function () {
+    function ready() { document.documentElement.classList.add('fonts-ready'); }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(ready);
+      setTimeout(ready, 3000); // 폰트가 없거나 오프라인이어도 3초 뒤엔 진행
+    } else {
+      ready();
+    }
+  })();
+</script>
 </body>
 </html>
