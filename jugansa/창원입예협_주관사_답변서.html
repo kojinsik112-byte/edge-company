@@ -5,33 +5,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
 @page { size: A4; margin: 0; }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans KR','맑은 고딕',sans-serif;color:#222;background:#e9ecf0;line-height:1.7;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-.page{width:210mm;min-height:297mm;background:#fff;padding:18mm 18mm 14mm;margin:0 auto 8px;box-shadow:0 1px 5px rgba(0,0,0,.1);}
+body{font-family:'Noto Sans KR','맑은 고딕',sans-serif;color:#222;background:#e9ecf0;line-height:1.75;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.page{width:210mm;min-height:297mm;background:#fff;padding:20mm 20mm 15mm;margin:0 auto 8px;box-shadow:0 1px 5px rgba(0,0,0,.1);}
 .page.brk{page-break-before:always;}
 @media print{ body{background:#fff;} .page{box-shadow:none;margin:0;} }
 
-.top{text-align:right;font-size:10.5px;color:#555;margin-bottom:4px;}
-h1{font-size:20px;font-weight:900;color:#16324f;text-align:center;letter-spacing:-0.5px;padding:8px 0 6px;border-bottom:2px solid #16324f;margin-bottom:4px;}
-.meta{display:flex;justify-content:space-between;font-size:11px;color:#444;border-bottom:1px solid #ccc;padding:6px 2px 8px;margin-bottom:14px;}
-.meta b{color:#16324f;}
-.intro{font-size:11.5px;color:#333;margin-bottom:16px;}
+.top{text-align:right;font-size:10.5px;color:#666;margin-bottom:6px;}
+h1{font-size:20px;font-weight:900;color:#1a1a1a;text-align:center;letter-spacing:-0.5px;padding:6px 0 10px;margin-bottom:2px;}
+.rule{border:0;border-top:2px solid #1a1a1a;margin-bottom:3px;}
+.rule2{border:0;border-top:1px solid #999;margin-bottom:16px;}
+.meta{display:flex;justify-content:space-between;font-size:11px;color:#333;padding:3px 2px 0;}
+.intro{font-size:11.5px;color:#333;margin:16px 0 20px;}
 
-h2{font-size:13.5px;font-weight:800;color:#16324f;margin:16px 0 6px;padding-left:9px;border-left:4px solid #16324f;}
-p{font-size:11.3px;color:#333;margin-bottom:6px;}
-ul{margin:2px 0 8px 2px;}
-li{font-size:11.3px;color:#333;list-style:none;padding:2px 0 2px 15px;position:relative;}
-li:before{content:"–";position:absolute;left:2px;color:#16324f;}
-b{color:#16324f;}
-.q{font-weight:700;color:#16324f;}
+.h{font-size:14px;font-weight:800;color:#1a1a1a;margin:20px 0 8px;}
+.h:first-of-type{margin-top:6px;}
+.item{font-size:11.4px;color:#2a2a2a;margin:0 0 9px 4px;padding-left:20px;text-indent:-20px;}
+.item .k{font-weight:700;color:#1a1a1a;}
+.sub{font-size:11.4px;color:#2a2a2a;margin:2px 0 2px 26px;padding-left:13px;text-indent:-13px;}
+p.txt{font-size:11.4px;color:#2a2a2a;margin:0 0 8px 4px;}
+.narrow{margin-left:26px;font-size:11.2px;color:#444;}
+b{color:#1a1a1a;font-weight:700;}
+.ref{font-size:10.6px;color:#777;margin:2px 0 8px 26px;}
 
-table{width:100%;border-collapse:collapse;font-size:10.6px;margin:4px 0 10px;}
-th{background:#eef1f5;color:#16324f;font-weight:700;padding:6px 9px;text-align:left;border:1px solid #cdd4dd;}
-td{border:1px solid #d8dde4;padding:6px 9px;vertical-align:top;color:#333;}
-td.h{background:#f6f8fa;font-weight:600;color:#16324f;width:27%;}
-
-.note{background:#f6f8fa;border:1px solid #d8dde4;border-radius:4px;padding:9px 13px;font-size:10.8px;color:#3a4658;margin:8px 0 12px;}
-.note b{color:#16324f;}
-.sign{margin-top:26px;font-size:11px;color:#333;text-align:right;line-height:1.9;}
+.sign{margin-top:30px;font-size:11px;color:#222;text-align:right;line-height:1.9;}
 .sign .line{font-size:13.5px;}
 .sign b{font-size:13.5px;}
 .stamp{display:inline-block;width:74px;height:74px;border:2.5px solid #c0392b;border-radius:50%;color:#c0392b;text-align:center;vertical-align:middle;margin-left:-4px;transform:rotate(-7deg);}
@@ -39,94 +35,52 @@ td.h{background:#f6f8fa;font-weight:600;color:#16324f;width:27%;}
 .stamp .a{font-size:10px;margin-top:12px;letter-spacing:-.5px;}
 .stamp .b{font-size:8px;margin-top:2px;}
 .stamp .c{font-size:14px;margin-top:2px;letter-spacing:3px;}
-.foot{margin-top:14px;padding-top:8px;border-top:1px solid #ddd;font-size:9px;color:#999;text-align:center;}
+.foot{margin-top:20px;padding-top:8px;border-top:1px solid #ddd;font-size:9px;color:#999;text-align:center;}
 </style></head>
 <body>
 
 <!-- ===================== PAGE 1 ===================== -->
 <div class="page">
 
-  <div class="top">문서번호 EDGE-2026- &nbsp;|&nbsp; 작성일 2026. 7. 15.</div>
+  <div class="top">문서번호 EDGE-2026- &nbsp;|&nbsp; 2026. 7. 15.</div>
   <h1>입주박람회 주관사 업무 문의에 대한 답변</h1>
+  <hr class="rule"><hr class="rule2">
   <div class="meta">
-    <div><b>수신</b> &nbsp;엘리프창원 입주예정자협의회 귀중</div>
-    <div><b>발신</b> &nbsp;㈜엣지컴퍼니 (대표 고진식) · 입주주관사 사업부</div>
+    <div>수신 &nbsp;엘리프창원 입주예정자협의회 귀중</div>
+    <div>발신 &nbsp;㈜엣지컴퍼니 (대표 고진식)</div>
   </div>
 
   <p class="intro">
-    협의회에서 보내주신 문의 사항에 대해 아래와 같이 항목별로 답변드립니다. 보내주신 순서 그대로 정리했습니다.
-    금액이나 범위 중 세대수·일정이 확정돼야 최종 확정되는 부분은 그 자리에 표시해 두었고, 계약 전에 직접 찾아뵙고 설명드리겠습니다.
-    아래의 발전기금·협의회 지원·입주민 혜택은 저희가 엘리프창원 입주박람회 <b>주관사로 함께하게 되는 것을 전제로 제공</b>되는 내용임을 참고 부탁드립니다.
+    협의회에서 보내주신 문의에 대해 아래와 같이 순서대로 답변드립니다. 세대수·일정이 확정돼야 정해지는 부분은 그 자리에 적어 두었고,
+    계약 전에 직접 찾아뵙고 설명드리겠습니다. 아래 발전기금·협의회 지원·입주민 혜택은 저희가 엘리프창원 입주박람회
+    <b>주관사로 함께하게 되는 것을 전제로 제공</b>되는 내용임을 참고 부탁드립니다.
   </p>
 
-  <h2>1. 주관사 업무 지원 범위</h2>
-  <table>
-    <tr><th style="width:27%">문의 항목</th><th>답변</th></tr>
-    <tr>
-      <td class="h">조경 설계변경 지원</td>
-      <td>설계변경 결정 권한은 시행사·시공사에 있어 주관사가 임의로 바꿀 수는 없습니다. 대신 협의회가 요구하는 내용을 근거자료로 정리하고, 시공사·관계기관에 보내는 공문 작성과 협상 자리 동석까지 저희가 맡아 진행합니다.</td>
-    </tr>
-    <tr>
-      <td class="h">법무법인 지원 여부</td>
-      <td>법무법인은 주관사와 <b>따로 입찰·선정</b>하시길 권합니다. 주관사와 법무법인은 서로 견제하고 지켜보는 관계여야 협의회에 유리하기 때문에, 한 팀으로 묶어 함께 들어오는 구조는 권하지 않습니다.<br>지금 단계에서 법무법인은 <b>등기 중심</b>으로 보시면 됩니다. 등기 실무를 매끄럽게 잘 처리하고 <b>등기비가 저렴한(보통 등기비 0원)</b> 곳, 그리고 <b>발전지원금(대출)을 세대당 3~5만원</b> 지원하는 곳을 고르시는 것이 좋습니다. 집단대출 은행 섭외 때문에 지역 법무법인이 유리한 경우가 많습니다.<br><b>하자소송은 지금 법무법인 선정에서 보실 사항이 아닙니다.</b> 하자 관련 소송은 입주 후 정식 입주자대표회의 단계에서 다루는 일입니다. 하자소송 전문 법무법인이 주관사와 함께 들어오는 경우가 있는데, 이렇게 시작하면 시공사와 처음부터 대립하게 되어 정작 협의회가 원하는 설계변경·건의사항 협상 자체가 어려워집니다. 저희는 이 구조를 권하지 않습니다.</td>
-    </tr>
-    <tr>
-      <td class="h">하자점검 지원</td>
-      <td>하자점검 전문업체 '우리홈'과 함께 진행합니다. 공용부 점검은 무상, 세대별 점검은 단지 특가로 지원하며, 점검 결과는 시공사에 정식 접수하고 처리될 때까지 추적합니다.</td>
-    </tr>
-    <tr>
-      <td class="h">입주자총회 지원</td>
-      <td>총회 장소를 무상으로 제공하고(회의실·전자칠판 구비), 자료·현수막·안내물 제작과 진행 운영을 지원합니다.</td>
-    </tr>
-    <tr>
-      <td class="h">입주박람회 지원</td>
-      <td>기획부터 부스 구성, 업체 선별, 홍보, 현장 운영, 사후 정산까지 저희가 직접 운영합니다. 참여 업체는 경남 지역업체를 우선으로, 검증을 통과한 곳만 세웁니다.</td>
-    </tr>
-    <tr>
-      <td class="h">하자 A/S 대응 지원</td>
-      <td>저희는 경남 지역업체라 하자가 생기면 바로 달려갈 수 있습니다. 자사 시공팀과 콜센터로 직접 대응하고, 48시간 내 보수, 10년 장기 A/S(최소 2년 무상)를 원칙으로 합니다. 참여 업체가 문을 닫더라도 저희가 이어받아 처리합니다. (재원은 6항 참조)</td>
-    </tr>
-    <tr>
-      <td class="h">카페 이벤트 지원</td>
-      <td>입주민 카페와 자사 입주민 앱을 활용한 이벤트(경품·점등식·드론촬영 등)를 기획·운영합니다.</td>
-    </tr>
-    <tr>
-      <td class="h">시공사·관계기관 공문 작성·발송</td>
-      <td>협의회 명의 공문 작성과 발송, 회신 관리를 실무로 대행합니다. 시공사·창원시청 등 관계기관에 보내는 요구사항을 문서로 정식화해 협의회 대응을 뒷받침합니다.</td>
-    </tr>
-    <tr>
-      <td class="h">건의사항 해결 방향 제시</td>
-      <td>다른 단지에서 실제로 관철시킨 사례를 근거로 우선순위와 현실적인 해결 경로를 제시하고, 공문·협상·공동구매 등 실행까지 함께합니다. (사례는 6항 참조)</td>
-    </tr>
-  </table>
+  <div class="h">1. 주관사 업무 지원 범위</div>
 
-  <h2>2. 발전기금</h2>
-  <p>발전기금은 <b>2천만원(현금)</b>으로 협의회에 지원합니다.</p>
-  <div class="note">
-    <b>발전기금과 입주민 혜택은 서로 다른 별개 항목입니다.</b> 발전기금은 협의회에 드리는 현금 지원이고,
-    아래 3항의 혜택은 각 세대(입주민)가 받는 것입니다. 두 가지를 하나로 보지 않으시도록 미리 말씀드립니다.
-    <b>발전기금 2천만원을 지원하더라도, 입주박람회에 참여하시는 각 세대의 혜택(3항)은 줄지 않고 그대로 제공됩니다.</b>
-    이 발전기금은 주관사(엣지컴퍼니)가 드리는 것으로, 법무법인이 별도로 지원하는 등기비·발전지원금과는 무관합니다. (법무법인은 1항 안내대로 따로 선정하시면 됩니다.)
-    정산 내역은 영수증 단위로 전부 공개하며 협의회 카페에 공지할 수 있습니다.
-  </div>
+  <div class="item"><span class="k">가. 조경 설계변경 지원.</span> 설계변경 결정 권한은 시행사·시공사에 있어 주관사가 임의로 바꿀 수는 없습니다. 대신 협의회가 요구하는 내용을 근거자료로 정리하고, 시공사·관계기관에 보내는 공문 작성과 협상 자리 동석까지 저희가 맡아 진행합니다.</div>
 
-  <h2>3. 정회원(전 세대) 혜택</h2>
-  <p>저희 방식은 다른 주관사와 다릅니다. 업체를 방문하거나 계약을 해야 혜택을 주는 것이 아니라,
-  <b>박람회 현장에 입장(체크인)만 하면 받는 혜택</b>이 기본입니다. 신청도 계약도 필요 없습니다.
-  정회원·준회원을 나누지 않고 전 세대에 동일하게 적용하는 것을 원칙으로 합니다.</p>
-  <table>
-    <tr><th style="width:27%">구분</th><th>내용</th></tr>
-    <tr>
-      <td class="h">무조건 제공<br>(방문·입장만 하면)</td>
-      <td>집에 남는 시공형 혜택 패키지(전동커튼·간접조명·거실 방충망 등), 화재보험 무상, 공용부 무상 시공(실링팬·간접조명·세균소독), 사전점검 키트 제공, 점등식·드론촬영·경품 행사.</td>
-    </tr>
-    <tr>
-      <td class="h">조건부 제공<br>(계약·참여 시)</td>
-      <td>온라인 특가 구매 품목, 부스 참여 업체 특가·서비스, 세대별 하자점검 특가, 시공 계약 시 사은품 등.</td>
-    </tr>
-  </table>
-  <p>한 가지 분명히 해두겠습니다. 행사장에서 업체들이 흔히 내거는 <b>무료 코팅, 줄눈·현관 무료 시공, 말굽 서비스 같은 미끼성 무료 서비스는 저희는 하지 않습니다.</b> 겉으로는 공짜지만 결국 나머지 시공을 비싸게 받아 그 돈이 그대로 메꿔지는 상술이기 때문입니다. (예: 줄눈 바닥 몇 곳을 무료로 해주고, 벽 등 나머지 줄눈 시공에서 비싸게 받는 식) 저희는 이런 방식 대신 처음부터 정직한 가격으로 갑니다.</p>
-  <p style="font-size:10.6px;color:#666;">※ 혜택 품목과 상당 금액은 엘리프창원의 평형·세대수·입주 시기에 맞춰 확정합니다.</p>
+  <div class="item"><span class="k">나. 법무법인.</span> 법무법인은 주관사와 <b>따로 입찰·선정</b>하시길 권합니다. 주관사와 법무법인은 서로 견제하고 지켜보는 관계여야 협의회에 유리해서, 한 팀으로 묶어 함께 들어오는 구조는 권하지 않습니다.</div>
+  <div class="narrow">지금 단계에서 법무법인은 <b>등기 중심</b>으로 보시면 됩니다. 등기 실무를 매끄럽게 잘 처리하고 <b>등기비가 저렴한(보통 등기비 0원)</b> 곳, <b>발전지원금(대출)을 세대당 3~5만원</b> 지원하는 곳을 고르시는 게 좋습니다. 집단대출 은행 섭외 때문에 지역 법무법인이 유리한 경우가 많습니다.<br>
+  다만 <b>하자소송은 지금 법무법인 선정에서 보실 사항이 아닙니다.</b> 하자 관련 소송은 입주 후 정식 입주자대표회의에서 다루는 일입니다. 하자소송 전문 법무법인이 주관사와 함께 들어오는 경우가 있는데, 이렇게 시작하면 시공사와 처음부터 대립하게 되어 정작 협의회가 원하는 설계변경·건의사항 협상 자체가 어려워집니다. 저희는 이 구조를 권하지 않습니다.</div>
+
+  <div class="item"><span class="k">다. 하자점검 지원.</span> 하자점검 전문업체 '우리홈'과 함께 진행합니다. 공용부 점검은 무상, 세대별 점검은 단지 특가로 지원하며, 점검 결과는 시공사에 정식 접수하고 처리될 때까지 추적합니다.</div>
+
+  <div class="item"><span class="k">라. 입주자총회 지원.</span> 총회 장소를 무상으로 제공하고(회의실·전자칠판 구비), 자료·현수막·안내물 제작과 진행 운영을 지원합니다.</div>
+
+  <div class="item"><span class="k">마. 입주박람회 지원.</span> 기획부터 부스 구성, 업체 선별, 홍보, 현장 운영, 사후 정산까지 저희가 직접 운영합니다. 참여 업체는 경남 지역업체를 우선으로, 검증을 통과한 곳만 세웁니다.</div>
+
+  <div class="item"><span class="k">바. 하자 A/S 대응 지원.</span> 저희는 경남 지역업체라 하자가 생기면 바로 달려갈 수 있습니다. 자사 시공팀과 콜센터로 직접 대응하고, 48시간 내 보수, 10년 장기 A/S(최소 2년 무상)를 원칙으로 합니다. 참여 업체가 문을 닫더라도 저희가 이어받아 처리합니다. (재원은 6항 참조)</div>
+
+  <div class="item"><span class="k">사. 카페 이벤트 지원.</span> 입주민 카페와 자사 입주민 앱을 활용한 이벤트(경품·점등식·드론촬영 등)를 기획·운영합니다.</div>
+
+  <div class="item"><span class="k">아. 시공사·관계기관 공문 작성·발송.</span> 협의회 명의 공문 작성과 발송, 회신 관리를 실무로 대행합니다. 시공사·창원시청 등 관계기관에 보내는 요구사항을 문서로 정식화해 협의회 대응을 뒷받침합니다.</div>
+
+  <div class="item"><span class="k">자. 건의사항 해결 방향 제시.</span> 다른 단지에서 실제로 관철시킨 사례를 근거로 우선순위와 현실적인 해결 경로를 제시하고, 공문·협상·공동구매 등 실행까지 함께합니다. (사례는 6항 참조)</div>
+
+  <div class="h">2. 발전기금</div>
+  <p class="txt">발전기금은 <b>2천만원(현금)</b>으로 협의회에 지원합니다.</p>
+  <p class="txt">발전기금과 입주민 혜택은 서로 다른 별개 항목입니다. 발전기금은 협의회에 드리는 현금 지원이고, 아래 3항의 혜택은 각 세대가 받는 것입니다. 발전기금 2천만원을 지원하더라도 각 세대의 혜택(3항)은 줄지 않고 그대로 갑니다. 이 발전기금은 주관사가 드리는 것으로, 법무법인이 별도로 지원하는 등기비·발전지원금과는 무관합니다. 정산 내역은 영수증 단위로 전부 공개하고 협의회 카페에 공지할 수 있습니다.</p>
 
   <div class="foot">㈜엣지컴퍼니 · 입주주관사 사업부 &nbsp;|&nbsp; 엘리프창원 입주예정자협의회 문의 답변 &nbsp;·&nbsp; 1 / 2</div>
 
@@ -135,62 +89,32 @@ td.h{background:#f6f8fa;font-weight:600;color:#16324f;width:27%;}
 <!-- ===================== PAGE 2 ===================== -->
 <div class="page brk">
 
-  <h2 style="margin-top:2px;">4. 협의회 지원</h2>
-  <p>협의회 활동 자체를 돕는 지원으로 아래를 제공합니다.</p>
-  <ul>
-    <li><b>조명 무상 시공 50만원 상당</b> — 협의회가 필요로 하는 공간에 조명 시공을 지원합니다.</li>
-    <li><b>모든 품목 공동구매가에서 추가 20~40% 할인</b> — 박람회 공동구매가를 기준으로, 품목별로 최소 20%에서 최대 40%까지 더 할인해 드립니다.</li>
-    <li><b>사전점검(프리체크) 지원 대행</b> — 사전점검 일정·안내·현장 진행을 함께 챙깁니다.</li>
-    <li><b>업무 보조</b> — 회의 장소 제공, 공문·행정 실무, 홍보 등 협의회 운영 전반을 돕습니다.</li>
-  </ul>
+  <div class="h" style="margin-top:2px;">3. 정회원(전 세대) 혜택</div>
+  <p class="txt">저희 방식은 다른 주관사와 다릅니다. 업체를 방문하거나 계약을 해야 혜택을 주는 것이 아니라, <b>박람회 현장에 입장(체크인)만 하면 받는 혜택</b>이 기본입니다. 신청도 계약도 필요 없습니다. 정회원·준회원을 나누지 않고 전 세대에 동일하게 적용합니다.</p>
+  <div class="sub"><b>○ 무조건 제공(방문·입장만 하면)</b> — 집에 남는 시공형 혜택 패키지(전동커튼·간접조명·거실 방충망 등), 화재보험 무상, 공용부 무상 시공(실링팬·간접조명·세균소독), 사전점검 키트 제공, 점등식·드론촬영·경품 행사.</div>
+  <div class="sub"><b>○ 조건부 제공(계약·참여 시)</b> — 온라인 특가 구매 품목, 부스 참여 업체 특가·서비스, 세대별 하자점검 특가, 시공 계약 시 사은품 등.</div>
+  <p class="txt" style="margin-top:8px;">한 가지 분명히 해두겠습니다. 행사장에서 업체들이 흔히 내거는 <b>무료 코팅, 줄눈·현관 무료 시공, 말굽 서비스 같은 미끼성 무료 서비스는 저희는 하지 않습니다.</b> 겉으로는 공짜지만 결국 나머지 시공을 비싸게 받아 그 돈이 그대로 메꿔지는 상술이기 때문입니다. (예: 줄눈 바닥 몇 곳을 무료로 해주고 벽 등 나머지 줄눈 시공에서 비싸게 받는 식) 저희는 이런 방식 대신 처음부터 정직한 가격으로 갑니다.</p>
+  <p class="ref" style="margin-left:4px;">※ 혜택 품목과 상당 금액은 엘리프창원의 평형·세대수·입주 시기에 맞춰 확정합니다.</p>
 
-  <h2>5. 계약 조건</h2>
-  <table>
-    <tr><th style="width:33%">협의회 요구</th><th>답변</th></tr>
-    <tr>
-      <td class="h">계약서 체결 전 검토 후 체결</td>
-      <td>당연히 그렇게 하겠습니다. 계약서 초안을 미리 드리고, 협의회가 충분히 검토하신 뒤에 체결합니다. 협의회에 불리한 조항이 없도록 함께 맞춥니다.</td>
-    </tr>
-    <tr>
-      <td class="h">타 아파트와 박람회 기간이<br>겹치지 않을 것</td>
-      <td>겹치지 않게 하겠습니다. 그 해, 그 달에 엘리프창원 박람회가 잡히면 <b>같은 시기 다른 단지에는 제안서 자체를 넣지 않습니다.</b> 준비와 인력을 이 단지에만 집중합니다. 이 내용은 계약서에 명시할 수 있습니다.</td>
-    </tr>
-    <tr>
-      <td class="h">사후 A/S를 완벽하게<br>처리하는지</td>
-      <td>저희는 경남 지역업체라 사후 대응에 자신 있습니다. 자사 시공팀·콜센터가 직접 처리하고, 48시간 보수·10년 A/S(최소 2년 무상)를 지킵니다. 아래 재원으로 뒷받침합니다.<br>· 하자예치금 현금 1억 (협의회가 단독으로 꺼내 쓸 수 있는 공동통장)<br>· 이행보증보험 5억 (업체 도산 시 저희가 지급·승계)</td>
-    </tr>
-  </table>
+  <div class="h">4. 협의회 지원</div>
+  <div class="item"><span class="k">가. 조명 무상 시공 50만원 상당.</span> 협의회가 필요로 하는 공간에 조명 시공을 지원합니다.</div>
+  <div class="item"><span class="k">나. 전 품목 공동구매가에서 추가 20~40% 할인.</span> 박람회 공동구매가를 기준으로, 품목별 최소 20%에서 최대 40%까지 더 할인해 드립니다.</div>
+  <div class="item"><span class="k">다. 사전점검(프리체크) 지원 대행.</span> 사전점검 일정·안내·현장 진행을 함께 챙깁니다.</div>
+  <div class="item"><span class="k">라. 업무 보조.</span> 회의 장소 제공, 공문·행정 실무, 홍보 등 협의회 운영 전반을 돕습니다.</div>
 
-  <h2>6. 주관사 실적</h2>
-  <table>
-    <tr><th style="width:33%">문의</th><th>답변</th></tr>
-    <tr>
-      <td class="h">타 아파트 진행 사례</td>
-      <td>지금까지 13개 단지 22,065세대(전부 1,000세대 이상)를 운영했습니다. 양정자이SK뷰(2,276), 두산위브 오션시티(2,205), 대성베르힐(1,120) 등이며, <b>창원 센트럴 아이파크</b>도 저희가 주관했습니다. 수임계약서·현장 사진·점등식 영상으로 보여드릴 수 있습니다.</td>
-    </tr>
-    <tr>
-      <td class="h">설계변경·건의사항<br>해결 사례</td>
-      <td>시공사를 상대로 공문과 협상으로 입주민 요구를 관철한 사례가 있습니다. 대표적으로 <b>유리난간 공동구매를 실제로 완료</b>한 것이 있습니다(진행 자료 제출 가능).</td>
-    </tr>
-    <tr>
-      <td class="h">설계도면을 받을 수<br>있는지</td>
-      <td>설계도면은 <b>구청에 요청하면 받을 수 있습니다.</b> 협의회 명의로 정식 요청하는 절차를 저희가 대행·지원해 확보해 드리겠습니다.</td>
-    </tr>
-    <tr>
-      <td class="h">버스정류장 요청 등<br>관계기관 요구</td>
-      <td>시행사에 요구할 수 있는 사안이라면, 그 관철은 저희가 누구보다 잘 해낼 자신이 있습니다. 창원시·시행사 등 관계기관 대상 요청 공문 작성·발송과 후속 협의를 맡아 진행합니다. (설치 여부의 최종 결정은 관계기관 권한이라 '확정'을 약속드리는 것은 아니며, 관철을 위한 실행을 약속드립니다.)</td>
-    </tr>
-    <tr>
-      <td class="h">유리난간 — 협상 결렬 시<br>공동구매 가능 여부</td>
-      <td>가능합니다. 저희는 <b>소유권 등기 전 입주 단계에서 유리난간 공동구매를 경남에서 처음으로 성사시킨 회사</b>입니다. 시행사 옵션 협상이 안 되더라도 공동구매로 전환할 수 있고, 이때 필요한 입주민 동의 취합(전유부 1/2·공유부 2/3), 구조안전 검토, 구청 행위허가 신고까지 저희가 대행합니다.<br>주관사들이 흔히 "우리가 다 했다"고 말하지만, 확인해 보시면 실제로 완료까지 간 곳은 많지 않습니다.</td>
-    </tr>
-  </table>
+  <div class="h">5. 계약 조건</div>
+  <div class="item"><span class="k">가. 계약서 체결 전 검토 후 체결.</span> 당연히 그렇게 하겠습니다. 계약서 초안을 미리 드리고, 협의회가 충분히 검토하신 뒤에 체결합니다. 협의회에 불리한 조항이 없도록 함께 맞춥니다.</div>
+  <div class="item"><span class="k">나. 타 아파트와 박람회 기간 비중복.</span> 겹치지 않게 하겠습니다. 그 해, 그 달에 엘리프창원 박람회가 잡히면 <b>같은 시기 다른 단지에는 제안서 자체를 넣지 않습니다.</b> 준비와 인력을 이 단지에만 집중합니다. 이 내용은 계약서에 명시할 수 있습니다.</div>
+  <div class="item"><span class="k">다. 사후 A/S.</span> 저희는 경남 지역업체라 사후 대응에 자신 있습니다. 자사 시공팀·콜센터가 직접 처리하고 48시간 보수·10년 A/S(최소 2년 무상)를 지킵니다. 재원으로 하자예치금 현금 1억(협의회가 단독으로 꺼내 쓸 수 있는 공동통장)과 이행보증보험 5억(업체 도산 시 저희가 지급·승계)을 갖춥니다.</div>
 
-  <p style="margin-top:14px;">
-    보내주신 문의에 대한 답변은 이상입니다. 세대수·일정에 따라 확정되는 금액과 범위는 협의회와 협의해 최종 확정하고,
-    면허증·인증서·실적 계약서 등 증빙은 계약 전에 직접 확인시켜 드리겠습니다.
-    필요하시면 언제든 협의회에 찾아뵙고 설명드리겠습니다.
-  </p>
+  <div class="h">6. 주관사 실적</div>
+  <div class="item"><span class="k">가. 타 아파트 진행 사례.</span> 지금까지 13개 단지 22,065세대(전부 1,000세대 이상)를 운영했습니다. 양정자이SK뷰(2,276), 두산위브 오션시티(2,205), 대성베르힐(1,120) 등이며 <b>창원 센트럴 아이파크</b>도 저희가 주관했습니다. 수임계약서·현장 사진·점등식 영상으로 보여드릴 수 있습니다.</div>
+  <div class="item"><span class="k">나. 설계변경·건의사항 해결 사례.</span> 시공사를 상대로 공문과 협상으로 입주민 요구를 관철한 사례가 있습니다. 대표적으로 <b>유리난간 공동구매를 실제로 완료</b>한 것이 있습니다(진행 자료 제출 가능).</div>
+  <div class="item"><span class="k">다. 설계도면.</span> 설계도면은 <b>구청에 요청하면 받을 수 있습니다.</b> 협의회 명의로 정식 요청하는 절차를 저희가 대행·지원해 확보해 드리겠습니다.</div>
+  <div class="item"><span class="k">라. 버스정류장 등 관계기관 요구.</span> 시행사에 요구할 수 있는 사안이라면 그 관철은 저희가 누구보다 잘 해낼 자신이 있습니다. 창원시·시행사 등 관계기관 대상 요청 공문 작성·발송과 후속 협의를 맡아 진행합니다. (설치 여부의 최종 결정은 관계기관 권한이라 '확정'을 약속드리는 것은 아니며, 관철을 위한 실행을 약속드립니다.)</div>
+  <div class="item"><span class="k">마. 유리난간 — 협상 결렬 시 공동구매.</span> 가능합니다. 저희는 <b>소유권 등기 전 입주 단계에서 유리난간 공동구매를 경남에서 처음으로 성사시킨 회사</b>입니다. 시행사 옵션 협상이 안 되더라도 공동구매로 전환할 수 있고, 이때 필요한 입주민 동의 취합(전유부 1/2·공유부 2/3), 구조안전 검토, 구청 행위허가 신고까지 저희가 대행합니다. 주관사들이 흔히 "우리가 다 했다"고 말하지만, 확인해 보시면 실제로 완료까지 간 곳은 많지 않습니다.</div>
+
+  <p class="txt" style="margin-top:14px;">보내주신 문의에 대한 답변은 이상입니다. 세대수·일정에 따라 정해지는 금액과 범위는 협의회와 협의해 확정하고, 면허증·인증서·실적 계약서 등 증빙은 계약 전에 직접 확인시켜 드리겠습니다. 필요하시면 언제든 협의회에 찾아뵙고 설명드리겠습니다.</p>
 
   <div class="sign">
     <div style="margin-bottom:6px;">2026.  7.  15.</div>
