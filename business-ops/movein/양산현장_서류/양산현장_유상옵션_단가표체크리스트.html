@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>양산현장 · 유상옵션 단가표 / 체크리스트</title>
+<style>
+@page { size: A4 landscape; margin: 0; }
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1a1a1a; margin:0; background:#eceef1; }
+.page { width:297mm; min-height:210mm; padding:9mm 11mm 8mm; position:relative; background:#fff; margin:0 auto 8px; overflow:hidden; }
+.brandbar { height:6px; background:linear-gradient(90deg,#15233d 0%,#15233d 55%,#c9a227 100%); border-radius:4px; }
+.head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:8px; }
+.brand { font-size:13px; font-weight:800; letter-spacing:1px; color:#15233d; }
+.brand small { display:block; font-size:9px; font-weight:600; letter-spacing:2px; color:#6b7a8d; margin-top:2px; }
+h1 { text-align:center; font-size:20px; font-weight:800; letter-spacing:3px; color:#15233d; margin:6px 0 2px; }
+.sub { text-align:center; font-size:11px; color:#6b7a8d; letter-spacing:1px; margin-bottom:8px; }
+.info { display:flex; justify-content:space-between; align-items:center; font-size:11px; margin:6px 0 4px; }
+.info .fields span { display:inline-block; margin-right:14px; color:#333; }
+.info .fields b { color:#15233d; font-weight:700; }
+.info .fields u { text-decoration:none; border-bottom:1px solid #9aa4b2; display:inline-block; min-width:52px; }
+.unit { font-size:10.5px; color:#8a6d12; font-weight:700; }
+table { width:100%; border-collapse:collapse; font-size:10.5px; margin-top:4px; }
+th, td { border:1px solid #c4c8d0; padding:6px 5px; text-align:center; }
+thead th { background:#15233d; color:#fff; font-weight:700; letter-spacing:.5px; }
+.grp th { background:#22345a; }
+tbody td { height:30px; }
+.no { width:30px; font-weight:700; color:#15233d; }
+.item { width:120px; text-align:left; font-weight:700; color:#15233d; padding-left:9px; }
+.spec { width:150px; }
+.pcol { width:62px; }
+.pay { width:70px; }
+.acct { width:130px; }
+.stamp { width:52px; }
+.chk { width:34px; font-size:13px; color:#8a94a6; }
+.remark { text-align:left; }
+.zebra tbody tr:nth-child(even) td { background:#f7f8fa; }
+.foot { margin-top:8px; font-size:9.5px; color:#666; line-height:1.6; }
+.foot b { color:#15233d; }
+.botbar { position:absolute; left:11mm; right:11mm; bottom:6mm; border-top:1px solid #e0e0e3; padding-top:5px; display:flex; justify-content:space-between; font-size:8.5px; color:#90a0b2; }
+</style></head>
+<body>
+<div class="page">
+  <div class="brandbar"></div>
+  <div class="head">
+    <div class="brand">EDGE COMPANY<small>㈜엣지컴퍼니 · 입주옵션 주관</small></div>
+    <div class="unit">단위 : 원 (부가세 포함)</div>
+  </div>
+  <h1>유상옵션 단가표 · 계약 체크리스트</h1>
+  <div class="sub">양산현장</div>
+
+  <div class="info">
+    <div class="fields">
+      <span><b>동·호수</b> <u>&nbsp;</u> 동 <u>&nbsp;</u> 호</span>
+      <span><b>타입</b> <u>&nbsp;</u></span>
+      <span><b>성명</b> <u>&nbsp;</u></span>
+      <span><b>연락처</b> <u>&nbsp;</u></span>
+    </div>
+    <div class="unit">계약금 · 계좌번호 · 날인란은 각 업체가 직접 작성</div>
+  </div>
+
+  <table class="zebra">
+    <thead>
+      <tr>
+        <th class="no" rowspan="2">순번</th>
+        <th class="item" rowspan="2">품목 (업체)</th>
+        <th class="spec" rowspan="2">제품명 / 사양</th>
+        <th class="grp" colspan="4">총공급액 (평형별)</th>
+        <th class="pay" rowspan="2">계약금</th>
+        <th class="acct" rowspan="2">입금 계좌번호</th>
+        <th class="stamp" rowspan="2">도장</th>
+        <th class="chk" rowspan="2">확인</th>
+        <th class="remark" rowspan="2" style="width:130px;">비고</th>
+      </tr>
+      <tr>
+        <th class="pcol">59㎡</th>
+        <th class="pcol">76㎡</th>
+        <th class="pcol">84㎡A</th>
+        <th class="pcol">84㎡B</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="no">1</td><td class="item">친환경 바이오도료</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">2</td><td class="item">현관중문</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">3</td><td class="item">간접조명 &amp; 실링팬</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">4</td><td class="item">전동커튼</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">5</td><td class="item">휴젠뜨 (욕실 천장 복합기)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">6</td><td class="item">음식물처리기</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">7</td><td class="item">홈케어 (줄눈·나노코팅·탄성코트)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">8</td><td class="item">프리미엄 워터</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">9</td><td class="item">실외기 자동개폐기</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">10</td><td class="item">단열필름</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+      <tr><td class="no">11</td><td class="item">안전망 (미세방충망 일체형)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="chk">□</td><td class="remark"></td></tr>
+    </tbody>
+  </table>
+
+  <div class="foot">
+    ※ 평형 : <b>59㎡ · 76㎡ · 84㎡A · 84㎡B</b> (힐스테이트 물금센트럴 분양 기준) &nbsp;|&nbsp;
+    총공급액·계약금은 업체 확정 후 기입 &nbsp;|&nbsp; <b>계약·수납·날인은 각 대표 업체가 직접 진행</b>하며, 엣지컴퍼니는 이행·품질·A/S를 보증합니다.
+  </div>
+
+  <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>양산현장 · 유상옵션 단가표/체크리스트</span></div>
+</div>
+</body></html>
