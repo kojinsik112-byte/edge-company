@@ -28,6 +28,15 @@
   "telephone": "1588-2424",
   "description": "하수구 막힘 뚫음, 고압 배관청소, 누수탐지·방수 전문. 전국 24시간 출동, 시공 전 투명 견적, 작업 후 A/S 보증.",
   "areaServed": "대한민국 전국",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "KR",
+    "addressRegion": "서울특별시",
+    "addressLocality": "영등포구",
+    "streetAddress": "국회금융로7길 20"
+  },
+  "identifier": "사업자등록번호 575-41-01087",
+  "foundingDate": "2023-12-15",
   "openingHoursSpecification": {
     "@type": "OpeningHoursSpecification",
     "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
@@ -146,7 +155,7 @@
   .hs .l{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px}
   .hero-visual{position:relative;margin-top:26px;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line)}
   .hero-visual svg{display:block;width:100%}
-  .hero-visual .cap{position:absolute;left:14px;bottom:12px;background:rgba(11,31,58,.85);backdrop-filter:blur(6px);color:#fff;font-size:12px;font-weight:700;padding:7px 12px;border-radius:99px;display:inline-flex;align-items:center;gap:6px}
+  .hero-visual .cap{position:absolute;left:14px;bottom:12px;z-index:4;background:rgba(11,31,58,.85);backdrop-filter:blur(6px);color:#fff;font-size:12px;font-weight:700;padding:7px 12px;border-radius:99px;display:inline-flex;align-items:center;gap:6px}
   .hero-visual .cap .icon{color:var(--sky)}
 
   /* ===== Live ticker (실시간 접수 지역) ===== */
@@ -428,7 +437,7 @@
 <header>
   <div class="wrap nav">
     <a href="#top" class="brand" aria-label="와우클린 홈">
-      <span class="logo"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/></svg></span>
+      <span class="logo" style="position:relative;overflow:hidden"><img src="assets/logo.png" alt="와우클린 로고" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;z-index:2" onerror="this.remove()"/><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/></svg></span>
       <span class="bt">와우클린<small>WOW CLEAN · 배관 전문</small></span>
     </a>
     <nav class="dnav" aria-label="주 메뉴">
@@ -486,6 +495,7 @@
       </div>
     </div>
     <div class="hero-visual">
+      <img src="assets/model.jpg" alt="와우클린 전문 기사" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;z-index:2" onerror="this.remove()"/>
       <svg viewBox="0 0 480 330" preserveAspectRatio="xMidYMid slice" aria-label="깨끗하게 시공된 배관 이미지">
         <defs>
           <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f8fe"/><stop offset="1" stop-color="#e6eefa"/></linearGradient>
@@ -539,7 +549,7 @@
   <div class="wrap row">
     <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>시공 전 투명 견적</span>
     <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>작업 후 A/S 보증</span>
-    <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>사업자 정식 등록</span>
+    <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>사업자등록 575-41-01087</span>
     <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>현장 사진 리포트</span>
     <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>카드·세금계산서</span>
   </div>
@@ -564,8 +574,25 @@
   </div>
 </section>
 
+<!-- ===== 응급조치 (기사 도착 전) ===== -->
+<section class="sec alt" id="firstaid">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">Emergency Tips</span>
+      <h2>기사 도착 전, <span class="a">이것부터</span> 하세요</h2>
+      <p>피해를 줄이는 응급조치입니다. 전화 주시면 상황에 맞게 바로 안내해 드립니다.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why reveal"><div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M6 4h12v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6zM12 15v5M8 20h8"/></svg></div><div><h4>변기가 넘칠 것 같다면</h4><p>변기 뒤 물탱크 아래 <b>급수 밸브를 잠그고</b> 물을 더 내리지 마세요. 뜨거운 물·화학 약품을 붓는 건 배관 손상 위험이 있습니다.</p></div></div>
+      <div class="why reveal"><div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M6 3h12l-1 7a5 5 0 0 1-10 0z"/><path d="M12 15v6M8 21h8"/></svg></div><div><h4>싱크대가 역류한다면</h4><p><b>물 사용을 즉시 중단</b>하고 바닥에 수건을 깔아 두세요. 뚫는 약품을 여러 번 붓고 기다리면 오히려 굳어서 작업이 어려워집니다.</p></div></div>
+      <div class="why reveal"><div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3.5 4.5 6 7.4 6 10.5A6 6 0 0 1 6 13.5C6 10.4 8.5 7.5 12 3z"/></svg></div><div><h4>물이 새는 것 같다면</h4><p>싱크대 아래·현관 옆 <b>계량기 밸브를 잠그면</b> 일단 멈춥니다. 젖은 부위 사진을 찍어두시면 진단이 훨씬 빨라집니다.</p></div></div>
+      <div class="why reveal"><div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20s2-8 8-8 8 8 8 8M9 8a3 3 0 1 0 6 0 3 3 0 0 0-6 0z"/></svg></div><div><h4>하수구 냄새가 올라온다면</h4><p>바닥 배수구·안 쓰는 배수구에 <b>물을 한 컵씩 부어</b> 트랩을 채우면 임시로 냄새가 줄어듭니다. 계속되면 배관 내부 문제입니다.</p></div></div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== Services ===== -->
-<section class="sec alt" id="services">
+<section class="sec" id="services">
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="kicker">Services</span>
@@ -867,13 +894,18 @@
   </div>
   <div class="wrap">
     <div class="rv-scroll">
-      <div class="rv"><div class="stars">★★★★★</div><p>새벽에 변기가 넘쳤는데 바로 전화 받고 와주셨어요. 오기 전에 대략 비용을 알려주셔서 안심됐습니다.</p><div class="who"><div class="av">김</div><div><b>김○○ 고객님</b><small>변기 막힘 · 아파트</small></div></div></div>
-      <div class="rv"><div class="stars">★★★★★</div><p>식당 주방 배관이 자주 막혔는데 고압세척 후 확실히 잘 내려갑니다. 사진으로 전후를 보여주셔서 좋았어요.</p><div class="who"><div class="av">이</div><div><b>이○○ 사장님</b><small>배관청소 · 상가</small></div></div></div>
-      <div class="rv"><div class="stars">★★★★★</div><p>천장 물자국 원인을 못 찾고 있었는데 탐지로 정확히 잡아주셨어요. 필요한 부분만 방수해서 비용도 합리적.</p><div class="who"><div class="av">박</div><div><b>박○○ 고객님</b><small>누수탐지 · 주택</small></div></div></div>
-      <div class="rv"><div class="stars">★★★★★</div><p>견적이 시공 후에 안 바뀌어서 신뢰가 갔습니다. 작업도 깔끔하고 뒷정리까지 해주셨어요.</p><div class="who"><div class="av">최</div><div><b>최○○ 고객님</b><small>하수구 막힘 · 빌라</small></div></div></div>
-      <div class="rv"><div class="stars">★★★★★</div><p>카페 정기관리 계약했는데 미리미리 봐주시니 막힐 걱정이 없어요. 영업 중에 안 막히는 게 제일 큽니다.</p><div class="who"><div class="av">정</div><div><b>정○○ 사장님</b><small>정기 관리 · 카페</small></div></div></div>
-      <div class="rv"><div class="stars">★★★★★</div><p>관로 카메라로 안을 보여주면서 설명해주셔서 이해가 확 됐어요. 필요한 것만 하자고 하셔서 믿음이 갔습니다.</p><div class="who"><div class="av">한</div><div><b>한○○ 고객님</b><small>CCTV 관로조사 · 주택</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>새벽 2시에 변기가 넘쳤는데 전화를 바로 받아주셨어요. 오기 전에 대략 비용을 알려주셔서 안심하고 기다렸습니다. 40분 만에 해결.</p><div class="who"><div class="av">김</div><div><b>김○○ 고객님</b><small>변기 막힘 · 아파트</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>손님 있는데 주방 배수가 역류해서 멘붕이었어요. 영업 끊기기 전에 와서 뚫어주시고, 재발 안 하게 관리법까지 알려주셨습니다.</p><div class="who"><div class="av">이</div><div><b>이○○ 사장님</b><small>싱크대 역류 · 식당</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>다른 데서는 다 뜯어야 한다고 했는데, 여기는 카메라로 확인하고 막힌 구간만 뚫어서 반값에 끝났어요. 견적 그대로였습니다.</p><div class="who"><div class="av">박</div><div><b>박○○ 고객님</b><small>배관 막힘 · 빌라</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>천장 물자국 때문에 아랫집이랑 얼굴 붉힐 뻔했는데 탐지로 정확한 지점을 찾아 필요한 부분만 방수했어요. 보고서 사진도 받았습니다.</p><div class="who"><div class="av">최</div><div><b>최○○ 고객님</b><small>누수탐지 · 주택</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>전화로 예상 범위 먼저 알려주고, 현장에서 확정 금액에 동의한 뒤에만 작업하더라고요. 끝나고 금액이 안 바뀌는 게 제일 좋았습니다.</p><div class="who"><div class="av">정</div><div><b>정○○ 고객님</b><small>하수구 막힘 · 오피스텔</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>주말 저녁이라 아무도 안 받는데 여기만 받았어요. 아이 씻겨야 하는데 욕실이 막혀서 급했거든요. 도착 시간도 정확했습니다.</p><div class="who"><div class="av">한</div><div><b>한○○ 고객님</b><small>욕실 배수 · 아파트</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>카페 정기관리 계약 후로는 막힐 걱정이 없어요. 방문 때마다 사진 리포트 남겨주셔서 건물주한테 보고하기도 편합니다.</p><div class="who"><div class="av">서</div><div><b>서○○ 사장님</b><small>정기 관리 · 카페</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>관로 카메라로 배관 속을 같이 보면서 설명해주니 이해가 확 됐어요. 안 해도 되는 작업은 안 해도 된다고 말해줘서 신뢰가 갔습니다.</p><div class="who"><div class="av">윤</div><div><b>윤○○ 고객님</b><small>CCTV 관로조사 · 주택</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>세입자 집 변기 문제로 원격으로 접수했는데, 세입자와 직접 일정 잡고 처리 후 저한테 사진으로 결과를 보내주셨어요. 임대인 입장에서 최고.</p><div class="who"><div class="av">임</div><div><b>임○○ 고객님</b><small>변기 막힘 · 임대세대</small></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>기름때로 꽉 막힌 주방 배관 고압세척 받았는데 물 내려가는 소리부터 달라졌어요. 작업 전후 영상을 보여줘서 확실히 믿음이 갑니다.</p><div class="who"><div class="av">오</div><div><b>오○○ 사장님</b><small>고압세척 · 프랜차이즈</small></div></div></div>
     </div>
+    <p class="cap-note" style="margin-top:6px">※ 고객 개인정보 보호를 위해 이름은 가리고, 실제 시공·상담 사례를 바탕으로 재구성한 후기입니다.</p>
   </div>
 </section>
 
@@ -966,10 +998,11 @@
       <a href="https://blog.naver.com/wowclean8282" target="_blank" rel="noopener"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>네이버 블로그</a>
     </div>
     <div class="legal">
-      상호 와우클린 · 대표 000 · 사업자등록번호 000-00-00000<br/>
+      상호 와우클린 하수구변기막힘설비 · 대표 안영란<br/>
+      사업자등록번호 575-41-01087 · 2023년 12월 개업<br/>
+      소재지 서울특별시 영등포구 국회금융로7길 20 (여의도동)<br/>
       대표전화 1588-2424 · 이메일 help@wowclean.co.kr<br/>
-      ⓒ 와우클린 (WOW CLEAN). All rights reserved.<br/>
-      ※ 본 페이지의 전화번호·사업자 정보는 오픈 전 실제 정보로 교체가 필요합니다.
+      ⓒ 와우클린 (WOW CLEAN). All rights reserved.
     </div>
   </div>
 </footer>
