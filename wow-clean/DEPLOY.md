@@ -10,7 +10,7 @@
 2. **Add new site › Import an existing project** 클릭
 3. **GitHub** 선택 → 저장소 `kojinsik112-byte/edge-company` 선택
 4. 배포 설정에서:
-   - **Branch**: `claude/wow-clean-website-mobile-md43f9` (또는 main 병합 후 main)
+   - **Branch**: `claude/plumbing-website-crk2vl` (와우클린 최신 작업 브랜치, 또는 main 병합 후 main)
    - **Publish directory**: `wow-clean`
    - **Build command**: 비워둠 (정적 사이트)
    - ※ 저장소 루트의 `netlify.toml`이 위 설정을 자동 적용하므로 그대로 Deploy 해도 됩니다.
