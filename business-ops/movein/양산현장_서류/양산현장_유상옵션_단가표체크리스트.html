@@ -2,39 +2,39 @@
 <html lang="ko"><head><meta charset="utf-8">
 <title>양산현장 · 유상옵션 단가표 / 체크리스트</title>
 <style>
-@page { size: A4 landscape; margin: 0; }
+@page { size: A4; margin: 0; }
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1a1a1a; margin:0; background:#eceef1; }
-.page { width:297mm; min-height:210mm; padding:9mm 11mm 8mm; position:relative; background:#fff; margin:0 auto 8px; overflow:hidden; }
+.page { width:210mm; min-height:297mm; padding:11mm 10mm 10mm; position:relative; background:#fff; margin:0 auto 8px; overflow:hidden; }
 .brandbar { height:6px; background:linear-gradient(90deg,#15233d 0%,#15233d 55%,#c9a227 100%); border-radius:4px; }
 .head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:8px; }
 .brand { font-size:13px; font-weight:800; letter-spacing:1px; color:#15233d; }
 .brand small { display:block; font-size:9px; font-weight:600; letter-spacing:2px; color:#6b7a8d; margin-top:2px; }
-h1 { text-align:center; font-size:20px; font-weight:800; letter-spacing:3px; color:#15233d; margin:6px 0 2px; }
+h1 { text-align:center; font-size:20px; font-weight:800; letter-spacing:3px; color:#15233d; margin:8px 0 2px; }
 .sub { text-align:center; font-size:11px; color:#6b7a8d; letter-spacing:1px; margin-bottom:8px; }
-.info { display:flex; justify-content:space-between; align-items:center; font-size:11px; margin:6px 0 4px; }
-.info .fields span { display:inline-block; margin-right:14px; color:#333; }
+.info { display:flex; justify-content:space-between; align-items:center; font-size:10.5px; margin:8px 1px 5px; }
+.info .fields span { display:inline-block; margin-right:11px; color:#333; }
 .info .fields b { color:#15233d; font-weight:700; }
-.info .fields u { text-decoration:none; border-bottom:1px solid #9aa4b2; display:inline-block; min-width:52px; }
-.unit { font-size:10.5px; color:#8a6d12; font-weight:700; }
-table { width:100%; border-collapse:collapse; font-size:10.5px; margin-top:4px; }
-th, td { border:1px solid #c4c8d0; padding:6px 5px; text-align:center; }
-thead th { background:#15233d; color:#fff; font-weight:700; letter-spacing:.5px; }
+.info .fields u { text-decoration:none; border-bottom:1px solid #9aa4b2; display:inline-block; min-width:40px; }
+.unit { font-size:10px; color:#8a6d12; font-weight:700; }
+table { width:100%; border-collapse:collapse; font-size:9px; margin-top:4px; table-layout:fixed; }
+th, td { border:1px solid #c4c8d0; padding:5px 3px; text-align:center; word-break:keep-all; }
+thead th { background:#15233d; color:#fff; font-weight:700; }
 .grp th { background:#22345a; }
-tbody td { height:30px; }
-.no { width:30px; font-weight:700; color:#15233d; }
-.item { width:120px; text-align:left; font-weight:700; color:#15233d; padding-left:9px; }
-.spec { width:150px; }
-.pcol { width:62px; }
-.pay { width:70px; }
-.acct { width:130px; }
-.stamp { width:52px; }
-.chk { width:34px; font-size:13px; color:#8a94a6; }
-.remark { text-align:left; }
+tbody td { height:34px; }
+.no { width:26px; font-weight:700; color:#15233d; }
+.item { width:88px; text-align:left; font-weight:700; color:#15233d; padding-left:6px; }
+.spec { width:74px; }
+.pcol { width:42px; }
+.pay { width:52px; }
+.acct { width:92px; }
+.stamp { width:42px; }
+.chk { width:26px; font-size:12px; color:#8a94a6; }
+.remark { width:auto; text-align:left; }
 .zebra tbody tr:nth-child(even) td { background:#f7f8fa; }
-.foot { margin-top:8px; font-size:9.5px; color:#666; line-height:1.6; }
+.foot { margin-top:9px; font-size:9px; color:#666; line-height:1.7; }
 .foot b { color:#15233d; }
-.botbar { position:absolute; left:11mm; right:11mm; bottom:6mm; border-top:1px solid #e0e0e3; padding-top:5px; display:flex; justify-content:space-between; font-size:8.5px; color:#90a0b2; }
+.botbar { position:absolute; left:10mm; right:10mm; bottom:8mm; border-top:1px solid #e0e0e3; padding-top:5px; display:flex; justify-content:space-between; font-size:8.5px; color:#90a0b2; }
 </style></head>
 <body>
 <div class="page">
@@ -53,7 +53,7 @@ tbody td { height:30px; }
       <span><b>성명</b> <u>&nbsp;</u></span>
       <span><b>연락처</b> <u>&nbsp;</u></span>
     </div>
-    <div class="unit">계약금 · 계좌번호 · 날인란은 각 업체가 직접 작성</div>
+    <div class="unit">계약금·계좌번호·날인란은 각 업체가 직접 작성</div>
   </div>
 
   <table class="zebra">
@@ -67,7 +67,7 @@ tbody td { height:30px; }
         <th class="acct" rowspan="2">입금 계좌번호</th>
         <th class="stamp" rowspan="2">도장</th>
         <th class="chk" rowspan="2">확인</th>
-        <th class="remark" rowspan="2" style="width:130px;">비고</th>
+        <th class="remark" rowspan="2">비고</th>
       </tr>
       <tr>
         <th class="pcol">59㎡</th>
@@ -92,8 +92,8 @@ tbody td { height:30px; }
   </table>
 
   <div class="foot">
-    ※ 평형 : <b>59㎡ · 76㎡ · 84㎡A · 84㎡B</b> (힐스테이트 물금센트럴 분양 기준) &nbsp;|&nbsp;
-    총공급액·계약금은 업체 확정 후 기입 &nbsp;|&nbsp; <b>계약·수납·날인은 각 대표 업체가 직접 진행</b>하며, 엣지컴퍼니는 이행·품질·A/S를 보증합니다.
+    ※ 평형 : <b>59㎡ · 76㎡ · 84㎡A · 84㎡B</b> (힐스테이트 물금센트럴 분양 기준)<br>
+    ※ 총공급액·계약금은 업체 확정 후 기입 &nbsp;|&nbsp; <b>계약·수납·날인은 각 대표 업체가 직접 진행</b>하며, 엣지컴퍼니는 이행·품질·A/S를 보증합니다.
   </div>
 
   <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>양산현장 · 유상옵션 단가표/체크리스트</span></div>
