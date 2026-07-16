@@ -8,19 +8,16 @@ ALL="전타입<br>동일"
 DATA = [
  (1,"친환경<br>바이오도료","그래핀 규조토 · 라돈 방출 저감 · 시멘트 독성 중화 · 유해물질 흡착분해 · 흡습·방습 · 불연성능 · <b>무상A/S 3년</b>",
    [("규조토 세스 바이오 (바닥 제외 실내벽체 / 발코니·타일·아트월 제외)",[("59",2400000),("76",2700000),("84",2900000)])]),
- (2,"현관중문","<b>단가</b> 스윙도어 1,500,000 / 원슬라이딩 1,300,000 · 5T 강화유리 · 시트 랩핑 · <b>무상AS 1년</b> · ※ 원슬라이딩 선택 : 59확장/84B",
-   [("스윙도어(양방향)",[("59기본형",1500000)]),
-    ("스윙도어(양방향) / 원슬라이딩",[("59확장형","선택")]),
-    ("스윙도어(양방향)",[("76",1500000)]),
-    ("스윙도어(양방향)",[("84A",1500000)]),
-    ("스윙도어(양방향) / 원슬라이딩",[("84B","선택")])]),
+ (2,"현관중문","<b>단가</b> 스윙도어 1,500,000 / 원슬라이딩 1,300,000 · 5T 강화유리 · 시트 랩핑 · <b>무상AS 1년</b> · ※ 원슬라이딩(선택) : 59확장·84B",
+   [("스윙도어 (양방향)",[("59기본·76·84A<br>동일",1500000)]),
+    ("원슬라이딩 (확장세대)",[("59확장·84B","선택")])]),
  (3,"열차단<br>단열필름","<b>대피실(실외기실) 제외</b> · 무상A/S 12년",
    [("레이노 프리미엄 LX",[("59",2100000),("76",2300000),("84",2500000)])]),
  (4,"간접조명<br>&amp; 실링팬","<span class='hlapp'>★ 실링팬·조명·BT스위치·전동커튼 아크로 앱 통합제어</span> · 실링팬 = <b>아크로 블루투스 실링팬 최신형</b><br><span class='hlapp'>◎ 조명&amp;실링팬 + 전동커튼 세트(아크로 앱 연동) 5% 할인</span>",
    [("[선택1] SPOT조명(거실·복도) + 매립스위치(IOT) + 욕실장·신발장하부 센서",[(ALL,1300000)]),
     ("[선택2] 선택1 + 우물천장 간접조명 + 거실 커튼라인조명",[(ALL,2400000)]),
     ("[추가] 아크로 실링팬 + 우물천장 간접조명 또는 다운라이트 8개",[(ALL,1400000)])]),
- (5,"전동커튼","<span class='hlapp'>아크로 앱 연동 통합제어</span> · 무상A/S 2년 · IOT 허브 별도 · 거실=속지+겉지 2겹 / 안방 1겹 · <b>자사 잠정단가</b><br><span class='hlapp'>◎ 조명&amp;실링팬 + 전동커튼 세트 계약 시 5% 할인</span>",
+ (5,"전동커튼","<span class='hlapp'>아크로 앱 연동 통합제어</span> · 무상A/S 2년 · IOT 허브 별도 · 거실=속지+겉지 2겹 / 안방 1겹 · <b>자사 잠정단가</b>",
    [("[패키지1] 거실 — 속지(쉬어) + 겉지(암막) 2겹",[(ALL,800000)]),
     ("[패키지2] 거실 2겹 + 안방 1겹 (안방 +300,000)",[(ALL,1100000)])]),
  (6,"휴젠뜨<br>(욕실환기)","자동 제습으로 샤워 후 습기 세균 방지 · 제조사 1년 보증 · ※ 2개소 설치 시 5만원 할인",
@@ -67,9 +64,36 @@ def item_rows(item):
             first_item=False; first_g=False
     return "\n".join(html)
 
-# 2페이지: 1~4 / 5~11
-p1 = [i for i in DATA if i[0]<=4]
-p2 = [i for i in DATA if i[0]>=5]
+# 2페이지: 1~6 / 7~11  (전동커튼·휴젠뜨 1페이지로)
+p1 = [i for i in DATA if i[0]<=6]
+p2 = [i for i in DATA if i[0]>=7]
+
+# 품목별 대표 업체 입금계좌 (page2 하단)
+VENDORS = [
+ ("친환경 바이오도료 · 홈케어(나노·줄눈·탄성)","예쁜기획&amp;하우징","농협","302-1223-0672-81"),
+ ("현관중문","㈜네이첸","신한은행","100-033-596248"),
+ ("열차단 단열필름","라온건설㈜","농협","351-1342-8478-6"),
+ ("간접조명&amp;실링팬 · 전동커튼 · 휴젠뜨 · 안전방범방충망","㈜엣지컴퍼니","우리은행","1005-004-327986"),
+ ("음식물처리기 · 수돗물정화(아토버스터)","㈜엠엔아이","농협","351-1290-3905-13"),
+ ("전동루버(실외기 자동개폐기)","윈가드 · 루버맨","신한은행","110-419-063647"),
+]
+def vendor_block():
+    n=len(VENDORS)
+    rows=[]
+    for idx,(it,ven,bk,acct) in enumerate(VENDORS):
+        bigo=(f'<td class="vbigo" rowspan="{n}">입금 시 반드시 <b>「동·호수 + 계약자 성명」</b>을 기재<br>예) 101동 1001호 홍길동 &rarr; <b>1011001홍길동</b><br>· 타인 명의 입금·입금 오류로 발생하는 문제의 책임·소명은 "을"에게 있습니다.</td>') if idx==0 else ''
+        rows.append(f'      <tr><td class="vbk">{bk}</td><td class="vven"><b>{ven}</b><small>{it}</small></td><td class="vacct"><b>{acct}</b></td>{bigo}</tr>')
+    body="\n".join(rows)
+    return f'''  <div class="vbank">
+    <div class="vbtitle">■ 납부방법 · 품목별 대표 업체 입금계좌</div>
+    <table class="vtbl">
+      <thead><tr><th class="vbk">금융기관</th><th class="vven">예금주 (공급 업체)</th><th class="vacct">계좌번호</th><th class="vbigo">비고</th></tr></thead>
+      <tbody>
+{body}
+      </tbody>
+    </table>
+    <div class="vbrule">※ 공급액은 각 대표 업체 계좌로 <b>직접 납부</b>(주관사 대리수납 없음) · ㈜엣지컴퍼니 <b>이행·품질·A/S 보증</b> · <b>계약 취소는 계약일로부터 15일(2주) 이내</b>에만 가능(이후 불가)</div>
+  </div>'''
 def build_tbody(items): return "\n".join(item_rows(it) for it in items)
 
 THEAD = '''    <thead>
@@ -84,65 +108,90 @@ STYLE = '''<style>
 @page { size: A4; margin: 0; }
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1a1a1a; margin:0; background:#eceef1; }
-.page { width:210mm; height:297mm; padding:10mm 9mm 12mm; position:relative; background:#fff; margin:0 auto 8px; overflow:hidden; display:flex; flex-direction:column; }
+.page { width:210mm; height:297mm; padding:9mm 9mm 9mm; position:relative; background:#fff; margin:0 auto 8px; overflow:hidden; display:flex; flex-direction:column; }
 .brandbar { height:6px; background:linear-gradient(90deg,#15233d 0%,#15233d 55%,#c9a227 100%); border-radius:4px; }
-.head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:7px; }
+.head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:5px; }
 .brand { font-size:12.5px; font-weight:800; letter-spacing:1px; color:#15233d; }
 .brand small { display:block; font-size:8.5px; font-weight:600; letter-spacing:2px; color:#6b7a8d; margin-top:1px; }
 h1 { text-align:center; font-size:20px; font-weight:800; letter-spacing:4px; color:#15233d; margin:6px 0 3px; }
-.re { border:1.5px solid #c9c9cd; border-radius:8px; padding:6px 12px; font-size:11px; margin:4px 0 5px; }
+.re { border:1.5px solid #c9c9cd; border-radius:8px; padding:7px 12px; font-size:11.5px; margin:5px 0 5px; }
 .re b { color:#15233d; } .re .fld u { text-decoration:none; border-bottom:1px solid #9aa4b2; display:inline-block; min-width:60px; }
-.pre { font-size:9.5px; line-height:1.5; color:#333; margin:0 2px 4px; } .pre b { color:#15233d; }
+.pre { font-size:10px; line-height:1.55; color:#333; margin:0 2px 6px; } .pre b { color:#15233d; }
 .art { font-size:10px; line-height:1.6; margin:5px 2px; } .art b { color:#15233d; }
-.sec2 { font-size:12.5px; font-weight:800; color:#15233d; margin:5px 2px 3px; }
+.sec2 { font-size:12.5px; font-weight:800; color:#15233d; margin:6px 2px 3px; }
 .unit { font-size:10px; color:#8a6d12; font-weight:700; }
 table { width:100%; border-collapse:collapse; font-size:10.5px; table-layout:fixed; flex:0 0 auto; }
+.pfill { flex:1 1 auto; }
+.fillsp { flex:1 1 auto; }
 .foot { flex:0 0 auto; }
 .page { justify-content:flex-start; }
-th, td { border:1px solid #b3b8c2; padding:8px 4px; text-align:center; word-break:keep-all; vertical-align:middle; line-height:1.3; }
+th, td { border:1px solid #b3b8c2; padding:5px 4px; text-align:center; word-break:keep-all; vertical-align:middle; line-height:1.3; }
+table.tall tbody td { padding-top:11px; padding-bottom:11px; }
 thead th { background:#15233d; color:#fff; font-weight:700; font-size:10.5px; padding:6px 4px; }
-.no { width:22px; font-weight:800; color:#15233d; background:#eef0f4; font-size:11px; }
-.item { width:56px; font-weight:800; color:#15233d; background:#fff7df; font-size:11px; }
-.type { width:56px; font-weight:700; font-size:10px; }
-.prod { width:170px; text-align:left; padding-left:8px; }
-.amt { width:72px; text-align:right; padding-right:8px; font-variant-numeric:tabular-nums; font-weight:800; font-size:13px; color:#15233d; }
-.pay { width:62px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:10.5px; font-weight:700; color:#15233d; }
-.pay2 { width:60px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:10px; color:#555; }
-.stamp { width:38px; font-size:10px; color:#aeb4bf; }
-.remark { width:150px; text-align:left; padding-left:7px; font-size:9.2px; line-height:1.4; color:#c0392b; }
+.no { width:24px; font-weight:800; color:#15233d; background:#eef0f4; font-size:11.5px; }
+.item { width:58px; font-weight:800; color:#15233d; background:#fff7df; font-size:11.5px; }
+.type { width:60px; font-weight:700; font-size:10.5px; }
+.prod { width:168px; text-align:left; padding-left:8px; font-size:10.5px; }
+.amt { width:74px; text-align:right; padding-right:8px; font-variant-numeric:tabular-nums; font-weight:800; font-size:13.5px; color:#15233d; }
+.pay { width:64px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:11px; font-weight:700; color:#15233d; }
+.pay2 { width:60px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:10.5px; color:#555; }
+.stamp { width:40px; font-size:10.5px; color:#aeb4bf; }
+.remark { width:150px; text-align:left; padding-left:7px; font-size:9.4px; line-height:1.45; color:#c0392b; }
 .remark b { color:#15233d; }
 .hlapp { background:#fff3cf; color:#15233d; font-weight:700; }
 thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th.pay, thead th.pay2, thead th.stamp, thead th.remark { color:#fff; background:#15233d; }
 .foot { margin-top:6px; font-size:9px; color:#666; line-height:1.5; } .foot b { color:#15233d; }
-.botbar { position:absolute; left:9mm; right:9mm; bottom:6mm; border-top:1px solid #e0e0e3; padding-top:4px; display:flex; justify-content:space-between; font-size:8px; color:#90a0b2; }
+.botbar { position:absolute; left:9mm; right:9mm; bottom:2.5mm; border-top:1px solid #e0e0e3; padding-top:3px; display:flex; justify-content:space-between; font-size:8px; color:#90a0b2; }
+/* ── 2페이지 납부방법·업체계좌 ── */
+.vbank { flex:0 0 auto; margin-top:9px; }
+.vbtitle { font-size:12px; font-weight:800; color:#15233d; margin:0 2px 5px; }
+.vtbl { flex:0 0 auto; table-layout:fixed; }
+.vtbl th, .vtbl td { border:1px solid #b3b8c2; padding:7px 8px; vertical-align:middle; text-align:center; }
+.vtbl thead th { background:#15233d; color:#fff; font-weight:700; font-size:11px; }
+.vbk { width:78px; font-weight:700; color:#15233d; font-size:11px; }
+.vven { text-align:left; padding-left:10px; }
+.vven b { color:#15233d; font-size:12px; }
+.vven small { display:block; color:#6b7a8d; font-size:9px; margin-top:2px; line-height:1.4; }
+.vacct { width:150px; }
+.vacct b { font-size:15px; font-weight:800; color:#15233d; letter-spacing:.4px; font-variant-numeric:tabular-nums; }
+.vbigo { width:186px; text-align:left; padding-left:10px; font-size:9.3px; line-height:1.55; color:#c0392b; }
+.vbigo b { color:#15233d; }
+.vbrule { flex:0 0 auto; margin-top:7px; font-size:9.2px; line-height:1.6; color:#444; }
+.vbrule b { color:#15233d; }
 /* ── 약관 페이지 ── */
-.ypage { padding:10mm 12mm 12mm; }
-.ytitle { text-align:center; font-size:18px; font-weight:800; letter-spacing:8px; color:#15233d; margin:10px 0 8px; }
-.ybox { columns:2; column-gap:9mm; column-rule:1px solid #e2e4e9; }
-.yart { break-inside:avoid; margin:0 0 6px; }
-.yart h3 { font-size:10px; font-weight:800; color:#15233d; margin:0 0 2px; }
-.yart ol { margin:0; padding-left:15px; }
-.yart li { font-size:8.4px; line-height:1.4; color:#333; margin:1.5px 0; text-align:justify; }
-.signnote { font-size:10px; font-weight:800; color:#15233d; margin:10px 0 5px; }
-.signtbl { width:100%; border-collapse:collapse; table-layout:fixed; flex:0 0 auto; }
-.signtbl td { border:1px solid #b3b8c2; padding:7px 9px; font-size:10px; vertical-align:middle; }
-.slbl { width:52px; text-align:center; font-weight:800; color:#15233d; background:#eef0f4; }
-.sgap { width:33%; line-height:1.7; }
-.sgap u, .sfld u { text-decoration:none; border-bottom:1px solid #9aa4b2; display:inline-block; min-width:60px; }
-.ins { color:#aeb4bf; font-size:9px; }
-.sfld { padding:5px 9px; }
-.frow { display:flex; align-items:center; padding:2px 0; }
-.frow + .frow { border-top:1px dashed #d7dae0; }
-.fk { width:110px; color:#6b7a8d; font-size:9px; }
-.fv { flex:1; }
-.fv u { min-width:120px; }
+.ypage { padding:9mm 12mm 7mm; }
+.ytitle { text-align:center; font-size:19px; font-weight:800; letter-spacing:8px; color:#15233d; margin:9px 0 9px; flex:0 0 auto; }
+.ybox { columns:2; column-gap:9mm; column-rule:1px solid #e2e4e9; flex:0 0 auto; }
+.yart { break-inside:avoid; margin:0 0 8px; }
+.yart h3 { font-size:11px; font-weight:800; color:#15233d; margin:0 0 3px; }
+.yart ol { margin:0; padding-left:16px; }
+.yart li { font-size:9.6px; line-height:1.5; color:#2a2a2a; margin:2.5px 0; text-align:justify; }
+.signblock { flex:0 0 auto; margin-top:38px; }
+.signnote { font-size:10px; font-weight:800; color:#15233d; margin-bottom:4px; }
+.signtbl { width:100%; border-collapse:collapse; table-layout:fixed; }
+.signtbl td { border:1px solid #b3b8c2; padding:3px 8px; font-size:9.5px; vertical-align:middle; }
+.slbl { width:64px; text-align:center; font-weight:800; color:#15233d; background:#eef0f4; }
+.slbl .ssub { display:block; font-weight:600; font-size:8px; color:#6b7a8d; margin-top:2px; }
+.sgrid { padding:6px; }
+.vengrid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; }
+.vcell { border:1px solid #d7dae0; border-radius:5px; background:#fafbfc; padding:2px 9px; font-size:10px; font-weight:700; color:#15233d; display:flex; align-items:center; justify-content:space-between; min-height:17px; }
+.vcell.wide { grid-column:1 / -1; background:#fff7df; }
+.vcell small { display:block; font-weight:500; font-size:8px; color:#6b7a8d; margin-top:1px; }
+.ins { color:#b6bcc7; font-size:8px; border:1px dashed #cfd4dc; border-radius:50%; width:26px; height:26px; line-height:24px; text-align:center; flex:0 0 auto; margin-left:8px; }
+.sfld { padding:3px 10px; }
+.fgrid { display:grid; grid-template-columns:1fr 1fr; column-gap:26px; row-gap:4px; align-items:center; }
+.frow { display:flex; align-items:center; }
+.frow.w2 { grid-column:auto; } .frow.w3 { grid-column:1 / -1; }
+.fk { width:100px; flex:0 0 auto; color:#6b7a8d; font-size:9.5px; }
+.fv { flex:1; display:flex; align-items:center; }
+.fv u { flex:1 1 auto; text-decoration:none; border-bottom:1px solid #9aa4b2; min-width:20px; height:15px; }
 .cday { text-align:center; font-size:11px; letter-spacing:1px; }
-.cday u { min-width:56px; }
-.signwarn { margin-top:8px; font-size:9px; color:#c0392b; font-weight:700; text-align:center; }
+.cday u { text-decoration:none; border-bottom:1px solid #9aa4b2; display:inline-block; min-width:56px; }
+.signwarn { margin-top:5px; font-size:9px; color:#c0392b; font-weight:700; text-align:center; }
 </style>'''
 
 HEADER_BLOCK = '''  <div class="re"><span class="fld"><b>■ 부동산의 표시</b> : 힐스테이트 물금센트럴 &nbsp; <u>&nbsp;</u> 동 &nbsp; <u>&nbsp;</u> 호 &nbsp;&nbsp; [ 타입 <u>&nbsp;</u> ]</span></div>
-  <div class="pre">상기 부동산에 대하여 각 옵션 품목의 <b>공급 대표 업체</b>(별첨 「입금계좌 안내」)를 "갑", 매수인을 "을"이라 하고 <b>제2조 옵션품목</b>의 공급계약(이하 "본 계약")을 체결하며, 계약서 2부를 각 1부씩 보관한다. ㈜엣지컴퍼니는 옵션주관사로서 각 업체의 이행·품질·A/S를 보증한다. <b>제1조(목적)</b> "갑"은 목적물을 상기 부동산에 시공·설치하고, "을"은 제2조 지급조건에 따라 "갑" 지정 <b>아래(별첨) 계좌</b>에 직접 납부한다.</div>
+  <div class="pre">상기 부동산의 각 옵션 품목 <b>공급 대표 업체</b>(별첨 계좌)를 "갑", 매수인을 "을"로 하여 <b>제2조 옵션품목</b>의 공급계약을 체결하고 2부를 각 1부씩 보관한다. ㈜엣지컴퍼니가 이행·품질·A/S를 보증한다. <b>제1조(목적)</b> "갑"은 목적물을 시공·설치하고, "을"은 제2조 지급조건에 따라 <b>별첨 계좌</b>에 직접 납부한다.</div>
   <div class="sec2">제2조 (옵션품목 및 공급대금) <span class="unit" style="float:right;">단위 : 원 / VAT 포함</span></div>'''
 
 # ── 3페이지 : 약관 + 서명·날인 ──────────────────────────────
@@ -189,23 +238,32 @@ def yakgwan_page():
         lis="".join(f"<li>{t}</li>" for t in items)
         arts.append(f'<div class="yart"><h3>{title}</h3><ol>{lis}</ol></div>')
     body="\n".join(arts)
-    sign='''  <div class="signnote">■ 본 목적물의 공급계약은 당사자가 충분히 그 내용을 숙지한 후 서명·날인한 것임을 확인합니다.</div>
+    edge='<div class="vcell wide">㈜엣지컴퍼니 <small>옵션주관사 · 이행·품질·A/S 보증 · 대표이사 이유호</small><span class="ins">(인)</span></div>'
+    others="".join(f'<div class="vcell">{ven}<span class="ins">(인)</span></div>' for (it,ven,bk,acct) in VENDORS if ven!="㈜엣지컴퍼니")
+    grid=edge+others
+    sign=f'''  <div class="signblock">
+  <div class="signnote">■ 본 목적물의 공급계약은 당사자가 충분히 그 내용을 숙지한 후 서명·날인한 것임을 확인합니다.</div>
   <table class="signtbl">
     <tr>
-      <td class="slbl">공급자<br>"갑"</td>
-      <td class="sgap">주식회사 엣지컴퍼니 (옵션주관사)<br>사업자등록번호 <u>&nbsp;</u><br>대표번호 <u>&nbsp;</u><br>대표이사 &nbsp;이 유 호 &nbsp;<span class="ins">(인)</span></td>
+      <td class="slbl">공급자 "갑"<br><span class="ssub">(공급 대표 업체)</span></td>
+      <td class="sgrid" colspan="3"><div class="vengrid">{grid}</div></td>
+    </tr>
+    <tr>
       <td class="slbl">매수인<br>"을"</td>
-      <td class="sfld">
-        <div class="frow"><span class="fk">성 명</span><span class="fv"><u>&nbsp;</u> <span class="ins">(인)</span></span></div>
-        <div class="frow"><span class="fk">주민번호</span><span class="fv"><u>&nbsp;</u> &ndash; <u>&nbsp;</u></span></div>
-        <div class="frow"><span class="fk">주 소</span><span class="fv"><u>&nbsp;</u></span></div>
-        <div class="frow"><span class="fk">연락처1 (휴대폰)</span><span class="fv"><u>&nbsp;</u></span></div>
-        <div class="frow"><span class="fk">연락처2 (현금영수증)</span><span class="fv"><u>&nbsp;</u></span></div>
+      <td class="sfld" colspan="3">
+        <div class="fgrid">
+          <div class="frow w2"><span class="fk">성 명</span><span class="fv"><u>&nbsp;</u> <span class="ins">(인)</span></span></div>
+          <div class="frow"><span class="fk">주민번호</span><span class="fv"><u>&nbsp;</u> &ndash; <u>&nbsp;</u></span></div>
+          <div class="frow w3"><span class="fk">주 소</span><span class="fv"><u>&nbsp;</u></span></div>
+          <div class="frow"><span class="fk">연락처1 (휴대폰)</span><span class="fv"><u>&nbsp;</u></span></div>
+          <div class="frow"><span class="fk">연락처2 (현금영수증)</span><span class="fv"><u>&nbsp;</u></span></div>
+        </div>
       </td>
     </tr>
     <tr><td class="slbl">계 약 일</td><td class="cday" colspan="3"><u>&nbsp;</u> 년 &nbsp; <u>&nbsp;</u> 월 &nbsp; <u>&nbsp;</u> 일</td></tr>
   </table>
-  <div class="signwarn">※ "갑" 및 "을"의 인장 날인 및 서명이 없는 계약은 무효로 한다. (단, 전화계약 시 계약금 입금 시 계약 성립)</div>'''
+  <div class="signwarn">※ "갑"(각 공급 업체 및 주관사) 및 "을"의 인장 날인·서명이 없는 계약은 무효로 한다. (단, 전화계약 시 계약금 입금 시 계약 성립)</div>
+  </div>'''
     return f'''<div class="page ypage">
   <div class="brandbar"></div>
   <div class="head"><div class="brand">EDGE COMPANY<small>㈜엣지컴퍼니 · 입주옵션 주관</small></div><div class="unit">힐스테이트 물금센트럴 추가 옵션 계약서</div></div>
@@ -220,23 +278,22 @@ def yakgwan_page():
 def page(inner, pageno):
     hd='''  <div class="brandbar"></div>
   <div class="head"><div class="brand">EDGE COMPANY<small>㈜엣지컴퍼니 · 입주옵션 주관</small></div><div class="unit">힐스테이트 물금센트럴 추가 옵션 계약서</div></div>'''
-    title='<h1>힐스테이트 물금센트럴 추가 옵션 계약서</h1>' if pageno==1 else '<div style="text-align:center;font-size:11px;color:#6b7a8d;margin:6px 0 4px;letter-spacing:1px;">힐스테이트 물금센트럴 추가 옵션 계약서 · 제2조 (계속)</div>'
-    hb=HEADER_BLOCK if pageno==1 else ''
-    if pageno==2:
-        foot='  <div class="foot">※ <b>대금 지급</b> : 계약금 20%(계약시) · 중도금 10% · 잔금 70%(공사완료시) &nbsp;|&nbsp; <b>각 대표 업체 계좌로 직접 납부</b>(별첨 입금계좌 안내) &nbsp;|&nbsp; <span class="hlapp">◎ 조명&amp;실링팬+전동커튼 세트(앱 연동) 5% 할인</span> &nbsp;|&nbsp; "선택" 품목은 옵션 선택 시 금액 확정</div>'
+    if pageno==1:
+        title='<h1>힐스테이트 물금센트럴 추가 옵션 계약서</h1>'
+        hb=HEADER_BLOCK
+        tbl=f'  <table class="tall">\n{THEAD}\n    <tbody>\n{inner}\n    </tbody>\n  </table>'
+        extra='<div class="fillsp"></div>'
     else:
-        foot='<div class="foot">※ 계약금 20%(계약시) · 중도금 10% · 잔금 70%(공사완료시) · 각 대표 업체 계좌 직접 납부 · 엣지컴퍼니 이행·품질·A/S 보증</div>'
+        title='<div style="text-align:center;font-size:11px;color:#6b7a8d;margin:6px 0 4px;letter-spacing:1px;">힐스테이트 물금센트럴 추가 옵션 계약서 · 제2조 (계속)</div>'
+        hb=''
+        tbl=f'  <table>\n{THEAD}\n    <tbody>\n{inner}\n    </tbody>\n  </table>'
+        extra=vendor_block()
     return f'''<div class="page">
 {hd}
 {title}
 {hb}
-  <table>
-{THEAD}
-    <tbody>
-{inner}
-    </tbody>
-  </table>
-{foot}
+{tbl}
+{extra}
   <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>힐스테이트 물금센트럴 추가 옵션 계약서 ({pageno}/3)</span></div>
 </div>'''
 

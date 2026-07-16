@@ -4,61 +4,86 @@
 @page { size: A4; margin: 0; }
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1a1a1a; margin:0; background:#eceef1; }
-.page { width:210mm; height:297mm; padding:10mm 9mm 12mm; position:relative; background:#fff; margin:0 auto 8px; overflow:hidden; display:flex; flex-direction:column; }
+.page { width:210mm; height:297mm; padding:9mm 9mm 9mm; position:relative; background:#fff; margin:0 auto 8px; overflow:hidden; display:flex; flex-direction:column; }
 .brandbar { height:6px; background:linear-gradient(90deg,#15233d 0%,#15233d 55%,#c9a227 100%); border-radius:4px; }
-.head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:7px; }
+.head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:5px; }
 .brand { font-size:12.5px; font-weight:800; letter-spacing:1px; color:#15233d; }
 .brand small { display:block; font-size:8.5px; font-weight:600; letter-spacing:2px; color:#6b7a8d; margin-top:1px; }
 h1 { text-align:center; font-size:20px; font-weight:800; letter-spacing:4px; color:#15233d; margin:6px 0 3px; }
-.re { border:1.5px solid #c9c9cd; border-radius:8px; padding:6px 12px; font-size:11px; margin:4px 0 5px; }
+.re { border:1.5px solid #c9c9cd; border-radius:8px; padding:7px 12px; font-size:11.5px; margin:5px 0 5px; }
 .re b { color:#15233d; } .re .fld u { text-decoration:none; border-bottom:1px solid #9aa4b2; display:inline-block; min-width:60px; }
-.pre { font-size:9.5px; line-height:1.5; color:#333; margin:0 2px 4px; } .pre b { color:#15233d; }
+.pre { font-size:10px; line-height:1.55; color:#333; margin:0 2px 6px; } .pre b { color:#15233d; }
 .art { font-size:10px; line-height:1.6; margin:5px 2px; } .art b { color:#15233d; }
-.sec2 { font-size:12.5px; font-weight:800; color:#15233d; margin:5px 2px 3px; }
+.sec2 { font-size:12.5px; font-weight:800; color:#15233d; margin:6px 2px 3px; }
 .unit { font-size:10px; color:#8a6d12; font-weight:700; }
 table { width:100%; border-collapse:collapse; font-size:10.5px; table-layout:fixed; flex:0 0 auto; }
+.pfill { flex:1 1 auto; }
+.fillsp { flex:1 1 auto; }
 .foot { flex:0 0 auto; }
 .page { justify-content:flex-start; }
-th, td { border:1px solid #b3b8c2; padding:8px 4px; text-align:center; word-break:keep-all; vertical-align:middle; line-height:1.3; }
+th, td { border:1px solid #b3b8c2; padding:5px 4px; text-align:center; word-break:keep-all; vertical-align:middle; line-height:1.3; }
+table.tall tbody td { padding-top:11px; padding-bottom:11px; }
 thead th { background:#15233d; color:#fff; font-weight:700; font-size:10.5px; padding:6px 4px; }
-.no { width:22px; font-weight:800; color:#15233d; background:#eef0f4; font-size:11px; }
-.item { width:56px; font-weight:800; color:#15233d; background:#fff7df; font-size:11px; }
-.type { width:56px; font-weight:700; font-size:10px; }
-.prod { width:170px; text-align:left; padding-left:8px; }
-.amt { width:72px; text-align:right; padding-right:8px; font-variant-numeric:tabular-nums; font-weight:800; font-size:13px; color:#15233d; }
-.pay { width:62px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:10.5px; font-weight:700; color:#15233d; }
-.pay2 { width:60px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:10px; color:#555; }
-.stamp { width:38px; font-size:10px; color:#aeb4bf; }
-.remark { width:150px; text-align:left; padding-left:7px; font-size:9.2px; line-height:1.4; color:#c0392b; }
+.no { width:24px; font-weight:800; color:#15233d; background:#eef0f4; font-size:11.5px; }
+.item { width:58px; font-weight:800; color:#15233d; background:#fff7df; font-size:11.5px; }
+.type { width:60px; font-weight:700; font-size:10.5px; }
+.prod { width:168px; text-align:left; padding-left:8px; font-size:10.5px; }
+.amt { width:74px; text-align:right; padding-right:8px; font-variant-numeric:tabular-nums; font-weight:800; font-size:13.5px; color:#15233d; }
+.pay { width:64px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:11px; font-weight:700; color:#15233d; }
+.pay2 { width:60px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:10.5px; color:#555; }
+.stamp { width:40px; font-size:10.5px; color:#aeb4bf; }
+.remark { width:150px; text-align:left; padding-left:7px; font-size:9.4px; line-height:1.45; color:#c0392b; }
 .remark b { color:#15233d; }
 .hlapp { background:#fff3cf; color:#15233d; font-weight:700; }
 thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th.pay, thead th.pay2, thead th.stamp, thead th.remark { color:#fff; background:#15233d; }
 .foot { margin-top:6px; font-size:9px; color:#666; line-height:1.5; } .foot b { color:#15233d; }
-.botbar { position:absolute; left:9mm; right:9mm; bottom:6mm; border-top:1px solid #e0e0e3; padding-top:4px; display:flex; justify-content:space-between; font-size:8px; color:#90a0b2; }
+.botbar { position:absolute; left:9mm; right:9mm; bottom:2.5mm; border-top:1px solid #e0e0e3; padding-top:3px; display:flex; justify-content:space-between; font-size:8px; color:#90a0b2; }
+/* ── 2페이지 납부방법·업체계좌 ── */
+.vbank { flex:0 0 auto; margin-top:9px; }
+.vbtitle { font-size:12px; font-weight:800; color:#15233d; margin:0 2px 5px; }
+.vtbl { flex:0 0 auto; table-layout:fixed; }
+.vtbl th, .vtbl td { border:1px solid #b3b8c2; padding:7px 8px; vertical-align:middle; text-align:center; }
+.vtbl thead th { background:#15233d; color:#fff; font-weight:700; font-size:11px; }
+.vbk { width:78px; font-weight:700; color:#15233d; font-size:11px; }
+.vven { text-align:left; padding-left:10px; }
+.vven b { color:#15233d; font-size:12px; }
+.vven small { display:block; color:#6b7a8d; font-size:9px; margin-top:2px; line-height:1.4; }
+.vacct { width:150px; }
+.vacct b { font-size:15px; font-weight:800; color:#15233d; letter-spacing:.4px; font-variant-numeric:tabular-nums; }
+.vbigo { width:186px; text-align:left; padding-left:10px; font-size:9.3px; line-height:1.55; color:#c0392b; }
+.vbigo b { color:#15233d; }
+.vbrule { flex:0 0 auto; margin-top:7px; font-size:9.2px; line-height:1.6; color:#444; }
+.vbrule b { color:#15233d; }
 /* ── 약관 페이지 ── */
-.ypage { padding:10mm 12mm 12mm; }
-.ytitle { text-align:center; font-size:18px; font-weight:800; letter-spacing:8px; color:#15233d; margin:10px 0 8px; }
-.ybox { columns:2; column-gap:9mm; column-rule:1px solid #e2e4e9; }
-.yart { break-inside:avoid; margin:0 0 6px; }
-.yart h3 { font-size:10px; font-weight:800; color:#15233d; margin:0 0 2px; }
-.yart ol { margin:0; padding-left:15px; }
-.yart li { font-size:8.4px; line-height:1.4; color:#333; margin:1.5px 0; text-align:justify; }
-.signnote { font-size:10px; font-weight:800; color:#15233d; margin:10px 0 5px; }
-.signtbl { width:100%; border-collapse:collapse; table-layout:fixed; flex:0 0 auto; }
-.signtbl td { border:1px solid #b3b8c2; padding:7px 9px; font-size:10px; vertical-align:middle; }
-.slbl { width:52px; text-align:center; font-weight:800; color:#15233d; background:#eef0f4; }
-.sgap { width:33%; line-height:1.7; }
-.sgap u, .sfld u { text-decoration:none; border-bottom:1px solid #9aa4b2; display:inline-block; min-width:60px; }
-.ins { color:#aeb4bf; font-size:9px; }
-.sfld { padding:5px 9px; }
-.frow { display:flex; align-items:center; padding:2px 0; }
-.frow + .frow { border-top:1px dashed #d7dae0; }
-.fk { width:110px; color:#6b7a8d; font-size:9px; }
-.fv { flex:1; }
-.fv u { min-width:120px; }
+.ypage { padding:9mm 12mm 7mm; }
+.ytitle { text-align:center; font-size:19px; font-weight:800; letter-spacing:8px; color:#15233d; margin:9px 0 9px; flex:0 0 auto; }
+.ybox { columns:2; column-gap:9mm; column-rule:1px solid #e2e4e9; flex:0 0 auto; }
+.yart { break-inside:avoid; margin:0 0 8px; }
+.yart h3 { font-size:11px; font-weight:800; color:#15233d; margin:0 0 3px; }
+.yart ol { margin:0; padding-left:16px; }
+.yart li { font-size:9.6px; line-height:1.5; color:#2a2a2a; margin:2.5px 0; text-align:justify; }
+.signblock { flex:0 0 auto; margin-top:38px; }
+.signnote { font-size:10px; font-weight:800; color:#15233d; margin-bottom:4px; }
+.signtbl { width:100%; border-collapse:collapse; table-layout:fixed; }
+.signtbl td { border:1px solid #b3b8c2; padding:3px 8px; font-size:9.5px; vertical-align:middle; }
+.slbl { width:64px; text-align:center; font-weight:800; color:#15233d; background:#eef0f4; }
+.slbl .ssub { display:block; font-weight:600; font-size:8px; color:#6b7a8d; margin-top:2px; }
+.sgrid { padding:6px; }
+.vengrid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; }
+.vcell { border:1px solid #d7dae0; border-radius:5px; background:#fafbfc; padding:2px 9px; font-size:10px; font-weight:700; color:#15233d; display:flex; align-items:center; justify-content:space-between; min-height:17px; }
+.vcell.wide { grid-column:1 / -1; background:#fff7df; }
+.vcell small { display:block; font-weight:500; font-size:8px; color:#6b7a8d; margin-top:1px; }
+.ins { color:#b6bcc7; font-size:8px; border:1px dashed #cfd4dc; border-radius:50%; width:26px; height:26px; line-height:24px; text-align:center; flex:0 0 auto; margin-left:8px; }
+.sfld { padding:3px 10px; }
+.fgrid { display:grid; grid-template-columns:1fr 1fr; column-gap:26px; row-gap:4px; align-items:center; }
+.frow { display:flex; align-items:center; }
+.frow.w2 { grid-column:auto; } .frow.w3 { grid-column:1 / -1; }
+.fk { width:100px; flex:0 0 auto; color:#6b7a8d; font-size:9.5px; }
+.fv { flex:1; display:flex; align-items:center; }
+.fv u { flex:1 1 auto; text-decoration:none; border-bottom:1px solid #9aa4b2; min-width:20px; height:15px; }
 .cday { text-align:center; font-size:11px; letter-spacing:1px; }
-.cday u { min-width:56px; }
-.signwarn { margin-top:8px; font-size:9px; color:#c0392b; font-weight:700; text-align:center; }
+.cday u { text-decoration:none; border-bottom:1px solid #9aa4b2; display:inline-block; min-width:56px; }
+.signwarn { margin-top:5px; font-size:9px; color:#c0392b; font-weight:700; text-align:center; }
 </style></head>
 <body>
 <div class="page">
@@ -66,9 +91,9 @@ thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th
   <div class="head"><div class="brand">EDGE COMPANY<small>㈜엣지컴퍼니 · 입주옵션 주관</small></div><div class="unit">힐스테이트 물금센트럴 추가 옵션 계약서</div></div>
 <h1>힐스테이트 물금센트럴 추가 옵션 계약서</h1>
   <div class="re"><span class="fld"><b>■ 부동산의 표시</b> : 힐스테이트 물금센트럴 &nbsp; <u>&nbsp;</u> 동 &nbsp; <u>&nbsp;</u> 호 &nbsp;&nbsp; [ 타입 <u>&nbsp;</u> ]</span></div>
-  <div class="pre">상기 부동산에 대하여 각 옵션 품목의 <b>공급 대표 업체</b>(별첨 「입금계좌 안내」)를 "갑", 매수인을 "을"이라 하고 <b>제2조 옵션품목</b>의 공급계약(이하 "본 계약")을 체결하며, 계약서 2부를 각 1부씩 보관한다. ㈜엣지컴퍼니는 옵션주관사로서 각 업체의 이행·품질·A/S를 보증한다. <b>제1조(목적)</b> "갑"은 목적물을 상기 부동산에 시공·설치하고, "을"은 제2조 지급조건에 따라 "갑" 지정 <b>아래(별첨) 계좌</b>에 직접 납부한다.</div>
+  <div class="pre">상기 부동산의 각 옵션 품목 <b>공급 대표 업체</b>(별첨 계좌)를 "갑", 매수인을 "을"로 하여 <b>제2조 옵션품목</b>의 공급계약을 체결하고 2부를 각 1부씩 보관한다. ㈜엣지컴퍼니가 이행·품질·A/S를 보증한다. <b>제1조(목적)</b> "갑"은 목적물을 시공·설치하고, "을"은 제2조 지급조건에 따라 <b>별첨 계좌</b>에 직접 납부한다.</div>
   <div class="sec2">제2조 (옵션품목 및 공급대금) <span class="unit" style="float:right;">단위 : 원 / VAT 포함</span></div>
-  <table>
+  <table class="tall">
     <thead>
       <tr>
         <th class="no" rowspan="2">순번</th><th class="item" rowspan="2">품목</th><th class="type" rowspan="2">Type</th><th class="prod" rowspan="2">제품명 / 사양</th>
@@ -80,20 +105,21 @@ thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th
       <tr><td class="no" rowspan="3">1</td><td class="item" rowspan="3">친환경<br>바이오도료</td><td class="type">59</td><td class="prod" rowspan="3">규조토 세스 바이오 (바닥 제외 실내벽체 / 발코니·타일·아트월 제외)</td><td class="amt">2,400,000</td><td class="pay">480,000</td><td class="pay2">240,000</td><td class="pay2">1,680,000</td><td class="stamp">(인)</td><td class="remark" rowspan="3">그래핀 규조토 · 라돈 방출 저감 · 시멘트 독성 중화 · 유해물질 흡착분해 · 흡습·방습 · 불연성능 · <b>무상A/S 3년</b></td></tr>
       <tr><td class="type">76</td><td class="amt">2,700,000</td><td class="pay">540,000</td><td class="pay2">270,000</td><td class="pay2">1,890,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="type">84</td><td class="amt">2,900,000</td><td class="pay">580,000</td><td class="pay2">290,000</td><td class="pay2">2,030,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="no" rowspan="5">2</td><td class="item" rowspan="5">현관중문</td><td class="type">59기본형</td><td class="prod" rowspan="1">스윙도어(양방향)</td><td class="amt">1,500,000</td><td class="pay">300,000</td><td class="pay2">150,000</td><td class="pay2">1,050,000</td><td class="stamp">(인)</td><td class="remark" rowspan="5"><b>단가</b> 스윙도어 1,500,000 / 원슬라이딩 1,300,000 · 5T 강화유리 · 시트 랩핑 · <b>무상AS 1년</b> · ※ 원슬라이딩 선택 : 59확장/84B</td></tr>
-      <tr><td class="type">59확장형</td><td class="prod" rowspan="1">스윙도어(양방향) / 원슬라이딩</td><td class="amt">선택</td><td class="pay">-</td><td class="pay2">-</td><td class="pay2">-</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">76</td><td class="prod" rowspan="1">스윙도어(양방향)</td><td class="amt">1,500,000</td><td class="pay">300,000</td><td class="pay2">150,000</td><td class="pay2">1,050,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">84A</td><td class="prod" rowspan="1">스윙도어(양방향)</td><td class="amt">1,500,000</td><td class="pay">300,000</td><td class="pay2">150,000</td><td class="pay2">1,050,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">84B</td><td class="prod" rowspan="1">스윙도어(양방향) / 원슬라이딩</td><td class="amt">선택</td><td class="pay">-</td><td class="pay2">-</td><td class="pay2">-</td><td class="stamp">(인)</td></tr>
+      <tr><td class="no" rowspan="2">2</td><td class="item" rowspan="2">현관중문</td><td class="type">59기본·76·84A<br>동일</td><td class="prod" rowspan="1">스윙도어 (양방향)</td><td class="amt">1,500,000</td><td class="pay">300,000</td><td class="pay2">150,000</td><td class="pay2">1,050,000</td><td class="stamp">(인)</td><td class="remark" rowspan="2"><b>단가</b> 스윙도어 1,500,000 / 원슬라이딩 1,300,000 · 5T 강화유리 · 시트 랩핑 · <b>무상AS 1년</b> · ※ 원슬라이딩(선택) : 59확장·84B</td></tr>
+      <tr><td class="type">59확장·84B</td><td class="prod" rowspan="1">원슬라이딩 (확장세대)</td><td class="amt">선택</td><td class="pay">-</td><td class="pay2">-</td><td class="pay2">-</td><td class="stamp">(인)</td></tr>
       <tr><td class="no" rowspan="3">3</td><td class="item" rowspan="3">열차단<br>단열필름</td><td class="type">59</td><td class="prod" rowspan="3">레이노 프리미엄 LX</td><td class="amt">2,100,000</td><td class="pay">420,000</td><td class="pay2">210,000</td><td class="pay2">1,470,000</td><td class="stamp">(인)</td><td class="remark" rowspan="3"><b>대피실(실외기실) 제외</b> · 무상A/S 12년</td></tr>
       <tr><td class="type">76</td><td class="amt">2,300,000</td><td class="pay">460,000</td><td class="pay2">230,000</td><td class="pay2">1,610,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="type">84</td><td class="amt">2,500,000</td><td class="pay">500,000</td><td class="pay2">250,000</td><td class="pay2">1,750,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="no" rowspan="3">4</td><td class="item" rowspan="3">간접조명<br>&amp; 실링팬</td><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">[선택1] SPOT조명(거실·복도) + 매립스위치(IOT) + 욕실장·신발장하부 센서</td><td class="amt">1,300,000</td><td class="pay">260,000</td><td class="pay2">130,000</td><td class="pay2">910,000</td><td class="stamp">(인)</td><td class="remark" rowspan="3"><span class='hlapp'>★ 실링팬·조명·BT스위치·전동커튼 아크로 앱 통합제어</span> · 실링팬 = <b>아크로 블루투스 실링팬 최신형</b><br><span class='hlapp'>◎ 조명&amp;실링팬 + 전동커튼 세트(아크로 앱 연동) 5% 할인</span></td></tr>
       <tr><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">[선택2] 선택1 + 우물천장 간접조명 + 거실 커튼라인조명</td><td class="amt">2,400,000</td><td class="pay">480,000</td><td class="pay2">240,000</td><td class="pay2">1,680,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">[추가] 아크로 실링팬 + 우물천장 간접조명 또는 다운라이트 8개</td><td class="amt">1,400,000</td><td class="pay">280,000</td><td class="pay2">140,000</td><td class="pay2">980,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="no" rowspan="2">5</td><td class="item" rowspan="2">전동커튼</td><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">[패키지1] 거실 — 속지(쉬어) + 겉지(암막) 2겹</td><td class="amt">800,000</td><td class="pay">160,000</td><td class="pay2">80,000</td><td class="pay2">560,000</td><td class="stamp">(인)</td><td class="remark" rowspan="2"><span class='hlapp'>아크로 앱 연동 통합제어</span> · 무상A/S 2년 · IOT 허브 별도 · 거실=속지+겉지 2겹 / 안방 1겹 · <b>자사 잠정단가</b></td></tr>
+      <tr><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">[패키지2] 거실 2겹 + 안방 1겹 (안방 +300,000)</td><td class="amt">1,100,000</td><td class="pay">220,000</td><td class="pay2">110,000</td><td class="pay2">770,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="no" rowspan="2">6</td><td class="item" rowspan="2">휴젠뜨<br>(욕실환기)</td><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">휴젠뜨3 풀옵션 1개소 (공용욕실)</td><td class="amt">740,000</td><td class="pay">148,000</td><td class="pay2">74,000</td><td class="pay2">518,000</td><td class="stamp">(인)</td><td class="remark" rowspan="2">자동 제습으로 샤워 후 습기 세균 방지 · 제조사 1년 보증 · ※ 2개소 설치 시 5만원 할인</td></tr>
+      <tr><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">휴젠뜨3 풀옵션 2개소 (공용+부부)</td><td class="amt">1,430,000</td><td class="pay">286,000</td><td class="pay2">143,000</td><td class="pay2">1,001,000</td><td class="stamp">(인)</td></tr>
     </tbody>
   </table>
-<div class="foot">※ 계약금 20%(계약시) · 중도금 10% · 잔금 70%(공사완료시) · 각 대표 업체 계좌 직접 납부 · 엣지컴퍼니 이행·품질·A/S 보증</div>
+<div class="fillsp"></div>
   <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>힐스테이트 물금센트럴 추가 옵션 계약서 (1/3)</span></div>
 </div>
 <div class="page">
@@ -110,10 +136,6 @@ thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th
       <tr><th class="pay">계약금 20%<br><span style="font-weight:400">계약시</span></th><th class="pay2">중도금 10%</th><th class="pay2">잔금 70%<br><span style="font-weight:400">공사완료시</span></th></tr>
     </thead>
     <tbody>
-      <tr><td class="no" rowspan="2">5</td><td class="item" rowspan="2">전동커튼</td><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">[패키지1] 거실 — 속지(쉬어) + 겉지(암막) 2겹</td><td class="amt">800,000</td><td class="pay">160,000</td><td class="pay2">80,000</td><td class="pay2">560,000</td><td class="stamp">(인)</td><td class="remark" rowspan="2"><span class='hlapp'>아크로 앱 연동 통합제어</span> · 무상A/S 2년 · IOT 허브 별도 · 거실=속지+겉지 2겹 / 안방 1겹 · <b>자사 잠정단가</b><br><span class='hlapp'>◎ 조명&amp;실링팬 + 전동커튼 세트 계약 시 5% 할인</span></td></tr>
-      <tr><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">[패키지2] 거실 2겹 + 안방 1겹 (안방 +300,000)</td><td class="amt">1,100,000</td><td class="pay">220,000</td><td class="pay2">110,000</td><td class="pay2">770,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="no" rowspan="2">6</td><td class="item" rowspan="2">휴젠뜨<br>(욕실환기)</td><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">휴젠뜨3 풀옵션 1개소 (공용욕실)</td><td class="amt">740,000</td><td class="pay">148,000</td><td class="pay2">74,000</td><td class="pay2">518,000</td><td class="stamp">(인)</td><td class="remark" rowspan="2">자동 제습으로 샤워 후 습기 세균 방지 · 제조사 1년 보증 · ※ 2개소 설치 시 5만원 할인</td></tr>
-      <tr><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">휴젠뜨3 풀옵션 2개소 (공용+부부)</td><td class="amt">1,430,000</td><td class="pay">286,000</td><td class="pay2">143,000</td><td class="pay2">1,001,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="no" rowspan="6">7</td><td class="item" rowspan="6">안전<br>방범<br>방충망</td><td class="type">59</td><td class="prod" rowspan="1">59 · 안전용 0.4mm</td><td class="amt">2,330,000</td><td class="pay">466,000</td><td class="pay2">233,000</td><td class="pay2">1,631,000</td><td class="stamp">(인)</td><td class="remark" rowspan="6">1톤 하중 내구성 · 외부 침입/추락/빈집털이 방지 · 찢어지지 않는 방충망 · <b>무상A/S 망 10년·부품 2년</b> · 대피공간(실외기실) 제외</td></tr>
       <tr><td class="type">59</td><td class="prod" rowspan="1">59 · 방범용 0.7mm</td><td class="amt">2,490,000</td><td class="pay">498,000</td><td class="pay2">249,000</td><td class="pay2">1,743,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="type">76</td><td class="prod" rowspan="1">76 · 안전용 0.4mm</td><td class="amt">2,400,000</td><td class="pay">480,000</td><td class="pay2">240,000</td><td class="pay2">1,680,000</td><td class="stamp">(인)</td></tr>
@@ -127,7 +149,21 @@ thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th
       <tr><td class="no" rowspan="1">11</td><td class="item" rowspan="1">홈케어<br>(줄눈·나노<br>·탄성)</td><td class="type">전타입<br>동일</td><td class="prod" rowspan="1">줄눈 + 나노코팅 + 탄성코트(3개소) &nbsp;<b>[홈케어 3종 세트]</b></td><td class="amt">2,850,000</td><td class="pay">570,000</td><td class="pay2">285,000</td><td class="pay2">1,995,000</td><td class="stamp">(인)</td><td class="remark" rowspan="1"><span class='hlapp'>◎ 3종 합계 2,980,000 → 2,850,000 할인 적용</span><br>줄눈 790,000 + 나노 1,200,000 + 탄성(3개소) 990,000<br><b>[줄눈]</b> 바닥3칸+샤워부스 안쪽3면+실리콘 오염방지 · <b>[나노]</b> 수전·걸이·코너선반 무상A/S 3년 · <b>[탄성]</b> 규조토 광촉매 3개소 통일</td></tr>
     </tbody>
   </table>
-  <div class="foot">※ <b>대금 지급</b> : 계약금 20%(계약시) · 중도금 10% · 잔금 70%(공사완료시) &nbsp;|&nbsp; <b>각 대표 업체 계좌로 직접 납부</b>(별첨 입금계좌 안내) &nbsp;|&nbsp; <span class="hlapp">◎ 조명&amp;실링팬+전동커튼 세트(앱 연동) 5% 할인</span> &nbsp;|&nbsp; "선택" 품목은 옵션 선택 시 금액 확정</div>
+  <div class="vbank">
+    <div class="vbtitle">■ 납부방법 · 품목별 대표 업체 입금계좌</div>
+    <table class="vtbl">
+      <thead><tr><th class="vbk">금융기관</th><th class="vven">예금주 (공급 업체)</th><th class="vacct">계좌번호</th><th class="vbigo">비고</th></tr></thead>
+      <tbody>
+      <tr><td class="vbk">농협</td><td class="vven"><b>예쁜기획&amp;하우징</b><small>친환경 바이오도료 · 홈케어(나노·줄눈·탄성)</small></td><td class="vacct"><b>302-1223-0672-81</b></td><td class="vbigo" rowspan="6">입금 시 반드시 <b>「동·호수 + 계약자 성명」</b>을 기재<br>예) 101동 1001호 홍길동 &rarr; <b>1011001홍길동</b><br>· 타인 명의 입금·입금 오류로 발생하는 문제의 책임·소명은 "을"에게 있습니다.</td></tr>
+      <tr><td class="vbk">신한은행</td><td class="vven"><b>㈜네이첸</b><small>현관중문</small></td><td class="vacct"><b>100-033-596248</b></td></tr>
+      <tr><td class="vbk">농협</td><td class="vven"><b>라온건설㈜</b><small>열차단 단열필름</small></td><td class="vacct"><b>351-1342-8478-6</b></td></tr>
+      <tr><td class="vbk">우리은행</td><td class="vven"><b>㈜엣지컴퍼니</b><small>간접조명&amp;실링팬 · 전동커튼 · 휴젠뜨 · 안전방범방충망</small></td><td class="vacct"><b>1005-004-327986</b></td></tr>
+      <tr><td class="vbk">농협</td><td class="vven"><b>㈜엠엔아이</b><small>음식물처리기 · 수돗물정화(아토버스터)</small></td><td class="vacct"><b>351-1290-3905-13</b></td></tr>
+      <tr><td class="vbk">신한은행</td><td class="vven"><b>윈가드 · 루버맨</b><small>전동루버(실외기 자동개폐기)</small></td><td class="vacct"><b>110-419-063647</b></td></tr>
+      </tbody>
+    </table>
+    <div class="vbrule">※ 공급액은 각 대표 업체 계좌로 <b>직접 납부</b>(주관사 대리수납 없음) · ㈜엣지컴퍼니 <b>이행·품질·A/S 보증</b> · <b>계약 취소는 계약일로부터 15일(2주) 이내</b>에만 가능(이후 불가)</div>
+  </div>
   <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>힐스테이트 물금센트럴 추가 옵션 계약서 (2/3)</span></div>
 </div>
 <div class="page ypage">
@@ -142,23 +178,29 @@ thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th
 <div class="yart"><h3>제7조 (특기사항)</h3><ol><li>"을"은 다음 사항을 충분히 숙지하고 계약을 체결하는 것이며, 추후 이에 대하여 "갑"에게 이의를 제기하지 아니한다.</li><li>본 옵션 품목은 「공동주택 분양가격의 산정 등에 관한 규칙·시행규칙」에 의한 분양가격에 포함되지 아니하는 품목이다.</li><li>카탈로그·견본품 및 각 시공 명칭은 카탈로그 기준이며, 실제 계약·시공 시 위치가 변경될 수 있다.</li><li>옵션물의 제조사·모델은 제품의 품질 개선·품귀 등의 사유로 동급 이상의 협의 사양으로 변경될 수 있다.</li><li>옵션물의 설치 위치는 지정되어 있으며, 계약자가 임의로 위치를 지정할 수 없다.</li><li>옵션 품목은 공동주택 컨셉에 맞추어 디자인·품질관리하는 품목으로, 타사·시중 품목과 충분히 비교 검토한 후 계약하기 바란다.</li><li>계약이 해제된 때에는 총 유상옵션 금액의 10%가 위약금으로 귀속되며, 착수일(공사업체·자재 선정 등의 업무 포함) 후에는 위약금을 초과하여 발생된 손실에 대하여 손해배상을 청구할 수 있다.</li></ol></div>
 <div class="yart"><h3>제8조 (기타)</h3><ol><li>본 공급계약상 부기하지 아니한 규정 등은 아파트 공급계약서의 규정을 연동하여 적용한다.</li><li>본 공급계약에 명시되지 아니한 사항은 "갑"과 "을"이 합의하여 결정하되, 합의되지 아니한 사항은 관계 법령 및 일반 상관례에 따른다.</li><li>본 공급계약에 관한 소송은 표시 부동산의 소재지를 관할하는 법원으로 한다.</li></ol></div>
   </div>
+  <div class="signblock">
   <div class="signnote">■ 본 목적물의 공급계약은 당사자가 충분히 그 내용을 숙지한 후 서명·날인한 것임을 확인합니다.</div>
   <table class="signtbl">
     <tr>
-      <td class="slbl">공급자<br>"갑"</td>
-      <td class="sgap">주식회사 엣지컴퍼니 (옵션주관사)<br>사업자등록번호 <u>&nbsp;</u><br>대표번호 <u>&nbsp;</u><br>대표이사 &nbsp;이 유 호 &nbsp;<span class="ins">(인)</span></td>
+      <td class="slbl">공급자 "갑"<br><span class="ssub">(공급 대표 업체)</span></td>
+      <td class="sgrid" colspan="3"><div class="vengrid"><div class="vcell wide">㈜엣지컴퍼니 <small>옵션주관사 · 이행·품질·A/S 보증 · 대표이사 이유호</small><span class="ins">(인)</span></div><div class="vcell">예쁜기획&amp;하우징<span class="ins">(인)</span></div><div class="vcell">㈜네이첸<span class="ins">(인)</span></div><div class="vcell">라온건설㈜<span class="ins">(인)</span></div><div class="vcell">㈜엠엔아이<span class="ins">(인)</span></div><div class="vcell">윈가드 · 루버맨<span class="ins">(인)</span></div></div></td>
+    </tr>
+    <tr>
       <td class="slbl">매수인<br>"을"</td>
-      <td class="sfld">
-        <div class="frow"><span class="fk">성 명</span><span class="fv"><u>&nbsp;</u> <span class="ins">(인)</span></span></div>
-        <div class="frow"><span class="fk">주민번호</span><span class="fv"><u>&nbsp;</u> &ndash; <u>&nbsp;</u></span></div>
-        <div class="frow"><span class="fk">주 소</span><span class="fv"><u>&nbsp;</u></span></div>
-        <div class="frow"><span class="fk">연락처1 (휴대폰)</span><span class="fv"><u>&nbsp;</u></span></div>
-        <div class="frow"><span class="fk">연락처2 (현금영수증)</span><span class="fv"><u>&nbsp;</u></span></div>
+      <td class="sfld" colspan="3">
+        <div class="fgrid">
+          <div class="frow w2"><span class="fk">성 명</span><span class="fv"><u>&nbsp;</u> <span class="ins">(인)</span></span></div>
+          <div class="frow"><span class="fk">주민번호</span><span class="fv"><u>&nbsp;</u> &ndash; <u>&nbsp;</u></span></div>
+          <div class="frow w3"><span class="fk">주 소</span><span class="fv"><u>&nbsp;</u></span></div>
+          <div class="frow"><span class="fk">연락처1 (휴대폰)</span><span class="fv"><u>&nbsp;</u></span></div>
+          <div class="frow"><span class="fk">연락처2 (현금영수증)</span><span class="fv"><u>&nbsp;</u></span></div>
+        </div>
       </td>
     </tr>
     <tr><td class="slbl">계 약 일</td><td class="cday" colspan="3"><u>&nbsp;</u> 년 &nbsp; <u>&nbsp;</u> 월 &nbsp; <u>&nbsp;</u> 일</td></tr>
   </table>
-  <div class="signwarn">※ "갑" 및 "을"의 인장 날인 및 서명이 없는 계약은 무효로 한다. (단, 전화계약 시 계약금 입금 시 계약 성립)</div>
+  <div class="signwarn">※ "갑"(각 공급 업체 및 주관사) 및 "을"의 인장 날인·서명이 없는 계약은 무효로 한다. (단, 전화계약 시 계약금 입금 시 계약 성립)</div>
+  </div>
   <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>힐스테이트 물금센트럴 추가 옵션 계약서 (3/3)</span></div>
 </div>
 </body></html>
