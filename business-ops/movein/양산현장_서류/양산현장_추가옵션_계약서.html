@@ -4,7 +4,7 @@
 @page { size: A4; margin: 0; }
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { font-family:'Malgun Gothic','맑은 고딕',sans-serif; color:#1a1a1a; margin:0; background:#eceef1; }
-.page { width:210mm; height:297mm; padding:10mm 9mm 9mm; position:relative; background:#fff; margin:0 auto 8px; overflow:hidden; }
+.page { width:210mm; height:297mm; padding:10mm 9mm 14mm; position:relative; background:#fff; margin:0 auto 8px; overflow:hidden; display:flex; flex-direction:column; }
 .brandbar { height:6px; background:linear-gradient(90deg,#15233d 0%,#15233d 55%,#c9a227 100%); border-radius:4px; }
 .head { display:flex; justify-content:space-between; align-items:flex-end; margin-top:7px; }
 .brand { font-size:12.5px; font-weight:800; letter-spacing:1px; color:#15233d; }
@@ -19,18 +19,18 @@ h1 { text-align:center; font-size:20px; font-weight:800; letter-spacing:4px; col
 .art b { color:#15233d; }
 .sec2 { font-size:12px; font-weight:800; color:#15233d; margin:8px 2px 3px; }
 .unit { font-size:9.5px; color:#8a6d12; font-weight:700; }
-table { width:100%; border-collapse:collapse; font-size:8.2px; table-layout:fixed; }
-th, td { border:1px solid #b3b8c2; padding:2.4px 3px; text-align:center; word-break:keep-all; vertical-align:middle; line-height:1.28; }
-thead th { background:#15233d; color:#fff; font-weight:700; font-size:8.6px; padding:4px 3px; }
-.no { width:20px; font-weight:800; color:#15233d; background:#eef0f4; }
-.item { width:50px; font-weight:800; color:#15233d; background:#fff7df; }
-.type { width:44px; font-weight:700; }
-.prod { width:150px; text-align:left; padding-left:6px; }
-.amt { width:64px; text-align:right; padding-right:6px; font-variant-numeric:tabular-nums; font-weight:800; font-size:10px; color:#15233d; }
-.pay { width:56px; text-align:right; padding-right:6px; font-variant-numeric:tabular-nums; font-size:8.6px; font-weight:700; color:#15233d; }
-.pay2 { width:54px; text-align:right; padding-right:6px; font-variant-numeric:tabular-nums; font-size:8.4px; color:#555; }
-.stamp { width:34px; font-size:8px; color:#aeb4bf; }
-.remark { width:118px; text-align:left; padding-left:6px; font-size:7.4px; line-height:1.32; color:#c0392b; }
+table { width:100%; border-collapse:collapse; font-size:10px; table-layout:fixed; flex:1 1 auto; }
+th, td { border:1px solid #b3b8c2; padding:3px 4px; text-align:center; word-break:keep-all; vertical-align:middle; line-height:1.3; }
+thead th { background:#15233d; color:#fff; font-weight:700; font-size:10.5px; padding:6px 4px; }
+.no { width:22px; font-weight:800; color:#15233d; background:#eef0f4; font-size:11px; }
+.item { width:54px; font-weight:800; color:#15233d; background:#fff7df; font-size:10.5px; }
+.type { width:46px; font-weight:700; }
+.prod { width:158px; text-align:left; padding-left:7px; }
+.amt { width:66px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-weight:800; font-size:12px; color:#15233d; }
+.pay { width:58px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:10px; font-weight:700; color:#15233d; }
+.pay2 { width:56px; text-align:right; padding-right:7px; font-variant-numeric:tabular-nums; font-size:9.6px; color:#555; }
+.stamp { width:36px; font-size:9.5px; color:#aeb4bf; }
+.remark { width:126px; text-align:left; padding-left:7px; font-size:8.6px; line-height:1.36; color:#c0392b; }
 .remark b { color:#15233d; }
 .hlapp { background:#fff3cf; color:#15233d; font-weight:700; }
 thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th.pay, thead th.pay2, thead th.stamp, thead th.remark { color:#fff; background:#15233d; }
@@ -80,22 +80,10 @@ thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th
       <tr><td class="type">59</td><td class="prod" rowspan="3">[추가] 실링팬 루씨에어 레이더3 + 우물천장 간접조명 또는 다운라이트 8개</td><td class="amt">1,400,000</td><td class="pay">280,000</td><td class="pay2">140,000</td><td class="pay2">980,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="type">76</td><td class="amt">1,400,000</td><td class="pay">280,000</td><td class="pay2">140,000</td><td class="pay2">980,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="type">84</td><td class="amt">1,400,000</td><td class="pay">280,000</td><td class="pay2">140,000</td><td class="pay2">980,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="no" rowspan="6">5</td><td class="item" rowspan="6">전동커튼</td><td class="type">59</td><td class="prod" rowspan="3">[패키지1] 거실 — 속지(쉬어)+겉지(암막) 2겹</td><td class="amt">800,000</td><td class="pay">160,000</td><td class="pay2">80,000</td><td class="pay2">560,000</td><td class="stamp">(인)</td><td class="remark" rowspan="6"><span class='hlapp'>아크로 앱 연동 통합제어</span> · 무상A/S 2년 · IOT 허브 별도<br>거실=속지+겉지 2겹 / 안방 1겹 · <b>자사 잠정단가</b><br><span class='hlapp'>◎ 조명&amp;실링팬 + 전동커튼 세트 계약 시 5% 할인</span></td></tr>
-      <tr><td class="type">76</td><td class="amt">800,000</td><td class="pay">160,000</td><td class="pay2">80,000</td><td class="pay2">560,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">84</td><td class="amt">800,000</td><td class="pay">160,000</td><td class="pay2">80,000</td><td class="pay2">560,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">59</td><td class="prod" rowspan="3">[패키지2] 거실 2겹 + 안방 1겹 (안방 +300,000)</td><td class="amt">1,100,000</td><td class="pay">220,000</td><td class="pay2">110,000</td><td class="pay2">770,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">76</td><td class="amt">1,100,000</td><td class="pay">220,000</td><td class="pay2">110,000</td><td class="pay2">770,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">84</td><td class="amt">1,100,000</td><td class="pay">220,000</td><td class="pay2">110,000</td><td class="pay2">770,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="no" rowspan="6">6</td><td class="item" rowspan="6">휴젠뜨<br>(욕실환기)</td><td class="type">59</td><td class="prod" rowspan="3">휴젠뜨3 풀옵션 1개소 (공용욕실)</td><td class="amt">740,000</td><td class="pay">148,000</td><td class="pay2">74,000</td><td class="pay2">518,000</td><td class="stamp">(인)</td><td class="remark" rowspan="6">자동 제습으로 샤워 후 습기 세균 방지 · 제조사 1년 보증<br>※ 2개소 설치 시 5만원 할인</td></tr>
-      <tr><td class="type">76</td><td class="amt">740,000</td><td class="pay">148,000</td><td class="pay2">74,000</td><td class="pay2">518,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">84</td><td class="amt">740,000</td><td class="pay">148,000</td><td class="pay2">74,000</td><td class="pay2">518,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">59</td><td class="prod" rowspan="3">휴젠뜨3 풀옵션 2개소 (공용+부부)</td><td class="amt">1,430,000</td><td class="pay">286,000</td><td class="pay2">143,000</td><td class="pay2">1,001,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">76</td><td class="amt">1,430,000</td><td class="pay">286,000</td><td class="pay2">143,000</td><td class="pay2">1,001,000</td><td class="stamp">(인)</td></tr>
-      <tr><td class="type">84</td><td class="amt">1,430,000</td><td class="pay">286,000</td><td class="pay2">143,000</td><td class="pay2">1,001,000</td><td class="stamp">(인)</td></tr>
     </tbody>
   </table>
-<div class="foot">※ 계약금 20% · 중도금 10% · 잔금 70% · 각 대표 업체 계좌 직접 납부 · 엣지컴퍼니 이행·품질·A/S 보증 &nbsp;|&nbsp; <span class="hlapp">◎ 조명&amp;실링팬 + 전동커튼 세트(아크로 앱 연동) 5% 할인</span></div>
-  <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>양산현장 추가 옵션 계약서 (1/2)</span></div>
+<div class="foot">※ 계약금 20%(계약시) · 중도금 10% · 잔금 70%(공사완료시) · 각 대표 업체 계좌 직접 납부 · 엣지컴퍼니 이행·품질·A/S 보증 &nbsp;|&nbsp; <span class="hlapp">◎ 조명&amp;실링팬 + 전동커튼 세트(아크로 앱 연동) 5% 할인</span></div>
+  <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>양산현장 추가 옵션 계약서 (1/3)</span></div>
 </div>
 <div class="page">
   <div class="brandbar"></div>
@@ -111,6 +99,18 @@ thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th
       <tr><th class="pay">계약금 20%<br><span style="font-weight:400">계약시</span></th><th class="pay2">중도금 10%</th><th class="pay2">잔금 70%<br><span style="font-weight:400">공사완료시</span></th></tr>
     </thead>
     <tbody>
+      <tr><td class="no" rowspan="6">5</td><td class="item" rowspan="6">전동커튼</td><td class="type">59</td><td class="prod" rowspan="3">[패키지1] 거실 — 속지(쉬어)+겉지(암막) 2겹</td><td class="amt">800,000</td><td class="pay">160,000</td><td class="pay2">80,000</td><td class="pay2">560,000</td><td class="stamp">(인)</td><td class="remark" rowspan="6"><span class='hlapp'>아크로 앱 연동 통합제어</span> · 무상A/S 2년 · IOT 허브 별도<br>거실=속지+겉지 2겹 / 안방 1겹 · <b>자사 잠정단가</b><br><span class='hlapp'>◎ 조명&amp;실링팬 + 전동커튼 세트 계약 시 5% 할인</span></td></tr>
+      <tr><td class="type">76</td><td class="amt">800,000</td><td class="pay">160,000</td><td class="pay2">80,000</td><td class="pay2">560,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="type">84</td><td class="amt">800,000</td><td class="pay">160,000</td><td class="pay2">80,000</td><td class="pay2">560,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="type">59</td><td class="prod" rowspan="3">[패키지2] 거실 2겹 + 안방 1겹 (안방 +300,000)</td><td class="amt">1,100,000</td><td class="pay">220,000</td><td class="pay2">110,000</td><td class="pay2">770,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="type">76</td><td class="amt">1,100,000</td><td class="pay">220,000</td><td class="pay2">110,000</td><td class="pay2">770,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="type">84</td><td class="amt">1,100,000</td><td class="pay">220,000</td><td class="pay2">110,000</td><td class="pay2">770,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="no" rowspan="6">6</td><td class="item" rowspan="6">휴젠뜨<br>(욕실환기)</td><td class="type">59</td><td class="prod" rowspan="3">휴젠뜨3 풀옵션 1개소 (공용욕실)</td><td class="amt">740,000</td><td class="pay">148,000</td><td class="pay2">74,000</td><td class="pay2">518,000</td><td class="stamp">(인)</td><td class="remark" rowspan="6">자동 제습으로 샤워 후 습기 세균 방지 · 제조사 1년 보증<br>※ 2개소 설치 시 5만원 할인</td></tr>
+      <tr><td class="type">76</td><td class="amt">740,000</td><td class="pay">148,000</td><td class="pay2">74,000</td><td class="pay2">518,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="type">84</td><td class="amt">740,000</td><td class="pay">148,000</td><td class="pay2">74,000</td><td class="pay2">518,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="type">59</td><td class="prod" rowspan="3">휴젠뜨3 풀옵션 2개소 (공용+부부)</td><td class="amt">1,430,000</td><td class="pay">286,000</td><td class="pay2">143,000</td><td class="pay2">1,001,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="type">76</td><td class="amt">1,430,000</td><td class="pay">286,000</td><td class="pay2">143,000</td><td class="pay2">1,001,000</td><td class="stamp">(인)</td></tr>
+      <tr><td class="type">84</td><td class="amt">1,430,000</td><td class="pay">286,000</td><td class="pay2">143,000</td><td class="pay2">1,001,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="no" rowspan="6">7</td><td class="item" rowspan="6">안전<br>방범<br>방충망</td><td class="type">59</td><td class="prod" rowspan="1">59 · 안전용 0.4mm</td><td class="amt">2,330,000</td><td class="pay">466,000</td><td class="pay2">233,000</td><td class="pay2">1,631,000</td><td class="stamp">(인)</td><td class="remark" rowspan="6">1톤 하중 내구성 · 외부 침입/추락/빈집털이 방지 · 찢어지지 않는 방충망<br><b>무상A/S 망 10년·부품 2년</b> · 대피공간(실외기실) 제외</td></tr>
       <tr><td class="type">59</td><td class="prod" rowspan="1">59 · 방범용 0.7mm</td><td class="amt">2,490,000</td><td class="pay">498,000</td><td class="pay2">249,000</td><td class="pay2">1,743,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="type">76</td><td class="prod" rowspan="1">76 · 안전용 0.4mm</td><td class="amt">2,400,000</td><td class="pay">480,000</td><td class="pay2">240,000</td><td class="pay2">1,680,000</td><td class="stamp">(인)</td></tr>
@@ -120,6 +120,25 @@ thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th
       <tr><td class="no" rowspan="3">8</td><td class="item" rowspan="3">음식물<br>처리기</td><td class="type">59</td><td class="prod" rowspan="3">롯데 필링스 DCS-HM4A</td><td class="amt">1,390,000</td><td class="pay">278,000</td><td class="pay2">139,000</td><td class="pay2">973,000</td><td class="stamp">(인)</td><td class="remark" rowspan="3">12만원 상당 리필용 미생물 3년분 + A/S용 1회분 무상증정 · <b>무상A/S 1년</b></td></tr>
       <tr><td class="type">76</td><td class="amt">1,390,000</td><td class="pay">278,000</td><td class="pay2">139,000</td><td class="pay2">973,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="type">84</td><td class="amt">1,390,000</td><td class="pay">278,000</td><td class="pay2">139,000</td><td class="pay2">973,000</td><td class="stamp">(인)</td></tr>
+    </tbody>
+  </table>
+<div class="foot">※ 계약금 20%(계약시) · 중도금 10% · 잔금 70%(공사완료시) · 각 대표 업체 계좌 직접 납부 · 엣지컴퍼니 이행·품질·A/S 보증 &nbsp;|&nbsp; <span class="hlapp">◎ 조명&amp;실링팬 + 전동커튼 세트(아크로 앱 연동) 5% 할인</span></div>
+  <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>양산현장 추가 옵션 계약서 (2/3)</span></div>
+</div>
+<div class="page">
+  <div class="brandbar"></div>
+  <div class="head"><div class="brand">EDGE COMPANY<small>㈜엣지컴퍼니 · 입주옵션 주관</small></div><div class="unit">양산현장 추가 옵션 계약서</div></div>
+<div style="text-align:center;font-size:11px;color:#6b7a8d;margin:6px 0 4px;letter-spacing:1px;">양산현장 추가 옵션 계약서 · 제2조 (계속)</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="no" rowspan="2">순번</th><th class="item" rowspan="2">품목</th><th class="type" rowspan="2">Type</th><th class="prod" rowspan="2">제품명 / 사양</th>
+        <th class="amt" rowspan="2">총금액</th><th colspan="3">대금 지급 (계약금 20% · 중도금 10% · 잔금 70%)</th><th class="stamp" rowspan="2">계약자<br>날인</th><th class="remark" rowspan="2" style="text-align:center;">비고</th>
+      </tr>
+      <tr><th class="pay">계약금 20%<br><span style="font-weight:400">계약시</span></th><th class="pay2">중도금 10%</th><th class="pay2">잔금 70%<br><span style="font-weight:400">공사완료시</span></th></tr>
+    </thead>
+    <tbody>
       <tr><td class="no" rowspan="6">9</td><td class="item" rowspan="6">수돗물 정화<br>아토버스터</td><td class="type">59</td><td class="prod" rowspan="3">계량기용 + 샤워기용 2ea</td><td class="amt">1,270,000</td><td class="pay">254,000</td><td class="pay2">127,000</td><td class="pay2">889,000</td><td class="stamp">(인)</td><td class="remark" rowspan="6">계량기·샤워·씽크 정수 필터 · 설치 시공 포함</td></tr>
       <tr><td class="type">76</td><td class="amt">1,270,000</td><td class="pay">254,000</td><td class="pay2">127,000</td><td class="pay2">889,000</td><td class="stamp">(인)</td></tr>
       <tr><td class="type">84</td><td class="amt">1,270,000</td><td class="pay">254,000</td><td class="pay2">127,000</td><td class="pay2">889,000</td><td class="stamp">(인)</td></tr>
@@ -140,6 +159,6 @@ thead th.no, thead th.item, thead th.type, thead th.prod, thead th.amt, thead th
     </tbody>
   </table>
   <div class="foot">※ <b>대금 지급</b> : 계약금 20%(계약시) · 중도금 10% · 잔금 70%(공사완료시) &nbsp;|&nbsp; <b>각 대표 업체 계좌로 직접 납부</b>(별첨 입금계좌 안내) &nbsp;|&nbsp; <span class="hlapp">◎ 조명&amp;실링팬 + 전동커튼 세트(아크로 앱 연동) 5% 할인</span> &nbsp;|&nbsp; "선택" 품목은 옵션 선택 시 금액 확정</div>
-  <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>양산현장 추가 옵션 계약서 (2/2)</span></div>
+  <div class="botbar"><span>㈜엣지컴퍼니 · 입주품목 옵션 및 박람회 전문기획</span><span>양산현장 추가 옵션 계약서 (3/3)</span></div>
 </div>
 </body></html>
