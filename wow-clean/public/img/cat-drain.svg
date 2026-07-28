@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="d-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5faff"/><stop offset="1" stop-color="#dfeaf4"/></linearGradient>
+    <radialGradient id="d-swirl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#5aa8f0"/><stop offset="1" stop-color="#1f83e0"/></radialGradient>
+    <linearGradient id="d-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef3f1"/><stop offset="1" stop-color="#9fb0ab"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#d-floor)"/>
+  <g stroke="#c9dae8" stroke-width="3" opacity=".6">
+    <path d="M0 225h1200M0 450h1200M0 675h1200"/>
+    <path d="M300 0v900M600 0v900M900 0v900"/>
+  </g>
+  <!-- 물 소용돌이 -->
+  <circle cx="600" cy="450" r="250" fill="url(#d-swirl)" opacity=".25"/>
+  <path d="M600 240 C420 240 320 380 360 520 C300 460 290 340 370 260" fill="none" stroke="#1f83e0" stroke-width="26" stroke-linecap="round" opacity=".55"/>
+  <path d="M600 660 C780 660 880 520 840 380 C900 440 910 560 830 640" fill="none" stroke="#5aa8f0" stroke-width="26" stroke-linecap="round" opacity=".55"/>
+  <!-- 배수구 커버 -->
+  <circle cx="600" cy="450" r="170" fill="url(#d-metal)"/>
+  <circle cx="600" cy="450" r="150" fill="#f4f8f9" stroke="#b9c8c3" stroke-width="6"/>
+  <g fill="#12345e" opacity=".85">
+    <rect x="520" y="392" width="160" height="18" rx="9"/>
+    <rect x="500" y="441" width="200" height="18" rx="9"/>
+    <rect x="520" y="490" width="160" height="18" rx="9"/>
+  </g>
+  <!-- 물방울 -->
+  <path d="M330 200 c0 0 -34 44 -34 68 a34 34 0 0 0 68 0 c0 -24 -34 -68 -34 -68z" fill="#1f83e0" opacity=".8"/>
+  <path d="M900 690 c0 0 -26 34 -26 52 a26 26 0 0 0 52 0 c0 -18 -26 -52 -26 -52z" fill="#5aa8f0" opacity=".8"/>
+  <path d="M880 180 l10 24 24 10 -24 10 -10 24 -10 -24 -24 -10 24 -10 z" fill="#1f83e0" opacity=".6"/>
+</svg>

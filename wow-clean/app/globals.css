@@ -1,0 +1,69 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ===== Wow Clean — Clean Blue design tokens (edge-platform 형제 팔레트) ===== */
+@theme {
+  --color-bg: #f7fafd;
+  --color-surface: #ffffff;
+  --color-warm: #eaf3fb;
+  --color-ink: #1f2937;
+  --color-muted: #6b7280;
+  --color-navy: #12345e;
+  --color-navy-d: #0c2547;
+  --color-gold: #1f83e0;
+  --color-gold-d: #1566c2;
+  --color-line: #dde8f2;
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 명품 세리프 영문 워드마크 (Cormorant Garamond) */
+.font-lux { font-family: 'Cormorant Garamond', 'Times New Roman', serif; }
+
+/* 스크롤 등장 애니메이션 — JS(reveal-ready) 있을 때만 숨겼다 나타남 (JS 없으면 항상 보임) */
+html.reveal-ready .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+html.reveal-ready .reveal.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { html.reveal-ready .reveal { opacity: 1 !important; transform: none !important; } }
+
+/* utility: section kicker */
+.kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+/* prose for case body */
+.prose { font-size: 15px; line-height: 1.9; color: #333; white-space: pre-wrap; }
+.prose p { margin: 0 0 1em; }
+
+/* hide scrollbar for filter chips row on mobile */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* 조명 시뮬레이터 슬라이더 손잡이 */
+.ct-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 26px; height: 26px; border-radius: 9999px;
+  background: #fff; border: 3px solid var(--color-gold);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35); cursor: pointer;
+}
+.ct-slider::-moz-range-thumb {
+  width: 24px; height: 24px; border-radius: 9999px;
+  background: #fff; border: 3px solid var(--color-gold);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35); cursor: pointer;
+}
