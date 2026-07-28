@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="p-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12345e"/><stop offset="1" stop-color="#0c2547"/></linearGradient>
+    <linearGradient id="p-pipe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f6fa"/><stop offset=".5" stop-color="#d6dde8"/><stop offset="1" stop-color="#a7b3c4"/></linearGradient>
+    <linearGradient id="p-jet" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#5aa8f0" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#p-bg)"/>
+  <circle cx="1020" cy="140" r="180" fill="#1f83e0" opacity=".15"/>
+  <!-- 배관 단면 -->
+  <rect x="0" y="330" width="1200" height="240" rx="0" fill="url(#p-pipe)"/>
+  <rect x="0" y="330" width="1200" height="26" fill="#ffffff" opacity=".5"/>
+  <rect x="0" y="544" width="1200" height="26" fill="#12345e" opacity=".2"/>
+  <!-- 배관 내부 -->
+  <rect x="0" y="386" width="1200" height="130" fill="#0c2547"/>
+  <!-- 남은 기름때 (오른쪽, 제거되는 중) -->
+  <path d="M1200 386 L1200 516 L900 516 C960 480 950 420 900 386 z" fill="#7a5c33" opacity=".8"/>
+  <!-- 고압 노즐 -->
+  <rect x="230" y="418" width="150" height="66" rx="20" fill="#1f83e0"/>
+  <rect x="180" y="434" width="70" height="34" rx="14" fill="#12345e" stroke="#5aa8f0" stroke-width="5"/>
+  <path d="M60 451 L180 451" stroke="#5aa8f0" stroke-width="16" stroke-linecap="round"/>
+  <!-- 고압수 분사 -->
+  <path d="M380 430 L680 400" stroke="url(#p-jet)" stroke-width="18" stroke-linecap="round"/>
+  <path d="M380 451 L720 451" stroke="url(#p-jet)" stroke-width="22" stroke-linecap="round"/>
+  <path d="M380 472 L680 502" stroke="url(#p-jet)" stroke-width="18" stroke-linecap="round"/>
+  <!-- 물방울·거품 -->
+  <circle cx="700" cy="420" r="12" fill="#5aa8f0" opacity=".8"/>
+  <circle cx="750" cy="470" r="9" fill="#bcdcfb" opacity=".8"/>
+  <circle cx="800" cy="430" r="7" fill="#ffffff" opacity=".7"/>
+  <!-- 게이지/반짝임 -->
+  <path d="M180 180 l12 28 28 12 -28 12 -12 28 -12 -28 -28 -12 28 -12 z" fill="#5aa8f0" opacity=".7"/>
+  <path d="M1020 700 l10 24 24 10 -24 10 -10 24 -10 -24 -24 -10 24 -10 z" fill="#1f83e0" opacity=".7"/>
+  <circle cx="600" cy="740" r="56" fill="none" stroke="#5aa8f0" stroke-width="10" opacity=".5"/>
+  <path d="M600 740 L636 716" stroke="#5aa8f0" stroke-width="10" stroke-linecap="round" opacity=".8"/>
+</svg>

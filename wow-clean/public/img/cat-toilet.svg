@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="t-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eaf3fb"/><stop offset="1" stop-color="#f7fafd"/></linearGradient>
+    <linearGradient id="t-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e2ebf2"/></linearGradient>
+    <linearGradient id="t-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcdcfb"/><stop offset="1" stop-color="#5aa8f0"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#t-wall)"/>
+  <rect x="0" y="700" width="1200" height="200" fill="#dfeaf4"/>
+  <rect x="0" y="688" width="1200" height="14" fill="#c9dae8"/>
+  <circle cx="1000" cy="160" r="150" fill="#1f83e0" opacity=".08"/>
+  <!-- 변기 몸체 -->
+  <rect x="720" y="240" width="150" height="300" rx="28" fill="url(#t-body)" stroke="#cfdde8" stroke-width="5"/>
+  <rect x="700" y="250" width="190" height="46" rx="16" fill="#ffffff" stroke="#cfdde8" stroke-width="5"/>
+  <circle cx="795" cy="273" r="12" fill="#1f83e0"/>
+  <path d="M430 470 C430 380 520 340 620 340 L740 340 L740 540 C740 640 640 700 545 700 C470 700 430 640 430 560 z" fill="url(#t-body)" stroke="#cfdde8" stroke-width="5"/>
+  <ellipse cx="585" cy="430" rx="150" ry="60" fill="#ffffff" stroke="#cfdde8" stroke-width="5"/>
+  <ellipse cx="585" cy="432" rx="110" ry="40" fill="url(#t-water)"/>
+  <!-- 받침 -->
+  <rect x="500" y="690" width="180" height="40" rx="12" fill="#e2ebf2" stroke="#cfdde8" stroke-width="4"/>
+  <!-- 뚫음 스프링 장비 (관통 성공 표현) -->
+  <path d="M240 250 C330 250 330 350 420 350 C500 350 500 420 560 428" fill="none" stroke="#12345e" stroke-width="20" stroke-linecap="round" opacity=".85"/>
+  <circle cx="240" cy="250" r="42" fill="#12345e"/>
+  <circle cx="240" cy="250" r="20" fill="#5aa8f0"/>
+  <!-- 반짝임 -->
+  <path d="M320 560 l10 24 24 10 -24 10 -10 24 -10 -24 -24 -10 24 -10 z" fill="#1f83e0" opacity=".65"/>
+  <path d="M960 560 l8 18 18 8 -18 8 -8 18 -8 -18 -18 -8 18 -8 z" fill="#5aa8f0" opacity=".7"/>
+</svg>

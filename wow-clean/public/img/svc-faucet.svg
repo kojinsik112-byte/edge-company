@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="f-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eef4fa"/></linearGradient>
+    <linearGradient id="f-chrome" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c3ccd8"/><stop offset=".35" stop-color="#f2f6fa"/><stop offset=".55" stop-color="#d6dde8"/><stop offset="1" stop-color="#a7b3c4"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#f-bg)"/>
+  <circle cx="1000" cy="150" r="150" fill="#1f83e0" opacity=".07"/>
+  <!-- 선반 -->
+  <rect x="0" y="640" width="1200" height="260" fill="#f0f5fa"/>
+  <rect x="0" y="628" width="1200" height="14" fill="#dde6ef"/>
+  <!-- 수전 본체 (교체 대상) -->
+  <rect x="430" y="560" width="120" height="80" rx="16" fill="url(#f-chrome)"/>
+  <path d="M490 560 C490 420 660 420 660 520 L660 560" fill="none" stroke="url(#f-chrome)" stroke-width="40" stroke-linecap="round"/>
+  <rect x="632" y="556" width="56" height="34" rx="12" fill="url(#f-chrome)"/>
+  <rect x="410" y="520" width="160" height="44" rx="16" fill="url(#f-chrome)"/>
+  <circle cx="490" cy="486" r="34" fill="#1f83e0"/>
+  <rect x="470" y="446" width="40" height="46" rx="10" fill="url(#f-chrome)"/>
+  <!-- 물방울 -->
+  <path d="M660 610 c0 0 -20 26 -20 40 a20 20 0 0 0 40 0 c0 -14 -20 -40 -20 -40z" fill="#5aa8f0" opacity=".85"/>
+  <!-- 몽키스패너 -->
+  <g transform="rotate(-38 850 430)">
+    <rect x="815" y="380" width="70" height="290" rx="26" fill="#12345e"/>
+    <path d="M785 330 a68 68 0 0 1 130 0 l-8 52 -114 0 z" fill="#12345e"/>
+    <rect x="800" y="300" width="44" height="70" rx="10" fill="#eef4fa" stroke="#12345e" stroke-width="10"/>
+  </g>
+  <!-- 교체 화살표 -->
+  <path d="M470 300 a150 110 0 0 1 210 -60" fill="none" stroke="#1f83e0" stroke-width="16" stroke-linecap="round"/>
+  <path d="M665 218 l30 24 -38 14 z" fill="#1f83e0"/>
+  <!-- 반짝임 -->
+  <path d="M280 250 l11 26 26 11 -26 11 -11 26 -11 -26 -26 -11 26 -11 z" fill="#1f83e0" opacity=".5"/>
+</svg>

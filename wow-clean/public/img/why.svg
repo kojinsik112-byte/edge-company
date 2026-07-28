@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="w-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12345e"/><stop offset="1" stop-color="#1f83e0"/></linearGradient>
+    <linearGradient id="w-pipe" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c3ccd8"/><stop offset=".35" stop-color="#f2f6fa"/><stop offset=".55" stop-color="#d6dde8"/><stop offset="1" stop-color="#a7b3c4"/></linearGradient>
+    <linearGradient id="w-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcdcfb"/><stop offset="1" stop-color="#5aa8f0"/></linearGradient>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#w-bg)"/>
+  <circle cx="1030" cy="180" r="260" fill="#5aa8f0" opacity=".16"/>
+  <circle cx="140" cy="1320" r="240" fill="#0c2547" opacity=".3"/>
+  <g stroke="#ffffff" stroke-opacity=".05" stroke-width="3">
+    <path d="M0 375h1200M0 750h1200M0 1125h1200"/>
+    <path d="M300 0v1500M600 0v1500M900 0v1500"/>
+  </g>
+  <!-- 큰 물방울 심볼 -->
+  <path d="M600 220 c0 0 -170 230 -170 355 a170 170 0 0 0 340 0 c0 -125 -170 -355 -170 -355z" fill="#ffffff" opacity=".97"/>
+  <path d="M600 300 c0 0 -120 170 -120 262 a120 120 0 0 0 240 0 c0 -92 -120 -262 -120 -262z" fill="url(#w-water)"/>
+  <path d="M545 560 a58 58 0 0 0 46 62" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" opacity=".9"/>
+  <!-- 체크 배지 -->
+  <circle cx="775" cy="620" r="86" fill="#ffffff"/>
+  <circle cx="775" cy="620" r="70" fill="#1f83e0"/>
+  <path d="M740 620 l26 26 48 -50" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 배관 라인 (하단 장식) -->
+  <path d="M120 1010 L520 1010 C580 1010 580 1100 640 1100 L1080 1100" fill="none" stroke="url(#w-pipe)" stroke-width="56" stroke-linecap="round"/>
+  <path d="M120 1010 L520 1010 C580 1010 580 1100 640 1100 L1080 1100" fill="none" stroke="url(#w-water)" stroke-width="22" stroke-linecap="round" opacity=".85"/>
+  <circle cx="520" cy="1010" r="14" fill="#ffffff" opacity=".7"/>
+  <!-- 핵심 문구 배지 3개 -->
+  <g font-family="Arial, 'Malgun Gothic', sans-serif" text-anchor="middle">
+    <rect x="230" y="1190" width="740" height="86" rx="43" fill="#ffffff"/>
+    <text x="600" y="1247" font-size="42" font-weight="800" fill="#12345e">시공 전 투명 견적 · 작업 후 A/S 보증</text>
+    <rect x="330" y="1310" width="540" height="76" rx="38" fill="#0c2547" stroke="#5aa8f0" stroke-width="3"/>
+    <text x="600" y="1360" font-size="36" font-weight="700" fill="#ffffff">전국 24시간 긴급 출동</text>
+  </g>
+  <!-- 반짝임 -->
+  <path d="M220 420 l14 32 32 14 -32 14 -14 32 -14 -32 -32 -14 32 -14 z" fill="#ffffff" opacity=".8"/>
+  <path d="M980 880 l10 24 24 10 -24 10 -10 24 -10 -24 -24 -10 24 -10 z" fill="#ffffff" opacity=".6"/>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="v-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eaf3fb"/><stop offset="1" stop-color="#f7fafd"/></linearGradient>
+    <linearGradient id="v-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e2ebf2"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#v-sky)"/>
+  <circle cx="1000" cy="150" r="160" fill="#1f83e0" opacity=".1"/>
+  <circle cx="150" cy="120" r="90" fill="#5aa8f0" opacity=".12"/>
+  <!-- 도로 -->
+  <rect x="0" y="640" width="1200" height="260" fill="#dfeaf4"/>
+  <rect x="0" y="628" width="1200" height="14" fill="#c9dae8"/>
+  <g fill="#ffffff"><rect x="60" y="750" width="140" height="16" rx="8"/><rect x="320" y="750" width="140" height="16" rx="8"/><rect x="580" y="750" width="140" height="16" rx="8"/><rect x="840" y="750" width="140" height="16" rx="8"/><rect x="1100" y="750" width="100" height="16" rx="8"/></g>
+  <!-- 출동 차량 -->
+  <g>
+    <rect x="200" y="300" width="620" height="300" rx="34" fill="url(#v-body)" stroke="#cfdde8" stroke-width="6"/>
+    <path d="M820 380 L960 380 C1010 380 1040 440 1044 500 L1044 560 C1044 582 1026 600 1004 600 L820 600 z" fill="url(#v-body)" stroke="#cfdde8" stroke-width="6"/>
+    <path d="M850 410 L940 410 C972 410 992 450 996 490 L850 490 z" fill="#bcdcfb" stroke="#cfdde8" stroke-width="5"/>
+    <!-- 옆면 브랜드 -->
+    <rect x="240" y="430" width="360" height="66" rx="16" fill="#1f83e0"/>
+    <text x="420" y="478" text-anchor="middle" font-family="Arial, sans-serif" font-size="46" font-weight="800" fill="#ffffff" letter-spacing="4">WOW CLEAN</text>
+    <text x="420" y="545" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#12345e">24시 배관 긴급출동</text>
+    <!-- 물방울 로고 -->
+    <path d="M690 430 c0 0 -30 40 -30 62 a30 30 0 0 0 60 0 c0 -22 -30 -62 -30 -62z" fill="#1f83e0"/>
+    <!-- 바퀴 -->
+    <circle cx="330" cy="612" r="58" fill="#12345e"/><circle cx="330" cy="612" r="26" fill="#e2ebf2"/>
+    <circle cx="900" cy="612" r="58" fill="#12345e"/><circle cx="900" cy="612" r="26" fill="#e2ebf2"/>
+    <!-- 경광 표시 -->
+    <rect x="470" y="268" width="80" height="32" rx="12" fill="#1f83e0"/>
+  </g>
+  <!-- 속도감 라인 -->
+  <g stroke="#5aa8f0" stroke-width="14" stroke-linecap="round" opacity=".55">
+    <path d="M90 380 L170 380"/><path d="M60 460 L150 460"/><path d="M100 540 L170 540"/>
+  </g>
+</svg>
