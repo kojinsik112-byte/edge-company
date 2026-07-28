@@ -18,7 +18,7 @@ export const SITE = {
 export const REGIONS = ["서울", "경기", "인천", "부산", "대구", "울산", "대전", "광주"] as const;
 export type Region = (typeof REGIONS)[number];
 
-export const CATEGORIES = ["하수구막힘", "변기막힘", "배관청소"] as const;
+export const CATEGORIES = ["하수구막힘", "변기막힘", "배관청소", "수전교체", "내시경검사", "관로탐지", "누수탐지"] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 // 한글 ↔ URL 슬러그 (지역 SEO 페이지 /area/<region>-<category>)
@@ -36,6 +36,10 @@ export const CATEGORY_SLUG: Record<Category, string> = {
   하수구막힘: "drain",
   변기막힘: "toilet",
   배관청소: "pipe-cleaning",
+  수전교체: "faucet-replacement",
+  내시경검사: "camera-inspection",
+  관로탐지: "pipe-detection",
+  누수탐지: "leak-detection",
 };
 
 export const REGION_BY_SLUG = Object.fromEntries(
@@ -53,6 +57,14 @@ export const CATEGORY_DESC: Record<Category, string> = {
     "변기 막힘·역류·이물질 제거. 함부로 뜯지 않고 상태를 확인한 뒤 깔끔하게 해결합니다.",
   배관청소:
     "고압세척·관로 스프링 장비로 배관 내부의 기름때와 슬러지를 걷어내 재막힘을 줄입니다.",
+  수전교체:
+    "세면대·주방·욕실 수전과 배관 부속을 규격에 맞게 교체 시공합니다. 각종 수전 및 부속 교체 전문.",
+  내시경검사:
+    "하수구·배관 내부를 내시경 카메라로 직접 확인해 막힘·파손 원인을 눈으로 보여드립니다.",
+  관로탐지:
+    "벽·바닥 속 배관의 위치와 경로를 전문 장비로 정확히 찾아내 불필요한 철거를 막습니다.",
+  누수탐지:
+    "장비 탐지로 누수 지점을 정확히 특정해 필요한 부위만 최소한으로 시공합니다.",
 };
 
 export const NAV = [

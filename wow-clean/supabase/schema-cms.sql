@@ -33,7 +33,7 @@ insert into public.settings (key, value) values
 }'),
 ('company', '{"image":"/img/hero.svg","title":"와우클린 소개","body":"하수구·변기 막힘 뚫음, 고압 배관청소, 누수탐지를 전문으로 하는 전국 24시간 출동 시공 기업입니다."}'),
 ('showroom', '{"image":"/img/cat-pipe.svg","title":"와우클린 시공 현장","body":"가정 욕실부터 상가 주방, 건물 공용 배관까지 — 와우클린이 실제로 해결한 현장들입니다.","hours":"연중무휴 24시간 접수 · 야간 긴급 출동 가능"}'),
-('categories', '{"하수구막힘":"/img/cat-drain.svg","변기막힘":"/img/cat-toilet.svg","배관청소":"/img/cat-pipe.svg"}'),
+('categories', '{"하수구막힘":"/img/cat-drain.svg","변기막힘":"/img/cat-toilet.svg","배관청소":"/img/cat-pipe.svg","수전교체":"/img/svc-faucet.svg","내시경검사":"/img/svc-scope.svg","관로탐지":"/img/svc-detect.svg","누수탐지":"/img/svc-leak.svg"}'),
 ('seo', '{"home":{"title":"","description":"","keywords":"","og":""}}')
 on conflict (key) do nothing;
 

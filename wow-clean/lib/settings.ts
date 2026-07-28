@@ -219,11 +219,19 @@ export const DEFAULT_SETTINGS: Settings = {
     하수구막힘: "/img/cat-drain.svg",
     변기막힘: "/img/cat-toilet.svg",
     배관청소: "/img/cat-pipe.svg",
+    수전교체: "/img/svc-faucet.svg",
+    내시경검사: "/img/svc-scope.svg",
+    관로탐지: "/img/svc-detect.svg",
+    누수탐지: "/img/svc-leak.svg",
   },
   categorySections: {
     하수구막힘: { title: "하수구막힘 시공사례", desc: "욕실·베란다·마당 하수구 뚫음 현장" },
     변기막힘: { title: "변기막힘 시공사례", desc: "역류·이물질까지 깔끔하게 해결한 현장" },
     배관청소: { title: "배관청소 시공사례", desc: "고압세척으로 배관 속까지 되살린 현장" },
+    수전교체: { title: "수전·부속 교체 시공사례", desc: "각종 수전·배관 부속 교체 현장" },
+    내시경검사: { title: "내시경 카메라 검사 사례", desc: "배관 내부를 눈으로 확인한 진단 현장" },
+    관로탐지: { title: "배관 관로 탐지 사례", desc: "벽·바닥 속 배관 경로를 정확히 찾은 현장" },
+    누수탐지: { title: "누수 탐지 시공사례", desc: "누수 지점을 특정해 최소 시공한 현장" },
   },
   seo: {
     home: {

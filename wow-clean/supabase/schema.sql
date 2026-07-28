@@ -11,7 +11,7 @@ create table if not exists public.cases (
   title text not null,
   slug text not null unique,
   region text not null check (region in ('서울','경기','인천','부산','대구','울산','대전','광주')),
-  category text not null check (category in ('하수구막힘','변기막힘','배관청소')),
+  category text not null check (category in ('하수구막힘','변기막힘','배관청소','수전교체','내시경검사','관로탐지','누수탐지')),
   apartment text not null default '',
   cover text,
   images jsonb not null default '[]'::jsonb,

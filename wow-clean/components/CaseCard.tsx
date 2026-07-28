@@ -7,6 +7,10 @@ const FALLBACK_BY_CATEGORY: Record<string, string> = {
   하수구막힘: FALLBACK_IMAGES.drain,
   변기막힘: FALLBACK_IMAGES.toilet,
   배관청소: FALLBACK_IMAGES.pipe,
+  수전교체: "/img/svc-faucet.svg",
+  내시경검사: "/img/svc-scope.svg",
+  관로탐지: "/img/svc-detect.svg",
+  누수탐지: "/img/svc-leak.svg",
 };
 
 export default function CaseCard({ c }: { c: CaseRow }) {
