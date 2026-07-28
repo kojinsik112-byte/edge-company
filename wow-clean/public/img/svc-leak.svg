@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="l-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eef4fa"/></linearGradient>
+    <linearGradient id="l-pipe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f6fa"/><stop offset=".5" stop-color="#d6dde8"/><stop offset="1" stop-color="#a7b3c4"/></linearGradient>
+    <linearGradient id="l-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcdcfb"/><stop offset="1" stop-color="#5aa8f0"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#l-bg)"/>
+  <!-- 벽 배관 -->
+  <rect x="0" y="380" width="1200" height="120" fill="url(#l-pipe)"/>
+  <rect x="0" y="408" width="1200" height="64" fill="#12345e" opacity=".15"/>
+  <!-- 누수 지점 -->
+  <path d="M560 500 c0 0 -14 18 -14 28 a14 14 0 0 0 28 0 c0 -10 -14 -28 -14 -28z" fill="#1f83e0"/>
+  <path d="M600 505 c0 0 -18 24 -18 36 a18 18 0 0 0 36 0 c0 -12 -18 -36 -18 -36z" fill="#5aa8f0"/>
+  <ellipse cx="585" cy="610" rx="90" ry="22" fill="url(#l-water)" opacity=".7"/>
+  <!-- 돋보기 -->
+  <circle cx="585" cy="440" r="150" fill="#ffffff" opacity=".35"/>
+  <circle cx="585" cy="440" r="150" fill="none" stroke="#12345e" stroke-width="26"/>
+  <rect x="680" y="530" width="200" height="56" rx="28" transform="rotate(42 700 560)" fill="#12345e"/>
+  <!-- 돋보기 안 균열 강조 -->
+  <path d="M520 430 L560 445 L545 465 L590 480" fill="none" stroke="#1f83e0" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 계측 그래프 -->
+  <rect x="120" y="120" width="330" height="180 " rx="20" fill="#12345e"/>
+  <path d="M150 240 L210 240 L240 170 L270 260 L300 210 L420 210" fill="none" stroke="#5aa8f0" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 체크 배지 -->
+  <circle cx="960" cy="200 " r="70" fill="#1f83e0"/>
+  <path d="M930 200 l22 22 40 -42" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 반짝임 -->
+  <path d="M260 660 l11 26 26 11 -26 11 -11 26 -11 -26 -26 -11 26 -11 z" fill="#1f83e0" opacity=".5"/>
+</svg>

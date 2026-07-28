@@ -30,7 +30,7 @@ export default function WhySection({ company }: { company: Company }) {
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 {features.map((f, i) => (
                   <div key={i} className="rounded-2xl border border-line bg-surface p-6 transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_45px_-24px_rgba(15,35,66,0.3)]">
-                    <span className="flex h-[58px] w-[58px] items-center justify-center rounded-2xl bg-gradient-to-br from-[#f6e9cd] to-[#e6cd9b] text-[#9a7434] shadow-[inset_0_1px_2px_rgba(255,255,255,0.65),0_10px_20px_-12px_rgba(154,116,52,0.55)] ring-1 ring-white/50">
+                    <span className="flex h-[58px] w-[58px] items-center justify-center rounded-2xl bg-gradient-to-br from-[#dcedfc] to-[#9ec9f2] text-[#1566c2] shadow-[inset_0_1px_2px_rgba(255,255,255,0.65),0_10px_20px_-12px_rgba(21,102,194,0.55)] ring-1 ring-white/50">
                       <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round"><path d={ICONS[i % ICONS.length]} /></svg>
                     </span>
                     <h3 className="mt-4 text-[16px] font-bold text-ink">{f.title}</h3>

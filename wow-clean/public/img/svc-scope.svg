@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="s-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eef4fa"/></linearGradient>
+    <linearGradient id="s-pipe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f6fa"/><stop offset=".5" stop-color="#d6dde8"/><stop offset="1" stop-color="#a7b3c4"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#s-bg)"/>
+  <!-- 모니터 -->
+  <rect x="90" y="120" width="420" height="300" rx="24" fill="#12345e"/>
+  <rect x="120" y="150" width="360" height="240" rx="14" fill="#0c2547"/>
+  <circle cx="300" cy="270" r="86" fill="none" stroke="#5aa8f0" stroke-width="10"/>
+  <circle cx="300" cy="270" r="48" fill="none" stroke="#1f83e0" stroke-width="8" opacity=".8"/>
+  <circle cx="300" cy="270" r="16" fill="#5aa8f0"/>
+  <rect x="150" y="352" width="120" height="18" rx="9" fill="#5aa8f0" opacity=".6"/>
+  <rect x="150" y="470" width="300" height="24" rx="12" fill="#dde6ef"/>
+  <!-- 배관 단면 -->
+  <rect x="0" y="600" width="1200" height="200" fill="url(#s-pipe)"/>
+  <rect x="0" y="640" width="1200" height="120" fill="#12345e" opacity=".85"/>
+  <!-- 케이블 + 카메라 헤드 -->
+  <path d="M420 430 C620 480 560 700 760 700" fill="none" stroke="#1f83e0" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="790" cy="700" r="40" fill="#1f83e0"/>
+  <circle cx="800" cy="700" r="18" fill="#ffffff"/>
+  <circle cx="806" cy="694" r="7" fill="#5aa8f0"/>
+  <!-- 라이트 빔 -->
+  <path d="M830 680 L980 640 L980 760 L830 720 z" fill="#5aa8f0" opacity=".3"/>
+  <!-- 반짝임 -->
+  <path d="M1020 250 l12 28 28 12 -28 12 -12 28 -12 -28 -28 -12 28 -12 z" fill="#1f83e0" opacity=".5"/>
+</svg>

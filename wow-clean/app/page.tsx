@@ -18,7 +18,7 @@ import WhySection from "@/components/WhySection";
 import LicenseSection from "@/components/LicenseSection";
 import BranchesSection from "@/components/BranchesSection";
 import PartnersSection from "@/components/PartnersSection";
-import { DEMO_REVIEWS } from "@/lib/demo";
+import { DEMO_REVIEWS, DEMO_FAQS } from "@/lib/demo";
 import ScrollRow from "@/components/ScrollRow";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -46,6 +46,7 @@ export default async function Home() {
   const { site, hero, showroom, company, process, simulator, shorts, categorySections: cs, license, branches, partners } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
   const reviewList = (reviews.length >= 9 ? reviews : [...reviews, ...DEMO_REVIEWS]).slice(0, 9);
+  const faqList = faqs.length > 0 ? faqs : DEMO_FAQS;
   const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/area/${REGION_SLUG["서울"]}-${CATEGORY_SLUG[cat]}`;
 
   return (
@@ -79,6 +80,18 @@ export default async function Home() {
         )}
         {!hero.overlayTitle && <h1 className="sr-only">{hero.title} · {hero.subline}</h1>}
       </section>
+
+      {/* ===== 신뢰 스트립 (히어로 바로 아래) ===== */}
+      <div className="border-b border-line bg-navy">
+        <div className="mx-auto flex max-w-[1320px] flex-wrap items-center justify-center gap-x-8 gap-y-2.5 px-6 py-4">
+          {["시공 전 투명 견적", "작업 후 A/S 보증", "사업자 정식 등록", "현장 사진 리포트", "가정·상가·건물 대응"].map((t) => (
+            <span key={t} className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-white/90">
+              <svg viewBox="0 0 24 24" className="h-4 w-4 text-gold" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* ===== SNS 채널 (메인 바로 아래 — 유튜브·블로그·인스타) ===== */}
       <SnsSection site={site} />
@@ -149,15 +162,15 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ===== FAQ ===== */}
-      {faqs.length > 0 && (
+      {/* ===== FAQ (DB 비어있으면 기본 8문항 폴백) ===== */}
+      {faqList.length > 0 && (
         <section className="reveal mx-auto max-w-[1080px] px-6 py-16 md:py-24">
           <div className="mx-auto mb-12 max-w-[640px] text-center">
             <p className="kicker">FAQ</p>
             <h2 className="mt-3 text-[24px] font-bold text-ink md:text-[30px]">자주 묻는 질문</h2>
           </div>
           <div className="grid gap-x-8 md:grid-cols-2">
-            {faqs.slice(0, 8).map((f) => (
+            {faqList.slice(0, 8).map((f) => (
               <details key={f.id} className="h-fit border-b border-line">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[16px] font-semibold text-ink">
                   {f.question}

@@ -2,18 +2,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
-/* ===== Wow Clean — Clean Blue design tokens (edge-platform 형제 팔레트) ===== */
+/* ===== Wow Clean — Clean White + Blue design tokens (edge-platform 형제 팔레트) ===== */
 @theme {
-  --color-bg: #f7fafd;
+  --color-bg: #ffffff;
   --color-surface: #ffffff;
-  --color-warm: #eaf3fb;
+  --color-warm: #f6f9fc;
   --color-ink: #1f2937;
   --color-muted: #6b7280;
   --color-navy: #12345e;
   --color-navy-d: #0c2547;
   --color-gold: #1f83e0;
   --color-gold-d: #1566c2;
-  --color-line: #dde8f2;
+  --color-line: #e5ecf3;
   --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 

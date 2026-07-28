@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getFaqs } from "@/lib/data";
+import { DEMO_FAQS } from "@/lib/demo";
 
 export const metadata: Metadata = {
   title: "자주 묻는 질문 (FAQ) — 하수구막힘·변기막힘·배관청소",
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
 };
 
 export default async function FaqPage() {
-  const faqs = await getFaqs();
+  const dbFaqs = await getFaqs();
+  const faqs = dbFaqs.length > 0 ? dbFaqs : DEMO_FAQS; // DB 비어있으면 기본 8문항 폴백
 
   const jsonLd = {
     "@context": "https://schema.org",

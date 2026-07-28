@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
   <defs>
     <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12345e"/><stop offset="1" stop-color="#1f83e0"/></linearGradient>
-    <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b8c6c2"/><stop offset=".35" stop-color="#eef3f1"/><stop offset=".55" stop-color="#cdd8d4"/><stop offset="1" stop-color="#9fb0ab"/></linearGradient>
+    <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c3ccd8"/><stop offset=".35" stop-color="#f2f6fa"/><stop offset=".55" stop-color="#d6dde8"/><stop offset="1" stop-color="#a7b3c4"/></linearGradient>
     <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcdcfb" stop-opacity=".95"/><stop offset="1" stop-color="#5aa8f0" stop-opacity=".8"/></linearGradient>
     <linearGradient id="counter" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4fafb"/><stop offset="1" stop-color="#dfeaf2"/></linearGradient>
   </defs>
@@ -18,7 +18,7 @@
   <rect x="0" y="765" width="1600" height="18" fill="#c9dae8"/>
   <!-- 세면대 -->
   <rect x="560" y="700" width="580" height="95" rx="46" fill="#ffffff" stroke="#dbe6ec" stroke-width="4"/>
-  <ellipse cx="850" cy="748" rx="205" ry="30" fill="#e7f4f8"/>
+  <ellipse cx="850" cy="748" rx="205" ry="30" fill="#e9f2fa"/>
   <ellipse cx="850" cy="752" rx="150" ry="20" fill="url(#water)"/>
   <!-- 수전 (구즈넥) -->
   <rect x="1005" y="415" width="64" height="40" rx="12" fill="url(#chrome)"/>
@@ -29,7 +29,7 @@
   <!-- P트랩 배관 -->
   <path d="M820 795 L820 880 C820 928 930 928 930 880 L930 820" fill="none" stroke="url(#chrome)" stroke-width="34" stroke-linecap="round"/>
   <!-- 화분 -->
-  <rect x="220" y="670" width="120" height="98" rx="14" fill="#e6f0f4" stroke="#d0dee4" stroke-width="3"/>
+  <rect x="220" y="670" width="120" height="98" rx="14" fill="#eaf1f8" stroke="#d4dfea" stroke-width="3"/>
   <path d="M280 670c-36-22-56-64-46-106 32 8 60 40 53 85" fill="#1566c2"/>
   <path d="M280 670c28-25 39-70 21-109-28 14-46 49-35 92" fill="#1f83e0"/>
   <path d="M280 670c-7-39 11-77 42-95 11 32-3 70-31 92" fill="#5aa8f0"/>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="dt-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eef4fa"/></linearGradient>
+    <linearGradient id="dt-pipe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f6fa"/><stop offset=".5" stop-color="#d6dde8"/><stop offset="1" stop-color="#a7b3c4"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#dt-bg)"/>
+  <!-- 지면 단면 -->
+  <rect x="0" y="500" width="1200" height="400" fill="#f0f5fa"/>
+  <rect x="0" y="488" width="1200" height="14" fill="#dde6ef"/>
+  <!-- 지하 배관 -->
+  <rect x="0" y="700" width="1200" height="90" rx="0" fill="url(#dt-pipe)"/>
+  <rect x="0" y="722" width="1200" height="46" fill="#12345e" opacity=".7"/>
+  <!-- 탐지기 (지상) -->
+  <rect x="540" y="220" width="120" height="60" rx="18" fill="#12345e"/>
+  <rect x="566" y="180" width="68" height="52" rx="12" fill="#1f83e0"/>
+  <rect x="586" y="280" width="28" height="180" rx="14" fill="#12345e"/>
+  <path d="M540 460 L660 460 L640 500 L560 500 z" fill="#1f83e0"/>
+  <!-- 신호파 (배관→탐지기) -->
+  <g fill="none" stroke="#1f83e0" stroke-width="12" stroke-linecap="round">
+    <path d="M540 640 a90 90 0 0 1 120 0" opacity=".9"/>
+    <path d="M505 585 a150 150 0 0 1 190 0" opacity=".6"/>
+    <path d="M470 530 a210 210 0 0 1 260 0" opacity=".35"/>
+  </g>
+  <circle cx="600" cy="745" r="26" fill="#5aa8f0"/>
+  <!-- 위치 핀 -->
+  <path d="M600 60 c-44 0 -78 34 -78 76 c0 56 78 130 78 130 s78 -74 78 -130 c0 -42 -34 -76 -78 -76z" fill="#1f83e0"/>
+  <circle cx="600" cy="138" r="30" fill="#ffffff"/>
+  <!-- 반짝임 -->
+  <path d="M240 300 l11 26 26 11 -26 11 -11 26 -11 -26 -26 -11 26 -11 z" fill="#1f83e0" opacity=".5"/>
+  <path d="M960 340 l9 20 20 9 -20 9 -9 20 -9 -20 -20 -9 20 -9 z" fill="#5aa8f0" opacity=".6"/>
+</svg>

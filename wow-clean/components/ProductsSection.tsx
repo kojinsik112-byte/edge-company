@@ -1,13 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ProductRow } from "@/lib/types";
-
-const DEMO: { name: string; category: string; body: string; image: string }[] = [
-  { name: "하수구 막힘 뚫음", category: "하수구", body: "욕실·베란다·마당 하수구 막힘. 원인 확인 후 장비로 관통합니다.", image: "/img/cat-drain.svg" },
-  { name: "변기 막힘 · 역류", category: "변기", body: "변기 막힘·역류·이물질 제거. 함부로 뜯지 않고 해결합니다.", image: "/img/cat-toilet.svg" },
-  { name: "고압 배관청소", category: "배관청소", body: "고압세척으로 배관 속 기름때·슬러지를 걷어내 재막힘을 줄입니다.", image: "/img/cat-pipe.svg" },
-  { name: "누수탐지 · 방수", category: "누수", body: "장비 탐지로 누수 지점을 찾아 필요한 부위만 정확히 시공합니다.", image: "/img/hero.svg" },
-];
+import { DEMO_SERVICES as DEMO } from "@/lib/demo";
 
 export default function ProductsSection({ products }: { products: ProductRow[] }) {
   const showDemo = products.length === 0;
@@ -18,7 +12,7 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
       <div className="reveal mx-auto mb-10 max-w-[640px] px-6 text-center">
         <p className="kicker">Services</p>
         <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">와우클린 서비스 안내</h2>
-        <p className="mt-3 text-[14.5px] text-muted">하수구막힘 · 변기막힘 · 고압 배관청소 · 누수탐지까지. 와우클린이 직접 시공하는 서비스입니다.</p>
+        <p className="mt-3 text-[14.5px] text-muted">막힘 뚫음부터 수전 교체, 내시경 검사, 관로·누수 탐지까지. 와우클린이 직접 시공하는 서비스입니다.</p>
       </div>
       {/* 한 줄 4개 그리드 (모바일 2열) · 최대 8개, 클릭 시 상세 */}
       <div className="reveal mx-auto grid max-w-[1200px] grid-cols-2 gap-5 px-6 md:grid-cols-4">

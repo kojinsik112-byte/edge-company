@@ -153,7 +153,7 @@ export const DEFAULT_SETTINGS: Settings = {
     ceo: "안영란",
     bizNo: "575-41-01087",
   },
-  notice: { enabled: false, text: "전국 24시간 긴급 출동 접수 중", link: "/contact" },
+  notice: { enabled: true, text: "🚨 전국 24시간 긴급 출동 접수 중 — 1668-8982", link: "/contact" },
   hero: {
     video: "",
     image: "/img/hero.svg",
@@ -170,7 +170,7 @@ export const DEFAULT_SETTINGS: Settings = {
     lead: "원인을 확인한 뒤 시공 전에 비용을 확정하고, 작업이 끝나면 사진으로 남기는 와우클린입니다.",
   },
   company: {
-    image: "/img/hero.svg",
+    image: "/img/why.svg",
     title: "와우클린 소개",
     body: "하수구·변기 막힘 뚫음, 고압 배관청소, 누수탐지를 전문으로 하는 전국 24시간 출동 시공 기업입니다.",
     eyebrow: "Why Wow Clean",
@@ -202,7 +202,7 @@ export const DEFAULT_SETTINGS: Settings = {
     subtitle: "",
   },
   shorts: {
-    enabled: true,
+    enabled: false, // 실제 시공 영상이 등록되면 관리자에서 ON ('곧 공개' 빈 박스 노출 방지)
     title: "현장이 증거입니다",
     desc: "말보다 확실한 시공 영상 — 어떻게 뚫고, 어떻게 마무리하는지 직접 보세요.",
     items: [],
@@ -212,7 +212,7 @@ export const DEFAULT_SETTINGS: Settings = {
     title: "와우클린 시공 현장",
     body: "가정 욕실부터 상가 주방, 건물 공용 배관까지 — 와우클린이 실제로 해결한 현장들입니다.",
     hours: "연중무휴 24시간 접수 · 야간 긴급 출동 가능",
-    images: ["/img/hero.svg", "/img/cat-drain.svg", "/img/cat-toilet.svg", "/img/cat-pipe.svg"],
+    images: ["/img/van.svg", "/img/cat-drain.svg", "/img/kitchen.svg", "/img/cat-toilet.svg", "/img/cat-pipe.svg"],
     map: "",
   },
   categories: {
