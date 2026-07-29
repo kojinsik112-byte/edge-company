@@ -21,6 +21,9 @@ import PartnersSection from "@/components/PartnersSection";
 import { DEMO_REVIEWS } from "@/lib/demo";
 import ScrollRow from "@/components/ScrollRow";
 
+// 관리자에서 등록/수정한 CMS 콘텐츠가 즉시 반영되도록 항상 최신 렌더
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getSettings();
   const h = seo.home;

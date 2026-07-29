@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { getFaqs } from "@/lib/data";
 
+// 관리자에서 등록/수정한 CMS 콘텐츠가 즉시 반영되도록 항상 최신 렌더
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "자주 묻는 질문 (FAQ) — 실링팬·간접조명·센서조명",
   description: "실링팬 설치, 전기요금, 간접조명 밝기, 센서조명 제어 등 자주 묻는 질문과 답변.",

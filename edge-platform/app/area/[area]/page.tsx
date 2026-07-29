@@ -10,6 +10,9 @@ import { getCases } from "@/lib/data";
 import { getSettings } from "@/lib/settings";
 import CaseCard from "@/components/CaseCard";
 
+// 관리자에서 등록/수정한 CMS 콘텐츠가 즉시 반영되도록 항상 최신 렌더
+export const dynamic = "force-dynamic";
+
 // 지역×카테고리 = 12개 SEO 페이지 자동 생성
 const COMBOS: { slug: string; region: Region; category: Category }[] = [];
 for (const r of REGIONS)
