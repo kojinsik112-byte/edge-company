@@ -9,7 +9,7 @@ export default function ProcessSection({ process }: { process: Process }) {
         <div className="mx-auto mb-12 max-w-[640px] text-center">
           <p className="kicker">Process</p>
           <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{process.title}</h2>
-          <p className="mt-3 text-[14.5px] text-muted">{process.desc}</p>
+          <p className="mt-3 text-[16px] leading-relaxed text-muted">{process.desc}</p>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {steps.map((s, i) => (
@@ -22,8 +22,8 @@ export default function ProcessSection({ process }: { process: Process }) {
               )}
               <div className="p-6">
                 {!s.image && <span className="font-lux text-[24px] font-semibold text-gold">{String(i + 1).padStart(2, "0")}</span>}
-                <h3 className={`${s.image ? "" : "mt-3"} text-[16px] font-bold text-ink`}>{s.title}</h3>
-                <p className="mt-2 text-[13px] leading-relaxed text-muted">{s.desc}</p>
+                <h3 className={`${s.image ? "" : "mt-3"} text-[17px] font-bold text-ink`}>{s.title}</h3>
+                <p className="mt-2 text-[14.5px] leading-relaxed text-muted">{s.desc}</p>
               </div>
             </div>
           ))}

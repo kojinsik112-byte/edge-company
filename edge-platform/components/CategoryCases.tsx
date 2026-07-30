@@ -23,8 +23,8 @@ export default function CategoryCases({
       <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="mb-10 flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-[24px] font-extrabold leading-snug text-ink md:text-[32px]">{title}</h2>
-            <p className="mt-2 text-[14.5px] text-muted">{desc}</p>
+            <h2 className="text-[26px] font-extrabold leading-snug text-ink md:text-[32px]">{title}</h2>
+            <p className="mt-2 text-[16px] leading-relaxed text-muted">{desc}</p>
           </div>
           <Link href={moreHref} className="hidden shrink-0 text-[14px] font-semibold text-gold-d hover:text-gold sm:inline">
             더 많은 시공사례 →

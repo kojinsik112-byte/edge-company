@@ -12,7 +12,7 @@ export default function LicenseSection({ license }: { license: License }) {
         <div className="mx-auto mb-10 max-w-[640px] text-center">
           <p className="kicker">License</p>
           <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{license.title}</h2>
-          {license.desc && <p className="mt-3 text-[14.5px] text-muted">{license.desc}</p>}
+          {license.desc && <p className="mt-3 text-[16px] leading-relaxed text-muted">{license.desc}</p>}
         </div>
         <div className="grid gap-6 sm:grid-cols-2">
           {items.map((it, i) => (

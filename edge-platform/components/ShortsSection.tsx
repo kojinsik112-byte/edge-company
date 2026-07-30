@@ -20,7 +20,7 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
       <div className="reveal mx-auto mb-9 max-w-[640px] px-6 text-center">
         <p className="kicker">Shorts</p>
         <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{shorts.title}</h2>
-        {shorts.desc && <p className="mt-3 text-[14.5px] text-muted">{shorts.desc}</p>}
+        {shorts.desc && <p className="mt-3 text-[16px] leading-relaxed text-muted">{shorts.desc}</p>}
       </div>
       <div className="reveal mx-auto grid max-w-[1320px] grid-cols-2 gap-5 px-6 md:gap-6">
           {empty
