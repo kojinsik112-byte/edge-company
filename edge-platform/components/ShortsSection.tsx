@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { Shorts } from "@/lib/settings";
-import ScrollRow from "./ScrollRow";
 
 function ytId(url: string): string | null {
   const m = url.match(/(?:shorts\/|youtu\.be\/|[?&]v=)([A-Za-z0-9_-]{6,})/);
@@ -23,18 +22,17 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
         <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{shorts.title}</h2>
         {shorts.desc && <p className="mt-3 text-[14.5px] text-muted">{shorts.desc}</p>}
       </div>
-      <ScrollRow fade="var(--color-bg)">
-        <div className="mx-auto flex w-max gap-4 px-6 pb-3">
+      <div className="reveal mx-auto grid max-w-[1200px] grid-cols-2 gap-4 px-6 md:grid-cols-3 md:gap-6">
           {empty
-            ? [0, 1, 2, 3].map((i) => (
-                <div key={i} className="relative aspect-video w-[360px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-b from-navy to-ink">
+            ? [0, 1, 2].map((i) => (
+                <div key={i} className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-gradient-to-b from-navy to-ink">
                   <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/45">
-                    <svg viewBox="0 0 24 24" className="h-9 w-9" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                    <svg viewBox="0 0 24 24" className="h-10 w-10" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
                     <span className="text-[12px] font-semibold">곧 공개</span>
                   </span>
                 </div>
               ))
-            : items.map((s, i) => {
+            : items.slice(0, 3).map((s, i) => {
                 const yt = ytId(s.url);
                 const isFile = /\.(mp4|mov|webm|m4v)(\?|$)/i.test(s.url);
                 const isExternal = !yt && !isFile; // 인스타·틱톡 등 → 클릭 시 새 탭 이동
@@ -60,7 +58,7 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
                   </>
                 );
                 return (
-                  <div key={i} className="relative aspect-video w-[360px] shrink-0 overflow-hidden rounded-2xl bg-ink shadow-[0_18px_40px_-22px_rgba(15,35,66,0.5)]">
+                  <div key={i} className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-ink shadow-[0_18px_40px_-22px_rgba(15,35,66,0.5)]">
                     {playing ? (
                       yt ? (
                         <iframe src={`https://www.youtube.com/embed/${yt}?autoplay=1&rel=0`} title={s.title} className="h-full w-full" allow="autoplay; encrypted-media; fullscreen" allowFullScreen />
@@ -75,8 +73,7 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
                   </div>
                 );
               })}
-        </div>
-      </ScrollRow>
+      </div>
       <div className="mt-9 text-center">
         <Link href="/youtube" className="inline-block rounded-lg border border-line bg-surface px-7 py-3.5 text-[15px] font-semibold text-ink transition hover:border-gold">더 많은 영상 보기</Link>
       </div>
