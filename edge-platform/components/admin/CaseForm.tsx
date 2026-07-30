@@ -8,14 +8,14 @@ import { buildCaseSlug, autoSeoTitle, autoSeoDescription } from "@/lib/seo";
 import { REGIONS, CATEGORIES, type Region, type Category } from "@/lib/constants";
 import type { CaseRow } from "@/lib/types";
 
-export default function CaseForm({ initial }: { initial?: CaseRow }) {
+export default function CaseForm({ initial, defaultCategory }: { initial?: CaseRow; defaultCategory?: Category }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const isEdit = Boolean(initial);
 
   const [title, setTitle] = useState(initial?.title ?? "");
   const [region, setRegion] = useState<Region>(initial?.region ?? "울산");
-  const [category, setCategory] = useState<Category>(initial?.category ?? "실링팬");
+  const [category, setCategory] = useState<Category>(initial?.category ?? defaultCategory ?? "실링팬");
   const [apartment, setApartment] = useState(initial?.apartment ?? "");
   const [body, setBody] = useState(initial?.body ?? "");
   const [tagsText, setTagsText] = useState((initial?.tags ?? []).join(", "));
@@ -114,6 +114,7 @@ export default function CaseForm({ initial }: { initial?: CaseRow }) {
           <select className={input} value={category} onChange={(e) => setCategory(e.target.value as Category)}>
             {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
           </select>
+          <p className="mt-1 text-[11.5px] text-gold-d">홈의 “{category} 시공사례” 칸에 노출됩니다.</p>
         </div>
       </div>
 

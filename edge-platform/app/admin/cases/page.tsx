@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { requireAdmin } from "@/lib/admin";
 import { getCases } from "@/lib/data";
+import { CATEGORIES } from "@/lib/constants";
 import { DeleteCaseButton } from "@/components/admin/AdminButtons";
 
 export const dynamic = "force-dynamic";
@@ -9,13 +10,25 @@ export const dynamic = "force-dynamic";
 export default async function AdminCases() {
   await requireAdmin();
   const cases = await getCases({ includeUnpublished: true, limit: 1000 });
+  const countBy = (c: string) => cases.filter((x) => x.category === c).length;
 
   return (
     <div className="mx-auto max-w-[1000px] px-5 py-8">
       <Link href="/admin" className="text-[13px] text-muted hover:text-navy">← 대시보드</Link>
-      <div className="mb-6 mt-3 flex items-center justify-between">
-        <h1 className="text-xl font-extrabold text-ink">시공사례 <span className="text-[14px] font-medium text-muted">총 {cases.length}건</span></h1>
-        <Link href="/admin/cases/new" className="rounded-lg bg-navy px-5 py-2.5 text-[14px] font-semibold text-white hover:bg-navy-d">+ 새 시공사례</Link>
+      <h1 className="mb-4 mt-3 text-xl font-extrabold text-ink">시공사례 <span className="text-[14px] font-medium text-muted">총 {cases.length}건</span></h1>
+
+      {/* 카테고리별 등록 — 셋 다 여기서 올립니다(사진·제목·아파트명·내용·태그) */}
+      <div className="mb-7 grid gap-3 sm:grid-cols-3">
+        {CATEGORIES.map((c) => (
+          <Link
+            key={c}
+            href={`/admin/cases/new?category=${encodeURIComponent(c)}`}
+            className="flex items-center justify-between rounded-xl border border-line bg-surface px-4 py-3.5 transition hover:border-navy hover:shadow-[0_14px_30px_-20px_rgba(11,31,58,0.4)]"
+          >
+            <span className="text-[14px] font-bold text-ink">+ {c} 사례 등록</span>
+            <span className="text-[12px] font-semibold text-muted">{countBy(c)}건</span>
+          </Link>
+        ))}
       </div>
 
       {cases.length === 0 ? (
