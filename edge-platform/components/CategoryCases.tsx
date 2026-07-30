@@ -20,7 +20,7 @@ export default function CategoryCases({
   heroImgs?: string[]; // 관리자 '카테고리 대표 이미지'(최대 6장). 등록 사례가 없을 때 이 사진들을 대표로 보여준다.
 }) {
   const showDemo = cases.length === 0;
-  const covers = heroImgs.filter(Boolean).slice(0, 6);
+  const covers = heroImgs.filter(Boolean).slice(0, 10);
   return (
     <section className={`${bg} py-16 md:py-24`}>
       <div className="reveal mx-auto max-w-[1320px] px-6">
