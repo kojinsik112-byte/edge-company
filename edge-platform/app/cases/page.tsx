@@ -4,6 +4,9 @@ import { getCases } from "@/lib/data";
 import { REGIONS, CATEGORIES, type Region, type Category } from "@/lib/constants";
 import CaseCard from "@/components/CaseCard";
 
+// 관리자에서 등록/수정한 CMS 콘텐츠가 즉시 반영되도록 항상 최신 렌더
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "시공사례 — 울산·부산·포항·경주 실링팬·간접조명",
   description:

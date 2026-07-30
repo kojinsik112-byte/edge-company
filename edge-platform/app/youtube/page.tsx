@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { getYoutube } from "@/lib/data";
 import YoutubeGrid from "@/components/YoutubeGrid";
 
+// 관리자에서 등록/수정한 CMS 콘텐츠가 즉시 반영되도록 항상 최신 렌더
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "시공 영상 (유튜브) — 실링팬·간접조명 시공",
   description: "엣지컴퍼니 실링팬·간접조명·센서조명 시공 영상 모음.",

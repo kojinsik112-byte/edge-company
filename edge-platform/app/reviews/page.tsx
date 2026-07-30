@@ -3,6 +3,9 @@ import Image from "next/image";
 import { getReviews } from "@/lib/data";
 import Stars from "@/components/Stars";
 
+// 관리자에서 등록/수정한 CMS 콘텐츠가 즉시 반영되도록 항상 최신 렌더
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "고객 후기 — 울산·부산·포항·경주 실링팬·간접조명",
   description: "엣지컴퍼니 실링팬·간접조명·센서조명 시공 고객 후기. 실제 시공 만족도를 확인하세요.",

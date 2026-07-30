@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getSettings } from "@/lib/settings";
 
+// 관리자에서 등록/수정한 CMS 콘텐츠가 즉시 반영되도록 항상 최신 렌더
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "쇼룸안내 — 울산 조명 쇼룸 직접 체험",
   description: "울산 엣지컴퍼니 조명 쇼룸에서 실링팬·간접조명·센서조명을 직접 보고 비교하고 체험하세요. 부산·포항·경주 방문 상담 가능.",

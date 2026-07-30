@@ -21,6 +21,9 @@ import PartnersSection from "@/components/PartnersSection";
 import { DEMO_REVIEWS } from "@/lib/demo";
 import ScrollRow from "@/components/ScrollRow";
 
+// 관리자에서 등록/수정한 CMS 콘텐츠가 즉시 반영되도록 항상 최신 렌더
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getSettings();
   const h = seo.home;
@@ -43,7 +46,7 @@ export default async function Home() {
     getFaqs(),
     getProducts(),
   ]);
-  const { site, hero, showroom, company, process, simulator, shorts, categorySections: cs, license, branches, partners } = settings;
+  const { site, hero, showroom, company, process, simulator, shorts, categorySections: cs, categories: catImg, license, branches, partners } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
   const reviewList = (reviews.length >= 9 ? reviews : [...reviews, ...DEMO_REVIEWS]).slice(0, 9);
   const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/area/${REGION_SLUG["울산"]}-${CATEGORY_SLUG[cat]}`;
@@ -108,9 +111,9 @@ export default async function Home() {
       <ShortsSection shorts={shorts} />
 
       {/* ===== 카테고리별 시공사례 (사진 중심·전면 배치) ===== */}
-      <CategoryCases title={cs["실링팬"]?.title ?? "실링팬 시공사례"} desc={cs["실링팬"]?.desc ?? ""} cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" />
-      <CategoryCases title={cs["간접조명"]?.title ?? "간접조명 시공사례"} desc={cs["간접조명"]?.desc ?? ""} cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" />
-      <CategoryCases title={cs["기타"]?.title ?? "기타 시공사례"} desc={cs["기타"]?.desc ?? ""} cases={etcCases} moreHref={moreHref("기타")} bg="bg-bg" />
+      <CategoryCases title={cs["실링팬"]?.title ?? "실링팬 시공사례"} desc={cs["실링팬"]?.desc ?? ""} cases={fanCases} moreHref={moreHref("실링팬")} bg="bg-bg" heroImg={catImg?.["실링팬"]} />
+      <CategoryCases title={cs["간접조명"]?.title ?? "간접조명 시공사례"} desc={cs["간접조명"]?.desc ?? ""} cases={indirectCases} moreHref={moreHref("간접조명")} bg="bg-surface" heroImg={catImg?.["간접조명"]} />
+      <CategoryCases title={cs["기타"]?.title ?? "기타 시공사례"} desc={cs["기타"]?.desc ?? ""} cases={etcCases} moreHref={moreHref("기타")} bg="bg-bg" heroImg={catImg?.["기타"]} />
 
       {/* ===== 시공 절차 ===== */}
       <ProcessSection process={process} />
