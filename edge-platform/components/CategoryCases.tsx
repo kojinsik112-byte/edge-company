@@ -10,16 +10,17 @@ export default function CategoryCases({
   cases,
   moreHref,
   bg = "bg-bg",
-  heroImg,
+  heroImgs = [],
 }: {
   title: string;
   desc: string;
   cases: CaseRow[];
   moreHref: string;
   bg?: string;
-  heroImg?: string; // 관리자 '카테고리 대표 이미지'. 등록 사례가 없을 때 이 사진을 대표로 보여준다.
+  heroImgs?: string[]; // 관리자 '카테고리 대표 이미지'(최대 6장). 등록 사례가 없을 때 이 사진들을 대표로 보여준다.
 }) {
   const showDemo = cases.length === 0;
+  const covers = heroImgs.filter(Boolean).slice(0, 6);
   return (
     <section className={`${bg} py-16 md:py-24`}>
       <div className="reveal mx-auto max-w-[1320px] px-6">
@@ -33,10 +34,14 @@ export default function CategoryCases({
           </Link>
         </div>
 
-        {showDemo && heroImg ? (
-          // 등록된 시공사례가 없으면 관리자가 올린 '카테고리 대표 이미지' 1장을 대표로 노출.
-          <div className="group relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-surface shadow-[0_10px_30px_-18px_rgba(15,35,66,0.2)]">
-            <Image src={heroImg} alt={title} fill sizes="(max-width:1320px) 100vw, 1320px" priority className="object-cover transition duration-500 group-hover:scale-[1.02]" />
+        {showDemo && covers.length > 0 ? (
+          // 등록된 시공사례가 없으면 관리자가 올린 '카테고리 대표 이미지'들을 한 줄에 2개씩(최대 6칸) 노출.
+          <div className="grid grid-cols-2 gap-4 md:gap-6">
+            {covers.map((src, i) => (
+              <div key={i} className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface shadow-[0_10px_30px_-18px_rgba(15,35,66,0.2)]">
+                <Image src={src} alt={`${title} ${i + 1}`} fill sizes="(max-width:768px) 50vw, 640px" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
