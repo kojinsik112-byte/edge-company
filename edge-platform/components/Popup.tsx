@@ -43,6 +43,13 @@ export default function Popup() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (!popup) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setPopup(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [popup]);
+
   if (!popup) return null;
 
   const close = () => {
@@ -51,8 +58,8 @@ export default function Popup() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-5" role="dialog" aria-modal="true">
-      <div className="max-h-[88vh] w-full max-w-md overflow-y-auto overflow-hidden rounded-2xl bg-surface shadow-2xl">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-5" role="dialog" aria-modal="true" aria-label={popup.title || "안내 팝업"} onClick={close}>
+      <div className="max-h-[88vh] w-full max-w-md overflow-y-auto overflow-hidden rounded-2xl bg-surface shadow-2xl" onClick={(e) => e.stopPropagation()}>
         {popup.image && (
           popup.link ? (
             <Link href={popup.link} onClick={close}>
