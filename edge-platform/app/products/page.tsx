@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "제품 소개 — 엣지컴퍼니",
   description: "실링팬 · 간접조명(COB) · 스위치 · 전동커튼 · 센서등까지. 엣지컴퍼니가 직접 시공하는 프리미엄 제품들입니다.",
+  alternates: { canonical: "/products" },
 };
 
 export default async function ProductsPage() {

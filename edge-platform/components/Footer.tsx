@@ -64,7 +64,7 @@ export default function Footer({ site }: { site: SiteInfo }) {
         <p className="mt-3 text-[11.5px] leading-relaxed text-muted">
           전기 결선이 따르는 조명·실링팬 시공을 면허 보유 법인이 안전하게 진행합니다. 제품·시공 이미지는 실제 시공 및 자사 제품 자료이며, 현장 여건에 따라 결과가 달라질 수 있습니다.
         </p>
-        <p className="mt-3 text-[11.5px] tracking-wide text-line">
+        <p className="mt-3 text-[11.5px] tracking-wide text-ink/40">
           © {new Date().getFullYear()} Edge Company Co., Ltd. All rights reserved.
         </p>
       </div>

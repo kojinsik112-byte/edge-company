@@ -185,10 +185,10 @@ export default async function Home() {
           </div>
           <div className="grid gap-x-8 md:grid-cols-2">
             {faqs.slice(0, 8).map((f) => (
-              <details key={f.id} className="h-fit border-b border-line">
+              <details key={f.id} className="group h-fit border-b border-line">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[16px] font-semibold text-ink">
                   {f.question}
-                  <span className="text-xl font-light text-gold">+</span>
+                  <span className="text-xl font-light text-gold transition-transform duration-200 group-open:rotate-45">+</span>
                 </summary>
                 <p className="prose pb-5">{f.answer}</p>
               </details>
