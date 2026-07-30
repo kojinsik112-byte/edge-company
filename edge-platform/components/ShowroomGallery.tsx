@@ -13,7 +13,7 @@ export default function ShowroomGallery({ showroom }: { showroom: Showroom }) {
           <p className="mt-3 whitespace-pre-line text-[15.5px] leading-relaxed text-muted">{showroom.body}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 gap-5 md:gap-6">
           {images.map((src, i) => (
             <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-[20px] bg-surface">
               <Image src={src} alt={`엣지컴퍼니 쇼룸 ${i + 1}`} fill sizes="(max-width:768px) 50vw, 380px" className="object-cover transition duration-500 hover:scale-[1.04]" />

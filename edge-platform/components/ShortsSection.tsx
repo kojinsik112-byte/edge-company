@@ -22,17 +22,17 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
         <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{shorts.title}</h2>
         {shorts.desc && <p className="mt-3 text-[14.5px] text-muted">{shorts.desc}</p>}
       </div>
-      <div className="reveal mx-auto grid max-w-[1200px] grid-cols-2 gap-4 px-6 md:grid-cols-3 md:gap-6">
+      <div className="reveal mx-auto grid max-w-[1320px] grid-cols-2 gap-5 px-6 md:gap-6">
           {empty
-            ? [0, 1, 2].map((i) => (
-                <div key={i} className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-gradient-to-b from-navy to-ink">
+            ? [0, 1, 2, 3].map((i) => (
+                <div key={i} className="relative aspect-video overflow-hidden rounded-2xl bg-gradient-to-b from-navy to-ink">
                   <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/45">
                     <svg viewBox="0 0 24 24" className="h-10 w-10" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
                     <span className="text-[12px] font-semibold">곧 공개</span>
                   </span>
                 </div>
               ))
-            : items.slice(0, 3).map((s, i) => {
+            : items.slice(0, 4).map((s, i) => {
                 const yt = ytId(s.url);
                 const isFile = /\.(mp4|mov|webm|m4v)(\?|$)/i.test(s.url);
                 const isExternal = !yt && !isFile; // 인스타·틱톡 등 → 클릭 시 새 탭 이동
