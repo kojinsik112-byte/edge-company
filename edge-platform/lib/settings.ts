@@ -82,7 +82,7 @@ export interface Showroom {
   images: string[]; // 쇼룸 갤러리 (최대 8장 + 안내보기 타일 = 3×3)
   map: string; // 오시는 길 지도 이미지 (관리자 업로드)
 }
-export type Categories = Record<string, string>; // 카테고리명 → 대표이미지 URL
+export type Categories = Record<string, string[]>; // 카테고리명 → 대표이미지 URL 배열(최대 6장)
 export interface CategorySection {
   title: string; // 홈 시공사례 섹션 제목 (관리자 변경 가능)
   desc: string;
@@ -216,9 +216,9 @@ export const DEFAULT_SETTINGS: Settings = {
     map: "",
   },
   categories: {
-    실링팬: "/img/fan.webp",
-    간접조명: "/img/indirect.webp",
-    기타: "/img/curtain.webp",
+    실링팬: ["/img/fan.webp"],
+    간접조명: ["/img/indirect.webp"],
+    기타: ["/img/curtain.webp"],
   },
   categorySections: {
     실링팬: { title: "실링팬 시공사례", desc: "실제 고객 시공 현장" },
@@ -265,6 +265,13 @@ export async function getSettings(): Promise<Settings> {
     }
   } catch {
     // 무시 — 기본값 사용
+  }
+  // 하위호환: 예전엔 카테고리 대표이미지가 문자열 1장이었음 → 배열로 정규화(기존 업로드 사진 유지)
+  const cat = merged.categories as unknown as Record<string, unknown>;
+  for (const k of Object.keys(cat)) {
+    const v = cat[k];
+    if (typeof v === "string") cat[k] = v ? [v] : [];
+    else if (!Array.isArray(v)) cat[k] = [];
   }
   return merged;
 }

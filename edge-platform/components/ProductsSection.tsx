@@ -11,8 +11,8 @@ const DEMO: { name: string; category: string; body: string; image: string }[] = 
 
 export default function ProductsSection({ products }: { products: ProductRow[] }) {
   const showDemo = products.length === 0;
-  const items = (showDemo ? DEMO : products).slice(0, 8); // 한 줄 4개 × 2줄 = 8개
-  const hasMore = !showDemo && products.length > 8;
+  const items = (showDemo ? DEMO : products).slice(0, 4); // 한 줄 2개 × 2줄 = 4개
+  const hasMore = !showDemo && products.length > 4;
   return (
     <section className="bg-surface py-16 md:py-24">
       <div className="reveal mx-auto mb-10 max-w-[640px] px-6 text-center">
@@ -20,8 +20,8 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
         <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">엣지컴퍼니 제품 소개</h2>
         <p className="mt-3 text-[14.5px] text-muted">유선스위치 · 실링팬 · COB조명 · 센서등까지. 엣지컴퍼니가 직접 시공하는 제품들입니다.</p>
       </div>
-      {/* 한 줄 4개 그리드 (모바일 2열) · 최대 8개, 클릭 시 상세 */}
-      <div className="reveal mx-auto grid max-w-[1200px] grid-cols-2 gap-5 px-6 md:grid-cols-4">
+      {/* 한 줄 2개 × 2줄 = 4개, 클릭 시 상세 */}
+      <div className="reveal mx-auto grid max-w-[900px] grid-cols-2 gap-5 px-6 md:gap-6">
         {items.map((p, i) => {
           const inner = (
             <>
@@ -46,7 +46,7 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
       </div>
       <div className="mt-9 text-center">
         <Link href="/products" className="inline-block rounded-lg border border-line bg-surface px-7 py-3.5 text-[15px] font-semibold text-ink transition hover:border-gold">
-          {hasMore ? "제품 더 보기" : "제품 전체 보기"}
+          {hasMore ? "제품 더 보기" : "전체 상품 보러가기"}
         </Link>
       </div>
     </section>
