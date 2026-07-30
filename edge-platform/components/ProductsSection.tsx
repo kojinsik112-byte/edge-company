@@ -26,7 +26,7 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
           const inner = (
             <>
               <div className="relative aspect-[4/3] overflow-hidden bg-bg">
-                {p.image && <Image src={p.image} alt={p.name} fill sizes="(max-width:768px) 50vw, 280px" className="object-cover transition duration-500 group-hover:scale-[1.04]" />}
+                {p.image && <Image src={p.image} alt={p.name} fill sizes="(max-width:1360px) 46vw, 640px" className="object-cover transition duration-500 group-hover:scale-[1.04]" />}
                 {showDemo && <span className="absolute left-3 top-3 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold text-ink/70 backdrop-blur-sm">예시</span>}
               </div>
               <div className="p-5">
