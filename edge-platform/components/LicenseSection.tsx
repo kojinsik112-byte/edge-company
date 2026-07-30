@@ -16,7 +16,7 @@ export default function LicenseSection({ license }: { license: License }) {
         </div>
         <div className="grid gap-6 sm:grid-cols-2">
           {items.map((it, i) => (
-            <figure key={i} className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_30px_-20px_rgba(15,35,66,0.2)]">
+            <figure key={i} className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_30px_-20px_rgba(47,37,28,0.2)]">
               <div className="relative aspect-[3/4] bg-bg">
                 <Image src={it.image} alt={it.caption || `엣지컴퍼니 등록증 ${i + 1}`} fill sizes="(max-width:640px) 100vw, 520px" className="object-contain" />
               </div>

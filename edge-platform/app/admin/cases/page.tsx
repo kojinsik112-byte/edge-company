@@ -23,7 +23,7 @@ export default async function AdminCases() {
           <Link
             key={c}
             href={`/admin/cases/new?category=${encodeURIComponent(c)}`}
-            className="flex items-center justify-between rounded-xl border border-line bg-surface px-4 py-3.5 transition hover:border-navy hover:shadow-[0_14px_30px_-20px_rgba(11,31,58,0.4)]"
+            className="flex items-center justify-between rounded-xl border border-line bg-surface px-4 py-3.5 transition hover:border-navy hover:shadow-[0_14px_30px_-20px_rgba(40,31,22,0.4)]"
           >
             <span className="text-[14px] font-bold text-ink">+ {c} 사례 등록</span>
             <span className="text-[12px] font-semibold text-muted">{countBy(c)}건</span>

@@ -58,7 +58,7 @@ export default function ShortsSection({ shorts }: { shorts: Shorts }) {
                   </>
                 );
                 return (
-                  <div key={i} className="relative aspect-video overflow-hidden rounded-2xl bg-ink shadow-[0_18px_40px_-22px_rgba(15,35,66,0.5)]">
+                  <div key={i} className="relative aspect-video overflow-hidden rounded-2xl bg-ink shadow-[0_18px_40px_-22px_rgba(47,37,28,0.5)]">
                     {playing ? (
                       yt ? (
                         <iframe src={`https://www.youtube.com/embed/${yt}?autoplay=1&rel=0`} title={s.title} className="h-full w-full" allow="autoplay; encrypted-media; fullscreen" allowFullScreen />

@@ -36,7 +36,7 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
               </div>
             </>
           );
-          const cls = "group overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_30px_-20px_rgba(15,35,66,0.2)] transition hover:-translate-y-1 hover:shadow-[0_22px_45px_-24px_rgba(15,35,66,0.25)]";
+          const cls = "group overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_30px_-20px_rgba(47,37,28,0.2)] transition hover:-translate-y-1 hover:shadow-[0_22px_45px_-24px_rgba(47,37,28,0.25)]";
           return showDemo ? (
             <div key={i} className={cls}>{inner}</div>
           ) : (

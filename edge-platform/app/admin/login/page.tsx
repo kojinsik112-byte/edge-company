@@ -32,7 +32,7 @@ export default function AdminLogin() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-5">
-      <form onSubmit={onSubmit} className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 shadow-[0_22px_60px_-30px_rgba(16,37,66,0.4)]">
+      <form onSubmit={onSubmit} className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 shadow-[0_22px_60px_-30px_rgba(47,37,28,0.4)]">
         <div className="mb-6 flex items-center gap-2.5">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-navy font-serif text-lg font-bold text-gold">E</span>
           <span className="font-extrabold tracking-tight text-ink">엣지컴퍼니 관리자</span>

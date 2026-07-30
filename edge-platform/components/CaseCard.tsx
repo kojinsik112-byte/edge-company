@@ -14,7 +14,7 @@ export default function CaseCard({ c }: { c: CaseRow }) {
   return (
     <Link
       href={`/cases/${c.slug}`}
-      className="group block overflow-hidden rounded-2xl bg-surface shadow-[0_10px_30px_-18px_rgba(16,37,66,0.25)] transition hover:shadow-[0_22px_50px_-24px_rgba(16,37,66,0.35)]"
+      className="group block overflow-hidden rounded-2xl bg-surface shadow-[0_10px_30px_-18px_rgba(47,37,28,0.25)] transition hover:shadow-[0_22px_50px_-24px_rgba(47,37,28,0.35)]"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-line">
         <Image
