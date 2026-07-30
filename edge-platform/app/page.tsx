@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
+import { REGION_SLUG, CATEGORY_SLUG, SITE, REGIONS } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
 import { getCases, getReviews, getFaqs, getProducts } from "@/lib/data";
 import ShortsSection from "@/components/ShortsSection";
@@ -51,8 +51,32 @@ export default async function Home() {
   const reviewList = (reviews.length >= 9 ? reviews : [...reviews, ...DEMO_REVIEWS]).slice(0, 9);
   const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/area/${REGION_SLUG["울산"]}-${CATEGORY_SLUG[cat]}`;
 
+  // 지역 검색(네이버·구글) 노출용 구조화 데이터
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: SITE.name,
+    legalName: SITE.legalName,
+    description: SITE.tagline,
+    image: `${SITE.url}/img/living-hero.webp`,
+    url: SITE.url,
+    telephone: site.phone || SITE.phone,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: site.address || SITE.address,
+      addressRegion: "울산광역시",
+      addressCountry: "KR",
+    },
+    areaServed: REGIONS.map((r) => ({ "@type": "City", name: r })),
+    priceRange: "₩₩",
+    ...(site.instagram || site.youtube || site.blog
+      ? { sameAs: [site.instagram, site.youtube, site.blog].filter(Boolean) }
+      : {}),
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Popup />
 
       {/* ===== HERO (광고영상 자동재생 루프 또는 이미지 — 관리자에서 교체) ===== */}
