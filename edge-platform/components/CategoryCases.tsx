@@ -36,7 +36,7 @@ export default function CategoryCases({
 
         {showDemo && covers.length > 0 ? (
           // 등록된 시공사례가 없으면 관리자가 올린 '카테고리 대표 이미지'들을 한 줄에 2개씩(최대 6칸) 노출.
-          <div className="grid grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 gap-5 md:gap-6">
             {covers.map((src, i) => (
               <div key={i} className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface shadow-[0_10px_30px_-18px_rgba(15,35,66,0.2)]">
                 <Image src={src} alt={`${title} ${i + 1}`} fill sizes="(max-width:768px) 50vw, 640px" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
@@ -44,7 +44,7 @@ export default function CategoryCases({
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
+          <div className="grid grid-cols-2 gap-5 md:gap-6">
             {showDemo
               ? demoTiles(9).map((t, i) => (
                   <div key={i} className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface shadow-[0_10px_30px_-18px_rgba(15,35,66,0.2)]">

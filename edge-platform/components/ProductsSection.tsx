@@ -21,7 +21,7 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
         <p className="mt-3 text-[14.5px] text-muted">유선스위치 · 실링팬 · COB조명 · 센서등까지. 엣지컴퍼니가 직접 시공하는 제품들입니다.</p>
       </div>
       {/* 한 줄 2개 × 2줄 = 4개, 클릭 시 상세 */}
-      <div className="reveal mx-auto grid max-w-[900px] grid-cols-2 gap-5 px-6 md:gap-6">
+      <div className="reveal mx-auto grid max-w-[1320px] grid-cols-2 gap-5 px-6 md:gap-6">
         {items.map((p, i) => {
           const inner = (
             <>
