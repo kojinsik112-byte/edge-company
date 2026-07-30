@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MobileBar from "@/components/MobileBar";
+import DesktopCTA from "@/components/DesktopCTA";
 import RevealInit from "@/components/RevealInit";
 import { SITE } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
@@ -48,6 +49,7 @@ export default async function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer site={site} />
         <MobileBar site={site} />
+        <DesktopCTA site={site} />
       </body>
     </html>
   );
