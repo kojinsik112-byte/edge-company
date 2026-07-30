@@ -18,6 +18,7 @@ import WhySection from "@/components/WhySection";
 import LicenseSection from "@/components/LicenseSection";
 import BranchesSection from "@/components/BranchesSection";
 import PartnersSection from "@/components/PartnersSection";
+import TrustBar from "@/components/TrustBar";
 import { DEMO_REVIEWS } from "@/lib/demo";
 import ScrollRow from "@/components/ScrollRow";
 
@@ -106,6 +107,9 @@ export default async function Home() {
         )}
         {!hero.overlayTitle && <h1 className="sr-only">{hero.title} · {hero.subline}</h1>}
       </section>
+
+      {/* ===== 신뢰 스트립 (면허·상담·A/S·지역) ===== */}
+      <TrustBar />
 
       {/* ===== SNS 채널 (메인 바로 아래 — 유튜브·블로그·인스타) ===== */}
       <SnsSection site={site} />
