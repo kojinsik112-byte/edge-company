@@ -19,7 +19,7 @@ export default async function ContactPage() {
       <div className="mx-auto max-w-[760px] px-6 py-16 md:py-24">
         <div className="text-center">
           <p className="kicker">Contact</p>
-          <h1 className="mt-4 text-[28px] font-extrabold text-ink md:text-[44px]">쇼룸 상담 예약</h1>
+          <h1 className="mt-4 text-[28px] font-display font-extrabold text-ink md:text-[44px]">쇼룸 상담 예약</h1>
           <p className="mt-3 text-[14.5px] text-muted">
             울산·부산·포항·경주 어디든 방문 상담 가능합니다.<br />아래 양식으로 남기시거나 전화·카톡으로 문의해 주세요.
           </p>

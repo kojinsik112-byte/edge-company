@@ -9,7 +9,7 @@ export default function ShowroomGallery({ showroom }: { showroom: Showroom }) {
       <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="mx-auto mb-12 max-w-[680px] text-center">
           <p className="kicker">Showroom</p>
-          <h2 className="mt-3 text-[26px] font-extrabold leading-snug text-ink md:text-[32px]">{showroom.title}</h2>
+          <h2 className="mt-3 text-[26px] font-display font-extrabold leading-snug text-ink md:text-[32px]">{showroom.title}</h2>
           <p className="mt-3 whitespace-pre-line text-[15.5px] leading-relaxed text-muted">{showroom.body}</p>
         </div>
 

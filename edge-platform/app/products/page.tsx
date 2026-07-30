@@ -18,7 +18,7 @@ export default async function ProductsPage() {
     <div className="mx-auto max-w-[1200px] px-6 py-12 md:py-16">
       <div className="mx-auto mb-10 max-w-[640px] text-center">
         <p className="kicker">Products</p>
-        <h1 className="mt-3 text-[28px] font-extrabold text-ink md:text-[36px]">엣지컴퍼니 제품 소개</h1>
+        <h1 className="mt-3 text-[28px] font-display font-extrabold text-ink md:text-[36px]">엣지컴퍼니 제품 소개</h1>
         <p className="mt-3 text-[14.5px] text-muted">유선스위치 · 실링팬 · COB조명 · 전동커튼 · 센서등까지. 직접 시공하는 제품을 자세히 확인하세요.</p>
       </div>
 

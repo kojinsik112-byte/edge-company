@@ -147,7 +147,7 @@ export default async function Home() {
         <div className="reveal mx-auto max-w-[1320px] px-6">
           <div className="mx-auto mb-10 max-w-[640px] text-center">
             <p className="kicker">Reviews</p>
-            <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">고객 후기</h2>
+            <h2 className="mt-3 text-[26px] font-display font-extrabold text-ink md:text-[32px]">고객 후기</h2>
             <p className="mt-3 text-[16px] leading-relaxed text-muted">실제 시공 고객님들의 이야기입니다. 옆으로 넘겨 더 많은 후기를 확인하세요.</p>
           </div>
         </div>
@@ -181,7 +181,7 @@ export default async function Home() {
         <section className="reveal mx-auto max-w-[1080px] px-6 py-16 md:py-24">
           <div className="mx-auto mb-12 max-w-[640px] text-center">
             <p className="kicker">FAQ</p>
-            <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">자주 묻는 질문</h2>
+            <h2 className="mt-3 text-[26px] font-display font-extrabold text-ink md:text-[32px]">자주 묻는 질문</h2>
           </div>
           <div className="grid gap-x-8 md:grid-cols-2">
             {faqs.slice(0, 8).map((f) => (
@@ -204,7 +204,7 @@ export default async function Home() {
       <section className="bg-warm py-20 text-center md:py-28">
         <div className="reveal mx-auto max-w-[1320px] px-6">
           <p className="kicker">Contact</p>
-          <h2 className="mt-4 whitespace-pre-line text-[30px] font-extrabold leading-[1.2] text-ink md:text-[48px]">실링팬 · 간접조명 시공{"\n"}지금 상담받으세요</h2>
+          <h2 className="mt-4 whitespace-pre-line text-[30px] font-display font-extrabold leading-[1.2] text-ink md:text-[48px]">실링팬 · 간접조명 시공{"\n"}지금 상담받으세요</h2>
           <a href={tel} className="mt-6 block text-[40px] font-extrabold tracking-tight text-navy md:text-[64px]">{site.phone}</a>
           <div className="mt-8 flex justify-center gap-3">
             <a href={tel} className="rounded-lg bg-ink px-7 py-4 text-[16px] font-bold text-white transition hover:bg-[#111827]">무료 상담</a>

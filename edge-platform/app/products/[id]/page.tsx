@@ -47,7 +47,7 @@ export default async function ProductDetail({ params }: Props) {
         </div>
         <div className="flex flex-col justify-center">
           {p.category && <span className="text-[13px] font-semibold text-gold-d">{p.category}</span>}
-          <h1 className="mt-2 text-[26px] font-extrabold leading-snug text-ink md:text-[34px]">{p.name}</h1>
+          <h1 className="mt-2 text-[26px] font-display font-extrabold leading-snug text-ink md:text-[34px]">{p.name}</h1>
           {p.body && <p className="mt-4 whitespace-pre-wrap text-[15px] leading-relaxed text-muted">{p.body}</p>}
           <div className="mt-7 flex gap-3">
             <a href={`tel:${site.phone.replace(/-/g, "")}`} className="rounded-lg bg-ink px-6 py-3.5 text-[15px] font-bold text-white transition hover:bg-[#111827]">전화 상담</a>
