@@ -12,7 +12,7 @@ export default function BranchesSection({ branches }: { branches: Branches }) {
         <div className="mx-auto mb-10 max-w-[640px] text-center">
           <p className="kicker">Branches</p>
           <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{branches.title}</h2>
-          {branches.desc && <p className="mt-3 text-[14.5px] text-muted">{branches.desc}</p>}
+          {branches.desc && <p className="mt-3 text-[16px] leading-relaxed text-muted">{branches.desc}</p>}
         </div>
 
         <div className="space-y-6">
