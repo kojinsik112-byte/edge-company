@@ -44,16 +44,16 @@ export default function ContactForm() {
     <form onSubmit={submit} className="rounded-2xl border border-line bg-surface p-6 text-left sm:p-8">
       <p className="mb-4 text-center text-[15px] font-bold text-ink">온라인 상담 신청</p>
       <div className="grid gap-3 sm:grid-cols-2">
-        <input className={inp} placeholder="이름" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-        <input className={inp} placeholder="연락처 (예: 010-0000-0000)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-        <select className={inp} value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })}>
+        <input className={inp} placeholder="이름" aria-label="이름" autoComplete="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+        <input className={inp} placeholder="연락처 (예: 010-0000-0000)" aria-label="연락처" type="tel" inputMode="numeric" autoComplete="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+        <select className={inp} aria-label="지역" value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })}>
           {REGIONS.map((r) => <option key={r} className="text-ink">{r}</option>)}
         </select>
-        <select className={inp} value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
+        <select className={inp} aria-label="관심 카테고리" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
           {CATEGORIES.map((c) => <option key={c} className="text-ink">{c}</option>)}
         </select>
       </div>
-      <textarea className={`${inp} mt-3 min-h-[90px]`} placeholder="문의 내용 (선택)" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
+      <textarea className={`${inp} mt-3 min-h-[90px]`} placeholder="문의 내용 (선택)" aria-label="문의 내용" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
       <label className="mt-3 flex items-start gap-2 text-[12.5px] text-muted">
         <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0" />
         <span>상담을 위한 <b className="font-semibold text-ink">개인정보(이름·연락처) 수집·이용</b>에 동의합니다. 수집된 정보는 상담 목적 외 사용하지 않습니다.</span>

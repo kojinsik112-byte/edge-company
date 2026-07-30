@@ -42,7 +42,7 @@ export default async function RootLayout({
   const { site, notice } = await getSettings();
   return (
     <html lang="ko" className="h-full antialiased">
-      <body className="flex min-h-full flex-col pb-[56px] xl:pb-0">
+      <body className="flex min-h-full flex-col pb-[calc(56px+env(safe-area-inset-bottom))] xl:pb-0">
         <RevealInit />
         <Header site={site} notice={notice} />
         <main className="flex-1">{children}</main>

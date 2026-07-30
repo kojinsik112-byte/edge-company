@@ -63,7 +63,7 @@ export default function LightSimulator({
         {/* 시뮬레이션 화면 */}
         <div className="relative overflow-hidden rounded-[28px] shadow-[0_30px_70px_-30px_rgba(15,35,66,0.4)] ring-1 ring-line">
           <div className="relative aspect-[16/10]" style={{ filter: `brightness(${0.52 + d * 0.48}) contrast(${1 + (1 - d) * 0.06}) saturate(${0.96 + d * 0.12})` }}>
-            <Image src={image} alt="조명 색온도 시뮬레이션" fill priority sizes="(max-width:1100px) 100vw, 1100px" className="object-cover" style={{ objectPosition: "center 68%" }} />
+            <Image src={image} alt="조명 색온도 시뮬레이션" fill sizes="(max-width:1100px) 100vw, 1100px" className="object-cover" style={{ objectPosition: "center 68%" }} />
             {/* 색온도 — 곱하기 블렌드(빛이 공간을 물들이듯, 시원한 빛에서도 안 뜸) */}
             <div className="pointer-events-none absolute inset-0 transition-colors duration-300" style={{ backgroundColor: `rgb(${rr},${gg},${bb})`, mixBlendMode: "multiply", opacity: 0.3 }} />
             {/* 디밍 — 가장자리부터 어두워지는 '빛 고임' 효과 */}

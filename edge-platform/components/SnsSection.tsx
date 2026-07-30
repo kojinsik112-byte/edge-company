@@ -43,8 +43,8 @@ export default function SnsSection({ site }: { site: SiteInfo }) {
   ];
 
   return (
-    <section className="border-b border-line bg-surface py-14 md:py-16">
-      <div className="reveal mx-auto max-w-[1240px] px-6">
+    <section className="border-b border-line bg-surface py-16 md:py-24">
+      <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="grid gap-5 sm:grid-cols-3">
           {channels.map((c) => {
             const live = Boolean(c.href);

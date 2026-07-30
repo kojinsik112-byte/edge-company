@@ -21,13 +21,18 @@ export default function HeroVideo({ src, poster }: { src: string; poster?: strin
       v.play().catch(() => {});
     });
 
-    // 방문자가 화면을 건드리는 즉시 소리 ON (브라우저 정책 우회의 표준)
+    // 방문자가 화면을 '탭/클릭'하면 소리 ON. 스크롤(wheel)은 제외 —
+    // 스크롤로 소리 켜기를 시도하면 브라우저가 막아 재생이 멈추기 때문.
+    // 소리 켜기가 막히면 음소거 상태로 재생을 계속 유지한다.
     const onGesture = () => {
       v.muted = false;
-      v.play().catch(() => {});
+      v.play().catch(() => {
+        v.muted = true;
+        v.play().catch(() => {});
+      });
       cleanup();
     };
-    const evts = ["pointerdown", "keydown", "touchstart", "wheel"] as const;
+    const evts = ["pointerdown", "keydown", "touchstart"] as const;
     const cleanup = () => evts.forEach((e) => window.removeEventListener(e, onGesture));
     evts.forEach((e) => window.addEventListener(e, onGesture, { passive: true }));
 

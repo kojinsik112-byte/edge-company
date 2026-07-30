@@ -34,10 +34,10 @@ export default async function FaqPage() {
       {faqs.length > 0 ? (
         <div className="mt-8">
           {faqs.map((f) => (
-            <details key={f.id} className="border-b border-line">
+            <details key={f.id} className="group border-b border-line">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[16px] font-semibold text-ink">
                 <span><span className="mr-2 font-bold text-gold">Q.</span>{f.question}</span>
-                <span className="text-xl font-light text-gold">+</span>
+                <span className="text-xl font-light text-gold transition-transform duration-200 group-open:rotate-45">+</span>
               </summary>
               <p className="prose pb-6">{f.answer}</p>
             </details>

@@ -54,7 +54,7 @@ export default function Header({ site, notice }: { site: SiteInfo; notice: Notic
               aria-label="메뉴"
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-lg border border-line bg-surface xl:hidden"
+              className="flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-lg border border-line bg-surface xl:hidden"
             >
               <span className={`h-[1.6px] w-[18px] bg-ink transition ${open ? "translate-y-[6.6px] rotate-45" : ""}`} />
               <span className={`h-[1.6px] w-[18px] bg-ink transition ${open ? "opacity-0" : ""}`} />
