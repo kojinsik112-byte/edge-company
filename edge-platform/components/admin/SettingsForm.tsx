@@ -132,22 +132,6 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
     }
   }
 
-  async function addCategoryImages(cat: string, files: FileList) {
-    setMsg("이미지 변환·업로드 중…");
-    try {
-      const existing = s.categories[cat] ?? [];
-      const room = Math.max(0, 10 - existing.length);
-      const picked = Array.from(files).slice(0, room);
-      if (room === 0) { setMsg("카테고리당 최대 10장입니다. 기존 사진을 지우고 올려주세요."); return; }
-      const urls: string[] = [];
-      for (const f of picked) urls.push(await uploadImage(supabase, f));
-      patch("categories", { [cat]: [...existing, ...urls] } as Partial<Settings["categories"]>);
-      setMsg(`업로드 완료(${urls.length}장) — 저장 버튼을 누르세요.`);
-    } catch (e) {
-      setMsg(`이미지 오류: ${e instanceof Error ? e.message : ""}`);
-    }
-  }
-
   return (
     <div className="space-y-10">
       {msg && <p className="sticky top-2 z-10 rounded-lg bg-gold/15 px-4 py-2.5 text-[13px] font-medium text-gold-d">{msg}</p>}
@@ -329,23 +313,6 @@ export default function SettingsForm({ initial }: { initial: Settings }) {
           onRemove={(i) => patch("showroom", { images: (s.showroom.images ?? []).filter((_, j) => j !== i) })}
         />
         <ImageField label="오시는 길 지도 이미지" hint="1320 × 500px (가로형) · 직접 만든 지도 캡처" url={s.showroom.map} onPick={(f) => pick(f, (url) => patch("showroom", { map: url }))} />
-      </Section>
-
-      {/* 카테고리 대표이미지 (카테고리당 최대 10장) */}
-      <Section title="카테고리 대표 이미지 (최대 10장)" onSave={() => save("categories")} saving={saving === "categories"}>
-        <p className="text-[12px] text-muted">시공사례를 아직 등록하지 않았을 때, 홈 화면의 각 “○○ 시공사례” 칸에 <b>한 줄에 2개씩</b> 올린 사진 전부가 노출됩니다. (시공사례를 등록하면 그 사례로 대체)</p>
-        <div className="grid gap-5 sm:grid-cols-3">
-          {CATEGORIES.map((c) => (
-            <MultiImage
-              key={c}
-              label={c}
-              hint="1200 × 900px (4:3) · 최대 10장"
-              urls={s.categories[c] ?? []}
-              onAdd={(files) => addCategoryImages(c, files)}
-              onRemove={(i) => patch("categories", { [c]: (s.categories[c] ?? []).filter((_, j) => j !== i) } as Partial<Settings["categories"]>)}
-            />
-          ))}
-        </div>
       </Section>
 
       {/* 카테고리 이름 (시공사례 섹션 제목) */}
