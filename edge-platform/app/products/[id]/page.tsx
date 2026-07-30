@@ -71,7 +71,7 @@ export default async function ProductDetail({ params }: Props) {
           <h2 className="mb-5 text-lg font-bold text-ink">다른 제품</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {related.map((r) => (
-              <Link key={r.id} href={`/products/${r.id}`} className="group overflow-hidden rounded-2xl border border-line bg-surface transition hover:-translate-y-1 hover:shadow-[0_22px_45px_-24px_rgba(15,35,66,0.25)]">
+              <Link key={r.id} href={`/products/${r.id}`} className="group overflow-hidden rounded-2xl border border-line bg-surface transition hover:-translate-y-1 hover:shadow-[0_22px_45px_-24px_rgba(47,37,28,0.25)]">
                 <div className="relative aspect-[4/3] overflow-hidden bg-bg">
                   {r.image && <Image src={r.image} alt={r.name} fill sizes="(max-width:768px) 50vw, 240px" className="object-cover transition duration-500 group-hover:scale-[1.04]" />}
                 </div>

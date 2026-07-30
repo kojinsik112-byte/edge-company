@@ -70,7 +70,7 @@ export default function ScrollRow({
         <button
           aria-label="이전"
           onClick={() => by(-340)}
-          className="absolute left-1 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white/95 text-ink shadow-[0_6px_20px_-8px_rgba(15,35,66,0.35)] backdrop-blur transition hover:bg-white sm:flex"
+          className="absolute left-1 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white/95 text-ink shadow-[0_6px_20px_-8px_rgba(47,37,28,0.35)] backdrop-blur transition hover:bg-white sm:flex"
         >
           <Chevron dir="left" />
         </button>
@@ -79,7 +79,7 @@ export default function ScrollRow({
         <button
           aria-label="다음"
           onClick={() => by(340)}
-          className="absolute right-1 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white/95 text-ink shadow-[0_6px_20px_-8px_rgba(15,35,66,0.35)] backdrop-blur transition hover:bg-white sm:flex"
+          className="absolute right-1 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white/95 text-ink shadow-[0_6px_20px_-8px_rgba(47,37,28,0.35)] backdrop-blur transition hover:bg-white sm:flex"
         >
           <Chevron dir="right" />
         </button>

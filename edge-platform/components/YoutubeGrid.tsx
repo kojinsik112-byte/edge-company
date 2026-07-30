@@ -9,7 +9,7 @@ export default function YoutubeGrid({ videos }: { videos: YoutubeRow[] }) {
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {videos.map((v) => (
-        <div key={v.id} className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_30px_-18px_rgba(15,35,66,0.2)]">
+        <div key={v.id} className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_30px_-18px_rgba(47,37,28,0.2)]">
           <div className="relative aspect-video bg-ink">
             {playing === v.id ? (
               <iframe

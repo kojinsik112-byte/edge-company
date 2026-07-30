@@ -56,7 +56,7 @@ export default async function AdminDashboard() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
-          <Link key={c.href} href={c.href} className="group rounded-2xl border border-line bg-surface p-6 transition hover:border-navy hover:shadow-[0_18px_40px_-24px_rgba(11,31,58,0.4)]">
+          <Link key={c.href} href={c.href} className="group rounded-2xl border border-line bg-surface p-6 transition hover:border-navy hover:shadow-[0_18px_40px_-24px_rgba(40,31,22,0.4)]">
             <div className="flex items-start justify-between">
               <h2 className="text-[16px] font-bold text-ink group-hover:text-navy">{c.title}</h2>
               {c.badge && <span className="rounded-full bg-gold/15 px-2.5 py-1 text-[11px] font-bold text-gold-d">{c.badge}</span>}

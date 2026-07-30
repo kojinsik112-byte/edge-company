@@ -13,7 +13,7 @@ export default function ProcessSection({ process }: { process: Process }) {
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {steps.map((s, i) => (
-            <div key={i} className="overflow-hidden rounded-2xl border border-line bg-surface transition hover:-translate-y-1 hover:shadow-[0_22px_45px_-26px_rgba(15,35,66,0.25)]">
+            <div key={i} className="overflow-hidden rounded-2xl border border-line bg-surface transition hover:-translate-y-1 hover:shadow-[0_22px_45px_-26px_rgba(47,37,28,0.25)]">
               {s.image && (
                 <div className="relative aspect-[4/3] overflow-hidden bg-bg">
                   <Image src={s.image} alt={`${s.title} 단계`} fill sizes="(max-width:768px) 100vw, 250px" className="object-cover" />

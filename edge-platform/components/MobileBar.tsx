@@ -8,7 +8,7 @@ export default function MobileBar({ site }: { site: SiteInfo }) {
   const cell = "flex items-center justify-center gap-2 py-3.5 text-[13.5px] font-bold text-ink transition active:bg-bg";
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 xl:hidden">
-      <div className="relative grid grid-cols-3 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-14px_rgba(15,35,66,0.2)] backdrop-blur-md">
+      <div className="relative grid grid-cols-3 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-14px_rgba(47,37,28,0.2)] backdrop-blur-md">
         <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/55 to-transparent" />
         <a href={tel} className={cell}>
           <Ic d="M6.5 3h-.8A2.7 2.7 0 0 0 3 5.8C3 14 10 21 18.2 21a2.7 2.7 0 0 0 2.8-2.7v-.8a1 1 0 0 0-.7-1l-3.2-1a1 1 0 0 0-1.1.4l-.9 1.3a13.4 13.4 0 0 1-5.8-5.8l1.3-.9a1 1 0 0 0 .4-1.1l-1-3.2a1 1 0 0 0-1-.7z" />

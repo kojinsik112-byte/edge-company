@@ -53,7 +53,7 @@ export default function SnsSection({ site }: { site: SiteInfo }) {
               <Tag
                 key={c.key}
                 {...(live ? { href: c.href, target: "_blank", rel: "noopener noreferrer" } : {})}
-                className={`group flex flex-col rounded-[20px] border border-line bg-surface p-7 shadow-[0_12px_32px_-20px_rgba(15,35,66,0.14)] transition duration-300 ${live ? "cursor-pointer hover:-translate-y-1.5 hover:border-gold/50 hover:shadow-[0_22px_45px_-22px_rgba(15,35,66,0.18)]" : ""}`}
+                className={`group flex flex-col rounded-[20px] border border-line bg-surface p-7 shadow-[0_12px_32px_-20px_rgba(47,37,28,0.14)] transition duration-300 ${live ? "cursor-pointer hover:-translate-y-1.5 hover:border-gold/50 hover:shadow-[0_22px_45px_-22px_rgba(47,37,28,0.18)]" : ""}`}
               >
                 <div className="flex items-center gap-3.5">
                   <span className="flex h-[50px] w-[50px] shrink-0 items-center justify-center overflow-hidden rounded-[14px] ring-1 ring-line">
