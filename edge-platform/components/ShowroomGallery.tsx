@@ -9,14 +9,14 @@ export default function ShowroomGallery({ showroom }: { showroom: Showroom }) {
       <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="mx-auto mb-12 max-w-[680px] text-center">
           <p className="kicker">Showroom</p>
-          <h2 className="mt-3 text-[28px] font-extrabold leading-snug text-ink md:text-[40px]">{showroom.title}</h2>
+          <h2 className="mt-3 text-[26px] font-extrabold leading-snug text-ink md:text-[32px]">{showroom.title}</h2>
           <p className="mt-3 whitespace-pre-line text-[15.5px] leading-relaxed text-muted">{showroom.body}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-5 md:gap-6">
           {images.map((src, i) => (
             <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-[20px] bg-surface">
-              <Image src={src} alt={`엣지컴퍼니 쇼룸 ${i + 1}`} fill sizes="(max-width:768px) 50vw, 380px" className="object-cover transition duration-500 hover:scale-[1.04]" />
+              <Image src={src} alt={`엣지컴퍼니 쇼룸 ${i + 1}`} fill sizes="(max-width:1360px) 46vw, 640px" className="object-cover transition duration-500 hover:scale-[1.04]" />
             </div>
           ))}
 

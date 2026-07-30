@@ -21,18 +21,18 @@ export default function CaseCard({ c }: { c: CaseRow }) {
           src={src}
           alt={`${c.region} ${c.apartment} ${c.category} 시공`}
           fill
-          sizes="(max-width:768px) 50vw, 360px"
+          sizes="(max-width:1360px) 46vw, 640px"
           className="object-cover transition duration-500 group-hover:scale-[1.04]"
         />
         <span className="absolute left-3 top-3 rounded-full bg-navy/85 px-3 py-1.5 text-[11.5px] font-semibold text-white backdrop-blur-sm">
           <span className="text-gold">{c.region}</span> · {c.category}
         </span>
       </div>
-      <div className="p-4">
-        <h3 className="line-clamp-1 text-[15px] font-bold text-ink">
+      <div className="p-5">
+        <h3 className="line-clamp-1 text-[16px] font-bold text-ink">
           {c.apartment || c.title}
         </h3>
-        <p className="mt-1 line-clamp-1 text-[12.5px] text-muted">{c.title}</p>
+        <p className="mt-1 line-clamp-1 text-[13.5px] text-muted">{c.title}</p>
       </div>
     </Link>
   );

@@ -56,8 +56,8 @@ export default function LightSimulator({
       <div className="reveal mx-auto max-w-[1100px] px-6">
         <div className="mx-auto mb-9 max-w-[680px] text-center">
           <p className="kicker">Light Experience</p>
-          <h2 className="mt-3 text-[28px] font-extrabold leading-snug text-ink md:text-[40px]">{title}</h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-muted">{subtitle}</p>
+          <h2 className="mt-3 text-[26px] font-extrabold leading-snug text-ink md:text-[32px]">{title}</h2>
+          <p className="mt-3 text-[16px] leading-relaxed text-muted">{subtitle}</p>
         </div>
 
         {/* 시뮬레이션 화면 */}

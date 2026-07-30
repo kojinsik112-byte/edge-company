@@ -24,7 +24,7 @@ export default function WhySection({ company }: { company: Company }) {
           {/* 우측 소개 + 강점 카드 */}
           <div>
             {company.eyebrow && <p className="kicker">{company.eyebrow}</p>}
-            <h2 className="mt-3 text-[28px] font-extrabold leading-snug text-ink md:text-[36px]">{company.heading}</h2>
+            <h2 className="mt-3 text-[26px] font-extrabold leading-snug text-ink md:text-[32px]">{company.heading}</h2>
             {company.lead && <p className="mt-4 whitespace-pre-line text-[15.5px] leading-relaxed text-muted">{company.lead}</p>}
             {features.length > 0 && (
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
