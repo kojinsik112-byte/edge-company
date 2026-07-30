@@ -8,7 +8,7 @@ export default function ProcessSection({ process }: { process: Process }) {
       <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="mx-auto mb-12 max-w-[640px] text-center">
           <p className="kicker">Process</p>
-          <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{process.title}</h2>
+          <h2 className="mt-3 text-[26px] font-display font-extrabold text-ink md:text-[32px]">{process.title}</h2>
           <p className="mt-3 text-[16px] leading-relaxed text-muted">{process.desc}</p>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">

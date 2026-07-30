@@ -17,7 +17,7 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
     <section className="bg-surface py-16 md:py-24">
       <div className="reveal mx-auto mb-10 max-w-[640px] px-6 text-center">
         <p className="kicker">Products</p>
-        <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">엣지컴퍼니 제품 소개</h2>
+        <h2 className="mt-3 text-[26px] font-display font-extrabold text-ink md:text-[32px]">엣지컴퍼니 제품 소개</h2>
         <p className="mt-3 text-[16px] leading-relaxed text-muted">실링팬 · 스위치 · COB 간접조명 · 전동커튼 · 센서등까지. 엣지컴퍼니가 직접 시공하는 제품들입니다.</p>
       </div>
       {/* 한 줄 2개 × 2줄 = 4개, 클릭 시 상세 */}

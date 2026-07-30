@@ -11,7 +11,7 @@ export default function PartnersSection({ partners }: { partners: Partners }) {
       <div className="reveal mx-auto max-w-[1080px] px-6">
         <div className="mx-auto mb-10 max-w-[640px] text-center">
           <p className="kicker">Partners</p>
-          <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{partners.title}</h2>
+          <h2 className="mt-3 text-[26px] font-display font-extrabold text-ink md:text-[32px]">{partners.title}</h2>
           {partners.desc && <p className="mt-3 text-[16px] leading-relaxed text-muted">{partners.desc}</p>}
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">

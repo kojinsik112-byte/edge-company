@@ -25,7 +25,7 @@ export default async function ShowroomPage() {
         </div>
         <div>
           <p className="kicker">Showroom</p>
-          <h1 className="mt-3 text-[26px] font-extrabold leading-snug text-ink md:text-[34px]">{showroom.title}</h1>
+          <h1 className="mt-3 text-[26px] font-display font-extrabold leading-snug text-ink md:text-[34px]">{showroom.title}</h1>
           <p className="mt-4 whitespace-pre-line text-[15px] leading-relaxed text-muted">{showroom.body}</p>
           <div className="mt-6 overflow-hidden rounded-2xl border border-line">
             {[

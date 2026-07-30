@@ -53,7 +53,7 @@ export default async function AreaPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-[1180px] px-5 py-12 md:py-16">
       <p className="kicker">{region} · {category}</p>
-      <h1 className="mt-3 text-2xl font-bold leading-snug text-ink md:text-[32px]">{seo.h1}</h1>
+      <h1 className="mt-3 text-2xl font-display font-bold leading-snug text-ink md:text-[32px]">{seo.h1}</h1>
       <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted">
         {CATEGORY_DESC[category]} 엣지컴퍼니는 {region}을 포함한 울산·부산·포항·경주 전 지역에서 {category} 시공을 직접 진행합니다.
       </p>

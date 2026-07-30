@@ -11,7 +11,7 @@ export default function BranchesSection({ branches }: { branches: Branches }) {
       <div className="reveal mx-auto max-w-[1080px] px-6">
         <div className="mx-auto mb-10 max-w-[640px] text-center">
           <p className="kicker">Branches</p>
-          <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{branches.title}</h2>
+          <h2 className="mt-3 text-[26px] font-display font-extrabold text-ink md:text-[32px]">{branches.title}</h2>
           {branches.desc && <p className="mt-3 text-[16px] leading-relaxed text-muted">{branches.desc}</p>}
         </div>
 

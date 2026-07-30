@@ -74,7 +74,7 @@ export default async function CaseDetail({ params }: Props) {
         <span className="rounded-full bg-navy px-3 py-1 text-[11.5px] font-semibold text-white">{c.region}</span>
         <span className="rounded-full bg-gold/20 px-3 py-1 text-[11.5px] font-semibold text-gold-d">{c.category}</span>
       </div>
-      <h1 className="mt-3 text-2xl font-bold leading-snug text-ink md:text-[30px]">{c.title}</h1>
+      <h1 className="mt-3 text-2xl font-display font-bold leading-snug text-ink md:text-[30px]">{c.title}</h1>
       {c.apartment && <p className="mt-2 text-[14px] text-muted">{c.region} · {c.apartment}</p>}
 
       <div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-2xl bg-line md:aspect-[16/10]">
