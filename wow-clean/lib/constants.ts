@@ -8,7 +8,7 @@ export const SITE = {
   phoneRep: "1668-5982",
   address: "전국 24시간 출동 서비스",
   // 대표 도메인 (env NEXT_PUBLIC_SITE_URL 우선 — Vercel 커스텀 도메인 연결 후 그 주소로)
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://wowclean.kr",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.wowclean.kr",
   // 카카오톡 채널 채팅 URL (예: https://pf.kakao.com/_xxxx/chat) — 없으면 문자로 폴백
   kakao: process.env.NEXT_PUBLIC_KAKAO_URL || "",
   // 네이버 서치어드바이저 사이트 소유확인 메타값
