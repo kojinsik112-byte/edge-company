@@ -2,9 +2,9 @@ import Link from "next/link";
 
 // 지사별 네이버 블로그 바로가기 (링크는 회장 지정). 지역명은 실제에 맞게 label만 바꾸면 됨.
 const BLOGS = [
-  { label: "지사 블로그 ①", handle: "ssun45100", href: "https://blog.naver.com/ssun45100" },
-  { label: "지사 블로그 ②", handle: "clear-a-drain", href: "https://blog.naver.com/clear-a-drain" },
-  { label: "지사 블로그 ③", handle: "wowclean8282", href: "https://blog.naver.com/wowclean8282" },
+  { label: "세종 지사 블로그", handle: "ssun45100", href: "https://blog.naver.com/ssun45100" },
+  { label: "대전 지사 블로그", handle: "clear-a-drain", href: "https://blog.naver.com/clear-a-drain" },
+  { label: "인천·서울 지사 블로그", handle: "wowclean8282", href: "https://blog.naver.com/wowclean8282" },
 ];
 
 export default function BranchBlogs() {
