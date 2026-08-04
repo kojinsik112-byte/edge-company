@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { Company } from "@/lib/settings";
 
 // 강점 카드 아이콘 (장식용 기본값 — 카드 순서대로 사용, 텍스트는 관리자 편집)
@@ -16,9 +15,10 @@ export default function WhySection({ company }: { company: Company }) {
     <section className="bg-surface py-16 md:py-24">
       <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-          {/* 좌측 비주얼 */}
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-warm md:aspect-[4/4.4]">
-            <Image src={company.image} alt={company.heading || "와우클린 시공 현장"} fill sizes="(max-width:1024px) 100vw, 560px" className="object-cover" />
+          {/* 좌측 비주얼 — 원본 비율 그대로(안 잘림) */}
+          <div className="overflow-hidden rounded-[24px] bg-warm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={company.image} alt={company.heading || "와우클린 시공 현장"} className="h-auto w-full" />
           </div>
 
           {/* 우측 소개 + 강점 카드 */}
