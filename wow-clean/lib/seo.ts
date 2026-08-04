@@ -45,7 +45,7 @@ export function areaSeo(region: Region, category: Category) {
   return {
     h1: `${region} ${category} 전문 시공`,
     title: `${region} ${category} 24시간 출동`,
-    description: `${region} ${category}은 와우클린. 전국 24시간 출동, 원인 확인 후 시공 전 투명 견적, 작업 후 A/S 보증까지. 대표번호 1668-8982.`,
+    description: `${region} ${category}은 와우클린. 전국 24시간 출동, 원인 확인 후 시공 전 투명 견적, 작업 후 A/S 보증까지. 대표번호 1668-5982.`,
   };
 }
 

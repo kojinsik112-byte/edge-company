@@ -4,8 +4,8 @@ export const SITE = {
   name: "와우클린",
   legalName: "와우클린 하수구변기막힘설비",
   tagline: "전국 24시간 하수구막힘·변기막힘·배관청소 전문",
-  phone: "1668-8982",
-  phoneRep: "1668-8982",
+  phone: "1668-5982",
+  phoneRep: "1668-5982",
   address: "전국 24시간 출동 서비스",
   // 대표 도메인 (env NEXT_PUBLIC_SITE_URL 우선 — Vercel 커스텀 도메인 연결 후 그 주소로)
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://wowclean.kr",

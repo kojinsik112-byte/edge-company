@@ -17,6 +17,7 @@ import CategoryCases from "@/components/CategoryCases";
 import WhySection from "@/components/WhySection";
 import LicenseSection from "@/components/LicenseSection";
 import BranchesSection from "@/components/BranchesSection";
+import BranchBlogs from "@/components/BranchBlogs";
 import PartnersSection from "@/components/PartnersSection";
 import { DEMO_REVIEWS, DEMO_FAQS } from "@/lib/demo";
 import ScrollRow from "@/components/ScrollRow";
@@ -110,6 +111,9 @@ export default async function Home() {
 
       {/* ===== 와우클린 전국 출동 지역 (표 + 지도) ===== */}
       <BranchesSection branches={branches} />
+
+      {/* ===== 지사별 블로그 바로가기 ===== */}
+      <BranchBlogs />
 
       {/* ===== 와우클린 협력사 소개 (로고 3열) ===== */}
       <PartnersSection partners={partners} />
