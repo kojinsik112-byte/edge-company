@@ -15,7 +15,7 @@ export default function ProductsSection({ products }: { products: ProductRow[] }
         <p className="mt-3 text-[14.5px] text-muted">막힘 뚫음부터 수전 교체, 내시경 검사, 관로·누수 탐지까지. 와우클린이 직접 시공하는 서비스입니다.</p>
       </div>
       {/* 한 줄 4개 그리드 (모바일 2열) · 최대 8개, 클릭 시 상세 */}
-      <div className="reveal mx-auto grid max-w-[1200px] grid-cols-2 gap-5 px-6 md:grid-cols-4">
+      <div className="reveal mx-auto grid max-w-[1320px] grid-cols-2 gap-5 px-6 md:grid-cols-3">
         {items.map((p, i) => {
           const inner = (
             <>

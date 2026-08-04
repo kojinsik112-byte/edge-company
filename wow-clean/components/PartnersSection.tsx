@@ -8,7 +8,7 @@ export default function PartnersSection({ partners }: { partners: Partners }) {
 
   return (
     <section className="bg-bg py-16 md:py-24">
-      <div className="reveal mx-auto max-w-[1080px] px-6">
+      <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="mx-auto mb-10 max-w-[640px] text-center">
           <p className="kicker">Partners</p>
           <h2 className="mt-3 text-[26px] font-extrabold text-ink md:text-[32px]">{partners.title}</h2>
