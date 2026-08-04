@@ -15,10 +15,10 @@ export default function WhySection({ company }: { company: Company }) {
     <section className="bg-surface py-16 md:py-24">
       <div className="reveal mx-auto max-w-[1320px] px-6">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-          {/* 좌측 비주얼 — 원본 비율 그대로(안 잘림) */}
-          <div className="overflow-hidden rounded-[24px] bg-warm">
+          {/* 좌측 비주얼 — 원본 비율 그대로(안 잘림) + 프레임 */}
+          <div className="overflow-hidden rounded-[24px] bg-warm shadow-[0_24px_60px_-28px_rgba(47,37,28,0.4)] ring-1 ring-line">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={company.image} alt={company.heading || "와우클린 시공 현장"} className="h-auto w-full" />
+            <img src={company.image} alt={company.heading || "와우클린 시공 현장"} className="block h-auto w-full" />
           </div>
 
           {/* 우측 소개 + 강점 카드 */}
