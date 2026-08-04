@@ -42,8 +42,10 @@ export default async function ProductDetail({ params }: Props) {
       </nav>
 
       <div className="mt-4 grid gap-8 md:grid-cols-2">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-line">
-          <Image src={cover} alt={p.name} fill priority sizes="(max-width:768px) 100vw, 480px" className="object-cover" />
+        <div className="overflow-hidden rounded-2xl bg-line">
+          {/* 제품 대표 이미지 — 원본 비율 그대로(안 잘림) */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={cover} alt={p.name} className="h-auto w-full" />
         </div>
         <div className="flex flex-col justify-center">
           {p.category && <span className="text-[13px] font-semibold text-gold-d">{p.category}</span>}
@@ -57,10 +59,12 @@ export default async function ProductDetail({ params }: Props) {
       </div>
 
       {gallery.length > 0 && (
-        <div className="mt-10 grid gap-3 sm:grid-cols-2">
+        <div className="mt-10 space-y-4">
           {gallery.map((src, i) => (
-            <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-xl bg-line">
-              <Image src={src} alt={`${p.name} 상세 사진 ${i + 1}`} fill sizes="(max-width:768px) 100vw, 460px" className="object-cover" />
+            <div key={i} className="overflow-hidden rounded-xl bg-line">
+              {/* 상세 사진 — 원본 비율 그대로(안 잘림) */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={src} alt={`${p.name} 상세 사진 ${i + 1}`} className="h-auto w-full" loading="lazy" />
             </div>
           ))}
         </div>

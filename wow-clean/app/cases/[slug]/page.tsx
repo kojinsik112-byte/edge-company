@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCaseBySlug, getCases } from "@/lib/data";
@@ -77,17 +76,21 @@ export default async function CaseDetail({ params }: Props) {
       <h1 className="mt-3 text-2xl font-bold leading-snug text-ink md:text-[30px]">{c.title}</h1>
       {c.apartment && <p className="mt-2 text-[14px] text-muted">{c.region} · {c.apartment}</p>}
 
-      <div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-2xl bg-line md:aspect-[16/10]">
-        <Image src={cover} alt={`${c.apartment} ${c.category} 시공 대표 이미지`} fill priority sizes="(max-width:860px) 100vw, 860px" className="object-cover" />
+      <div className="mt-6 overflow-hidden rounded-2xl bg-line">
+        {/* 대표 이미지 — 원본 비율 그대로(안 잘림) */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={cover} alt={`${c.apartment} ${c.category} 시공 대표 이미지`} className="h-auto w-full" />
       </div>
 
       {c.body && <div className="prose mt-8">{c.body}</div>}
 
       {c.images?.length > 0 && (
-        <div className="mt-8 grid gap-3 sm:grid-cols-2">
+        <div className="mt-8 space-y-4">
           {c.images.map((src, i) => (
-            <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-xl bg-line">
-              <Image src={src} alt={`${c.apartment} ${c.category} 상세 사진 ${i + 1}`} fill sizes="(max-width:768px) 100vw, 420px" className="object-cover" />
+            <div key={i} className="overflow-hidden rounded-xl bg-line">
+              {/* 상세 사진 — 원본 비율 그대로(안 잘림) */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={src} alt={`${c.apartment} ${c.category} 상세 사진 ${i + 1}`} className="h-auto w-full" loading="lazy" />
             </div>
           ))}
         </div>
