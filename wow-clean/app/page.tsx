@@ -196,8 +196,12 @@ export default async function Home() {
           <p className="kicker">Contact</p>
           <h2 className="mt-4 whitespace-pre-line text-[30px] font-extrabold leading-[1.2] text-ink md:text-[48px]">하수구 · 변기 막힘{"\n"}지금 바로 접수하세요</h2>
           <a href={tel} className="mt-6 block text-[40px] font-extrabold tracking-tight text-navy md:text-[64px]">{site.phone}</a>
-          <div className="mt-8 flex justify-center gap-3">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a href={tel} className="rounded-lg bg-ink px-7 py-4 text-[16px] font-bold text-white transition hover:bg-[#111827]">무료 상담</a>
+            <a href={site.kakao || `sms:${site.phone.replace(/-/g, "")}`} target={site.kakao ? "_blank" : undefined} rel={site.kakao ? "noopener noreferrer" : undefined} className="flex items-center gap-2 rounded-lg bg-[#fee500] px-7 py-4 text-[16px] font-bold text-[#191600] transition hover:brightness-95">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5"><path d="M21 11.5a8.4 8.4 0 0 1-12.1 7.5L3 21l2-5.9A8.4 8.4 0 1 1 21 11.5z" /></svg>
+              카톡 상담
+            </a>
             <Link href="/contact" className="rounded-lg border border-gold bg-surface px-7 py-4 text-[16px] font-bold text-ink transition hover:bg-bg">온라인 접수</Link>
           </div>
         </div>
