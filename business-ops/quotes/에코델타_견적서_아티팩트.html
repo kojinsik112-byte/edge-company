@@ -1,0 +1,122 @@
+<style>
+  :root{ --navy:#1f2e4d; --navy2:#2c3d63; --line:#d9dee7; --ink:#1f2937; --muted:#6b7280; --red:#c0392b; --wash:#f4f6fa; }
+  *{ box-sizing:border-box; }
+  .qwrap{ font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',-apple-system,sans-serif; color:var(--ink); background:#e9edf3; padding:18px; -webkit-font-smoothing:antialiased; min-height:100vh; }
+  .sheet{ max-width:820px; margin:0 auto; background:#fff; padding:28px 30px 36px; box-shadow:0 10px 40px -18px rgba(20,30,60,.4); border-radius:6px; }
+  .top{ border-top:4px solid var(--navy); padding-top:16px; display:flex; justify-content:space-between; align-items:flex-start; gap:18px; border-bottom:2px solid var(--navy); padding-bottom:14px; flex-wrap:wrap; }
+  .title{ font-size:24px; font-weight:800; color:var(--navy); letter-spacing:-.02em; }
+  .subtitle{ font-size:10.5px; letter-spacing:.13em; color:#8a93a3; margin-top:5px; font-weight:600; }
+  .meta{ text-align:right; font-size:12px; color:var(--muted); line-height:2.1; }
+  .meta b{ color:var(--ink); font-weight:600; }
+  .u{ display:inline-block; min-width:60px; border-bottom:1px solid #c3cad6; }
+  .cust{ display:grid; grid-template-columns:repeat(2,1fr); gap:0; border-bottom:1px solid var(--line); }
+  @media(min-width:640px){ .cust{ grid-template-columns:repeat(4,1fr); } }
+  .cust div{ padding:10px 6px 11px; font-size:12px; color:var(--muted); }
+  .cust .lab{ font-weight:700; color:var(--ink); }
+  .sec{ margin-top:16px; }
+  .sec-h{ background:var(--navy); color:#fff; font-weight:700; font-size:13.5px; padding:9px 14px; border-radius:7px 7px 0 0; }
+  table{ width:100%; border-collapse:collapse; }
+  thead td{ background:var(--wash); color:#59647a; font-size:11px; font-weight:700; padding:8px 10px; border-bottom:1px solid var(--line); }
+  tbody td{ padding:10px; border-bottom:1px solid #eceff4; font-size:12.5px; vertical-align:middle; }
+  tbody tr:last-child td{ border-bottom:1px solid var(--line); }
+  .model{ font-weight:700; }
+  .note{ color:var(--muted); font-size:12px; }
+  .price{ text-align:right; font-weight:700; white-space:nowrap; }
+  .price.red{ color:var(--red); }
+  .strike{ color:#adb3bd; text-decoration:line-through; font-weight:500; font-size:11.5px; margin-right:2px; }
+  .chk{ width:14px; height:14px; border:1.6px solid #9aa4b5; border-radius:3px; display:inline-block; vertical-align:-2px; }
+  .cbox{ width:32px; text-align:center; }
+  .badge{ display:inline-block; font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:5px; margin-left:4px; }
+  .b-red{ background:#fdeaea; color:var(--red); }
+  .b-gray{ background:#eef1f6; color:#6b7280; }
+  .total{ margin-top:20px; border:2px solid var(--navy); border-radius:10px; padding:15px 18px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  .total .l{ font-size:15.5px; font-weight:800; color:var(--navy); }
+  .total .s{ font-size:11px; color:var(--muted); font-weight:500; margin-top:3px; }
+  .total .amt{ min-width:180px; border-bottom:2px solid var(--navy); text-align:right; font-size:17px; font-weight:800; padding-bottom:2px; flex:1; }
+  .memo{ margin-top:15px; }
+  .memo .l{ font-size:11.5px; font-weight:800; color:#59647a; letter-spacing:.04em; }
+  .memo .box{ margin-top:6px; height:66px; border:1px solid var(--line); border-radius:8px; background:var(--wash); }
+  .foot{ margin-top:16px; font-size:10.5px; color:#9aa4b5; text-align:center; line-height:1.7; }
+  @media(prefers-color-scheme:dark){ .qwrap{ background:#0f1420; } }
+</style>
+
+<div class="qwrap">
+<div class="sheet">
+
+  <div class="top">
+    <div>
+      <div class="title">에코델타 중흥 S클래스 · 조명 견적서</div>
+      <div class="subtitle">ECO DELTA JUNGHEUNG S-CLASS — EDGE COMPANY 조명 시공 패키지</div>
+    </div>
+    <div class="meta">
+      작성일 <span class="u"></span> 년 <span class="u" style="min-width:34px"></span> 월 <span class="u" style="min-width:34px"></span> 일<br>
+      <b>엣지컴퍼니</b> / 담당 <span class="u"></span>
+    </div>
+  </div>
+
+  <div class="cust">
+    <div><span class="lab">동 · 호수</span> <span class="u" style="min-width:70px"></span></div>
+    <div><span class="lab">성함</span> <span class="u" style="min-width:70px"></span></div>
+    <div><span class="lab">연락처</span> <span class="u" style="min-width:80px"></span></div>
+    <div><span class="lab">총 계약 금액</span> <span class="u" style="min-width:70px"></span></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">① 실링팬 모델 선택</div>
+    <table>
+      <thead><tr><td class="cbox"></td><td>모델명</td><td>특징</td><td style="text-align:right">정가</td><td style="text-align:right">박람회가</td></tr></thead>
+      <tbody>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">아크로 <span class="badge b-red">인기</span><span class="badge b-red">특가</span></td><td class="note">블루투스 기능 탑재 · 인기 모델</td><td class="price"><span class="strike">330,000원</span></td><td class="price red">230,000원</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">루씨에어 레이다3</td><td class="note">디자인 라인</td><td class="price">—</td><td class="price">550,000원</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">루씨에어 콘타라</td><td class="note">디자인 라인</td><td class="price">—</td><td class="price">600,000원</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">팬엔코 <span class="note">(레나피노 기준)</span></td><td class="note">프리미엄 라인</td><td class="price">—</td><td class="price">400,000원</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">② 실링팬 설치</div>
+    <table>
+      <thead><tr><td class="cbox"></td><td>항목</td><td>비고</td><td style="text-align:right">금액</td></tr></thead>
+      <tbody>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">설치 <span class="note">(보강 + 전기설치)</span></td><td class="note">천장 보강 및 전기작업 포함 · 즉시 시공 가능</td><td class="price">200,000원</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">도배 추가 <span class="badge b-gray">해당세대</span></td><td class="note">도배 완료 후 설치 진행</td><td class="price">220,000원</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">③ 간접조명</div>
+    <table>
+      <thead><tr><td class="cbox"></td><td>항목</td><td>비고</td><td style="text-align:right">금액</td></tr></thead>
+      <tbody>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">간접조명 패키지 10구</td><td class="note">거실 · 복도 · 주방 범위 포함</td><td class="price">280,000원</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">추가 타공 <span class="badge b-gray">옵션</span></td><td class="note">1타공당 25,000원 · 수량 <span class="u" style="min-width:32px"></span> 개</td><td class="price">25,000원/개</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">블루투스 유선 스위치 <span class="badge b-red">특가</span></td><td class="note">5년 A/S 보장 · <span class="strike">170,000원</span> → 박람회 한정</td><td class="price red">80,000원</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">화장실 센서 간접조명 1곳</td><td class="note"></td><td class="price">80,000원</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">화장실 센서 간접조명 2곳</td><td class="note">2곳 시공 시 선택</td><td class="price">150,000원</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">현관 하부 센서조명</td><td class="note"></td><td class="price">90,000원</td></tr>
+        <tr><td class="cbox"><span class="chk"></span></td><td class="model">커튼박스 설치 <span class="badge b-gray">해당세대</span></td><td class="note">해당 세대만 시공</td><td class="price">150,000원</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="total">
+    <div>
+      <div class="l">총 계약 금액</div>
+      <div class="s">체크 항목 합산 · VAT 포함</div>
+    </div>
+    <div class="amt">&nbsp;</div>
+  </div>
+
+  <div class="memo">
+    <div class="l">MEMO · 특이사항 / 추가 요청</div>
+    <div class="box"></div>
+  </div>
+
+  <div class="foot">
+    ㈜엣지컴퍼니 · 조명 시공 패키지 &nbsp;|&nbsp; 본 견적은 박람회 한정가로, 현장 여건에 따라 변동될 수 있습니다.
+  </div>
+
+</div>
+</div>
