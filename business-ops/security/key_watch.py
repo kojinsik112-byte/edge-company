@@ -86,7 +86,8 @@ def scan_tracked() -> list[str]:
 
 def scan_staged() -> list[str]:
     secrets = _secrets()
-    diff = _git(["diff", "--cached"])
+    # --no-textconv: PDF 등 바이너리를 astextplain으로 변환하다 훅이 무한 대기하는 문제 방지
+    diff = _git(["diff", "--cached", "--no-textconv"])
     return scan_text(diff, "스테이징(커밋 직전)", secrets)
 
 

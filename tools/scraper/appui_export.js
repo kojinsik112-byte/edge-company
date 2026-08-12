@@ -15,6 +15,7 @@ const NAMES = [
   '01_블루투스권한', '02_홈', '03_유선스위치', '04_전동커튼', '05_콘센트',
   '06_스마트조명', '07_방등', '08_전동블라인드', '09_실링팬조명', '10_욕실환기팬',
   '11_시나리오', '12_장치추가', '13_QR공유', '14_가족공유', '15_마이페이지',
+  '16_빨래건조대',
 ];
 
 const fileUrl = p => 'file:///' + p.replace(/\\/g, '/');
@@ -37,7 +38,6 @@ const fileUrl = p => 'file:///' + p.replace(/\\/g, '/');
 
   // ① 전체본 15화면 PNG
   await load(FULL);
-  // 16·17(빨래건조대)은 PNG 임베드 프레임이라 제외 — 원본은 빨래건조대 HTML에서 별도 캡처
   const frames = (await page.$$('.screen-wrapper .phone-frame')).slice(0, NAMES.length);
   console.log('frames:', frames.length);
   for (let i = 0; i < frames.length; i++) {
@@ -45,13 +45,6 @@ const fileUrl = p => 'file:///' + p.replace(/\\/g, '/');
     await frames[i].scrollIntoViewIfNeeded();
     await frames[i].screenshot({ path: path.join(outDir, `ACRO_앱UI_${nm}.png`) });
     console.log('saved', nm);
-  }
-
-  // ② 빨래건조대 2화면 PNG
-  await load(LAUNDRY);
-  for (const [id, nm] of [['phoneHome', '16_빨래건조대_홈'], ['phoneCtrl', '17_빨래건조대_제어']]) {
-    const el = await page.$('#' + id);
-    if (el) { await el.screenshot({ path: path.join(outDir, `ACRO_앱UI_${nm}.png`) }); console.log('saved', nm); }
   }
 
   await exportPdfs();
