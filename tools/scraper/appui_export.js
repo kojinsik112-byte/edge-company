@@ -24,9 +24,13 @@ const fileUrl = p => 'file:///' + p.replace(/\\/g, '/');
   const browser = await chromium.launch({ channel: 'chrome', headless: true });
   const page = await browser.newPage({ viewport: { width: 1400, height: 1000 }, deviceScaleFactor: 2 });
 
-  async function load(file) {
+  async function load(file, hideCaptions) {
     await page.goto(fileUrl(file), { waitUntil: 'networkidle', timeout: 60000 });
     await page.evaluate(() => document.fonts.ready);
+    if (hideCaptions) {
+      // 캡션·다운로드 버튼이 프레임 캡처 영역에 비치지 않게 숨김 (원본 미닫힘 div 탓에 일부 화면에서 겹침)
+      await page.addStyleTag({ content: '.screen-comment,.frame-dl,.dl-toolbar{display:none!important}' });
+    }
     await page.waitForTimeout(1200);
   }
 
@@ -36,8 +40,8 @@ const fileUrl = p => 'file:///' + p.replace(/\\/g, '/');
     return;
   }
 
-  // ① 전체본 15화면 PNG
-  await load(FULL);
+  // ① 전체본 화면별 PNG
+  await load(FULL, true);
   const frames = (await page.$$('.screen-wrapper .phone-frame')).slice(0, NAMES.length);
   console.log('frames:', frames.length);
   for (let i = 0; i < frames.length; i++) {
