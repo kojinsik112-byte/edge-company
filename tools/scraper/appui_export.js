@@ -37,7 +37,8 @@ const fileUrl = p => 'file:///' + p.replace(/\\/g, '/');
 
   // ① 전체본 15화면 PNG
   await load(FULL);
-  const frames = await page.$$('.screen-wrapper .phone-frame');
+  // 16·17(빨래건조대)은 PNG 임베드 프레임이라 제외 — 원본은 빨래건조대 HTML에서 별도 캡처
+  const frames = (await page.$$('.screen-wrapper .phone-frame')).slice(0, NAMES.length);
   console.log('frames:', frames.length);
   for (let i = 0; i < frames.length; i++) {
     const nm = NAMES[i] || ('screen_' + (i + 1));
