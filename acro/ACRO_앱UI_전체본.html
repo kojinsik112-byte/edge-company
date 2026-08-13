@@ -1733,6 +1733,121 @@
  <div class="screen-comment">② 홈 · 전체 기기</div>
 </div>
 
+<div class="screen-wrapper">
+ <div class="phone-frame">
+ <div class="status-bar"><span style="font-weight:500;">9:41</span><span class="right"><i class="ti ti-signal-5g"></i><i class="ti ti-battery-2"></i></span></div>
+ <div class="bt-status-bar"><div class="left"><span class="bt-text">연결됨</span></div><span class="bt-count">신호 강함</span></div>
+ <div class="header">
+ <button><i class="ti ti-chevron-left" style="font-size:22px;"></i></button>
+ <div class="title"><div class="title-main">아크로 빨래건조대</div><div class="title-sub active">거실 · 건조 중</div></div>
+ <button><i class="ti ti-dots-vertical" style="font-size:20px;"></i></button>
+ </div>
+ <div class="screen-content" style="overflow-y:auto; padding-top:8px; padding-bottom:16px;">
+
+ <div class="ld-card">
+ <div class="ld-hd"><div class="ld-tt">① 승하강</div><div class="ld-gold">현재 높이 60%</div></div>
+ <div class="ld-bar"><i></i></div>
+ <div class="ld-r3">
+ <button class="ld-btn" data-ldlift><span><i class="ti ti-chevron-up"></i> 상승</span></button>
+ <button class="ld-btn stop" data-ldlift><span><i class="ti ti-player-stop"></i> 정지</span></button>
+ <button class="ld-btn" data-ldlift><span><i class="ti ti-chevron-down"></i> 하강</span></button>
+ </div>
+ <div class="ld-foot">
+ <span class="ld-note"><i class="ti ti-info-circle"></i>이동 중 재탭 시 정지</span>
+ <div style="display:flex;align-items:center;gap:6px;">
+ <span class="ld-rec">추천</span>
+ <button class="ld-mini" data-ldm>M1</button>
+ <button class="ld-mini off" data-ldm>M2</button>
+ </div>
+ </div>
+ </div>
+
+ <div class="ld-card">
+ <div class="ld-hd">
+ <div class="ld-tt">② 조명</div>
+ <div style="display:flex;align-items:center;gap:11px;">
+ <button class="ld-mini"><i class="ti ti-star" style="font-size:11px;"></i> 메모리</button>
+ <div class="ld-tgl" data-ldpow="ldLight"><i></i></div>
+ </div>
+ </div>
+ <div id="ldLight">
+ <div class="ld-sl"><i class="ti ti-temperature"></i><span class="lb">색온도</span><input type="range" min="3000" max="6500" step="100" value="4500" id="ldCct"><span class="vv" id="ldCctV">4500K</span></div>
+ <div class="ld-sl"><i class="ti ti-brightness-up"></i><span class="lb">밝기</span><input type="range" min="0" max="100" step="1" value="80" id="ldDim"><span class="vv" id="ldDimV">80%</span></div>
+ </div>
+ </div>
+
+ <div class="ld-card">
+ <div class="ld-hd"><div class="ld-tt">③ 건조 · 바람</div><div class="ld-tgl" data-ldpow="ldDry"><i></i></div></div>
+ <div id="ldDry">
+ <div class="ld-r2">
+ <button class="ld-btn warm on" data-ldmode><span><i class="ti ti-flame"></i> 열풍</span></button>
+ <button class="ld-btn" data-ldmode><span><i class="ti ti-wind"></i> 자연풍</span></button>
+ </div>
+ <div class="ld-r3" style="margin-bottom:12px;">
+ <button class="ld-btn" data-ldspd><span class="n">1</span><span class="s">약</span></button>
+ <button class="ld-btn on" data-ldspd><span class="n">2</span><span class="s">중</span></button>
+ <button class="ld-btn" data-ldspd><span class="n">3</span><span class="s">강</span></button>
+ </div>
+ <div class="ld-tnote"><i class="ti ti-info-circle"></i>타이머 미설정 시 끌 때까지 계속 작동</div>
+ <div class="ld-twrap">
+ <i class="ti ti-clock"></i>
+ <div class="ld-tgrid">
+ <button class="ld-tmr" data-ldtmr>30분</button>
+ <button class="ld-tmr" data-ldtmr>1시간</button>
+ <button class="ld-tmr" data-ldtmr>2시간</button>
+ <button class="ld-tmr" data-ldtmr>3시간</button>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div class="ld-card">
+ <div class="ld-hd" style="margin-bottom:10px;"><div class="ld-tt">④ 원터치 씬</div><span class="ld-rec">추천</span></div>
+ <div class="ld-scenes">
+ <div class="ld-scene"><i class="ti ti-basket" style="color:#3B8FFF;"></i><div>널기</div></div>
+ <div class="ld-scene" style="background:rgba(212,175,106,.1);border-color:rgba(212,175,106,.3);"><i class="ti ti-flame" style="color:#D4AF6A;"></i><div style="color:#D4AF6A;">건조</div></div>
+ <div class="ld-scene"><i class="ti ti-check" style="color:#4ADE80;"></i><div>정리</div></div>
+ <div class="ld-scene" style="background:rgba(155,89,217,.12);border-color:rgba(155,89,217,.35);"><i class="ti ti-shield-check" style="color:#B98AE0;"></i><div style="color:#B98AE0;">UV살균</div></div>
+ </div>
+ </div>
+
+ </div>
+ </div>
+ <div class="screen-comment">③ 빨래건조대 제어 (NEW)</div>
+</div>
+
+<script>
+(function(){
+  var cct=document.getElementById('ldCct'), dim=document.getElementById('ldDim');
+  if(cct) cct.oninput=function(){ document.getElementById('ldCctV').textContent=cct.value+'K'; };
+  if(dim) dim.oninput=function(){ document.getElementById('ldDimV').textContent=Math.round(dim.value)+'%'; };
+  function grp(sel){
+    var ns=document.querySelectorAll(sel);
+    ns.forEach(function(b){ b.onclick=function(){ ns.forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); }; });
+  }
+  grp('[data-ldmode]'); grp('[data-ldspd]');
+  document.querySelectorAll('[data-ldtmr]').forEach(function(b){
+    b.onclick=function(){
+      var was=b.classList.contains('on');
+      document.querySelectorAll('[data-ldtmr]').forEach(function(x){x.classList.remove('on');});
+      if(!was) b.classList.add('on');
+    };
+  });
+  document.querySelectorAll('[data-ldpow]').forEach(function(sw){
+    sw.onclick=function(){
+      sw.classList.toggle('off');
+      var ct=document.getElementById(sw.getAttribute('data-ldpow'));
+      var on=!sw.classList.contains('off');
+      if(ct){ ct.style.opacity=on?'1':'0.3'; ct.style.pointerEvents=on?'auto':'none'; }
+    };
+  });
+  document.querySelectorAll('[data-ldm]').forEach(function(b){
+    b.onclick=function(){ document.querySelectorAll('[data-ldm]').forEach(function(x){x.classList.add('off');}); b.classList.remove('off'); };
+  });
+})();
+</script>
+
+
 <!-- ===== 화면 3: 유선 스위치 (개선판) ===== -->
 <div class="screen-wrapper">
  <div class="phone-frame">
@@ -1850,7 +1965,7 @@
  </div>
  </div>
  </div>
- <div class="screen-comment">③ 유선 스위치 (5채널·일괄소등)</div>
+ <div class="screen-comment">④ 유선 스위치 (5채널·일괄소등)</div>
 </div>
 
 <!-- ===== 화면 5: 전동 커튼 (고급화) ===== -->
@@ -1960,7 +2075,7 @@
  </div>
  </div>
  </div>
- <div class="screen-comment">④ 전동 커튼</div>
+ <div class="screen-comment">⑤ 전동 커튼</div>
 </div>
 
 <!-- ===== 화면 5: 콘센트 ===== -->
@@ -2042,7 +2157,7 @@
  </div>
  </div>
  </div>
- <div class="screen-comment">⑤ 스마트 콘센트</div>
+ <div class="screen-comment">⑥ 스마트 콘센트</div>
 </div>
 
 <!-- ===== 화면 2: 스마트 조명 (3색변환 + 조도조절 슬라이더) ===== -->
@@ -2245,7 +2360,7 @@
  </div>
  </div>
  </div>
- <div class="screen-comment">⑥ 스마트 조명 (색온도·밝기)</div>
+ <div class="screen-comment">⑦ 스마트 조명 (색온도·밝기)</div>
 </div>
 
 <!-- ===== 방등 화면 ===== -->
@@ -2480,7 +2595,7 @@
 
  </div>
  </div>
- <div class="screen-comment">⑦ 방등 · LED 패널</div>
+ <div class="screen-comment">⑧ 방등 · LED 패널</div>
 </div>
 <div class="screen-wrapper">
  <div class="phone-frame">
@@ -2582,7 +2697,7 @@
  </div>
  </div>
  </div>
- <div class="screen-comment">⑧ 전동 블라인드</div>
+ <div class="screen-comment">⑨ 전동 블라인드</div>
 </div>
 
 <!-- ===== 실링팬 + 조명 통합 화면 ===== -->
@@ -2856,7 +2971,7 @@
 
  </div><!-- /screen-content -->
  </div>
- <div class="screen-comment">⑨ 실링팬 + 조명 통합</div>
+ <div class="screen-comment">⑩ 실링팬 + 조명 통합</div>
 </div>
 
 <!-- ===== 욕실 환기팬 (환풍/제습/온풍/바람 탭 통합) ===== -->
@@ -3118,7 +3233,7 @@
 
  </div><!-- /screen-content -->
  </div>
- <div class="screen-comment">⑩ 욕실 환기팬</div>
+ <div class="screen-comment">⑪ 욕실 환기팬</div>
 </div>
 <div class="screen-wrapper">
  <div class="phone-frame">
@@ -3193,7 +3308,7 @@
  <div class="nav-item"><i class="ti ti-user"></i><span>나의</span></div>
  </div>
  </div>
- <div class="screen-comment">⑪ 시나리오</div>
+ <div class="screen-comment">⑫ 시나리오</div>
 </div>
 
 <!-- ===== 화면 8: 장치 추가 (QR 스캔 + 직접 추가 탭) ===== -->
@@ -3284,7 +3399,7 @@
  </div>
  </div>
  </div>
- <div class="screen-comment">⑫ 장치 추가 (QR 스캔)</div>
+ <div class="screen-comment">⑬ 장치 추가 (QR 스캔)</div>
 </div>
 
 <!-- ===== 화면 9: ★ QR 공유 생성 (핵심 신규 화면) ===== -->
@@ -3495,7 +3610,7 @@
  </button>
  </div>
  </div>
- <div class="screen-comment">⑬ QR 공유 생성</div>
+ <div class="screen-comment">⑭ QR 공유 생성</div>
 </div>
 
 <!-- ===== 화면 10: ★ 가족 멤버 관리 (우리집 통째로 공유한 사람들) ===== -->
@@ -3639,7 +3754,7 @@
  </div>
  </div>
  </div>
- <div class="screen-comment">⑭ 가족 공유 관리</div>
+ <div class="screen-comment">⑮ 가족 공유 관리</div>
 </div>
 
 <!-- ===== 화면 11: 마이페이지 (계정 → 장치/공유 관리로 변경) ===== -->
@@ -3768,7 +3883,7 @@
  <div class="nav-item active"><i class="ti ti-user"></i><span>나의</span></div>
  </div>
  </div>
- <div class="screen-comment">⑮ 나의 (마이페이지)</div>
+ <div class="screen-comment">⑯ 나의 (마이페이지)</div>
 </div>
 
 // ===== 스마트 조명 =====
@@ -4395,126 +4510,11 @@ window.selectLocChip3 = selectLocChip3;
 window.confirmLoc3    = confirmLoc3;
 </script>
 
-</div>
-
-<div class="screen-wrapper">
- <div class="phone-frame">
- <div class="status-bar"><span style="font-weight:500;">9:41</span><span class="right"><i class="ti ti-signal-5g"></i><i class="ti ti-battery-2"></i></span></div>
- <div class="bt-status-bar"><div class="left"><span class="bt-text">연결됨</span></div><span class="bt-count">신호 강함</span></div>
- <div class="header">
- <button><i class="ti ti-chevron-left" style="font-size:22px;"></i></button>
- <div class="title"><div class="title-main">아크로 빨래건조대</div><div class="title-sub active">거실 · 건조 중</div></div>
- <button><i class="ti ti-dots-vertical" style="font-size:20px;"></i></button>
- </div>
- <div class="screen-content" style="overflow-y:auto; padding-top:8px; padding-bottom:16px;">
-
- <div class="ld-card">
- <div class="ld-hd"><div class="ld-tt">① 승하강</div><div class="ld-gold">현재 높이 60%</div></div>
- <div class="ld-bar"><i></i></div>
- <div class="ld-r3">
- <button class="ld-btn" data-ldlift><span><i class="ti ti-chevron-up"></i> 상승</span></button>
- <button class="ld-btn stop" data-ldlift><span><i class="ti ti-player-stop"></i> 정지</span></button>
- <button class="ld-btn" data-ldlift><span><i class="ti ti-chevron-down"></i> 하강</span></button>
- </div>
- <div class="ld-foot">
- <span class="ld-note"><i class="ti ti-info-circle"></i>이동 중 재탭 시 정지</span>
- <div style="display:flex;align-items:center;gap:6px;">
- <span class="ld-rec">추천</span>
- <button class="ld-mini" data-ldm>M1</button>
- <button class="ld-mini off" data-ldm>M2</button>
- </div>
- </div>
- </div>
-
- <div class="ld-card">
- <div class="ld-hd">
- <div class="ld-tt">② 조명</div>
- <div style="display:flex;align-items:center;gap:11px;">
- <button class="ld-mini"><i class="ti ti-star" style="font-size:11px;"></i> 메모리</button>
- <div class="ld-tgl" data-ldpow="ldLight"><i></i></div>
- </div>
- </div>
- <div id="ldLight">
- <div class="ld-sl"><i class="ti ti-temperature"></i><span class="lb">색온도</span><input type="range" min="3000" max="6500" step="100" value="4500" id="ldCct"><span class="vv" id="ldCctV">4500K</span></div>
- <div class="ld-sl"><i class="ti ti-brightness-up"></i><span class="lb">밝기</span><input type="range" min="0" max="100" step="1" value="80" id="ldDim"><span class="vv" id="ldDimV">80%</span></div>
- </div>
- </div>
-
- <div class="ld-card">
- <div class="ld-hd"><div class="ld-tt">③ 건조 · 바람</div><div class="ld-tgl" data-ldpow="ldDry"><i></i></div></div>
- <div id="ldDry">
- <div class="ld-r2">
- <button class="ld-btn warm on" data-ldmode><span><i class="ti ti-flame"></i> 열풍</span></button>
- <button class="ld-btn" data-ldmode><span><i class="ti ti-wind"></i> 자연풍</span></button>
- </div>
- <div class="ld-r3" style="margin-bottom:12px;">
- <button class="ld-btn" data-ldspd><span class="n">1</span><span class="s">약</span></button>
- <button class="ld-btn on" data-ldspd><span class="n">2</span><span class="s">중</span></button>
- <button class="ld-btn" data-ldspd><span class="n">3</span><span class="s">강</span></button>
- </div>
- <div class="ld-tnote"><i class="ti ti-info-circle"></i>타이머 미설정 시 끌 때까지 계속 작동</div>
- <div class="ld-twrap">
- <i class="ti ti-clock"></i>
- <div class="ld-tgrid">
- <button class="ld-tmr" data-ldtmr>30분</button>
- <button class="ld-tmr" data-ldtmr>1시간</button>
- <button class="ld-tmr" data-ldtmr>2시간</button>
- <button class="ld-tmr" data-ldtmr>3시간</button>
- </div>
- </div>
- </div>
- </div>
-
- <div class="ld-card">
- <div class="ld-hd" style="margin-bottom:10px;"><div class="ld-tt">④ 원터치 씬</div><span class="ld-rec">추천</span></div>
- <div class="ld-scenes">
- <div class="ld-scene"><i class="ti ti-basket" style="color:#3B8FFF;"></i><div>널기</div></div>
- <div class="ld-scene" style="background:rgba(212,175,106,.1);border-color:rgba(212,175,106,.3);"><i class="ti ti-flame" style="color:#D4AF6A;"></i><div style="color:#D4AF6A;">건조</div></div>
- <div class="ld-scene"><i class="ti ti-check" style="color:#4ADE80;"></i><div>정리</div></div>
- <div class="ld-scene" style="background:rgba(155,89,217,.12);border-color:rgba(155,89,217,.35);"><i class="ti ti-shield-check" style="color:#B98AE0;"></i><div style="color:#B98AE0;">UV살균</div></div>
- </div>
- </div>
-
- </div>
- </div>
- <div class="screen-comment">⑯ 빨래건조대 제어 (NEW)</div>
-</div>
-
-<script>
-(function(){
-  var cct=document.getElementById('ldCct'), dim=document.getElementById('ldDim');
-  if(cct) cct.oninput=function(){ document.getElementById('ldCctV').textContent=cct.value+'K'; };
-  if(dim) dim.oninput=function(){ document.getElementById('ldDimV').textContent=Math.round(dim.value)+'%'; };
-  function grp(sel){
-    var ns=document.querySelectorAll(sel);
-    ns.forEach(function(b){ b.onclick=function(){ ns.forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); }; });
-  }
-  grp('[data-ldmode]'); grp('[data-ldspd]');
-  document.querySelectorAll('[data-ldtmr]').forEach(function(b){
-    b.onclick=function(){
-      var was=b.classList.contains('on');
-      document.querySelectorAll('[data-ldtmr]').forEach(function(x){x.classList.remove('on');});
-      if(!was) b.classList.add('on');
-    };
-  });
-  document.querySelectorAll('[data-ldpow]').forEach(function(sw){
-    sw.onclick=function(){
-      sw.classList.toggle('off');
-      var ct=document.getElementById(sw.getAttribute('data-ldpow'));
-      var on=!sw.classList.contains('off');
-      if(ct){ ct.style.opacity=on?'1':'0.3'; ct.style.pointerEvents=on?'auto':'none'; }
-    };
-  });
-  document.querySelectorAll('[data-ldm]').forEach(function(b){
-    b.onclick=function(){ document.querySelectorAll('[data-ldm]').forEach(function(x){x.classList.add('off');}); b.classList.remove('off'); };
-  });
-})();
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 (function(){
-  var NAMES=['01_블루투스권한','02_홈','03_유선스위치','04_전동커튼','05_콘센트','06_스마트조명','07_방등','08_전동블라인드','09_실링팬조명','10_욕실환기팬','11_시나리오','12_장치추가','13_QR공유','14_가족공유','15_마이페이지','16_빨래건조대'];
+  var NAMES=['01_블루투스권한','02_홈','03_빨래건조대','04_유선스위치','05_전동커튼','06_콘센트','07_스마트조명','08_방등','09_전동블라인드','10_실링팬조명','11_욕실환기팬','12_시나리오','13_장치추가','14_QR공유','15_가족공유','16_마이페이지'];
   var wrappers=Array.prototype.slice.call(document.querySelectorAll('.screen-wrapper'));
 
   function saveFrame(frame, fname, btn){
