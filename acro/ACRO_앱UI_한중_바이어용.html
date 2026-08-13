@@ -3001,7 +3001,7 @@
  <i class="ti ti-wind"></i><span>환풍기</span>
  </div>
  <div class="bf-tab" data-mode="dehu" onclick="window.bfSwitch('dehu')">
- <i class="ti ti-drop"></i><span>제습</span>
+ <i class="ti ti-droplet"></i><span>제습</span>
  </div>
  <div class="bf-tab" data-mode="heat" onclick="window.bfSwitch('heat')">
  <i class="ti ti-flame"></i><span>온풍</span>
@@ -4424,7 +4424,7 @@ var cfDB=document.getElementById('cfDirBtn');
 if(cfDB) cfDB.addEventListener('click',function(){
   cfDir=!cfDir;
   document.getElementById('cfDirVal').textContent=cfDir?'정방향 (여름)':'역방향 (겨울)';
-  document.getElementById('cfDirIcon').innerHTML=cfDir?'<i class="ti ti-rotate-clockwise"></i>':'<i class="ti ti-rotate-counter-clockwise"></i>';
+  document.getElementById('cfDirIcon').innerHTML=cfDir?'<i class="ti ti-rotate-clockwise"></i>':'<i class="ti ti-rotate"></i>';
 });
 
 function cfSliderEvt(trackId,fillId,thumbId,numId){

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ACRO 앱 UI 아이콘팩 · 한/중 | ACRO App UI 图标包 · 韩/中</title>
+<title>ACRO 앱 UI 아이콘팩 전체 68종 · 한/중 | ACRO App UI 图标包 全68款 · 韩/中</title>
 <link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -33,29 +33,34 @@
 </style>
 </head>
 <body>
-  <h1>ACRO 앱 UI 아이콘팩 <span style="color:#9a978f;font-weight:400">· 图标包</span></h1>
-  <div class="sub">앱에 들어가는 마크(아이콘) 하나하나 · 개별 PNG 다운로드(투명 배경) · 한국어/中文 · 开发用图标资源</div>
-  <div class="ver"><span>✅ 최종본 v4 · 2026-08-13</span></div>
+  <h1>ACRO 앱 UI 아이콘팩 · 전체 68종 <span style="color:#9a978f;font-weight:400">· 图标包 全68款</span></h1>
+  <div class="sub">앱 16화면에 쓰이는 마크 전부 · 하나하나 개별 PNG 다운로드(투명 배경) · 한국어/中文 · 开发用全套图标资源</div>
+  <div class="ver"><span>✅ 최종본 v5 · 2026-08-13 · 앱 사용 마크 전수 수록</span></div>
   <div class="bar">
     <button id="dlAll">⬇️ 전체 아이콘 PNG 일괄 저장 · 全部下载</button>
     <button class="ghost" onclick="window.print()">🖨️ 인쇄 · PDF</button>
   </div>
 
-  <!-- ═══ 기기 아이콘 ═══ -->
   <h2 class="grp">기기 아이콘 <span>设备图标 (9)</span></h2>
   <div class="grid" id="gDev"></div>
 
-  <!-- ═══ 공통 기능 ═══ -->
-  <h2 class="grp">공통 기능 마크 <span>通用功能图标 (8)</span></h2>
+  <h2 class="grp">상태바·내비게이션 <span>状态栏·导航 (12)</span></h2>
+  <div class="grid" id="gNav"></div>
+
+  <h2 class="grp">공통 기능 마크 <span>通用功能图标 (17)</span></h2>
   <div class="grid" id="gCommon"></div>
 
-  <!-- ═══ 빨래건조대 기능 ═══ -->
   <h2 class="grp">빨래건조대 기능 마크 <span>晾衣架功能图标 (12)</span></h2>
   <div class="grid" id="gLaundry"></div>
 
-  <!-- ═══ 실링팬·커튼 기능 ═══ -->
-  <h2 class="grp">실링팬·커튼 기능 마크 <span>吊扇·窗帘功能图标 (6)</span></h2>
+  <h2 class="grp">실링팬·환기팬 기능 <span>吊扇·换气扇功能 (10)</span></h2>
   <div class="grid" id="gFan"></div>
+
+  <h2 class="grp">커튼·블라인드·조명 기능 <span>窗帘·百叶帘·照明功能 (4)</span></h2>
+  <div class="grid" id="gCurtain"></div>
+
+  <h2 class="grp">씬·공유·설정 <span>情景·共享·设置 (4)</span></h2>
+  <div class="grid" id="gScene"></div>
 
   <div class="foot">㈜엣지컴퍼니 · ACRO Smart Home &nbsp;|&nbsp; 아이콘은 투명 배경 PNG로 저장됩니다. 图标以透明背景 PNG 保存。<br>협력사 앱 개발 시 이 마크를 그대로 사용해 주세요. 请开发方直接使用本图标资源。</div>
 
@@ -72,49 +77,89 @@ const SVGS = {
   vent: '<svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="9" stroke="'+GOLD+'" stroke-width="2.2"/><circle cx="50" cy="50" r="4" fill="'+GOLD+'"/><path d="M47 41 L44 13 Q50 10 56 13 L53 41Z" fill="rgba(212,175,106,0.25)" stroke="'+GOLD+'" stroke-width="2"/><g transform="rotate(90 50 50)"><path d="M47 41 L44 13 Q50 10 56 13 L53 41Z" fill="rgba(212,175,106,0.25)" stroke="'+GOLD+'" stroke-width="2"/></g><g transform="rotate(180 50 50)"><path d="M47 41 L44 13 Q50 10 56 13 L53 41Z" fill="rgba(212,175,106,0.25)" stroke="'+GOLD+'" stroke-width="2"/></g><g transform="rotate(270 50 50)"><path d="M47 41 L44 13 Q50 10 56 13 L53 41Z" fill="rgba(212,175,106,0.25)" stroke="'+GOLD+'" stroke-width="2"/></g></svg>'
 };
 
+// 앱 16화면에서 실제 사용된 마크 전수 (tabler 57종 + 기기 SVG 8종 + 보조 3종)
 const ICONS = {
   gDev: [
-    ['01', '실링팬', '吊扇', {svg:'fan'}],
-    ['02', '빨래건조대', '晾衣架', {svg:'laundry'}],
-    ['03', '전동커튼', '电动窗帘', {svg:'curtain'}],
-    ['04', '전동블라인드', '电动百叶帘', {svg:'blind'}],
-    ['05', '유선스위치', '有线开关', {svg:'swtch'}],
-    ['06', '콘센트', '智能插座', {svg:'outlet'}],
-    ['07', '스마트조명', '智能照明', {ti:'ti-bulb'}],
-    ['08', '방등', '吸顶灯', {svg:'panel'}],
-    ['09', '욕실환기팬', '浴室换气扇', {svg:'vent'}],
+    ['01','실링팬','吊扇',{svg:'fan'}],
+    ['02','빨래건조대','晾衣架',{svg:'laundry'}],
+    ['03','전동커튼','电动窗帘',{svg:'curtain'}],
+    ['04','전동블라인드','电动百叶帘',{svg:'blind'}],
+    ['05','유선스위치','有线开关',{svg:'swtch'}],
+    ['06','콘센트','智能插座',{svg:'outlet'}],
+    ['07','스마트조명','智能照明',{ti:'ti-bulb'}],
+    ['08','방등','吸顶灯',{svg:'panel'}],
+    ['09','욕실환기팬','浴室换气扇',{svg:'vent'}],
+  ],
+  gNav: [
+    ['10','신호 5G','信号5G',{ti:'ti-signal-5g'}],
+    ['11','배터리','电池',{ti:'ti-battery-2'}],
+    ['12','블루투스','蓝牙',{ti:'ti-bluetooth'}],
+    ['13','뒤로가기','返回',{ti:'ti-chevron-left'}],
+    ['14','이동(오른쪽)','前往',{ti:'ti-chevron-right'}],
+    ['15','닫기','关闭',{ti:'ti-x'}],
+    ['16','더보기 메뉴','更多',{ti:'ti-dots-vertical'}],
+    ['17','홈(장치)','主页(设备)',{ti:'ti-home'}],
+    ['18','시나리오 탭','情景模式',{ti:'ti-layout-grid'}],
+    ['19','나의','我的',{ti:'ti-user'}],
+    ['20','추가(+)','添加',{ti:'ti-plus'}],
+    ['21','알림','通知',{ti:'ti-bell'}],
   ],
   gCommon: [
-    ['10', '전원', '电源', {ti:'ti-power'}],
-    ['11', '블루투스', '蓝牙', {ti:'ti-bluetooth'}],
-    ['12', '타이머', '定时', {ti:'ti-clock'}],
-    ['13', '홈', '主页', {ti:'ti-home'}],
-    ['14', '시나리오', '情景模式', {ti:'ti-layout-grid'}],
-    ['15', '나의', '我的', {ti:'ti-user'}],
-    ['16', 'QR공유', '二维码分享', {ti:'ti-qrcode'}],
-    ['17', '일괄소등', '一键全关', {ti:'ti-bulb-off'}],
+    ['22','전원','电源',{ti:'ti-power'}],
+    ['23','타이머','定时',{ti:'ti-clock'}],
+    ['24','예약 시간','预约时间',{ti:'ti-clock-hour-4'}],
+    ['25','예약 일정','预约日程',{ti:'ti-calendar-event'}],
+    ['26','예약 추가','添加预约',{ti:'ti-calendar-plus'}],
+    ['27','기록','记录',{ti:'ti-history'}],
+    ['28','안내','提示',{ti:'ti-info-circle'}],
+    ['29','확인','确认',{ti:'ti-check'}],
+    ['30','수정','编辑',{ti:'ti-pencil'}],
+    ['31','삭제','删除',{ti:'ti-trash'}],
+    ['32','동기화','同步',{ti:'ti-refresh'}],
+    ['33','설치 위치','安装位置',{ti:'ti-map-pin'}],
+    ['34','내 기기','我的设备',{ti:'ti-device-mobile'}],
+    ['35','전력','电力',{ti:'ti-bolt'}],
+    ['36','고객지원','客服',{ti:'ti-headset'}],
+    ['37','언어','语言',{ti:'ti-language'}],
+    ['38','권한','权限',{ti:'ti-shield'}],
   ],
   gLaundry: [
-    ['18', '상승', '上升', {ti:'ti-chevron-up'}],
-    ['19', '정지', '停止', {ti:'ti-player-stop'}],
-    ['20', '하강', '下降', {ti:'ti-chevron-down'}],
-    ['21', '높이메모리', '高度记忆', {ti:'ti-star'}],
-    ['22', '색온도', '色温', {ti:'ti-temperature'}],
-    ['23', '밝기', '亮度', {ti:'ti-brightness-up'}],
-    ['24', '열풍', '热风', {ti:'ti-flame'}],
-    ['25', '자연풍', '自然风', {ti:'ti-wind'}],
-    ['26', '널기', '晾晒', {ti:'ti-basket'}],
-    ['27', '정리', '收纳', {ti:'ti-check'}],
-    ['28', 'UV살균', 'UV杀菌', {ti:'ti-shield-check'}],
-    ['29', '안내', '提示', {ti:'ti-info-circle'}],
+    ['39','상승','上升',{ti:'ti-chevron-up'}],
+    ['40','정지','停止',{ti:'ti-player-stop'}],
+    ['41','하강','下降',{ti:'ti-chevron-down'}],
+    ['42','완전 상승','升到顶',{ti:'ti-arrow-bar-up'}],
+    ['43','완전 하강','降到底',{ti:'ti-arrow-bar-down'}],
+    ['44','높이 메모리','高度记忆',{ti:'ti-star'}],
+    ['45','색온도','色温',{ti:'ti-temperature'}],
+    ['46','밝기','亮度',{ti:'ti-brightness-up'}],
+    ['47','열풍','热风',{ti:'ti-flame'}],
+    ['48','자연풍','自然风',{ti:'ti-wind'}],
+    ['49','널기','晾晒',{ti:'ti-basket'}],
+    ['50','UV살균','UV杀菌',{ti:'ti-shield-check'}],
   ],
   gFan: [
-    ['30', '회전방향', '正反转', {ti:'ti-rotate'}],
-    ['31', '수면모드', '睡眠模式', {ti:'ti-moon'}],
-    ['32', '풍속', '风速', {ti:'ti-gauge'}],
-    ['33', '완전열기', '全开', {ti:'ti-arrow-bar-to-right'}],
-    ['34', '완전닫기', '全关', {ti:'ti-arrow-bar-to-left'}],
-    ['35', '예약추가', '添加预约', {ti:'ti-calendar-plus'}],
+    ['51','팬(프로펠러)','风扇',{ti:'ti-propeller'}],
+    ['52','정방향 회전','正转',{ti:'ti-rotate-clockwise'}],
+    ['53','역방향 회전','反转',{ti:'ti-rotate'}],
+    ['54','수면모드','睡眠模式',{ti:'ti-moon'}],
+    ['55','풍속','风速',{ti:'ti-gauge'}],
+    ['56','일시정지','暂停',{ti:'ti-player-pause'}],
+    ['57','제습','除湿',{ti:'ti-droplet'}],
+    ['58','냉방','制冷',{ti:'ti-snowflake'}],
+    ['59','주광(밝게)','白天',{ti:'ti-sun'}],
+    ['60','저조도','低亮度',{ti:'ti-sun-low'}],
+  ],
+  gCurtain: [
+    ['61','완전 열기','全开',{ti:'ti-arrow-bar-to-right'}],
+    ['62','완전 닫기','全关',{ti:'ti-arrow-bar-to-left'}],
+    ['63','조명 켜기','开灯',{ti:'ti-bulb'}],
+    ['64','일괄소등','一键全关',{ti:'ti-bulb-off'}],
+  ],
+  gScene: [
+    ['65','귀가모드','回家模式',{ti:'ti-home-bolt'}],
+    ['66','외출모드','外出模式',{ti:'ti-door-exit'}],
+    ['67','QR코드','二维码',{ti:'ti-qrcode'}],
+    ['68','가족공유·재공유','家庭共享·转发',{ti:'ti-users'}],
   ],
 };
 
