@@ -59,7 +59,7 @@ const fileUrl = p => 'file:///' + p.replace(/\\/g, '/');
   await page.emulateMedia({ media: 'print' });
   const h = await page.evaluate(() => document.body.scrollHeight);
   await page.pdf({
-    path: path.join(repo, 'acro', 'ACRO_앱UI_한중_바이어용.pdf'),
+    path: path.join(repo, 'acro', 'ACRO_앱UI_한중_바이어용_v4최종.pdf'),
     printBackground: true, width: '1400px', height: Math.min(h + 60, 20000) + 'px',
     margin: { top: '20px', bottom: '20px', left: '20px', right: '20px' },
   });
