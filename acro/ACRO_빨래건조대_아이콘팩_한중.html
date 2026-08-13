@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACRO 빨래건조대 아이콘팩 18종 · 한/중 | ACRO 晾衣架 图标包 全18款 · 韩/中</title>
+<link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Pretendard','PingFang SC','Microsoft YaHei',sans-serif;background:#141416;color:#F5F2EC;padding:30px 20px 60px}
+  h1{text-align:center;font-size:22px}
+  .sub{text-align:center;font-size:13px;color:#9a978f;margin-top:6px}
+  .ver{text-align:center;margin-top:10px}
+  .ver span{font-size:12px;color:#D4AF6A;border:1px solid rgba(212,175,106,.45);border-radius:8px;padding:3px 12px}
+  .bar{display:flex;justify-content:center;gap:10px;margin:18px 0 26px}
+  .bar button{font-family:inherit;cursor:pointer;background:#D4AF6A;color:#1a1408;border:none;border-radius:11px;font-size:13px;font-weight:600;padding:11px 18px}
+  .bar button.ghost{background:rgba(255,255,255,.08);color:#F5F2EC}
+  .bar button:disabled{opacity:.5;cursor:wait}
+  h2.grp{max-width:1200px;margin:26px auto 12px;font-size:15px;color:#D4AF6A}
+  h2.grp span{font-size:12px;color:#9a978f;font-weight:400;margin-left:8px}
+  .grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+  .tile{background:#1c1c21;border:.5px solid rgba(255,255,255,.07);border-radius:14px;padding:16px 12px 13px;text-align:center}
+  .ico{width:120px;height:120px;margin:0 auto;display:flex;align-items:center;justify-content:center;background:transparent}
+  .ico i{font-size:84px;color:#D4AF6A;line-height:1}
+  .ico svg{width:96px;height:96px}
+  .kr{font-size:13.5px;font-weight:600;margin-top:10px}
+  .cn{font-size:12px;color:#9a978f;margin-top:2px}
+  .dl{margin-top:9px;font-family:inherit;cursor:pointer;background:rgba(212,175,106,.14);color:#D4AF6A;border:1px solid rgba(212,175,106,.4);border-radius:8px;font-size:11.5px;font-weight:600;padding:6px 12px}
+  .dl:hover{background:rgba(212,175,106,.25)}
+  .foot{max-width:1200px;margin:34px auto 0;text-align:center;font-size:11px;color:#6B6864;line-height:1.7}
+</style>
+</head>
+<body>
+  <h1>ACRO 빨래건조대 아이콘팩 · 18종 <span style="color:#9a978f;font-weight:400">· 晾衣架 图标包 全18款</span></h1>
+  <div class="sub">전동 빨래건조대 앱 화면에 쓰이는 마크 전부 · 개별 PNG 다운로드(투명 배경) · 한국어/中文</div>
+  <div class="ver"><span>✅ 최종본 v1 · 2026-08-13 · 升降晾衣架 开发用图标</span></div>
+  <div class="bar">
+    <button id="dlAll">⬇️ 전체 18종 PNG 일괄 저장 · 全部下载</button>
+    <button class="ghost" onclick="window.print()">🖨️ 인쇄 · PDF</button>
+  </div>
+
+  <h2 class="grp">기기 <span>设备 (1)</span></h2>
+  <div class="grid" id="gDev"></div>
+
+  <h2 class="grp">① 승하강 <span>升降 (6)</span></h2>
+  <div class="grid" id="gLift"></div>
+
+  <h2 class="grp">② 조명 <span>照明 (2)</span></h2>
+  <div class="grid" id="gLight"></div>
+
+  <h2 class="grp">③ 건조·바람·타이머 <span>烘干·送风·定时 (3)</span></h2>
+  <div class="grid" id="gDry"></div>
+
+  <h2 class="grp">④ 원터치 씬 <span>一键情景 (4)</span></h2>
+  <div class="grid" id="gScene"></div>
+
+  <h2 class="grp">공통 <span>通用 (2)</span></h2>
+  <div class="grid" id="gEtc"></div>
+
+  <div class="foot">㈜엣지컴퍼니 · ACRO Smart Home &nbsp;|&nbsp; 아이콘은 투명 배경 PNG로 저장됩니다. 图标以透明背景 PNG 保存。<br>협력사 앱 개발 시 이 마크를 그대로 사용해 주세요. 请开发方直接使用本图标资源。</div>
+
+<script>
+const GOLD = '#D4AF6A';
+const SVGS = {
+  laundry: '<svg viewBox="0 0 56 56" fill="none" stroke="'+GOLD+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="11" y1="13" x2="45" y2="13" stroke-width="2.5"/><line x1="18" y1="13" x2="18" y2="21"/><line x1="38" y1="13" x2="38" y2="21"/><line x1="14" y1="22" x2="14" y2="40"/><line x1="42" y1="22" x2="42" y2="40"/><line x1="14" y1="22" x2="42" y2="22"/><line x1="14" y1="31" x2="42" y2="31"/><line x1="14" y1="40" x2="42" y2="40"/></svg>'
+};
+
+const ICONS = {
+  gDev: [
+    ['01','빨래건조대','晾衣架',{svg:'laundry'}],
+  ],
+  gLift: [
+    ['02','상승','上升',{ti:'ti-chevron-up'}],
+    ['03','정지','停止',{ti:'ti-player-stop'}],
+    ['04','하강','下降',{ti:'ti-chevron-down'}],
+    ['05','완전 상승','升到顶',{ti:'ti-arrow-bar-up'}],
+    ['06','완전 하강','降到底',{ti:'ti-arrow-bar-down'}],
+    ['07','높이 메모리','高度记忆',{ti:'ti-star'}],
+  ],
+  gLight: [
+    ['08','색온도','色温',{ti:'ti-temperature'}],
+    ['09','밝기','亮度',{ti:'ti-brightness-up'}],
+  ],
+  gDry: [
+    ['10','열풍','热风',{ti:'ti-flame'}],
+    ['11','자연풍','自然风',{ti:'ti-wind'}],
+    ['12','타이머','定时',{ti:'ti-clock'}],
+  ],
+  gScene: [
+    ['13','널기','晾晒',{ti:'ti-basket'}],
+    ['14','건조','烘干',{ti:'ti-flame'}],
+    ['15','정리','收纳',{ti:'ti-check'}],
+    ['16','UV살균','UV杀菌',{ti:'ti-shield-check'}],
+  ],
+  gEtc: [
+    ['17','전원','电源',{ti:'ti-power'}],
+    ['18','안내','提示',{ti:'ti-info-circle'}],
+  ],
+};
+
+Object.keys(ICONS).forEach(function(gid){
+  const grid = document.getElementById(gid);
+  ICONS[gid].forEach(function(item){
+    const [no, kr, cn, src] = item;
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    const inner = src.svg ? SVGS[src.svg] : '<i class="ti ' + src.ti + '"></i>';
+    tile.innerHTML = '<div class="ico" data-name="' + no + '_' + kr + '_' + cn + '">' + inner + '</div>'
+      + '<div class="kr">' + no + ' · ' + kr + '</div><div class="cn">' + cn + '</div>'
+      + '<button class="dl">⬇️ PNG 저장 · 下载</button>';
+    grid.appendChild(tile);
+  });
+});
+
+function saveIcon(box, btn){
+  if(typeof html2canvas === 'undefined'){ alert('인터넷 연결 후 다시 열어주세요. 请联网后重试。'); return Promise.resolve(); }
+  if(btn) btn.disabled = true;
+  return html2canvas(box, {backgroundColor: null, scale: 4}).then(function(canvas){
+    const a = document.createElement('a');
+    a.download = 'ACRO_빨래건조대_아이콘_' + box.getAttribute('data-name') + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }).catch(function(){ alert('저장 실패 · 保存失败'); }).then(function(){ if(btn) btn.disabled = false; });
+}
+
+document.querySelectorAll('.tile .dl').forEach(function(btn){
+  btn.onclick = function(){ saveIcon(btn.parentElement.querySelector('.ico'), btn); };
+});
+
+document.getElementById('dlAll').onclick = function(){
+  const btn = this, boxes = Array.prototype.slice.call(document.querySelectorAll('.ico'));
+  btn.disabled = true; const orig = btn.innerHTML;
+  let chain = Promise.resolve();
+  boxes.forEach(function(b, i){
+    chain = chain.then(function(){
+      btn.innerHTML = '저장 중… ' + (i+1) + ' / ' + boxes.length;
+      return saveIcon(b);
+    }).then(function(){ return new Promise(function(r){ setTimeout(r, 350); }); });
+  });
+  chain.then(function(){ btn.innerHTML = orig; btn.disabled = false; });
+};
+</script>
+</body>
+</html>

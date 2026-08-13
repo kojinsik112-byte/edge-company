@@ -4,8 +4,10 @@ const fs = require('fs');
 const path = require('path');
 
 const repo = path.join(__dirname, '..', '..');
-const SRC = path.join(repo, 'acro', 'ACRO_앱UI_아이콘팩_한중.html');
-const outDir = path.join(repo, 'acro', '앱UI_아이콘');
+// 기본=전체 68종 팩. LAUNDRY=1 이면 빨래건조대 전용 18종 팩.
+const LAUNDRY = !!process.env.LAUNDRY;
+const SRC = path.join(repo, 'acro', LAUNDRY ? 'ACRO_빨래건조대_아이콘팩_한중.html' : 'ACRO_앱UI_아이콘팩_한중.html');
+const outDir = path.join(repo, 'acro', LAUNDRY ? '빨래건조대_아이콘' : '앱UI_아이콘');
 fs.mkdirSync(outDir, { recursive: true });
 
 (async () => {
@@ -22,7 +24,7 @@ fs.mkdirSync(outDir, { recursive: true });
   for (const box of boxes) {
     const name = await box.getAttribute('data-name');
     await box.scrollIntoViewIfNeeded();
-    await box.screenshot({ path: path.join(outDir, `ACRO_아이콘_${name}.png`), omitBackground: true });
+    await box.screenshot({ path: path.join(outDir, (LAUNDRY ? 'ACRO_빨래건조대_아이콘_' : 'ACRO_아이콘_') + name + '.png'), omitBackground: true });
   }
   console.log('done');
   await browser.close();
