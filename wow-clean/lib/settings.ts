@@ -208,11 +208,11 @@ export const DEFAULT_SETTINGS: Settings = {
     items: [],
   },
   showroom: {
-    image: "/img/cat-pipe.svg",
+    image: "/img/photo/gal-pipe-work.jpg",
     title: "와우클린 시공 현장",
     body: "가정 욕실부터 상가 주방, 건물 공용 배관까지 — 와우클린이 실제로 해결한 현장들입니다.",
     hours: "연중무휴 24시간 접수 · 야간 긴급 출동 가능",
-    images: ["/img/van.svg", "/img/cat-drain.svg", "/img/kitchen.svg", "/img/cat-toilet.svg", "/img/cat-pipe.svg"],
+    images: ["/img/photo/gal-pipe-work.jpg", "/img/photo/gal-sink-repair.jpg", "/img/photo/gal-toilet-work.jpg", "/img/photo/gal-basin-repair.jpg", "/img/photo/gal-floor-drain.jpg", "/img/photo/gal-building-pipe.jpg"],
     map: "",
   },
   categories: {
