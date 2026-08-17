@@ -4,14 +4,14 @@ const path = require('path');
 (async () => {
   const b = await chromium.launch({ channel: 'chrome', headless: true });
   const p = await b.newPage({ viewport: { width: 900, height: 1200 }, deviceScaleFactor: 1 });
-  const src = path.resolve(__dirname, '..', '..', 'acro', 'ACRO_원삼센트레빌_옵션제안서_v4.html');
+  const src = path.resolve(__dirname, '..', '..', 'acro', 'ACRO_원삼센트레빌_옵션제안서_v5.html');
   await p.goto('file:///' + src.replace(/\\/g, '/'), { waitUntil: 'networkidle' });
   await p.evaluate(() => document.fonts.ready);
   await p.waitForTimeout(800);
   const pages = await p.$$('.page');
   const outDir = process.env.SNAP_OUT || path.join(__dirname, 'snap');
   require('fs').mkdirSync(outDir, { recursive: true });
-  for (const i of [3, 4]) {
+  for (const i of [0, 7]) {
     if (pages[i]) { await pages[i].scrollIntoViewIfNeeded(); await pages[i].screenshot({ path: path.join(outDir, `p${i + 1}.png`) }); }
   }
   console.log('snapped');
