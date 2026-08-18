@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import type { SiteInfo } from "@/lib/settings";
+import type { Hero, SiteInfo } from "@/lib/settings";
 
 const SYMPTOMS = ["물이 안 내려가나요?", "변기가 역류하나요?", "싱크대에서 냄새 나나요?", "배수구가 꾸르륵대나요?"];
 
 /** 긴급출동형 히어로 — 타이핑 헤드라인 + 실시간 접수 티커 + 물결 애니메이션 */
-export default function EmergencyHero({ site }: { site: SiteInfo }) {
+export default function EmergencyHero({ site, hero }: { site: SiteInfo; hero: Hero }) {
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
   const [today, setToday] = useState<number | null>(null);
   const [dots, setDots] = useState(0);
@@ -48,9 +49,17 @@ export default function EmergencyHero({ site }: { site: SiteInfo }) {
 
   return (
     <section className="relative overflow-hidden bg-navy-d text-white">
-      {/* 배경 그라디언트 + 물결 */}
+      {/* 배경 — 관리자 업로드 배너 사진(있으면) + 그라디언트 + 물결 */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(1100px_540px_at_78%_-10%,rgba(31,131,224,0.45),transparent_60%),radial-gradient(700px_420px_at_8%_110%,rgba(31,131,224,0.28),transparent_60%)]" />
+        {hero.image && (
+          <>
+            <Image src={hero.image} alt="" fill priority sizes="100vw" className="hidden object-cover md:block" />
+            <Image src={hero.imageMobile || hero.image} alt="" fill priority sizes="100vw" className="object-cover md:hidden" />
+            {/* 글자 가독성용 딤 — 사진은 살리고 텍스트는 선명하게 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0b1b30]/88 via-[#0b1b30]/62 to-[#0b1b30]/30" />
+          </>
+        )}
+        <div className={`absolute inset-0 bg-[radial-gradient(1100px_540px_at_78%_-10%,rgba(31,131,224,0.45),transparent_60%),radial-gradient(700px_420px_at_8%_110%,rgba(31,131,224,0.28),transparent_60%)] ${hero.image ? "opacity-55" : ""}`} />
         <svg className="absolute bottom-0 left-0 w-[200%] animate-[wave_14s_linear_infinite]" viewBox="0 0 2880 140" fill="none" aria-hidden>
           <path d="M0 90 Q 180 40 360 90 T 720 90 T 1080 90 T 1440 90 T 1800 90 T 2160 90 T 2520 90 T 2880 90 V140 H0 Z" fill="rgba(31,131,224,0.16)" />
           <path d="M0 108 Q 180 70 360 108 T 720 108 T 1080 108 T 1440 108 T 1800 108 T 2160 108 T 2520 108 T 2880 108 V140 H0 Z" fill="rgba(255,255,255,0.06)" />
@@ -71,16 +80,36 @@ export default function EmergencyHero({ site }: { site: SiteInfo }) {
             </span>
           </div>
 
-          <h1 className="mt-6 text-[34px] font-extrabold leading-[1.18] tracking-tight md:text-[54px]">
-            <span className="block min-h-[1.2em]">
-              {txt}
-              <span className="ml-1 inline-block w-[3px] animate-[blink_1s_step-start_infinite] bg-[#7cc0ff] align-middle" style={{ height: "0.95em" }} aria-hidden />
-            </span>
-            <span className="text-[#7cc0ff]">전화 한 통</span>이면 끝납니다
-          </h1>
-          <p className="mt-5 max-w-[520px] text-[15.5px] leading-relaxed text-white/75 md:text-[17px]">
-            하수구·변기·싱크대 막힘부터 배관 고압세척까지 — 전문 장비를 갖춘 기사가
-            바로 출발합니다. 뚫는 것으로 끝내지 않고 <b className="text-white">뒷정리까지</b> 와우클린이 책임집니다.
+          {/* 헤드라인 — 관리자에 입력한 라이브 텍스트가 있으면 그걸 그대로 쓴다 */}
+          {hero.overlayTitle ? (
+            <>
+              <h1
+                className={`mt-6 whitespace-pre-line leading-[1.2] tracking-tight ${hero.overlaySerif ? "font-lux" : ""}`}
+                style={{ color: hero.overlayColor || "#ffffff", fontWeight: Number(hero.overlayWeight) || 800, fontSize: `clamp(30px, 7vw, ${hero.overlayTitleSize || 54}px)` }}
+              >
+                {hero.overlayTitle}
+              </h1>
+              <p className="mt-4 text-[15px] font-semibold text-[#7cc0ff] md:text-[17px]">
+                {txt}
+                <span className="ml-1 inline-block w-[3px] animate-[blink_1s_step-start_infinite] bg-[#7cc0ff] align-middle" style={{ height: "0.95em" }} aria-hidden />
+              </p>
+            </>
+          ) : (
+            <h1 className="mt-6 text-[34px] font-extrabold leading-[1.18] tracking-tight md:text-[54px]">
+              <span className="block min-h-[1.2em]">
+                {txt}
+                <span className="ml-1 inline-block w-[3px] animate-[blink_1s_step-start_infinite] bg-[#7cc0ff] align-middle" style={{ height: "0.95em" }} aria-hidden />
+              </span>
+              <span className="text-[#7cc0ff]">전화 한 통</span>이면 끝납니다
+            </h1>
+          )}
+          <p className="mt-5 max-w-[520px] whitespace-pre-line text-[15.5px] leading-relaxed text-white/75 md:text-[17px]">
+            {hero.overlaySub || (
+              <>
+                하수구·변기·싱크대 막힘부터 배관 고압세척까지 — 전문 장비를 갖춘 기사가 바로 출발합니다. 뚫는 것으로 끝내지 않고{" "}
+                <b className="text-white">뒷정리까지</b> 와우클린이 책임집니다.
+              </>
+            )}
           </p>
 
           {/* CTA */}

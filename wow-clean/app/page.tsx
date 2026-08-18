@@ -5,6 +5,7 @@ import { REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
 import { getCases, getReviews, getFaqs, getProducts } from "@/lib/data";
 import ShortsSection from "@/components/ShortsSection";
+import ProcessSection from "@/components/ProcessSection";
 import ProductsSection from "@/components/ProductsSection";
 import Stars from "@/components/Stars";
 import Popup from "@/components/Popup";
@@ -48,7 +49,7 @@ export default async function Home() {
     getFaqs(),
     getProducts(),
   ]);
-  const { site, hero, showroom, company, simulator, shorts, categorySections: cs, license, branches, partners } = settings;
+  const { site, hero, showroom, company, process, simulator, shorts, categorySections: cs, license, branches, partners } = settings;
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
   const reviewList = (reviews.length >= 9 ? reviews : [...reviews, ...DEMO_REVIEWS]).slice(0, 9);
   const faqList = faqs.length > 0 ? faqs : DEMO_FAQS;
@@ -59,7 +60,7 @@ export default async function Home() {
       <Popup />
 
       {/* ===== HERO — 긴급출동형 (타이핑 헤드라인 + 실시간 티커 + 카톡 사진견적) ===== */}
-      <EmergencyHero site={site} />
+      <EmergencyHero site={site} hero={hero} />
 
       {/* ===== 실시간 접수 현황 롤링 피드 ===== */}
       <LiveFeed />
@@ -118,6 +119,9 @@ export default async function Home() {
       <CategoryCases title={cs["하수구막힘"]?.title ?? "하수구막힘 시공사례"} desc={cs["하수구막힘"]?.desc ?? ""} cases={fanCases} moreHref={moreHref("하수구막힘")} bg="bg-bg" />
       <CategoryCases title={cs["변기막힘"]?.title ?? "변기막힘 시공사례"} desc={cs["변기막힘"]?.desc ?? ""} cases={indirectCases} moreHref={moreHref("변기막힘")} bg="bg-surface" />
       <CategoryCases title={cs["배관청소"]?.title ?? "배관청소 시공사례"} desc={cs["배관청소"]?.desc ?? ""} cases={etcCases} moreHref={moreHref("배관청소")} bg="bg-bg" />
+
+      {/* ===== 시공 절차 — 관리자에 등록한 단계(사진 포함)가 있으면 그걸 우선 노출 ===== */}
+      {process.steps?.length ? <ProcessSection process={process} /> : null}
 
       {/* ===== 시공 절차 — 시간 타임라인 ===== */}
       <RescueTimeline />
