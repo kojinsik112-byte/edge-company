@@ -5,8 +5,8 @@ import { REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
 import { getCases, getReviews, getFaqs, getProducts } from "@/lib/data";
 import ShortsSection from "@/components/ShortsSection";
-import ProcessSection from "@/components/ProcessSection";
 import ProductsSection from "@/components/ProductsSection";
+import ProcessSection from "@/components/ProcessSection";
 import Stars from "@/components/Stars";
 import Popup from "@/components/Popup";
 import SnsSection from "@/components/SnsSection";
@@ -20,12 +20,6 @@ import BranchesSection from "@/components/BranchesSection";
 import PartnersSection from "@/components/PartnersSection";
 import { DEMO_REVIEWS, DEMO_FAQS } from "@/lib/demo";
 import ScrollRow from "@/components/ScrollRow";
-import EmergencyHero from "@/components/EmergencyHero";
-import BeforeAfter from "@/components/BeforeAfter";
-import RescueTimeline from "@/components/RescueTimeline";
-import PricePrinciple from "@/components/PricePrinciple";
-import LiveFeed from "@/components/LiveFeed";
-import CountUpStats from "@/components/CountUpStats";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getSettings();
@@ -59,16 +53,33 @@ export default async function Home() {
     <>
       <Popup />
 
-      {/* ===== HERO — 긴급출동형 (타이핑 헤드라인 + 실시간 티커 + 카톡 사진견적) ===== */}
-      <EmergencyHero site={site} hero={hero} />
-
-      {/* ===== 실시간 접수 현황 롤링 피드 ===== */}
-      <LiveFeed />
-      {hero.video && (
-        <section className="relative aspect-video overflow-hidden bg-warm">
+      {/* ===== HERO (광고영상 자동재생 루프 또는 이미지 — 관리자에서 교체) ===== */}
+      <section className={`relative overflow-hidden bg-warm ${hero.video ? "aspect-video" : "h-[calc(100svh-72px)] min-h-[560px]"}`}>
+        {hero.video ? (
           <HeroVideo src={hero.video} poster={hero.image || undefined} />
-        </section>
-      )}
+        ) : (
+          <>
+            <Image src={hero.image} alt={`${hero.subline} — 와우클린`} fill priority sizes="100vw" className="hidden object-cover md:block" />
+            <Image src={hero.imageMobile || hero.image} alt={`${hero.subline} — 와우클린`} fill priority sizes="100vw" className="object-cover md:hidden" />
+          </>
+        )}
+        {/* 라이브 텍스트 오버레이 (관리자 입력 — 이미지에 글자 안 박아 안 잘림·선명) */}
+        {(hero.overlayTitle || hero.overlaySub) && (
+          <div className="absolute inset-0 flex flex-col justify-center bg-gradient-to-r from-black/80 via-black/45 to-transparent px-8 md:px-20">
+            {hero.eyebrow && <p className="mb-5 text-[13px] font-medium tracking-[0.06em] opacity-85 md:text-[15px]" style={{ color: hero.overlayColor }}>{hero.eyebrow}</p>}
+            {hero.overlayTitle && (
+              <h1 className={`max-w-[640px] whitespace-pre-line leading-[1.22] tracking-[-0.01em] [text-shadow:0_2px_24px_rgba(0,0,0,0.35)] ${hero.overlaySerif ? "font-lux" : ""}`} style={{ color: hero.overlayColor, fontWeight: Number(hero.overlayWeight) || 600, fontSize: `clamp(28px, 7vw, ${hero.overlayTitleSize || 56}px)` }}>{hero.overlayTitle}</h1>
+            )}
+            <span className="mt-6 block h-px w-[180px]" style={{ backgroundColor: hero.overlayColor, opacity: 0.45 }} />
+            {hero.overlaySub && <p className="mt-6 max-w-[460px] whitespace-pre-line text-[15px] font-light leading-relaxed opacity-90 md:text-[17px]" style={{ color: hero.overlayColor }}>{hero.overlaySub}</p>}
+            <p className="mt-5 font-lux text-[15px] font-semibold tracking-[0.34em] opacity-75 md:text-[17px]" style={{ color: hero.overlayColor }}>WOW CLEAN</p>
+            <div className="mt-8">
+              <Link href="/cases" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-7 py-3.5 text-[15px] font-semibold text-white backdrop-blur-sm transition hover:bg-white hover:text-ink">시공사례 보기 <span aria-hidden>→</span></Link>
+            </div>
+          </div>
+        )}
+        {!hero.overlayTitle && <h1 className="sr-only">{hero.title} · {hero.subline}</h1>}
+      </section>
 
       {/* ===== 신뢰 스트립 (히어로 바로 아래) ===== */}
       <div className="border-b border-line bg-navy">
@@ -82,13 +93,7 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* ===== Before/After 드래그 비교 ===== */}
-      <BeforeAfter before={fanCases.find((c) => c.cover)?.cover ?? "/img/photo/before-drain.jpg"} after={etcCases.find((c) => c.cover)?.cover ?? "/img/photo/after-flow.jpg"} />
-
-      {/* ===== 누적 시공 카운터 + 상승 그래프 ===== */}
-      <CountUpStats />
-
-      {/* ===== SNS 채널 (유튜브·블로그·인스타) ===== */}
+      {/* ===== SNS 채널 (메인 바로 아래 — 유튜브·블로그·인스타) ===== */}
       <SnsSection site={site} />
 
       {/* ===== 시공 현장 갤러리 ===== */}
@@ -120,14 +125,8 @@ export default async function Home() {
       <CategoryCases title={cs["변기막힘"]?.title ?? "변기막힘 시공사례"} desc={cs["변기막힘"]?.desc ?? ""} cases={indirectCases} moreHref={moreHref("변기막힘")} bg="bg-surface" />
       <CategoryCases title={cs["배관청소"]?.title ?? "배관청소 시공사례"} desc={cs["배관청소"]?.desc ?? ""} cases={etcCases} moreHref={moreHref("배관청소")} bg="bg-bg" />
 
-      {/* ===== 시공 절차 — 관리자에 등록한 단계(사진 포함)가 있으면 그걸 우선 노출 ===== */}
-      {process.steps?.length ? <ProcessSection process={process} /> : null}
-
-      {/* ===== 시공 절차 — 시간 타임라인 ===== */}
-      <RescueTimeline />
-
-      {/* ===== 투명 요금 원칙 ===== */}
-      <PricePrinciple site={site} />
+      {/* ===== 시공 절차 ===== */}
+      <ProcessSection process={process} />
 
       {/* ===== 고객후기 ===== */}
       <section className="bg-[#f8f5f0] py-16 md:py-24">

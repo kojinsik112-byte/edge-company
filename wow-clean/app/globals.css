@@ -51,15 +51,6 @@ html.reveal-ready .reveal.is-visible { opacity: 1; transform: none; }
 .prose { font-size: 15px; line-height: 1.9; color: #333; white-space: pre-wrap; }
 .prose p { margin: 0 0 1em; }
 
-/* 긴급 히어로 애니메이션 (물결·전화벨·타이핑 커서·실시간 피드) */
-@keyframes wave { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@keyframes ring { 0%, 100% { transform: rotate(0); } 10% { transform: rotate(-18deg); } 20% { transform: rotate(14deg); } 30% { transform: rotate(-10deg); } 40% { transform: rotate(6deg); } 50% { transform: rotate(0); } }
-@keyframes blink { 50% { opacity: 0; } }
-@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) {
-  .animate-\[marquee_38s_linear_infinite\], .animate-\[wave_14s_linear_infinite\] { animation: none !important; }
-}
-
 /* hide scrollbar for filter chips row on mobile */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
