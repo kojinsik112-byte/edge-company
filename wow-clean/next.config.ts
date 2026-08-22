@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   // 상위 폴더에 다른 package-lock 이 있어 이 폴더를 워크스페이스 루트로 고정
   turbopack: { root: import.meta.dirname },
   images: {
+    // Vercel 이미지 최적화 무료 한도를 넘기면 /_next/image 가 402(OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED)를
+    // 뱉어 업로드한 사진이 통째로 안 보인다(2026-08-19 사고). 최적화를 끄고 Supabase 원본을 그대로 서빙한다.
+    // 업로드 단계(lib/upload.ts)에서 이미 webp 변환·압축하므로 화질/용량 손해는 사실상 없다.
+    unoptimized: true,
     // 기본 비주얼이 로컬 SVG(일러스트)라 next/image 에서 SVG 서빙 허용 (스크립트 실행 차단 CSP 동봉)
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

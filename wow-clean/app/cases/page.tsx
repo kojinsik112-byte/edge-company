@@ -37,7 +37,7 @@ export default async function CasesPage({
     <div className="mx-auto max-w-[1180px] px-5 py-12 md:py-16">
       <p className="kicker">Portfolio</p>
       <h1 className="mt-3 text-2xl font-bold text-ink md:text-3xl">
-        {region ?? "울산·부산·포항·경주"} {category ?? "전체"} 시공사례
+        {region ?? "전국"} {category ?? "전체"} 시공사례
       </h1>
       <p className="mt-3 text-[14.5px] text-muted">실제 시공 현장을 지역·카테고리로 확인하세요.</p>
 

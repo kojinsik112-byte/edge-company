@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { REGION_SLUG, CATEGORY_SLUG } from "@/lib/constants";
+import { CATEGORY_SLUG } from "@/lib/constants";
 import { getSettings } from "@/lib/settings";
 import { getCases, getReviews, getFaqs, getProducts } from "@/lib/data";
 import ShortsSection from "@/components/ShortsSection";
@@ -48,7 +48,8 @@ export default async function Home() {
   const tel = `tel:${site.phone.replace(/-/g, "")}`;
   const reviewList = (reviews.length >= 9 ? reviews : [...reviews, ...DEMO_REVIEWS]).slice(0, 9);
   const faqList = faqs.length > 0 ? faqs : DEMO_FAQS;
-  const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/area/${REGION_SLUG["서울"]}-${CATEGORY_SLUG[cat]}`;
+  // 카테고리별 '더 많은 시공사례' — 서울 지역 페이지(사례 1건)가 아니라 전지역 해당 카테고리 전체 목록으로
+  const moreHref = (cat: keyof typeof CATEGORY_SLUG) => `/cases?category=${encodeURIComponent(cat)}`;
 
   return (
     <>
