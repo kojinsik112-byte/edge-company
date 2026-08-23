@@ -32,10 +32,11 @@
   /* ===== 공통 헤더 ===== */
   .head { background:#12345e; color:#fff; padding:2.8mm 4mm; border-radius:2px; flex-shrink:0; }
   .head h1 { font-size:15pt; font-weight:900; letter-spacing:-.3px; }
-  .head .sub { margin-top:1mm; font-size:8.8pt; font-weight:500; opacity:.95;
-               display:flex; justify-content:space-between; align-items:center; }
-  .datebox { background:#fff; color:#12345e; font-weight:900; font-size:9.5pt;
-             padding:.9mm 3mm; border-radius:2px; }
+  .head .sub { margin-top:1.4mm; font-size:9pt; font-weight:500; opacity:.95;
+               display:flex; justify-content:space-between; align-items:center; gap:3mm; }
+  .head .sub > span:first-child { white-space:nowrap; }
+  .datebox { background:#fff; color:#12345e; font-weight:900; font-size:9pt;
+             padding:.9mm 2.5mm; border-radius:2px; flex-shrink:0; white-space:nowrap; }
   .datebox u { text-decoration:none; border-bottom:.4mm solid #12345e; padding:0 6mm; }
 
   /* ===== 1p 안내표 ===== */
@@ -77,29 +78,30 @@
   /* ===== 2p·3p 체크표 ===== */
   .counters { display:flex; gap:1.6mm; margin-top:2.5mm; flex-shrink:0; }
   .counter { flex:1; border:.4mm solid #12345e; border-radius:2px; padding:1.4mm 1mm; text-align:center; }
-  .counter .t { font-size:7.4pt; font-weight:700; color:#12345e; }
-  .counter .v { font-size:8.2pt; font-weight:900; margin-top:.5mm; letter-spacing:1px; color:#999; }
+  .counter .t { font-size:8.4pt; font-weight:700; color:#12345e; }
+  .counter .v { font-size:9.2pt; font-weight:900; margin-top:.6mm; letter-spacing:1px; color:#999; }
 
-  .chk { margin-top:2mm; table-layout:fixed; flex:1; }
-  .chk th { background:#12345e; color:#fff; font-size:7.4pt; font-weight:700;
-            padding:1.4mm .3mm; border:.25mm solid #0d2745; line-height:1.25; }
+  .chk { margin-top:2.5mm; table-layout:fixed; flex:1; }
+  .chk th { background:#12345e; color:#fff; font-size:9.5pt; font-weight:700;
+            padding:2.2mm .5mm; border:.25mm solid #0d2745; line-height:1.3; }
+  .chk th small { display:block; font-size:8pt; font-weight:500; opacity:.9; margin-top:.4mm; }
   .chk th.g2 { background:#1b4b80; }
-  .chk td { border:.25mm solid #aab6c6; height:6.4mm; font-size:8pt; text-align:center; }
+  .chk td { border:.25mm solid #aab6c6; height:6.9mm; font-size:10pt; text-align:center; }
   .chk tr:nth-child(even) td { background:#f7f9fc; }
-  .chk td.l { text-align:left; padding-left:1.2mm; }
-  .chk .cno { width:6mm; font-weight:700; color:#12345e; }
-  .chk .cnm { width:17mm; }
-  .chk .cho { width:16mm; }
-  .chk .ctel{ width:22mm; }
-  .chk .cwr { width:15mm; background:#fff6f6 !important; }
-  .chk .cpot{ width:16mm; }
-  .chk .cent{ width:13mm; }
-  .chk .cgif{ width:15mm; }
-  .chk .cins{ width:15mm; }
-  .chk .cnan{ width:15mm; }
+  .chk td.l { text-align:left; padding-left:2mm; }
+  .chk .cno { width:7mm;  font-weight:700; color:#12345e; }
+  .chk .cho { width:24mm; }
+  .chk .ctel{ width:30mm; }
+  .chk .cwr { width:18mm; background:#fff6f6 !important; }
+  .chk .cpot{ width:21mm; }
+  .chk .cent{ width:17mm; }
+  .chk .cgif{ width:18mm; }
+  .chk .cins{ width:18mm; }
+  .chk .cnan{ width:18mm; }
+  .chk .csig{ width:15mm; }
 
   .sum { display:flex; flex-wrap:wrap; gap:1.6mm; margin-top:2mm; flex-shrink:0; }
-  .sum div { flex:1 1 30%; border:.35mm solid #12345e; padding:1.6mm 1.6mm; font-size:8pt; font-weight:700; color:#12345e; }
+  .sum div { flex:1 1 30%; border:.35mm solid #12345e; padding:1.8mm 2mm; font-size:9pt; font-weight:700; color:#12345e; }
   .sum div span { display:inline-block; min-width:12mm; border-bottom:.3mm solid #999; margin:0 1mm; }
 </style>
 </head>
@@ -202,18 +204,18 @@
 
   <table class="chk">
     <colgroup>
-      <col class="cno"><col class="cnm"><col class="cho"><col class="ctel">
-      <col class="cwr"><col class="cpot"><col class="cent"><col class="cgif"><col class="cins"><col class="cnan"><col>
+      <col class="cno"><col class="cho"><col class="ctel">
+      <col class="cwr"><col class="cpot"><col class="cent"><col class="cgif"><col class="cins"><col class="cnan"><col class="csig">
     </colgroup>
     <tr>
-      <th>No</th><th>성명</th><th>동 · 호수</th><th>연락처</th>
+      <th>No</th><th>동 · 호수</th><th>연락처</th>
       <th class="g2">정회원<br>팔찌</th>
-      <th>① 라면포트기<br>(순번/50)</th>
-      <th>② 응모권<br>(정회원)</th>
-      <th>③ 상품권<br>2만×10</th>
-      <th>④ 화재보험<br>1년</th>
-      <th>⑤ 도어락<br>나노코팅</th>
-      <th>수령 확인 (서명)</th>
+      <th>① 라면포트기<small>순번 / 50</small></th>
+      <th>② 응모권<small>정회원</small></th>
+      <th>③ 상품권<small>2만 × 10</small></th>
+      <th>④ 화재보험<small>1년</small></th>
+      <th>⑤ 나노코팅<small>도어락</small></th>
+      <th>서명</th>
     </tr>
     <tbody id="rowsA"></tbody>
   </table>
@@ -249,18 +251,18 @@
 
   <table class="chk">
     <colgroup>
-      <col class="cno"><col class="cnm"><col class="cho"><col class="ctel">
-      <col class="cwr"><col class="cpot"><col class="cent"><col class="cgif"><col class="cins"><col class="cnan"><col>
+      <col class="cno"><col class="cho"><col class="ctel">
+      <col class="cwr"><col class="cpot"><col class="cent"><col class="cgif"><col class="cins"><col class="cnan"><col class="csig">
     </colgroup>
     <tr>
-      <th>No</th><th>성명</th><th>동 · 호수</th><th>연락처</th>
+      <th>No</th><th>동 · 호수</th><th>연락처</th>
       <th class="g2">정회원<br>팔찌</th>
-      <th>① 라면포트기<br>(순번/50)</th>
-      <th>② 응모권<br>(정회원)</th>
-      <th>③ 상품권<br>2만×10</th>
-      <th>④ 화재보험<br>1년</th>
-      <th>⑤ 도어락<br>나노코팅</th>
-      <th>수령 확인 (서명)</th>
+      <th>① 라면포트기<small>순번 / 50</small></th>
+      <th>② 응모권<small>정회원</small></th>
+      <th>③ 상품권<small>2만 × 10</small></th>
+      <th>④ 화재보험<small>1년</small></th>
+      <th>⑤ 나노코팅<small>도어락</small></th>
+      <th>서명</th>
     </tr>
     <tbody id="rowsB"></tbody>
   </table>
@@ -283,7 +285,7 @@
     let html = '';
     for (let i = 1; i <= ROWS; i++) {
       html += '<tr><td class="cno">' + i + '</td>'
-            + '<td class="l"></td><td class="l"></td><td class="l"></td>'
+            + '<td class="l"></td><td class="l"></td>'
             + '<td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
     }
     tb.innerHTML = html;
