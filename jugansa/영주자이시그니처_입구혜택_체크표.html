@@ -192,8 +192,8 @@
 <script>
 (function () {
   const TOTAL      = 700;  // 접수 번호 1 ~ 700
-  const FIRST_ROWS = 30;   // 카운터 칸이 들어가는 첫 장
-  const NEXT_ROWS  = 33;   // 이후 장 (인쇄 시 하단 여백 확보)
+  const FIRST_ROWS = 30;   // 모든 장 30명씩 통일 (1장=1~30, 2장=31~60 …)
+  const NEXT_ROWS  = 30;
 
   let pageCount = 1, left = TOTAL - FIRST_ROWS;
   while (left > 0) { pageCount++; left -= NEXT_ROWS; }
