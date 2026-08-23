@@ -4,47 +4,98 @@
     {
       "name": "dash",
       "runtimeExecutable": "C:/Users/win11/AppData/Local/Programs/Python/Python312/python.exe",
-      "runtimeArgs": ["-m", "http.server", "8777", "--directory", "business-ops/dashboard"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8777",
+        "--directory",
+        "business-ops/dashboard"
+      ],
       "port": 8777
     },
     {
       "name": "vendor-screen",
       "runtimeExecutable": "C:/Users/win11/AppData/Local/Programs/Python/Python312/python.exe",
-      "runtimeArgs": ["-m", "http.server", "8899", "--directory", "business-ops/vendor-screen"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8899",
+        "--directory",
+        "business-ops/vendor-screen"
+      ],
       "port": 8899
     },
     {
       "name": "acro-static",
       "runtimeExecutable": "C:/Users/win11/AppData/Local/Programs/Python/Python312/python.exe",
-      "runtimeArgs": ["-m", "http.server", "8754", "--directory", "acro"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8754",
+        "--directory",
+        "acro"
+      ],
       "port": 8754
     },
     {
       "name": "lighting-site",
       "runtimeExecutable": "C:/Users/win11/AppData/Local/Programs/Python/Python312/python.exe",
-      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "lighting-site"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--directory",
+        "lighting-site"
+      ],
       "port": 8765
     },
     {
       "name": "edge-platform",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "edge-platform", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "edge-platform",
+        "run",
+        "dev"
+      ],
       "port": 3000,
       "autoPort": true
     },
     {
       "name": "edge-curtain",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "edge-curtain", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "edge-curtain",
+        "run",
+        "dev"
+      ],
       "port": 3100,
       "autoPort": true
     },
     {
       "name": "wow-clean",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "wow-clean", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "wow-clean",
+        "run",
+        "dev"
+      ],
       "port": 3200,
       "autoPort": true
+    },
+    {
+      "name": "jugansa",
+      "runtimeExecutable": "C:/Users/win11/AppData/Local/Programs/Python/Python312/python.exe",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8790",
+        "--directory",
+        "jugansa"
+      ],
+      "port": 8790
     }
   ]
 }
