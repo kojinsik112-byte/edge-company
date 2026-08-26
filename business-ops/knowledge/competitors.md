@@ -3440,3 +3440,11 @@
 - ⚠️ '실링팬 조명' 오류: 404 Client Error: Not Found for url: https://openapi.naver.com/v1/search/shop.json?query=%EC%8B%A4%EB%A7%81%ED%8C%AC+%EC%A1%B0%EB%AA%85&display=10&sort=sim
 - ⚠️ '무선 스위치' 오류: 404 Client Error: Not Found for url: https://openapi.naver.com/v1/search/shop.json?query=%EB%AC%B4%EC%84%A0+%EC%8A%A4%EC%9C%84%EC%B9%98&display=10&sort=sim
 - ⚠️ '전동커튼' 오류: 404 Client Error: Not Found for url: https://openapi.naver.com/v1/search/shop.json?query=%EC%A0%84%EB%8F%99%EC%BB%A4%ED%8A%BC&display=10&sort=sim
+
+
+## 2026-08-27 (2026-08-27 08:30:02)
+**아크로 노출**: 이번 스냅샷 TOP10 내 미검출(광고/하위 가능 — 화면 확인 병행).
+- ⚠️ '실링팬' 오류: 404 Client Error: Not Found for url: https://openapi.naver.com/v1/search/shop.json?query=%EC%8B%A4%EB%A7%81%ED%8C%AC&display=10&sort=sim
+- ⚠️ '실링팬 조명' 오류: 404 Client Error: Not Found for url: https://openapi.naver.com/v1/search/shop.json?query=%EC%8B%A4%EB%A7%81%ED%8C%AC+%EC%A1%B0%EB%AA%85&display=10&sort=sim
+- ⚠️ '무선 스위치' 오류: 404 Client Error: Not Found for url: https://openapi.naver.com/v1/search/shop.json?query=%EB%AC%B4%EC%84%A0+%EC%8A%A4%EC%9C%84%EC%B9%98&display=10&sort=sim
+- ⚠️ '전동커튼' 오류: 404 Client Error: Not Found for url: https://openapi.naver.com/v1/search/shop.json?query=%EC%A0%84%EB%8F%99%EC%BB%A4%ED%8A%BC&display=10&sort=sim
