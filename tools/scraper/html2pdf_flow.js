@@ -14,7 +14,7 @@ if (!src || !out) { console.error('usage: node html2pdf_flow.js <src.html> <out.
   await page.emulateMedia({ media: 'print' });
   await page.pdf({
     path: out, format: 'A4', printBackground: true,
-    margin: { top: '18mm', bottom: '20mm', left: '0', right: '0' },
+    margin: { top: '30mm', bottom: '26mm', left: '0', right: '0' },
     displayHeaderFooter: true,
     headerTemplate: '<div></div>',
     footerTemplate: '<div style="width:100%;text-align:center;font-size:9px;color:#888;font-family:sans-serif">- <span class="pageNumber"></span> -</div>',
