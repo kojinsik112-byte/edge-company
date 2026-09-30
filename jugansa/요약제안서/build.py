@@ -14,6 +14,7 @@ v2 변경: ①11p 구분페이지 '경관조명은 우리가 책임집니다'(�
 """
 import html
 import os
+import pathlib
 import re
 import shutil
 import subprocess
@@ -798,7 +799,8 @@ def find_chrome():
     cands = [os.environ.get("CHROME"), "/opt/pw-browsers/chromium",
              shutil.which("chromium"), shutil.which("google-chrome"), shutil.which("chrome"),
              r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-             r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"]
+             r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+             r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"]
     return next((c for c in cands if c and os.path.exists(c)), None)
 
 
@@ -807,7 +809,7 @@ def build_pdf():
     if not exe:
         print("크롬/엣지를 찾지 못해 PDF 생략 (HTML을 브라우저에서 인쇄 → PDF 저장 가능)")
         return
-    url = "file:///" + OUT_HTML.replace("\\", "/").lstrip("/")
+    url = pathlib.Path(OUT_HTML).as_uri()
     subprocess.run([exe, "--headless", "--no-sandbox", "--disable-gpu", "--no-pdf-header-footer",
                     "--virtual-time-budget=8000", f"--print-to-pdf={OUT_PDF}", url],
                    check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
