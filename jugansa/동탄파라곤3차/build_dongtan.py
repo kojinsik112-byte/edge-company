@@ -79,6 +79,8 @@ B.CSS += r"""
 .sub2{display:flex;gap:64px;padding:18px 0 20px;border-top:1px solid rgba(200,168,106,.35)}
 .sub2 i{display:block;font-style:normal;font-size:12px;letter-spacing:.3em;color:var(--gold2);font-weight:700}
 .sub2 b{display:block;font-size:17px;font-weight:700;margin-top:6px}
+.cards.al .card{justify-content:flex-start}
+.cards.al .card:before{content:'';flex:0 0 26%}
 .toc4{grid-template-columns:repeat(4,1fr)!important}
 .toc4 .col{padding:0 22px}
 """
@@ -112,7 +114,7 @@ new("std", sec=S0, title="[[임대 단지]]의 박람회는 달라야 합니다"
              ds="설 연휴 전 박람회를 열어 입주 전 시공 일정을 확보합니다."),
         dict(lb="LEASE", big="10", unit="년 이상", nm="공공지원 민간임대", hl=True,
              ds="임대 거주 세대는 [[할 수 있는 시공이 다릅니다.]] 분양전환 조건은 사업주체 공고 기준으로 안내합니다."),
-    ]),
+    ]).replace('class="cards"', 'class="cards al"', 1),
     kp="타입 2개 · 임대 10년 — [[규격화된 공동구매]]와 [[원상복구 걱정 없는 시공]]이 핵심입니다.")
 
 SCOPE = [
