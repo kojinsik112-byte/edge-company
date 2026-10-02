@@ -140,15 +140,27 @@ def doc_image(src_doc, pno, trim=True, dpi=150, crop=None):
     return buf.getvalue(), im.width / im.height
 
 
-def place_doc(page, inner, src_doc, pno, pad=3, crop=None, label=""):
-    """액자 안쪽(inner)을 흰 바탕으로 덮고 증빙 원본을 비율 유지로 꽉 차게 배치."""
-    inner = fitz.Rect(inner)
+def place_doc(page, opening, src_doc, pno, pad=4, crop=None, label="", keep_below=None, plaque=None):
+    """액자 안쪽 개구부(opening, 금색 몰딩 안쪽 실측값)를 흰 바탕으로 덮고, 증빙 원본을 비율 유지로
+    개구부 안에 '전부 보이게' 배치(남는 곳은 흰 여백). 몰딩 밖으로는 절대 나가지 않음.
+    keep_below: 이 y 아래는 문서를 두지 않음(하단 명패가 액자에 겹치는 경우).
+    plaque: (x0, x1) 명패 가로 범위 — keep_below 아래 흰 바탕을 명패 좌우에만 칠함."""
+    opening = fitz.Rect(opening)
     key = (id(src_doc), pno, crop)
     if key not in _CACHE:
         _CACHE[key] = doc_image(src_doc, pno, crop=crop)
     data, ar = _CACHE[key]
-    page.draw_rect(inner, color=None, fill=(1, 1, 1), overlay=True)
-    box = inner + (pad, pad, -pad, -pad)
+    white = (1, 1, 1)
+    if keep_below:
+        page.draw_rect(fitz.Rect(opening.x0, opening.y0, opening.x1, keep_below), color=None, fill=white, overlay=True)
+        px0, px1 = plaque
+        page.draw_rect(fitz.Rect(opening.x0, keep_below, px0, opening.y1), color=None, fill=white, overlay=True)
+        page.draw_rect(fitz.Rect(px1, keep_below, opening.x1, opening.y1), color=None, fill=white, overlay=True)
+        area = fitz.Rect(opening.x0, opening.y0, opening.x1, keep_below)
+    else:
+        page.draw_rect(opening, color=None, fill=white, overlay=True)
+        area = opening
+    box = area + (pad, pad, -pad, -pad)
     if box.width / box.height > ar:
         w = box.height * ar
         tgt = fitz.Rect(box.x0 + (box.width - w) / 2, box.y0, box.x0 + (box.width + w) / 2, box.y1)
@@ -157,7 +169,6 @@ def place_doc(page, inner, src_doc, pno, pad=3, crop=None, label=""):
         tgt = fitz.Rect(box.x0, box.y0 + (box.height - h) / 2, box.x1, box.y0 + (box.height + h) / 2)
     page.insert_image(tgt, stream=data, overlay=True)
     LOG.append(f"p{pn(page)}: 증빙 교체 → {label}")
-
 
 
 def ink(page, rect):
@@ -222,18 +233,21 @@ def fix_part1(d, ev):
     panel_label(p, (542, 131, 814, 150), ["임직원 10명 (4대보험 가입자 명부 기준)"], 10.5, LIGHT, x=546)
     panel_label(p, (542, 189, 814, 227), ["울산광역시 울주군 청량읍 온산로 615-1 (본점)",
                                           "부산광역시 해운대구 아르피나 B1 (부산사무소)"], 10.5, LIGHT, x=546, gap=18.5)
-    place_doc(p, (447, 254, 604, 492), ev["사업자등록증"], 0, label="사업자등록증 원본")
-    place_doc(p, (632, 254, 804, 493), ev["법인등기부등본"], 0, label="법인등기부등본 원본")
+    # 액자 개구부 실측(금색 몰딩 안쪽). 하단 명패가 액자에 겹쳐 문서는 명패 위까지만.
+    place_doc(p, (446, 252.5, 600.5, 501), ev["사업자등록증"], 0, label="사업자등록증 원본",
+              keep_below=493, plaque=(470, 581))
+    place_doc(p, (634, 252.5, 805, 504.5), ev["법인등기부등본"], 0, label="법인등기부등본 원본",
+              keep_below=493, plaque=(661, 776))
 
     # 9·10p 4대보험·신용평가·납세 → 2026.10.02 발급 원본 / NICE 2026.06.19
     p = P(9)
-    place_doc(p, (191, 199, 366, 520), ev["4대보험"], 0, label="4대보험 사업장 가입자 명부(2026.10.02)")
-    place_doc(p, (392, 199, 608, 523), ev["NICE"], 2, label="NICE 기업신용평가 요약(BB-, 2026.06.19)")
-    place_doc(p, (637, 198, 836, 520), ev["국세"], 0, label="국세 납세증명서(2026.10.02)")
+    place_doc(p, (185.5, 199, 365.5, 516), ev["4대보험"], 0, label="4대보험 사업장 가입자 명부(2026.10.02)")
+    place_doc(p, (388.5, 198.5, 610.5, 522), ev["NICE"], 2, label="NICE 기업신용평가 요약(BB-, 2026.06.19)")
+    place_doc(p, (631, 199, 823, 517.5), ev["국세"], 0, label="국세 납세증명서(2026.10.02)")
     p = P(10)
-    place_doc(p, (42, 183, 268, 507), ev["4대보험"], 0, label="4대보험 사업장 가입자 명부(2026.10.02)")
-    place_doc(p, (294, 154, 550, 513), ev["NICE"], 2, label="NICE 기업신용평가 요약(BB-, 2026.06.19)")
-    place_doc(p, (586, 182, 804, 509), ev["지방세"], 0, label="지방세 납세증명서(2026.10.02)")
+    place_doc(p, (49.5, 188.5, 270, 509), ev["4대보험"], 0, label="4대보험 사업장 가입자 명부(2026.10.02)")
+    place_doc(p, (295, 153.5, 558.5, 521.5), ev["NICE"], 2, label="NICE 기업신용평가 요약(BB-, 2026.06.19)")
+    place_doc(p, (583, 189, 804, 509), ev["지방세"], 0, label="지방세 납세증명서(2026.10.02)")
 
     # 11p 재무: 자본금 2억·신용 BB-·현금흐름 A·부채비율 17.1%
     fix_p11(P(11))
@@ -246,9 +260,9 @@ def fix_part1(d, ev):
 
     # 13p ISO: AI 재현본(만료일 2025.05.03) → 글로벌시스템인증원 원본(한글판, 2025.08.12~2028.08.11)
     p = P(13)
-    place_doc(p, (210, 236, 397, 503), ev["ISO"], 4, label="ISO 45001 인증서(한글)")
-    place_doc(p, (427, 240, 604, 501), ev["ISO"], 2, label="ISO 14001 인증서(한글)")
-    place_doc(p, (634, 241, 813, 503), ev["ISO"], 0, label="ISO 9001 인증서(한글)")
+    place_doc(p, (210.5, 238.5, 396.5, 502), ev["ISO"], 4, label="ISO 45001 인증서(한글)")
+    place_doc(p, (427, 242.5, 603.5, 502), ev["ISO"], 2, label="ISO 14001 인증서(한글)")
+    place_doc(p, (633.5, 242.5, 810, 502), ev["ISO"], 0, label="ISO 9001 인증서(한글)")
 
     # 08.수임실적(22~27번째 장): 본부장님 지시로 원본 유지. 정정안은 아래 fix_suim_later()에 보관(나중에 확인 후 적용)
 
