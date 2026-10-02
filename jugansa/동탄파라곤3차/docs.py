@@ -53,9 +53,8 @@ ul.n li{padding-left:14pt;text-indent:-14pt;margin-top:2pt}
 .sign{margin-top:12pt;text-align:center;break-inside:avoid}
 .sign .d{font-size:11pt;letter-spacing:.06em}
 .sign .who{margin-top:4pt;font-size:12pt;font-weight:700;display:inline-flex;gap:14pt;align-items:center}
-.sign .seal{width:32pt;height:32pt;border:1pt solid #B7BEC9;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
-  color:#9AA3B0;font-size:9pt;font-weight:400}
-.to{margin-top:8pt;text-align:center;font-size:12.5pt;font-weight:800;color:#0D1E33}
+.sign .seal{color:#5B6676;font-size:10pt;font-weight:400;margin-left:6pt}
+.to{margin-top:26pt;text-align:center;font-size:12.5pt;font-weight:800;color:#0D1E33}
 """
 
 
@@ -67,7 +66,7 @@ def page(label, title, body):
 <h1>{e(title)}</h1>
 <div class="case">건명 : {e(D.TITLE)}</div>
 {body}
-<div class="sign"><div class="d">2026년 10월 &nbsp;&nbsp;&nbsp;&nbsp; 일</div>
+<div class="sign"><div class="d">{D.SIGN_DATE[0]}년 {D.SIGN_DATE[1]}월 {D.SIGN_DATE[2]}일</div>
 <div class="who"><span>{D.COMPANY} &nbsp; 대표이사 &nbsp; {D.CEO}</span><span class="seal">(인)</span></div></div>
 <div class="to">{e(D.CLIENT)} 귀중</div>
 </body></html>"""
@@ -76,7 +75,8 @@ def page(label, title, body):
 def company_info():
     return f"""<table class="info">
 <tr><th>업체명</th><td>{D.COMPANY}</td><th>대표자</th><td>{D.CEO}</td></tr>
-<tr><th>본사 소재지</th><td>울산광역시 울주군 청량읍 상남1길 28, 2동</td><th>담당자</th><td>주관사업 총괄 본부장 윤현욱<br>010-7273-9901 · 대표 1533-3210</td></tr>
+<tr><th>본사 소재지</th><td colspan="3">{D.ADDRESS}</td></tr>
+<tr><th>담당자</th><td colspan="3">{D.MANAGER[1]} {D.MANAGER[0]} · {D.MANAGER[2]} · {D.EMAIL}</td></tr>
 </table>"""
 
 
@@ -84,7 +84,7 @@ def company_info():
 def doc8():
     rows = "".join(
         f'<tr><td>{i}</td><td>{d}</td><td class="l">{e(nm)}</td><td>{e(reg)}</td><td class="r">{n:,}</td>'
-        f'<td style="white-space:nowrap">입주박람회·공동구매 주관</td><td>별첨 1·2</td></tr>'
+        f'<td style="white-space:nowrap">입주박람회·공동구매 주관</td><td>별첨 1</td></tr>'
         for i, (d, nm, reg, n) in enumerate(D.RECORDS, 1))
     total = sum(r[3] for r in D.RECORDS)
     body = f"""{company_info()}
@@ -104,9 +104,7 @@ def doc8():
 &nbsp;→&nbsp; 보유: <b>{len(D.RECORDS)}회 · 합계 {total:,}세대</b> &nbsp; <span class="ok">충족</span></div>
 <h2>3. 별첨 증빙</h2>
 <ul class="n">
-<li>1. NICE디앤비 CLIP 기업신용평가보고서 ‘연혁’ 발췌 (표지 · 9쪽)</li>
-<li>2. 단지별 입주박람회·공동구매 주관 협약서(계약서) 사본</li>
-<li>3. 입주예정자협의회 추천서·감사패 사본 (통합제안서 수록)</li>
+<li>1. NICE디앤비 CLIP 기업신용평가보고서 ‘연혁’ 발췌 (표지 · 9쪽) — 1매</li>
 </ul>
 <p style="margin-top:10pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 7항에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>"""
     return page("제출서류 8)", "최근 5년간 1,000세대 이상 행사 실적", body)

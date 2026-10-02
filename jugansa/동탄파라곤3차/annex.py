@@ -111,11 +111,12 @@ def build(nice_path):
     # 원본대조
     y = foot.y1 + 40
     pen.text((L + R) / 2, y, "위 발췌 내용은 원본과 같음을 확인합니다.", 10, "r", (0.1, 0.14, 0.2), "c")
-    pen.text((L + R) / 2, y + 26, "2026년 10월        일", 10, "r", (0.1, 0.14, 0.2), "c")
-    pen.text((L + R) / 2 - 14, y + 52, f"{D.COMPANY}   대표이사   {D.CEO}", 11, "b", NAVY, "c")
-    sx = (L + R) / 2 + pen.f["b"].text_length(f"{D.COMPANY}   대표이사   {D.CEO}", fontsize=11) / 2 + 4
-    pg.draw_circle((sx, y + 48), 14, color=(0.72, 0.75, 0.79), width=0.8)
-    pen.text(sx, y + 51, "(인)", 7.5, "r", (0.6, 0.64, 0.69), "c")
+    yy, mm, dd = D.SIGN_DATE
+    pen.text((L + R) / 2, y + 26, f"{yy}년 {mm}월 {dd}일", 10, "r", (0.1, 0.14, 0.2), "c")
+    who = f"{D.COMPANY}   대표이사   {D.CEO}"
+    pen.text((L + R) / 2 - 14, y + 52, who, 11, "b", NAVY, "c")
+    sx = (L + R) / 2 - 14 + pen.f["b"].text_length(who, fontsize=11) / 2 + 8
+    pen.text(sx, y + 52, "(인)", 10, "r", GRAY)  # 직인은 stamp.py가 이 자리에 찍음
 
     out.set_metadata({"title": "별첨 1 NICE 기업신용평가보고서 연혁 발췌", "author": D.COMPANY})
     out.save(ANNEX, garbage=4, deflate=True)
