@@ -1,115 +1,99 @@
 # -*- coding: utf-8 -*-
-"""동탄 파라곤3차 표지 일러스트(SVG) — 신리천 변 20층 판상형 단지의 경관조명 야경.
+"""2-1 표지용 단지 이미지 — 임예협 입찰공고 1쪽 상단의 '동탄2 신동 Paragon 3차' 단지 조감도를 가공.
 
-공고·분양 자료 기준 특징만 반영한 '연출 일러스트'(실사·조감도 아님):
-- 18개동 · 지상 최고 20층 판상형 → 높이가 고른 중층 스카이라인, 2열 배치
-- 단지 앞 신리천 수변 → 물 반사, 산책로 볼라드·가로수
-- 원경: 동탄2 신도시 고층 스카이라인(실루엣)
-요약제안서 make_images.py 의 동(tower)·나무·볼라드 그리기 함수를 그대로 쓴다.
+1) 공고 PDF에서 원본 이미지를 그대로 꺼냄
+2) 하늘에 얹힌 제목 글자·금색 선을 위아래 하늘색으로 메워 지움(건물에는 손대지 않음)
+3) 단지 부분만 자르고, 하늘을 투명하게 오려 네이비 표지 위로 건물이 솟아 보이게 함
+4) 해질녘 톤(약간 어둡게·따뜻하게)으로 맞춤
 
-실행: python make_cover.py   → assets_dt/동탄_파라곤3차_야경.svg
+원본은 임예협이 공고문에 넣은 이미지(사업주체 조감도)이므로 깃에는 올리지 않는다(.gitignore *.png).
+실행: python make_cover.py <입찰공고.pdf>   → assets_dt/paragon3_cover.png
 """
 import os
-import random
 import sys
 
+import numpy as np
+import pymupdf as fitz
+from PIL import Image, ImageFilter
+
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(HERE, "..", "요약제안서"))
-from make_images import GOLD, WARM, WASH_DEFS, bollard, svg, tower, tree  # noqa: E402
+OUT = os.path.join(HERE, "assets_dt", "paragon3_cover.png")
 
-OUT = os.path.join(HERE, "assets_dt", "동탄_파라곤3차_야경.svg")
+# 원본(1453×484)에서 지울 영역: (x0, y0, x1, y1) — 하늘 위 글자·선만, 건물과 겹치지 않는 범위
+ERASE = [(230, 74, 1226, 93),     # 위 금색 선
+         (355, 124, 1128, 206),   # '동탄2 신동 Paragon 3차'
+         (278, 232, 1174, 253)]   # 아래 금색 선
+CROP = (88, 182, 1352, 433)       # 단지(왼쪽 노을 번짐·오른쪽 구름 제외, 하늘 일부 ~ 잔디 끝)
 
 
-def cover():
-    r = random.Random(58)  # A58BL
-    W, H, G = 1100, 1240, 900          # G: 동이 서는 지면
-    WT, WB = G + 34, H                 # 신리천 수면
-    defs = WASH_DEFS + f"""
-  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#050f1f"/>
-    <stop offset=".62" stop-color="#0d2443"/>
-    <stop offset="1" stop-color="#1d3d63"/>
-  </linearGradient>
-  <radialGradient id="cityGlow" cx="62%" cy="74%" r="55%">
-    <stop offset="0" stop-color="{GOLD}" stop-opacity=".26"/>
-    <stop offset="1" stop-color="{GOLD}" stop-opacity="0"/>
-  </radialGradient>
-  <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
-    <stop offset="0" stop-color="#FFF4D6" stop-opacity=".55"/>
-    <stop offset="1" stop-color="#FFF4D6" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#10294a"/>
-    <stop offset="1" stop-color="#040a14"/>
-  </linearGradient>
-  <linearGradient id="reflFade" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
-    <stop offset=".7" stop-color="#fff" stop-opacity="0"/>
-  </linearGradient>
-  <mask id="reflMask"><rect x="0" y="{WT}" width="{W}" height="{WB - WT}" fill="url(#reflFade)"/></mask>
-  <filter id="ripple" x="-5%" y="-5%" width="110%" height="110%">
-    <feTurbulence type="fractalNoise" baseFrequency="0.004 0.09" numOctaves="2" seed="7" result="n"/>
-    <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G" result="d"/>
-    <feGaussianBlur in="d" stdDeviation="1.6"/>
-  </filter>"""
-    b = [f'<rect width="{W}" height="{H}" fill="url(#sky)"/>',
-         f'<rect width="{W}" height="{H}" fill="url(#cityGlow)"/>']
-    # 별·초승달(마스크로 오려 냄)
-    for _ in range(70):
-        b.append(f'<circle cx="{r.uniform(0, W):.0f}" cy="{r.uniform(10, 380):.0f}" r="{r.uniform(.6, 1.6):.1f}" '
-                 f'fill="#DDE6F2" opacity="{r.uniform(.15, .6):.2f}"/>')
-    b.append('<mask id="cres"><circle cx="640" cy="250" r="30" fill="#fff"/><circle cx="656" cy="240" r="27" fill="#000"/></mask>')
-    b.append('<circle cx="640" cy="250" r="80" fill="url(#moonGlow)" opacity=".7"/>')
-    b.append('<circle cx="640" cy="250" r="30" fill="#F6E7C4" mask="url(#cres)"/>')
-    # 원경: 동탄2 고층 스카이라인(실루엣)
-    x = -10
-    while x < W:
-        w = r.randint(34, 70)
-        top = r.randint(200, 430)
-        b.append(f'<rect x="{x}" y="{top}" width="{w}" height="{G - top}" fill="#132b49" opacity=".85"/>')
-        for _ in range(r.randint(4, 12)):
-            b.append(f'<rect x="{x + r.randint(4, w - 8)}" y="{r.randint(top + 8, G - 120)}" width="4" height="3" '
-                     f'fill="{WARM}" opacity="{r.uniform(.12, .38):.2f}"/>')
-        b.append(f'<circle cx="{x + w / 2:.0f}" cy="{top - 4}" r="1.8" fill="#ff6b5b" opacity=".7"/>')
-        x += w + r.randint(10, 46)
-    # 단지(20층 판상형 2열). 살짝 높은 시점 → 뒷열은 지면이 더 위에 보이고, 앞열 사이·위로 드러난다.
-    GB = G - 112
-    back = [(-70, 170, 18), (185, 170, 20), (455, 170, 17), (725, 170, 20), (990, 170, 19)]  # (x, 폭, 층수)
-    front = [(28, 205, 16), (298, 205, 20), (568, 205, 18), (838, 205, 15)]
-    blocks = []
-    for (tx, tw, fl) in back:
-        blocks.append(tower(r, tx, GB - 26 - fl * 14, tw, GB, side=18, win_p=.22, floor_h=14,
-                            facade="#0d2036", side_fill="#091729", halo=False))
-    blocks.append(f'<rect x="0" y="200" width="{W}" height="{GB - 200}" fill="#0b1d35" opacity=".22"/>')  # 원근 헤이즈
-    blocks.append(f'<rect x="0" y="{GB}" width="{W}" height="{G - GB}" fill="#0a1a2d"/>')
-    for tx in range(-10, W, 64):
-        blocks.append(tree(tx + r.randint(-8, 8), GB + 10, r.randint(12, 17)))
-    for (tx, tw, fl) in front:
-        blocks.append(tower(r, tx, G - 26 - fl * 19, tw, G, side=30, win_p=.32, floor_h=19))
-    b.append(f'<g id="complex">{"".join(blocks)}</g>')
-    # 지면·조경
-    b.append(f'<rect x="0" y="{G}" width="{W}" height="{WT - G}" fill="#081627"/>')
-    b.append(f'<line x1="0" y1="{G}" x2="{W}" y2="{G}" stroke="{GOLD}" stroke-width="1.6" opacity=".6" filter="url(#glow)"/>')
-    for tx in (14, 120, 255, 392, 525, 660, 795, 930, 1075):
-        b.append(tree(tx, G - 12, r.randint(18, 26)))
-    # 신리천: 수면 + 단지 반사 + 물결
-    b.append(f'<rect x="0" y="{WT}" width="{W}" height="{WB - WT}" fill="url(#water)"/>')
-    b.append(f'<g mask="url(#reflMask)"><use href="#complex" transform="translate(0 {2 * WT}) scale(1 -1)" '
-             f'filter="url(#ripple)" opacity=".85"/></g>')
-    for _ in range(140):
-        y = r.uniform(WT + 6, WB - 20)
-        x0 = r.uniform(0, W)
-        b.append(f'<line x1="{x0:.0f}" y1="{y:.0f}" x2="{x0 + r.uniform(14, 70):.0f}" y2="{y:.0f}" stroke="{WARM}" '
-                 f'stroke-width="1.2" opacity="{r.uniform(.05, .22):.2f}"/>')
-    # 수변 산책로 볼라드
-    b.append(f'<line x1="0" y1="{WT}" x2="{W}" y2="{WT}" stroke="{WARM}" stroke-width="2" opacity=".55" filter="url(#glow)"/>')
-    for bx in range(30, W, 78):
-        b.append(bollard(bx, WT - 2, h=12))
-    return svg(W, H, "\n".join(b), defs)
+def banner(pdf):
+    doc = fitz.open(pdf)
+    info = max(doc[0].get_image_info(xrefs=True), key=lambda b: b["width"] * b["height"])
+    pix = fitz.Pixmap(doc, info["xref"])
+    if pix.n - pix.alpha > 3:
+        pix = fitz.Pixmap(fitz.csRGB, pix)
+    return np.asarray(Image.frombytes("RGB", (pix.width, pix.height), pix.samples)).astype(np.float32)
+
+
+def erase(a):
+    for x0, y0, x1, y1 in ERASE:
+        top, bot = a[y0 - 2, x0:x1].copy(), a[y1 + 2, x0:x1].copy()
+        n = y1 - y0
+        for k in range(n):
+            w = (k + 1) / (n + 1)
+            a[y0 + k, x0:x1] = top * (1 - w) + bot * w
+    return a
+
+
+def sky_alpha(a):
+    """열마다 위에서부터 '하늘이 아닌' 첫 픽셀을 찾아 그 위를 투명하게."""
+    h, w, _ = a.shape
+    lum = a.mean(axis=2)
+    sat = a.max(axis=2) - a.min(axis=2)
+    ref = a[2]  # 맨 윗줄 = 하늘
+    diff = np.abs(a - ref[None, :, :]).sum(axis=2)
+    nonsky = (diff > 34) | (lum < 205) | ((sat > 60) & (lum < 235))
+    first = np.where(nonsky.any(axis=0), nonsky.argmax(axis=0), h)
+    med = np.array([np.median(first[max(0, x - 1):x + 2]) for x in range(w)])  # 열 사이 잡음 제거
+    # 건물 윤곽을 1px 안으로(좌우 이웃 중 낮은 쪽) → 하늘과 섞인 밝은 테두리 제거
+    sm = np.array([med[max(0, x - 1):x + 2].max() for x in range(w)]) + 1
+    yy = np.arange(h)[:, None]
+    alpha = np.clip((yy - sm[None, :]) / 2.0, 0, 1)
+    # 좌우 끝·아래쪽은 네이비로 자연스럽게 사라지게
+    xx = np.arange(w)[None, :]
+    side = np.clip(np.minimum(xx, w - 1 - xx) / (w * 0.06), 0, 1)
+    bottom = np.clip((h - 1 - yy) / (h * 0.16), 0, 1)
+    return alpha * side * bottom, sm
+
+
+def grade(a, edge):
+    """해질녘 톤: 대비 살짝 올리고 따뜻하게, 네이비 배경과 어울리게 전체를 낮춤.
+    건물 윤곽 바로 아래 3px은 한 번 더 눌러 밝은 테두리를 지운다."""
+    a = (a - 128) * 1.06 + 128
+    a = a * 0.80
+    a[..., 0] *= 1.06
+    a[..., 1] *= 1.00
+    a[..., 2] *= 0.88
+    h, w, _ = a.shape
+    yy = np.arange(h)[:, None]
+    band = (yy >= edge[None, :]) & (yy < edge[None, :] + 3)
+    a[band] *= 0.82
+    return np.clip(a, 0, 255)
+
+
+def main(pdf):
+    a = erase(banner(pdf))
+    x0, y0, x1, y1 = CROP
+    a = a[y0:y1, x0:x1].copy()
+    alpha, edge = sky_alpha(a)
+    a = grade(a, edge)
+    im = Image.fromarray(np.dstack([a, alpha * 255]).astype(np.uint8), "RGBA")
+    # 인쇄용 2배 업스케일 + 약한 선명화
+    im = im.resize((im.width * 2, im.height * 2), Image.LANCZOS).filter(ImageFilter.UnsharpMask(1.2, 60, 2))
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    im.save(OUT, optimize=True)
+    print("saved", OUT, im.size)
 
 
 if __name__ == "__main__":
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w", encoding="utf-8") as f:
-        f.write(cover())
-    print("saved", OUT, os.path.getsize(OUT) // 1024, "KB")
+    main(sys.argv[1])

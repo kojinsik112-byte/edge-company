@@ -72,15 +72,25 @@ B.CSS += r"""
 .ins-h{display:flex;justify-content:space-between;align-items:flex-end;margin:12px 0 14px}
 .ins-h h1{margin:0}
 .ins-h span{font-size:12.5px;letter-spacing:.28em;color:var(--gold2);font-weight:700;white-space:nowrap;padding-bottom:8px}
-.cv2 .art{position:absolute;right:0;top:0;width:57%;height:100%;
-  background:url('assets_dt/동탄_파라곤3차_야경.svg') center bottom/cover no-repeat;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 36%);mask-image:linear-gradient(90deg,transparent 0%,#000 36%)}
-.cv2 .veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,14,26,.96) 0%,rgba(5,14,26,.7) 38%,rgba(5,14,26,.08) 72%,rgba(5,14,26,0) 100%)}
-.cv2 .credit{position:absolute;right:30px;bottom:72px;z-index:1;font-size:10.5px;color:rgba(255,255,255,.42);letter-spacing:.02em}
-.cv2>.top,.cv2>.mid,.cv2>.sub2,.cv2>.bt{position:relative;z-index:1}
-.cv2 h1{font-size:52px;line-height:1.28;margin-top:24px}
-.cv2 .gbar{width:150px;height:2px;background:var(--gold2);margin:28px 0 22px}
-.cv2 .tag2{font-size:20px;line-height:1.65;margin-top:0}
+.cv3{padding:52px 72px 0;background:radial-gradient(120% 60% at 50% 88%,rgba(214,170,98,.20) 0%,rgba(13,30,51,0) 60%),var(--bg)}
+.cv3 .mid{flex:1;align-items:center;text-align:center;justify-content:center;padding-bottom:6px}
+.cv3 .pill{align-self:center}
+.cv3 h1{font-size:50px;line-height:1.28;margin-top:22px}
+.orn{display:flex;align-items:center;justify-content:center;gap:14px;margin:24px 0 18px;width:100%}
+.orn i{flex:0 0 190px;height:1.5px;background:linear-gradient(90deg,rgba(200,168,106,0),var(--gold2))}
+.orn i:last-child{background:linear-gradient(90deg,var(--gold2),rgba(200,168,106,0))}
+.orn b{width:9px;height:9px;transform:rotate(45deg);border:1.5px solid var(--gold2);background:rgba(200,168,106,.25)}
+.cv3 .tag2{font-size:19px;line-height:1.65;margin-top:0}
+.pano{position:relative;height:228px;margin:0 -72px}
+.pano img{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;display:block}
+.pano:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1.5px;
+  background:linear-gradient(90deg,rgba(200,168,106,0),rgba(230,201,142,.85) 50%,rgba(200,168,106,0))}
+.pano .credit{position:absolute;right:76px;bottom:8px;font-size:10.5px;color:rgba(255,255,255,.5);z-index:1}
+.cv3 .sub2{justify-content:center;border-top:0;padding:16px 0 14px}
+.cv4 .gbar{width:150px;height:2px;background:var(--gold2);margin:26px 0 20px}
+.cv4 h1{font-size:52px;line-height:1.28;margin-top:24px}
+.cv4 .tag2{font-size:19px;line-height:1.6;margin-top:0}
+.cv4 .stats{margin-top:34px}
 .sub2{display:flex;gap:64px;padding:18px 0 20px;border-top:1px solid rgba(200,168,106,.35)}
 .sub2 i{display:block;font-style:normal;font-size:12px;letter-spacing:.3em;color:var(--gold2);font-weight:700}
 .sub2 b{display:block;font-size:17px;font-weight:700;margin-top:6px}
@@ -390,21 +400,40 @@ def render_full_pages(src_pdf):
 
 
 # ============================================================ 특수 페이지
-COVER = dict(pill="공동구매 입찰 제안서",
+COVER = dict(kind="pano", pill="공동구매 입찰 제안서",
              tag=f"박람회를 여는 회사가 아니라, 단지를 완성시키는 회사.<br>{D.SITE['households']:,}세대의 시작을 입주 후 1년까지 책임지겠습니다.")
+TITLE_H1 = "동탄2 신동 A58BL 파라곤 3차<br><em>임차예정자협의회 주관사 선정</em>"
+COVER_TOP = """<div class="top"><div><div class="logo">EG</div><div class="en">EDGE COMPANY</div></div>
+<div class="who">주식회사 엣지컴퍼니<br>입주박람회 전문 주관사</div></div>"""
 
 
 def p_cover():
-    return f"""<section class="page cv cv2"><div class="art"></div><div class="veil"></div>
-<div class="top"><div><div class="logo">EG</div><div class="en">EDGE COMPANY</div></div>
-<div class="who">주식회사 엣지컴퍼니<br>입주박람회 전문 주관사</div></div>
+    sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
+    if COVER["kind"] == "pano":  # 2-1: 입찰공고 수록 단지 조감도 파노라마(make_cover.py)
+        return f"""<section class="page cv cv3">{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
-<h1>동탄2 신동 A58BL 파라곤 3차<br><em>임차예정자협의회 주관사 선정</em></h1>
-<div class="gbar"></div>
+<h1>{TITLE_H1}</h1>
+<div class="orn"><i></i><b></b><i></i></div>
 <div class="tag2">{COVER['tag']}</div></div>
-<div class="credit">※ 단지 야경을 연출한 일러스트입니다</div>
-<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>
+<div class="pano"><img src="assets_dt/paragon3_cover.png" alt="동탄2 신동 파라곤 3차 조감도">
+<span class="credit">조감도 · 입찰공고 수록 이미지 (실제와 다를 수 있음)</span></div>
+{sub2}
 <div class="bt"><span>BID PROPOSAL · 주관사 입찰 제안서</span><span>2026.10</span></div>
+</section>"""
+    # 2-2: 이미지 없이 핵심 수치
+    return f"""<section class="page cv cv4">{COVER_TOP}
+<div class="mid"><span class="pill">{COVER['pill']}</span>
+<h1>{TITLE_H1}</h1>
+<div class="gbar"></div>
+<div class="tag2">{COVER['tag']}</div>
+<div class="stats">
+<div><b>15만원<small>(VAT 포함)</small></b><span>세대당 발전지원금</span></div>
+<div><b>현금 1억</b><span>하자 예치금 거치</span></div>
+<div><b>10억 / 2년</b><span>이행보증보험</span></div>
+<div><b>8가지</b><span>임예협 전용 무상 단지지원</span></div>
+</div></div>
+{sub2}
+<div class="bt"><span>BID PROPOSAL · 제안내용 [2-2]</span><span>2026.10</span></div>
 </section>"""
 
 
@@ -535,9 +564,33 @@ def build():
     # 2-2) 제안내용: 표지 + 01장(박람회·공동구매 계획 / 품목별 예상 참가 업체 / 박람회 특화 제안) + 연락처
     cover = [pg for pg in B.PAGES if pg[0] == "cover"]
     contact = [pg for pg in B.PAGES if pg[0] == "contact"]
-    COVER.update(pill="공동구매 입찰 제안서 · 제안내용 [2-2]",
+    COVER.update(kind="stats", pill="공동구매 입찰 제안서 · 제안내용 [2-2]",
                  tag="박람회 및 공동구매 계획 · 공동구매 품목별 예상 참가 업체 · 박람회 특화 제안")
-    emit(cover + B.PAGES[2:2 + len(NEW)] + contact, OUT_22[:-4] + ".html",
+    # 02장(2-2 전용): 공고 요구 3항목 외에 임예협이 꼭 봐야 할 엣지컴퍼니 강점 — 2-1의 해당 장을 그대로 가져와 장 표시만 바꿈
+    S02 = "02. 엣지컴퍼니의 약속"
+
+    def take(kind=None, title=None):
+        hits = [(k, kw) for k, kw in B.PAGES if (kind and k == kind) or (title and kw.get("title") == title)]
+        assert len(hits) == 1, (kind, title, len(hits))
+        k, kw = hits[0]
+        kw = dict(kw)
+        if "sec" in kw:
+            kw["sec"] = S02
+        return (k, kw)
+
+    extra = [("divider", dict(n="02", title="임예협이 받는 [[엣지컴퍼니만의 약속]]",
+                              bl=["세대당 15만원 발전지원금", "하자 예치금 현금 1억", "이행보증보험 2년 10억",
+                                  "임예협 전용 8가지 무상 지원", "정회원 세대당 60만원 상당 혜택"])),
+             take(kind="hi_fund"),
+             take(title="발전지원금은 [[이렇게 쓰입니다]]"),
+             take(title="입주민을 지키는 [[4중 안전망]]"),
+             take(kind="hi_money"),
+             take(title="협의회 전용 [[8가지 무상 단지지원]]"),
+             take(title="정회원 전용 [[세대당 60만원 상당]]"),
+             take(kind="pricing"),
+             take(title="[[대단지]] 운영 경험"),
+             take(kind="closing")]
+    emit(cover + B.PAGES[2:2 + len(NEW)] + extra + contact, OUT_22[:-4] + ".html",
          "엣지컴퍼니 동탄 파라곤3차 제안내용 [2-2]")
 
 
