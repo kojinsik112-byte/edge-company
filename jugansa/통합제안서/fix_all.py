@@ -230,7 +230,10 @@ def fix_part1(d, ev):
 
     # 8p 회사개요: 사원수·소재지 + AI 생성 가짜 서류 → 실제 사업자등록증·등기부등본
     p = P(8)
-    panel_label(p, (542, 131, 814, 150), ["임직원 10명 (4대보험 가입) + 인턴 3명"], 10.5, LIGHT, x=546)
+    patch(p, (542, 131, 814, 150))
+    write_runs(p, 546, 140.5, [("임직원 11명 + 인턴 3명", 10.5, LIGHT, F_BOLD),
+                               ("   4대보험 10명 · 총괄본부장 10월 등재 예정", 7.5, 0xA9B4C2, F_REG)])
+    LOG.append(f"p{pn(p)}: 사원수 → 임직원 11명 + 인턴 3명 (4대보험 10명, 총괄본부장 10월 등재 예정)")
     panel_label(p, (542, 189, 814, 227), ["울산광역시 울주군 청량읍 온산로 615-1 (본점)",
                                           "부산광역시 해운대구 아르피나 B1 (부산사무소)"], 10.5, LIGHT, x=546, gap=18.5)
     # 액자 개구부 실측(금색 몰딩 안쪽). 하단 명패가 액자에 겹쳐 문서는 명패 위까지만.
@@ -492,12 +495,44 @@ def shrink(d, maxw=1600, q=74):
             pass
 
 
+# 4대보험 사업장 가입자 명부 1쪽: 개인정보 가림(성명 가운데 글자, 주민번호 뒷자리 첫 숫자) — 증빙 PDF 좌표(pt)
+ROSTER_ROWS = [  # (성명 글자 세로범위, 주민번호 성별자리 세로범위, 같은 줄 첫 '*' 세로범위)
+    ((317.4, 326.6), (318.25, 325.75), (319.88, 323.62)), ((337.25, 346.5), (338.12, 345.5), (339.75, 343.5)),
+    ((357.03, 366.4), (357.9, 365.4), (359.65, 363.28)), ((377.05, 386.3), (377.93, 385.3), (379.55, 383.3)),
+    ((396.95, 406.07), (397.7, 405.2), (399.45, 403.07)), ((416.65, 425.9), (417.53, 424.9), (419.15, 422.9)),
+    ((436.65, 445.9), (437.28, 444.9), (439.15, 442.78)), ((456.45, 465.7), (457.2, 464.7), (458.95, 462.7)),
+    ((476.25, 485.62), (477.0, 484.5), (478.75, 482.5)), ((496.12, 505.38), (497.0, 504.5), (498.62, 502.38)),
+]
+
+
+def mask_roster(doc):
+    """명부 원본 서식은 그대로 두고, 이름 가운데 글자와 주민번호 뒷자리 첫 숫자를 '*'로 가린다.
+    '*'는 문서에 원래 찍혀 있는 별표를 그대로 복사해 쓴다(글꼴·굵기 동일)."""
+    page = doc[0]
+    white = (1, 1, 1)
+    for (ny, gy, ay) in ROSTER_ROWS:
+        star_clip = fitz.Rect(147.7, ay[0] - 0.3, 152.3, ay[1] + 0.3)
+        star = page.get_pixmap(matrix=fitz.Matrix(10, 10), clip=star_clip, alpha=False).tobytes("png")
+        sw, sh = star_clip.width, star_clip.height
+        # 주민번호 성별 숫자 → '*'
+        page.draw_rect(fitz.Rect(141.0, gy[0] - 0.5, 146.4, gy[1] + 0.5), color=None, fill=white, overlay=True)
+        page.insert_image(fitz.Rect(141.4, star_clip.y0, 141.4 + sw, star_clip.y1), stream=star, overlay=True)
+        # 성명 가운데 글자 → '*' (조금 크게, 글자 높이 가운데)
+        page.draw_rect(fitz.Rect(228.6, ny[0] - 0.6, 238.5, ny[1] + 0.6), color=None, fill=white, overlay=True)
+        k = 1.5
+        cx, cy = 233.55, (ny[0] + ny[1]) / 2
+        page.insert_image(fitz.Rect(cx - sw * k / 2, cy - sh * k / 2, cx + sw * k / 2, cy + sh * k / 2),
+                          stream=star, overlay=True)
+    LOG.append("4대보험 명부: 성명 가운데 글자·주민번호 뒷자리 첫 숫자 가림(10명)")
+
+
 def main():
     evdir, s1, s2, s3, out = sys.argv[1:6]
     E = lambda n: fitz.open(os.path.join(evdir, n))
     ev = {"사업자등록증": E("사업자등록증.pdf"), "법인등기부등본": E("법인등기부등본.pdf"), "국세": E("국세_납세증명서.pdf"),
           "지방세": E("지방세_납세증명서.pdf"), "4대보험": E("4대보험_가입자명부.pdf"), "ISO": E("ISO_인증서.pdf"),
           "NICE": E("NICE_기업신용평가.pdf")}
+    mask_roster(ev["4대보험"])
     os.makedirs(out, exist_ok=True)
     merged = fitz.open()
     for src, fn, name, off in ((s1, lambda d: fix_part1(d, ev), "1-36", 0), (s2, fix_part2, "37-121", 36),

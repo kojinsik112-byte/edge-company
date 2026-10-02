@@ -2,8 +2,9 @@
 """제출용 통합본(152p, 원본 화질) 만들기.
 
 1파트 = fix_all.py 결과(수정본), 2·3파트 = 원본 그대로.
-단, 2파트 우측 상단 70번 장(2파트 32번째 장)의 '95% 이상' → '90% 이상' 한 곳만 수정
-(요약제안서 '지역업체 90%'와 숫자 통일).
+단, 2파트 우측 상단 70번 장(2파트 32번째 장) 한 줄만 수정:
+'95% 이상 지역 최고업체들과의 협업!' → '90% 이상 지역 우수업체들과의 협업!'
+(요약제안서 '지역업체 90%'와 통일, '최고'는 입증 어려운 표현).
 
 사용: python merge_submit.py <1파트_수정본.pdf> <2파트_원본.pdf> <3파트_원본.pdf> <출력.pdf>
 """
@@ -14,6 +15,18 @@ import pymupdf as fitz
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fix_all import ink, rgb, sample_bg  # noqa: E402
+
+
+def core_ink(page, rect):
+    """글자 '속' 색: 배경과 먼 픽셀 중 가장 진한 30%의 중앙값(가장자리 번짐 제외)."""
+    import statistics
+    bg = [v * 255 for v in sample_bg(page, rect)]
+    pix = page.get_pixmap(matrix=fitz.Matrix(4, 4), clip=rect, alpha=False)
+    px = [pix.pixel(x, y) for x in range(pix.width) for y in range(pix.height)]
+    px = sorted((c for c in px if sum(abs(c[i] - bg[i]) for i in range(3)) > 90), key=sum)
+    core = px[: max(1, len(px) * 3 // 10)]
+    m = [int(statistics.median(c[i] for c in core)) for i in range(3)]
+    return (m[0] << 16) | (m[1] << 8) | m[2]
 
 
 def fix_local_ratio(doc):
@@ -34,13 +47,22 @@ def fix_local_ratio(doc):
     page.add_redact_annot(fitz.Rect(s["bbox"]))
     page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE, graphics=fitz.PDF_REDACT_LINE_ART_NONE)
     hidden = fitz.TextWriter(page.rect)
-    hidden.append(s["origin"], s["text"].replace("95%", "90%", 1), font=mg, fontsize=s["size"])
+    hidden.append(s["origin"], s["text"].replace("95%", "90%", 1).replace("최고업체", "우수업체", 1),
+                  font=mg, fontsize=s["size"])
     hidden.write_text(page, render_mode=3)
     # 화면에 보이는 숫자
     page.draw_rect(rect, color=None, fill=bg, overlay=True)
     tw = fitz.TextWriter(page.rect)
     tw.append((246.0, 180.8), "90", font=mg, fontsize=15.4)
     tw.write_text(page, color=rgb(col))
+    # '최고' → '우수' (회색 본문, 같은 줄·같은 글꼴, 위치는 원본 픽셀에 맞춰 보정)
+    rect2 = fitz.Rect(345.6, 167.5, 372.6, 183)
+    bg2 = sample_bg(page, rect2, ring=1.2)
+    col2 = core_ink(page, fitz.Rect(314, 167, 340, 183))  # 같은 줄 '지역' 글자색
+    page.draw_rect(rect2, color=None, fill=bg2, overlay=True)
+    tw2 = fitz.TextWriter(page.rect)
+    tw2.append((345.0, 180.8), "우수", font=mg, fontsize=15.4)
+    tw2.write_text(page, color=rgb(col2))
 
 
 def main():
