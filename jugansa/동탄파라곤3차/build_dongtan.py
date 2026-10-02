@@ -23,7 +23,11 @@ NAME = "엣지컴퍼니_동탄파라곤3차_2-1_입찰제안서"
 FULL_DIR = os.path.join(HERE, "assets_full")  # 통합제안서 기본틀 발췌 페이지(JPEG, 깃 제외)
 FULL_DPI = 170
 FULL_CLIP = (196, 34, 850, 600)  # 원본 페이지에서 본문 패널만(좌측 메뉴·상단 띠 제외)
-FULL_CLIP_OVR = {8: (174, 34, 850, 600)}  # 4대보험 액자가 x≈178에서 시작 → 왼쪽까지 포함
+FULL_CLIP_OVR = {
+    8: (174, 34, 850, 600),   # 4대보험 액자가 x≈178에서 시작 → 왼쪽까지 포함
+    27: (196, 34, 836, 600),  # 사송신도시: 원본 오른쪽 흰 여백 잘라냄
+    35: (196, 34, 846, 600),  # 감사패: 오른쪽 끝 흰 선 잘라냄
+}
 B.OUT_HTML = os.path.join(HERE, NAME + ".html")
 B.OUT_PDF = os.path.join(HERE, NAME + ".pdf")
 OUT_22 = os.path.join(HERE, "엣지컴퍼니_동탄파라곤3차_2-2_제안내용.pdf")
@@ -68,10 +72,11 @@ B.CSS += r"""
 .ins-h{display:flex;justify-content:space-between;align-items:flex-end;margin:12px 0 14px}
 .ins-h h1{margin:0}
 .ins-h span{font-size:12.5px;letter-spacing:.28em;color:var(--gold2);font-weight:700;white-space:nowrap;padding-bottom:8px}
-.cv2 .art{position:absolute;right:-20px;bottom:0;width:56%;height:100%;
-  background:url('assets/경관조명_야경.svg') right bottom/cover no-repeat;opacity:.85;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 42%);mask-image:linear-gradient(90deg,transparent 0%,#000 42%)}
-.cv2 .veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,14,26,.95) 0%,rgba(5,14,26,.62) 50%,rgba(5,14,26,.1) 100%)}
+.cv2 .art{position:absolute;right:0;top:0;width:57%;height:100%;
+  background:url('assets_dt/동탄_파라곤3차_야경.svg') center bottom/cover no-repeat;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 36%);mask-image:linear-gradient(90deg,transparent 0%,#000 36%)}
+.cv2 .veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,14,26,.96) 0%,rgba(5,14,26,.7) 38%,rgba(5,14,26,.08) 72%,rgba(5,14,26,0) 100%)}
+.cv2 .credit{position:absolute;right:30px;bottom:72px;z-index:1;font-size:10.5px;color:rgba(255,255,255,.42);letter-spacing:.02em}
 .cv2>.top,.cv2>.mid,.cv2>.sub2,.cv2>.bt{position:relative;z-index:1}
 .cv2 h1{font-size:52px;line-height:1.28;margin-top:24px}
 .cv2 .gbar{width:150px;height:2px;background:var(--gold2);margin:28px 0 22px}
@@ -79,8 +84,6 @@ B.CSS += r"""
 .sub2{display:flex;gap:64px;padding:18px 0 20px;border-top:1px solid rgba(200,168,106,.35)}
 .sub2 i{display:block;font-style:normal;font-size:12px;letter-spacing:.3em;color:var(--gold2);font-weight:700}
 .sub2 b{display:block;font-size:17px;font-weight:700;margin-top:6px}
-.cards.al .card{justify-content:flex-start}
-.cards.al .card:before{content:'';flex:0 0 26%}
 .toc4{grid-template-columns:repeat(4,1fr)!important}
 .toc4 .col{padding:0 22px}
 """
@@ -114,7 +117,7 @@ new("std", sec=S0, title="[[임대 단지]]의 박람회는 달라야 합니다"
              ds="설 연휴 전 박람회를 열어 입주 전 시공 일정을 확보합니다."),
         dict(lb="LEASE", big="10", unit="년 이상", nm="공공지원 민간임대", hl=True,
              ds="임대 거주 세대는 [[할 수 있는 시공이 다릅니다.]] 분양전환 조건은 사업주체 공고 기준으로 안내합니다."),
-    ]).replace('class="cards"', 'class="cards al"', 1),
+    ]),
     kp="타입 2개 · 임대 10년 — [[규격화된 공동구매]]와 [[원상복구 걱정 없는 시공]]이 핵심입니다.")
 
 SCOPE = [
@@ -387,14 +390,19 @@ def render_full_pages(src_pdf):
 
 
 # ============================================================ 특수 페이지
+COVER = dict(pill="공동구매 입찰 제안서",
+             tag=f"박람회를 여는 회사가 아니라, 단지를 완성시키는 회사.<br>{D.SITE['households']:,}세대의 시작을 입주 후 1년까지 책임지겠습니다.")
+
+
 def p_cover():
     return f"""<section class="page cv cv2"><div class="art"></div><div class="veil"></div>
 <div class="top"><div><div class="logo">EG</div><div class="en">EDGE COMPANY</div></div>
 <div class="who">주식회사 엣지컴퍼니<br>입주박람회 전문 주관사</div></div>
-<div class="mid"><span class="pill">공동구매 입찰 제안서</span>
+<div class="mid"><span class="pill">{COVER['pill']}</span>
 <h1>동탄2 신동 A58BL 파라곤 3차<br><em>임차예정자협의회 주관사 선정</em></h1>
 <div class="gbar"></div>
-<div class="tag2">박람회를 여는 회사가 아니라, 단지를 완성시키는 회사.<br>{D.SITE['households']:,}세대의 시작을 입주 후 1년까지 책임지겠습니다.</div></div>
+<div class="tag2">{COVER['tag']}</div></div>
+<div class="credit">※ 단지 야경을 연출한 일러스트입니다</div>
 <div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>
 <div class="bt"><span>BID PROPOSAL · 주관사 입찰 제안서</span><span>2026.10</span></div>
 </section>"""
@@ -465,34 +473,72 @@ B.p_divider_lx = lambda: sub(B_p_divider_lx(), '<div class="n">02</div>', '<div 
 
 
 # ============================================================ 빌드
-def build():
-    full = sys.argv[sys.argv.index("--full") + 1] if "--full" in sys.argv else None
-    render_full_pages(full)
-    B.build_html()
-    with open(B.OUT_HTML, encoding="utf-8") as f:
+# 카드·타일 정렬: 같은 줄의 카드 중 내용이 가장 긴 카드를 세로 가운데에 두고,
+# 나머지 카드는 그 시작 높이에 맞춰 위로 정렬 → 라벨·숫자·제목·설명 첫 줄이 가로로 일치
+ALIGN_JS = """<script>
+(function(){
+function align(){
+  document.querySelectorAll('.cards,.tiles').forEach(function(box){
+    var items=[].slice.call(box.children).filter(function(c){return c.classList.contains('card')||c.classList.contains('tile');});
+    var rows={};
+    items.forEach(function(c){var k=Math.round(c.getBoundingClientRect().top);(rows[k]=rows[k]||[]).push(c);});
+    Object.keys(rows).forEach(function(k){
+      var row=rows[k],maxH=0,info=[];
+      row.forEach(function(c){
+        var kids=[].slice.call(c.children);if(!kids.length)return;
+        var f=kids[0],l=kids[kids.length-1],cs=getComputedStyle(c);
+        var h=(l.getBoundingClientRect().bottom+parseFloat(getComputedStyle(l).marginBottom))
+             -(f.getBoundingClientRect().top-parseFloat(getComputedStyle(f).marginTop));
+        maxH=Math.max(maxH,h);info.push([c,parseFloat(cs.paddingTop),parseFloat(cs.paddingBottom),c.clientHeight]);
+      });
+      info.forEach(function(x){var extra=Math.max(0,(x[3]-x[1]-x[2]-maxH)/2);
+        x[0].style.justifyContent='flex-start';x[0].style.paddingTop=(x[1]+extra)+'px';});
+    });
+  });
+}
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(align);
+})();
+</script>"""
+
+
+def finish(path, title):
+    with open(path, encoding="utf-8") as f:
         doc = f.read()
     doc = term(doc)
     doc = doc.replace("<span>주식회사 엣지컴퍼니 · 대표이사 고진식</span>", "<span>주식회사 엣지컴퍼니</span>")
     doc = doc.replace("지역업체", "인근 지역업체").replace("인근 인근", "인근")  # 본부장님 지시: '인근 지역업체'
     doc = doc.replace("url(assets/", "url(../요약제안서/assets/").replace("url('assets/", "url('../요약제안서/assets/")
     doc = doc.replace('src="assets/', 'src="../요약제안서/assets/')
-    doc = sub(doc, "<title>엣지컴퍼니 요약제안서</title>", "<title>엣지컴퍼니 동탄 파라곤3차 주관사 입찰제안서</title>")
+    doc = sub(doc, "<title>엣지컴퍼니 요약제안서</title>", f"<title>{title}</title>")
+    doc = sub(doc, "</body>", ALIGN_JS + "</body>")
     left = re.findall(r".{0,12}(?:협의회|입예협).{0,6}", re.sub(r"임차예정자협의회|타 단지 협의회", "", doc))
     assert not left, left
-    with open(B.OUT_HTML, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8") as f:
         f.write(doc)
-    if "--no-pdf" in sys.argv:
-        return
-    B.build_pdf()
-    # 2-2) 제안내용 발췌본: 표지 + 01장
-    import pymupdf as fitz
-    src = fitz.open(B.OUT_PDF)
-    ex = fitz.open()
-    ex.insert_pdf(src, from_page=0, to_page=0)
-    ex.insert_pdf(src, from_page=2, to_page=1 + len(NEW))
-    ex.set_metadata({"title": "동탄 파라곤3차 2-2 제안내용", "author": D.COMPANY})
-    ex.save(OUT_22, garbage=4, deflate=True)
-    print(f"2-2 : {OUT_22} ({len(ex)} pages)")
+
+
+def emit(pages, out_html, title):
+    keep = list(B.PAGES)
+    B.PAGES[:] = pages
+    B.OUT_HTML, B.OUT_PDF = out_html, out_html[:-5] + ".pdf"
+    B.build_html()
+    B.PAGES[:] = keep
+    finish(out_html, title)
+    if "--no-pdf" not in sys.argv:
+        B.build_pdf()
+
+
+def build():
+    full = sys.argv[sys.argv.index("--full") + 1] if "--full" in sys.argv else None
+    render_full_pages(full)
+    emit(list(B.PAGES), B.OUT_HTML, "엣지컴퍼니 동탄 파라곤3차 공동구매 입찰 제안서 [2-1]")
+    # 2-2) 제안내용: 표지 + 01장(박람회·공동구매 계획 / 품목별 예상 참가 업체 / 박람회 특화 제안) + 연락처
+    cover = [pg for pg in B.PAGES if pg[0] == "cover"]
+    contact = [pg for pg in B.PAGES if pg[0] == "contact"]
+    COVER.update(pill="공동구매 입찰 제안서 · 제안내용 [2-2]",
+                 tag="박람회 및 공동구매 계획 · 공동구매 품목별 예상 참가 업체 · 박람회 특화 제안")
+    emit(cover + B.PAGES[2:2 + len(NEW)] + contact, OUT_22[:-4] + ".html",
+         "엣지컴퍼니 동탄 파라곤3차 제안내용 [2-2]")
 
 
 if __name__ == "__main__":

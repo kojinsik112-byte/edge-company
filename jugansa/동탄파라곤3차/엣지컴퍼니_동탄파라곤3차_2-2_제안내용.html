@@ -1,0 +1,357 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<title>엣지컴퍼니 동탄 파라곤3차 제안내용 [2-2]</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+@font-face{font-family:'Gelasio';font-weight:400;src:url(../요약제안서/assets/fonts/gelasio-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Gelasio';font-weight:700;src:url(../요약제안서/assets/fonts/gelasio-latin-700-normal.woff2) format('woff2')}
+@page{size:297mm 210mm;margin:0}
+:root{
+  --bg:#0D1E33;--gold:#EBCB8F;--gold2:#C8A86A;--ink:#F4F6F9;--sub:#B4BECA;--mute:#8595A8;
+  --line:rgba(255,255,255,.13);--sans:'Pretendard','Malgun Gothic','맑은 고딕','Apple SD Gothic Neo',sans-serif;
+  --serif:Georgia,'Gelasio','Times New Roman',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0D1E33}
+body{font-family:var(--sans);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact;word-break:keep-all}
+em{font-style:normal;color:var(--gold)}
+.page{width:297mm;height:210mm;position:relative;overflow:hidden;page-break-after:always;break-after:page;
+  background:var(--bg);
+  display:flex;flex-direction:column;padding:40px 48px 0}
+.page:last-child{page-break-after:auto;break-after:auto}
+@media screen{body{padding:24px 0}.page{margin:0 auto 24px;box-shadow:0 10px 40px rgba(0,0,0,.5)}}
+
+/* ---- header */
+.hd{display:flex;justify-content:space-between;align-items:center;height:30px}
+.hd .l{display:flex;align-items:center;gap:16px}
+.logo{font-family:var(--serif);font-weight:700;font-size:27px;color:var(--gold);letter-spacing:.02em;line-height:1}
+.sec{font-size:13px;font-weight:700;letter-spacing:.34em;color:var(--gold2)}
+.hd .r{font-size:12.5px;color:var(--mute);letter-spacing:.02em}
+h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-height:1.2}
+.lead{font-size:19px;color:var(--sub);margin-top:10px;line-height:1.45}
+.rule{height:1.5px;margin:16px 0 20px;background:linear-gradient(90deg,var(--gold2),rgba(200,168,106,.35) 55%,rgba(200,168,106,0))}
+.ct{flex:1;min-height:0;display:flex;flex-direction:column}
+.kp{margin-top:18px;border:1px solid rgba(200,168,106,.38);background:rgba(18,22,28,.62);border-radius:11px;
+  padding:15px 26px;display:flex;align-items:center;gap:24px}
+.kp b{font-size:12.5px;letter-spacing:.34em;color:var(--gold2);white-space:nowrap}
+.kp span{font-size:18.5px;font-weight:700;line-height:1.4}
+.kp small{font-size:15px;font-weight:400;color:var(--mute);margin-left:6px}
+.ft{height:44px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mute)}
+
+/* ---- cards */
+.cards{flex:1;display:grid;gap:16px}
+.card{border:1px solid var(--line);border-radius:15px;padding:26px 24px;display:flex;flex-direction:column;justify-content:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.012) 60%,rgba(255,255,255,.02))}
+.card.hl{border-color:rgba(235,203,143,.75);background:linear-gradient(180deg,rgba(235,203,143,.16),rgba(235,203,143,.03))}
+.lb{font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--gold2)}
+.big{font-size:46px;font-weight:800;color:var(--gold);line-height:1.1;margin-top:8px;letter-spacing:-.01em}
+.big small{font-size:21px;font-weight:700;margin-left:2px}
+.nm{font-size:22px;font-weight:700;margin-top:8px;line-height:1.3}
+.ds{font-size:17.5px;color:var(--sub);margin-top:10px;line-height:1.55}
+.ds em{font-weight:700}
+
+/* ---- rows */
+.rows{flex:1;display:flex;flex-direction:column;justify-content:space-evenly}
+.row{display:grid;grid-template-columns:46px 268px 1fr;gap:0 22px;align-items:center;padding:0 0 14px;
+  border-bottom:1px dashed rgba(255,255,255,.14)}
+.row:last-child{border-bottom:0}
+.no{width:46px;height:46px;border-radius:9px;border:1px solid rgba(200,168,106,.55);background:rgba(200,168,106,.12);
+  color:var(--gold);font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center}
+.row .tt{font-size:22px;font-weight:700;line-height:1.3}
+.row .dd{font-size:18.5px;color:var(--sub);line-height:1.55}
+.row .dd em{font-weight:700}
+
+/* ---- divider */
+.dv{justify-content:center;padding:0 96px}
+.dv .n{font-family:var(--serif);font-size:88px;line-height:1;color:#7a6e52;font-weight:400}
+.dv h2{font-size:50px;font-weight:800;margin-top:14px;letter-spacing:-.01em}
+.dv .bar{width:170px;height:2px;background:var(--gold2);margin:26px 0 24px}
+.dv .bl{display:flex;flex-wrap:wrap;gap:10px 30px;font-size:19.5px;color:var(--sub)}
+.dv .bl span:before{content:'· ';color:var(--gold2)}
+
+/* ---- media (image + bullets) */
+.media{flex:1;display:grid;grid-template-columns:44% 1fr;gap:38px;min-height:0}
+.ph{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .cap{position:absolute;left:0;right:0;bottom:0;padding:12px 18px;font-size:15px;font-weight:700;
+  background:linear-gradient(0deg,rgba(5,12,22,.92),rgba(5,12,22,.6))}
+.bul{display:flex;flex-direction:column;justify-content:center;gap:24px}
+.bul div{position:relative;padding-left:26px}
+.bul div:before{content:'';position:absolute;left:0;top:9px;width:10px;height:10px;border-radius:50%;background:var(--gold2)}
+.bul b{display:block;font-size:22px;line-height:1.35}
+.bul p{font-size:17.5px;color:var(--sub);margin-top:6px;line-height:1.5}
+
+/* ---- bars */
+.bars{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:26px;align-items:end;padding:0 4px}
+.bars .c{display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
+.bars .v{font-size:28px;font-weight:800;margin-bottom:10px}
+.bars .b{width:100%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#E6C98E,#8E7442)}
+.bars .y{font-size:17px;color:var(--sub);margin-top:12px}
+
+/* ---- highlight */
+.hi{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.hi .tag{font-size:17px;font-weight:700;letter-spacing:.3em;color:var(--gold2)}
+.hi .num{display:flex;align-items:flex-end;gap:14px;margin-top:4px}
+.hi .num .pre{font-size:40px;font-weight:800;color:var(--gold2);margin-bottom:26px}
+.hi .num .v{font-size:150px;font-weight:800;color:var(--gold);line-height:1;letter-spacing:-.03em}
+.hi .num .post{font-size:16.5px;color:var(--sub);margin-bottom:28px}
+.hi .nm2{font-size:28px;font-weight:800;margin-top:14px}
+.hi p{font-size:19px;color:var(--sub);margin-top:12px;line-height:1.6}
+.hi p em{font-weight:700}
+.chips{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;justify-content:center}
+.chips span{border:1px solid var(--gold2);border-radius:99px;padding:8px 20px;font-size:16px;font-weight:700;color:var(--gold)}
+
+/* ---- grid tiles */
+.tiles{flex:1;display:grid;gap:14px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;justify-content:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015))}
+.tile .lb{font-size:12px}
+.tile .nm{font-size:20px;margin-top:6px}
+.tile .ds{font-size:16px;margin-top:6px;line-height:1.5}
+.tile .big{font-size:36px;margin-top:4px}
+.tile .big small{font-size:18px}
+
+/* ---- closing */
+.cl{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);gap:12px 16px}
+.cl .it{border:1px solid var(--line);border-radius:12px;padding:12px 20px;display:flex;align-items:center;gap:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015))}
+.cl .it b{display:block;font-size:21px;line-height:1.3}
+.cl .it p{font-size:16.5px;color:var(--sub);margin-top:4px}
+.cl .no{width:40px;height:40px;font-size:16px;flex:none}
+
+/* ---- toc */
+.toc{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.toc .col{border-left:1px solid rgba(255,255,255,.16);padding:0 26px;display:flex;flex-direction:column;gap:18px}
+.toc .s .sn{font-family:var(--serif);font-size:30px;color:var(--gold2);line-height:1}
+.toc .s h3{font-size:23px;font-weight:800;margin:6px 0 10px}
+.toc .s li{list-style:none;font-size:17px;color:#D5DCE4;line-height:1.85}
+.toc .s li i{font-style:normal;color:var(--mute);font-size:14px;margin-right:12px}
+
+/* ---- cover / contact */
+.cv{padding:56px 72px 0}
+.cv .top{display:flex;justify-content:space-between}
+.cv .logo{font-size:46px}
+.cv .en{font-size:13.5px;letter-spacing:.55em;color:var(--gold2);font-weight:700;margin-top:14px}
+.cv .who{text-align:right;font-size:15px;color:var(--sub);line-height:1.7}
+.cv .mid{flex:1;display:flex;flex-direction:column;justify-content:center}
+.pill{display:inline-block;align-self:flex-start;border:1px solid var(--gold2);border-radius:99px;padding:8px 26px;
+  font-size:16px;font-weight:700;letter-spacing:.3em;color:var(--gold)}
+.cv h1{font-size:54px;line-height:1.25;margin-top:22px}
+.cv .tag2{font-size:20px;color:var(--sub);margin-top:16px}
+.stats{display:flex;gap:44px;margin-top:30px;flex-wrap:wrap}
+.stats div{border-left:2px solid var(--gold2);padding-left:18px}
+.stats b{display:block;font-size:32px;font-weight:800;color:var(--gold);line-height:1.2}
+.stats b small{font-size:12px;font-weight:400;color:var(--sub);font-style:italic;margin-left:4px}
+.stats span{font-size:15.5px;color:var(--sub)}
+.cv .bt{height:64px;display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--sub)}
+.contacts{display:grid;grid-template-columns:repeat(3,auto);gap:22px 48px;margin-top:28px;justify-content:start}
+.contacts div{border-left:2px solid var(--gold2);padding-left:18px}
+.contacts b{display:block;font-size:31px;font-weight:800;color:var(--gold);line-height:1.2;letter-spacing:-.005em}
+.contacts span{font-size:16px;color:var(--sub)}
+.contacts .me{grid-column:span 3}
+.contacts .me b{font-size:27px}
+.addr{font-size:15.5px;color:var(--sub);margin-top:24px;line-height:1.75}
+
+/* ---- 경관조명 */
+.dv-lx{background:var(--bg)}
+.dv-lx .art{position:absolute;right:-30px;bottom:0;width:58%;height:100%;
+  background:url('../요약제안서/assets/경관조명_야경.svg') right bottom/cover no-repeat;opacity:.9;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 38%);mask-image:linear-gradient(90deg,transparent 0%,#000 38%)}
+.dv-lx .veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,14,26,.92) 0%,rgba(5,14,26,.55) 48%,rgba(5,14,26,.05) 100%)}
+.dv-lx .in{position:relative;z-index:1;max-width:640px}
+.dv-lx .kick{font-size:23px;font-weight:700;color:var(--ink);margin-top:2px}
+.dv-lx .kick em{font-weight:800}
+.flow{display:flex;align-items:center;gap:14px;margin-top:22px}
+.flow .st{border:1px solid rgba(235,203,143,.7);background:rgba(10,24,42,.78);border-radius:12px;padding:12px 22px;min-width:150px}
+.flow .st i{display:block;font-style:normal;font-size:12.5px;font-weight:700;letter-spacing:.28em;color:var(--gold2)}
+.flow .st b{display:block;font-size:26px;font-weight:800;color:var(--gold);margin-top:4px}
+.flow .ar{font-size:26px;color:var(--gold2)}
+.dv-lx .bl{margin-top:26px}
+.lx{flex:1;display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;align-items:stretch;min-height:0}
+.lx .card{padding:0;justify-content:flex-start;overflow:hidden}
+.lx .card img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-bottom:1px solid var(--line)}
+.lx .card .tx{padding:18px 22px 20px;display:flex;flex-direction:column;flex:1;justify-content:center}
+.lx .card .big{font-size:40px;margin-top:4px}
+.lx .card .nm{font-size:20.5px;margin-top:4px}
+.lx .card .ds{font-size:16px;margin-top:8px}
+.lx .card.key{border-color:rgba(235,203,143,.75)}
+.lx .ar{display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:24px;font-weight:800}
+
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:12.5px;font-weight:700;letter-spacing:.24em;color:var(--gold2);text-align:left;
+  padding:0 14px 9px;border-bottom:1.5px solid rgba(200,168,106,.55)}
+.tbl td{font-size:17px;padding:8.5px 14px;border-bottom:1px dashed rgba(255,255,255,.14);color:var(--sub);line-height:1.42;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td.k{color:var(--ink);font-weight:700;font-size:17.5px}
+.tbl td.n{color:var(--gold);font-weight:800;font-size:15px;width:44px}
+.tbl td.g{color:var(--gold);font-weight:700;font-size:14.5px;letter-spacing:.04em;border-right:1px solid rgba(255,255,255,.12)}
+.tbl tr.own td{background:rgba(235,203,143,.07)}
+.tbl em{font-weight:700}
+.tbl.sm td{font-size:15px;padding:6px 14px}
+.tbl.sm td.k{font-size:15.5px}
+.lg .tile{padding:20px 24px}
+.lg .tile .nm{font-size:23px}
+.lg .tile .ds{font-size:17.5px;line-height:1.55;margin-top:8px}
+.ins{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.ins img{max-width:100%;max-height:100%;border-radius:14px;box-shadow:0 16px 44px rgba(0,0,0,.5)}
+.ins-h{display:flex;justify-content:space-between;align-items:flex-end;margin:12px 0 14px}
+.ins-h h1{margin:0}
+.ins-h span{font-size:12.5px;letter-spacing:.28em;color:var(--gold2);font-weight:700;white-space:nowrap;padding-bottom:8px}
+.cv2 .art{position:absolute;right:0;top:0;width:57%;height:100%;
+  background:url('assets_dt/동탄_파라곤3차_야경.svg') center bottom/cover no-repeat;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 36%);mask-image:linear-gradient(90deg,transparent 0%,#000 36%)}
+.cv2 .veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,14,26,.96) 0%,rgba(5,14,26,.7) 38%,rgba(5,14,26,.08) 72%,rgba(5,14,26,0) 100%)}
+.cv2 .credit{position:absolute;right:30px;bottom:72px;z-index:1;font-size:10.5px;color:rgba(255,255,255,.42);letter-spacing:.02em}
+.cv2>.top,.cv2>.mid,.cv2>.sub2,.cv2>.bt{position:relative;z-index:1}
+.cv2 h1{font-size:52px;line-height:1.28;margin-top:24px}
+.cv2 .gbar{width:150px;height:2px;background:var(--gold2);margin:28px 0 22px}
+.cv2 .tag2{font-size:20px;line-height:1.65;margin-top:0}
+.sub2{display:flex;gap:64px;padding:18px 0 20px;border-top:1px solid rgba(200,168,106,.35)}
+.sub2 i{display:block;font-style:normal;font-size:12px;letter-spacing:.3em;color:var(--gold2);font-weight:700}
+.sub2 b{display:block;font-size:17px;font-weight:700;margin-top:6px}
+.toc4{grid-template-columns:repeat(4,1fr)!important}
+.toc4 .col{padding:0 22px}
+</style></head><body>
+<section class="page cv cv2"><div class="art"></div><div class="veil"></div>
+<div class="top"><div><div class="logo">EG</div><div class="en">EDGE COMPANY</div></div>
+<div class="who">주식회사 엣지컴퍼니<br>입주박람회 전문 주관사</div></div>
+<div class="mid"><span class="pill">공동구매 입찰 제안서 · 제안내용 [2-2]</span>
+<h1>동탄2 신동 A58BL 파라곤 3차<br><em>임차예정자협의회 주관사 선정</em></h1>
+<div class="gbar"></div>
+<div class="tag2">박람회 및 공동구매 계획 · 공동구매 품목별 예상 참가 업체 · 박람회 특화 제안</div></div>
+<div class="credit">※ 단지 야경을 연출한 일러스트입니다</div>
+<div class="sub2"><div><i>제출처</i><b>동탄2 신도시 신동 A58BL 파라곤3차 임차예정자협의회</b></div><div><i>제안사</i><b>주식회사 엣지컴퍼니</b></div></div>
+<div class="bt"><span>BID PROPOSAL · 주관사 입찰 제안서</span><span>2026.10</span></div>
+</section>
+<section class="page dv"><div class="n">01</div><h2>동탄 파라곤 3차를 위한 <em>맞춤 제안</em></h2><div class="bar"></div>
+<div class="bl"><span>박람회·공동구매 계획</span><span>품목별 예상 참가 업체</span><span>임대 단지 특화 제안</span><span>공고 업무범위 9개 항목 수행안</span></div></section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 03</div></div>
+<h1><em>임대 단지</em>의 박람회는 달라야 합니다</h1>
+<div class="lead">동탄2 신동 A58BL 파라곤 3차 — 공고문 단지개요를 기준으로 설계했습니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="cards" style="grid-template-columns:repeat(4,1fr)"><div class="card"><div class="lb">SCALE</div><div class="big">1,247<small>세대</small></div><div class="nm">18개동 대단지</div><div class="ds">시행 ㈜바우하우스 · 시공 ㈜라인건설. 1,000세대 이상 주관 경험을 그대로 적용합니다.</div></div><div class="card"><div class="lb">TYPE</div><div class="big">2<small>개 타입</small></div><div class="nm">82㎡ · 108㎡</div><div class="ds">835세대 · 411세대. 타입이 단순해 커튼·블라인드·조명을 <em>규격화</em>할 수 있어 단가 협상력이 커집니다.</div></div><div class="card"><div class="lb">MOVE-IN</div><div class="big">2027<small>.02.28</small></div><div class="nm">입주 예정</div><div class="ds">설 연휴 전 박람회를 열어 입주 전 시공 일정을 확보합니다.</div></div><div class="card hl"><div class="lb">LEASE</div><div class="big">10<small>년 이상</small></div><div class="nm">공공지원 민간임대</div><div class="ds">임대 거주 세대는 <em>할 수 있는 시공이 다릅니다.</em> 분양전환 조건은 사업주체 공고 기준으로 안내합니다.</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>타입 2개 · 임대 10년 — <em>규격화된 공동구매</em>와 <em>원상복구 걱정 없는 시공</em>이 핵심입니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 04</div></div>
+<h1>공고 업무범위 <em>9개 항목</em> 수행 방안</h1>
+<div class="lead">공고문 4항의 업무를 빠짐없이, 항목별로 답합니다.</div>
+<div class="rule"></div>
+<div class="ct"><table class="tbl "><thead><tr><th>NO</th><th>공고 업무범위</th><th>엣지컴퍼니 수행 방안</th></tr></thead><tbody><tr><td class="n">01</td><td class="k">박람회 개최·기획, 공동구매 총괄</td><td>전담 PM 지정. 일정·품목·업체·계약 전 과정을 <em>임예협과 공유</em>하고 진행 현황을 정기 보고.</td></tr><tr><td class="n">02</td><td class="k">품목 구성·업체 섭외·계약·가격 검수</td><td>수요조사로 품목 확정 → 공개 입찰(임예협·주관사 이메일 동시 접수) → 4단계 심사 → 단가표 사전 검수.</td></tr><tr><td class="n">03</td><td class="k">입주 후 A/S·하자 접수·이행관리</td><td>콜센터·카페 신문고·카카오채널 단일 창구. <em>24시간 회신 · 48시간 처리</em>, 업체 회피 시 선보상 후 정산.</td></tr><tr><td class="n">04</td><td class="k">사전점검·입주지원·입주설명회 지원</td><td>현수막·도우미·라돈측정기 10대·커피차 지원, 사전점검 당일 공용부·조경 하자진단 보고서.</td></tr><tr><td class="n">05</td><td class="k">대관·동선·안전·인력·비품·홍보물</td><td>주관사가 직접 대관·운영. <em>행사 배상책임보험</em> 가입, 안전요원·동선·비상구 계획 수립.</td></tr><tr><td class="n">06</td><td class="k">입주 전·후 전문분야 검토·행정지원</td><td>착공·조경 도면 분석보고서, 열화상 드론·일조 분석, 민원 양식·접수 지원.</td></tr><tr><td class="n">07</td><td class="k">카페·공지채널 홍보 콘텐츠 제작</td><td>카페 디자인, 품목 안내 카드뉴스·영상, 공지 콘텐츠를 주관사가 제작.</td></tr><tr><td class="n">08</td><td class="k">기타 임예협 요청 업무</td><td>시행사·시공사 협의 자리 엔지니어 동석, 온라인 위임장 등 요청 시 지원.</td></tr><tr><td class="n">09</td><td class="k">이벤트 지원</td><td>경품·키즈 프로그램·점등식 등 박람회 이벤트와 정회원 전용 혜택 운영.</td></tr></tbody></table></div>
+<div class="kp"><b>KEY POINT</b><span>제안서는 협약서와 같은 효력 — <em>지킬 수 있는 것만</em> 적었습니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 05</div></div>
+<h1>박람회·공동구매 <em>추진 일정</em> (안)</h1>
+<div class="lead">입주 2027.02.28에서 거꾸로 짰습니다. 설 연휴 전 박람회, 입주 후 1년 사후관리까지.</div>
+<div class="rule"></div>
+<div class="ct"><div class="rows"><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">01</div><div class="tt">2026.10</div><div class="dd">주관사 선정·협약 체결 · 임예협 카페/공지채널 지원 시작 · <em>품목 수요조사</em> 설문</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">02</div><div class="tt">2026.11</div><div class="dd">참여업체 <em>공개 입찰공고</em>(임예협·주관사 이메일 동시 접수) · 행사장 대관 · 타입별 실측 데이터 준비</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">03</div><div class="tt">2026.12</div><div class="dd">1·2차 업체 심사 → <em>임예협 최종 컨펌</em> · 업체 협약식 · 특약이행각서·하자보수 이행각서 징구</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">04</div><div class="tt">2027.01</div><div class="dd">단가표 사전 공개 · 사전점검 행사 지원 · <em>입주박람회 주말 양일</em>(설 연휴 전) · 온라인 박람회 오픈</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">05</div><div class="tt">2027.02~03</div><div class="dd">입주 지원 · 입주기간 업체 순환 상주(협의) · 콜센터 운영 · 시공 일정 관리</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">06</div><div class="tt">~2028.02</div><div class="dd">입주 후 1년 사후관리 — A/S·하자 이행관리, 협약 종료 시 <em>결과 보고서</em> 제출</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>세부 일정은 사전점검·입주지원센터 일정에 맞춰 <em>임예협과 확정</em>합니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 06</div></div>
+<h1>입주박람회 <em>운영 계획</em></h1>
+<div class="lead">계약을 재촉하는 자리가 아니라, 확인하고 비교하는 자리로 만듭니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="tiles lg" style="grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr)"><div class="tile"><div class="lb">WHEN</div><div class="nm">주말 양일 · 설 연휴 전</div><div class="ds">2027년 1월 중 토·일 개최(안). 사전점검 일정에 맞춰 확정합니다.</div></div><div class="tile"><div class="lb">WHERE</div><div class="nm">수원메쎄 · 수원컨벤션센터 등 후보</div><div class="ds">단지에서 30분 내외 전시장 후보를 임예협과 답사한 뒤 확정합니다.</div></div><div class="tile"><div class="lb">SAFETY</div><div class="nm">행사 배상책임보험 가입</div><div class="ds">안전요원·동선·비상구 계획 수립. 화재·상해 예방 수칙은 참여업체 서약.</div></div><div class="tile"><div class="lb">MEMBERS</div><div class="nm">정회원 사전예약 · 체크인</div><div class="ds">정회원 우선 입장·혜택. 임예협 부스를 행사장 중앙에 배치합니다.</div></div><div class="tile"><div class="lb">ONLINE</div><div class="nm">온라인 박람회 · 라이브</div><div class="ds">단지 입주민만 들어오는 폐쇄몰. 박람회와 같은 공동구매가.</div></div><div class="tile"><div class="lb">PR</div><div class="nm">카페·공지채널 콘텐츠</div><div class="ds">품목 안내 카드뉴스·영상·현수막·알림톡을 주관사가 제작합니다.</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>박람회장 가격 = 사전 공개 단가 — <em>현장에서 가격이 바뀌지 않습니다.</em></span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 07</div></div>
+<h1>품목별 <em>예상 참가 업체</em></h1>
+<div class="lead">확정은 임예협 공개 입찰·심사 후 — 시공 품목은 인근 지역(동탄·화성·오산) 업체가 우선입니다.</div>
+<div class="rule"></div>
+<div class="ct"><table class="tbl sm"><thead><tr><th>구분</th><th>품목</th><th>예상 참가 업체</th><th>비고</th></tr></thead><tbody><tr class="own"><td class="g" rowspan="3">주관사 직영</td><td class="k">조명 · LED · 경관조명</td><td>㈜엣지컴퍼니 조명사업부</td><td>전기공사업 등록 · KC 인증 제품</td></tr><tr class="own"><td class="k">커튼 · 블라인드 · 전동커튼</td><td>엣지리브커튼 (㈜엣지컴퍼니)</td><td>82·108㎡ 실측 규격 사전 제작</td></tr><tr class="own"><td class="k">실링팬</td><td>아크로 ARCO (㈜엣지컴퍼니)</td><td>천장 시공 · 임대사업자 승인 품목</td></tr><tr><td class="g" rowspan="6">브랜드</td><td class="k">가전 · 시스템에어컨</td><td>삼성전자 공식 판매점</td><td>삼성전자 MOU 체결</td></tr><tr><td class="k">욕실 환기</td><td>힘펠 (휴젠뜨)</td><td>욕실 환기·온풍</td></tr><tr><td class="k">해충 방역 · 위생 점검</td><td>세스코</td><td>임예협 무상 점검 연계</td></tr><tr><td class="k">렌탈 (정수기·비데·공기청정)</td><td>SK매직</td><td>설치·철거 간편 · 원상복구 부담 없음</td></tr><tr><td class="k">가구</td><td>에몬스</td><td>참가 협의 중</td></tr><tr><td class="k">중문 · 인테리어 자재</td><td>LX하우시스 지인(Z:IN) 대리점</td><td>참가 협의 중</td></tr><tr><td class="g" rowspan="3">지역 시공</td><td class="k">입주청소 · 줄눈 · 탄성코트 · 새집증후군</td><td>동탄·화성 지역 전문업체</td><td>공개 입찰 선정</td></tr><tr><td class="k">방충망 · 단열필름 · 선반 · 유리막코팅</td><td>동탄·화성 지역 전문업체</td><td>공개 입찰 선정</td></tr><tr><td class="k">포장이사 · 사전점검 대행</td><td>경기 남부 지역 전문업체</td><td>공개 입찰 선정</td></tr></tbody></table></div>
+<div class="kp"><b>KEY POINT</b><span>주관사 직영 품목도 <em>같은 심사 · 같은 단가 공개 · 같은 최저가 보장</em>.<small>하도급·타 주관사 연동 계약 없음</small></span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 08</div></div>
+<h1>임대 단지라서 <em>달라야 하는 것</em></h1>
+<div class="lead">10년을 살 집, 언젠가 내 집이 될 수도 있는 집 — 두 경우를 모두 설계했습니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="rows"><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">01</div><div class="tt">시공 허용 품목 가이드</div><div class="dd">임대사업자와 사전 협의해 품목을 <em>허용·조건부·불가</em> 3단계로 나눠 박람회 전에 공개합니다. 퇴거 시 원상복구 분쟁을 막습니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">02</div><div class="tt">두 갈래 패키지</div><div class="dd">분양전환 예정 세대는 ‘내 집’ 기준(중문·줄눈·시스템에어컨), 임대 거주 세대는 <em>무타공·이동식·렌탈</em> 중심으로 구성합니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">03</div><div class="tt">세대별 시공 이력 카드</div><div class="dd">시공 품목·자재·사진·보증기간을 세대별로 기록해 드립니다. A/S·분양전환·퇴거 때 <em>증빙</em>이 됩니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">04</div><div class="tt">하자 창구 분리 접수</div><div class="dd">공동구매 시공 하자는 주관사 콜센터가 처리하고, 건물 하자는 접수 후 <em>임예협을 통해 임대사업자에 일괄 전달</em>합니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">05</div><div class="tt">타입 2개 규격화</div><div class="dd">82·108㎡ 실측 데이터로 커튼·블라인드·조명을 미리 제작해 입주일에 바로 설치합니다.</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>임차인의 시공은 ‘얼마나 싸게’보다 <em>‘나갈 때 문제없나’</em>가 먼저입니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 09</div></div>
+<h1>공동구매 규모는 <em>솔직하게</em> 잡겠습니다</h1>
+<div class="lead">임대 거주 세대는 타공·구조 변경 시공이 제한됩니다. 참여 품목·업체 수가 분양 단지보다 줄어드는 것을 전제로 설계했습니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="cards" style="grid-template-columns:repeat(4,1fr)"><div class="card"><div class="lb">FACT</div><div class="big">제한</div><div class="nm">임대 세대 시공 제한</div><div class="ds">줄눈·중문·타공 품목은 임대사업자 승인 범위 안에서만. 참여 업체 수는 <em>수요조사 결과</em>로 정합니다.</div></div><div class="card"><div class="lb">ANSWER 01</div><div class="big">비침습</div><div class="nm">시공 없는 품목 강화</div><div class="ds">가전·가구·렌탈·커튼·입주청소·이사·보험 등 <em>원상복구 부담 없는 품목</em>을 중심에 둡니다.</div></div><div class="card"><div class="lb">ANSWER 02</div><div class="big">상주</div><div class="nm">입주 집중기 업체 순환 상주</div><div class="ds">입주지원센터 옆 주관사 상주 창구에 품목 업체가 <em>순환 상주</em> — 추가 계약·즉시 A/S를 한곳에서.</div></div><div class="card"><div class="lb">ANSWER 03</div><div class="big">협의</div><div class="nm">규모에 맞춘 운영</div><div class="ds">박람회 규모·업체 상주 운영은 계약 세대 수에 맞춰 <em>임예협과 협의해 조정</em>합니다.</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>규모를 부풀려 약속하지 않습니다 — <em>지킬 수 있는 규모</em>로 끝까지 운영합니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 10</div></div>
+<h1>동탄 파라곤 3차 <em>특화 제안</em></h1>
+<div class="lead">엣지컴퍼니 본업(조명·커튼·실링팬)을 임대 단지에 맞게 다시 짰습니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="tiles lg" style="grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr)"><div class="tile"><div class="lb">01</div><div class="nm">무타공 전동커튼·블라인드</div><div class="ds">벽·천장 타공 없이 설치하는 방식을 우선 제안해 원상복구 부담을 줄입니다.</div></div><div class="tile"><div class="lb">02</div><div class="nm">교체형 조명 패키지</div><div class="ds">기존 등기구 자리에 교체 설치. 기존 등은 세대에 보관해 퇴거 시 복원할 수 있습니다.</div></div><div class="tile"><div class="lb">03</div><div class="nm">경관·커뮤니티 조명 컨설팅</div><div class="ds">임예협 요청 시 단지 경관조명·커뮤니티 조도 개선 제안서를 무상 제출합니다.</div></div><div class="tile"><div class="lb">04</div><div class="nm">온라인 박람회 · 라이브커머스</div><div class="ds">박람회 날 오기 어려운 세대도 같은 공동구매가로 온라인 계약할 수 있습니다.</div></div><div class="tile"><div class="lb">05</div><div class="nm">임차인 입주설명회 지원</div><div class="ds">입주 절차·사전점검 요령·시공 허용 가이드를 한 자리에서 안내합니다.</div></div><div class="tile"><div class="lb">06</div><div class="nm">정회원 혜택 · 임예협 부스</div><div class="ds">정회원 전용 혜택을 구성하고, 임예협 홍보·가입 부스를 중앙에 둡니다.</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>제안 품목·혜택은 수요조사 결과에 따라 <em>임예협과 최종 확정</em>합니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 11</div></div>
+<h1>공동구매 단가를 지키는 <em>4가지 장치</em></h1>
+<div class="lead">공고문이 우려한 ‘행사비 때문에 오르는 단가’를 구조로 막습니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="cards" style="grid-template-columns:repeat(4,1fr)"><div class="card"><div class="lb">01</div><div class="big">공개</div><div class="nm">단가표 사전 공개</div><div class="ds">박람회 전 품목별 단가·할인율을 임예협에 제출해 검수받습니다. 현장 가격 변경 없음.</div></div><div class="card"><div class="lb">02</div><div class="big">10<small>배</small></div><div class="nm">최저가 차액 보상</div><div class="ds">동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)</div></div><div class="card"><div class="lb">03</div><div class="big">1~3<small>%</small></div><div class="nm">실적 비례 추가할인</div><div class="ds">업체 기대매출 초과 시 잔금에서 추가할인. 예: 50·100·150세대 계약 시 1·2·3%.</div></div><div class="card"><div class="lb">04</div><div class="big">5<small>%</small></div><div class="nm">계약금 상한</div><div class="ds">계약금은 총액의 5% 이하, 잔금은 시공·설치 후. 현금·카드 동일가.</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>가격은 말이 아니라 <em>사전 공개 단가 + 최저가 보장</em>으로 검증받습니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page cv">
+<div class="top"><div><div class="logo">EG</div><div class="en">EDGE COMPANY</div></div>
+<div class="who">주식회사 엣지컴퍼니<br>대표이사 고진식</div></div>
+<div class="mid"><span class="pill">CONTACT</span>
+<h1>단지가 끝날 때까지,<br><em>끝까지 함께하겠습니다.</em></h1>
+<div class="tag2">임차예정자협의회·시행사·협력업체 모두 환영합니다. 가장 편한 방법으로 연락 주십시오.</div>
+<div class="contacts">
+<div><b>1533-3210</b><span>본사 대표번호</span></div>
+<div><b>010-3345-6107</b><span>대표이사 직통</span></div>
+<div><b>010-7273-9901</b><span>주관사업 총괄 본부장</span></div>
+<div class="me"><b>edgecompany1@naver.com</b><span>이메일 문의</span></div>
+</div>
+<div class="addr">울산 본사 · 울산광역시 울주군 청량읍 온산로 615-1, 2층, 3층 &nbsp;|&nbsp; 대전 지사 &nbsp;|&nbsp; 부산 지사 · 해운대구<br>
+전기공사업 등록 제 울산-00821호 · ISO 9001/14001/45001 · 삼성전자 MOU 체결</div>
+</div>
+<div class="bt"><span>BID PROPOSAL · 동탄 파라곤 3차</span><span>주식회사 엣지컴퍼니</span></div>
+</section>
+<script>
+(function(){
+function align(){
+  document.querySelectorAll('.cards,.tiles').forEach(function(box){
+    var items=[].slice.call(box.children).filter(function(c){return c.classList.contains('card')||c.classList.contains('tile');});
+    var rows={};
+    items.forEach(function(c){var k=Math.round(c.getBoundingClientRect().top);(rows[k]=rows[k]||[]).push(c);});
+    Object.keys(rows).forEach(function(k){
+      var row=rows[k],maxH=0,info=[];
+      row.forEach(function(c){
+        var kids=[].slice.call(c.children);if(!kids.length)return;
+        var f=kids[0],l=kids[kids.length-1],cs=getComputedStyle(c);
+        var h=(l.getBoundingClientRect().bottom+parseFloat(getComputedStyle(l).marginBottom))
+             -(f.getBoundingClientRect().top-parseFloat(getComputedStyle(f).marginTop));
+        maxH=Math.max(maxH,h);info.push([c,parseFloat(cs.paddingTop),parseFloat(cs.paddingBottom),c.clientHeight]);
+      });
+      info.forEach(function(x){var extra=Math.max(0,(x[3]-x[1]-x[2]-maxH)/2);
+        x[0].style.justifyContent='flex-start';x[0].style.paddingTop=(x[1]+extra)+'px';});
+    });
+  });
+}
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(align);
+})();
+</script></body></html>
