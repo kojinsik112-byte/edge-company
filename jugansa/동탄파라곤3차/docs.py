@@ -90,7 +90,7 @@ def doc8():
     body = f"""{company_info()}
 <h2>1. 일반 분양 아파트 실적</h2>
 <p class="note" style="margin:0 0 5pt">기준: 공고일(2026.09.30) 기준 최근 5년(2021.10.01 ~ 2026.09.30), 1,000세대 이상 공동주택 입주박람회·공동구매 주관 실적 (공고 6항 4호).
-주관 시기·세대수는 NICE평가정보 기업신용평가보고서 ‘연혁’ 기재 내용과 같습니다.</p>
+주관 시기·세대수는 NICE디앤비 CLIP 기업신용평가보고서(평가완료일 2026.06.19) ‘연혁’ 기재 내용과 같습니다(별첨 1).</p>
 <table class="t">
 <thead><tr><th style="width:5%">No</th><th style="width:10%">주관 시기</th><th>단지명</th><th style="width:10%">지역</th>
 <th style="width:10%">세대수</th><th style="width:24%">수행 내용</th><th style="width:9%">증빙</th></tr></thead>
@@ -104,7 +104,7 @@ def doc8():
 &nbsp;→&nbsp; 보유: <b>{len(D.RECORDS)}회 · 합계 {total:,}세대</b> &nbsp; <span class="ok">충족</span></div>
 <h2>3. 별첨 증빙</h2>
 <ul class="n">
-<li>1. NICE평가정보 기업신용평가보고서 ‘연혁’ 사본 (주관 실적 기재 면)</li>
+<li>1. NICE디앤비 CLIP 기업신용평가보고서 ‘연혁’ 발췌 (표지 · 9쪽)</li>
 <li>2. 단지별 입주박람회·공동구매 주관 협약서(계약서) 사본</li>
 <li>3. 입주예정자협의회 추천서·감사패 사본 (통합제안서 수록)</li>
 </ul>
