@@ -21,8 +21,8 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT_HTML = os.path.join(HERE, "엣지컴퍼니_요약제안서_v4.html")
-OUT_PDF = os.path.join(HERE, "엣지컴퍼니_요약제안서_v4.pdf")
+OUT_HTML = os.path.join(HERE, "엣지컴퍼니_요약제안서_v5.html")
+OUT_PDF = os.path.join(HERE, "엣지컴퍼니_요약제안서_v5.pdf")
 QUOTE = "“입주민의 든든한 파트너, 엣지컴퍼니”"
 
 
@@ -38,16 +38,16 @@ CSS = r"""
 @font-face{font-family:'Gelasio';font-weight:700;src:url(assets/fonts/gelasio-latin-700-normal.woff2) format('woff2')}
 @page{size:297mm 210mm;margin:0}
 :root{
-  --gold:#EBCB8F;--gold2:#C8A86A;--ink:#F4F6F9;--sub:#B4BECA;--mute:#8595A8;
+  --bg:#0D1E33;--gold:#EBCB8F;--gold2:#C8A86A;--ink:#F4F6F9;--sub:#B4BECA;--mute:#8595A8;
   --line:rgba(255,255,255,.13);--sans:'Pretendard','Malgun Gothic','맑은 고딕','Apple SD Gothic Neo',sans-serif;
   --serif:Georgia,'Gelasio','Times New Roman',serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#050d18}
+html,body{background:#0D1E33}
 body{font-family:var(--sans);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact;word-break:keep-all}
 em{font-style:normal;color:var(--gold)}
 .page{width:297mm;height:210mm;position:relative;overflow:hidden;page-break-after:always;break-after:page;
-  background:radial-gradient(120% 95% at 88% -12%,#1c3c61 0%,#10264a 34%,#0a192d 64%,#050e1a 100%);
+  background:var(--bg);
   display:flex;flex-direction:column;padding:40px 48px 0}
 .page:last-child{page-break-after:auto;break-after:auto}
 @media screen{body{padding:24px 0}.page{margin:0 auto 24px;box-shadow:0 10px 40px rgba(0,0,0,.5)}}
@@ -184,7 +184,7 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 .addr{font-size:15.5px;color:var(--sub);margin-top:24px;line-height:1.75}
 
 /* ---- 경관조명 */
-.dv-lx{background:radial-gradient(120% 95% at 88% -12%,#1c3c61 0%,#10264a 34%,#0a192d 64%,#050e1a 100%)}
+.dv-lx{background:var(--bg)}
 .dv-lx .art{position:absolute;right:-30px;bottom:0;width:58%;height:100%;
   background:url('assets/경관조명_야경.svg') right bottom/cover no-repeat;opacity:.9;
   -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 38%);mask-image:linear-gradient(90deg,transparent 0%,#000 38%)}
@@ -353,25 +353,16 @@ add("divider_lx")
 S2 = "02. 조명 특화"
 # 12 경관조명 (기존 14p → 앞으로)
 add("landscape", sec=S2)
-# 13 수직계열화 (기존 12p)
-add("std", sec=S2, title="주관사 중 유일한 [[조명 수직계열화]]",
-    lead="기획 → 직수입/생산 → 인증 → 시공까지 한 회사 안에서 끝납니다.",
+# 13 수직계열화 + 같은 물건 다른 가격 (v5: 중복 2장 → 1장 통합)
+add("std", sec=S2, title="[[조명 수직계열화]] · 같은 물건, 다른 가격",
+    lead="직수입 → 생산 → KC 인증 → 시공까지 한 회사 안에서 끝나, 유통 단계 없이 단지에 도착합니다.",
     body=cards([
-        dict(lb="STEP 01", big="직수입", nm="해외 직수입 라인", ds="중국 상해·중산 무역 라인 직접 보유. 국내 유통 단계를 거치지 않습니다."),
-        dict(lb="STEP 02", big="생산", nm="생산 및 제작", ds="단지 사양에 맞춰 제품을 직접 기획·생산합니다. 규격 맞춤 가능."),
-        dict(lb="STEP 03", big="KC", nm="KC 인증", ds="전기용품 안전 KC 인증을 갖춘 제품만 단지에 들어갑니다."),
-        dict(lb="STEP 04", big="시공", nm="면허 기반 시공", ds="전기공사업 등록업체로서 결선·설치까지 직접 책임집니다."),
+        dict(lb="STEP 01", big="직수입", nm="해외 직수입 라인", ds="중국 상해·중산 라인 무역 체결 완료. 품목은 입주민 투표로 정해 직수입 공동구매."),
+        dict(lb="STEP 02", big="생산", nm="단지 맞춤 생산", ds="단지 도면과 천장 사양에 맞춘 규격으로 직접 제작. 재고 상품을 파는 방식이 아닙니다."),
+        dict(lb="STEP 03", big="KC", nm="KC 인증 확보", ds="전기용품 안전관리법 기준 KC 인증 제품만 취급. 인증서 사본을 협의회에 제출합니다."),
+        dict(lb="STEP 04", big="시공", nm="직접 시공·A/S", ds="전기공사업 등록업체가 결선·설치까지 직접. 하자가 나도 다른 업체를 찾을 필요가 없습니다."),
     ]),
-    kp="유통 단계를 뺀 만큼 [[그대로 입주민 단가]]가 됩니다.")
-# 14 같은 물건 (기존 13p)
-add("std", sec=S2, title="같은 물건, [[다른 가격]]", lead="한국 유통 단계를 모두 빼고 단지에 도착합니다.",
-    body=rows([
-        ("해외 직수입", "중국 상해·중산 라인 무역 체결 완료. 실링팬·조명·가구 등 품목을 입주민 투표로 정해 최저가 직수입 공동구매를 진행합니다."),
-        ("자체 생산·제작", "단지 도면과 천장 사양에 맞춘 규격으로 제작 가능. 재고 상품을 파는 방식이 아닙니다."),
-        ("KC 인증 확보", "전기용품 안전관리법 기준 KC 인증 제품만 취급. 인증서 사본을 협의회에 제출합니다."),
-        ("직접 시공·A/S", "전기공사업 면허 보유. 시공 하자가 나도 다른 업체를 찾을 필요가 없습니다."),
-    ]),
-    kp="“업체가 안 해줘요”라는 말이 나올 수 없는 구조입니다.")
+    kp="유통 단계를 뺀 만큼 [[그대로 입주민 단가]]가 되고, 시공·A/S까지 한 회사가 책임집니다.")
 add("std", sec=S2, title="[[커뮤니티 시설]] 업그레이드", lead="입주민이 매일 쓰는 공간부터 손봅니다.",
     body=rows([
         ("커뮤니티 조명 개선", "피트니스·독서실·경로당 등 조도가 부족한 공간을 재설계해 개선안을 제시합니다."),
@@ -438,7 +429,7 @@ add("std", sec=S3, title="주관 [[콜센터]]와 선보상", lead="입주민은
 
 # 24 구분 — 업체선정
 add("divider", n="04", title="업체 선정이 [[주관사의 본질]]입니다.",
-    bl=["4단계 공개 심사", "지역업체 95% 선정", "최저가 보장 차액 10배", "계약금 5% 상한제", "시공 전 100% 환불"])
+    bl=["4단계 공개 심사", "지역업체 90% 선정", "최저가 보장 차액 10배", "계약금 5% 상한제", "시공 전 100% 환불"])
 S4 = "04. 업체선정"
 add("std", sec=S4, title="[[4단계]] 공개 심사 프로세스", lead="주관사 단독 결정이 아닙니다. 협의회가 마지막에 컨펌합니다.",
     body=rows([
@@ -448,9 +439,9 @@ add("std", sec=S4, title="[[4단계]] 공개 심사 프로세스", lead="주관�
         ("협의회 최종 컨펌", "후보업체 서류 최종 검토 후 [[협의회 승인으로 확정]]. 물품공급계약서·청렴이행서약서·하자보수이행각서 징구."),
     ], title_w=230),
     kp="입찰 과정 전체를 협의회와 [[공유]]합니다.")
-add("std", sec=S4, title="[[지역업체 95%]] 선정 원칙", lead="A/S는 거리가 결정합니다.",
+add("std", sec=S4, title="[[지역업체 90%]] 선정 원칙", lead="A/S는 거리가 결정합니다.",
     body=cards([
-        dict(lb="LOCAL", big="95", unit="%", nm="지역업체 비중", ds="타 지역 업체는 48시간 내 A/S 처리·관리가 현실적으로 불가능합니다."),
+        dict(lb="LOCAL", big="90", unit="%", nm="지역업체 비중", ds="타 지역 업체는 48시간 내 A/S 처리·관리가 현실적으로 불가능합니다."),
         dict(lb="CHECK", big="검증", nm="사업자·재무·예치금", ds="사업자등록증·재무제표·완납증명서·예치금 통과 업체만 입점."),
         dict(lb="NO SUB", big="외주 X", nm="미검증·외주 배제", ds="선정 업체가 다른 업체에 하청 주는 행위를 계약으로 금지합니다."),
     ]),
@@ -622,9 +613,9 @@ def p_cover():
 
 TOC = [
     [("01", "회사 역량", ["한 장 요약", "실적·성장", "인증·재무", "전국 지사망", "직영 운영", "대표와 채널"]),
-     ("02", "조명 특화", ["경관조명 컨설팅", "직수입·생산·시공", "KC 인증·면허", "커뮤니티 업그레이드"])],
+     ("02", "조명 특화", ["경관조명 컨설팅", "직수입·생산·KC·시공", "커뮤니티 업그레이드"])],
     [("03", "안전망", ["하자예치금 1억", "이행보증 10억", "업체 하자보증", "48시간·10년 A/S", "베이스캠프", "콜센터·선보상"]),
-     ("04", "업체선정", ["4단계 심사", "지역업체 95%", "최저가 보장", "계약·환불 보호"])],
+     ("04", "업체선정", ["4단계 심사", "지역업체 90%", "최저가 보장", "계약·환불 보호"])],
     [("05", "협의회 지원", ["발전지원금 15만원", "8가지 무상 지원", "조경 분석보고서", "시설 업그레이드"]),
      ("06", "입주민 혜택", ["상품권·백화점권", "정회원 14종", "사전점검", "이벤트·편의"])],
 ]
@@ -726,7 +717,7 @@ def p_closing(no, sec):
              ("하자 예치금 현금 1억 거치", "주관사 순수 자산·공동통장·즉시 집행"),
              ("이행보증보험 2년 10억", "증권 실물 제출"),
              ("협의회 전용 8가지 무상 지원", "별도 비용 없음·자체 인력"),
-             ("지역업체 95% 선정", "48시간 A/S가 가능한 거리"),
+             ("지역업체 90% 선정", "48시간 A/S가 가능한 거리"),
              ("최저가 보장 차액 10배", "동일 제품 확인 시 보상"),
              ("48시간 하자보수 · 10년 A/S", "베이스캠프·콜센터 상시 운영"),
              ("경관조명 컨설팅 · 설계 · 생산 · 직접시공", "조명 직수입·KC 인증·면허 시공까지 한 회사")]
