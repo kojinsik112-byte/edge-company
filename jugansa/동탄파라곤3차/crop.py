@@ -44,10 +44,22 @@ def opt(flag, default):
     return default
 
 
+def strip_overlay(p):
+    """마지막에 그려진 페이지 전체 크기 이미지(재작화 덮개)를 지운다 — 원본 사진 레이어가 드러남."""
+    infos = p.get_image_info(xrefs=True)
+    if len(infos) > 1:
+        b = infos[-1]["bbox"]
+        if (b[2] - b[0]) * (b[3] - b[1]) > 0.8 * p.rect.width * p.rect.height and infos[-1]["xref"]:
+            p.delete_image(infos[-1]["xref"])
+    return p
+
+
 def main():
     cmd = sys.argv[1]
     if cmd == "info":
         p = fitz.open(BASE_PDF)[int(sys.argv[2])]
+        if "--under" in sys.argv:
+            strip_overlay(p)
         print("page", p.rect)
         for b in p.get_image_info(xrefs=True):
             print("IMG", [round(v) for v in b["bbox"]], b["width"], "x", b["height"])
@@ -59,6 +71,8 @@ def main():
         name, idx = sys.argv[2], int(sys.argv[3])
         rect = fitz.Rect(*map(float, sys.argv[4:8]))
         p = fitz.open(BASE_PDF)[idx]
+        if "--under" in sys.argv:
+            strip_overlay(p)
         save(p.get_pixmap(dpi=opt("--dpi", 220), clip=rect), name)
         return
     if cmd == "ev":

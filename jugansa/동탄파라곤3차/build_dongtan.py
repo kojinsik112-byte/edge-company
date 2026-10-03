@@ -524,10 +524,14 @@ def load_native():
             spec.setdefault("sec", sec)
             new_pages.append(native_page(spec))
         B.PAGES[i + 1:i + 1] = new_pages
+        NATIVE[g["group"]] = [kw for _, kw in new_pages]
 
 
+NATIVE = {}  # 그룹 id → 그 그룹이 만든 장(kw dict) — 덱 정리 때 위치 이동용
 if not os.environ.get("NO_NATIVE"):
     load_native()
+    import polish  # noqa: E402  (중복 정리·순서·문구 — polish.py)
+    polish.apply(globals())
 
 
 def render_std(no, sec, title, lead, body, kp):
@@ -600,13 +604,13 @@ def p_cover():
 
 
 TOC4 = [
-    [("01", "동탄 맞춤 제안", ["단지 이해 · 업무범위", "추진 일정 · 운영 계획", "품목별 참가 업체", "임대 특화 제안", "단가 보호 장치"]),
+    [("01", "동탄 맞춤 제안", ["단지 이해 · 임대 특화", "업무범위 9개 항목", "추진 일정 · 운영 계획", "참가 업체 · 품목"]),
      ("02", "회사 역량", ["실적·성장", "인증·재무", "지사망·직영", "대표와 채널"])],
-    [("03", "조명 특화", ["경관조명 컨설팅", "직수입·생산·KC·시공", "커뮤니티 업그레이드"]),
+    [("03", "조명 특화", ["경관조명 컨설팅", "직수입·생산·KC·시공", "공용부 조명 개선"]),
      ("04", "안전망", ["예치금 1억·보증 10억", "업체 하자보증", "클레임 보상 규정", "콜센터·선보상"])],
-    [("05", "업체선정", ["4단계 심사", "인근 지역업체 90%", "최저가 보장", "계약·환불 보호"]),
-     ("06", "임예협 지원", ["발전지원금 15만원", "8가지 무상 지원", "조경 분석보고서", "시설 업그레이드"])],
-    [("07", "입주민 혜택", ["상품권·백화점권", "정회원 혜택", "사전점검", "이벤트·편의"]),
+    [("05", "업체선정", ["4단계 심사", "인근 지역업체 90%", "단가 보호·차액 10배", "계약·환불 보호"]),
+     ("06", "임예협 지원", ["발전지원금 15만원", "8가지 무상 지원", "조경 분석보고서", "사전점검 지원"])],
+    [("07", "입주민 혜택", ["상품권·현장 혜택", "정회원 혜택", "사전점검", "이벤트·편의"]),
      ("08", "주관 실적", ["수임실적", "신도시 연속 운영", "대단지 운영"])],
 ]
 
@@ -625,6 +629,7 @@ def p_contact():
     s = sub(s, "입주예정자협의회·시공사·협력업체 모두 환영합니다.", "임차예정자협의회·시행사·협력업체 모두 환영합니다.")
     s = sub(s, "울산광역시 울주군 청량읍 상남1길 28, 2동", D.ADDRESS)  # 사업자등록증(2026.08.04) 주소
     s = sub(s, "부산 지사 · 해운대구 &nbsp;|&nbsp; 대전 지사", "대전 지사 &nbsp;|&nbsp; 부산 지사 · 해운대구")  # 울산→대전→부산
+    s = sub(s, "삼성전자 MOU 체결", "삼성전자판매 업무제휴")  # 계약서 원본 표기(업무제휴 계약서)
     return sub(s, "SUMMARY PROPOSAL · 요약제안서", "BID PROPOSAL · 동탄 파라곤 3차")
 
 
@@ -642,16 +647,26 @@ def p_hi_fund(no, sec):
 B_p_hi_fund = B.p_hi_fund
 
 
+def p_hi_money(no, sec):
+    s = B_p_hi_money(no, sec)
+    s = sub(s, "타 주관사는 <em>참여 업체에게 받은 돈</em>으로 예치합니다.<br>엣지컴퍼니는 <em>주관사 순수 자산</em>으로 직접 깔아둡니다.",
+            "참여 업체에게 걷은 돈이 아니라, <em>엣지컴퍼니 자산</em>으로 직접 예치합니다.<br>업체가 빠져도 예치금은 줄지 않습니다.")  # 타사 일반화 비교 삭제
+    return sub(s, "<span>법무법인 송달 지연 없음</span>", "<span>사용 내역 공개</span>")
+
+
+B_p_hi_money = B.p_hi_money
+
+
 def p_closing(no, sec):
     n = D.SITE["households"] * 15
     items = [("세대당 15만원 발전지원금", "지급 기준 세대는 협약 시 확정 · 임예협 협의 후 집행"),
-             ("하자 예치금 1억 · 이행보증보험 10억", "주관사 순수 자산 공동통장 · 증권 실물 제출"),
+             ("하자 예치금 1억 · 이행보증보험 10억", "엣지컴퍼니 자산으로 공동통장 예치 · 증권 실물 제출"),
              ("임예협 전용 8가지 무상 지원", "별도 비용 없음 · 자체 인력"),
              ("임대 단지 시공 허용 가이드", "원상복구 분쟁 예방 · 세대별 시공 이력 카드"),
-             ("인근 지역업체 90% 선정", "48시간 A/S가 가능한 거리"),
-             ("최저가 보장 차액 10배", "단가표 사전 공개 · 현장 가격 변경 없음"),
-             ("48시간 하자보수 · 10년 A/S", "콜센터·CRM 상시 운영 · 입주기간 업체 순환 상주(협의)"),
-             ("경관조명 컨설팅 · 설계 · 생산 · 직접시공", "조명 직수입·KC 인증·면허 시공까지 한 회사")]
+             ("시공 품목 인근 지역업체 90% 선정", "48시간 A/S가 가능한 거리"),
+             ("최저가 차액 10배 보상", "단가표 사전 공개 · 동일 브랜드·동일 제품 기준"),
+             ("48시간 하자보수 · 무상 A/S 2년", "장기관리 최대 10년 · 콜센터 상시 운영 · 입주기간 업체 순환 상주(협의)"),
+             ("경관조명 컨설팅 · 설계 · 생산 · 직접시공", "조명 직수입·KC 인증·전기공사업 등록 시공까지 한 회사")]
     its = "".join(f'<div class="it"><div class="no">{i:02d}</div><div><b>{B.html.escape(a)}</b><p>{B.html.escape(b)}</p></div></div>'
                   for i, (a, b) in enumerate(items, 1))
     return B.render_std(no, sec, "엣지컴퍼니가 [[약속드리는 것]]", "제안서에 쓴 것은 전부 협약서와 증빙으로 남깁니다.",
@@ -660,6 +675,7 @@ def p_closing(no, sec):
 
 B_p_divider_lx = B.p_divider_lx
 B.p_cover, B.p_toc, B.p_contact, B.p_hi_fund, B.p_closing = p_cover, p_toc, p_contact, p_hi_fund, p_closing
+B.p_hi_money = p_hi_money
 B.p_divider_lx = lambda: sub(B_p_divider_lx(), '<div class="n">02</div>', '<div class="n">03</div>')
 
 
@@ -752,7 +768,10 @@ def build():
              take(kind="pricing"),
              take(title="[[대단지]] 운영 경험"),
              take(kind="closing")]
-    emit(cover + B.PAGES[2:2 + len(NEW)] + extra + contact, OUT_22[:-4] + ".html",
+    d = [i for i, (k, _) in enumerate(B.PAGES) if k in ("divider", "divider_lx")]
+    ch1 = B.PAGES[d[0]:d[1]]  # 01장(구분 페이지 ~ 다음 구분 페이지 앞)
+    extra.insert(1, take(title="공동구매 단가를 지키는 [[4가지 장치]]"))
+    emit(cover + ch1 + extra + contact, OUT_22[:-4] + ".html",
          "엣지컴퍼니 동탄 파라곤3차 제안내용 [2-2]")
 
 
