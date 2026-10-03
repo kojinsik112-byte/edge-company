@@ -218,6 +218,50 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 .sub2{display:flex;gap:64px;padding:18px 0 20px;border-top:1px solid rgba(200,168,106,.35)}
 .sub2 i{display:block;font-style:normal;font-size:12px;letter-spacing:.3em;color:var(--gold2);font-weight:700}
 .sub2 b{display:block;font-size:17px;font-weight:700;margin-top:6px}
+/* ---- 네이티브 블록(통합제안서 내용을 새로 조판) */
+.nb{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px}
+.nb>*{min-height:0}
+.nb .cards,.nb .tiles,.nb .rows{flex:1 1 auto}
+.splitx{display:grid;gap:26px;flex:1;min-height:0}
+.splitx>div{display:flex;flex-direction:column;gap:14px;min-height:0}
+.stackx{display:flex;flex-direction:column;gap:14px;min-height:0}
+.gal{display:grid;gap:12px;flex:1;min-height:0}
+.gal figure{position:relative;margin:0;border-radius:12px;overflow:hidden;border:1px solid rgba(200,168,106,.32);background:#0a1626;min-height:0}
+.gal img{width:100%;height:100%;object-fit:cover;display:block}
+.gal figure.ct img{object-fit:contain;background:#fff}
+.gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:22px 14px 9px;font-size:14.5px;font-weight:700;line-height:1.3;
+  background:linear-gradient(0deg,rgba(5,12,22,.94) 0%,rgba(5,12,22,.72) 55%,rgba(5,12,22,0) 100%)}
+.gal figcaption small{display:block;font-size:12.5px;font-weight:400;color:var(--sub);margin-top:2px}
+.docs{display:flex;gap:28px;justify-content:center;align-items:stretch;flex:1;min-height:0}
+.docs .d{flex:1 1 0;display:flex;flex-direction:column;align-items:center;min-height:0;min-width:0}
+.docs .pp{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;width:100%}
+.docs img{max-width:100%;max-height:100%;display:block;background:#fff;border-radius:3px;
+  box-shadow:0 0 0 1px rgba(235,203,143,.75),0 0 0 7px rgba(200,168,106,.12),0 16px 34px rgba(0,0,0,.5)}
+.docs .cap{margin-top:14px;font-size:15.5px;font-weight:700;color:var(--gold);text-align:center;line-height:1.35}
+.docs .cap small{display:block;font-size:12.5px;font-weight:400;color:var(--mute);margin-top:2px}
+.bulx{display:flex;flex-direction:column;justify-content:center;gap:16px;flex:1;min-height:0}
+.bulx>div{position:relative;padding-left:24px}
+.bulx>div:before{content:'';position:absolute;left:0;top:9px;width:9px;height:9px;border-radius:50%;background:var(--gold2)}
+.bulx b{display:block;font-size:20px;line-height:1.35}
+.bulx p{font-size:16.5px;color:var(--sub);margin-top:5px;line-height:1.5}
+.bulx p em,.bulx b em{font-weight:700}
+.flowx{display:flex;align-items:stretch;gap:0}
+.flowx .st{flex:1;border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.015))}
+.flowx .st.hl{border-color:rgba(235,203,143,.75);background:linear-gradient(180deg,rgba(235,203,143,.16),rgba(235,203,143,.03))}
+.flowx .st i{display:block;font-style:normal;font-size:12px;font-weight:700;letter-spacing:.24em;color:var(--gold2)}
+.flowx .st b{display:block;font-size:18.5px;margin-top:5px;line-height:1.3}
+.flowx .st p{font-size:14.5px;color:var(--sub);margin-top:5px;line-height:1.45}
+.flowx .ar{display:flex;align-items:center;justify-content:center;width:30px;color:var(--gold);font-size:20px;font-weight:800;flex:none}
+.tagx{border:1px solid var(--line);border-radius:12px;padding:14px 18px;background:rgba(255,255,255,.035)}
+.tagx h4{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:10px;letter-spacing:.02em}
+.tagx .tg{display:flex;flex-wrap:wrap;gap:8px}
+.tagx .tg span{border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:5px 13px;font-size:14.5px;color:#DCE3EB}
+.tagx .tg span.g{border-color:var(--gold2);color:var(--gold);font-weight:700}
+.notex{font-size:13px;color:var(--mute);line-height:1.5}
+.bigq{border-left:3px solid var(--gold2);padding:6px 0 6px 20px}
+.bigq b{display:block;font-size:24px;line-height:1.4}
+.bigq p{font-size:16.5px;color:var(--sub);margin-top:6px;line-height:1.5}
 .toc4{grid-template-columns:repeat(4,1fr)!important}
 .toc4 .col{padding:0 22px}
 </style></head><body>
@@ -237,12 +281,12 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 <div class="bt"><span>BID PROPOSAL · 제안내용 [2-2]</span><span>2026.10</span></div>
 </section>
 <section class="page dv"><div class="n">01</div><h2>동탄 파라곤 3차를 위한 <em>맞춤 제안</em></h2><div class="bar"></div>
-<div class="bl"><span>박람회·공동구매 계획</span><span>품목별 예상 참가 업체</span><span>임대 단지 특화 제안</span><span>공고 업무범위 9개 항목 수행안</span></div></section>
+<div class="bl"><span>임대 단지 이해 · 특화 제안</span><span>공고 업무범위 9개 항목 수행안</span><span>추진 일정 · 운영 계획</span><span>품목별 예상 참가 업체</span></div></section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
 <div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 03</div></div>
-<h1><em>임대 단지</em>의 박람회는 달라야 합니다</h1>
-<div class="lead">동탄2 신동 A58BL 파라곤 3차 — 공고문 단지개요를 기준으로 설계했습니다.</div>
+<h1>동탄 파라곤 3차, <em>이런 단지</em>입니다</h1>
+<div class="lead">공고문 단지개요 기준 — 임차예정자협의회(이하 임예협)와 함께 설계합니다.</div>
 <div class="rule"></div>
 <div class="ct"><div class="cards" style="grid-template-columns:repeat(4,1fr)"><div class="card"><div class="lb">SCALE</div><div class="big">1,247<small>세대</small></div><div class="nm">18개동 대단지</div><div class="ds">시행 ㈜바우하우스 · 시공 ㈜라인건설. 1,000세대 이상 주관 경험을 그대로 적용합니다.</div></div><div class="card"><div class="lb">TYPE</div><div class="big">2<small>개 타입</small></div><div class="nm">82㎡ · 108㎡</div><div class="ds">835세대 · 411세대. 타입이 단순해 커튼·블라인드·조명을 <em>규격화</em>할 수 있어 단가 협상력이 커집니다.</div></div><div class="card"><div class="lb">MOVE-IN</div><div class="big">2027<small>.02.28</small></div><div class="nm">입주 예정</div><div class="ds">설 연휴 전 박람회를 열어 입주 전 시공 일정을 확보합니다.</div></div><div class="card hl"><div class="lb">LEASE</div><div class="big">10<small>년 이상</small></div><div class="nm">공공지원 민간임대</div><div class="ds">임대 거주 세대는 <em>할 수 있는 시공이 다릅니다.</em> 분양전환 조건은 사업주체 공고 기준으로 안내합니다.</div></div></div></div>
 <div class="kp"><b>KEY POINT</b><span>타입 2개 · 임대 10년 — <em>규격화된 공동구매</em>와 <em>원상복구 걱정 없는 시공</em>이 핵심입니다.</span></div>
@@ -251,56 +295,16 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
 <div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 04</div></div>
-<h1>공고 업무범위 <em>9개 항목</em> 수행 방안</h1>
-<div class="lead">공고문 4항의 업무를 빠짐없이, 항목별로 답합니다.</div>
-<div class="rule"></div>
-<div class="ct"><table class="tbl "><thead><tr><th>NO</th><th>공고 업무범위</th><th>엣지컴퍼니 수행 방안</th></tr></thead><tbody><tr><td class="n">01</td><td class="k">박람회 개최·기획, 공동구매 총괄</td><td>전담 PM 지정. 일정·품목·업체·계약 전 과정을 <em>임예협과 공유</em>하고 진행 현황을 정기 보고.</td></tr><tr><td class="n">02</td><td class="k">품목 구성·업체 섭외·계약·가격 검수</td><td>수요조사로 품목 확정 → 공개 입찰(임예협·주관사 이메일 동시 접수) → 4단계 심사 → 단가표 사전 검수.</td></tr><tr><td class="n">03</td><td class="k">입주 후 A/S·하자 접수·이행관리</td><td>콜센터·카페 신문고·카카오채널 단일 창구. <em>24시간 회신 · 48시간 처리</em>, 업체 회피 시 선보상 후 정산.</td></tr><tr><td class="n">04</td><td class="k">사전점검·입주지원·입주설명회 지원</td><td>현수막·도우미·라돈측정기 10대·커피차 지원, 사전점검 당일 공용부·조경 하자진단 보고서.</td></tr><tr><td class="n">05</td><td class="k">대관·동선·안전·인력·비품·홍보물</td><td>주관사가 직접 대관·운영. <em>행사 배상책임보험</em> 가입, 안전요원·동선·비상구 계획 수립.</td></tr><tr><td class="n">06</td><td class="k">입주 전·후 전문분야 검토·행정지원</td><td>착공·조경 도면 분석보고서, 열화상 드론·일조 분석, 민원 양식·접수 지원.</td></tr><tr><td class="n">07</td><td class="k">카페·공지채널 홍보 콘텐츠 제작</td><td>카페 디자인, 품목 안내 카드뉴스·영상, 공지 콘텐츠를 주관사가 제작.</td></tr><tr><td class="n">08</td><td class="k">기타 임예협 요청 업무</td><td>시행사·시공사 협의 자리 엔지니어 동석, 온라인 위임장 등 요청 시 지원.</td></tr><tr><td class="n">09</td><td class="k">이벤트 지원</td><td>경품·키즈 프로그램·점등식 등 박람회 이벤트와 정회원 전용 혜택 운영.</td></tr></tbody></table></div>
-<div class="kp"><b>KEY POINT</b><span>제안서는 협약서와 같은 효력 — <em>지킬 수 있는 것만</em> 적었습니다.</span></div>
-<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
-</section>
-<section class="page">
-<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 05</div></div>
-<h1>박람회·공동구매 <em>추진 일정</em> (안)</h1>
-<div class="lead">입주 2027.02.28에서 거꾸로 짰습니다. 설 연휴 전 박람회, 입주 후 1년 사후관리까지.</div>
-<div class="rule"></div>
-<div class="ct"><div class="rows"><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">01</div><div class="tt">2026.10</div><div class="dd">주관사 선정·협약 체결 · 임예협 카페/공지채널 지원 시작 · <em>품목 수요조사</em> 설문</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">02</div><div class="tt">2026.11</div><div class="dd">참여업체 <em>공개 입찰공고</em>(임예협·주관사 이메일 동시 접수) · 행사장 대관 · 타입별 실측 데이터 준비</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">03</div><div class="tt">2026.12</div><div class="dd">1·2차 업체 심사 → <em>임예협 최종 컨펌</em> · 업체 협약식 · 특약이행각서·하자보수 이행각서 징구</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">04</div><div class="tt">2027.01</div><div class="dd">단가표 사전 공개 · 사전점검 행사 지원 · <em>입주박람회 주말 양일</em>(설 연휴 전) · 온라인 박람회 오픈</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">05</div><div class="tt">2027.02~03</div><div class="dd">입주 지원 · 입주기간 업체 순환 상주(협의) · 콜센터 운영 · 시공 일정 관리</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">06</div><div class="tt">~2028.02</div><div class="dd">입주 후 1년 사후관리 — A/S·하자 이행관리, 협약 종료 시 <em>결과 보고서</em> 제출</div></div></div></div>
-<div class="kp"><b>KEY POINT</b><span>세부 일정은 사전점검·입주지원센터 일정에 맞춰 <em>임예협과 확정</em>합니다.</span></div>
-<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
-</section>
-<section class="page">
-<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 06</div></div>
-<h1>입주박람회 <em>운영 계획</em></h1>
-<div class="lead">계약을 재촉하는 자리가 아니라, 확인하고 비교하는 자리로 만듭니다.</div>
-<div class="rule"></div>
-<div class="ct"><div class="tiles lg" style="grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr)"><div class="tile"><div class="lb">WHEN</div><div class="nm">주말 양일 · 설 연휴 전</div><div class="ds">2027년 1월 중 토·일 개최(안). 사전점검 일정에 맞춰 확정합니다.</div></div><div class="tile"><div class="lb">WHERE</div><div class="nm">수원메쎄 · 수원컨벤션센터 등 후보</div><div class="ds">단지에서 30분 내외 전시장 후보를 임예협과 답사한 뒤 확정합니다.</div></div><div class="tile"><div class="lb">SAFETY</div><div class="nm">행사 배상책임보험 가입</div><div class="ds">안전요원·동선·비상구 계획 수립. 화재·상해 예방 수칙은 참여업체 서약.</div></div><div class="tile"><div class="lb">MEMBERS</div><div class="nm">정회원 사전예약 · 체크인</div><div class="ds">정회원 우선 입장·혜택. 임예협 부스를 행사장 중앙에 배치합니다.</div></div><div class="tile"><div class="lb">ONLINE</div><div class="nm">온라인 박람회 · 라이브</div><div class="ds">단지 입주민만 들어오는 폐쇄몰. 박람회와 같은 공동구매가.</div></div><div class="tile"><div class="lb">PR</div><div class="nm">카페·공지채널 콘텐츠</div><div class="ds">품목 안내 카드뉴스·영상·현수막·알림톡을 주관사가 제작합니다.</div></div></div></div>
-<div class="kp"><b>KEY POINT</b><span>박람회장 가격 = 사전 공개 단가 — <em>현장에서 가격이 바뀌지 않습니다.</em></span></div>
-<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
-</section>
-<section class="page">
-<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 07</div></div>
-<h1>품목별 <em>예상 참가 업체</em></h1>
-<div class="lead">확정은 임예협 공개 입찰·심사 후 — 시공 품목은 인근 지역(동탄·화성·오산) 업체가 우선입니다.</div>
-<div class="rule"></div>
-<div class="ct"><table class="tbl sm"><thead><tr><th>구분</th><th>품목</th><th>예상 참가 업체</th><th>비고</th></tr></thead><tbody><tr class="own"><td class="g" rowspan="3">주관사 직영</td><td class="k">조명 · LED · 경관조명</td><td>㈜엣지컴퍼니 조명사업부</td><td>전기공사업 등록 · KC 인증 제품</td></tr><tr class="own"><td class="k">커튼 · 블라인드 · 전동커튼</td><td>엣지리브커튼 (㈜엣지컴퍼니)</td><td>82·108㎡ 실측 규격 사전 제작</td></tr><tr class="own"><td class="k">실링팬</td><td>아크로 ARCO (㈜엣지컴퍼니)</td><td>천장 시공 · 임대사업자 승인 품목</td></tr><tr><td class="g" rowspan="6">브랜드</td><td class="k">가전 · 시스템에어컨</td><td>삼성전자 공식 판매점</td><td>삼성전자 MOU 체결</td></tr><tr><td class="k">욕실 환기</td><td>힘펠 (휴젠뜨)</td><td>욕실 환기·온풍</td></tr><tr><td class="k">해충 방역 · 위생 점검</td><td>세스코</td><td>임예협 무상 점검 연계</td></tr><tr><td class="k">렌탈 (정수기·비데·공기청정)</td><td>SK매직</td><td>설치·철거 간편 · 원상복구 부담 없음</td></tr><tr><td class="k">가구</td><td>에몬스</td><td>참가 협의 중</td></tr><tr><td class="k">중문 · 인테리어 자재</td><td>LX하우시스 지인(Z:IN) 대리점</td><td>참가 협의 중</td></tr><tr><td class="g" rowspan="3">지역 시공</td><td class="k">입주청소 · 줄눈 · 탄성코트 · 새집증후군</td><td>동탄·화성 지역 전문업체</td><td>공개 입찰 선정</td></tr><tr><td class="k">방충망 · 단열필름 · 선반 · 유리막코팅</td><td>동탄·화성 지역 전문업체</td><td>공개 입찰 선정</td></tr><tr><td class="k">포장이사 · 사전점검 대행</td><td>경기 남부 지역 전문업체</td><td>공개 입찰 선정</td></tr></tbody></table></div>
-<div class="kp"><b>KEY POINT</b><span>주관사 직영 품목도 <em>같은 심사 · 같은 단가 공개 · 같은 최저가 보장</em>.<small>하도급·타 주관사 연동 계약 없음</small></span></div>
-<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
-</section>
-<section class="page">
-<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 08</div></div>
 <h1>임대 단지라서 <em>달라야 하는 것</em></h1>
 <div class="lead">10년을 살 집, 언젠가 내 집이 될 수도 있는 집 — 두 경우를 모두 설계했습니다.</div>
 <div class="rule"></div>
-<div class="ct"><div class="rows"><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">01</div><div class="tt">시공 허용 품목 가이드</div><div class="dd">임대사업자와 사전 협의해 품목을 <em>허용·조건부·불가</em> 3단계로 나눠 박람회 전에 공개합니다. 퇴거 시 원상복구 분쟁을 막습니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">02</div><div class="tt">두 갈래 패키지</div><div class="dd">분양전환 예정 세대는 ‘내 집’ 기준(중문·줄눈·시스템에어컨), 임대 거주 세대는 <em>무타공·이동식·렌탈</em> 중심으로 구성합니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">03</div><div class="tt">세대별 시공 이력 카드</div><div class="dd">시공 품목·자재·사진·보증기간을 세대별로 기록해 드립니다. A/S·분양전환·퇴거 때 <em>증빙</em>이 됩니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">04</div><div class="tt">하자 창구 분리 접수</div><div class="dd">공동구매 시공 하자는 주관사 콜센터가 처리하고, 건물 하자는 접수 후 <em>임예협을 통해 임대사업자에 일괄 전달</em>합니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">05</div><div class="tt">타입 2개 규격화</div><div class="dd">82·108㎡ 실측 데이터로 커튼·블라인드·조명을 미리 제작해 입주일에 바로 설치합니다.</div></div></div></div>
+<div class="ct"><div class="rows"><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">01</div><div class="tt">시공 허용 품목 가이드</div><div class="dd">임대사업자와 사전 협의해 품목을 <em>허용·조건부·불가</em> 3단계로 나눠 박람회 전에 공개합니다. 퇴거 시 원상복구 분쟁을 막습니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">02</div><div class="tt">두 갈래 패키지</div><div class="dd">분양전환 예정 세대는 ‘내 집’ 기준(중문·줄눈·시스템에어컨), 임대 거주 세대는 <em>무타공·이동식·렌탈</em> 중심으로 구성합니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">03</div><div class="tt">세대별 시공 이력 카드</div><div class="dd">시공 품목·자재·사진·보증기간을 세대별로 기록해 드립니다. A/S·분양전환·퇴거 때 <em>증빙</em>이 됩니다.</div></div><div class="row" style="grid-template-columns:46px 230px 1fr"><div class="no">04</div><div class="tt">하자 창구 분리 접수</div><div class="dd">공동구매 시공 하자는 주관사 콜센터가 처리하고, 건물 하자는 접수 후 <em>임예협을 통해 임대사업자에 일괄 전달</em>합니다.</div></div></div></div>
 <div class="kp"><b>KEY POINT</b><span>임차인의 시공은 ‘얼마나 싸게’보다 <em>‘나갈 때 문제없나’</em>가 먼저입니다.</span></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 09</div></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 05</div></div>
 <h1>공동구매 규모는 <em>솔직하게</em> 잡겠습니다</h1>
 <div class="lead">임대 거주 세대는 타공·구조 변경 시공이 제한됩니다. 참여 품목·업체 수가 분양 단지보다 줄어드는 것을 전제로 설계했습니다.</div>
 <div class="rule"></div>
@@ -310,7 +314,7 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 10</div></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 06</div></div>
 <h1>동탄 파라곤 3차 <em>특화 제안</em></h1>
 <div class="lead">엣지컴퍼니 본업(조명·커튼·실링팬)을 임대 단지에 맞게 다시 짰습니다.</div>
 <div class="rule"></div>
@@ -320,12 +324,52 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 11</div></div>
-<h1>공동구매 단가를 지키는 <em>4가지 장치</em></h1>
-<div class="lead">공고문이 우려한 ‘행사비 때문에 오르는 단가’를 구조로 막습니다.</div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 07</div></div>
+<h1>공고 업무범위 <em>9개 항목</em> 수행 방안</h1>
+<div class="lead">공고문 4항의 업무를 빠짐없이, 항목별로 답합니다.</div>
 <div class="rule"></div>
-<div class="ct"><div class="cards" style="grid-template-columns:repeat(4,1fr)"><div class="card"><div class="lb">01</div><div class="big">공개</div><div class="nm">단가표 사전 공개</div><div class="ds">박람회 전 품목별 단가·할인율을 임예협에 제출해 검수받습니다. 현장 가격 변경 없음.</div></div><div class="card"><div class="lb">02</div><div class="big">10<small>배</small></div><div class="nm">최저가 차액 보상</div><div class="ds">동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)</div></div><div class="card"><div class="lb">03</div><div class="big">1~3<small>%</small></div><div class="nm">실적 비례 추가할인</div><div class="ds">업체 기대매출 초과 시 잔금에서 추가할인. 예: 50·100·150세대 계약 시 1·2·3%.</div></div><div class="card"><div class="lb">04</div><div class="big">5<small>%</small></div><div class="nm">계약금 상한</div><div class="ds">계약금은 총액의 5% 이하, 잔금은 시공·설치 후. 현금·카드 동일가.</div></div></div></div>
-<div class="kp"><b>KEY POINT</b><span>가격은 말이 아니라 <em>사전 공개 단가 + 최저가 보장</em>으로 검증받습니다.</span></div>
+<div class="ct"><table class="tbl "><thead><tr><th>NO</th><th>공고 업무범위</th><th>엣지컴퍼니 수행 방안</th></tr></thead><tbody><tr><td class="n">01</td><td class="k">박람회 개최·기획, 공동구매 총괄</td><td>전담 PM 지정. 일정·품목·업체·계약 전 과정을 <em>임예협과 공유</em>하고 진행 현황을 정기 보고.</td></tr><tr><td class="n">02</td><td class="k">품목 구성·업체 섭외·계약·가격 검수</td><td>수요조사로 품목 확정 → 공개 입찰(임예협·주관사 이메일 동시 접수) → 4단계 심사 → 단가표 사전 검수.</td></tr><tr><td class="n">03</td><td class="k">입주 후 A/S·하자 접수·이행관리</td><td>콜센터·카페 신문고·카카오채널 단일 창구. <em>24시간 회신 · 48시간 처리</em>, 업체 회피 시 선보상 후 정산.</td></tr><tr><td class="n">04</td><td class="k">사전점검·입주지원·입주설명회 지원</td><td>현수막·도우미·라돈측정기 10대·커피차 지원, 사전점검 당일 공용부·조경 하자진단 보고서.</td></tr><tr><td class="n">05</td><td class="k">대관·동선·안전·인력·비품·홍보물</td><td>주관사가 직접 대관·운영. <em>행사 배상책임보험</em> 가입, 안전요원·동선·비상구 계획 수립.</td></tr><tr><td class="n">06</td><td class="k">입주 전·후 전문분야 검토·행정지원</td><td>착공·조경 도면 분석보고서, 열화상 드론·일조 분석, 민원 양식·접수 지원.</td></tr><tr><td class="n">07</td><td class="k">카페·공지채널 홍보 콘텐츠 제작</td><td>카페 디자인, 품목 안내 카드뉴스·영상, 공지 콘텐츠를 주관사가 제작.</td></tr><tr><td class="n">08</td><td class="k">기타 임예협 요청 업무</td><td>시행사·시공사 협의 자리 엔지니어 동석, 온라인 위임장 등 요청 시 지원.</td></tr><tr><td class="n">09</td><td class="k">이벤트 지원</td><td>경품·키즈 프로그램·점등식 등 박람회 이벤트와 정회원 전용 혜택 운영.</td></tr></tbody></table></div>
+<div class="kp"><b>KEY POINT</b><span>제안서는 협약서와 같은 효력 — <em>지킬 수 있는 것만</em> 적었습니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 08</div></div>
+<h1>박람회·공동구매 <em>추진 일정</em> (안)</h1>
+<div class="lead">입주 2027.02.28에서 거꾸로 짰습니다. 설 연휴 전 박람회, 입주 후 1년 사후관리까지.</div>
+<div class="rule"></div>
+<div class="ct"><div class="rows"><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">01</div><div class="tt">2026.10</div><div class="dd">주관사 선정·협약 체결 · 임예협 카페/공지채널 지원 시작 · <em>품목 수요조사</em> 설문</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">02</div><div class="tt">2026.11</div><div class="dd">참여업체 <em>공개 입찰공고</em>(임예협·주관사 이메일 동시 접수) · 행사장 대관 · 타입별 실측 데이터 준비</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">03</div><div class="tt">2026.12</div><div class="dd">1·2차 업체 심사 → <em>임예협 최종 컨펌</em> · 업체 협약식 · 특약이행각서·하자보수 이행각서 징구</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">04</div><div class="tt">2027.01</div><div class="dd">단가표 사전 공개 · 사전점검 행사 지원 · <em>입주박람회 주말 양일</em>(설 연휴 전) · 온라인 박람회 오픈</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">05</div><div class="tt">2027.02~03</div><div class="dd">입주 지원 · 입주기간 업체 순환 상주(협의) · 콜센터 운영 · 시공 일정 관리</div></div><div class="row" style="grid-template-columns:46px 170px 1fr"><div class="no">06</div><div class="tt">~2028.02</div><div class="dd">입주 후 1년 사후관리 — A/S·하자 이행관리, 협약 종료 시 <em>결과 보고서</em> 제출</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>세부 일정은 사전점검·입주지원센터 일정에 맞춰 <em>임예협과 확정</em>합니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 09</div></div>
+<h1>입주박람회 <em>운영 계획</em></h1>
+<div class="lead">계약을 재촉하는 자리가 아니라, 확인하고 비교하는 자리로 만듭니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="tiles lg" style="grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr)"><div class="tile"><div class="lb">WHEN</div><div class="nm">주말 양일 · 설 연휴 전</div><div class="ds">2027년 1월 중 토·일 개최(안). 사전점검 일정에 맞춰 확정합니다.</div></div><div class="tile"><div class="lb">WHERE</div><div class="nm">수원메쎄 · 수원컨벤션센터 등 후보</div><div class="ds">단지에서 30분 내외 전시장 후보를 임예협과 답사한 뒤 확정합니다.</div></div><div class="tile"><div class="lb">SAFETY</div><div class="nm">행사 배상책임보험 가입</div><div class="ds">안전요원·동선·비상구 계획 수립. 화재·상해 예방 수칙은 참여업체 서약.</div></div><div class="tile"><div class="lb">MEMBERS</div><div class="nm">정회원 사전예약 · 체크인</div><div class="ds">정회원 우선 입장·혜택. 임예협 부스를 행사장 중앙에 배치합니다.</div></div><div class="tile"><div class="lb">ONLINE</div><div class="nm">온라인 박람회 · 라이브</div><div class="ds">단지 입주민만 들어오는 폐쇄몰. 박람회와 같은 공동구매가.</div></div><div class="tile"><div class="lb">PR</div><div class="nm">카페·공지채널 콘텐츠</div><div class="ds">품목 안내 카드뉴스·영상·현수막·알림톡을 주관사가 제작합니다.</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>박람회장 가격 = 사전 공개 단가 — <em>현장에서 가격이 바뀌지 않습니다.</em></span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 10</div></div>
+<h1>품목별 <em>예상 참가 업체</em></h1>
+<div class="lead">확정은 임예협 공개 입찰·심사 후 — 시공 품목은 인근 지역(동탄·화성·오산) 업체가 우선입니다.</div>
+<div class="rule"></div>
+<div class="ct"><table class="tbl sm"><thead><tr><th>구분</th><th>품목</th><th>예상 참가 업체</th><th>비고</th></tr></thead><tbody><tr class="own"><td class="g" rowspan="3">주관사 직영</td><td class="k">조명 · LED · 경관조명</td><td>㈜엣지컴퍼니 조명사업부</td><td>전기공사업 등록 · KC 인증 제품</td></tr><tr class="own"><td class="k">커튼 · 블라인드 · 전동커튼</td><td>엣지리브커튼 (㈜엣지컴퍼니)</td><td>82·108㎡ 실측 규격 사전 제작</td></tr><tr class="own"><td class="k">실링팬</td><td>아크로 ARCO (㈜엣지컴퍼니)</td><td>천장 시공 · 임대사업자 승인 품목</td></tr><tr><td class="g" rowspan="6">브랜드</td><td class="k">가전 · 시스템에어컨</td><td>삼성전자 공식 판매점</td><td>삼성전자판매 업무제휴</td></tr><tr><td class="k">욕실 환기</td><td>힘펠 (휴젠뜨)</td><td>욕실 환기·온풍</td></tr><tr><td class="k">해충 방역 · 위생 점검</td><td>세스코</td><td>임예협 무상 점검 연계</td></tr><tr><td class="k">렌탈 (정수기·비데·공기청정)</td><td>SK매직</td><td>설치·철거 간편 · 원상복구 부담 없음</td></tr><tr><td class="k">가구</td><td>에몬스</td><td>참가 협의 중</td></tr><tr><td class="k">중문 · 인테리어 자재</td><td>LX하우시스 지인(Z:IN) 대리점</td><td>참가 협의 중</td></tr><tr><td class="g" rowspan="3">지역 시공</td><td class="k">입주청소 · 줄눈 · 탄성코트 · 새집증후군</td><td>동탄·화성 지역 전문업체</td><td>공개 입찰 선정</td></tr><tr><td class="k">방충망 · 단열필름 · 선반 · 유리막코팅</td><td>동탄·화성 지역 전문업체</td><td>공개 입찰 선정</td></tr><tr><td class="k">포장이사 · 사전점검 대행</td><td>경기 남부 지역 전문업체</td><td>공개 입찰 선정</td></tr></tbody></table></div>
+<div class="kp"><b>KEY POINT</b><span>주관사 직영 품목도 <em>같은 심사 · 같은 단가 공개 · 같은 최저가 보장</em>.<small>하도급·타 주관사 연동 계약 없음</small></span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">01. 동탄 맞춤 제안</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 11</div></div>
+<h1>공동구매 <em>품목</em>을 한눈에</h1>
+<div class="lead">가구·가전부터 입주청소·보험까지, 입주 준비 품목을 한 박람회에서 비교합니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="nb"><div class="gal" style="grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(2,1fr);flex:1 1 0"><figure class=""><img src="assets_ins/g07_furniture.jpg" alt=""><figcaption>브랜드가구</figcaption></figure><figure class=""><img src="assets_ins/g07_appliance.jpg" alt=""><figcaption>가전</figcaption></figure><figure class=""><img src="assets_ins/g07_aircon.jpg" alt=""><figcaption>시스템에어컨</figcaption></figure><figure class=""><img src="assets_ins/g07_door.jpg" alt=""><figcaption>중문</figcaption></figure><figure class=""><img src="assets_ins/g07_curtain.jpg" alt=""><figcaption>커튼·블라인드</figcaption></figure><figure class=""><img src="assets_ins/g07_screen.jpg" alt=""><figcaption>방충망</figcaption></figure><figure class=""><img src="assets_ins/g07_induction.jpg" alt=""><figcaption>인덕션</figcaption></figure><figure class=""><img src="assets_ins/g07_foodwaste.jpg" alt=""><figcaption>음식물처리기</figcaption></figure><figure class=""><img src="assets_ins/g07_bath.jpg" alt=""><figcaption>욕실케어</figcaption></figure><figure class=""><img src="assets_ins/g07_tv.jpg" alt=""><figcaption>벽걸이TV</figcaption></figure><figure class=""><img src="assets_ins/g07_shelf.jpg" alt=""><figcaption>선반</figcaption></figure><figure class=""><img src="assets_ins/g07_bedding.jpg" alt=""><figcaption>침구</figcaption></figure></div><div class="splitx" style="grid-template-columns:1fr 1fr"><div><div class="tagx"><h4>생활·무타공 품목 — 바로 계약</h4><div class="tg"><span class="">브랜드가구</span><span class="">디자인가구</span><span class="">가전</span><span class="">커튼·블라인드</span><span class="">입주청소</span><span class="">욕실케어</span><span class="">새집증후군</span><span class="">슈케어</span><span class="">단열필름</span><span class="">이사</span><span class="">공간정리</span><span class="">렌탈</span><span class="">사전점검</span><span class="">해외직구</span><span class="">층간소음</span><span class="">화재보험</span><span class="">비데</span><span class="">통신</span><span class="">SK매직</span><span class="">진드기케어</span><span class="">침구</span></div></div></div><div><div class="tagx"><h4>시공 품목 — 임대사업자 승인 후 진행</h4><div class="tg"><span class="g">시스템에어컨</span><span class="g">중문</span><span class="g">실링팬</span><span class="g">줄눈</span><span class="g">방충망</span><span class="g">인덕션</span><span class="g">음식물처리기</span><span class="g">탄성코트</span><span class="g">욕실환풍기</span><span class="g">인테리어</span><span class="g">LED</span><span class="g">선반</span><span class="g">벽걸이TV</span><span class="g">에어컨이전</span><span class="g">공기청정시스템</span><span class="g">주방아트</span></div></div></div></div><div class="notex">품목 구분은 예시입니다. 허용·조건부·불가 기준은 임대사업자와 협의해 박람회 전에 공개하며, 최종 품목은 임예협 수요조사 결과로 확정합니다.</div></div></div>
+<div class="kp"><b>KEY POINT</b><span>임대 세대는 '살 수 있나'보다 '<em>시공해도 되나</em>'를 먼저 안내합니다.</span></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>
 <section class="page dv"><div class="n">02</div><h2>임예협이 받는 <em>엣지컴퍼니만의 약속</em></h2><div class="bar"></div>
@@ -333,6 +377,16 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
 <div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 13</div></div>
+<h1>공동구매 단가를 지키는 <em>4가지 장치</em></h1>
+<div class="lead">공고문이 우려한 ‘행사비 때문에 오르는 단가’를 구조로 막습니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="cards" style="grid-template-columns:repeat(4,1fr)"><div class="card"><div class="lb">01</div><div class="big">공개</div><div class="nm">단가표 사전 공개</div><div class="ds">박람회 전 품목별 단가·할인율을 임예협에 제출해 검수받습니다. 현장 가격 변경 없음.</div></div><div class="card"><div class="lb">02</div><div class="big">10<small>배</small></div><div class="nm">최저가 차액 10배 보상</div><div class="ds">동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)</div></div><div class="card"><div class="lb">03</div><div class="big">1~3<small>%</small></div><div class="nm">실적 비례 추가할인</div><div class="ds">업체 기대매출 초과 시 잔금에서 추가할인. 예: 50·100·150세대 계약 시 1·2·3%.</div></div><div class="card"><div class="lb">04</div><div class="big">5<small>%</small></div><div class="nm">계약금 상한</div><div class="ds">계약금은 총액의 5% 이하, 잔금은 시공·설치 후. 현금·카드 동일가.</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>가격은 <em>사전 공개 단가 + 최저가 차액 10배 보상</em>으로 검증받습니다.</span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 14</div></div>
 
 
 <div class="ct"><div class="hi"><div class="tag">★★ 핵심 제안</div>
@@ -345,60 +399,60 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 14</div></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 15</div></div>
 <h1>발전지원금은 <em>이렇게 쓰입니다</em></h1>
 <div class="lead">현금만 드리고 끝나는 게 아니라, 단지에 남는 형태로 집행합니다.</div>
 <div class="rule"></div>
-<div class="ct"><div class="rows"><div class="row" style="grid-template-columns:46px 268px 1fr"><div class="no">01</div><div class="tt">단지 시설 투자</div><div class="dd">커뮤니티 시설 업그레이드, 경관조명, 공용부 개선 등 <em>입주 후에도 남는 곳</em>에 우선 집행.</div></div><div class="row" style="grid-template-columns:46px 268px 1fr"><div class="no">02</div><div class="tt">임예협 활동 지원</div><div class="dd">임예협 운영·행사·회의 등 활동에 필요한 지원.</div></div><div class="row" style="grid-template-columns:46px 268px 1fr"><div class="no">03</div><div class="tt">입주민 직접 혜택</div><div class="dd">상품권·사은품·무상 시공 등 세대에 직접 돌아가는 혜택.</div></div><div class="row" style="grid-template-columns:46px 268px 1fr"><div class="no">04</div><div class="tt">집행 내역 공개</div><div class="dd">항목·금액·시점을 임예협과 사전 협의하고, 집행 후 내역을 공개합니다.</div></div></div></div>
+<div class="ct"><div class="rows"><div class="row" style="grid-template-columns:46px 268px 1fr"><div class="no">01</div><div class="tt">단지 시설 투자</div><div class="dd">커뮤니티·공용부 개선 등 <em>입주 후에도 남는 곳</em>에 우선 집행합니다(임대사업자 협의).</div></div><div class="row" style="grid-template-columns:46px 268px 1fr"><div class="no">02</div><div class="tt">임예협 활동 지원</div><div class="dd">임예협 운영·행사·회의 등 활동에 필요한 지원.</div></div><div class="row" style="grid-template-columns:46px 268px 1fr"><div class="no">03</div><div class="tt">입주민 직접 혜택</div><div class="dd">상품권·사은품·무상 시공 등 세대에 직접 돌아가는 혜택.</div></div><div class="row" style="grid-template-columns:46px 268px 1fr"><div class="no">04</div><div class="tt">집행 내역 공개</div><div class="dd">항목·금액·시점을 임예협과 사전 협의하고, 집행 후 내역을 공개합니다.</div></div></div></div>
 <div class="kp"><b>KEY POINT</b><span>구체 배분은 <em>임예협 협의 후 단지 맞춤</em>으로 확정합니다.<small>표기 금액은 부가세 포함</small></span></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 15</div></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 16</div></div>
 <h1>입주민을 지키는 <em>4중 안전망</em></h1>
 <div class="lead">한 가지라도 빠지면 입주민이 피해를 봅니다. 저희는 네 겹으로 막습니다.</div>
 <div class="rule"></div>
-<div class="ct"><div class="cards" style="grid-template-columns:repeat(4,1fr)"><div class="card"><div class="lb">01</div><div class="big">1<small>억</small></div><div class="nm">하자 예치금 현금</div><div class="ds">엣지 순수 자산으로 거치. 업체에게 받은 돈이 아닙니다.</div></div><div class="card"><div class="lb">02</div><div class="big">10<small>억</small></div><div class="nm">이행보증보험 2년</div><div class="ds">업체 도산 시 엣지가 100% 지급 + 동종업체 이관.</div></div><div class="card"><div class="lb">03</div><div class="big">48<small>시간</small></div><div class="nm">하자보수 원칙</div><div class="ds">미해결 시 하자지연 패널티 부과.</div></div><div class="card"><div class="lb">04</div><div class="big">10<small>년</small></div><div class="nm">장기 사후관리</div><div class="ds">최소 2년 무상 A/S, 최대 10년 장기 관리.</div></div></div></div>
+<div class="ct"><div class="cards" style="grid-template-columns:repeat(4,1fr)"><div class="card"><div class="lb">01</div><div class="big">1<small>억</small></div><div class="nm">하자 예치금 현금</div><div class="ds">엣지컴퍼니 자산으로 직접 예치합니다.</div></div><div class="card"><div class="lb">02</div><div class="big">10<small>억</small></div><div class="nm">이행보증보험 2년</div><div class="ds">업체 도산 시 동종업체로 이관하고 비용은 엣지컴퍼니가 부담합니다.</div></div><div class="card"><div class="lb">03</div><div class="big">48<small>시간</small></div><div class="nm">하자보수 원칙</div><div class="ds">미해결 시 하자지연 패널티 부과.</div></div><div class="card"><div class="lb">04</div><div class="big">10<small>년</small></div><div class="nm">장기 사후관리</div><div class="ds">최소 2년 무상 A/S, 최대 10년 장기 관리.</div></div></div></div>
 <div class="kp"><b>KEY POINT</b><span>안전망은 <em>계약서</em>와 <em>증권으로</em> 제출합니다.</span></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 16</div></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 17</div></div>
 
 
 <div class="ct"><div class="hi"><div class="tag">★ 차별화 포인트</div>
 <div class="num"><span class="pre">현금</span><span class="v">1억</span></div>
 <div class="nm2">하자 예치금 거치</div>
-<p>타 주관사는 <em>참여 업체에게 받은 돈</em>으로 예치합니다.<br>엣지컴퍼니는 <em>주관사 순수 자산</em>으로 직접 깔아둡니다.</p>
-<div class="chips"><span>임예협+주관사 공동통장</span><span>하자 시 즉시 집행</span><span>법무법인 송달 지연 없음</span></div></div></div>
+<p>참여 업체에게 걷은 돈이 아니라, <em>엣지컴퍼니 자산</em>으로 직접 예치합니다.<br>업체가 빠져도 예치금은 줄지 않습니다.</p>
+<div class="chips"><span>임예협+주관사 공동통장</span><span>하자 시 즉시 집행</span><span>사용 내역 공개</span></div></div></div>
 <div class="kp"><b>KEY POINT</b><span>업체 사고·도산 시 <em>입주민이 먼저 보상</em>받습니다.</span></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 17</div></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 18</div></div>
 <h1>임예협 전용 <em>8가지 무상 단지지원</em></h1>
 <div class="lead">박람회와 별개로, 단지의 발전을 위해 무상 제공합니다.</div>
 <div class="rule"></div>
 <div class="ct"><div class="tiles" style="grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr)"><div class="tile"><div class="lb">01</div><div class="nm">공용부 철근탐지 · 콘크리트 강도 측정</div><div class="ds">건설현장 시공품질 정밀 검증. 입주 전 안전 진단 무상.</div></div><div class="tile"><div class="lb">02</div><div class="nm">열화상 드론 공용부 촬영</div><div class="ds">육안으로 안 보이는 누수·단열 결함을 드론으로 잡아냅니다.</div></div><div class="tile"><div class="lb">03</div><div class="nm">일조량 시뮬레이션 분석</div><div class="ds">세대별 일조 시간을 사전 분석. 임예협 협상 자료로 활용.</div></div><div class="tile"><div class="lb">04</div><div class="nm">라돈 측정 무료 지원</div><div class="ds">1급 발암물질 라돈 농도 측정. 측정기 10대 렌탈 지원.</div></div><div class="tile"><div class="lb">05</div><div class="nm">공용부 항균 나노코팅</div><div class="ds">엘리베이터·계단실 등 다중이용 공간 항균 처리.</div></div><div class="tile"><div class="lb">06</div><div class="nm">세스코 무료 점검</div><div class="ds">해충·위생 전문 진단 협력 패키지 제공.</div></div><div class="tile"><div class="lb">07</div><div class="nm">공정·하자 분석 솔루션</div><div class="ds">착공·조경 설계도면 검토 및 개선안 분석 지원.</div></div><div class="tile"><div class="lb">08</div><div class="nm">임예협 협상 미팅 지원</div><div class="ds">시공사·시행사 협상 자리에 전문 엔지니어가 동석합니다.</div></div></div></div>
-<div class="kp"><b>KEY POINT</b><span>별도 비용 없음 · 외주 아닌 <em>자체 인력 운영</em> · 임예협 전용.</span></div>
-<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
-</section>
-<section class="page">
-<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 18</div></div>
-<h1>정회원 전용 <em>세대당 60만원 상당</em></h1>
-<div class="lead">공동구매가에 더해지는 정회원 전용 혜택입니다.</div>
-<div class="rule"></div>
-<div class="ct"><div class="tiles" style="grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr)"><div class="tile"><div class="lb">01</div><div class="nm">백화점 상품권</div></div><div class="tile"><div class="lb">02</div><div class="nm">도어락 나노코팅</div></div><div class="tile"><div class="lb">03</div><div class="nm">실링팬 50% 특가</div></div><div class="tile"><div class="lb">04</div><div class="nm">우물 간접조명</div></div><div class="tile"><div class="lb">05</div><div class="nm">갤러리조명 2구</div></div><div class="tile"><div class="lb">06</div><div class="nm">피톤치드 항균</div></div><div class="tile"><div class="lb">07</div><div class="nm">인테리어 30% 할인</div></div><div class="tile"><div class="lb">08</div><div class="nm">미세촘촘망 거실창</div></div><div class="tile"><div class="lb">09</div><div class="nm">홈케어 진드기 박멸</div></div><div class="tile"><div class="lb">10</div><div class="nm">욕실케어 1회</div></div><div class="tile"><div class="lb">11</div><div class="nm">현관 줄눈 무상</div></div><div class="tile"><div class="lb">12</div><div class="nm">프리미엄 중문</div></div><div class="tile"><div class="lb">13</div><div class="nm">욕실 휴젠뜨</div></div><div class="tile"><div class="lb">14</div><div class="nm">화재보험 2년</div></div><div class="tile"><div class="lb">15</div><div class="nm">사전점검 할인</div></div><div class="tile"><div class="lb">16</div><div class="nm">경품 응모</div></div></div></div>
-<div class="kp"><b>KEY POINT</b><span>박람회장 방문 시 세대당 <em>600,000원 상당</em>의 혜택.<small>(품목은 단지 협의 후 확정)</small></span></div>
+<div class="kp"><b>KEY POINT</b><span>별도 비용 없이 <em>자체 인력</em>이 임예협 전용으로 지원합니다.</span></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
 <div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 19</div></div>
+<h1>정회원 전용 <em>세대당 60만원 상당</em></h1>
+<div class="lead">공동구매가에 더해지는 정회원 전용 혜택입니다.</div>
+<div class="rule"></div>
+<div class="ct"><div class="tiles" style="grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr)"><div class="tile"><div class="lb">01</div><div class="nm">백화점 상품권</div></div><div class="tile"><div class="lb">02</div><div class="nm">도어락 나노코팅</div></div><div class="tile"><div class="lb">03</div><div class="nm">실링팬 50% 특가</div></div><div class="tile"><div class="lb">04</div><div class="nm">우물 간접조명</div></div><div class="tile"><div class="lb">05</div><div class="nm">갤러리조명 2구</div></div><div class="tile"><div class="lb">06</div><div class="nm">피톤치드 항균</div></div><div class="tile"><div class="lb">07</div><div class="nm">인테리어 30% 할인</div></div><div class="tile"><div class="lb">08</div><div class="nm">미세촘촘망 거실창</div></div><div class="tile"><div class="lb">09</div><div class="nm">홈케어 진드기 박멸</div></div><div class="tile"><div class="lb">10</div><div class="nm">욕실케어 1회</div></div><div class="tile"><div class="lb">11</div><div class="nm">현관 줄눈 무상</div></div><div class="tile"><div class="lb">12</div><div class="nm">프리미엄 중문</div></div><div class="tile"><div class="lb">13</div><div class="nm">욕실 휴젠뜨</div></div><div class="tile"><div class="lb">14</div><div class="nm">화재보험 2년</div></div><div class="tile"><div class="lb">15</div><div class="nm">사전점검 할인</div></div><div class="tile"><div class="lb">16</div><div class="nm">경품 응모</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>정회원이 박람회장을 방문하면 세대당 <em>60만원 상당</em>의 혜택을 드립니다.<small>품목은 임예협 협의 후 확정 · 타공·구조 변경 품목은 임대사업자 승인 범위 안에서</small></span></div>
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>
+<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 20</div></div>
 <h1><em>사전점검</em> 대행 · 최대 50% 할인</h1>
 <div class="lead">내 집 하자를 전문가가 대신 봐드립니다.</div>
 <div class="rule"></div>
@@ -408,21 +462,21 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 20</div></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 21</div></div>
 <h1><em>대단지</em> 운영 경험</h1>
-<div class="lead">규모가 커질수록 운영의 차이가 드러납니다.</div>
+<div class="lead">제출서류 8) 행사 실적과 같은 기준(NICE 기업신용평가 연혁)입니다.</div>
 <div class="rule"></div>
-<div class="ct"><div class="tiles" style="grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr)"><div class="tile"><div class="lb">2023</div><div class="big">4,470<small>세대</small></div><div class="nm">레이카운티</div></div><div class="tile"><div class="lb">2026</div><div class="big">2,813<small>세대</small></div><div class="nm">두산위브 오션시티</div></div><div class="tile"><div class="lb">2024</div><div class="big">2,272<small>세대</small></div><div class="nm">양정자이 SK뷰</div></div><div class="tile"><div class="lb">2023</div><div class="big">1,717<small>세대</small></div><div class="nm">힐스테이트 포항</div></div><div class="tile"><div class="lb">2024</div><div class="big">1,712<small>세대</small></div><div class="nm">사송 데시앙 1차</div></div><div class="tile"><div class="lb">2024</div><div class="big">1,643<small>세대</small></div><div class="nm">두산위브더제니스 센트럴사하</div></div><div class="tile"><div class="lb">2023</div><div class="big">1,572<small>세대</small></div><div class="nm">사상중흥 S-클래스</div></div><div class="tile"><div class="lb">2026</div><div class="big">1,540<small>세대</small></div><div class="nm">창원 센트럴아이파크</div></div><div class="tile"><div class="lb">2025</div><div class="big">1,114<small>세대</small></div><div class="nm">춘천 학곡지구 중해마루힐</div></div></div></div>
-<div class="kp"><b>KEY POINT</b><span>최근 5년, 1,000세대 이상 단지만 모아도 <em>이 정도</em>입니다.</span></div>
+<div class="ct"><div class="tiles" style="grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr)"><div class="tile"><div class="lb">2023</div><div class="big">4,470<small>세대</small></div><div class="nm">레이카운티</div></div><div class="tile"><div class="lb">2026</div><div class="big">2,813<small>세대</small></div><div class="nm">두산위브 오션시티</div></div><div class="tile"><div class="lb">2024</div><div class="big">2,272<small>세대</small></div><div class="nm">양정자이 SK뷰</div></div><div class="tile"><div class="lb">2023</div><div class="big">1,717<small>세대</small></div><div class="nm">힐스테이트 포항</div></div><div class="tile"><div class="lb">2024</div><div class="big">1,643<small>세대</small></div><div class="nm">두산위브더제니스 센트럴사하</div></div><div class="tile"><div class="lb">2026</div><div class="big">1,540<small>세대</small></div><div class="nm">창원 센트럴아이파크</div></div><div class="tile"><div class="lb">2025</div><div class="big">1,114<small>세대</small></div><div class="nm">춘천 학곡지구 중해마루힐</div></div><div class="tile"><div class="lb">TOTAL</div><div class="big">15,569<small>세대</small></div><div class="nm">7개 단지 합계</div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>최근 5년 1,000세대 이상 주관 <em>7건 · 15,569세대</em>입니다.</span></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>
 <section class="page">
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">02. 엣지컴퍼니의 약속</span></div>
-<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 21</div></div>
+<div class="r">“입주민의 든든한 파트너, 엣지컴퍼니” &nbsp;·&nbsp; 22</div></div>
 <h1>엣지컴퍼니가 <em>약속드리는 것</em></h1>
 <div class="lead">제안서에 쓴 것은 전부 협약서와 증빙으로 남깁니다.</div>
 <div class="rule"></div>
-<div class="ct"><div class="cl"><div class="it"><div class="no">01</div><div><b>세대당 15만원 발전지원금</b><p>지급 기준 세대는 협약 시 확정 · 임예협 협의 후 집행</p></div></div><div class="it"><div class="no">02</div><div><b>하자 예치금 1억 · 이행보증보험 10억</b><p>주관사 순수 자산 공동통장 · 증권 실물 제출</p></div></div><div class="it"><div class="no">03</div><div><b>임예협 전용 8가지 무상 지원</b><p>별도 비용 없음 · 자체 인력</p></div></div><div class="it"><div class="no">04</div><div><b>임대 단지 시공 허용 가이드</b><p>원상복구 분쟁 예방 · 세대별 시공 이력 카드</p></div></div><div class="it"><div class="no">05</div><div><b>인근 지역업체 90% 선정</b><p>48시간 A/S가 가능한 거리</p></div></div><div class="it"><div class="no">06</div><div><b>최저가 보장 차액 10배</b><p>단가표 사전 공개 · 현장 가격 변경 없음</p></div></div><div class="it"><div class="no">07</div><div><b>48시간 하자보수 · 10년 A/S</b><p>콜센터·CRM 상시 운영 · 입주기간 업체 순환 상주(협의)</p></div></div><div class="it"><div class="no">08</div><div><b>경관조명 컨설팅 · 설계 · 생산 · 직접시공</b><p>조명 직수입·KC 인증·면허 시공까지 한 회사</p></div></div></div></div>
+<div class="ct"><div class="cl"><div class="it"><div class="no">01</div><div><b>세대당 15만원 발전지원금</b><p>지급 기준 세대는 협약 시 확정 · 임예협 협의 후 집행</p></div></div><div class="it"><div class="no">02</div><div><b>하자 예치금 1억 · 이행보증보험 10억</b><p>엣지컴퍼니 자산으로 공동통장 예치 · 증권 실물 제출</p></div></div><div class="it"><div class="no">03</div><div><b>임예협 전용 8가지 무상 지원</b><p>별도 비용 없음 · 자체 인력</p></div></div><div class="it"><div class="no">04</div><div><b>임대 단지 시공 허용 가이드</b><p>원상복구 분쟁 예방 · 세대별 시공 이력 카드</p></div></div><div class="it"><div class="no">05</div><div><b>시공 품목 인근 지역업체 90% 선정</b><p>48시간 A/S가 가능한 거리</p></div></div><div class="it"><div class="no">06</div><div><b>최저가 차액 10배 보상</b><p>단가표 사전 공개 · 동일 브랜드·동일 제품 기준</p></div></div><div class="it"><div class="no">07</div><div><b>48시간 하자보수 · 무상 A/S 2년</b><p>장기관리 최대 10년 · 콜센터 상시 운영 · 입주기간 업체 순환 상주(협의)</p></div></div><div class="it"><div class="no">08</div><div><b>경관조명 컨설팅 · 설계 · 생산 · 직접시공</b><p>조명 직수입·KC 인증·전기공사업 등록 시공까지 한 회사</p></div></div></div></div>
 <div class="kp"><b>KEY POINT</b><span>제안서의 약속은 <em>협약서에 그대로 옮겨</em> 끝까지 이행하겠습니다.</span></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>
@@ -439,7 +493,7 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 <div class="me"><b>edgecompany1@naver.com</b><span>이메일 문의</span></div>
 </div>
 <div class="addr">울산 본사 · 울산광역시 울주군 청량읍 온산로 615-1, 2층, 3층 &nbsp;|&nbsp; 대전 지사 &nbsp;|&nbsp; 부산 지사 · 해운대구<br>
-전기공사업 등록 제 울산-00821호 · ISO 9001/14001/45001 · 삼성전자 MOU 체결</div>
+전기공사업 등록 제 울산-00821호 · ISO 9001/14001/45001 · 삼성전자판매 업무제휴</div>
 </div>
 <div class="bt"><span>BID PROPOSAL · 동탄 파라곤 3차</span><span>주식회사 엣지컴퍼니</span></div>
 </section>
