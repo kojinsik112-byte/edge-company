@@ -9,6 +9,7 @@
 
 사용: python build_dongtan.py          # HTML + PDF + 2-2 발췌 PDF
 """
+import json
 import os
 import re
 import sys
@@ -94,6 +95,50 @@ B.CSS += r"""
 .sub2{display:flex;gap:64px;padding:18px 0 20px;border-top:1px solid rgba(200,168,106,.35)}
 .sub2 i{display:block;font-style:normal;font-size:12px;letter-spacing:.3em;color:var(--gold2);font-weight:700}
 .sub2 b{display:block;font-size:17px;font-weight:700;margin-top:6px}
+/* ---- 네이티브 블록(통합제안서 내용을 새로 조판) */
+.nb{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px}
+.nb>*{min-height:0}
+.nb .cards,.nb .tiles,.nb .rows{flex:1 1 auto}
+.splitx{display:grid;gap:26px;flex:1;min-height:0}
+.splitx>div{display:flex;flex-direction:column;gap:14px;min-height:0}
+.stackx{display:flex;flex-direction:column;gap:14px;min-height:0}
+.gal{display:grid;gap:12px;flex:1;min-height:0}
+.gal figure{position:relative;margin:0;border-radius:12px;overflow:hidden;border:1px solid rgba(200,168,106,.32);background:#0a1626;min-height:0}
+.gal img{width:100%;height:100%;object-fit:cover;display:block}
+.gal figure.ct img{object-fit:contain;background:#fff}
+.gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:22px 14px 9px;font-size:14.5px;font-weight:700;line-height:1.3;
+  background:linear-gradient(0deg,rgba(5,12,22,.94) 0%,rgba(5,12,22,.72) 55%,rgba(5,12,22,0) 100%)}
+.gal figcaption small{display:block;font-size:12.5px;font-weight:400;color:var(--sub);margin-top:2px}
+.docs{display:flex;gap:28px;justify-content:center;align-items:stretch;flex:1;min-height:0}
+.docs .d{flex:1 1 0;display:flex;flex-direction:column;align-items:center;min-height:0;min-width:0}
+.docs .pp{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;width:100%}
+.docs img{max-width:100%;max-height:100%;display:block;background:#fff;border-radius:3px;
+  box-shadow:0 0 0 1px rgba(235,203,143,.75),0 0 0 7px rgba(200,168,106,.12),0 16px 34px rgba(0,0,0,.5)}
+.docs .cap{margin-top:14px;font-size:15.5px;font-weight:700;color:var(--gold);text-align:center;line-height:1.35}
+.docs .cap small{display:block;font-size:12.5px;font-weight:400;color:var(--mute);margin-top:2px}
+.bulx{display:flex;flex-direction:column;justify-content:center;gap:16px;flex:1;min-height:0}
+.bulx>div{position:relative;padding-left:24px}
+.bulx>div:before{content:'';position:absolute;left:0;top:9px;width:9px;height:9px;border-radius:50%;background:var(--gold2)}
+.bulx b{display:block;font-size:20px;line-height:1.35}
+.bulx p{font-size:16.5px;color:var(--sub);margin-top:5px;line-height:1.5}
+.bulx p em,.bulx b em{font-weight:700}
+.flowx{display:flex;align-items:stretch;gap:0}
+.flowx .st{flex:1;border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.015))}
+.flowx .st.hl{border-color:rgba(235,203,143,.75);background:linear-gradient(180deg,rgba(235,203,143,.16),rgba(235,203,143,.03))}
+.flowx .st i{display:block;font-style:normal;font-size:12px;font-weight:700;letter-spacing:.24em;color:var(--gold2)}
+.flowx .st b{display:block;font-size:18.5px;margin-top:5px;line-height:1.3}
+.flowx .st p{font-size:14.5px;color:var(--sub);margin-top:5px;line-height:1.45}
+.flowx .ar{display:flex;align-items:center;justify-content:center;width:30px;color:var(--gold);font-size:20px;font-weight:800;flex:none}
+.tagx{border:1px solid var(--line);border-radius:12px;padding:14px 18px;background:rgba(255,255,255,.035)}
+.tagx h4{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:10px;letter-spacing:.02em}
+.tagx .tg{display:flex;flex-wrap:wrap;gap:8px}
+.tagx .tg span{border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:5px 13px;font-size:14.5px;color:#DCE3EB}
+.tagx .tg span.g{border-color:var(--gold2);color:var(--gold);font-weight:700}
+.notex{font-size:13px;color:var(--mute);line-height:1.5}
+.bigq{border-left:3px solid var(--gold2);padding:6px 0 6px 20px}
+.bigq b{display:block;font-size:24px;line-height:1.4}
+.bigq p{font-size:16.5px;color:var(--sub);margin-top:6px;line-height:1.5}
 .toc4{grid-template-columns:repeat(4,1fr)!important}
 .toc4 .col{padding:0 22px}
 """
@@ -366,6 +411,123 @@ for after_title, pages in INSERTS:
                                         body=f'<div class="ins-h"><h1>{t(lb)}</h1><span>통합제안서 발췌</span></div>'
                                              f'<div class="ins"><img src="assets_full/p{idx:03d}.jpg" alt=""></div>'))
                             for idx, lb, *rest in pages]
+
+
+# ============================================================ 네이티브 페이지(pages21.json)
+# 통합제안서에서 가져온 장을 사진만 살려 새로 조판한다. 스펙은 pages21.json, 사진은 crop.py → assets_ins/
+NATIVE_JSON = os.path.join(HERE, "pages21.json")
+
+
+def _sty(b):
+    g = b.get("grow")
+    return f' style="flex:{g} 1 0;min-height:0"' if g else ""
+
+
+def blk(b):
+    k = b["type"]
+    if k == "photos":
+        cols, rows_n = b.get("cols", len(b["items"])), b.get("rows")
+        rs = f";grid-template-rows:repeat({rows_n},1fr)" if rows_n else ""
+        figs = ""
+        for it in b["items"]:
+            cls = "ct" if (it.get("fit") or b.get("fit")) == "contain" else ""
+            span = ' style="grid-column:span %d"' % it["span"] if it.get("span") else ""
+            cap = ""
+            if it.get("cap"):
+                sub_ = f'<small>{t(it["sub"])}</small>' if it.get("sub") else ""
+                cap = f'<figcaption>{t(it["cap"])}{sub_}</figcaption>'
+            figs += f'<figure class="{cls}"{span}><img src="assets_ins/{it["img"]}.jpg" alt="">{cap}</figure>'
+        g = b.get("grow", 1)
+        return f'<div class="gal" style="grid-template-columns:repeat({cols},1fr){rs};flex:{g} 1 0">{figs}</div>'
+    if k == "docs":
+        ds = "".join(f'<div class="d"><div class="pp"><img src="assets_ins/{it["img"]}.jpg" alt=""></div>'
+                     f'<div class="cap">{t(it["cap"])}' + (f'<small>{t(it["sub"])}</small>' if it.get("sub") else "")
+                     + "</div></div>" for it in b["items"])
+        return f'<div class="docs"{_sty(b)}>{ds}</div>'
+    if k == "bullets":
+        return f'<div class="bulx"{_sty(b)}>' + "".join(
+            f'<div><b>{t(it["t"])}</b>' + (f'<p>{t(it["d"])}</p>' if it.get("d") else "") + "</div>"
+            for it in b["items"]) + "</div>"
+    if k == "rows":
+        return B.rows([(it["t"], it["d"]) for it in b["items"]], title_w=b.get("title_w", 230))
+    if k == "cards":
+        return B.cards(b["items"], cols=b.get("cols"))
+    if k == "tiles":
+        return B.tiles(b["items"], cols=b.get("cols", 3), rows_n=b.get("rows"))
+    if k == "table":
+        w = b.get("widths") or [None] * len(b["head"])
+        th = "".join((f'<th style="width:{x}">' if x else "<th>") + f"{t(h)}</th>" for h, x in zip(b["head"], w))
+        trs = ""
+        for r in b["rows"]:
+            tds = []
+            for j, c in enumerate(r):
+                cls = "k" if j == 0 and b.get("key_col", True) else ""
+                tds.append(f'<td class="{cls}">{t(c)}</td>')
+            trs += "<tr>" + "".join(tds) + "</tr>"
+        return f'<table class="tbl {"sm" if b.get("small") else ""}"{_sty(b)}><thead><tr>{th}</tr></thead><tbody>{trs}</tbody></table>'
+    if k == "flow":
+        parts = []
+        for i, st in enumerate(b["steps"]):
+            if i:
+                parts.append('<div class="ar">›</div>')
+            parts.append(f'<div class="st{" hl" if st.get("hl") else ""}"><i>{t(st.get("lb", f"STEP {i + 1:02d}"))}</i>'
+                         f'<b>{t(st["t"])}</b>' + (f'<p>{t(st["d"])}</p>' if st.get("d") else "") + "</div>")
+        return f'<div class="flowx"{_sty(b)}>{"".join(parts)}</div>'
+    if k == "tags":
+        gold = set(b.get("gold", []))
+        sp = "".join(f'<span class="{"g" if x in gold else ""}">{t(x)}</span>' for x in b["items"])
+        return f'<div class="tagx"{_sty(b)}>' + (f'<h4>{t(b["title"])}</h4>' if b.get("title") else "") + f'<div class="tg">{sp}</div></div>'
+    if k == "quote":
+        return f'<div class="bigq"{_sty(b)}><b>{t(b["t"])}</b>' + (f'<p>{t(b["d"])}</p>' if b.get("d") else "") + "</div>"
+    if k == "note":
+        return f'<div class="notex">{t(b["text"])}</div>'
+    if k == "split":
+        L = "".join(blk(x) for x in b["left"])
+        R = "".join(blk(x) for x in b["right"])
+        return f'<div class="splitx" style="grid-template-columns:{b.get("cols", "1fr 1fr")}">' \
+               f'<div>{L}</div><div>{R}</div></div>'
+    if k == "stack":
+        return f'<div class="stackx"{_sty(b)}>' + "".join(blk(x) for x in b["blocks"]) + "</div>"
+    raise ValueError(f"알 수 없는 블록: {k}")
+
+
+def native_page(spec):
+    body = '<div class="nb">' + "".join(blk(b) for b in spec["body"]) + "</div>"
+    kp = spec.get("kp")
+    if isinstance(kp, list):
+        kp = tuple(kp)
+    return ("std", dict(sec=spec.get("sec", ""), title=spec["title"], lead=spec.get("lead"), body=body, kp=kp))
+
+
+def load_native():
+    """pages21.json: [{after: 기존 장 제목, replaces: [통합제안서 index...], pages: [spec...]}] — 해당 발췌 장을 대체."""
+    if not os.path.exists(NATIVE_JSON):
+        return
+    with open(NATIVE_JSON, encoding="utf-8") as f:
+        groups = json.load(f)
+    for g in groups:
+        drop = set(g.get("replaces", []))
+        # 이 그룹이 대체하는 발췌 장(INS) 제거
+        keep = []
+        for k, kw in B.PAGES:
+            if kw.get("title") == INS and any(f"assets_full/p{i:03d}.jpg" in kw.get("body", "") for i in drop):
+                continue
+            keep.append((k, kw))
+        B.PAGES[:] = keep
+        if g.get("remove_titles"):
+            B.PAGES[:] = [(k, kw) for k, kw in B.PAGES if kw.get("title") not in set(g["remove_titles"])]
+        i = find(g["after"])
+        sec = B.PAGES[i][1].get("sec", "")
+        new_pages = []
+        for spec in g["pages"]:
+            spec = dict(spec)
+            spec.setdefault("sec", sec)
+            new_pages.append(native_page(spec))
+        B.PAGES[i + 1:i + 1] = new_pages
+
+
+if not os.environ.get("NO_NATIVE"):
+    load_native()
 
 
 def render_std(no, sec, title, lead, body, kp):
