@@ -118,9 +118,9 @@ def apply(G):
     k["body"] = ('<div class="nb"><div class="splitx" style="grid-template-columns:1fr 1.15fr"><div>'
                  + B.cards([
                      dict(lb="GROUP PRICE", big="33", unit="만원", ds="박람회 공동구매가"),
-                     dict(lb="FOUND PRICE", big="27", unit="만원", ds="인근 매장 동일 제품"),
-                     dict(lb="GAP", big="6", unit="만원", ds="차액"),
-                     dict(lb="REWARD ×10", big="60", unit="만원", ds="보상 + 판매가 27만원으로 조정", hl=True),
+                     dict(lb="FOUND PRICE", big="28", unit="만원", ds="인근 매장 동일 제품"),
+                     dict(lb="GAP", big="5", unit="만원", ds="차액"),
+                     dict(lb="REWARD ×10", big="50", unit="만원", ds="보상 + 판매가 28만원으로 조정", hl=True),
                  ], cols=2)
                  + '<div class="notex">※ 금액은 이해를 돕기 위한 예시입니다.</div></div><div>'
                  + B.rows([("같은 제품", "브랜드·모델명(모델코드)이 완전히 같은 새 제품"),
