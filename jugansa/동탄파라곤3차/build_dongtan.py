@@ -355,15 +355,17 @@ B.PAGES[i][1]["body"] = B.cards([
 ])
 B.PAGES[i][1]["kp"] = "재무 평가 · 대기업 제휴 · 국제표준 인증 — [[공인 기관이 검증한 항목]]만 적었습니다."
 
-# 22p 지사망: 대전 직영을 맨 앞으로(부산과 자리 교체)
+# 22p 지사망: 직영 4곳 + 협력 8곳 = 전국 12개 지사망(2026.10 확정). 동탄과 가까운 충청권 직영을 앞에.
 i = find("전국 지사망")
-B.PAGES[i][1]["title"] = "전국 지사망 · [[대전·울산·부산 직영]]"
+B.PAGES[i][1]["title"] = "전국 지사망 · [[직영 4곳 + 협력 8곳]]"
+B.PAGES[i][1]["lead"] = "직영 거점 4곳에 협력 네트워크 8곳을 더해 전국 12개 지사로 운영합니다."
 B.PAGES[i][1]["body"] = B.cards([
-    dict(lb="직영 01", big="대전", nm="대전 직영", ds="충청권 거점. 세종·아산·청주 커버."),
-    dict(lb="직영 02", big="울산", nm="울산 본사 직영", ds="본사·사옥·쇼룸. 시공팀 상주."),
-    dict(lb="직영 03", big="부산", nm="부산 직영", ds="해운대 거점. 부산·경남 전 단지 직접 운영."),
-    dict(lb="NETWORK", big="전국", unit="지사망", nm="그 외 지역", ds="서울·경인·강원·전북·전남·광주·대구·경북·양산 등 네트워크 운영."),
-])
+    dict(lb="BRANCH 01", big="청주", nm="충북 청주 지사", ds="동탄과 가장 가까운 직영 거점. 흥덕구 직지대로."),
+    dict(lb="BRANCH 02", big="대전", nm="대전 지사", ds="충청권 거점. 세종·아산 커버."),
+    dict(lb="BRANCH 03", big="울산", nm="울산 본사", ds="본사·사옥·쇼룸. 시공팀 상주."),
+    dict(lb="BRANCH 04", big="부산", nm="부산 해운대 지사", ds="해운대 거점. 부산·경남 단지를 직접 운영합니다."),
+    dict(lb="NETWORK", big="8", unit="곳", nm="협력 네트워크", ds="직영 4곳 + 협력 8곳 = 전국 12개 지사망.", hl=True),
+], cols=5)
 
 # 45p 지역업체 키포인트
 i = find("[[지역업체 90%]] 선정 원칙")
@@ -433,7 +435,9 @@ def blk(b):
         figs = ""
         for it in b["items"]:
             cls = "ct" if (it.get("fit") or b.get("fit")) == "contain" else ""
-            span = ' style="grid-column:span %d"' % it["span"] if it.get("span") else ""
+            span = ";".join(x for x in [f'grid-column:span {it["span"]}' if it.get("span") else "",
+                                        f'grid-row:span {it["rspan"]}' if it.get("rspan") else ""] if x)
+            span = f' style="{span}"' if span else ""
             cap = ""
             if it.get("cap"):
                 sub_ = f'<small>{t(it["sub"])}</small>' if it.get("sub") else ""
@@ -629,8 +633,10 @@ B_p_toc = B.p_toc
 def p_contact():
     s = B_p_contact()
     s = sub(s, "입주예정자협의회·시공사·협력업체 모두 환영합니다.", "임차예정자협의회·시행사·협력업체 모두 환영합니다.")
-    s = sub(s, "울산광역시 울주군 청량읍 상남1길 28, 2동", D.ADDRESS)  # 사업자등록증(2026.08.04) 주소
-    s = sub(s, "부산 지사 · 해운대구 &nbsp;|&nbsp; 대전 지사", "대전 지사 &nbsp;|&nbsp; 부산 지사 · 해운대구")  # 울산→대전→부산
+    # 지사: 직영 4곳 + 협력 8곳 = 전국 12개 지사망(2026.10 확정). 본사 주소는 사업자등록증(2026.08.04) 기준.
+    s = sub(s, "울산 본사 · 울산광역시 울주군 청량읍 상남1길 28, 2동 &nbsp;|&nbsp; 부산 지사 · 해운대구 &nbsp;|&nbsp; 대전 지사<br>",
+            f"울산 본사 · {D.ADDRESS}<br>청주 지사 · 청주시 흥덕구 직지대로 642 &nbsp;|&nbsp; 대전 지사 · 디펠리체 204동 &nbsp;|&nbsp; "
+            "부산 해운대 지사 · 해운대구 아르파나 B1<br>직영 4곳 + 협력 8곳 = 전국 12개 지사망 · 평일 09:00–18:00 · 24시간 이내 회신<br>")
     return sub(s, "SUMMARY PROPOSAL · 요약제안서", "BID PROPOSAL · 동탄 파라곤 3차")
 
 
