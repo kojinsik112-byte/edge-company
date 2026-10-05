@@ -82,26 +82,32 @@ def company_info():
 
 # ============================================================ 8) 행사 실적
 def doc8():
-    rows = "".join(
-        f'<tr><td>{i}</td><td>{d}</td><td class="l">{e(nm)}</td><td>{e(reg)}</td><td class="r">{n:,}</td>'
-        f'<td style="white-space:nowrap">입주박람회·공동구매 주관</td><td>별첨 1</td></tr>'
-        for i, (d, nm, reg, n) in enumerate(D.RECORDS, 1))
+    def rows_of(recs, start=1):
+        return "".join(
+            f'<tr><td>{i}</td><td>{d}</td><td class="l">{e(nm)}</td><td>{e(reg)}</td><td class="r">{n:,}</td>'
+            f'<td style="white-space:nowrap">입주박람회·공동구매 주관</td><td>별첨 1</td></tr>'
+            for i, (d, nm, reg, n) in enumerate(recs, start))
+    sale = [r for r in D.RECORDS if r[1] not in D.LEASE_RECORDS]
+    lease = [r for r in D.RECORDS if r[1] in D.LEASE_RECORDS]
     total = sum(r[3] for r in D.RECORDS)
-    body = f"""{company_info()}
+    head = """<thead><tr><th style="width:5%">No</th><th style="width:10%">주관 시기</th><th>단지명</th><th style="width:10%">지역</th>
+<th style="width:10%">세대수</th><th style="width:24%">수행 내용</th><th style="width:9%">증빙</th></tr></thead>"""
+    lease_tbl = (f'<table class="t"><tbody>{rows_of(lease, len(sale) + 1)}'
+                 '</tbody></table>') if lease else \
+        '<table class="t"><tbody><tr><td class="l">해당 없음</td></tr></tbody></table>'
+    body = f"""<style>.t td{{padding:3pt 6pt}} h2{{margin:9pt 0 4pt}} .box{{margin-top:8pt;padding:6pt 11pt}} .sign{{margin-top:9pt}} .to{{margin-top:14pt}}</style>
+{company_info()}
 <h2>1. 일반 분양 아파트 실적</h2>
 <p class="note" style="margin:0 0 5pt">기준: 공고일(2026.09.30) 기준 최근 5년(2021.10.01 ~ 2026.09.30), 1,000세대 이상 공동주택 입주박람회·공동구매 주관 실적 (공고 6항 4호).
-주관 시기·세대수는 NICE디앤비 CLIP 기업신용평가보고서(평가완료일 2026.06.19) ‘연혁’ 기재 내용과 같습니다(별첨 1).</p>
-<table class="t">
-<thead><tr><th style="width:5%">No</th><th style="width:10%">주관 시기</th><th>단지명</th><th style="width:10%">지역</th>
-<th style="width:10%">세대수</th><th style="width:24%">수행 내용</th><th style="width:9%">증빙</th></tr></thead>
-<tbody>{rows}
-<tr class="sum"><td colspan="4">합계</td><td class="r">{total:,}</td><td colspan="2">{len(D.RECORDS)}건</td></tr>
+주관 사실·시기는 NICE디앤비 CLIP 기업신용평가보고서(평가완료일 2026.06.19) ‘연혁’(별첨 1)으로 확인되며, 세대수는 각 단지의 공식 총세대수(입주자모집공고 기준)로 적었습니다(연혁 표기와 다른 3개 단지 정정: 양정자이 SK뷰 · 두산위브더제니스 오션시티 · 창원 센트럴 아이파크).</p>
+<table class="t">{head}
+<tbody>{rows_of(sale)}
+<tr class="sum"><td colspan="4">소계</td><td class="r">{sum(r[3] for r in sale):,}</td><td colspan="2">{len(sale)}건</td></tr>
 </tbody></table>
 <h2>2. 임대 아파트 실적 (공고 6항 4호 — 별도 구분)</h2>
-<table class="t"><tbody><tr><td class="k" style="width:30%;white-space:nowrap">1,000세대 이상 임대 아파트</td>
-<td class="l">해당 없음 — 위 1항의 {len(D.RECORDS)}건은 모두 일반 분양 아파트 실적입니다.</td></tr></tbody></table>
+{lease_tbl}
 <div class="box"><b>참가 자격 대비</b> &nbsp; 요건: 1,000세대 이상 입주박람회·공동구매 주관 실적 5회 이상
-&nbsp;→&nbsp; 보유: <b>{len(D.RECORDS)}회 · 합계 {total:,}세대</b> &nbsp; <span class="ok">충족</span></div>
+&nbsp;→&nbsp; 보유: <b>{len(D.RECORDS)}회(분양 {len(sale)} · 임대 {len(lease)}) · 합계 {total:,}세대</b> &nbsp; <span class="ok">충족</span></div>
 <h2>3. 별첨 증빙</h2>
 <ul class="n">
 <li>1. NICE디앤비 CLIP 기업신용평가보고서 ‘연혁’ 발췌 (표지 · 9쪽) — 1매</li>
