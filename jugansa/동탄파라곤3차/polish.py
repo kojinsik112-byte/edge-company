@@ -169,7 +169,7 @@ def apply(G):
     total = sum(n for _, n, _ in recs)
     k["body"] = B.tiles([dict(lb=y, big=f"{n:,}", unit="세대", nm=nm) for y, n, nm in recs]
                         + [dict(lb="TOTAL", big=f"{total:,}", unit="세대", nm=f"{len(recs)}개 단지 합계")], cols=4, rows_n=2)
-    k["lead"] = "제출서류 8) 행사 실적과 같은 단지입니다. 세대수는 단지 공식 총세대수 기준입니다."
+    k["lead"] = "제출서류 8) 행사 실적과 같은 기준(NICE 기업신용평가 연혁)입니다."
     k["kp"] = (f"최근 5년 1,000세대 이상 주관 [[{len(recs)}건 · {total:,}세대]]입니다.",
                "춘천 학곡지구 중해마루힐 포레스트는 10년 민간임대 단지 — 임대 단지 운영 경험")
 
