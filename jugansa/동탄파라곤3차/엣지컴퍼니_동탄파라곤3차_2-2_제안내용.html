@@ -235,8 +235,10 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 .docs{display:flex;gap:28px;justify-content:center;align-items:stretch;flex:1;min-height:0}
 .docs .d{flex:1 1 0;display:flex;flex-direction:column;align-items:center;min-height:0;min-width:0}
 .docs .pp{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;width:100%}
-.docs img{max-width:100%;max-height:100%;display:block;background:#fff;border-radius:3px;
-  box-shadow:0 0 0 1px rgba(235,203,143,.75),0 0 0 7px rgba(200,168,106,.12),0 16px 34px rgba(0,0,0,.5)}
+.docs img{max-width:100%;max-height:100%;display:block;background:#fff;box-sizing:border-box;
+  padding:7px;border:7px solid transparent;
+  background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#f1dca8 0%,#b8935a 28%,#8a6630 52%,#d9bb7c 76%,#9c773c 100%) border-box;
+  box-shadow:0 0 0 1px rgba(0,0,0,.55),0 18px 36px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.35)}  /* 금색 액자 + 흰 매트 */
 .docs .cap{margin-top:14px;font-size:15.5px;font-weight:700;color:var(--gold);text-align:center;line-height:1.35}
 .docs .cap small{display:block;font-size:12.5px;font-weight:400;color:var(--mute);margin-top:2px}
 .bulx{display:flex;flex-direction:column;justify-content:center;gap:16px;flex:1;min-height:0}
