@@ -137,7 +137,7 @@ def doc9():
             "시공 결과 확인 시 하자·미시공 부분이 있으면 계약자는 해당 부분의 보수가 끝난 후 잔금을 지급할 수 있다.",
         ], None),
         ("제5조 (취소·환불 기준)", [
-            "제작·시공(설치) 착수 전에는 <b>100% 해약</b>할 수 있으며, 납부한 계약금 전액을 환불한다. 다만 맞춤 제작 품목은 출고 지시 전까지 참여업체와 협의하여 취소한다.",
+            f"제작·시공(설치) 착수 전에는 <b>100% 해약</b>할 수 있으며, 납부한 계약금 전액을 환불한다. 다만 맞춤 제작 품목({D.CUSTOM_MADE})은 출고 지시 전까지 참여업체와 협의하여 취소한다.",
             "품목별 취소 가능 기한은 [별표]와 같다. 기한 내 취소 시 납부 금액 전액을 환불한다.",
             "브랜드 가전·가구는 미제작 및 출고 지시 전에는 100% 취소·환불한다.",
             "참여업체가 사전 해피콜을 이행하지 않은 경우, 계약자 미동의 주문제작 건을 포함한 <b>모든 품목은 당일 취소·환불</b>할 수 있다(공급사 100% 귀책).",
@@ -176,7 +176,6 @@ def doc9():
             out.append(f'<div class="art"><h3>{h}</h3><p>{e(text)}</p></div>')
     table = f"""<h2>[별표] 품목별 취소 가능 기한 (시공일 기준)</h2>
 <table class="t"><thead><tr><th style="width:24%">취소 가능 기한</th><th>품목</th></tr></thead><tbody>
-<tr><td class="k" style="text-align:center">시공일 7일 전까지</td><td class="l">{e(D.CANCEL_7)}</td></tr>
 <tr><td class="k" style="text-align:center">시공일 15일 전까지</td><td class="l">시공 품목 — {e(D.CANCEL_15)}</td></tr>
 <tr><td class="k" style="text-align:center">출고 지시 전까지</td><td class="l">{e(D.CANCEL_SHIP)}</td></tr>
 <tr><td class="k" style="text-align:center">당일 취소 가능</td><td class="l">사전 해피콜 미이행 시 모든 품목</td></tr>
