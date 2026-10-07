@@ -211,6 +211,10 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
   background:linear-gradient(90deg,rgba(200,168,106,0),rgba(230,201,142,.85) 50%,rgba(200,168,106,0))}
 .pano .credit{position:absolute;right:76px;bottom:8px;font-size:10.5px;color:rgba(255,255,255,.5);z-index:1}
 .cv3 .sub2{justify-content:center;border-top:0;padding:16px 0 14px}
+.cv4>*{position:relative;z-index:1}
+.cv4>.cvart{position:absolute;z-index:0;right:0;bottom:128px;width:62%;height:400px}
+.cvart img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 85%}
+.cvart .credit{position:absolute;right:72px;bottom:8px;font-size:10.5px;color:rgba(255,255,255,.55)}
 .cv4 .gbar{width:150px;height:2px;background:var(--gold2);margin:26px 0 20px}
 .cv4 h1{font-size:52px;line-height:1.28;margin-top:24px}
 .cv4 .tag2{font-size:19px;line-height:1.6;margin-top:0}
@@ -427,8 +431,16 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 .ruls .rc ul{list-style:none;margin:0;padding:10px 0 0;border-top:1px solid rgba(200,168,106,.35)}
 .ruls .rc li{font-size:14.5px;color:var(--sub);line-height:1.5;padding:4px 0 4px 14px;position:relative}
 .ruls .rc li:before{content:'·';position:absolute;left:2px;color:var(--gold2)}
+
+.gal.lxg{grid-template-columns:1fr 1fr;gap:16px;flex:1 1 0}
+.gal.lxg figcaption{font-size:17px;padding:30px 18px 12px}
+.gal.lxg figcaption small{font-size:13.5px}
+.lxs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.lxs>div{border-left:2px solid var(--gold2);padding:2px 0 2px 14px}
+.lxs b{font-size:17px}
+.lxs p{font-size:14.5px;color:var(--sub);margin-top:4px;line-height:1.45}
 </style></head><body>
-<section class="page cv cv4"><div class="top"><div><div class="logo">EG</div><div class="en">EDGE COMPANY</div></div>
+<section class="page cv cv4"><div class="cvart"><img src="assets_ins/cs_cover_art.jpg" alt=""><span class="credit">철산역 자이 조감도 · 홍보용 이미지</span></div><div class="top"><div><div class="logo">EG</div><div class="en">EDGE COMPANY</div></div>
 <div class="who">주식회사 엣지컴퍼니<br>입주박람회 전문 주관사</div></div>
 <div class="mid"><span class="pill">입주박람회 주관사 제안서</span>
 <h1>철산역 자이 (조합)<br><em>입주박람회 주관사 제안서</em></h1>
@@ -1323,8 +1335,8 @@ h1{font-size:37px;font-weight:800;letter-spacing:-.01em;margin-top:14px;line-hei
 <h1>문주·경관조명 <em>컨설팅</em></h1>
 <div class="lead">단지의 첫인상인 진입부와 밤 풍경까지 조명으로 제안합니다.</div>
 <div class="rule"></div>
-<div class="ct"><div class="nb"><div class="splitx" style="grid-template-columns:1.55fr 1fr"><div><div class="gal" style="grid-template-columns:repeat(1,1fr);flex:1 1 0"><figure class=""><img src="assets_ins/g04_gate.jpg" alt=""><figcaption>문주 조명<small>연출 예시</small></figcaption></figure></div><div class="bulx"><div><b>문주 조명</b><p>진입부 문주의 간접조명·사인 조명 연출안을 제안합니다.</p></div><div><b>경관조명</b><p>동 외벽 라인조명 등 야간 경관 개선안을 검토합니다.</p></div><div><b>협의 후 적용</b><p>공용부는 사업주체·관리주체 협의를 거쳐 범위를 정합니다.</p></div></div></div><div><div class="gal" style="grid-template-columns:repeat(1,1fr);flex:1 1 0"><figure class=""><img src="assets_ins/g04_facade.jpg" alt=""><figcaption>경관조명<small>연출 예시</small></figcaption></figure></div></div></div></div></div>
-<div class="kp"><b>KEY POINT</b><span>제안에 그치지 않고 <em>시공 가능 여부</em>까지 함께 검토합니다.<small>전기공사업 제 울산-00821호 · 사진은 연출 예시</small></span></div>
+<div class="ct"><div class="nb"><div class="gal lxg"><figure><img src="assets_ins/cs_gate_night.jpg" alt=""><figcaption>문주 · 진입부 조명<small>간접조명 · 사인 조명 · 보행 동선 연출</small></figcaption></figure><figure><img src="assets_ins/cs_aerial_night.jpg" alt=""><figcaption>단지 경관조명<small>동 외벽 라인조명 · 단지 야간 경관</small></figcaption></figure></div><div class="lxs"><div><b>문주 조명</b><p>진입부 문주의 간접조명·사인 조명 연출안을 제안합니다.</p></div><div><b>경관조명</b><p>동 외벽 라인조명 등 야간 경관 개선안을 검토합니다.</p></div><div><b>협의 후 적용</b><p>공용부는 사업주체·관리주체 협의를 거쳐 범위를 정합니다.</p></div></div></div></div>
+<div class="kp"><b>KEY POINT</b><span>제안에 그치지 않고 <em>시공 가능 여부</em>까지 함께 검토합니다.<small>전기공사업 제 울산-00821호 · 사진은 연출 예시 이미지</small></span></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>
 <section class="page">

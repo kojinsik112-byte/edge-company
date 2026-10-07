@@ -83,6 +83,10 @@ B.CSS += r"""
   background:linear-gradient(90deg,rgba(200,168,106,0),rgba(230,201,142,.85) 50%,rgba(200,168,106,0))}
 .pano .credit{position:absolute;right:76px;bottom:8px;font-size:10.5px;color:rgba(255,255,255,.5);z-index:1}
 .cv3 .sub2{justify-content:center;border-top:0;padding:16px 0 14px}
+.cv4>*{position:relative;z-index:1}
+.cv4>.cvart{position:absolute;z-index:0;right:0;bottom:128px;width:62%;height:400px}
+.cvart img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 85%}
+.cvart .credit{position:absolute;right:72px;bottom:8px;font-size:10.5px;color:rgba(255,255,255,.55)}
 .cv4 .gbar{width:150px;height:2px;background:var(--gold2);margin:26px 0 20px}
 .cv4 h1{font-size:52px;line-height:1.28;margin-top:24px}
 .cv4 .tag2{font-size:19px;line-height:1.6;margin-top:0}
@@ -666,7 +670,10 @@ COVER_TOP = """<div class="top"><div><div class="logo">EG</div><div class="en">E
 
 def p_cover():
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
-    return f"""<section class="page cv cv4">{COVER_TOP}
+    # 조감도(본부장 제공 2026-10-07) — 네이비 배경에 스며들도록 위·왼쪽을 배경색으로 페이드
+    art = ('<div class="cvart"><img src="assets_ins/cs_cover_art.jpg" alt="">'
+           '<span class="credit">철산역 자이 조감도 · 홍보용 이미지</span></div>')
+    return f"""<section class="page cv cv4">{art}{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
 <h1>{TITLE_H1}</h1>
 <div class="gbar"></div>

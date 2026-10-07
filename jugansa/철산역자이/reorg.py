@@ -522,6 +522,29 @@ def apply(G):
         body='<div class="nb"><div class="sumx roomy">' + f'<div class="sb">{mtb(mem[:half], 1)}</div><div class="sb">{mtb(mem[half:], half + 1)}</div>' + "</div></div>",
         kp=("품목은 입예협 협의 후 [[조정 가능]]합니다.", "조합원 옵션과 겹치는 품목은 제외")))
 
+    # 문주·경관조명 장 — 본부장 제공 이미지로 교체, 사진을 크게(10-07)
+    k = take("문주·경관조명 [[컨설팅]]")[1]
+    def ph(img, cap, sub_):
+        return (f'<figure><img src="assets_ins/{img}.jpg" alt=""><figcaption>{cap}<small>{sub_}</small></figcaption></figure>')
+    k["body"] = ('<div class="nb"><div class="gal lxg">'
+                 + ph("cs_gate_night", "문주 · 진입부 조명", "간접조명 · 사인 조명 · 보행 동선 연출")
+                 + ph("cs_aerial_night", "단지 경관조명", "동 외벽 라인조명 · 단지 야간 경관")
+                 + '</div><div class="lxs">'
+                 '<div><b>문주 조명</b><p>진입부 문주의 간접조명·사인 조명 연출안을 제안합니다.</p></div>'
+                 '<div><b>경관조명</b><p>동 외벽 라인조명 등 야간 경관 개선안을 검토합니다.</p></div>'
+                 '<div><b>협의 후 적용</b><p>공용부는 사업주체·관리주체 협의를 거쳐 범위를 정합니다.</p></div>'
+                 '</div></div>')
+    k["kp"] = ("제안에 그치지 않고 [[시공 가능 여부]]까지 함께 검토합니다.", "전기공사업 제 울산-00821호 · 사진은 연출 예시 이미지")
+    B.CSS += r"""
+.gal.lxg{grid-template-columns:1fr 1fr;gap:16px;flex:1 1 0}
+.gal.lxg figcaption{font-size:17px;padding:30px 18px 12px}
+.gal.lxg figcaption small{font-size:13.5px}
+.lxs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.lxs>div{border-left:2px solid var(--gold2);padding:2px 0 2px 14px}
+.lxs b{font-size:17px}
+.lxs p{font-size:14.5px;color:var(--sub);margin-top:4px;line-height:1.45}
+"""
+
     # A·B·C 패키지 표지 장
     def pkg(L, name, en, desc, groups, cols=2):
         rt = ""
