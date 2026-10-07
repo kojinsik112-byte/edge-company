@@ -4,7 +4,7 @@
 동탄 파라곤3차 2-1 빌더를 토대로 한다. 기본틀(요약제안서 v5, ../요약제안서/build.py)은 건드리지 않고 불러와서 고친다.
 - 표지: 철산역 자이(조합) 입주박람회 주관사 제안서 (조감도 없음 → 핵심 수치 표지)
 - 01장 = 철산역 자이 맞춤 제안(단지 이해 · 참가자격 10개 항목 · 일정 · 운영 · 참가 업체 · 조합 단지 특화)
-- 실적은 공고 6)에 맞춰 최근 3년(2023.10.06~) 1,000세대 이상만
+- 실적: 2023.01~2026.10 1,000세대 이상(본부장 지시), 날짜는 입주 연월
 - 사진·발췌 장은 동탄 폴더 assets_ins / assets_full 을 공유(심볼릭 링크, 깃 제외)
 
 사용: python build_cheolsan.py
@@ -143,11 +143,12 @@ B.CSS += r"""
 .ylist h3{font-size:24px;color:var(--gold);margin:0 0 10px;font-weight:800}
 .ylist h3 small{display:block;font-size:13px;color:var(--mute);font-weight:500;margin-top:2px}
 .ylist ul{list-style:none;margin:0;padding:0}
-.ylist li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--sub);padding:5px 0;line-height:1.3;border-bottom:1px dashed rgba(255,255,255,.12)}
+.ylist li{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--sub);padding:4px 0;line-height:1.28;border-bottom:1px dashed rgba(255,255,255,.12)}
 .ylist li:last-child{border-bottom:0}
-.ylist li i{font-style:normal;font-size:12px;color:var(--mute)}
+.ylist li i{font-style:normal;font-size:11.5px;color:var(--mute);white-space:nowrap}
 .ylist li b{font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
 .ylist li.big span,.ylist li.big b{color:var(--gold);font-weight:700}
+.ylist li.fut i{color:#9fd3c7;font-weight:600}
 .toc4{grid-template-columns:repeat(4,1fr)!important}
 .toc4 .col{padding:0 22px}
 """
@@ -192,7 +193,7 @@ QUAL = [
     ("‘행사대행·전시·광고기획’ 업종", "전시·박람회 및 행사대행업 등재", "사업자등록증"),
     ("자본금 1억원 이상", "자본금 [[2억원]]", "법인등기부(2026.10.02)"),
     ("4대보험 정직원 5명 이상", "가입자 명부 [[10명]]", "4대보험 가입자 명부(2026.10.02)"),
-    ("최근 3년 1,000세대 이상 5회 이상", f"[[{len(D.RECORDS)}건 · {total3:,}세대]] (2023.11~2026.07)", "실적 증빙 · NICE 연혁"),
+    ("최근 3년 1,000세대 이상 5회 이상", f"[[{len(D.RECORDS)}건 · {total3:,}세대]] (2023.01~2026.10)", "실적 증빙 · NICE 연혁"),
     ("공동구매 하자담보 이행능력", "하자 예치금 현금 1억 · 이행보증보험 2년 10억 · 업체 특약이행각서", "협약 시 증권·예치 증빙"),
     ("등록 소재지 사무소 방문 가능", "울산 본사(사옥·쇼룸) 상시 방문 가능", "사업자등록증 주소"),
     ("신축 아파트 행사·단지 업무 실적", "진행 단지 2022년 9곳 → 2026년 25곳(확정 포함) · ISO 3종", "회사소개서 · 인증서"),
@@ -332,7 +333,7 @@ B.PAGES[i][1]["body"] = B.cards([
     dict(lb="2026", big="25", nm="확정 단지", ds="두산위브더제니스 오션시티 2,813 · 창원 센트럴 아이파크 1,540 등 일정 확정 단지 순차 운영."),
 ])
 total = sum(r[3] for r in D.RECORDS)
-B.PAGES[i][1]["kp"] = f"최근 3년 1,000세대 이상 주관 [[{len(D.RECORDS)}건 · {total:,}세대]] (NICE 기업신용평가 연혁 기준)"
+B.PAGES[i][1]["kp"] = f"2023년 이후 1,000세대 이상 주관 [[{len(D.RECORDS)}건 · {total:,}세대]]"
 
 i = find("[[대단지]] 운영 경험")
 big9 = sorted([(d[:4], n, nm) for d, nm, _, n in D.RECORDS]
@@ -548,18 +549,20 @@ if not os.environ.get("NO_NATIVE"):
     load_native()
     import polish  # noqa: E402  (중복 정리·순서·문구 — polish.py)
     polish.apply(globals())
-    # 2023년 이후 수임 단지 전체(본부장 목록 10-07) — 08장 대단지 장 뒤, 세대수 순 4열
-    _rows = sorted(D.SUIM, key=lambda r: -(r[1] or 0))
-    _li = "".join(f'<li{" class=big" if (n or 0) >= 1000 else ""}><span>{nm}{f" <i>{m}</i>" if m else ""}</span>'
-                  f'<b>{f"{n:,}{u}" if n else "확인 중"}</b></li>' for nm, n, u, m in _rows)
+    # 수임 단지 전체(본부장 목록 10-07) — 08장 대단지 장 뒤, 입주 연월 최신순 3열(입주 전 = 입주 예정)
+    _rows = sorted(D.SUIM, key=lambda r: r[3], reverse=True)
+    _now = "2026.10"
+    _li = "".join(f'<li class="{"big" if n >= 1000 else ""}{" fut" if m > _now else ""}"><span>{nm} <i>{m}{" 예정" if m > _now else ""}</i></span>'
+                  f'<b>{n:,}{u}</b></li>' for nm, n, u, m in _rows)
     _cols = [f"<ul>{_li}</ul>"]
-    _n1k = sum(1 for r in _rows if (r[1] or 0) >= 1000)
+    _n1k = sum(1 for r in _rows if r[1] >= 1000)
+    _nfut = sum(1 for r in _rows if r[3] > _now)
     _di = next(i for i, (_, k) in enumerate(B.PAGES) if k.get("title") == "[[대단지]] 운영 경험")
     B.PAGES.insert(_di + 1, ("std", dict(sec=B.PAGES[_di][1].get("sec", ""), title=f"2023년 이후 수임 단지 [[{len(_rows)}곳]]",
-        lead="최근 3년, 입주박람회 주관을 맡은 단지 전체입니다. 금색 = 1,000세대 이상.",
+        lead="날짜는 입주 연월입니다. 입주 전 단지는 입주 예정월 · 금색 = 1,000세대 이상.",
         body='<div class="ylist">' + "".join(_cols) + "</div>",
-        kp=(f"{len(_rows)}개 단지 수임 — 이 중 1,000세대 이상 [[{_n1k}곳]]",
-            "공식 명칭·총세대수 기준 · 월 표기는 NICE 연혁 기재분"))))
+        kp=(f"{len(_rows)}개 단지 · 1,000세대 이상 [[{_n1k}곳]] · 입주 예정 [[{_nfut}곳]] 진행 중",
+            "공식 단지명·총세대수 기준 · ‘실’은 오피스텔·생활숙박"))))
     # 핵심 혜택 한 장(본부장 지시 10-07: 표지 수치 대신 뒤쪽에 임팩트 있게) — 마무리 약속 장 바로 앞
     _ci = next(i for i, (k, _) in enumerate(B.PAGES) if k == "closing")
     _hh = D.SITE["households"]

@@ -165,14 +165,13 @@ def apply(G):
     k["body"] = sub(k["body"], '<div class="lb">GIFT</div>', '<div class="lb">GIVEAWAY</div>')
     k["kp"] = "계약하지 않아도 [[가족 모두가 하루를 즐길 수 있게]] 운영합니다."
 
-    # 08장 — 대단지 = 공고 6) 최근 3년 실적 6건
+    # 08장 — 대단지 = 2023.01~2026.10 1,000세대 이상 실적(입주 연월)
     k = kw("[[대단지]] 운영 경험")
     recs = sorted(((d[:4], n, nm) for d, nm, _, n in D.RECORDS), key=lambda r: -r[1])
     total = sum(n for _, n, _ in recs)
-    k["body"] = B.tiles([dict(lb=y, big=f"{n:,}", unit="세대", nm=nm) for y, n, nm in recs]
-                        + [dict(lb="TOTAL", big=f"{total:,}", unit="세대", nm=f"{len(recs)}개 단지 합계")], cols=4, rows_n=2)
-    k["lead"] = "공고 참가 자격 6) 최근 3년 실적과 같은 기준(NICE 기업신용평가 연혁)입니다."
-    k["kp"] = f"최근 3년 1,000세대 이상 주관 [[{len(recs)}건 · {total:,}세대]]입니다."
+    k["body"] = B.tiles([dict(lb=y, big=f"{n:,}", unit="세대", nm=nm) for y, n, nm in recs], cols=5, rows_n=2)
+    k["lead"] = "2023년 1월 ~ 2026년 10월, 1,000세대 이상 주관 단지입니다. 연도는 입주 기준."
+    k["kp"] = f"2023년 이후 1,000세대 이상 주관 [[{len(recs)}건 · {total:,}세대]]입니다."
 
     # 신도시 장 — 단지명·세대수 공식 기준, 미주관 단지(롯데캐슬·중흥S-클래스) 삭제 (본부장 확인 2026-10-05)
     body_sub("한 단지가 아니라 [[한 신도시]]",
