@@ -345,7 +345,7 @@ def find(title_part):
 i = find("성공사례")
 B.PAGES[i][1]["body"] = B.cards([
     dict(lb="2023", big="12", nm="진행 단지", ds="레이카운티 4,470 · 힐스테이트 포항 1,717 · 사상중흥 S-클래스 1,572 등."),
-    dict(lb="2024", big="15", nm="진행 단지", ds="양정자이 SK뷰 2,272 · 사송 데시앙 1차 1,712 · 두산위브더제니스 센트럴사하 1,643 등."),
+    dict(lb="2024", big="15", nm="진행 단지", ds="양정자이더샵SK VIEW 1·2단지 2,272 · 두산위브더제니스 센트럴사하 1,643 · e편한세상 송도 더퍼스트비치 1,302 등."),
     dict(lb="2025", big="18", nm="진행 단지", ds="춘천 중해마루힐 1,114 · e편한세상 에코델타 센터포인트 953 등."),
     dict(lb="2026", big="25", nm="확정 단지", ds="두산위브더제니스 오션시티 2,813 · 창원 센트럴 아이파크 1,540 등 일정 확정 단지 순차 운영."),
 ])
@@ -575,15 +575,15 @@ if not os.environ.get("NO_NATIVE"):
     _n1k = sum(1 for r in _rows if r[1] >= 1000)
     _nfut = sum(1 for r in _rows if r[3] > _now)
     _di = next(i for i, (_, k) in enumerate(B.PAGES) if k.get("title") == "[[대단지]] 운영 경험")
-    B.PAGES.insert(_di + 1, ("std", dict(sec=B.PAGES[_di][1].get("sec", ""), title=f"2023년 이후 수임 단지 [[{len(_rows)}곳]]",
+    B.PAGES.insert(_di + 1, ("std", dict(sec=B.PAGES[_di][1].get("sec", ""), title=f"2023년 이후 수임 단지 [[{sum(D.DANJI_N.get(r[0], 1) for r in _rows)}곳]]",
         lead="날짜는 입주 연월입니다. 입주 전 단지는 입주 예정월 · 금색 = 1,000세대 이상.",
         body='<div class="ylist">' + "".join(_cols) + "</div>",
-        kp=(f"{len(_rows)}개 단지 · 1,000세대 이상 [[{_n1k}곳]] · 입주 예정 [[{_nfut}곳]] 진행 중",
+        kp=(f"{sum(D.DANJI_N.get(r[0], 1) for r in _rows)}개 단지 · 1,000세대 이상 [[{_n1k}곳]] · 입주 예정 [[{_nfut}곳]] 진행 중",
             "공식 단지명·총세대수 기준 · ‘실’은 오피스텔·생활숙박"))))
     # 2,000세대 이상 초대형 단지 강조(본부장 지시 10-07, 통합제안서 대단지 장 참고) — 성공사례 장 바로 뒤
     _big = [("n02_raycounty", "레이카운티", 4470, "2023.11 입주", "부산 거제2구역 재개발", "단일 단지 최대 규모"),
             ("n02_oceancity", "두산위브더제니스 오션시티", 2813, "2026.01 입주", "부산 우암2구역 · 조합 사업", "조합 단지 운영"),
-            ("n02_yangjung", "양정자이더샵SK VIEW", 2272, "2025.01 입주", "부산진구 양정동", "3개 건설사 컨소시엄 단지")]
+            ("n02_yangjung", "양정자이더샵SK VIEW 1·2단지", 2272, "2025.01 입주", "부산진구 양정동", "3개 건설사 컨소시엄 단지")]
     _cards = "".join(
         f'<div class="bc"><div class="ph"><img src="assets_ins/{im}.jpg" alt=""><span class="tg">{tag}</span></div>'
         f'<div class="pn"><div class="n">{n:,}<small>세대</small></div><div class="nm">{nm}</div>'
