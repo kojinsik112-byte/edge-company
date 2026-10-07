@@ -906,6 +906,10 @@ def finish(path, title):
     doc = doc.replace("url(assets/", "url(../요약제안서/assets/").replace("url('assets/", "url('../요약제안서/assets/")
     doc = doc.replace('src="assets/', 'src="../요약제안서/assets/')
     doc = re.sub(r"(?<!조합 )입예협", "조합 입예협", doc)  # 본부장 10-07: '입예협' → '조합 입예협' 표기 통일
+    i = doc.index("<body")
+    body = doc[i:].replace("—", "-")  # 본부장 10-07: 굵은 긴 줄표 → 하이픈
+    body = re.sub(r"(\d)\s*[–~]\s*(\d)", r"\1 ~ \2", body)  # 본부장 10-07: 범위는 '2018 ~ 2022'(띄어쓰기 + 물결)
+    doc = doc[:i] + body
     doc = sub(doc, "<title>엣지컴퍼니 요약제안서</title>", f"<title>{title}</title>")
     doc = sub(doc, "</body>", ALIGN_JS + "</body>")
     left = re.findall(r".{0,12}(?:동탄|임예협|임차|임대사업자).{0,6}", doc)
