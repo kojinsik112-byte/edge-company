@@ -112,11 +112,12 @@ B.CSS += r"""
 .cv5 .sub2 b{font-size:15px}
 .page.hero{padding:40px 48px 0}
 .page.hero>.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 70%}
-.page.hero>.veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,18,32,.96) 0%,rgba(8,18,32,.86) 34%,rgba(8,18,32,.25) 64%,rgba(8,18,32,.05) 100%),
+.page.hero>.veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,18,32,.78) 0%,rgba(8,18,32,0) 16%),linear-gradient(90deg,rgba(8,18,32,.96) 0%,rgba(8,18,32,.86) 34%,rgba(8,18,32,.25) 64%,rgba(8,18,32,.05) 100%),
   linear-gradient(0deg,rgba(8,18,32,.92) 0%,rgba(8,18,32,0) 38%)}
 .page.hero>.hd,.page.hero>.ct,.page.hero>.kp,.page.hero>.ft{position:relative;z-index:1}
 .page.hero .ct{flex:1}
 .page.hero .hin{position:absolute;z-index:1;left:48px;top:96px;width:560px}
+.page.hero .hcap{position:absolute;z-index:1;right:52px;bottom:238px;font-size:10.5px;color:rgba(255,255,255,.62)}
 .hin .kick{font-size:13px;font-weight:700;letter-spacing:.32em;color:var(--gold2)}
 .hin h2{font-size:52px;font-weight:800;line-height:1.22;margin-top:14px;letter-spacing:-.01em}
 .hin .bar{width:150px;height:2px;background:var(--gold2);margin:22px 0 18px}
@@ -259,7 +260,7 @@ QUAL = [
     ("‘행사대행·전시·광고기획’ 업종", "전시·박람회 및 행사대행업 등재", "사업자등록증"),
     ("자본금 1억원 이상", "자본금 [[2억원]]", "법인등기부(2026.10.02)"),
     ("4대보험 정직원 5명 이상", "가입자 명부 [[10명]]", "4대보험 가입자 명부(2026.10.02)"),
-    ("최근 3년 1,000세대 이상 5회 이상", f"[[{len(D.RECORDS)}건 · {total3:,}세대]] (2023.01~2026.10)", "실적 증빙 · NICE 연혁"),
+    ("최근 3년 1,000세대 이상 5회 이상", f"최근 3년(2023.10 이후) [[{sum(1 for r in D.RECORDS if r[0] >= '2023.10')}건]] · 2023.01부터 {len(D.RECORDS)}건 · {total3:,}세대", "실적 증빙 · NICE 연혁"),
     ("공동구매 하자담보 이행능력", "하자 예치금 현금 1억 · 이행보증보험 2년 10억 · 업체 특약이행각서", "협약 시 증권·예치 증빙"),
     ("등록 소재지 사무소 방문 가능", "울산 본사(사옥·쇼룸) 상시 방문 가능", "사업자등록증 주소"),
     ("신축 아파트 행사·단지 업무 실적", "누적 67개 단지 · 56,361세대 주관·수임 · ISO 3종", "회사소개서 · 인증서"),
@@ -278,9 +279,9 @@ new("std", sec=S0, title="선정부터 입주까지 [[추진 일정]] (안)",
         ("2026.10~11", "주관사 선정·협약 체결 · 입예협 카페/공지채널 지원 시작 · [[조합원 옵션·기본 제공 품목]] 목록 확보"),
         ("2027~2028", "분기별 진행 보고 · 카페 콘텐츠 지원 · 조합·시공사 협의 자료(도면·하자 분석) 지원 · 품목 시장가 점검"),
         ("2028 하반기", "[[품목 수요조사]] 설문 · 타입별 실측 데이터 준비 · 행사장 후보 답사"),
-        ("2029.01~02", "참여업체 [[공개 입찰공고]](입예협·주관사 이메일 동시 접수) · 4단계 심사 → [[입예협 최종 컨펌]] · 특약이행각서 징구"),
+        ("2029.01~02", "참여업체 [[공개 입찰공고]](이메일 동시 접수) · 4단계 심사 → [[입예협 최종 컨펌]] · 특약이행각서 징구"),
         ("2029.03~04", "단가표 사전 공개 · [[입주박람회 주말 양일]] · 사전점검 행사 지원 · 온라인 박람회 오픈"),
-        ("2029.05~", "입주 지원 · 단지별 설치 예약·하역 관리 · 콜센터 운영 → 입주 후 1년 사후관리 · [[결과 보고서]]"),
+        ("2029.05~", "입주 지원 · 단지별 설치 예약·하역 관리 · 콜센터 운영 → 입주 후 1년 운영 관리 · [[결과 보고서]] (품목 A/S는 최소 2년)"),
     ], title_w=170),
     kp="세부 일정은 사전점검·입주지원센터 일정에 맞춰 [[입예협과 확정]]합니다.")
 
@@ -288,7 +289,7 @@ new("std", sec=S0, title="입주박람회 [[운영 계획]]",
     lead="계약을 재촉하는 자리가 아니라, 확인하고 비교하는 자리로 만듭니다.",
     body=B.tiles([
         dict(lb="WHEN", nm="주말 양일 · 입주 1~2개월 전", ds="2029년 3~4월 토·일 개최(안). 사전점검 일정에 맞춰 확정합니다."),
-        dict(lb="WHERE", nm="광명·서울 서남권 행사장 후보", ds="단지에서 30분 내외 전시·컨벤션 시설을 입예협과 답사한 뒤 확정합니다."),
+        dict(lb="WHERE", nm="광명·서울 서남권 행사장 후보", ds="단지에서 30분 이내 전시·컨벤션 시설을 입예협과 답사한 뒤 확정합니다."),
         dict(lb="SAFETY", nm="행사 배상책임보험 가입", ds="안전요원·동선·비상구 계획 수립. 화재·상해 예방 수칙은 참여업체 서약."),
         dict(lb="MEMBERS", nm="정회원 사전예약 · 체크인", ds="정회원 우선 입장·혜택. 입예협 부스를 행사장 중앙에 배치합니다."),
         dict(lb="ONLINE", nm="온라인 박람회 · 라이브", ds="단지 입주민만 들어오는 폐쇄몰. 박람회와 같은 공동구매가."),
@@ -681,7 +682,7 @@ def render_std(no, sec, title, lead, body, kp):
 <div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">{sec}</span></div>
 <div class="r">{B.QUOTE} &nbsp;·&nbsp; {no:02d}</div></div>
 <div class="ct"></div>
-{f'<div class="kp"><b>KEY POINT</b><span>{t(kp)}</span></div>' if kp else ''}
+{(f'<div class="kp"><b>KEY POINT</b><span>{t(kp[0])}<small>{t(kp[1])}</small></span></div>' if isinstance(kp, tuple) else f'<div class="kp"><b>KEY POINT</b><span>{t(kp)}</span></div>') if kp else ''}
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>"""
     if title != INS:
@@ -838,7 +839,7 @@ def p_closing(no, sec):
              ("옵션 중복 확인 · 가격 공개표", "조합원 옵션과 겹치는 품목 사전 확인 · 시공비·추가금 포함 공개"),
              ("시공 품목 인근 지역업체 90% 선정", "48시간 A/S가 가능한 거리"),
              ("최저가 차액 10배 보상", "단가표 사전 공개 · 현장 가격 변경 없음"),
-             ("48시간 하자보수 · 무상 A/S 2년", "장기관리 최대 10년 · 콜센터 상시 운영 · 입주기간 업체 순환 상주(협의)"),
+             ("48시간 하자보수 · 무상 A/S 2년", "장기관리 최대 10년 · 접수 채널 365일 · 24시간 내 회신"),
              ("경관조명 컨설팅 · 설계 · 생산 · 직접시공", "전기공사업 면허 기반 직접 시공 · KC 인증 제품")]
     its = "".join(f'<div class="it"><div class="no">{i:02d}</div><div><b>{B.html.escape(a)}</b><p>{B.html.escape(b)}</p></div></div>'
                   for i, (a, b) in enumerate(items, 1))
@@ -866,6 +867,24 @@ B.p_divider_lx = lambda: sub(B_p_divider_lx(), '<div class="n">02</div>', '<div 
 if not os.environ.get("NO_NATIVE"):
     import reorg  # noqa: E402  (목차 10장 재배치 · 15만원 현금/패키지 선택 · 특화서비스 요약 — reorg.py)
     reorg.apply(globals())
+
+CLOSING_DROP = []  # 요약본에서 뺄 약속 번호
+
+
+def p_closing_drop(no, sec):
+    s = B_p_closing_full(no, sec)
+    if not CLOSING_DROP:
+        return s
+    for n in CLOSING_DROP:
+        s, k = re.subn(rf'<div class="it"><div class="no">{n}</div><div><b>.*?</b><p>.*?</p></div></div>', "", s, flags=re.S)
+        assert k == 1, n
+    cnt = iter(range(1, 20))
+    s = s.replace('<div class="cl">', f'<div class="cl" style="grid-template-rows:repeat({(8 - len(CLOSING_DROP) + 1) // 2},1fr)">')
+    return re.sub(r'<div class="no">\d+</div>', lambda m: f'<div class="no">{next(cnt):02d}</div>', s)
+
+
+B_p_closing_full = B.p_closing
+B.p_closing = p_closing_drop
 
 
 # ============================================================ 빌드
@@ -905,7 +924,7 @@ def finish(path, title):
     doc = doc.replace("지역업체", "인근 지역업체").replace("인근 인근", "인근")  # 본부장님 지시: '인근 지역업체'
     doc = doc.replace("url(assets/", "url(../요약제안서/assets/").replace("url('assets/", "url('../요약제안서/assets/")
     doc = doc.replace('src="assets/', 'src="../요약제안서/assets/')
-    doc = re.sub(r"(?<!조합 )입예협", "조합 입예협", doc)  # 본부장 10-07: '입예협' → '조합 입예협' 표기 통일
+    doc = re.sub(r"(?<!조합 )(?<!조합\u00a0)입예협", "조합\u00a0입예협", doc)  # 줄바꿈 없는 공백 — '조합 / 입예협'으로 갈리지 않게  # 본부장 10-07: '입예협' → '조합 입예협' 표기 통일
     i = doc.index("<body")
     body = doc[i:].replace("—", "-")  # 본부장 10-07: 굵은 긴 줄표 → 하이픈
     body = re.sub(r"(\d)\s*[–~]\s*(\d)", r"\1 ~ \2", body)  # 본부장 10-07: 범위는 '2018 ~ 2022'(띄어쓰기 + 물결)
@@ -934,19 +953,21 @@ NAME22 = "엣지컴퍼니_철산역자이_2-2_요약제안서"
 
 def summary_pages():
     """요약본 [2-2] — 본 제안서(B.PAGES, 재배치 후)에서 필요한 장만 골라 압축. 장 표시(sec)만 요약본 기준으로 바꾼다."""
-    def take(title=None, kind=None, sec=None):
+    def take(title=None, kind=None, sec=None, kp=None):
         hits = [(k, kw) for k, kw in B.PAGES if (title and kw.get("title") == title) or (kind and not title and k == kind)]
         assert len(hits) == 1, (title, kind, len(hits))
         k, kw = hits[0]
         kw = dict(kw)
         if sec and "sec" in kw:
             kw["sec"] = sec
+        if kp:
+            kw["kp"] = kp
         return (k, kw)
 
     S1, S2, S3, S4, S5, S6 = ("01. 발전지원 15만원", "02. 경관조명 특화", "03. 하자보증 · 안전망",
                               "04. 업체선정 · 가격 보호", "05. 철산역 자이 맞춤", "06. 주관 실적")
     hero_body = (
-        '<img class="bg" src="assets_ins/cs_gate_night.jpg" alt=""><div class="veil"></div>'
+        '<img class="bg" src="assets_ins/cs_gate_night.jpg" alt=""><div class="veil"></div><span class="hcap">문주·진입부 경관조명 · 연출 예시 이미지</span>'
         '<div class="hin"><div class="kick">LANDSCAPE LIGHTING · 전기공사업 면허 주관사</div>'
         '<h2>단지의 밤,<br><em>경관조명이 완성합니다</em></h2><div class="bar"></div>'
         '<p>엣지컴퍼니는 전기공사업 면허를 갖춘 입주박람회 주관사입니다.<br>경관조명은 제안서로 끝내지 않고,<br>컨설팅부터 직접 시공까지 면허 범위 안에서 책임집니다.</p></div>'
@@ -954,18 +975,19 @@ def summary_pages():
         '<div><i>01 · CONSULTING</i><b>컨설팅 · 설계</b><span>조도·색온도·배광을 단지 동선과 외관에 맞춰 도면으로 제안</span></div>'
         '<div><i>02 · PRODUCTION</i><b>직수입 · 생산</b><span>설계 사양 그대로 제작 · KC 인증 제품만 납품</span></div>'
         '<div><i>03 · CONSTRUCTION</i><b>면허 시공</b><span>전기공사업 등록 제 울산-00821호 · 외주 없이 직접 시공</span></div>'
-        '<div><i>04 · COMMUNITY</i><b>단지 업그레이드</b><span>문주·외벽 라인조명·커뮤니티 조명 개선안 (C 패키지)</span></div>'
+        '<div><i>04 · COMMUNITY</i><b>단지 업그레이드</b><span>문주·외벽·커뮤니티 조명 개선안 컨설팅(C 패키지) · 시공은 승인 후 선택</span></div>'
         '</div>')
     pages = [
         ("cover", {}),
         take("세대당 15만원, [[현금 또는 혜택 패키지]] 중 선택", sec=S1),
-        take("혜택 패키지 [[A · B · C]] 구성 항목", sec=S1),
+        take("혜택 패키지 [[A · B · C]] 구성 항목", sec=S1,
+             kp=("다음 장은 받으시는 방식별 [[패키지 구성 예시]]입니다.", "항목별 상세는 본 제안서 08장 · 공용부 항목은 조합·관리주체 협의 전제")),
         take("이렇게 [[패키지로]] 받으실 수 있습니다 (예시)", sec=S1),
         ("std", dict(sec=S2, title=HERO, lead=None, body=hero_body,
-                     kp="제안한 주관사가 직접 시공하니 — [[제안과 시공이 어긋나지 않습니다.]]")),
+                     kp=("제안한 주관사가 시공까지 맡을 수 있어 [[제안과 시공이 어긋나지 않습니다.]]", "공용부 시공은 조합·관리주체 승인 후 · 범위·비용 협의"))),
         take(kind="landscape", sec=S2),
-        take("문주·경관조명 [[컨설팅]]", sec=S2),
-        take("[[조명 수직계열화]] · 유통 단계 없는 공급", sec=S2),
+        take("[[조명 수직계열화]] · 유통 단계 없는 공급", sec=S2,
+             kp=("유통 단계를 뺀 만큼 [[그대로 입주민 단가]]가 됩니다.", "주관사 직영 품목도 같은 4단계 심사 · 같은 단가 공개 · 조합 입예협 최종 컨펌")),
         take("입주민을 지키는 [[3중 안전망]]", sec=S3),
         take("이행보증보험 [[2년 · 최대 10억]]", sec=S3),
         take("선보상 재원 · 하자 예치금 [[최대 1억원]]", sec=S3),
@@ -990,7 +1012,9 @@ def build():
     if not os.environ.get("NO_NATIVE"):
         # 요약본 [2-2] — 본 제안서 틀 그대로, 표지는 숫자(15만원·10억·1억)로
         COVER.update(kind="impact", pill="입주박람회 주관사 요약 제안서 · [2-2]")
+        CLOSING_DROP[:] = ["03", "04"]  # 요약본 약속 장: 03 A 입주민 특화서비스 · 04 옵션 중복 확인 삭제(본부장 10-07)
         emit(summary_pages(), os.path.join(HERE, NAME22 + ".html"), "엣지컴퍼니 철산역 자이 요약 제안서 [2-2]")
+        CLOSING_DROP[:] = []
         COVER.update(kind="stats", pill="입주박람회 주관사 제안서")
 
 
