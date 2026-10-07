@@ -2594,8 +2594,8 @@
         "grow": 1,
         "items": [
          {
-          "img": "n12_meeting",
-          "cap": "타 단지 협의회 회의",
+          "img": "n12_meeting_cs",
+          "cap": "타 단지 협의회 협상 미팅",
           "sub": "오프라인 회의 현장"
          }
         ]
