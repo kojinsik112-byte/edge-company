@@ -689,10 +689,13 @@ TOC4 = [
 ]
 
 
+TOC_CLS = "toc4"
+
+
 def p_toc(no):
     B.TOC = TOC4
     html = B_p_toc(no)
-    return sub(html, 'class="toc"', 'class="toc toc4"').replace("요약제안서 <em>목차</em>", "제안서 <em>목차</em>")
+    return sub(html, 'class="toc"', f'class="toc {TOC_CLS}"').replace("요약제안서 <em>목차</em>", "제안서 <em>목차</em>")
 
 
 B_p_toc = B.p_toc
@@ -774,6 +777,11 @@ B.p_bars = p_bars
 B.p_cover, B.p_toc, B.p_contact, B.p_hi_fund, B.p_closing = p_cover, p_toc, p_contact, p_hi_fund, p_closing
 B.p_hi_money = p_hi_money
 B.p_divider_lx = lambda: sub(B_p_divider_lx(), '<div class="n">02</div>', '<div class="n">03</div>')
+
+
+if not os.environ.get("NO_NATIVE"):
+    import reorg  # noqa: E402  (목차 10장 재배치 · 15만원 현금/패키지 선택 · 특화서비스 요약 — reorg.py)
+    reorg.apply(globals())
 
 
 # ============================================================ 빌드
