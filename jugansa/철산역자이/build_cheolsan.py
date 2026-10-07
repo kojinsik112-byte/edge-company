@@ -536,6 +536,21 @@ if not os.environ.get("NO_NATIVE"):
     load_native()
     import polish  # noqa: E402  (중복 정리·순서·문구 — polish.py)
     polish.apply(globals())
+    # 핵심 혜택 한 장(본부장 지시 10-07: 표지 수치 대신 뒤쪽에 임팩트 있게) — 마무리 약속 장 바로 앞
+    _ci = next(i for i, (k, _) in enumerate(B.PAGES) if k == "closing")
+    _hh = D.SITE["households"]
+    B.PAGES.insert(_ci, ("std", dict(sec=B.PAGES[_ci][1].get("sec", ""), title="철산역 자이에 드리는 [[핵심 혜택 6가지]]",
+        lead="숫자로 약속하고, 협약서로 지킵니다.",
+        body=B.tiles([
+            dict(lb="발전지원금", big=f"{D.FUND}", unit="만원", nm="세대당 발전지원금",
+                 ds=f"조합 {_hh:,}세대 기준 총 {_hh * D.FUND // 10000}억 {_hh * D.FUND % 10000:,}만원 (부가세 포함)"),
+            dict(lb="하자 예치금", big="1", unit="억원", nm="현금 예치", ds="엣지컴퍼니 자산으로 입예협 공동통장에 직접 예치"),
+            dict(lb="이행보증보험", big="10", unit="억원", nm="2년 보증", ds="증권 실물을 입예협에 전달"),
+            dict(lb="최저가 보장", big="10", unit="배", nm="차액 보상", ds="동일 제품이 더 싸면 차액의 10배 보상"),
+            dict(lb="입예협 지원", big="8", unit="가지", nm="무상 단지지원", ds="사전점검 지원·라돈측정·도면 분석 등 자체 인력"),
+            dict(lb="정회원 혜택", big="60", unit="만원 상당", nm="세대당 혜택", ds="정회원 박람회 방문 세대 전용"),
+        ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"'),
+        kp="모든 혜택은 [[협약서에 그대로 옮겨]] 끝까지 이행합니다.")))
 
 
 def render_std(no, sec, title, lead, body, kp):
@@ -584,12 +599,7 @@ def p_cover():
 <h1>{TITLE_H1}</h1>
 <div class="gbar"></div>
 <div class="tag2">{COVER['tag']}</div>
-<div class="stats">
-<div><b>{D.FUND}만원<small>(VAT 포함)</small></b><span>세대당 발전지원금</span></div>
-<div><b>현금 1억</b><span>하자 예치금 거치</span></div>
-<div><b>10억 / 2년</b><span>이행보증보험</span></div>
-<div><b>8가지</b><span>입예협 전용 무상 단지지원</span></div>
-</div></div>
+</div>
 {sub2}
 <div class="bt"><span>BID PROPOSAL · 입주박람회 주관사 제안서</span><span>2026.10</span></div>
 </section>"""
