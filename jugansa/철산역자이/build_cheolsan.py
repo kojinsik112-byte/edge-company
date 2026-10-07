@@ -337,12 +337,12 @@ new("std", sec=S0, title="입주까지 31개월, [[긴 시간]]을 관리합니�
     kp="길게 남은 일정일수록 [[바뀔 때의 기준]]이 곧 약속입니다.")
 
 new("std", sec=S0, title="철산역 자이 [[특화 제안]]",
-    lead="엣지컴퍼니 본업(조명·커튼·실링팬)과 박람회 운영을 이 단지에 맞게 다시 짰습니다.",
+    lead="박람회 운영 경험과 주관사 직영 품목(조명·커튼·실링팬)을 이 단지에 맞게 다시 짰습니다.",
     body=B.tiles([
         dict(lb="01", nm="옵션 중복 확인 서비스", ds="세대별 계약 옵션을 확인해 겹치는 품목은 안내 단계에서 걸러 드립니다."),
         dict(lb="02", nm="단지별 설치 예약", ds="1·2·3단지별로 설치 날짜·시간을 예약받아 같은 날 같은 동에 몰리지 않게 합니다."),
         dict(lb="03", nm="경관·커뮤니티 조명 무상 점검", ds="야간 보행·길찾기 취약 지점을 점검해 개선안을 제출합니다. 설치는 조합·관리주체 승인 후 선택."),
-        dict(lb="04", nm="본업 품목 사전 실측", ds="커튼·블라인드·조명은 타입별 실측 데이터로 미리 제작해 입주일에 바로 설치합니다."),
+        dict(lb="04", nm="직영 품목 사전 실측", ds="커튼·블라인드·조명은 타입별 실측 데이터로 미리 제작해 입주일에 바로 설치합니다."),
         dict(lb="05", nm="온라인 박람회 · 라이브커머스", ds="박람회 날 오기 어려운 세대도 같은 공동구매가로 온라인 계약할 수 있습니다."),
         dict(lb="06", nm="정회원 혜택 · 입예협 부스", ds="정회원 전용 혜택을 구성하고, 입예협 홍보·가입 부스를 중앙에 둡니다."),
     ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"'),
@@ -736,7 +736,7 @@ def p_cover_impact():
 <div><i>이행보증보험 2년</i><b><small class="mx">최대</small>10<small>억</small></b><p>증권 실물 제출</p></div>
 <div><i>하자 예치금</i><b><small class="mx">최대</small>1<small>억</small></b><p>하자 시 입주민 선보상</p></div>
 </div>
-<div class="lxband"><b>경관조명 특화</b><span>컨설팅 · 설계 · 생산 · 직접시공까지 한 회사<br>전기공사업 등록 제 울산-00821호</span></div>
+<div class="lxband"><b>전기공사업 면허 주관사</b><span>경관조명·공용부 조명 개선을 제안에서 직접 시공까지<br>전기공사업 등록 제 울산-00821호</span></div>
 </div>
 {sub2}
 <div class="bt"><span>BID PROPOSAL · 요약본 [2-2]</span><span>2026.10</span></div>
@@ -811,8 +811,8 @@ def p_hi_fund(no, sec):
     s = B_p_hi_fund(no, sec)
     s = sub(s, '<span class="v">15만원</span>', f'<span class="v">{D.FUND}만원</span>')
     s = sub(s, "세대수 × 15만원 규모의 발전지원금을 협의회와 협의해 집행합니다.",
-            f"<em>공고 대상 조합 {hh:,}세대</em>를 기준으로 지급하고, <em>조합 또는 입예협 공식 통장</em>으로 입금합니다.")
-    s = sub(s, "<span>현금성 지원</span>", "<span>현금성 지원 · 조합 또는 입예협 공식 통장 입금 가능</span>")  # 본부장 10-07
+            f"<em>공고 대상 조합 {hh:,}세대</em>를 기준으로 지급하고, <em>입예협 공식 통장</em>으로 입금합니다.")
+    s = sub(s, "<span>현금성 지원</span>", "<span>현금성 지원 · 입예협 공식 통장 입금 가능</span>")  # 본부장 10-07
     return sub(s, "예: 1,000세대 단지 기준 <em>1억 5천만원</em>의 발전지원 규모.",
                f"{hh:,}세대 × {D.FUND}만원 = <em>총 {won(n)}</em>(부가세 포함)의 발전지원 규모.")
 
@@ -839,7 +839,7 @@ def p_closing(no, sec):
              ("시공 품목 인근 지역업체 90% 선정", "48시간 A/S가 가능한 거리"),
              ("최저가 차액 10배 보상", "단가표 사전 공개 · 현장 가격 변경 없음"),
              ("48시간 하자보수 · 무상 A/S 2년", "장기관리 최대 10년 · 콜센터 상시 운영 · 입주기간 업체 순환 상주(협의)"),
-             ("경관조명 컨설팅 · 설계 · 생산 · 직접시공", "조명 직수입·KC 인증·전기공사업 등록 시공까지 한 회사")]
+             ("경관조명 컨설팅 · 설계 · 생산 · 직접시공", "전기공사업 면허 기반 직접 시공 · KC 인증 제품")]
     its = "".join(f'<div class="it"><div class="no">{i:02d}</div><div><b>{B.html.escape(a)}</b><p>{B.html.escape(b)}</p></div></div>'
                   for i, (a, b) in enumerate(items, 1))
     return B.render_std(no, sec, "엣지컴퍼니가 [[약속드리는 것]]", "제안서에 쓴 것은 전부 협약서와 증빙으로 남깁니다.",
@@ -943,13 +943,13 @@ def summary_pages():
                               "04. 업체선정 · 가격 보호", "05. 철산역 자이 맞춤", "06. 주관 실적")
     hero_body = (
         '<img class="bg" src="assets_ins/cs_gate_night.jpg" alt=""><div class="veil"></div>'
-        '<div class="hin"><div class="kick">LANDSCAPE LIGHTING · 엣지컴퍼니 특화</div>'
+        '<div class="hin"><div class="kick">LANDSCAPE LIGHTING · 전기공사업 면허 주관사</div>'
         '<h2>단지의 밤,<br><em>경관조명이 완성합니다</em></h2><div class="bar"></div>'
-        '<p>엣지컴퍼니는 조명 회사입니다.<br>경관조명 컨설팅부터 설계·생산·직접시공까지<br>유통 단계 없이 한 회사가 책임집니다.</p></div>'
+        '<p>엣지컴퍼니는 전기공사업 면허를 갖춘 입주박람회 주관사입니다.<br>경관조명은 제안서로 끝내지 않고,<br>컨설팅부터 직접 시공까지 면허 범위 안에서 책임집니다.</p></div>'
         '<div class="pil">'
         '<div><i>01 · CONSULTING</i><b>컨설팅 · 설계</b><span>조도·색온도·배광을 단지 동선과 외관에 맞춰 도면으로 제안</span></div>'
         '<div><i>02 · PRODUCTION</i><b>직수입 · 생산</b><span>설계 사양 그대로 제작 · KC 인증 제품만 납품</span></div>'
-        '<div><i>03 · CONSTRUCTION</i><b>직접 시공</b><span>전기공사업 등록 제 울산-00821호 · 면허 기반 직접 시공</span></div>'
+        '<div><i>03 · CONSTRUCTION</i><b>면허 시공</b><span>전기공사업 등록 제 울산-00821호 · 외주 없이 직접 시공</span></div>'
         '<div><i>04 · COMMUNITY</i><b>단지 업그레이드</b><span>문주·외벽 라인조명·커뮤니티 조명 개선안 (C 패키지)</span></div>'
         '</div>')
     pages = [
@@ -958,7 +958,7 @@ def summary_pages():
         take("혜택 패키지 [[A · B · C]] 구성 항목", sec=S1),
         take("이렇게 [[패키지로]] 받으실 수 있습니다 (예시)", sec=S1),
         ("std", dict(sec=S2, title=HERO, lead=None, body=hero_body,
-                     kp="제안에서 끝나지 않습니다 — [[시공 가능 여부]]까지 검토하고 직접 시공합니다.")),
+                     kp="제안한 주관사가 직접 시공하니 — [[제안과 시공이 어긋나지 않습니다.]]")),
         take(kind="landscape", sec=S2),
         take("문주·경관조명 [[컨설팅]]", sec=S2),
         take("[[조명 수직계열화]] · 유통 단계 없는 공급", sec=S2),
