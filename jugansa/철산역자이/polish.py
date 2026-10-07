@@ -167,7 +167,7 @@ def apply(G):
 
     # 08장 — 대단지 = 2023.01~2026.10 1,000세대 이상 실적(입주 연월)
     k = kw("[[대단지]] 운영 경험")
-    recs = sorted(((f"{d} 입주", n, nm) for d, nm, _, n in D.RECORDS), key=lambda r: -r[1])  # 년·월까지(본부장 10-07)
+    recs = [(f"{d} 입주", n, nm) for d, nm, _, n in sorted(D.RECORDS, key=lambda r: r[0], reverse=True)]  # 입주 최신순·년월(본부장 10-07)
     total = sum(n for _, n, _ in recs)
     k["body"] = B.tiles([dict(lb=y, big=f"{n:,}", unit="세대", nm=nm) for y, n, nm in recs], cols=5, rows_n=2)
     k["lead"] = "2023년 1월 ~ 2026년 10월, 1,000세대 이상 주관 단지입니다. 연도는 입주 기준."
