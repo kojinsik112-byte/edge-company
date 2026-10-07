@@ -136,12 +136,14 @@ B.CSS += r"""
 .bigq{border-left:3px solid var(--gold2);padding:6px 0 6px 20px}
 .bigq b{display:block;font-size:24px;line-height:1.4}
 .bigq p{font-size:16.5px;color:var(--sub);margin-top:6px;line-height:1.5}
-.ylist{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;min-height:0}
-.ylist .yc{border:1px solid var(--line);border-radius:14px;padding:16px 20px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015))}
+.ylist{flex:1;min-height:0;border:1px solid var(--line);border-radius:14px;padding:12px 22px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015))}
+.ylist ul{column-count:3;column-gap:34px;column-rule:1px solid rgba(255,255,255,.1)}
+.ylist li{break-inside:avoid}
+.ylist .yc{border:1px solid var(--line);border-radius:14px;padding:10px 14px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015))}
 .ylist h3{font-size:24px;color:var(--gold);margin:0 0 10px;font-weight:800}
 .ylist h3 small{display:block;font-size:13px;color:var(--mute);font-weight:500;margin-top:2px}
 .ylist ul{list-style:none;margin:0;padding:0}
-.ylist li{display:flex;justify-content:space-between;gap:10px;font-size:15.5px;color:var(--sub);padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.12)}
+.ylist li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--sub);padding:5px 0;line-height:1.3;border-bottom:1px dashed rgba(255,255,255,.12)}
 .ylist li:last-child{border-bottom:0}
 .ylist li i{font-style:normal;font-size:12px;color:var(--mute)}
 .ylist li b{font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
@@ -358,7 +360,7 @@ i = find("공인된 [[자격과 신뢰]]")
 B.PAGES[i][1]["body"] = B.cards([
     dict(lb="CASH FLOW", big="A", nm="현금흐름 등급", ds="박람회 운영 중 자금 흐름 안정성 검증."),
     dict(lb="CREDIT", big="BB-", nm="기업 신용등급", ds="공인 평가기관 기업신용평가 등급."),
-    dict(lb="PARTNERSHIP", big="MOU", nm="삼성전자 공식 MOU", ds="LX하우시스·에몬스와 제휴 추가 협의 중."),
+    dict(lb="PARTNERSHIP", big="MOU", nm="삼성전자 · 세스코 MOU", ds="세스코 MOU 2025.11 체결. LX하우시스·에몬스와 제휴 추가 협의 중."),
     dict(lb="ISO", big="3", unit="종", nm="국제표준 인증", ds="ISO 9001 · 14001 · 45001."),
 ])
 B.PAGES[i][1]["kp"] = "재무 평가 · 대기업 제휴 · 국제표준 인증 — [[공인 기관이 검증한 항목]]만 적었습니다."
@@ -546,19 +548,18 @@ if not os.environ.get("NO_NATIVE"):
     load_native()
     import polish  # noqa: E402  (중복 정리·순서·문구 — polish.py)
     polish.apply(globals())
-    # 2023년 이후 주관 단지 전체(본부장 지시 10-07) — 08장 대단지 장 뒤
-    _cols = []
-    for _y in ["2023–2024", "2025", "2026"]:
-        _rs = [r for r in D.SINCE_2023 if r[0] == _y]
-        _li = "".join(f'<li{" class=big" if n >= 1000 else ""}><span>{nm}{f" <i>{m}</i>" if m else ""}</span><b>{n:,}</b></li>' for _, nm, n, m in _rs)
-        _cols.append(f'<div class="yc"><h3>{_y}<small>{len(_rs)}개 단지 · {sum(r[2] for r in _rs):,}세대</small></h3><ul>{_li}</ul></div>')
-    _n1k = sum(1 for r in D.SINCE_2023 if r[2] >= 1000)
+    # 2023년 이후 수임 단지 전체(본부장 목록 10-07) — 08장 대단지 장 뒤, 세대수 순 4열
+    _rows = sorted(D.SUIM, key=lambda r: -(r[1] or 0))
+    _li = "".join(f'<li{" class=big" if (n or 0) >= 1000 else ""}><span>{nm}{f" <i>{m}</i>" if m else ""}</span>'
+                  f'<b>{f"{n:,}{u}" if n else "확인 중"}</b></li>' for nm, n, u, m in _rows)
+    _cols = [f"<ul>{_li}</ul>"]
+    _n1k = sum(1 for r in _rows if (r[1] or 0) >= 1000)
     _di = next(i for i, (_, k) in enumerate(B.PAGES) if k.get("title") == "[[대단지]] 운영 경험")
-    B.PAGES.insert(_di + 1, ("std", dict(sec=B.PAGES[_di][1].get("sec", ""), title=f"2023년 이후 주관 단지 [[{len(D.SINCE_2023)}곳]]",
-        lead="최근 3년, 입주박람회를 직접 주관한 단지 전체입니다. 금색 = 1,000세대 이상.",
+    B.PAGES.insert(_di + 1, ("std", dict(sec=B.PAGES[_di][1].get("sec", ""), title=f"2023년 이후 수임 단지 [[{len(_rows)}곳]]",
+        lead="최근 3년, 입주박람회 주관을 맡은 단지 전체입니다. 금색 = 1,000세대 이상.",
         body='<div class="ylist">' + "".join(_cols) + "</div>",
-        kp=(f"{len(D.SINCE_2023)}개 단지 · {sum(r[2] for r in D.SINCE_2023):,}세대 — 이 중 1,000세대 이상 [[{_n1k}곳]]",
-            "세대수는 단지 공식 총세대수 · 월 표기는 NICE 기업신용평가 연혁 기재분"))))
+        kp=(f"{len(_rows)}개 단지 수임 — 이 중 1,000세대 이상 [[{_n1k}곳]]",
+            "공식 명칭·총세대수 기준 · 월 표기는 NICE 연혁 기재분"))))
     # 핵심 혜택 한 장(본부장 지시 10-07: 표지 수치 대신 뒤쪽에 임팩트 있게) — 마무리 약속 장 바로 앞
     _ci = next(i for i, (k, _) in enumerate(B.PAGES) if k == "closing")
     _hh = D.SITE["households"]
