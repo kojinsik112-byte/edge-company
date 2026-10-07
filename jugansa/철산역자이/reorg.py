@@ -123,6 +123,7 @@ def apply(G):
 .sumx.roomy .tbl.xs td.k{font-size:15.5px}
 .sumx.roomy{gap:26px 26px}
 .sumx.roomy h3{font-size:19px;margin-bottom:8px}
+.big small.mx{font-size:19px;margin:0 6px 0 0;font-weight:700}
 .sumx.tight .tbl.xs td{padding:3.4px 10px}
 .pkx .pk ul[style] li{break-inside:avoid}
 .toc5{grid-template-columns:repeat(5,1fr)!important}
@@ -398,23 +399,28 @@ def apply(G):
     k["kp"] = "많이 계약될수록 [[계약 세대의 잔금]]이 함께 줄어듭니다."
 
     # 하자보증 — 예치금은 '최대 1억'으로 낮추고 콜센터(선보상) 장으로, 보증보험 '2년 최대 10억'
+    # 예치금 카드는 주관 콜센터 장으로 옮겼으므로 삭제 → 3중 안전망 (본부장 10-07)
     k = take("입주민을 지키는 [[4중 안전망]]")[1]
-    k["body"] = sub(k["body"], '<div class="big">1<small>억</small></div><div class="nm">하자 예치금 현금</div><div class="ds">엣지컴퍼니 자산으로 직접 예치합니다.</div>',
-                    '<div class="big">최대 1<small>억</small></div><div class="nm">하자 예치금</div><div class="ds">엣지컴퍼니 자산으로 예치해 선보상 재원으로 씁니다.</div>')
-    k["body"] = sub(k["body"], '<div class="big">10<small>억</small></div><div class="nm">이행보증보험 2년</div>',
-                    '<div class="big">최대 10<small>억</small></div><div class="nm">이행보증보험 2년</div>')
+    k["title"] = "입주민을 지키는 [[3중 안전망]]"
+    k["lead"] = sub(k["lead"], "네 겹으로", "세 겹으로")
+    k["body"] = sub(k["body"], '<div class="card"><div class="lb">01</div><div class="big">1<small>억</small></div><div class="nm">하자 예치금 현금</div><div class="ds">엣지컴퍼니 자산으로 직접 예치합니다.</div></div>', "")
+    k["body"] = sub(k["body"], 'repeat(4,1fr)', 'repeat(3,1fr)')
+    k["body"] = sub(k["body"], '<div class="lb">02</div><div class="big">10<small>억</small></div><div class="nm">이행보증보험 2년</div>',
+                    '<div class="lb">01</div><div class="big"><small class="mx">최대</small>10<small>억</small></div><div class="nm">이행보증보험 2년</div>')
+    k["body"] = sub(k["body"], '<div class="lb">03</div>', '<div class="lb">02</div>')
+    k["body"] = sub(k["body"], '<div class="lb">04</div>', '<div class="lb">03</div>')
     d04b = take("사고가 나도 [[입주민이 먼저]] 보상받습니다")[1]
-    d04b["bl"] = [{"하자 예치금 현금 1억": "이행보증보험 2년 · 최대 10억", "이행보증보험 2년 10억": "하자 예치금 최대 1억"}.get(x, x) for x in d04b["bl"]]
+    d04b["bl"] = [{"이행보증보험 2년 10억": "이행보증보험 2년 · 최대 10억"}.get(x, x) for x in d04b["bl"] if "예치금" not in x]
     k = take("입찰 참가 자격 [[10개 항목]] 대응")[1]
     k["body"] = sub(k["body"], "하자 예치금 현금 1억 · 이행보증보험 2년 10억", "이행보증보험 2년 최대 10억 · 하자 예치금 최대 1억")
 
     p_deposit = ("std", dict(sec="05. 주관 콜센터", title="선보상 재원 · 하자 예치금 [[최대 1억원]]",
         lead="콜센터가 먼저 보상할 수 있도록, 주관사가 예치금을 따로 둡니다.",
         body=B.cards([
-            dict(lb="AMOUNT", big="최대 1", unit="억원", nm="예치 규모", ds="단지 규모와 입예협 협의에 따라 예치 금액을 정합니다."),
+            dict(lb="AMOUNT", big="@@MX1", unit="억원", nm="예치 규모", ds="단지 규모와 입예협 협의에 따라 예치 금액을 정합니다."),
             dict(lb="SOURCE", big="자산", nm="엣지컴퍼니 자산으로 예치", ds="참여 업체에게 걷은 돈이 아닙니다. 업체가 빠져도 예치금은 줄지 않습니다."),
             dict(lb="USE", big="선보상", nm="하자 시 입주민 먼저", ds="업체 사고·도산 시 입주민 선보상에 쓰고, 사용 내역을 공개합니다."),
-        ], cols=3),
+        ], cols=3).replace("@@MX1", '<small class="mx">최대</small>1'),
         kp="예치금은 콜센터 [[선보상]]이 실제로 돌아가게 하는 재원입니다."))
 
     k = take("이행보증보험 [[2년 · 10억]]")[1]
@@ -581,7 +587,7 @@ def apply(G):
             "공동구매 단가를 지키는 [[4가지 장치]]", "[[최저가 차액 10배]] 보상", "실적 비례 [[추가할인]] 구조", "입주민 [[자금]]을 먼저 지킵니다",
             "품목별 [[취소 기한]]과 환불 절차"]]),
         ("04. 하자보증", [d04] + [T(x) for x in [
-            "입주민을 지키는 [[4중 안전망]]", "이행보증보험 [[2년 · 최대 10억]]", "보증보험증권 [[제출과 확인]]", "참여업체 [[하자보증]] 체계",
+            "입주민을 지키는 [[3중 안전망]]", "이행보증보험 [[2년 · 최대 10억]]", "보증보험증권 [[제출과 확인]]", "참여업체 [[하자보증]] 체계",
             "입주박람회 [[특약이행각서]] (예시)", "주요 클레임 품목과 [[보상 기준]] (예시)", "참여업체 [[패널티 3단계]]"]]),
         ("05. 주관 콜센터", [dv("05", "클레임은 [[주관사가 먼저]] 받습니다", ["주관 콜센터 · 선보상", "하자 예치금 최대 1억", "클레임 처리 흐름 · CRM", "입주민 후기 · 실시간 응대"])]
          + [T("주관 [[콜센터]]와 선보상"), p_deposit] + [T(x) for x in ["클레임 [[처리 흐름]]과 CRM 관리", "입주민 후기 · [[실시간 응대]] 화면"]]),
