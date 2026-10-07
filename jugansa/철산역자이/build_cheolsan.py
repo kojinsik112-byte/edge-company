@@ -567,7 +567,9 @@ if not os.environ.get("NO_NATIVE"):
     import polish  # noqa: E402  (중복 정리·순서·문구 — polish.py)
     polish.apply(globals())
     # 수임 단지 전체(본부장 목록 10-07) — 08장 대단지 장 뒤, 입주 연월 최신순 3열(입주 전 = 입주 예정)
-    _rows = sorted(D.SUIM, key=lambda r: r[3], reverse=True)
+    # 정렬(본부장 10-07): 1,000세대 이상은 세대수 많은 순 → 나머지는 입주 오래된 순
+    _rows = (sorted([r for r in D.SUIM if r[1] >= 1000], key=lambda r: -r[1])
+             + sorted([r for r in D.SUIM if r[1] < 1000], key=lambda r: r[3]))
     _now = "2026.10"
     _li = "".join(f'<li class="{"big" if n >= 1000 else ""}{" fut" if m > _now else ""}"><span>{nm} <i>{m}{" 예정" if m > _now else ""}</i></span>'
                   f'<b>{n:,}{u}</b></li>' for nm, n, u, m in _rows)
@@ -576,7 +578,7 @@ if not os.environ.get("NO_NATIVE"):
     _nfut = sum(1 for r in _rows if r[3] > _now)
     _di = next(i for i, (_, k) in enumerate(B.PAGES) if k.get("title") == "[[대단지]] 운영 경험")
     B.PAGES.insert(_di + 1, ("std", dict(sec=B.PAGES[_di][1].get("sec", ""), title=f"2023년 이후 수임 단지 [[{sum(D.DANJI_N.get(r[0], 1) for r in _rows)}곳]]",
-        lead="날짜는 입주 연월입니다. 입주 전 단지는 입주 예정월 · 금색 = 1,000세대 이상.",
+        lead="1,000세대 이상(금색)은 세대수 순, 나머지는 입주 순 · 날짜는 입주 연월(입주 전은 예정월).",
         body='<div class="ylist">' + "".join(_cols) + "</div>",
         kp=(f"{sum(D.DANJI_N.get(r[0], 1) for r in _rows)}개 단지 · 1,000세대 이상 [[{_n1k}곳]] · 입주 예정 [[{_nfut}곳]] 진행 중",
             "공식 단지명·총세대수 기준 · ‘실’은 오피스텔·생활숙박"))))
