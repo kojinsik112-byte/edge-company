@@ -83,6 +83,49 @@ B.CSS += r"""
   background:linear-gradient(90deg,rgba(200,168,106,0),rgba(230,201,142,.85) 50%,rgba(200,168,106,0))}
 .pano .credit{position:absolute;right:76px;bottom:8px;font-size:10.5px;color:rgba(255,255,255,.5);z-index:1}
 .cv3 .sub2{justify-content:center;border-top:0;padding:16px 0 14px}
+.cv5>.top,.cv5>.mid,.cv5>.sub2,.cv5>.bt{position:relative;z-index:1;width:57%}
+.cv5 .mid{justify-content:center;padding-top:22px}
+.cv5 .top .who{display:none}
+.cv5 h1{font-size:27px;line-height:1.32;margin-top:14px}
+.cv5 h1 em{display:block}
+.cvlx{position:absolute;z-index:0;top:0;right:0;bottom:0;width:50%}
+.cvlx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:52% 50%}
+.cvlx .fd{position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 0%,rgba(13,30,51,.75) 18%,rgba(13,30,51,.15) 45%,rgba(13,30,51,0) 70%),
+  linear-gradient(0deg,rgba(13,30,51,.55) 0%,rgba(13,30,51,0) 25%)}
+.cvlx .cap{position:absolute;right:28px;bottom:16px;font-size:10.5px;color:rgba(255,255,255,.6)}
+.hero3{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-top:1px solid rgba(200,168,106,.5)}
+.hero3>div{padding:16px 0 16px 22px;border-left:1px solid rgba(200,168,106,.28);border-bottom:1px solid rgba(200,168,106,.5)}
+.hero3>div.h1x{grid-column:1/-1;border-left:0;padding-left:0}
+.hero3>div:nth-child(2){border-left:0;padding-left:0}
+.hero3 i{font-style:normal;font-size:12px;letter-spacing:.2em;color:var(--gold2);font-weight:700}
+.hero3 b{display:block;font-size:52px;font-weight:800;color:var(--gold);line-height:1;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.hero3 .h1x b{font-size:84px}
+.hero3 b small{font-size:22px;margin-left:4px;font-weight:700}
+.hero3 b small.mx{font-size:17px;margin:0 7px 0 0;color:var(--gold2)}
+.hero3 p{font-size:13.5px;color:var(--sub);margin-top:9px;line-height:1.5}
+.hero3 p em{color:var(--ink);font-weight:800}
+.lxband{margin-top:18px;display:flex;align-items:center;gap:16px;border:1px solid rgba(235,203,143,.55);border-radius:10px;padding:10px 18px;
+  background:linear-gradient(90deg,rgba(235,203,143,.16),rgba(235,203,143,.02))}
+.lxband b{font-size:15.5px;color:var(--gold);white-space:nowrap;letter-spacing:.04em}
+.lxband span{font-size:13.5px;color:var(--ink);line-height:1.45}
+.cv5 .sub2{gap:40px}
+.cv5 .sub2 b{font-size:15px}
+.page.hero{padding:40px 48px 0}
+.page.hero>.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 70%}
+.page.hero>.veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,18,32,.96) 0%,rgba(8,18,32,.86) 34%,rgba(8,18,32,.25) 64%,rgba(8,18,32,.05) 100%),
+  linear-gradient(0deg,rgba(8,18,32,.92) 0%,rgba(8,18,32,0) 38%)}
+.page.hero>.hd,.page.hero>.ct,.page.hero>.kp,.page.hero>.ft{position:relative;z-index:1}
+.page.hero .ct{flex:1}
+.page.hero .hin{position:absolute;z-index:1;left:48px;top:96px;width:560px}
+.hin .kick{font-size:13px;font-weight:700;letter-spacing:.32em;color:var(--gold2)}
+.hin h2{font-size:52px;font-weight:800;line-height:1.22;margin-top:14px;letter-spacing:-.01em}
+.hin .bar{width:150px;height:2px;background:var(--gold2);margin:22px 0 18px}
+.hin p{font-size:18px;color:var(--ink);line-height:1.6;opacity:.92}
+.page.hero .pil{position:absolute;z-index:1;left:48px;right:48px;bottom:126px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.pil>div{border:1px solid rgba(235,203,143,.45);border-radius:12px;padding:14px 16px;background:rgba(8,18,32,.72);backdrop-filter:blur(2px)}
+.pil i{font-style:normal;font-size:12px;letter-spacing:.24em;color:var(--gold2);font-weight:700}
+.pil b{display:block;font-size:19px;margin-top:4px}
+.pil span{display:block;font-size:13.5px;color:var(--sub);line-height:1.45;margin-top:4px}
 .cv4>*{position:relative;z-index:1}
 .cv4>.cvart{position:absolute;z-index:0;right:0;bottom:128px;width:62%;height:400px}
 .cvart img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 85%}
@@ -310,7 +353,7 @@ new("std", sec=S0, title="공동구매 단가를 지키는 [[4가지 장치]]",
     body=B.cards([
         dict(lb="01", big="공개", nm="단가표 사전 공개", ds="박람회 전 품목별 단가·할인율을 입예협에 제출해 검수받습니다. 현장 가격 변경 없음."),
         dict(lb="02", big="10", unit="배", nm="최저가 차액 보상", ds="동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)"),
-        dict(lb="03", big="1~3", unit="%", nm="실적 비례 추가할인", ds="업체 기대매출 초과 시 잔금에서 추가할인. 예: 50·100·150세대 계약 시 1·2·3%."),
+        dict(lb="03", big="추가할인", nm="실적 비례 추가할인", ds="업체 기대매출을 넘기면 계약 세대 잔금에서 추가할인. 할인율은 업체 입찰 조건으로 입예협과 확정."),
         dict(lb="04", big=str(D.DEPOSIT_MAX), unit="%", nm="계약금 상한", ds=f"계약금은 총액의 {D.DEPOSIT_MAX}% 이하, 잔금은 시공·설치 후. 현금·카드 동일가."),
     ]),
     kp="가격은 말이 아니라 [[사전 공개 단가 + 최저가 보장]]으로 검증받습니다.")
@@ -629,7 +672,18 @@ if not os.environ.get("NO_NATIVE"):
         kp="모든 혜택은 [[협약서에 그대로 옮겨]] 끝까지 이행합니다.")))
 
 
+HERO = "\x00HERO"  # 전면 사진 장(요약본 경관조명) — body가 본문 전체
+
+
 def render_std(no, sec, title, lead, body, kp):
+    if title == HERO:
+        return f"""<section class="page hero">{body}
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">{sec}</span></div>
+<div class="r">{B.QUOTE} &nbsp;·&nbsp; {no:02d}</div></div>
+<div class="ct"></div>
+{f'<div class="kp"><b>KEY POINT</b><span>{t(kp)}</span></div>' if kp else ''}
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>"""
     if title != INS:
         return B_render_std(no, sec, title, lead, body, kp)
     return f"""<section class="page">
@@ -668,7 +722,30 @@ COVER_TOP = """<div class="top"><div><div class="logo">EG</div><div class="en">E
 <div class="who">주식회사 엣지컴퍼니<br>입주박람회 전문 주관사</div></div>"""
 
 
+def p_cover_impact():
+    """요약본 [2-2] 표지 — 숫자(15만원 · 10억 · 1억)로 시작, 오른쪽은 단지 경관조명(본부장 10-07)."""
+    hh = D.SITE["households"]
+    sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
+    return f"""<section class="page cv cv5"><div class="cvlx"><img src="assets_ins/cs_aerial_night.jpg" alt=""><div class="fd"></div>
+<span class="cap">단지 경관조명 · 연출 예시 이미지</span></div>{COVER_TOP}
+<div class="mid"><span class="pill">{COVER['pill']}</span>
+<h1>철산역 자이 (조합) <em>입주박람회 주관사 요약 제안서</em></h1>
+<div class="hero3">
+<div class="h1x"><i>세대당 발전지원금</i><b>{D.FUND}<small>만원</small></b>
+<p>조합 {hh:,}세대 × {D.FUND}만원 = <em>총 {won(hh * D.FUND)}</em> (부가세 포함) · 현금 또는 같은 금액의 혜택 패키지 중 선택</p></div>
+<div><i>이행보증보험 2년</i><b><small class="mx">최대</small>10<small>억</small></b><p>증권 실물 제출</p></div>
+<div><i>하자 예치금</i><b><small class="mx">최대</small>1<small>억</small></b><p>하자 시 입주민 선보상</p></div>
+</div>
+<div class="lxband"><b>경관조명 특화</b><span>컨설팅 · 설계 · 생산 · 직접시공까지 한 회사<br>전기공사업 등록 제 울산-00821호</span></div>
+</div>
+{sub2}
+<div class="bt"><span>BID PROPOSAL · 요약본 [2-2]</span><span>2026.10</span></div>
+</section>"""
+
+
 def p_cover():
+    if COVER.get("kind") == "impact":
+        return p_cover_impact()
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
     # 조감도(본부장 제공 2026-10-07) — 네이비 배경에 스며들도록 위·왼쪽을 배경색으로 페이드
     art = ('<div class="cvart"><img src="assets_ins/cs_cover_art.jpg" alt="">'
@@ -828,6 +905,7 @@ def finish(path, title):
     doc = doc.replace("지역업체", "인근 지역업체").replace("인근 인근", "인근")  # 본부장님 지시: '인근 지역업체'
     doc = doc.replace("url(assets/", "url(../요약제안서/assets/").replace("url('assets/", "url('../요약제안서/assets/")
     doc = doc.replace('src="assets/', 'src="../요약제안서/assets/')
+    doc = re.sub(r"(?<!조합 )입예협", "조합 입예협", doc)  # 본부장 10-07: '입예협' → '조합 입예협' 표기 통일
     doc = sub(doc, "<title>엣지컴퍼니 요약제안서</title>", f"<title>{title}</title>")
     doc = sub(doc, "</body>", ALIGN_JS + "</body>")
     left = re.findall(r".{0,12}(?:동탄|임예협|임차|임대사업자).{0,6}", doc)
@@ -847,10 +925,69 @@ def emit(pages, out_html, title):
         B.build_pdf()
 
 
+NAME22 = "엣지컴퍼니_철산역자이_2-2_요약제안서"
+
+
+def summary_pages():
+    """요약본 [2-2] — 본 제안서(B.PAGES, 재배치 후)에서 필요한 장만 골라 압축. 장 표시(sec)만 요약본 기준으로 바꾼다."""
+    def take(title=None, kind=None, sec=None):
+        hits = [(k, kw) for k, kw in B.PAGES if (title and kw.get("title") == title) or (kind and not title and k == kind)]
+        assert len(hits) == 1, (title, kind, len(hits))
+        k, kw = hits[0]
+        kw = dict(kw)
+        if sec and "sec" in kw:
+            kw["sec"] = sec
+        return (k, kw)
+
+    S1, S2, S3, S4, S5, S6 = ("01. 발전지원 15만원", "02. 경관조명 특화", "03. 하자보증 · 안전망",
+                              "04. 업체선정 · 가격 보호", "05. 철산역 자이 맞춤", "06. 주관 실적")
+    hero_body = (
+        '<img class="bg" src="assets_ins/cs_gate_night.jpg" alt=""><div class="veil"></div>'
+        '<div class="hin"><div class="kick">LANDSCAPE LIGHTING · 엣지컴퍼니 특화</div>'
+        '<h2>단지의 밤,<br><em>경관조명이 완성합니다</em></h2><div class="bar"></div>'
+        '<p>엣지컴퍼니는 조명 회사입니다.<br>경관조명 컨설팅부터 설계·생산·직접시공까지<br>유통 단계 없이 한 회사가 책임집니다.</p></div>'
+        '<div class="pil">'
+        '<div><i>01 · CONSULTING</i><b>컨설팅 · 설계</b><span>조도·색온도·배광을 단지 동선과 외관에 맞춰 도면으로 제안</span></div>'
+        '<div><i>02 · PRODUCTION</i><b>직수입 · 생산</b><span>설계 사양 그대로 제작 · KC 인증 제품만 납품</span></div>'
+        '<div><i>03 · CONSTRUCTION</i><b>직접 시공</b><span>전기공사업 등록 제 울산-00821호 · 면허 기반 직접 시공</span></div>'
+        '<div><i>04 · COMMUNITY</i><b>단지 업그레이드</b><span>문주·외벽 라인조명·커뮤니티 조명 개선안 (C 패키지)</span></div>'
+        '</div>')
+    pages = [
+        ("cover", {}),
+        take("세대당 15만원, [[현금 또는 혜택 패키지]] 중 선택", sec=S1),
+        take("혜택 패키지 [[A · B · C]] 구성 항목", sec=S1),
+        take("이렇게 [[패키지로]] 받으실 수 있습니다 (예시)", sec=S1),
+        ("std", dict(sec=S2, title=HERO, lead=None, body=hero_body,
+                     kp="제안에서 끝나지 않습니다 — [[시공 가능 여부]]까지 검토하고 직접 시공합니다.")),
+        take(kind="landscape", sec=S2),
+        take("문주·경관조명 [[컨설팅]]", sec=S2),
+        take("[[조명 수직계열화]] · 유통 단계 없는 공급", sec=S2),
+        take("입주민을 지키는 [[3중 안전망]]", sec=S3),
+        take("이행보증보험 [[2년 · 최대 10억]]", sec=S3),
+        take("선보상 재원 · 하자 예치금 [[최대 1억원]]", sec=S3),
+        take("[[4단계]] 공개 심사 프로세스", sec=S4),
+        take("공동구매 단가를 지키는 [[4가지 장치]]", sec=S4),
+        take("철산역 자이, [[이런 단지]]입니다", sec=S5),
+        take("조합 단지라서 [[챙겨야 하는 것]]", sec=S5),
+        take("선정부터 입주까지 [[추진 일정]] (안)", sec=S5),
+        take("숫자로 보는 [[엣지컴퍼니]]", sec=S6),
+        take("[[2,000세대 이상]] 초대형 단지를 맡아 왔습니다", sec=S6),
+        take("철산역 자이에 드리는 [[핵심 혜택 6가지]]", sec="CLOSING"),
+        take(kind="closing"),
+        take(kind="contact"),
+    ]
+    return pages
+
+
 def build():
     full = sys.argv[sys.argv.index("--full") + 1] if "--full" in sys.argv else None
     render_full_pages(full)
     emit(list(B.PAGES), B.OUT_HTML, "엣지컴퍼니 철산역 자이 입주박람회 주관사 제안서")
+    if not os.environ.get("NO_NATIVE"):
+        # 요약본 [2-2] — 본 제안서 틀 그대로, 표지는 숫자(15만원·10억·1억)로
+        COVER.update(kind="impact", pill="입주박람회 주관사 요약 제안서 · [2-2]")
+        emit(summary_pages(), os.path.join(HERE, NAME22 + ".html"), "엣지컴퍼니 철산역 자이 요약 제안서 [2-2]")
+        COVER.update(kind="stats", pill="입주박람회 주관사 제안서")
 
 
 if __name__ == "__main__":
