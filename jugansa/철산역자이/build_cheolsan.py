@@ -166,6 +166,8 @@ B.CSS += r"""
 .bband b small{font-size:14px;margin-left:2px}
 .bband .nx b{color:var(--gold)}
 .bband .nx p{font-size:13px;color:var(--sub);margin-top:1px}
+.bars.b7{grid-template-columns:repeat(7,1fr);gap:20px}
+.bars.b7 .v small{font-size:15px;margin-left:2px}
 .toc4{grid-template-columns:repeat(4,1fr)!important}
 .toc4 .col{padding:0 22px}
 """
@@ -343,12 +345,16 @@ def find(title_part):
 
 # 실적 장 — 제출서류 8)과 같은 숫자(NICE 연혁)로
 i = find("성공사례")
+# 연도별 카드 = 확인된 단지 목록의 입주 연도 누적(본부장 10-07: 근거 없는 12·15·18·25 → 누적 방식)
+_cum = {y: (d, nd) for y, d, _, nd, _ in D.cumulative()}
 B.PAGES[i][1]["body"] = B.cards([
-    dict(lb="2023", big="12", nm="진행 단지", ds="레이카운티 4,470 · 힐스테이트 포항 1,717 · 사상중흥 S-클래스 1,572 등."),
-    dict(lb="2024", big="15", nm="진행 단지", ds="양정자이더샵SK VIEW 1·2단지 2,272 · 두산위브더제니스 센트럴사하 1,643 · e편한세상 송도 더퍼스트비치 1,302 등."),
-    dict(lb="2025", big="18", nm="진행 단지", ds="춘천 중해마루힐 1,114 · e편한세상 에코델타 센터포인트 953 등."),
-    dict(lb="2026", big="25", nm="확정 단지", ds="두산위브더제니스 오션시티 2,813 · 창원 센트럴 아이파크 1,540 등 일정 확정 단지 순차 운영."),
-])
+    dict(lb="~2022", big=str(_cum["2022"][1]), unit="곳", nm="누적 단지", ds="양산 이지더원 2차 1,768 등"),
+    dict(lb="2023", big=str(_cum["2023"][1]), unit="곳", nm=f"누적 단지 · +{_cum['2023'][0]}", ds="레이카운티 4,470 등"),
+    dict(lb="2024", big=str(_cum["2024"][1]), unit="곳", nm=f"누적 단지 · +{_cum['2024'][0]}", ds="센트럴사하 1,643 등"),
+    dict(lb="2025", big=str(_cum["2025"][1]), unit="곳", nm=f"누적 단지 · +{_cum['2025'][0]}", ds="양정자이 1·2단지 2,272 등"),
+    dict(lb="2026", big=str(_cum["2026"][1]), unit="곳", nm=f"누적 단지 · +{_cum['2026'][0]}", ds="오션시티 2,813 등"),
+    dict(lb="2027 예정", big=str(_cum["2027"][1]), unit="곳", nm=f"누적 단지 · +{_cum['2027'][0]}", hl=True, ds="상생공원 1·2단지 2,667 등"),
+], cols=3)
 total = sum(r[3] for r in D.RECORDS)
 B.PAGES[i][1]["kp"] = f"2023년 이후 1,000세대 이상 주관 [[{len(D.RECORDS)}건 · {total:,}세대]]"
 
@@ -754,6 +760,17 @@ def p_closing(no, sec):
 
 
 B_p_divider_lx = B.p_divider_lx
+
+
+def p_bars(no, sec, title, lead, data, kp):
+    """누적 7개 막대(2021~2027 예정) — 칸 수와 '곳' 단위."""
+    s = B_p_bars(no, sec, title, lead, data, kp)
+    s = sub(s, 'class="bars"', 'class="bars b7"')
+    return re.sub(r'<div class="v">(\d+)</div>', r'<div class="v">\1<small>곳</small></div>', s)
+
+
+B_p_bars = B.p_bars
+B.p_bars = p_bars
 B.p_cover, B.p_toc, B.p_contact, B.p_hi_fund, B.p_closing = p_cover, p_toc, p_contact, p_hi_fund, p_closing
 B.p_hi_money = p_hi_money
 B.p_divider_lx = lambda: sub(B_p_divider_lx(), '<div class="n">02</div>', '<div class="n">03</div>')
