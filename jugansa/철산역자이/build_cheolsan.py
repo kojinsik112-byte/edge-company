@@ -149,6 +149,23 @@ B.CSS += r"""
 .ylist li b{font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
 .ylist li.big span,.ylist li.big b{color:var(--gold);font-weight:700}
 .ylist li.fut i{color:#9fd3c7;font-weight:600}
+.bigx{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;min-height:0}
+.bigx .bc{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid rgba(200,168,106,.45);background:#0b1a2d;min-height:0}
+.bigx .ph{position:relative;flex:1;min-height:0}
+.bigx .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bigx .ph .tg{position:absolute;left:12px;top:12px;font-size:12.5px;font-weight:700;color:#0d1e33;background:var(--gold);border-radius:99px;padding:4px 11px}
+.bigx .pn{padding:14px 18px 16px;background:linear-gradient(180deg,#132a45,#0d1e33);border-top:2px solid var(--gold2)}
+.bigx .n{font-size:44px;font-weight:800;color:var(--gold);line-height:1.05;font-variant-numeric:tabular-nums}
+.bigx .n small{font-size:18px;margin-left:3px;font-weight:700}
+.bigx .nm{font-size:19px;font-weight:700;margin-top:6px}
+.bigx .ds{font-size:14px;color:var(--sub);margin-top:4px}
+.bband{display:grid;grid-template-columns:1fr 1fr 1fr 1.5fr;gap:1px;background:rgba(200,168,106,.35);border:1px solid rgba(200,168,106,.35);border-radius:12px;overflow:hidden}
+.bband>div{background:#0f2237;padding:10px 18px}
+.bband i{display:block;font-style:normal;font-size:12.5px;color:var(--mute);letter-spacing:.04em}
+.bband b{display:block;font-size:26px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.bband b small{font-size:14px;margin-left:2px}
+.bband .nx b{color:var(--gold)}
+.bband .nx p{font-size:13px;color:var(--sub);margin-top:1px}
 .toc4{grid-template-columns:repeat(4,1fr)!important}
 .toc4 .col{padding:0 22px}
 """
@@ -563,6 +580,26 @@ if not os.environ.get("NO_NATIVE"):
         body='<div class="ylist">' + "".join(_cols) + "</div>",
         kp=(f"{len(_rows)}개 단지 · 1,000세대 이상 [[{_n1k}곳]] · 입주 예정 [[{_nfut}곳]] 진행 중",
             "공식 단지명·총세대수 기준 · ‘실’은 오피스텔·생활숙박"))))
+    # 2,000세대 이상 초대형 단지 강조(본부장 지시 10-07, 통합제안서 대단지 장 참고) — 성공사례 장 바로 뒤
+    _big = [("n02_raycounty", "레이카운티", 4470, "2023.11 입주", "부산 거제2구역 재개발", "단일 단지 최대 규모"),
+            ("n02_oceancity", "두산위브더제니스 오션시티", 2813, "2026.01 입주", "부산 우암2구역 · 조합 사업", "조합 단지 운영"),
+            ("n02_yangjung", "양정자이더샵SK VIEW", 2272, "2025.01 입주", "부산진구 양정동", "3개 건설사 컨소시엄 단지")]
+    _cards = "".join(
+        f'<div class="bc"><div class="ph"><img src="assets_ins/{im}.jpg" alt=""><span class="tg">{tag}</span></div>'
+        f'<div class="pn"><div class="n">{n:,}<small>세대</small></div><div class="nm">{nm}</div>'
+        f'<div class="ds">{mv} · {ds}</div></div></div>' for im, nm, n, mv, ds, tag in _big)
+    _sum = sum(r[2] for r in _big)
+    _band = ('<div class="bband">'
+             f'<div><i>2,000세대 이상</i><b>{len(_big)}<small>곳</small></b></div>'
+             f'<div><i>3개 단지 합계</i><b>{_sum:,}<small>세대</small></b></div>'
+             '<div><i>단일 단지 최대</i><b>4,470<small>세대</small></b></div>'
+             '<div class="nx"><i>다음 대단지 · 2027.09 입주 예정</i><b>2,667<small>세대</small></b><p>힐스테이트 더샵 상생공원 1·2단지</p></div></div>')
+    _si = next(i for i, (_, k) in enumerate(B.PAGES) if k.get("title") == "주관 [[성공사례]] · 수임실적")
+    B.PAGES.insert(_si + 1, ("std", dict(sec=B.PAGES[_si][1].get("sec", ""), title="[[2,000세대 이상]] 초대형 단지를 맡아 왔습니다",
+        lead="단일 단지 4,470세대까지 — 대단지 박람회는 규모가 아니라 운영 시스템으로 치릅니다.",
+        body='<div class="nb"><div class="bigx">' + _cards + "</div>" + _band + "</div>",
+        kp=("재개발·조합 대단지를 이끈 경험을 철산역 자이 [[조합 1,395세대]]에 그대로 옮깁니다.",
+            "사진은 조감·외관 이미지"))))
     # 핵심 혜택 한 장(본부장 지시 10-07: 표지 수치 대신 뒤쪽에 임팩트 있게) — 마무리 약속 장 바로 앞
     _ci = next(i for i, (k, _) in enumerate(B.PAGES) if k == "closing")
     _hh = D.SITE["households"]
