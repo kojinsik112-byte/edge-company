@@ -391,6 +391,13 @@ new("std", sec=S0, title="입주민 개인정보는 [[행사 운영에만]] 씁�
     ], title_w=210),
     kp="입주민 명단은 [[업체 영업 명단이 아닙니다.]]")
 
+FLOWX = ('<div class="hflow"><span>한 창구 접수</span><i>›</i><span>유형 분류</span><i>›</i><span>책임 주체 연결</span><i>›</i>'
+         '<span>처리 · 회신 추적</span><i>›</i><span>완료 확인 · 정기 보고</span></div>')
+B.CSS += (".tbl.lgx td{padding:17px 14px;font-size:16.5px;line-height:1.5}.tbl.lgx td.k{font-size:18px}"
+          ".hflow{display:flex;align-items:center;gap:10px;margin-top:18px}.hflow span{flex:1;text-align:center;border:1px solid rgba(200,168,106,.5);"
+          "border-radius:10px;padding:12px 8px;font-size:15.5px;font-weight:700;background:rgba(235,203,143,.06)}"
+          ".hflow span:last-child{background:var(--gold);color:#0d1e33;border-color:var(--gold)}.hflow i{font-style:normal;color:var(--gold);font-weight:800;font-size:20px}")
+
 new("std", sec=S0, title="하자 접수, [[책임부터]] 나눕니다",
     lead="공고 4항 5) 하자 접수 전용 창구 — 접수는 한 곳에서 받고, 처리 책임은 유형별로 나눠 끝까지 추적합니다.",
     body=table(["접수 유형", "예", "처리 책임", "주관사 역할"], "".join(
@@ -398,8 +405,18 @@ new("std", sec=S0, title="하자 접수, [[책임부터]] 나눕니다",
             ("건설사 시공 · 공용부", "세대 마감·설비 하자, 공용부 시설", f"시공사({ST['builder']})·사업주체 하자 처리 창구", "접수 대행 · 회신 추적 · 현장 확인 지원 · 정기 보고"),
             ("공동구매 납품 · 시공", "박람회에서 계약한 품목의 설치·제품 하자", "참여업체 + 주관사 연대(별지 2호)", "48시간 하자보수 원칙 · 업체 미응답 시 개입 · 선보상"),
             ("성능 향상 · 추가 설치", "조경·조명·집기 개선, 시설 추가", "입예협·관리주체 결정 사항", "하자와 구분 · 도면·예산·운영비 검토 후 추진"),
-        ]), "sm"),
+        ]), "lgx") + FLOWX,
     kp=("시공 하자를 [[공동구매 업체에 떠넘기지 않고]], 공동구매 하자를 [[시공사 탓으로 돌리지 않습니다.]]", "접수는 주관 콜센터·카카오채널·홈페이지 한 창구"))
+
+RPRIN = ('<div class="rprin">' + "".join(f'<div><b>{a}</b><p>{b}</p></div>' for a, b in [
+    ("협의 ≠ 설치", "‘협의 완료’와 ‘설치 완료’를 나눠 표시"),
+    ("지연은 사유와 함께", "지연 건은 사유·다음 일정을 같이 보고"),
+    ("최소 정보", "입예협과 공유할 수 있는 범위로 집계"),
+    ("원자료 열람", "입예협이 요청하면 근거 자료를 열람"),
+]) + '</div>')
+B.CSS += (".rprin{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}.rprin div{border:1px solid rgba(200,168,106,.45);"
+          "border-radius:12px;padding:12px 14px;background:rgba(235,203,143,.05)}.rprin b{display:block;font-size:16px;color:var(--gold)}"
+          ".rprin p{font-size:13.5px;color:var(--sub);margin-top:4px;line-height:1.45}")
 
 new("std", sec=S0, title="보고는 [[항목과 시점]]을 정해 둡니다",
     lead="공고 4항 1)·5)·7) — 결과보고서와 정기 보고에 무엇을 담을지 미리 정했습니다.",
@@ -409,7 +426,7 @@ new("std", sec=S0, title="보고는 [[항목과 시점]]을 정해 둡니다",
             ("하자처리 현황 보고", "입주 후 정기(주기는 입예협과 협의)", "하자 접수 · 처리 완료 · 지연 건과 사유 · 재접수"),
             ("입주박람회 결과보고서", "박람회 종료 후", "[[공동구매 진행현황 · A/S 접수현황 · 하자처리 현황 · 민원처리 결과]]"),
             ("최종 결과 보고서", "입주 후 1년 운영 관리 종료 시", "계약 · 환불 · A/S · 하자 처리 결과 · 하자 예치금 사용 내역"),
-        ]), "sm"),
+        ]), "lgx") + RPRIN,
     kp=("보고서는 입예협과 공유할 수 있는 [[최소 정보]]로 집계합니다.", "개인 연락처·동호수는 싣지 않습니다"))
 
 new("std", sec=S0, title="선정부터 입주까지 [[추진 일정]] (안)",
