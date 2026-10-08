@@ -47,6 +47,6 @@
 - **철산역 자이(조합) 1,395세대 · 입예협 주관사** — `철산역자이/` · `python build_cheolsan.py` → 제안서(09) 109쪽 + 요약본 [2-2] 20쪽. 마감 2026.10.13 24:00(메일 richgorich@naver.com).
   - 구조: 기본틀(요약제안서/build.py) → `build_cheolsan.py`(01장·특수 장) → `polish.py` → `reorg.py`(목차 10장·15만원 현금/패키지 A·B·C·특화서비스 요약·조직도). 표기: '조합 입예협', 줄표 '-', 범위 '2018 ~ 2022'.
   - 조직도 실명은 `org_private.json`(깃 제외). 없으면 ○○○로 나오니 통합제안서 기본틀 '06 회사 조직도' 장에서 다시 옮겨 적는다. 빌드 결과 HTML도 실명 때문에 깃 제외.
-  - 사진 `assets_ins/`(동탄 폴더 공유, 깃 제외): 본부장 제공 `cs_birdseye`(조감도)·`cs_gate_night`·`cs_aerial_night`·`n12_meeting_cs` — 컨테이너가 바뀌면 다시 받아야 한다.
+  - 사진 `assets_ins/`(동탄 폴더 공유, 깃 제외): 본부장 제공 `cs_birdseye`(조감도)·`cs_gate_night`·`cs_aerial_night`·`n12_meeting_cs`·`n02_raycounty_v2`·`n02_oceancity_v2` — 컨테이너가 바뀌면 다시 받아야 한다.
 - **동탄2 신동 A58BL 파라곤3차(임예협, 공공지원 민간임대 1,247세대)** — `동탄파라곤3차/` (README 참고). 마감 2026.10.06(화) 12시.
   - 2-2 제안내용·8) 실적·9) 환불규정은 Claude, 나머지 서류는 본부장님이 ChatGPT로 준비.
