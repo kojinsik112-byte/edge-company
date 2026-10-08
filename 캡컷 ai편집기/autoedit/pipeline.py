@@ -66,6 +66,8 @@ class PipelineResult:
     shorts: List[Path] = field(default_factory=list)
     steps: List[str] = field(default_factory=list)
     captions_json: Optional[Path] = None
+    title: Optional[str] = None
+    cut: Optional[dict] = None   # {"source", "keep", "total"} 컷 타임라인
     captions: Optional[List[Caption]] = None
     keywords: Set[str] = field(default_factory=set)
 
@@ -148,6 +150,8 @@ def _speech_only_cut(
         padded.append((last, min(total, last + sil.keep_tail)))
     keep_ranges = merge_intervals(padded, gap=sil.bridge_gap)
     segments = [Segment(s, e) for s, e in keep_ranges if e - s >= sil.min_keep]
+    # 컷 타임라인(살리기)용: 원본 시간 기준 남긴 구간 기억
+    _speech_only_cut.last_keep = [(round(x.start, 3), round(x.end, 3)) for x in segments]
     if not segments:
         return video, captions
 
@@ -270,12 +274,41 @@ def _finish(
     else:
         logger.info("[3/4] 숏츠 건너뜀 (비활성화)")
 
+    # 오프닝·엔딩 카드 → 브랜딩의 인트로/아웃트로 자리에 끼운다
+    branding = config.branding
+    cc = config.cards
+    if cc.opening or cc.ending:
+        from dataclasses import replace
+
+        from .cards import CardInfo, make_card_video
+        from .ffmpeg import probe_dimensions
+
+        W, H = probe_dimensions(main) or (config.output.width, config.output.height)
+        info = CardInfo(
+            title=cc.title or (result.title or ""), subtitle=cc.subtitle, company=cc.company,
+            phone=cc.phone, site=cc.site, message=cc.message, logo=cc.logo, qr=cc.qr, theme=cc.theme,
+        )
+        intro = make_card_video("opening", info, main, W, H, config.output.fps, cc.duration, work_dir) if cc.opening else None
+        outro = make_card_video("ending", info, main, W, H, config.output.fps, cc.duration + 0.5, work_dir) if cc.ending else None
+        branding = replace(
+            branding, enabled=True,
+            intro=str(intro) if intro else branding.intro,
+            outro=str(outro) if outro else branding.outro,
+        )
+        result.steps.append("오프닝·엔딩 카드")
+
     # 브랜딩
     final_out = output_dir / f"{stem}_edited.mp4"
-    if config.branding.enabled:
+    if branding.enabled:
         logger.info("[4/4] 인트로/아웃트로/BGM")
+        # 인트로/아웃트로를 붙일 때 본편 해상도 그대로 (2560x1440 영상을 1920x1080 으로 줄이지 않게)
+        from dataclasses import replace as _replace
+        from .ffmpeg import probe_dimensions as _dims
+
+        md = _dims(main)
+        out_for_brand = _replace(config.output, width=md[0], height=md[1]) if md else config.output
         apply_branding(
-            main, final_out, work_dir, config.branding, config.output, assets_dir
+            main, final_out, work_dir, branding, out_for_brand, assets_dir
         )
         result.steps.append("브랜딩")
     else:
@@ -324,8 +357,22 @@ def process(
             if current != input_video:
                 result.steps.append("음질 개선")
 
+        # ── 0-2) 화면 보정 (밝기·색 / 손떨림) ─────────────────────────
+        if config.video.color or config.video.stabilize:
+            from .enhance import enhance_video
+
+            fixed = enhance_video(
+                current, work_dir / "videofix.mp4", work_dir, config.output,
+                color=config.video.color, stabilize=config.video.stabilize,
+            )
+            if fixed != current:
+                current = fixed
+                result.steps.append("화면 보정" + (" + 손떨림" if config.video.stabilize else ""))
+
         # ── 1·2) 음성 분석 → 과감한 컷 (말하는 구간만 남김) ─────────
         captions: Optional[List[Caption]] = None
+        pre_cut: Optional[Path] = None
+        cut_keep = None
         if config.subtitle.enabled:
             logger.info("[1/5] 음성 분석 (말하는 구간·추임새·반복 찾기)")
             try:
@@ -352,9 +399,12 @@ def process(
 
             # 말하는 구간만 남기고 무음·준비·응시·추임새·반복·잡담 전부 컷
             logger.info("[2/5] 과감한 컷 (무음/준비/응시/추임새/반복/잡담 제거)")
+            pre_cut = current
+            _speech_only_cut.last_keep = None
             current, captions = _speech_only_cut(
                 current, captions, work_dir, config, extra_drop=smart_drop
             )
+            cut_keep = _speech_only_cut.last_keep if current != pre_cut else None
             result.steps.append("과감한 컷")
         elif config.silence.enabled:
             # ASR가 없을 때(또는 speech_only 끔)는 dB 기반 무음 컷
@@ -424,6 +474,16 @@ def process(
         clean_out = output_dir / f"{stem}_clean.mp4"
         shutil.copy2(current, clean_out)
         result.clean_video = clean_out
+
+        # 컷 타임라인: 컷 전 영상을 보관해 두면 편집 화면에서 잘린 구간을 '살리기' 할 수 있다
+        src_out = output_dir / f"{stem}_source.mp4"
+        if cut_keep and pre_cut is not None:
+            shutil.copy2(pre_cut, src_out)
+            result.cut = {"source": str(src_out), "keep": cut_keep, "total": probe_duration(src_out)}
+        else:
+            shutil.copy2(current, src_out)
+            total = probe_duration(src_out)
+            result.cut = {"source": str(src_out), "keep": [(0.0, round(total, 3))], "total": total}
 
         if review:
             logger.info("자막 검토 대기 — 오타를 고친 뒤 완성본을 만드세요.")
@@ -529,6 +589,16 @@ def render_final(
 
     work_dir = Path(tempfile.mkdtemp(prefix="autoedit_render_"))
     try:
+        # 속도 조절: 영상·소리 속도를 바꾸고 자막·로고 시간도 같은 비율로
+        sp = float(getattr(config.output, "speed", 1.0) or 1.0)
+        if abs(sp - 1.0) >= 0.01 and captions is not None:
+            from .speed import change_speed, scale_captions, scale_overlays
+
+            logger.info("속도 %.2f배 적용", sp)
+            clean_video = change_speed(clean_video, sp, work_dir / "speed.mp4", config.output)
+            captions = scale_captions(captions, sp)
+            overlays = scale_overlays(overlays or [], sp)
+            result.steps.append(f"속도 {sp:g}배")
         if captions:
             result.srt = write_srt(
                 captions, output_dir / f"{stem}.srt", config.subtitle.max_line_chars
@@ -543,6 +613,7 @@ def render_final(
             _, meta = write_metadata(captions, meta_out, config.metadata)
             result.metadata_file = meta_out
             title = meta["titles"][0] if meta and meta.get("titles") else None
+        result.title = title
         _finish(
             clean_video, captions, stem, output_dir, work_dir, config, assets_dir,
             result, keywords, overlays,

@@ -32,3 +32,6 @@ assets/*.wav
 
 # 자막 글꼴 (설치.bat 이 내려받음)
 assets/fonts/
+
+# 제품 사진 라이브러리 (회장님 실제 사진 — 용량 커서 깃 제외)
+assets/products/

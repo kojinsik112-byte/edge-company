@@ -41,7 +41,7 @@ if not exist "%VPY%" (
 echo.
 echo [1/3] 핵심 구성요소 설치 중 ... 무음컷 / 숏츠 / 브랜딩 + ffmpeg
 "%VPY%" -m pip install --upgrade pip
-"%VPY%" -m pip install pyyaml imageio-ffmpeg anthropic numpy
+"%VPY%" -m pip install pyyaml imageio-ffmpeg anthropic numpy pillow qrcode opencv-python-headless
 if errorlevel 1 (
   echo.
   echo [오류] 핵심 구성요소 설치 실패. 인터넷 연결을 확인하고 다시 시도하세요.

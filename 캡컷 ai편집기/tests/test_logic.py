@@ -248,3 +248,46 @@ def test_sfx_cue_at_first_emphasis():
 
     c = Caption(0, 2, "가 나", words=[Word(0, 1, "가"), Word(1, 2, "나")], emph={1: "big"})
     assert plan_cues([c], auto=True) == [(1, "pop")]
+
+
+# ── 컷 타임라인 · 속도 · 줌 · 얼굴 따라가기 ───────────────────────
+
+def test_timeline_restore_shifts_later_captions():
+    from autoedit import timeline as tl
+
+    old = [(0.0, 10.0), (12.0, 20.0)]          # 10~12초가 잘려 있었음
+    new = [(0.0, 20.0)]                        # 살림
+    caps = [Caption(1.0, 2.0, "앞"), Caption(11.0, 12.0, "뒤")]  # 편집 시간 (뒤 = 원본 13~14초)
+    out = tl.remap_captions(caps, old, new)
+    assert out[0].start == 1.0 and abs(out[1].start - 13.0) < 1e-6
+
+
+def test_timeline_cut_more_drops_caption():
+    from autoedit import timeline as tl
+
+    out = tl.remap_captions([Caption(5.0, 6.0, "잘림")], [(0.0, 10.0)], [(0.0, 4.0), (7.0, 10.0)])
+    assert out == []
+
+
+def test_speed_scales_times():
+    from autoedit.speed import scale_captions, scale_overlays
+
+    c = scale_captions([Caption(9.0, 18.0, "가", [Word(9.0, 18.0, "가")])], 0.9)[0]
+    assert abs(c.start - 10.0) < 1e-6 and abs(c.words[0].end - 20.0) < 1e-6
+    assert scale_overlays([{"start": 9, "dur": 9}], 0.9)[0]["start"] == 10.0
+
+
+def test_zoom_windows_follow_emphasis():
+    from autoedit.zoom import zoom_windows
+
+    caps = [Caption(0, 2, "평범한 말"), Caption(3, 5, "가격 3만원", emph={1: "big"}),
+            Caption(6, 8, "끔", emph={0: "big"}, zoom=False)]
+    w = zoom_windows(caps)
+    assert len(w) == 1 and 3.0 <= w[0][0] < 5.0
+
+
+def test_track_expr_centers_face():
+    from autoedit.track import crop_x_expr
+
+    e = crop_x_expr([(0.0, 0.5), (1.0, 0.5)], 1920, 608)
+    assert float(e) == 1920 * 0.5 - 304

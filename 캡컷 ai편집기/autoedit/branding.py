@@ -84,8 +84,8 @@ def _normalize_clip(
     """
     w, h, fps = out_cfg.width, out_cfg.height, out_cfg.fps
     vf = (
-        f"scale={w}:{h}:force_original_aspect_ratio=decrease,"
-        f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps={fps}"
+        f"scale={w}:{h}:force_original_aspect_ratio=decrease:out_range=tv,"
+        f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps={fps},format=yuv420p"
     )
     common = [
         "-c:v",

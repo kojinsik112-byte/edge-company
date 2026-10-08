@@ -108,6 +108,22 @@ def render_short(
         f"crop='min(iw,ih*{cfg.width}/{cfg.height})':'min(ih,iw*{cfg.height}/{cfg.width})',"
         f"scale={cfg.width}:{cfg.height}:flags=lanczos,setsar=1"
     )
+    # 가로 영상이면 얼굴을 따라 자르는 위치를 옮긴다 (장면 따라가기)
+    from .ffmpeg import probe_dimensions
+
+    dims = probe_dimensions(video)
+    if getattr(cfg, "track", True) and dims and dims[0] > dims[1]:
+        from .track import crop_x_expr, face_track
+
+        sw, sh = dims
+        cw = int(sh * cfg.width / cfg.height) // 2 * 2
+        xexpr = crop_x_expr(face_track(video, highlight.start, highlight.end), sw, cw)
+        if xexpr:
+            logger.info("숏츠 %d: 얼굴 따라가기 적용", index)
+            vf = (
+                f"crop={cw}:{sh}:x='{xexpr}':y=0,"
+                f"scale={cfg.width}:{cfg.height}:flags=lanczos,setsar=1"
+            )
     run(
         [
             "ffmpeg",

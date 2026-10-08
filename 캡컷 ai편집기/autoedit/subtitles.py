@@ -129,6 +129,13 @@ def burn_subtitles(
         )
         fdir = fonts_dir()
         vf = f"subtitles='{_escape_filter_path(ass)}'"
+        if getattr(sub_cfg, "punch_zoom", False):
+            # 자동 줌인을 자막보다 먼저 → 글자는 확대되지 않음
+            from .zoom import zoom_filter
+
+            zf = zoom_filter(captions, width, height, sub_cfg.zoom_strength)
+            if zf:
+                vf = zf + "," + vf
         if fdir.exists():
             vf += f":fontsdir='{_escape_filter_path(fdir)}'"
         _encode(video, vf, out_path, out_cfg)

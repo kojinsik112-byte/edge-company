@@ -65,6 +65,8 @@ class SubtitleConfig:
     offset: float = 0.0          # 위아래 미세조정 (화면 높이 %, +면 위로)
     sfx_volume: float = 0.5      # 효과음 크기 (0~1)
     auto_sfx: bool = False       # 강조 단어(크게/형광펜/빨강)에 효과음 자동
+    punch_zoom: bool = True      # 강조 순간 화면 살짝 확대(펀치인)
+    zoom_strength: float = 1.08  # 확대 정도 (1.05~1.15)
 
 
 @dataclass
@@ -82,6 +84,7 @@ class ShortsConfig:
     margin_v: int = 360          # 세로 영상 자막 하단 여백 (px, 폰 UI 피해 위로)
     hook_text: Optional[str] = None  # 숏츠 상단 훅 문구 (없으면 첫 자막 사용)
     hook_font_size: int = 72     # 훅 문구 글자 크기 (px)
+    track: bool = True           # 가로 영상 → 세로로 자를 때 얼굴 따라가기
 
 
 @dataclass
@@ -107,6 +110,7 @@ class OutputConfig:
     preset: str = "fast"         # 최종 인코딩 속도 (veryfast/fast/medium/slow)
     inter_crf: int = 12          # 중간 파일(컷 편집본 등) 화질 — 여러 번 다시 압축해도 안 깎이게 거의 무손실
     inter_preset: str = "veryfast"
+    speed: float = 1.0           # 재생 속도 (0.85~1.2, 말이 빠르면 0.9) — 목소리 높이는 그대로
     audio_bitrate: str = "192k"
 
 
@@ -118,6 +122,32 @@ class AudioConfig:
     denoise: bool = True         # 잡음 제거 (afftdn)
     loudnorm: bool = True        # 음량 정규화
     target_lufs: float = -14.0   # 유튜브 표준 음량
+
+
+@dataclass
+class VideoFixConfig:
+    """화면 보정 (밝기·색 / 손떨림)."""
+
+    color: bool = True           # 어둡거나 칙칙하면 필요한 만큼만 자동 보정
+    stabilize: bool = False      # 손떨림 보정 (가장자리 2% 확대, 시간 더 걸림)
+
+
+@dataclass
+class CardsConfig:
+    """오프닝·엔딩 카드."""
+
+    opening: bool = False
+    ending: bool = False
+    duration: float = 2.5
+    theme: str = "blur"          # blur / white / navy
+    title: str = ""              # 비우면 자동 제목
+    subtitle: str = ""
+    company: str = "엣지컴퍼니"
+    phone: str = ""
+    site: str = ""
+    message: str = "박람회에서 뵙겠습니다"
+    logo: str = ""
+    qr: str = ""
 
 
 @dataclass
@@ -156,6 +186,8 @@ class SmartEditConfig:
 class Config:
     silence: SilenceConfig = field(default_factory=SilenceConfig)
     audio: AudioConfig = field(default_factory=AudioConfig)
+    video: VideoFixConfig = field(default_factory=VideoFixConfig)
+    cards: CardsConfig = field(default_factory=CardsConfig)
     subtitle: SubtitleConfig = field(default_factory=SubtitleConfig)
     shorts: ShortsConfig = field(default_factory=ShortsConfig)
     branding: BrandingConfig = field(default_factory=BrandingConfig)
@@ -178,6 +210,8 @@ class Config:
         for section, sub in (
             ("silence", SilenceConfig),
             ("audio", AudioConfig),
+            ("video", VideoFixConfig),
+            ("cards", CardsConfig),
             ("subtitle", SubtitleConfig),
             ("shorts", ShortsConfig),
             ("branding", BrandingConfig),

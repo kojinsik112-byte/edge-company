@@ -109,6 +109,22 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "bgm": True,
     "bgm_choice": "mood:bright",  # mood:<분위기> / file:<내 음악> / ""
     "genre": "promo",
+    "color_fix": True,
+    "stabilize": False,
+    "punch_zoom": True,
+    "speed": 1.0,
+    "auto_products": True,
+    "card_opening": False,
+    "card_ending": False,
+    "card_theme": "blur",
+    "card_title": "",
+    "card_subtitle": "",
+    "card_company": "엣지컴퍼니",
+    "card_phone": "",
+    "card_site": "",
+    "card_message": "박람회에서 뵙겠습니다",
+    "card_logo": "",
+    "card_qr": "",
     "auto_sfx": True,
     "sfx_volume": 0.5,
 }
@@ -157,6 +173,17 @@ def build_config(opts: Dict[str, Any]) -> Config:
     cfg.subtitle.offset = float(opts.get("offset", 0))
     cfg.subtitle.auto_sfx = bool(opts.get("auto_sfx", True))
     cfg.subtitle.sfx_volume = float(opts.get("sfx_volume", 0.5))
+    cfg.subtitle.punch_zoom = bool(opts.get("punch_zoom", True))
+    cfg.video.color = bool(opts.get("color_fix", True))
+    cfg.video.stabilize = bool(opts.get("stabilize", False))
+    cfg.output.speed = float(opts.get("speed", 1.0) or 1.0)
+    cc = cfg.cards
+    cc.opening, cc.ending = bool(opts.get("card_opening")), bool(opts.get("card_ending"))
+    cc.theme = opts.get("card_theme", "blur")
+    cc.title, cc.subtitle = opts.get("card_title", ""), opts.get("card_subtitle", "")
+    cc.company, cc.phone = opts.get("card_company", "엣지컴퍼니"), opts.get("card_phone", "")
+    cc.site, cc.message = opts.get("card_site", ""), opts.get("card_message", "")
+    cc.logo, cc.qr = opts.get("card_logo", ""), opts.get("card_qr", "")
     n = int(opts.get("shorts", 3))
     cfg.shorts.enabled = n > 0
     cfg.shorts.count = max(1, n)
@@ -205,6 +232,7 @@ class Job:
         self.captions: List[Dict[str, Any]] = []
         self.keywords: List[str] = []
         self.overlays: List[Dict[str, Any]] = []  # 로고·스티커
+        self.cut: Optional[Dict[str, Any]] = None  # 컷 타임라인 {source, keep, total}
         self.result: Dict[str, Any] = {}
         self.duration = 0.0
         self.poster: Optional[Path] = None
@@ -258,7 +286,7 @@ class JobLog(logging.Handler):
     """파이프라인 로그 → 화면 진행 단계·퍼센트."""
 
     ANALYZE = [
-        (r"음질|입력 영상", "prep", 3),
+        (r"음질|입력 영상|화면 밝기|손떨림", "prep", 3),
         (r"Whisper 모델|음성 분석|음성 인식 시작", "asr", 8),
         (r"AI 스마트 편집", "smart", 48),
         (r"과감한 컷|무음 구간", "cut", 55),
@@ -339,6 +367,7 @@ def _run_analyze(job: Job, opts: Dict[str, Any]):
             if res.captions_json and res.captions_json.exists():
                 job.captions = json.loads(res.captions_json.read_text(encoding="utf-8"))
             job.keywords = sorted(res.keywords)
+            job.cut = res.cut
             job.duration = ff.probe_duration(res.clean_video) if res.clean_video else 0
             _save_project(job)
             job.finish_steps()
@@ -397,6 +426,7 @@ def _save_project(job: Job):
         "clean_video": str(job.clean_video) if job.clean_video else None,
         "keywords": job.keywords,
         "overlays": job.overlays,
+        "cut": job.cut,
         "saved": time.strftime("%Y-%m-%d %H:%M"),
     }
     (job.out_dir / "_project.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -477,6 +507,7 @@ def open_project(dir_path: Path) -> Job:
     job.clean_video = clean
     job.keywords = info.get("keywords", [])
     job.overlays = info.get("overlays", [])
+    job.cut = info.get("cut")
     cj = dir_path / f"{name}_자막.json"
     job.captions = json.loads(cj.read_text(encoding="utf-8")) if cj.exists() else []
     job.duration = ff.probe_duration(clean) if clean.exists() else 0
@@ -718,12 +749,34 @@ class Handler(BaseHTTPRequestHandler):
                 job = self._job(m.group(1))
                 if not job:
                     return self._json({"error": "없음"}, 404)
-                return self._json({"captions": job.captions, "keywords": job.keywords, "overlays": job.overlays})
+                return self._json({"captions": job.captions, "keywords": job.keywords, "overlays": job.overlays, "cut": job.cut})
             m = re.match(r"^/api/preview/(\w+)\.jpg$", path)
             if m:
                 job = self._job(q.get("job", [""])[0])
                 opts = {k: v[0] for k, v in q.items()}
                 return self._file(style_preview(job, m.group(1), opts), "image/jpeg")
+            if path == "/api/products":
+                from ..products import load as load_products
+
+                return self._json(load_products(APP_ROOT))
+            m = re.match(r"^/api/products/img/(.+)$", path)
+            if m:
+                from ..products import lib_dir
+
+                return self._file(lib_dir(APP_ROOT) / Path(urllib.parse.unquote(m.group(1))).name)
+            m = re.match(r"^/api/card-preview/(opening|ending)\.jpg$", path)
+            if m:
+                from ..cards import CardInfo, preview_png
+
+                st = {**load_settings(), **{k: v[0] for k, v in q.items()}}
+                job = self._job(q.get("job", [""])[0])
+                vid = job.clean_video if job and job.clean_video else None
+                W, H = (ff.probe_dimensions(vid) if vid else None) or (1920, 1080)
+                info = CardInfo(title=st.get("card_title") or (job.name if job else ""), subtitle=st.get("card_subtitle", ""),
+                                company=st.get("card_company", ""), phone=st.get("card_phone", ""), site=st.get("card_site", ""),
+                                message=st.get("card_message", ""), logo=st.get("card_logo", ""), qr=st.get("card_qr", ""),
+                                theme=st.get("card_theme", "blur"))
+                return self._file(preview_png(m.group(1), info, vid, W, H), "image/jpeg")
             m = re.match(r"^/api/bgm/(\w+)\.wav$", path)
             if m:
                 from ..bgm import MOODS, mood_path
@@ -757,6 +810,25 @@ class Handler(BaseHTTPRequestHandler):
             return
         u = urllib.parse.urlparse(self.path)
         q = urllib.parse.parse_qs(u.query)
+        if u.path in ("/api/products", "/api/brand-logo"):
+            n = int(self.headers.get("Content-Length") or 0)
+            if n > 30 * 1024 * 1024:
+                return self._json({"error": "이미지가 너무 큽니다 (30MB 이하)"}, 400)
+            data = self.rfile.read(n)
+            name = os.path.basename(q.get("name", ["image.png"])[0])
+            if os.path.splitext(name)[1].lower() not in (".png", ".jpg", ".jpeg", ".webp"):
+                return self._json({"error": "PNG·JPG 이미지만 넣을 수 있어요"}, 400)
+            if u.path == "/api/products":
+                from ..products import add as add_product
+
+                kws = [k for k in re.split(r"[,，\s]+", q.get("keywords", [""])[0]) if k]
+                return self._json(add_product(APP_ROOT, data, name, q.get("label", [""])[0], kws))
+            d = DATA_DIR / "brand"
+            d.mkdir(parents=True, exist_ok=True)
+            dst = d / f"logo_{uuid.uuid4().hex[:6]}{os.path.splitext(name)[1].lower()}"
+            dst.write_bytes(data)
+            save_settings({"card_logo": str(dst)})
+            return self._json({"path": str(dst)})
         m = re.match(r"^/api/jobs/(\w+)/asset$", u.path)
         if m:
             job = JOBS.get(m.group(1))
@@ -815,6 +887,61 @@ class Handler(BaseHTTPRequestHandler):
                     return self._json({"ok": False, "busy": True})
                 threading.Thread(target=lambda: (time.sleep(0.3), os._exit(0)), daemon=True).start()
                 return self._json({"ok": True})
+            if path == "/api/products/update":
+                from ..products import update as upd_product
+
+                upd_product(APP_ROOT, body.get("file", ""), body.get("name"), body.get("keywords"))
+                return self._json({"ok": True})
+            if path == "/api/products/delete":
+                from ..products import remove as rm_product
+
+                rm_product(APP_ROOT, body.get("file", ""))
+                return self._json({"ok": True})
+            m = re.match(r"^/api/jobs/(\w+)/auto-products$", path)
+            if m:
+                from ..products import auto_place
+                from ..transcribe import captions_from_json
+
+                job = self._job(m.group(1))
+                if not job:
+                    return self._json({"error": "작업이 없습니다"}, 404)
+                caps = captions_from_json(body.get("captions", job.captions))
+                dims = ff.probe_dimensions(job.clean_video) if job.clean_video else None
+                new = auto_place(caps, APP_ROOT, existing=body.get("overlays", []),
+                                 vertical=bool(dims and dims[1] > dims[0]), copy_to=job.out_dir / "_assets")
+                return self._json({"overlays": new})
+            m = re.match(r"^/api/jobs/(\w+)/recut$", path)
+            if m:
+                # 컷 다시 적용: 살린/더 자른 구간으로 편집본을 다시 만들고 자막·로고 시간을 옮긴다
+                from .. import timeline as tl
+                from ..transcribe import captions_from_json, captions_to_list
+
+                job = self._job(m.group(1))
+                if not job or not job.cut:
+                    return self._json({"error": "컷 정보가 없는 작업입니다 (새로 분석한 영상부터 가능)"}, 400)
+                if not WORK_LOCK.acquire(blocking=False):
+                    return self._json({"error": "다른 작업이 진행 중입니다"}, 409)
+                try:
+                    total = float(job.cut["total"])
+                    old_keep = tl.normalize(job.cut["keep"], total)
+                    new_keep = tl.normalize(body.get("keep", []), total)
+                    if not new_keep:
+                        return self._json({"error": "남길 구간이 없습니다"}, 400)
+                    caps = captions_from_json(body.get("captions", job.captions))
+                    ovs = body.get("overlays", job.overlays) or []
+                    cfg = build_config(load_settings())
+                    tmp = job.out_dir / f"{job.name}_clean_new.mp4"
+                    tl.recut(Path(job.cut["source"]), new_keep, tmp, cfg.output)
+                    tmp.replace(job.clean_video)
+                    job.captions = captions_to_list(tl.remap_captions(caps, old_keep, new_keep))
+                    job.overlays = tl.remap_overlays(ovs, old_keep, new_keep)
+                    job.cut = {**job.cut, "keep": new_keep}
+                    job.duration = ff.probe_duration(job.clean_video)
+                    _save_project(job)
+                    return self._json({"captions": job.captions, "overlays": job.overlays, "cut": job.cut,
+                                       "clean_video": str(job.clean_video), "v": int(time.time())})
+                finally:
+                    WORK_LOCK.release()
             if path == "/api/pick":
                 # 윈도우 파일 선택창 → 원본을 복사하지 않고 그 자리에서 바로 편집 (대용량에 유리)
                 picked = _pick_file()

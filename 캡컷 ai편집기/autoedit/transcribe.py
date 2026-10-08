@@ -41,6 +41,7 @@ class Caption:
     pos: Optional[str] = None     # bottom / middle / top
     align: Optional[str] = None   # left / center / right
     sfx: Optional[str] = None     # 효과음 이름 (첫 강조 단어 타이밍, 없으면 자막 시작에 재생)
+    zoom: Optional[bool] = None   # 자동 줌인: None=자동(강조·효과음 있으면), True=켬, False=끔
 
 
 def _load_model(cfg: SubtitleConfig):
@@ -79,9 +80,10 @@ def _hallucinated(seg, text: str, vocab: List[str]) -> bool:
             return True
     if getattr(seg, "compression_ratio", 0) > 2.4:
         return True
+    # 말소리가 아닐 확률이 '매우' 높고 확신도도 매우 낮을 때만 (흐릿한 끝인사 같은 진짜 말은 살림)
     nsp = getattr(seg, "no_speech_prob", 0.0)
     lp = getattr(seg, "avg_logprob", 0.0)
-    return nsp > 0.6 and lp < -0.8
+    return nsp > 0.85 and lp < -1.1
 
 
 def transcribe(
@@ -227,6 +229,7 @@ def slice_captions(
                 pos=cap.pos,
                 align=cap.align,
                 sfx=cap.sfx if cap.start >= start else None,
+                zoom=cap.zoom,
             )
         )
     return out
@@ -259,6 +262,7 @@ def captions_to_list(captions: List[Caption]) -> list:
             "pos": c.pos,
             "align": c.align,
             "sfx": c.sfx,
+            "zoom": c.zoom,
         }
         for c in captions
     ]
@@ -299,6 +303,7 @@ def captions_from_json(data) -> List[Caption]:
                 pos=d.get("pos") or None,
                 align=d.get("align") or None,
                 sfx=d.get("sfx") or None,
+                zoom=d.get("zoom"),
             )
         )
     return out

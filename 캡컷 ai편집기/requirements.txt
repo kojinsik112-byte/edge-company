@@ -6,3 +6,6 @@ pyyaml>=6.0             # 설정 파일(YAML)
 imageio-ffmpeg>=0.4.9   # ffmpeg 자동 동봉 (시스템에 ffmpeg 없을 때 자동 사용)
 anthropic>=0.40.0       # AI 스마트 편집(내용 이해 기반 컷) — API 키 있을 때만 동작
 numpy                   # 효과음 합성 (faster-whisper 와 함께 설치됨)
+opencv-python-headless  # 숏츠 얼굴 따라가기
+pillow                  # 오프닝·엔딩 카드
+qrcode                  # 엔딩 카드 QR

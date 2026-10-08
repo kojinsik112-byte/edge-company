@@ -131,6 +131,25 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 .ov .box{padding:.1em .45em;border-radius:.12em}
 .design{margin-top:18px;padding:18px}
 .ovl{position:absolute;inset:0;pointer-events:none}
+.tlcard{margin-top:12px;padding:14px 16px}
+.tlbar{position:relative;height:34px;border-radius:8px;background:#E9EDF5;overflow:hidden;cursor:pointer;margin:8px 0 6px}
+.tlbar .pc{position:absolute;top:0;bottom:0;border-right:1px solid rgba(255,255,255,.6)}
+.tlbar .pc.keep{background:#3557FF}
+.tlbar .pc.gone{background:repeating-linear-gradient(45deg,#CBD2DE 0 6px,#DCE1EA 6px 12px)}
+.tlbar .pc.restore{background:#12A150}
+.tlbar .pc.cutnew{background:repeating-linear-gradient(45deg,#E5484D 0 6px,#F08B8E 6px 12px)}
+.tlbar .pc:hover{filter:brightness(1.12)}
+.tlbar .ph{position:absolute;top:-2px;bottom:-2px;width:2px;background:#0F172A;pointer-events:none}
+.tlleg{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--sub);align-items:center}
+.tlleg i{display:inline-block;width:12px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.pgrid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.pitem{border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff}
+.pitem .im{aspect-ratio:1;border-radius:8px;background:#F1F4F9 center/contain no-repeat;margin-bottom:6px}
+.pitem input{width:100%;border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12px;margin-top:4px}
+.cardrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cardrow input{border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px;width:100%}
+.cprev{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.cprev img{width:100%;border-radius:10px;background:#E9EDF5;aspect-ratio:16/9;object-fit:cover}
 .ovl img{position:absolute;transition:transform .15s,opacity .15s}
 .ovrow{display:grid;grid-template-columns:56px 1fr;gap:12px;padding:10px;border:1px solid var(--line);border-radius:12px;margin-top:8px;align-items:start}
 .ovrow.now{border-color:#CBD5FF;background:var(--accent-soft)}
@@ -269,6 +288,12 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
           <button data-v="base">빠르게</button><button data-v="small">정확(권장)</button><button data-v="medium">최고(느림)</button>
         </div></div>
       <div class="field">
+        <label class="switch"><input type="checkbox" data-key="color_fix"><i></i><span><b>밝기·색 자동 보정</b><br><span class="muted" style="font-size:12px">어둡거나 칙칙한 폰 영상만 필요한 만큼</span></span></label>
+      </div>
+      <div class="field">
+        <label class="switch"><input type="checkbox" data-key="stabilize"><i></i><span><b>손떨림 보정</b><br><span class="muted" style="font-size:12px">들고 찍은 영상 흔들림 줄이기 (조금 더 걸림)</span></span></label>
+      </div>
+      <div class="field">
         <label class="switch" id="swSmart"><input type="checkbox" data-key="smart_edit"><i></i><span><b>AI 스마트 편집</b><br><span class="muted" style="font-size:12px">같은 말 반복·잡담·NG를 AI가 잘라요</span></span></label>
       </div>
       <div class="field">
@@ -313,6 +338,18 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
         <div class="ov" id="ov"></div>
         <div class="ovl" id="ovl"></div>
       </div>
+      <div class="card tlcard" id="tlCard">
+        <div class="row" style="justify-content:space-between">
+          <h2 style="margin:0;font-size:15px">✂️ 컷 타임라인 <span class="muted" id="tlInfo" style="font-weight:500;font-size:12px"></span></h2>
+          <div class="row" style="gap:6px">
+            <button class="btn sm" id="tlMarkA" title="재생 위치를 자를 구간 시작으로">[ 여기부터</button>
+            <button class="btn sm" id="tlMarkB" title="재생 위치까지 잘라내기">여기까지 자르기 ]</button>
+            <button class="btn sm primary" id="tlApply" disabled>컷 적용</button>
+          </div>
+        </div>
+        <div class="tlbar" id="tlBar"></div>
+        <div class="tlleg"><span><i style="background:#3557FF"></i>남은 부분</span><span><i style="background:#CBD2DE"></i>잘린 부분(눌러서 미리보기·살리기)</span><span><i style="background:#12A150"></i>살릴 부분</span><span><i style="background:#E5484D"></i>더 자를 부분</span><span class="muted">— 원본 전체 기준</span></div>
+      </div>
       <div class="card design">
         <div class="row" style="justify-content:space-between;margin-bottom:12px">
           <h2 style="margin:0">자막 디자인</h2>
@@ -331,11 +368,39 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
       <div class="card design" id="ovCard">
         <div class="row" style="justify-content:space-between;margin-bottom:6px">
           <h2 style="margin:0">로고 · 스티커</h2>
-          <button class="btn sm primary" id="ovAdd">+ 이미지 넣기</button>
+          <span class="row" style="gap:6px">
+            <button class="btn sm" id="prodLib" title="제품 사진과 키워드 등록">📦 제품 사진 라이브러리</button>
+            <button class="btn sm" id="prodAuto" title="자막에 제품 키워드가 나오면 그 순간 사진 띄우기">📦 자동 넣기</button>
+            <button class="btn sm primary" id="ovAdd">+ 이미지 넣기</button>
+          </span>
         </div>
         <p class="muted" style="font-size:12px;margin:0 0 10px">자이 로고·제품 사진 등 PNG/JPG. 영상을 원하는 장면에 멈추고 넣으면 <b>그 시점부터</b> 나타나요. 투명 배경 PNG가 제일 깔끔해요.</p>
         <input type="file" id="ovFile" accept="image/png,image/jpeg,image/webp" class="hidden">
         <div id="ovList"></div>
+      </div>
+      <div class="card design" id="cardCard">
+        <div class="row" style="justify-content:space-between;margin-bottom:8px">
+          <h2 style="margin:0">🎬 오프닝 · 엔딩 카드</h2>
+          <div class="row" style="gap:14px">
+            <label class="switch"><input type="checkbox" data-key="card_opening"><i></i>오프닝</label>
+            <label class="switch"><input type="checkbox" data-key="card_ending"><i></i>엔딩</label>
+          </div>
+        </div>
+        <div class="row" style="gap:10px;margin-bottom:10px;flex-wrap:wrap">
+          <div class="seg" data-key="card_theme"><button data-v="blur">장면 흐림</button><button data-v="white">화이트</button><button data-v="navy">네이비</button></div>
+          <button class="btn sm" id="logoUp">로고 이미지 올리기</button><span class="muted" id="logoName" style="font-size:12px"></span>
+          <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp" class="hidden">
+        </div>
+        <div class="cardrow">
+          <input data-text="card_title" placeholder="오프닝 제목 (비우면 영상 이름)">
+          <input data-text="card_subtitle" placeholder="오프닝 부제 (예: 조명·실링팬 상담 이벤트)">
+          <input data-text="card_message" placeholder="엔딩 문구 (예: 박람회에서 뵙겠습니다)">
+          <input data-text="card_company" placeholder="회사명">
+          <input data-text="card_phone" placeholder="전화번호">
+          <input data-text="card_site" placeholder="홈페이지">
+          <input data-text="card_qr" placeholder="QR 링크 (비우면 QR 없음)" style="grid-column:1/-1">
+        </div>
+        <div class="cprev"><img id="cpOpen" alt=""><img id="cpEnd" alt=""></div>
       </div>
     </div>
 
@@ -376,6 +441,10 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
     </aside>
   </div>
   <div class="foot">
+    <div class="row"><span class="muted">속도</span>
+      <select id="speedSel" title="말이 빠르면 0.9배 — 목소리 높이는 그대로">
+        <option value="0.85">0.85배</option><option value="0.9">0.9배</option><option value="0.95">0.95배</option>
+        <option value="1">1배 (원래)</option><option value="1.1">1.1배</option><option value="1.2">1.2배</option></select></div>
     <div class="row"><span class="muted">숏츠</span>
       <select data-key="shorts"><option value="0">안 만듦</option><option value="1">1개</option><option value="2">2개</option><option value="3">3개</option><option value="5">5개</option></select></div>
     <label class="switch"><input type="checkbox" data-key="shorts_subs"><i></i>숏츠에도 자막</label>
@@ -383,6 +452,7 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
       <select id="bgmSel" title="배경음악 분위기"></select>
       <button class="btn sm ghost" id="bgmPlay" title="미리듣기">▶</button></div>
     <label class="switch"><input type="checkbox" data-key="auto_sfx"><i></i>강조 단어 효과음 자동</label>
+    <label class="switch" title="강조·효과음 있는 순간 화면이 살짝 다가감"><input type="checkbox" data-key="punch_zoom"><i></i>자동 줌인</label>
     <div class="row"><span class="muted">효과음 크기</span><input type="range" min="0.1" max="1" step="0.05" data-key="sfx_volume" style="width:90px;accent-color:var(--accent)"></div>
     <div class="grow"></div>
     <button class="btn" id="backHome">새 영상</button>
@@ -415,6 +485,26 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 </section>
 </main>
 <div class="toast" id="toast"></div>
+<div class="modal hidden" id="prodModal">
+  <div class="card mbox" style="width:min(860px,100%)">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">📦 제품 사진 라이브러리</h2><button class="btn sm ghost" id="prodClose">✕</button></div>
+    <p class="muted" style="font-size:13px;margin:6px 0 12px">실제 제품 사진을 한 번 등록해 두면, 자막에 <b>키워드</b>가 나오는 순간 사진이 자동으로 떠요. 키워드는 쉼표로 여러 개 (예: 실링팬, 슬림, 14.5). AI로 만든 제품 그림은 쓰지 않아요.</p>
+    <div class="row" style="gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <input id="pName" placeholder="제품 이름 (예: 아크로 슬림 실링팬)" style="flex:1;min-width:180px;border:1px solid var(--line);border-radius:8px;padding:8px">
+      <input id="pKw" placeholder="키워드 (예: 실링팬, 슬림)" style="flex:1;min-width:180px;border:1px solid var(--line);border-radius:8px;padding:8px">
+      <button class="btn primary" id="pAdd">사진 선택해서 등록</button>
+      <input type="file" id="pFile" accept="image/png,image/jpeg,image/webp" class="hidden">
+    </div>
+    <div class="pgrid2" id="pGrid"></div>
+  </div>
+</div>
+<div class="modal hidden" id="srcModal">
+  <div class="card mbox" style="width:min(720px,100%)">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0" id="srcTitle">잘린 부분 미리보기</h2><button class="btn sm ghost" id="srcClose">✕</button></div>
+    <video id="srcVid" controls style="width:100%;border-radius:10px;margin:10px 0;background:#000"></video>
+    <div class="row" style="justify-content:flex-end;gap:8px"><button class="btn" id="srcToggle"></button></div>
+  </div>
+</div>
 <div class="modal hidden" id="dirModal">
   <div class="card mbox">
     <div class="row" style="justify-content:space-between"><h2 style="margin:0">🎬 AI 자동 연출 — 어떤 편집인가요?</h2><button class="btn sm ghost" id="dirClose">✕</button></div>
@@ -425,6 +515,7 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
       <label class="switch"><input type="checkbox" id="dEmph" checked><i></i>강조 단어</label>
       <label class="switch"><input type="checkbox" id="dSfx" checked><i></i>효과음</label>
       <label class="switch"><input type="checkbox" id="dBgm" checked><i></i>배경음악</label>
+      <label class="switch"><input type="checkbox" id="dProd" checked><i></i>제품 사진 자동</label>
       <label class="switch"><input type="checkbox" id="dStyle"><i></i>자막 디자인도 추천대로</label>
     </div>
     <p class="muted" style="font-size:12px;margin:0 0 14px">이미 직접 고른 효과음은 그대로 둬요. 마음에 안 들면 <b>↶ 되돌리기</b> 한 번이면 원래대로.</p>
@@ -481,6 +572,7 @@ function setS(k, v) {
   S[k] = v;
   clearTimeout(saveSH); saveSH = setTimeout(() => post('/api/settings', S).catch(() => {}), 400);
   if (['style', 'pos', 'align', 'scale', 'offset'].includes(k)) { refreshPreviews(k !== 'style'); drawOverlay(true); }
+  if (k === 'card_theme') refreshCardPreview();
 }
 function renderVocab() {
   const box = $('#vocab'), inp = $('#vocabIn');
@@ -576,11 +668,13 @@ async function openEditor() {
   const d = await api(`/api/jobs/${JOB.id}/captions`);
   CAPS = d.captions || [];
   OVS = d.overlays || [];
+  CUT = d.cut || null; EKEEP = CUT ? normSegs(CUT.keep) : []; MARK_A = null;
   show('vEdit');
   const v = $('#vid');
   if (JOB.clean_video && v.dataset.src !== JOB.clean_video) { v.src = media(JOB.clean_video); v.dataset.src = JOB.clean_video; }
   bindSettings();
   buildStyleCards(); buildBgm(); renderList(); renderOverlays(); drawOverlay(true);
+  drawTimeline(); bindCardText(); refreshCardPreview(); applySpeed();
   $('#saved').textContent = '';
   HIST = []; FUT = []; lastSnap = snapNow(); histButtons();
 }
@@ -622,6 +716,7 @@ function capRow(c, i, ls) {
   const flags = [];
   if (c.pos) flags.push({top: '위', middle: '가운데', bottom: '아래'}[c.pos]);
   if (c.align) flags.push({left: '왼쪽', center: '가운데정렬', right: '오른쪽'}[c.align]);
+  if (c.zoom === true) flags.push('🔍 줌'); if (c.zoom === false) flags.push('줌 끔');
   el.innerHTML = `
     <div class="row" style="gap:6px">
       <span class="tm" title="여기부터 재생">▶ ${fmt(c.start)} → ${fmt(c.end)}</span>
@@ -635,6 +730,7 @@ function capRow(c, i, ls) {
       <select class="o-align" title="이 줄 정렬"><option value="">정렬: 기본</option><option value="left">왼쪽</option><option value="center">가운데</option><option value="right">오른쪽</option></select>
       <select class="o-sfx" title="효과음"><option value="">효과음 없음</option>${Object.entries(INIT.sfx).map(([k, v]) => `<option value="${k}">🔔 ${v}</option>`).join('')}</select>
       <button class="btn sm ghost o-play" title="효과음 미리듣기">▶︎</button>
+      <select class="o-zoom" title="이 줄 자동 줌인"><option value="">🔍 줌: 자동</option><option value="on">🔍 줌 켬</option><option value="off">🔍 줌 끔</option></select>
       <span class="sp"></span>
       <button class="btn sm ghost o-fit" title="한 줄 ↔ 보기 좋은 두 줄">줄 맞춤</button>
       <button class="btn sm ghost o-split" title="커서 위치에서 두 줄로 나누기 (Ctrl+Enter)">나누기</button>
@@ -671,6 +767,8 @@ function capRow(c, i, ls) {
   drawTokens(el.querySelector('.words'), c, i, ls);
   const op = el.querySelector('.o-pos'), oa = el.querySelector('.o-align'), os = el.querySelector('.o-sfx');
   op.value = c.pos || ''; oa.value = c.align || ''; os.value = c.sfx || '';
+  const oz = el.querySelector('.o-zoom'); oz.value = c.zoom === true ? 'on' : c.zoom === false ? 'off' : '';
+  oz.onchange = () => { c.zoom = oz.value === 'on' ? true : oz.value === 'off' ? false : null; changed(); rerowKeep(i); };
   op.onchange = () => { c.pos = op.value || null; changed(); rerowKeep(i); };
   oa.onchange = () => { c.align = oa.value || null; changed(); rerowKeep(i); };
   os.onchange = () => { c.sfx = os.value || null; changed(); if (c.sfx) playSfx(c.sfx); rerowKeep(i); };
@@ -1209,12 +1307,172 @@ $('#dirRun').onclick = async () => {
       S.genre = GENRE;
     });
     post('/api/settings', S).catch(() => {});
+    let nProd = 0; if ($('#dProd').checked) { try { nProd = await autoProducts(true); } catch {} }
     bindSettings(); buildStyleCards(); buildBgm(); renderList(); drawOverlay(true);
     const nSfx = CAPS.filter(c => c.sfx).length, nEmph = CAPS.filter(c => c.emph && Object.keys(c.emph).length).length;
     $('#dirModal').classList.add('hidden');
-    toast(`${r.used_ai ? 'AI' : '규칙'} 연출 완료 — ${CAPS.length}문장 · 강조 ${nEmph}줄 · 효과음 ${nSfx}개 (되돌리기 가능)`);
+    toast(`${r.used_ai ? 'AI' : '규칙'} 연출 완료 — ${CAPS.length}문장 · 강조 ${nEmph}줄 · 효과음 ${nSfx}개${nProd ? ' · 제품 사진 ' + nProd + '개' : ''} (되돌리기 가능)`);
   } catch (e) { toast('연출 실패: ' + e.message); }
   finally { btn.disabled = false; btn.textContent = '연출 시작'; }
+};
+
+// ───── 속도
+function applySpeed() {
+  const v = $('#vid'); const sp = parseFloat(S.speed || 1);
+  v.playbackRate = sp; v.preservesPitch = true;
+  $('#speedSel').value = String(sp);
+}
+$('#speedSel').onchange = e => { setS('speed', parseFloat(e.target.value)); applySpeed(); toast(`속도 ${e.target.value}배 — 미리보기에도 적용`); };
+$('#vid').addEventListener('loadeddata', applySpeed);
+
+// ───── 컷 타임라인 (원본 전체 기준)
+let CUT = null, EKEEP = [], MARK_A = null, SEL_PIECE = null;
+const inSegs = (t, segs) => segs.some(([a, b]) => t > a + 1e-4 && t < b - 1e-4);
+function normSegs(segs) {
+  const s2 = segs.map(([a, b]) => [Math.max(0, a), Math.min(CUT.total, b)]).filter(([a, b]) => b - a > 0.05).sort((x, y) => x[0] - y[0]);
+  const out = [];
+  s2.forEach(([a, b]) => { if (out.length && a <= out[out.length - 1][1] + 0.02) out[out.length - 1][1] = Math.max(out[out.length - 1][1], b); else out.push([a, b]); });
+  return out;
+}
+function subSeg(segs, a, b) { const out = []; segs.forEach(([x, y]) => { if (y <= a || x >= b) out.push([x, y]); else { if (x < a) out.push([x, a]); if (y > b) out.push([b, y]); } }); return out; }
+function cutPieces() {
+  const pts = new Set([0, CUT.total]);
+  CUT.keep.concat(EKEEP).forEach(([a, b]) => { pts.add(a); pts.add(b); });
+  const arr = [...pts].sort((x, y) => x - y), out = [];
+  for (let i = 0; i < arr.length - 1; i++) {
+    const a = arr[i], b = arr[i + 1]; if (b - a < 0.01) continue;
+    const m = (a + b) / 2, o = inSegs(m, CUT.keep), n = inSegs(m, EKEEP);
+    out.push({a, b, kind: o && n ? 'keep' : !o && !n ? 'gone' : !o && n ? 'restore' : 'cutnew'});
+  }
+  return out;
+}
+function srcTime(tEdit) {  // 편집 시간 → 원본 시간 (지금 보이는 영상은 CUT.keep 기준)
+  let acc = 0; for (const [a, b] of CUT.keep) { if (tEdit <= acc + (b - a)) return a + tEdit - acc; acc += b - a; } return CUT.total;
+}
+function drawTimeline() {
+  const card = $('#tlCard');
+  if (!CUT) { card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+  const bar = $('#tlBar'); bar.innerHTML = '';
+  const pcs = cutPieces();
+  pcs.forEach(p => {
+    const d = document.createElement('div'); d.className = 'pc ' + p.kind;
+    d.style.left = (p.a / CUT.total * 100) + '%'; d.style.width = ((p.b - p.a) / CUT.total * 100) + '%';
+    d.title = `${fmt(p.a)} ~ ${fmt(p.b)} (${(p.b - p.a).toFixed(1)}초) — ${{keep: '남은 부분 (눌러서 자르기)', gone: '잘린 부분 (눌러서 미리보기·살리기)', restore: '살릴 부분', cutnew: '더 자를 부분'}[p.kind]}`;
+    d.onclick = e => { e.stopPropagation(); pieceClick(p); };
+    bar.appendChild(d);
+  });
+  const ph = document.createElement('div'); ph.className = 'ph'; ph.id = 'tlPh'; bar.appendChild(ph);
+  movePlayhead();
+  const kept = CUT.keep.reduce((s, [a, b]) => s + b - a, 0), nkept = EKEEP.reduce((s, [a, b]) => s + b - a, 0);
+  const gone = pcs.filter(p => p.kind === 'gone').length;
+  const changedCut = JSON.stringify(normSegs(EKEEP)) !== JSON.stringify(normSegs(CUT.keep));
+  $('#tlInfo').textContent = `원본 ${CUT.total.toFixed(1)}초 → 편집 ${kept.toFixed(1)}초 · 잘린 곳 ${gone}군데` + (changedCut ? ` → 적용하면 ${nkept.toFixed(1)}초` : '');
+  $('#tlApply').disabled = !changedCut;
+  $('#tlApply').textContent = changedCut ? '✂️ 컷 적용' : '컷 적용';
+}
+function movePlayhead() {
+  const ph = $('#tlPh'); if (!ph || !CUT) return;
+  ph.style.left = (srcTime($('#vid').currentTime || 0) / CUT.total * 100) + '%';
+}
+$('#vid').addEventListener('timeupdate', movePlayhead);
+function pieceClick(p) {
+  if (p.kind === 'keep') {  // 남은 부분 → 통째로 자르기 (긴 구간은 [여기부터 ~ 여기까지]로 정밀하게)
+    if (p.b - p.a > 6 && !confirm(`${(p.b - p.a).toFixed(1)}초짜리 구간을 통째로 자를까요?\n일부만 자르려면 재생 위치에서 [여기부터] → [여기까지 자르기]를 쓰세요.`)) return;
+    EKEEP = normSegs(subSeg(EKEEP, p.a, p.b)); drawTimeline(); return;
+  }
+  if (p.kind === 'restore' || p.kind === 'cutnew') {  // 되돌리기
+    EKEEP = p.kind === 'restore' ? normSegs(subSeg(EKEEP, p.a, p.b)) : normSegs(EKEEP.concat([[p.a, p.b]]));
+    drawTimeline(); return;
+  }
+  // 잘린 부분 → 미리보기 창
+  SEL_PIECE = p;
+  $('#srcTitle').textContent = `잘린 부분 ${fmt(p.a)} ~ ${fmt(p.b)} (${(p.b - p.a).toFixed(1)}초)`;
+  const sv = $('#srcVid');
+  sv.src = media(CUT.source) + '#t=' + Math.max(0, p.a - 0.5).toFixed(2) + ',' + (p.b + 0.3).toFixed(2);
+  sv.play().catch(() => {});
+  $('#srcToggle').textContent = '✅ 이 부분 살리기';
+  $('#srcModal').classList.remove('hidden');
+}
+$('#srcToggle').onclick = () => { if (SEL_PIECE) EKEEP = normSegs(EKEEP.concat([[SEL_PIECE.a, SEL_PIECE.b]])); $('#srcModal').classList.add('hidden'); $('#srcVid').pause(); drawTimeline(); toast('살릴 부분으로 표시했어요 — [컷 적용]을 누르면 반영돼요'); };
+$('#srcClose').onclick = () => { $('#srcModal').classList.add('hidden'); $('#srcVid').pause(); };
+$('#tlMarkA').onclick = () => { MARK_A = srcTime($('#vid').currentTime || 0); toast(`자를 구간 시작: ${fmt(MARK_A)} — 끝낼 위치로 가서 [여기까지 자르기]`); };
+$('#tlMarkB').onclick = () => {
+  if (MARK_A === null) return toast('먼저 [여기부터]를 눌러 시작 위치를 정하세요');
+  const b = srcTime($('#vid').currentTime || 0), a = Math.min(MARK_A, b), c = Math.max(MARK_A, b);
+  if (c - a < 0.1) return toast('구간이 너무 짧아요');
+  EKEEP = normSegs(subSeg(EKEEP, a, c)); MARK_A = null; drawTimeline(); toast(`${(c - a).toFixed(1)}초를 자를 부분으로 표시했어요`);
+};
+$('#tlApply').onclick = async () => {
+  const btn = $('#tlApply'); btn.disabled = true; btn.textContent = '적용 중… (영상 다시 만드는 중)';
+  try {
+    document.activeElement && document.activeElement.blur && document.activeElement.blur();
+    const r = await post(`/api/jobs/${JOB.id}/recut`, {keep: normSegs(EKEEP), captions: CAPS, overlays: OVS});
+    bulk(() => { CAPS = r.captions; OVS = r.overlays; });
+    CUT = r.cut; EKEEP = normSegs(CUT.keep);
+    const v = $('#vid'); v.src = media(r.clean_video) + '&v=' + r.v; v.dataset.src = r.clean_video + r.v;
+    renderList(); renderOverlays(); drawTimeline(); drawOverlay(true);
+    toast('컷을 다시 적용했어요 — 자막·로고 시간도 맞췄어요');
+  } catch (e) { toast('컷 적용 실패: ' + e.message); drawTimeline(); }
+};
+
+// ───── 제품 사진 라이브러리
+async function loadProducts() {
+  const list = await api('/api/products');
+  const g = $('#pGrid'); g.innerHTML = list.length ? '' : '<p class="muted">아직 등록한 제품 사진이 없어요</p>';
+  list.forEach(it => {
+    const d = document.createElement('div'); d.className = 'pitem';
+    d.innerHTML = `<div class="im" style="background-image:url('/api/products/img/${encodeURIComponent(it.file)}')"></div>
+      <input class="n" value="" placeholder="이름"><input class="k" value="" placeholder="키워드, 쉼표로">
+      <div class="row" style="justify-content:space-between;margin-top:6px"><button class="btn sm s">저장</button><button class="btn sm ghost x" style="color:var(--warn)">삭제</button></div>`;
+    d.querySelector('.n').value = it.name; d.querySelector('.k').value = (it.keywords || []).join(', ');
+    d.querySelector('.s').onclick = async () => { await post('/api/products/update', {file: it.file, name: d.querySelector('.n').value, keywords: d.querySelector('.k').value.split(/[,，]/)}); toast('저장했어요'); };
+    d.querySelector('.x').onclick = async () => { if (!confirm('이 제품 사진을 라이브러리에서 지울까요?')) return; await post('/api/products/delete', {file: it.file}); loadProducts(); };
+    g.appendChild(d);
+  });
+}
+$('#prodLib').onclick = () => { $('#prodModal').classList.remove('hidden'); loadProducts(); };
+$('#prodClose').onclick = () => $('#prodModal').classList.add('hidden');
+$('#pAdd').onclick = () => { if (!$('#pKw').value.trim()) return toast('키워드를 먼저 적어 주세요 (예: 실링팬, 슬림)'); $('#pFile').click(); };
+$('#pFile').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  const q = `name=${encodeURIComponent(f.name)}&label=${encodeURIComponent($('#pName').value)}&keywords=${encodeURIComponent($('#pKw').value)}`;
+  const r = await fetch('/api/products?' + q, {method: 'PUT', headers: {'X-Edge-Studio': '1'}, body: f});
+  if (!r.ok) return toast((await r.json()).error || '등록 실패');
+  $('#pName').value = ''; $('#pKw').value = ''; toast('등록했어요'); loadProducts();
+};
+async function autoProducts(silent) {
+  const r = await post(`/api/jobs/${JOB.id}/auto-products`, {captions: CAPS, overlays: OVS});
+  if (!r.overlays.length) { if (!silent) toast('키워드가 나오는 곳이 없거나, 라이브러리가 비어 있어요'); return 0; }
+  OVS = OVS.concat(r.overlays); changed(); renderOverlays(); drawOverlay(true);
+  if (!silent) toast(`제품 사진 ${r.overlays.length}개를 넣었어요: ` + r.overlays.map(o => o.product).join(', '));
+  return r.overlays.length;
+}
+$('#prodAuto').onclick = () => autoProducts(false).catch(e => toast(e.message));
+
+// ───── 오프닝·엔딩 카드
+function bindCardText() {
+  $$('input[data-text]').forEach(el => {
+    el.value = S[el.dataset.text] || '';
+    el.onchange = () => { setS(el.dataset.text, el.value); refreshCardPreview(); };
+  });
+  $('#logoName').textContent = S.card_logo ? '✓ 로고 등록됨' : '';
+}
+let cpH = null;
+function refreshCardPreview() {
+  clearTimeout(cpH);
+  cpH = setTimeout(() => {
+    if ($('#cardCard').classList.contains('hidden')) return;
+    const q = 'job=' + (JOB ? JOB.id : '') + '&t=' + Date.now() + '&' + ['card_theme', 'card_title', 'card_subtitle', 'card_message', 'card_company', 'card_phone', 'card_site', 'card_qr', 'card_logo'].map(k => k + '=' + encodeURIComponent(S[k] || '')).join('&');
+    $('#cpOpen').src = '/api/card-preview/opening.jpg?' + q; $('#cpEnd').src = '/api/card-preview/ending.jpg?' + q;
+  }, 300);
+}
+$('#logoUp').onclick = () => $('#logoFile').click();
+$('#logoFile').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  const r = await fetch('/api/brand-logo?name=' + encodeURIComponent(f.name), {method: 'PUT', headers: {'X-Edge-Studio': '1'}, body: f});
+  const j = await r.json(); if (!r.ok) return toast(j.error || '실패');
+  S.card_logo = j.path; bindCardText(); refreshCardPreview(); toast('로고를 등록했어요');
 };
 
 // 효과음 미리듣기
