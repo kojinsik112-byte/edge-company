@@ -264,6 +264,9 @@ def apply(B, D, take, sub):
     ]:
         k = take(title)[1]
         k["body"] = inject(k["body"], names, "card" if 'class="card' in k["body"] else "tile")
+    k = take("입주박람회 [[운영 계획]]")[1]
+    k["body"] = k["body"].replace('class="tiles lg"', 'class="tiles lg opw"', 1)
+    B.CSS += ".opw .tile:first-child .nm{font-size:18.5px;letter-spacing:-.02em;white-space:nowrap}"
     k = take("철산역 자이 [[특화 제안]]")[1]
     k["body"] = inject(k["body"], ["checklist", "calendar", "streetlight", "tape", "phone_live", "member"], "tile")
 
@@ -749,54 +752,57 @@ def apply2(B, D, take, sub):
         b = sub(b, f'<div class="tile"><div class="lb">{lb}</div>',
                 f'<div class="tile"><div class="tim"><img src="assets_ins/{im}.jpg" style="object-position:{pos}" alt=""><span>{cp}</span></div><div class="lb">{lb}</div>')
     b = sub(b, '<div class="tile"><div class="lb">14 · CESCO</div>',
-            f'<div class="tile"><div class="tim ipn">{ic("bug")}<b>2025.11 MOU</b></div><div class="lb">14 · CESCO</div>')
+            '<div class="tile"><div class="tim"><img src="assets_ins/n94_cesco.jpg" style="object-position:50% 50%" alt=""><span>세스코 · 2025.11 MOU</span></div><div class="lb">14 · CESCO</div>')
     k["body"] = b.replace('<div class="tiles"', '<div class="tiles tp"', 1)
 
     # 사전점검 당일 현장 지원 — 위: 현수막·X배너 시안(HTML로 그린 예시) / 아래: 사진 카드 5칸
     k = take("사전점검 당일 [[현장 지원]]")[1]
-    banner = ('<div class="bnx"><div class="bl"><i>01 · 행사 물품</i><b>현수막 · X배너</b>'
-              '<p>점검 당일 입예협 부스에 설치할 현수막·X배너·서면 자료를 주관사가 제작합니다.</p><small>시안 · 문구·디자인은 입예협과 확정</small></div>'
+    banner = ('<div class="bnx"><div class="bl"><i>01</i><b>행사 물품</b>'
+              '<p>부스용 현수막·X배너·서면 자료 제작</p><small>시안 · 협의 후 확정</small></div>'
               '<div class="hbw"><div class="hbn"><span class="t1">철산역 자이(조합) 입주예정자협의회</span>'
               '<b>철산역 자이 입주민 여러분, <em>사전점검을 환영합니다</em></b>'
               '<span class="t2">입예협 안내 부스 · 라돈 측정 · 하자 체크리스트 배포</span></div><span class="cp">현수막 시안</span></div>'
               '<div class="xbw"><div class="xbn"><div class="xh"><span>철산역 자이</span><b>사전점검<br>안내</b></div>'
               '<ol><li>입예협 부스 방문 · 정회원 가입</li><li>라돈 측정 지원</li><li>하자 체크리스트 · 점검 요령</li><li>입주박람회 2029년 2~3월(예정)</li></ol>'
-              '<div class="xf">철산역 자이(조합)<br>입주예정자협의회</div></div><div class="leg"></div><span class="cp">X배너 시안</span></div></div>')
+              '<div class="xf">철산역 자이(조합)<br>입주예정자협의회</div></div><span class="cp">X배너 시안</span></div></div>')
     items = [("02", "입예협 도우미", "부스 운영 인력 별도 지원", ("g09_helper_ai", "50% 30%")),
              ("03", "라돈측정기 10대", "입주민이 내 집 라돈을 직접 측정", ("g09_radon_u", "50% 50%")),
              ("04", "냉·난방용품", "점검 시기에 맞춰 부스용 준비", ("g09_heater_ai", "50% 50%")),
              ("05", "커피차 지원", "점검 당일 입예협 부스에 커피차 지원", ("g09_coffee_u2", "50% 50%")),
              ("06", "하자진단 보고서", "공용부·조경 점검 결과를 사진·도면으로", ("n11_report", "50% 40%"))]
-    tl = "".join(f'<div class="tile"><div class="tim"><img src="assets_ins/{ph_[0]}.jpg" style="object-position:{ph_[1]}" alt=""></div>'
-                 f'<div class="lb">{no}</div><div class="nm">{nm}</div><div class="ds">{ds}</div></div>' for no, nm, ds, ph_ in items)
-    k["body"] = f'<div class="nb">{banner}<div class="tiles t5" style="grid-template-columns:repeat(5,1fr);grid-template-rows:1fr">{tl}</div></div>'
+    tile = lambda no, nm, ds, ph_: (f'<div class="tile"><div class="tim"><img src="assets_ins/{ph_[0]}.jpg" style="object-position:{ph_[1]}" alt=""></div>'
+                                    f'<div class="lb">{no}</div><div class="nm">{nm}</div><div class="ds">{ds}</div></div>')
+    k["body"] = (f'<div class="nb"><div class="r91">{banner}{tile(*items[0])}</div>'
+                 f'<div class="tiles t5" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr">{"".join(tile(*x) for x in items[1:])}</div></div>')
     B.CSS += r"""
 .tile .tim+.lb{margin-top:0}
-.t5 .tile .nm{font-size:17px}.t5 .tile .ds{font-size:13.5px;line-height:1.45}.t5 .tim{height:84px}
-.bnx{flex:0 0 228px;display:grid;grid-template-columns:210px 1fr 118px;gap:20px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:14px 22px;
+.t5 .tile,.r91 .tile{justify-content:flex-start}.t5 .tile .nm{font-size:17px}.t5 .tile .ds{font-size:13.5px;line-height:1.45}.t5 .tim{height:136px}
+.r91{display:grid;grid-template-columns:2.05fr 1fr;gap:14px;flex:0 0 172px}
+.r91 .tile .tim{height:70px}.r91 .tile .nm{font-size:17px}.r91 .tile .ds{font-size:13.5px}
+.bnx{display:grid;grid-template-columns:128px 1fr 70px;gap:14px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 16px;
   background:radial-gradient(120% 120% at 60% 40%,#173356,#0b1a2d)}
 .bnx .bl i{display:block;font-style:normal;font-size:12px;letter-spacing:.22em;color:var(--gold2);font-weight:700}
-.bnx .bl b{display:block;font-size:22px;font-weight:800;margin:4px 0 6px}
-.bnx .bl p{font-size:13.5px;color:var(--sub);line-height:1.5}
-.bnx .bl small{display:inline-block;margin-top:8px;font-size:11.5px;color:var(--gold);border:1px solid rgba(235,203,143,.55);border-radius:99px;padding:2px 10px}
-.bnx .cp{display:block;text-align:center;font-size:11px;color:var(--mute);margin-top:8px}
-.hbw{position:relative;padding:0 14px}
+.bnx .bl b{display:block;font-size:18px;font-weight:800;margin:2px 0 4px}
+.bnx .bl p{font-size:12.5px;color:var(--sub);line-height:1.45}
+.bnx .bl small{display:inline-block;margin-top:6px;font-size:10.5px;color:var(--gold);border:1px solid rgba(235,203,143,.55);border-radius:99px;padding:2px 10px}
+.bnx .cp{display:block;text-align:center;font-size:10px;color:var(--mute);margin-top:5px}
+.hbw{position:relative;padding:0 4px}
 .hbw:before,.hbw:after{content:'';position:absolute;top:-10px;width:1px;height:14px;background:rgba(255,255,255,.5)}
-.hbw:before{left:22px}.hbw:after{right:22px}
+.hbw:before{left:12px}.hbw:after{right:12px}
 .hbn{position:relative;aspect-ratio:4.6/1;border-radius:3px;background:linear-gradient(180deg,#fdfaf2,#f3ead6);box-shadow:0 8px 22px rgba(0,0,0,.45);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-top:7px solid #0d1e33;border-bottom:7px solid #c8a86a;padding:0 18px}
-.hbn .t1{font-size:11.5px;font-weight:700;color:#8a6630;letter-spacing:.06em}
-.hbn b{font-size:22px;font-weight:900;color:#0d1e33;letter-spacing:-.02em;margin:3px 0 4px;line-height:1.2}
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-top:5px solid #0d1e33;border-bottom:5px solid #c8a86a;padding:0 12px}
+.hbn .t1{font-size:9.5px;font-weight:700;color:#8a6630;letter-spacing:.06em}
+.hbn b{font-size:16.5px;font-weight:900;color:#0d1e33;letter-spacing:-.02em;margin:2px 0 3px;line-height:1.2}
 .hbn b em{color:#b0812f;font-style:normal}
-.hbn .t2{font-size:11.5px;color:#334;font-weight:600}
+.hbn .t2{font-size:9.5px;color:#334;font-weight:600}
 .xbw{position:relative;display:flex;flex-direction:column;align-items:center}
-.xbn{width:100px;height:152px;border-radius:3px;background:#fdfaf2;box-shadow:0 8px 22px rgba(0,0,0,.45);overflow:hidden;display:flex;flex-direction:column}
-.xbn .xh{background:#0d1e33;color:#fff;text-align:center;padding:7px 4px 6px;border-bottom:3px solid #c8a86a}
-.xbn .xh span{display:block;font-size:8.5px;color:#ebcb8f;font-weight:700}
-.xbn .xh b{display:block;font-size:14px;font-weight:900;line-height:1.15;margin-top:2px}
-.xbn ol{list-style:none;margin:0;padding:5px 7px 0;counter-reset:x;flex:1}
-.xbn li{counter-increment:x;font-size:7.2px;color:#223;line-height:1.25;padding:2px 0 2px 12px;position:relative;border-bottom:1px dashed #d8ccb0;font-weight:600}
-.xbn li:before{content:counter(x);position:absolute;left:0;top:3px;width:9px;height:9px;border-radius:50%;background:#c8a86a;color:#fff;font-size:6.5px;line-height:9px;text-align:center}
+.xbn{width:70px;height:112px;border-radius:3px;background:#fdfaf2;box-shadow:0 8px 22px rgba(0,0,0,.45);overflow:hidden;display:flex;flex-direction:column}
+.xbn .xh{background:#0d1e33;color:#fff;text-align:center;padding:5px 3px 4px;border-bottom:3px solid #c8a86a}
+.xbn .xh span{display:block;font-size:6.5px;color:#ebcb8f;font-weight:700}
+.xbn .xh b{display:block;font-size:10.5px;font-weight:900;line-height:1.15;margin-top:2px}
+.xbn ol{list-style:none;margin:0;padding:3px 5px 0;counter-reset:x;flex:1}
+.xbn li{counter-increment:x;font-size:5.6px;color:#223;line-height:1.25;padding:2px 0 2px 9px;position:relative;border-bottom:1px dashed #d8ccb0;font-weight:600}
+.xbn li:before{content:counter(x);position:absolute;left:0;top:2px;width:7px;height:7px;border-radius:50%;background:#c8a86a;color:#fff;font-size:5px;line-height:7px;text-align:center}
 .xbn .xf{font-size:7px;color:#8a6630;text-align:center;padding:5px 2px 7px;font-weight:700;line-height:1.3}
 .xbw .leg{width:98px;height:14px;position:relative}
 .xbw .leg:before,.xbw .leg:after{content:'';position:absolute;top:0;width:2px;height:16px;background:rgba(255,255,255,.55)}
