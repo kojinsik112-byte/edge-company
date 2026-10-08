@@ -277,7 +277,7 @@ def apply(B, D, take, sub):
         f'<div class="big">{hh:,}<small>세대</small></div>',
         f'<div class="big">{hh:,}<small>세대</small></div><div class="sbar"><i style="flex:{hh}">조합 {hh:,}</i><i style="flex:{gen}">일반 {gen}</i></div>', 1)
     assert cards != k["body"]
-    k["body"] = ('<div class="nb"><div class="bnr"><img src="assets_ins/cs_birdseye.jpg" alt="">'
+    k["body"] = ('<div class="nb"><div class="bnr"><img src="assets_ins/tj_aerial_night.jpg" alt="">'
                  f'<b>철산역 자이 · 총 {tot:,}세대 · 19개동</b><span>철산역 자이 조감도 · 실제와 다를 수 있습니다</span></div>'
                  + cards + '</div>')
 
@@ -646,7 +646,7 @@ def apply2(B, D, take, sub):
     tails = [f'<div class="exi cs">{ic("vault")}<b>2억 925만원</b><small>입예협 공식 통장</small></div>',
              '<div class="exi"><img src="assets_ins/g08_thermal.jpg" alt=""><span>열화상 점검 화면 · 타 단지</span></div>',
              '<div class="exi"><img src="assets_ins/g12_style_after.jpg" alt=""><span>3D 홈스타일링 · 제작 예시</span></div>',
-             '<div class="exi"><img src="assets_ins/cs_gate_night.jpg" alt=""><span>문주·경관조명 · 연출 예시 이미지</span></div>']
+             '<div class="exi"><img src="assets_ins/tj_gate_night.jpg" alt=""><span>문주·경관조명 · 연출 예시 이미지</span></div>']
     it = iter(tails)
     b, n = re.subn(r"</ul></div>", lambda m: "</ul>" + next(it) + "</div>", k["body"])
     assert n == 4, n
@@ -654,7 +654,7 @@ def apply2(B, D, take, sub):
 
     # C 패키지 — 항목 썸네일
     k = take("C 패키지 · [[단지지원 컨설팅]]")[1]
-    th = [("n13_fit", "커뮤니티 조명"), ("cs_gate_night", "문주·경관조명"), ("n13_kidsplay", "피트니스·키즈"),
+    th = [("n13_fit", "커뮤니티 조명"), ("tj_gate_night", "문주·경관조명"), ("n13_kidsplay", "피트니스·키즈"),
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))

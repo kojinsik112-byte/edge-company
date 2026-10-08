@@ -731,7 +731,7 @@ def p_cover_impact():
     """요약본 [2-2] 표지 — 숫자(15만원 · 10억 · 1억)로 시작, 오른쪽은 단지 경관조명(본부장 10-07)."""
     hh = D.SITE["households"]
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
-    return f"""<section class="page cv cv5"><div class="cvlx"><img src="assets_ins/cs_aerial_night.jpg" alt=""><div class="fd"></div>
+    return f"""<section class="page cv cv5"><div class="cvlx"><img src="assets_ins/tj_facade_night.jpg" alt=""><div class="fd"></div>
 <span class="cap">단지 경관조명 · 연출 예시 이미지</span></div>{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
 <h1>철산역 자이 (조합) <em>입주박람회 주관사 요약 제안서</em></h1>
@@ -770,7 +770,7 @@ def p_cover():
 
 def p_cover_company():
     """제출서류 07 회사소개서 표지 — 제안서 표지 틀 그대로, 제목·띠만 회사소개서로."""
-    art = ('<div class="cvart"><img src="assets_ins/cs_cover_art.jpg" alt="">'
+    art = ('<div class="cvart"><img src="assets_ins/tj_cover_art.jpg" alt="">'
            '<span class="credit">철산역 자이 조감도 · 홍보용 이미지</span></div>')
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제출서류</i><b>07 회사소개서 (연혁 · 조직도 포함)</b></div></div>'
     return f"""<section class="page cv cv4">{art}{COVER_TOP}
@@ -1054,7 +1054,7 @@ def summary_pages():
     S1, S2, S3, S4, S45, S5, S6 = ("01. 발전지원 15만원", "02. 경관조명 특화", "03. 하자보증 · 안전망",
                                    "04. 업체선정 · 가격 보호", "05. 박람회 운영", "06. 철산역 자이 맞춤", "07. 주관 실적")
     hero_body = (
-        '<img class="bg" src="assets_ins/cs_gate_night.jpg" alt=""><div class="veil"></div><span class="hcap">문주·진입부 경관조명 · 연출 예시 이미지</span>'
+        '<img class="bg" src="assets_ins/tj_gate_night.jpg" alt=""><div class="veil"></div><span class="hcap">문주·진입부 경관조명 · 연출 예시 이미지</span>'
         '<div class="hin"><div class="kick">LANDSCAPE LIGHTING · 전기공사업 면허 주관사</div>'
         '<h2>단지의 밤,<br><em>경관조명이 완성합니다</em></h2><div class="bar"></div>'
         '<p>엣지컴퍼니는 전기공사업 면허를 갖춘 입주박람회 주관사입니다.<br>경관조명은 제안서로 끝내지 않고,<br>컨설팅부터 직접 시공까지 면허 범위 안에서 책임집니다.</p></div>'

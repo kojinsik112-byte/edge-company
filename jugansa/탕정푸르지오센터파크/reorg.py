@@ -666,8 +666,8 @@ def apply(G):
     def ph(img, cap, sub_):
         return (f'<figure><img src="assets_ins/{img}.jpg" alt=""><figcaption>{cap}<small>{sub_}</small></figcaption></figure>')
     k["body"] = ('<div class="nb"><div class="gal lxg">'
-                 + ph("cs_gate_night", "문주 · 진입부 조명", "간접조명 · 사인 조명 · 보행 동선 연출")
-                 + ph("cs_aerial_night", "단지 경관조명", "동 외벽 라인조명 · 단지 야간 경관")
+                 + ph("tj_gate_night", "문주 · 진입부 조명", "간접조명 · 사인 조명 · 보행 동선 연출")
+                 + ph("tj_facade_night", "단지 경관조명", "동 외벽 라인조명 · 단지 야간 경관")
                  + '</div><div class="lxs">'
                  '<div><b>문주 조명</b><p>진입부 문주의 간접조명·사인 조명 연출안을 제안합니다.</p></div>'
                  '<div><b>경관조명</b><p>동 외벽 라인조명 등 야간 경관 개선안을 검토합니다.</p></div>'
