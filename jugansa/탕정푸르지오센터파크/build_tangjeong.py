@@ -1122,7 +1122,7 @@ def company_pages():
         kp=("2023년부터 [[해마다]] 1,000세대 이상 입주박람회를 맡아 왔습니다.",
             "출처: 법인등기부 · 전기공사업 등록증 · ISO 인증서 · NICE 기업신용평가보고서 연혁 · 세스코 협약")))
     contact = [p for p in B.PAGES if p[0] == "contact"]
-    return [("cover", {})] + d01 + [hist, B.ORG_ANON] + pick + contact
+    return [("cover", {})] + d01 + [hist] + pick + contact  # 조직 구성 장은 01장(pick)에 이미 들어 있음
 
 
 def summary_pages():
