@@ -601,6 +601,8 @@ class Handler(BaseHTTPRequestHandler):
 
                 return self._file(fonts_dir() / m.group(1), "font/" + m.group(1).rsplit(".", 1)[1])
             if path == "/api/ping":
+                if q.get("alive"):
+                    _touch()
                 return self._json({"ok": True, "app": "edge-studio"})
             if path == "/api/init":
                 from ..sfx import SFX_LIST
@@ -756,6 +758,14 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"error": str(exc)}, 500)
 
 
+LAST_SEEN = time.time()
+
+
+def _touch() -> None:
+    global LAST_SEEN
+    LAST_SEEN = time.time()
+
+
 _PICK_LOCK = threading.Lock()
 
 
@@ -851,14 +861,16 @@ def main(argv: Optional[List[str]] = None):
     if no_window:
         t.join()
         return
-    closed = _open_window(url, wait=True)
-    if closed:
-        # 앱 창을 닫으면 작업이 끝날 때까지 기다렸다가 종료
-        while WORK_LOCK.locked():
-            time.sleep(1)
-        srv.shutdown()
-    else:
-        t.join()
+    _open_window(url, wait=False)
+    # 화면이 10초마다 보내는 '살아있음' 신호가 끊기면(창을 닫으면) 종료.
+    # (Edge 실행 파일은 창을 띄우자마자 바로 끝나므로 프로세스로는 창 닫힘을 알 수 없다)
+    _touch()
+    while True:
+        time.sleep(5)
+        idle = time.time() - LAST_SEEN
+        if idle > 180 and not WORK_LOCK.locked():  # 창을 최소화해도 신호가 느려질 뿐 끊기진 않도록 여유
+            break
+    srv.shutdown()
 
 
 def _open_window(url: str, wait: bool) -> bool:

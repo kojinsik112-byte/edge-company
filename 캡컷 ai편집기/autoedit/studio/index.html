@@ -935,6 +935,10 @@ function renderProjects() {
   });
 }
 
+// 살아있음 신호 (창을 닫으면 끊겨서 프로그램이 스스로 종료)
+setInterval(() => fetch('/api/ping?alive=1').catch(() => {}), 10000);
+fetch('/api/ping?alive=1').catch(() => {});
+
 // 시작
 (async () => {
   INIT = await api('/api/init');
