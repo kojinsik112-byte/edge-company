@@ -180,7 +180,7 @@ def apply(G):
               f'<div class="op"><i>OPTION ①</i><h3>현금으로 받기</h3><div class="v">{total.replace("만원", "")}<small>만원</small></div>'
               f'<ul><li>조합 {hh:,}세대 × {fund}만원 (부가세 포함)</li><li>입예협 공식 통장으로 입금</li><li>쓰임새는 입예협이 결정</li></ul></div>'
               '<div class="or">또는</div>'
-              '<div class="op hl"><i>OPTION ②</i><h3>혜택 패키지로 받기</h3><div class="v">A · B · C</div>'
+              '<div class="op"><i>OPTION ②</i><h3>혜택 패키지로 받기</h3><div class="v">A · B · C</div>'
               f'<ul><li>같은 금액({total}) 범위 안에서 항목 선택</li><li>A · B · C 세 가지 패키지에서 골라 구성</li>'
               '<li>항목·범위는 협의 후 협약서로 확정</li></ul></div></div>'
               '<div class="basex"><b>A 입주민 특화서비스</b>에는 <em>백화점 상품권 10만원(현물)</em> · 박람회 상품권(정회원 30만원 = 일반 20만원 + 정회원 추가 10만원) · 정회원 혜택 · '
@@ -249,7 +249,7 @@ def apply(G):
     safety = [("이행보증보험", "2년 · 최대 10억 · 증권 실물 제출"),
               ("하자 예치금", "최대 1억 · 엣지컴퍼니 자산 · 선보상 재원"),
               ("업체 하자보증", "특약이행각서 9개 항 · 패널티 3단계"),
-              ("A/S", "48시간 하자보수 · 무상 A/S 2년 · 장기관리 최대 10년"),
+              ("A/S", "48시간 하자보수 · 무상 A/S 최소 2년(업체별 상이) · 장기관리 최대 10년"),
               ("주관 콜센터", "클레임 접수·선보상 · CRM 관리")]
     vendor = [("4단계 공개 심사", "입예협 최종 컨펌 · 업체 서비스 교육"),
               ("인근 지역업체 선정", "시공 품목 · 검증 업체 · 하청 금지"),
@@ -277,7 +277,7 @@ def apply(G):
         dict(lb="이행보증보험 2년", big="@@MX10", unit="억원", nm="주관사 이행 보증", ds="증권 실물을 입예협에 전달"),
         dict(lb="최저가 차액", big="10", unit="배", nm="차액 보상", ds="동일 모델 새 제품 · 인근 오프라인 정상가 · 계약 후 7일 이내"),
         dict(lb="계약금 상한", big=f"{D.DEPOSIT_MAX}", unit="%", nm="계약 보호", ds="시공 전 취소·환불 절차를 품목별로 공개"),
-        dict(lb="하자보수", big="48", unit="시간", nm="하자보수 원칙", ds="하자지연 패널티 · 무상 A/S 2년"),
+        dict(lb="하자보수", big="48", unit="시간", nm="하자보수 원칙", ds="하자지연 패널티 · 무상 A/S 최소 2년(업체별 상이)"),
         dict(lb="하자 예치금", big="@@MX1", unit="억원", nm="선보상 재원", ds="자산으로 예치 · 사용 내역 공개"),
     ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"').replace("@@MX10", '<small class="mx">최대</small>10').replace("@@MX1", '<small class="mx">최대</small>1')
 
@@ -550,31 +550,31 @@ def apply(G):
               f'<div class="tms">{tms}</div></div></div>'),
         kp="팀별로 역할을 나눠 [[수임부터 박람회·사후관리까지]] 함께합니다."))
     B.CSS += r"""
-.org{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center}
-.org .ceo{width:128px;height:128px;border-radius:50%;border:2px solid var(--gold2);box-shadow:0 0 0 6px rgba(200,168,106,.12),0 0 34px rgba(235,203,143,.22);
+.org{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.org .ceo{width:176px;height:176px;border-radius:50%;border:2px solid var(--gold2);box-shadow:0 0 0 6px rgba(200,168,106,.12),0 0 34px rgba(235,203,143,.22);
   display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle,#16304f,#0b1a2d)}
-.org .ceo i{font-style:normal;font-size:12px;color:var(--sub)}
-.org .ceo b{font-family:var(--serif);font-size:30px;color:var(--gold);line-height:1.1;margin:2px 0}
-.org .ceo span{font-size:19px;font-weight:700;letter-spacing:.3em;padding-left:.3em}
-.org .gmr{position:relative;width:100%;height:48px}
+.org .ceo i{font-style:normal;font-size:14px;color:var(--sub)}
+.org .ceo b{font-family:var(--serif);font-size:42px;color:var(--gold);line-height:1.1;margin:2px 0}
+.org .ceo span{font-size:23px;font-weight:700;letter-spacing:.3em;padding-left:.3em}
+.org .gmr{position:relative;width:100%;height:46px}
 .org .gmr:before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--gold2)}
 .org .gm{position:absolute;left:calc(50% + 40px);top:6px;display:flex;align-items:center;gap:14px;border:1.5px solid var(--gold2);border-radius:10px;padding:6px 16px;background:#0b1a2d}
 .org .gm:before{content:'';position:absolute;right:100%;top:50%;width:40px;height:2px;background:var(--gold2)}
 .org .gm i{font-style:normal;font-size:13px;color:var(--gold2);font-weight:700;padding-right:14px;border-right:1px solid rgba(255,255,255,.25)}
 .org .gm b{font-size:18px;letter-spacing:.2em}
-.org .tms{position:relative;width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;padding-top:24px;flex:1;min-height:0}
+.org .tms{position:relative;width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding-top:24px;flex:0 0 auto}
 .org .tms:before{content:'';position:absolute;left:calc((100% - 66px) / 8);right:calc((100% - 66px) / 8);top:0;height:2px;background:var(--gold2)}
-.org .tm{position:relative;border:1px solid rgba(200,168,106,.35);border-top:2px solid var(--gold2);border-radius:14px;padding:12px 18px 14px;background:linear-gradient(180deg,rgba(235,203,143,.09),rgba(255,255,255,.015) 45%)}
+.org .tm{position:relative;border:1px solid rgba(200,168,106,.35);border-top:2px solid var(--gold2);border-radius:14px;padding:9px 16px 11px;background:linear-gradient(180deg,rgba(235,203,143,.09),rgba(255,255,255,.015) 45%)}
 .org .tm:after{content:'';position:absolute;left:50%;top:-29px;width:10px;height:10px;margin-left:-4px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(235,203,143,.7)}
 .org .tm svg{display:block;width:26px;height:26px;margin:0 auto 2px;fill:none;stroke:var(--gold);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .org .gm{box-shadow:0 0 18px rgba(235,203,143,.15)}
 .org .tm:before{content:'';position:absolute;left:50%;top:-26px;width:2px;height:26px;background:var(--gold2)}
 .org .tm>i{display:block;font-style:normal;font-size:11.5px;letter-spacing:.26em;color:var(--gold2);font-weight:700;text-align:center}
-.org .tm h3{font-size:20px;font-weight:800;color:var(--gold);text-align:center;margin:2px 0 8px}
-.org .tm ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.org .tm h3{font-size:19px;font-weight:800;color:var(--gold);text-align:center;margin:1px 0 6px}
+.org .tm ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
 .org .tm li{display:grid;grid-template-columns:64px 1fr;border:1px solid rgba(200,168,106,.35);border-radius:8px;overflow:hidden}
-.org .tm li span{background:rgba(200,168,106,.16);color:var(--gold);font-size:14px;font-weight:700;text-align:center;padding:5px 0}
-.org .tm li b{font-size:15.5px;text-align:center;padding:5px 0;letter-spacing:.06em}
+.org .tm li span{background:rgba(200,168,106,.16);color:var(--gold);font-size:13.5px;font-weight:700;text-align:center;padding:3px 0}
+.org .tm li b{font-size:15px;text-align:center;padding:3px 0;letter-spacing:.06em}
 """
 
     # 실적 기간은 전신 실적 포함(본부장 10-08)
@@ -587,7 +587,7 @@ def apply(G):
     def zn(area, name, desc, staff="", cls=""):
         st = f'<b class="st">{staff}</b>' if staff else ""
         return f'<div class="z {cls}" style="grid-area:{area}"><h4>{name}{st}</h4><p>{desc}</p></div>'
-    staff = [("주차 안내요원", 5), ("조합 입예협 안내 도우미", 3), ("보안요원", 2), ("구급요원", 1),
+    staff = [("주차 안내요원", 5), ("입구 체크인·조합 입예협 부스 도우미", 3), ("보안요원", 2), ("구급요원", 1),
              ("카페테리아", 3), ("어린이 편의시설", 4), ("이벤트(네일·타로·캐리커처)", 3)]
     tot = sum(n for _, n in staff)
     p_floor = ("std", dict(sec="06. 입주박람회", title="박람회장 배치와 [[인원 운영]] (안)",
@@ -597,11 +597,11 @@ def apply(G):
               + zn("brand", "브랜드 존", "가전 · 가구 · 렌탈")
               + zn("cafe", "카페테리아", "휴게 · 음료", "3명")
               + zn("own", "직영 품목 존", "조명 · 커튼 · 실링팬")
-              + zn("coun", "조합 입예협 부스", "행사장 중앙 · 가입·안내", "도우미 3명", "hl")
+              + zn("coun", "시공 · 판매 품목 존", "청소·줄눈·탄성·방충망 · 인테리어 · 가전·가구 · 공개 단가표 그대로", "", "hl")
               + zn("sign", "상담·계약 데스크", "공개 단가표 그대로 계약")
-              + zn("build", "시공 품목 존", "청소 · 줄눈 · 탄성 · 방충망")
+              + zn("build", "휴게 · 수유실", "가족 휴게 · 유모차 대여")
               + zn("event", "이벤트 · 경품존", "네일 · 타로 · 캐리커처", "3명")
-              + zn("entry", "입구 · 체크인", "정회원 등록 · 방문 선물 · 주관사 운영팀", "", "ent")
+              + zn("entry", "입구 · 체크인 · 조합 입예협 부스", "정회원 등록 · 가입 안내 · 방문 선물 · 주관사 운영팀", "도우미 3명", "ent")
               + zn("safe", "안전 · 구급", "보안 2 · 구급 1 · 119 연계", "3명", "sf")
               + zn("park", "주차장 · 외부 동선", "차량 유도 · 하역 구역 분리", "5명", "pk")
               + '</div><div class="fps">'
@@ -621,7 +621,8 @@ def apply(G):
 .fp .z p{font-size:11.5px;color:var(--sub);margin-top:3px;line-height:1.35}
 .fp .z .st{font-size:11.5px;font-weight:800;color:#0d1e33;background:var(--gold);border-radius:99px;padding:2px 8px;white-space:nowrap}
 .fp .z.hl{border:1.5px solid var(--gold2);background:linear-gradient(180deg,rgba(235,203,143,.18),rgba(13,30,51,.9));align-items:center;text-align:center}
-.fp .z.hl h4{font-size:18px;color:var(--gold);flex-direction:column}
+.fp .z.hl h4{font-size:22px;color:var(--gold);flex-direction:column}
+.fp .z.hl p{font-size:14px;line-height:1.5;margin-top:8px;max-width:88%}
 .fp .z.ent{border-color:rgba(235,203,143,.6)}
 .fp .z.sf{border-color:rgba(255,120,110,.55)}
 .fp .z.pk{background:rgba(255,255,255,.04);border-style:dashed}
@@ -716,6 +717,7 @@ def apply(G):
     d01[1]["n"] = "01"
     d03 = T("업체 선정이 [[주관사의 본질]]입니다.")
     d03[1]["n"] = "03"
+    d03[1]["bl"] = ["품목 수요조사"] + [x for x in d03[1]["bl"] if "수요조사" not in x]  # 본부장 10-08
     d04 = T("사고가 나도 [[입주민이 먼저]] 보상받습니다")
     d04[1]["n"] = "04"
     d04[1]["bl"] = [x for x in d04[1]["bl"] if "콜센터" not in x]
@@ -742,8 +744,8 @@ def apply(G):
             "입주박람회 [[특약이행각서]] (예시)", "주요 클레임 품목과 [[보상 기준]] (예시)", "참여업체 [[패널티 3단계]]"]]),
         ("05. 주관 콜센터", [dv("05", "클레임은 [[주관사가 먼저]] 받습니다", ["주관 콜센터 · 선보상", "하자 예치금 최대 1억", "클레임 처리 흐름 · CRM", "입주민 후기 · 실시간 응대"])]
          + [T("주관 [[콜센터]]와 선보상"), p_deposit] + [T(x) for x in ["클레임 [[처리 흐름]]과 CRM 관리", "입주민 후기 · [[실시간 응대]] 화면"]]),
-        ("06. 입주박람회", [dv("06", "확인하고 비교하는 [[입주박람회]]", ["운영 계획 · 행사장 대관", "즐거운 박람회 · 편의시설", "온라인 박람회 · 라이브커머스", "실제 박람회 현장"])]
-         + [T(x) for x in ["입주박람회 [[운영 계획]]", "행사장 대관과 [[운영 준비]]"]] + [p_floor] + [T(x) for x in [ "하루가 [[즐거운]] 박람회", "가족이 머무는 [[편의시설]]",
+        ("06. 입주박람회", [dv("06", "확인하고 비교하는 [[입주박람회]]", ["운영 계획 · 행사장 대관", "배치·인원 운영 · 편의시설", "온라인 박람회 · 라이브커머스", "실제 박람회 현장"])]
+         + [T(x) for x in ["입주박람회 [[운영 계획]]", "행사장 대관과 [[운영 준비]]"]] + [p_floor] + [T(x) for x in ["가족이 머무는 [[편의시설]]",
                            "못 오셔도 [[괜찮습니다]]", "실제 박람회 [[현장]]"]]),
         ("07. 철산역 자이 맞춤 제안", [d07] + [T(x) for x in [
             "철산역 자이, [[이런 단지]]입니다", "조합 단지라서 [[챙겨야 하는 것]]", "입주까지 31개월, [[긴 시간]]을 관리합니다", "철산역 자이 [[특화 제안]]",
@@ -765,7 +767,7 @@ def apply(G):
                                 p_s1, p_s2, p_s3, T("철산역 자이에 드리는 [[핵심 혜택 6가지]]")]),
     ]
     drop = [T(kind="hi_money"), T("발전지원금은 [[이렇게 쓰입니다]]"), T("협의회 전용 [[8가지 무상 단지지원]]"), T("입예협·입주민 [[지원 한눈에]]"),
-            T("협의회 전용 [[단지 지원]]"), T("입주민에게 [[직접]] 돌아가는 혜택"), T("기록이 [[증명]]합니다.")]
+            T("협의회 전용 [[단지 지원]]"), T("입주민에게 [[직접]] 돌아가는 혜택"), T("기록이 [[증명]]합니다."), T("하루가 [[즐거운]] 박람회")]
     head = [T(kind="cover"), T(kind="toc")]
     tail = [T(kind="closing"), T(kind="contact")]
     used = {id(p) for p in head + tail + drop}
@@ -793,7 +795,7 @@ def apply(G):
          ("06", "입주박람회", ["금·토·일 3일 · 대관", "배치·인원 운영", "편의시설 · 온라인", "박람회 현장"])],
         [("02", "마케팅전략", ["카페 홍보 콘텐츠", "사전점검 언박싱", "드론 · 검색 · 언론", "현수막 · 버스 광고"]),
          ("07", "철산역 자이 맞춤", ["단지 이해 · 조합 특화", "참가 자격 10개 항목", "일정 · 31개월 관리", "예상 참가 업체"])],
-        [("03", "업체선정", ["공동구매 품목", "4단계 공개 심사", "인근 지역업체 선정", "최저가 차액 10배", "계약·환불 보호"]),
+        [("03", "업체선정", ["공동구매 품목 · 수요조사", "4단계 공개 심사", "인근 지역업체 선정", "최저가 차액 10배", "계약·환불 보호"]),
          ("08", "혜택안내", [f"{fund}만원 · 현금 또는 패키지", "A 입주민 특화서비스", "B 협의회 단지발전지원", "C 단지지원 컨설팅"])],
         [("04", "하자보증", ["이행보증보험 최대 10억", "업체 하자보증 · 특약이행각서", "클레임 보상 기준", "패널티 3단계"]),
          ("09", "차별화 포인트", ["경관조명 설계·생산·시공", "조명 수직계열화"])],
