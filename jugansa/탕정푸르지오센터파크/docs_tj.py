@@ -12,6 +12,11 @@
 """
 import html
 import os
+import sys as _sys
+
+if __name__ == "__main__" and "--allow-cheolsan-draft" not in _sys.argv:
+    # 검증(10-08): 이 파일은 아직 철산 복사본(조합·철산역 자이·31개월·현금 문구) — 탕정 공고 7항·별지 1~4호로 다시 쓰기 전에는 실행하지 않는다
+    _sys.exit("docs_tj.py: 탕정용으로 다시 쓰기 전 — 실행 금지 (철산 문구가 그대로 나감)")
 import pathlib
 import subprocess
 import sys
