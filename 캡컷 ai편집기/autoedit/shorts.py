@@ -112,7 +112,22 @@ def render_short(
     from .ffmpeg import probe_dimensions
 
     dims = probe_dimensions(video)
-    if getattr(cfg, "track", True) and dims and dims[0] > dims[1]:
+    mode = getattr(cfg, "frame", "auto")
+    if dims and dims[0] > dims[1] and mode == "auto":
+        # 세로로 자르면 몇 배 늘려야 하는지: 1080p 가로 영상은 1.8배 → 뭉개짐 → '전체+흐린 배경'
+        upscale = cfg.height / dims[1]
+        mode = "fit" if upscale > 1.4 else "track"
+    if dims and dims[0] > dims[1] and mode == "fit":
+        # 전체 화면을 가운데에 선명하게 + 위아래는 같은 영상을 흐리게 깐 배경 (늘리지 않아서 선명)
+        logger.info("숏츠 %d: 전체 화면 + 흐린 배경 (원본 해상도가 낮아 확대 대신)", index)
+        vf = (
+            f"split[a][b];"
+            f"[a]scale={cfg.width}:{cfg.height}:force_original_aspect_ratio=increase,"
+            f"crop={cfg.width}:{cfg.height},boxblur=24:2,eq=brightness=-0.06[bg];"
+            f"[b]scale={cfg.width}:-2:flags=lanczos[fg];"
+            f"[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1"
+        )
+    elif getattr(cfg, "track", True) and dims and dims[0] > dims[1]:
         from .track import crop_x_expr, face_track
 
         sw, sh = dims
@@ -122,7 +137,7 @@ def render_short(
             logger.info("숏츠 %d: 얼굴 따라가기 적용", index)
             vf = (
                 f"crop={cw}:{sh}:x='{xexpr}':y=0,"
-                f"scale={cfg.width}:{cfg.height}:flags=lanczos,setsar=1"
+                f"scale={cfg.width}:{cfg.height}:flags=lanczos,unsharp=5:5:0.6,setsar=1"
             )
     run(
         [

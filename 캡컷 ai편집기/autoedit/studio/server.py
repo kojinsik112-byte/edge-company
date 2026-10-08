@@ -113,6 +113,7 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "stabilize": False,
     "punch_zoom": True,
     "speed": 1.0,
+    "short_frame": "auto",
     "auto_products": True,
     "card_opening": False,
     "card_ending": False,
@@ -177,6 +178,7 @@ def build_config(opts: Dict[str, Any]) -> Config:
     cfg.video.color = bool(opts.get("color_fix", True))
     cfg.video.stabilize = bool(opts.get("stabilize", False))
     cfg.output.speed = float(opts.get("speed", 1.0) or 1.0)
+    cfg.shorts.frame = opts.get("short_frame", "auto")
     cc = cfg.cards
     cc.opening, cc.ending = bool(opts.get("card_opening")), bool(opts.get("card_ending"))
     cc.theme = opts.get("card_theme", "blur")

@@ -447,6 +447,9 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
         <option value="1">1배 (원래)</option><option value="1.1">1.1배</option><option value="1.2">1.2배</option></select></div>
     <div class="row"><span class="muted">숏츠</span>
       <select data-key="shorts"><option value="0">안 만듦</option><option value="1">1개</option><option value="2">2개</option><option value="3">3개</option><option value="5">5개</option></select></div>
+    <div class="row"><span class="muted">숏츠 화면</span>
+      <select id="frameSel" title="가로 영상을 세로 숏츠로 만들 때">
+        <option value="auto">자동 (선명한 쪽)</option><option value="track">꽉 채우기 (얼굴 따라)</option><option value="fit">전체 + 흐린 배경</option></select></div>
     <label class="switch"><input type="checkbox" data-key="shorts_subs"><i></i>숏츠에도 자막</label>
     <div class="row"><span class="muted">배경음악</span>
       <select id="bgmSel" title="배경음악 분위기"></select>
@@ -1321,7 +1324,9 @@ function applySpeed() {
   const v = $('#vid'); const sp = parseFloat(S.speed || 1);
   v.playbackRate = sp; v.preservesPitch = true;
   $('#speedSel').value = String(sp);
+  $('#frameSel').value = S.short_frame || 'auto';
 }
+$('#frameSel').onchange = e => setS('short_frame', e.target.value);
 $('#speedSel').onchange = e => { setS('speed', parseFloat(e.target.value)); applySpeed(); toast(`속도 ${e.target.value}배 — 미리보기에도 적용`); };
 $('#vid').addEventListener('loadeddata', applySpeed);
 

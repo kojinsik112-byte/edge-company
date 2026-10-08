@@ -85,6 +85,7 @@ class ShortsConfig:
     hook_text: Optional[str] = None  # 숏츠 상단 훅 문구 (없으면 첫 자막 사용)
     hook_font_size: int = 72     # 훅 문구 글자 크기 (px)
     track: bool = True           # 가로 영상 → 세로로 자를 때 얼굴 따라가기
+    frame: str = "auto"          # auto(해상도 보고 결정) / track(얼굴 따라 꽉 채움) / fit(전체+흐린 배경)
 
 
 @dataclass
@@ -106,8 +107,8 @@ class OutputConfig:
     height: int = 1080
     fps: int = 30                # 원본 fps 를 못 읽을 때만 사용 (보통은 원본 fps 유지)
     video_codec: str = "libx264"
-    crf: int = 18                # 최종 화질 (낮을수록 고화질, 18 = 눈으로 원본과 거의 구분 안 됨)
-    preset: str = "fast"         # 최종 인코딩 속도 (veryfast/fast/medium/slow)
+    crf: int = 16                # 최종 화질 (낮을수록 고화질) — 16 = 원본 수준, 넓은 벽·하늘도 덜 뭉개짐
+    preset: str = "medium"       # 최종 인코딩 (medium = 같은 용량에서 더 선명, 조금 더 걸림)
     inter_crf: int = 12          # 중간 파일(컷 편집본 등) 화질 — 여러 번 다시 압축해도 안 깎이게 거의 무손실
     inter_preset: str = "veryfast"
     speed: float = 1.0           # 재생 속도 (0.85~1.2, 말이 빠르면 0.9) — 목소리 높이는 그대로
