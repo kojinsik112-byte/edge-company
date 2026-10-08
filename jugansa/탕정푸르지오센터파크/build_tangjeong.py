@@ -890,21 +890,22 @@ COVER_TOP = """<div class="top"><div><div class="logo">EG</div><div class="en">E
 def p_cover_impact():
     """요약본 [2-2] 표지 — 숫자(15만원 · 10억 · 1억)로 시작, 오른쪽은 단지 경관조명(본부장 10-07)."""
     hh = D.SITE["households"]
+    CASHV = getattr(D, "FUND_CASH", False)
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
     return f"""<section class="page cv cv5"><div class="cvlx"><img src="assets_ins/tj_facade_night.jpg" alt=""><div class="fd"></div>
 <span class="cap">단지 경관조명 · 연출 예시 이미지</span></div>{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
-<h1>탕정 푸르지오 센터파크 <em>입주박람회 주관사 요약 제안서</em></h1>
+<h1>탕정 푸르지오 센터파크 <em>입주박람회 주관사 제안</em></h1>
 <div class="hero3">
-<div class="h1x"><i>세대당 발전지원금</i><b>{D.FUND}<small>만원</small></b>
-<p>{hh:,}세대 × {D.FUND}만원 = <em>총 {won(hh * D.FUND)}</em> (부가세 포함) · {'현금 또는 같은 금액의 혜택 패키지 중 선택' if getattr(D, 'FUND_CASH', False) else '혜택 패키지 또는 입예협이 고른 항목으로 직접 제공'}</p></div>
+<div class="h1x"><i>{'세대당 발전지원금' if CASHV else '세대당 발전지원 · 혜택 패키지'}</i><b>{D.FUND}<small>{'만원' if CASHV else '만원 상당'}</small></b>
+<p>{hh:,}세대 × {D.FUND}만원 = <em>총 {won(hh * D.FUND)}{'' if CASHV else ' 상당'}</em>(부가세 포함) · {'현금 또는 같은 금액의 혜택 패키지 중 선택' if CASHV else '패키지 또는 입예협 지정 항목으로 제공'}</p></div>
 <div><i>이행보증보험 2년</i><b><small class="mx">최대</small>10<small>억</small></b><p>증권 실물 제출</p></div>
 <div><i>하자 예치금</i><b><small class="mx">최대</small>1<small>억</small></b><p>하자 시 입주민 선보상</p></div>
 </div>
 <div class="lxband"><b>전기공사업 면허 주관사</b><span>경관조명·공용부 조명 개선을 제안에서 직접 시공까지<br>전기공사업 등록 제 울산-00821호</span></div>
 </div>
 {sub2}
-<div class="bt"><span>BID PROPOSAL · 요약 제안서</span><span>2026.10</span></div>
+<div class="bt"><span>입주박람회 주관사 입찰 · 요약 제안서</span><span>2026.10</span></div>
 </section>"""
 
 
@@ -924,7 +925,7 @@ def p_cover():
 <div class="tag2">{COVER['tag']}</div>
 </div>
 {sub2}
-<div class="bt"><span>BID PROPOSAL · 입주박람회 주관사 제안서</span><span>2026.10</span></div>
+<div class="bt"><span>입주박람회 주관사 입찰 제안서</span><span>2026.10</span></div>
 </section>"""
 
 
@@ -940,7 +941,7 @@ def p_cover_company():
 <div class="tag2">연혁 · 조직도 · 주관 실적 · 자격과 증빙<br>전기공사업 면허를 갖춘 입주박람회 주관사</div>
 </div>
 {sub2}
-<div class="bt"><span>COMPANY PROFILE · 탕정 푸르지오 센터파크</span><span>2026.10</span></div>
+<div class="bt"><span>회사소개서 · 탕정 푸르지오 센터파크</span><span>2026.10</span></div>
 </section>"""
 
 
@@ -977,7 +978,7 @@ def p_contact():
     s = sub(s, "삼성전자 MOU 체결</div>", "삼성전자 · 세스코 MOU 체결</div>")
     s = sub(s, '<div class="who">주식회사 엣지컴퍼니<br>대표이사 고진식</div>', "")
     s = sub(s, '<div class="addr">', '<div class="addr" style="font-size:14.2px">')
-    label = "COMPANY PROFILE · 탕정 푸르지오 센터파크" if COVER.get("kind") == "company" else "BID PROPOSAL · 탕정 푸르지오 센터파크"
+    label = "회사소개서 · 탕정 푸르지오 센터파크" if COVER.get("kind") == "company" else "입주박람회 주관사 입찰 · 탕정 푸르지오 센터파크"
     return sub(s, "SUMMARY PROPOSAL · 요약제안서", label)
 
 
@@ -1204,7 +1205,7 @@ def company_pages():
 
 
 def summary_pages():
-    """요약본 [2-2] — 본 제안서(B.PAGES, 재배치 후)에서 필요한 장만 골라 압축. 장 표시(sec)만 요약본 기준으로 바꾼다."""
+    """요약 제안서 — 본 제안서(B.PAGES, 재배치 후)에서 필요한 장만 골라 압축. 장 표시(sec)만 요약본 기준으로 바꾼다."""
     def take(title=None, kind=None, sec=None, kp=None):
         hits = [(k, kw) for k, kw in B.PAGES if (title and kw.get("title") == title) or (kind and not title and k == kind)]
         assert len(hits) == 1, (title, kind, len(hits))
@@ -1216,18 +1217,18 @@ def summary_pages():
             kw["kp"] = kp
         return (k, kw)
 
-    S1, S2, S3, S4, S45, S5, S6 = ("01. 발전지원 15만원", "02. 경관조명 특화", "03. 하자보증 · 안전망",
+    S1, S2, S3, S4, S45, S5, S6 = ("01. 발전지원 15만원 상당" if not getattr(D, "FUND_CASH", False) else "01. 발전지원 15만원", "02. 경관조명 특화", "03. 하자보증 · 안전망",
                                    "04. 업체선정 · 가격 보호", "05. 박람회 운영", "06. 탕정 푸르지오 센터파크 맞춤", "07. 주관 실적")
     hero_body = (
         '<img class="bg" src="assets_ins/tj_gate_night.jpg" alt=""><div class="veil"></div><span class="hcap">문주·진입부 경관조명 · 연출 예시 이미지</span>'
-        '<div class="hin"><div class="kick">LANDSCAPE LIGHTING · 전기공사업 면허 주관사</div>'
+        '<div class="hin"><div class="kick">경관조명 · 전기공사업 면허 주관사</div>'
         '<h2>단지의 밤,<br><em>경관조명이 완성합니다</em></h2><div class="bar"></div>'
         '<p>엣지컴퍼니는 전기공사업 면허를 갖춘 입주박람회 주관사입니다.<br>경관조명은 제안서로 끝내지 않고,<br>컨설팅부터 직접 시공까지 면허 범위 안에서 책임집니다.</p></div>'
         '<div class="pil">'
-        '<div><i>01 · CONSULTING</i><b>컨설팅 · 설계</b><span>조도·색온도·배광을 단지 동선과 외관에 맞춰 도면으로 제안</span></div>'
-        '<div><i>02 · PRODUCTION</i><b>직수입 · 생산</b><span>설계 사양 그대로 제작 · KC 인증 제품만 납품</span></div>'
-        '<div><i>03 · CONSTRUCTION</i><b>면허 시공</b><span>전기공사업 등록 제 울산-00821호 · 외주 없이 직접 시공</span></div>'
-        '<div><i>04 · COMMUNITY</i><b>단지 업그레이드</b><span>문주·외벽·커뮤니티 조명 개선안 컨설팅(C 패키지) · 시공은 승인 후 선택</span></div>'
+        '<div><i>1단계</i><b>컨설팅 · 설계</b><span>조도·색온도·배광을 단지 동선과 외관에 맞춰 도면으로 제안</span></div>'
+        '<div><i>2단계</i><b>직수입 · 생산</b><span>설계 사양 그대로 제작 · KC 인증 제품만 납품</span></div>'
+        '<div><i>3단계</i><b>면허 시공</b><span>전기공사업 등록 제 울산-00821호 · 외주 없이 직접 시공</span></div>'
+        '<div><i>4단계</i><b>단지 업그레이드</b><span>문주·외벽·커뮤니티 조명 개선안 컨설팅(C 패키지) · 시공은 승인 후 선택</span></div>'
         '</div>')
     pages = [
         ("cover", {}),
@@ -1237,9 +1238,8 @@ def summary_pages():
         take("이렇게 [[패키지로]] 받으실 수 있습니다 (예시)", sec=S1),
         ("std", dict(sec=S2, title=HERO, lead=None, body=hero_body,
                      kp=("제안한 주관사가 시공까지 맡을 수 있어 [[제안과 시공이 어긋나지 않습니다.]]", "공용부 시공은 입예협·관리주체 승인 후 · 범위·비용 협의"))),
-        take(kind="landscape", sec=S2),
-        take("[[조명 수직계열화]] · 유통 단계 없는 공급", sec=S2,
-             kp=("유통 단계를 뺀 만큼 [[그대로 입주민 단가]]가 됩니다.", "주관사 직영 품목도 같은 4단계 심사 · 같은 단가 공개 · 입예협 최종 컨펌")),
+        take("중앙광장 · 물의정원, [[밤까지]] 살피겠습니다", sec=S2),
+        take("단지 내부 [[경관조명]] 제안", sec=S2),
         take("입주민을 지키는 [[3중 안전망]]", sec=S3),
         take("이행보증보험 [[2년 · 최대 10억]]", sec=S3),
         take("선보상 재원 · 하자 예치금 [[최대 1억원]]", sec=S3),
@@ -1249,8 +1249,11 @@ def summary_pages():
         take("박람회장 배치와 [[인원 운영]] (안)", sec=S45),
         take("탕정 푸르지오 센터파크, [[이런 단지]]입니다", sec=S5),
         take("이 단지라서 [[먼저 챙길 것]]", sec=S5),
-        take("선정부터 입주까지 [[추진 일정]] (안)", sec=S5),
+        take("입주민 건의, [[관리표로]] 끝까지 챙깁니다", sec=S5),
+        take("공고 업무 범위 [[8개 항목]] 대응", sec=S5),
         take("입찰 참가 자격 [[22개 항목]] 대응 ①", sec=S5), take("입찰 참가 자격 [[22개 항목]] 대응 ②", sec=S5),
+        take("입예협 [[전담 체계]] — 자격 18 · 19 · 22 대응", sec=S5),
+        take("선정부터 입주까지 [[추진 일정]] (안)", sec=S5),
         take("숫자로 보는 [[엣지컴퍼니]]", sec=S6),
         take("[[2,000세대 이상]] 초대형 단지를 맡아 왔습니다", sec=S6),
         take("탕정 푸르지오 센터파크에 드리는 [[핵심 혜택 6가지]]", sec="CLOSING"),
@@ -1266,7 +1269,7 @@ def build():
     emit(list(B.PAGES), B.OUT_HTML, "엣지컴퍼니 탕정 푸르지오 센터파크 입주박람회 주관사 제안서")
     if not os.environ.get("NO_NATIVE"):
         # 요약본 [2-2] — 본 제안서 틀 그대로, 표지는 숫자(15만원·10억·1억)로
-        COVER.update(kind="impact", pill="입주박람회 주관사 요약 제안서")
+        COVER.update(kind="impact", pill="요약 제안서")
         CLOSING_DROP[:] = ["03", "04"]  # 요약본 약속 장: 03 A 입주민 특화서비스 · 04 옵션 중복 확인 삭제(본부장 10-07)
         emit(summary_pages(), os.path.join(HERE, NAME22 + ".html"), "엣지컴퍼니 탕정 푸르지오 센터파크 요약 제안서")
         CLOSING_DROP[:] = []

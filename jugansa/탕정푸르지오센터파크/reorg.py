@@ -312,6 +312,8 @@ def apply(G):
 
     def p_closing(no, sec):
         s = B_closing(no, sec)
+        if not CASH:
+            s = sub(s, f"<b>세대당 {fund}만원 발전지원금</b>", f"<b>세대당 {fund}만원 상당 발전지원</b>")
         s = sub(s, f"<p>전 세대 {hh:,}세대 기준 · 총 {total}(부가세 포함)</p>",
                 f"<p>{hh:,}세대 · 총 {total} · 현금 또는 혜택 패키지 선택</p>" if CASH else f"<p>{hh:,}세대 · 총 {total} 상당 · 혜택 패키지 또는 입예협 지정 항목</p>")
         s = sub(s, "<b>입예협 전용 8가지 무상 지원</b><p>별도 비용 없음 · 자체 인력</p>",
