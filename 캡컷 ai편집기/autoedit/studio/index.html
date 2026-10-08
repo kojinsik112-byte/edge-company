@@ -180,6 +180,12 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 .menu button{display:flex;width:100%;align-items:center;gap:10px;border:0;background:transparent;padding:8px 10px;border-radius:8px;font-weight:600;text-align:left}
 .menu button:hover{background:var(--soft)}
 .menu .sw{width:18px;height:18px;border-radius:5px;flex:none}
+.menu{min-width:230px}
+.medit{display:flex;gap:6px;padding:4px 4px 8px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.medit input{flex:1;min-width:0;border:1px solid var(--accent);border-radius:8px;padding:7px 9px;font-size:14px;font-weight:600;outline:0;box-shadow:0 0 0 3px rgba(53,87,255,.12)}
+.menu .medit .btn{width:auto;flex:none;padding:6px 12px;justify-content:center;color:#fff}
+.menu .medit .btn:hover{background:var(--accent)}
+.mhint{font-size:11px;font-weight:700;color:var(--faint);padding:2px 10px}
 .foot{position:sticky;bottom:0;z-index:15;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);
   padding:12px 28px;display:flex;align-items:center;gap:22px;margin:24px -28px -28px}
 .foot .grow{flex:1}
@@ -233,9 +239,9 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
     </div>
     <aside class="card settings">
       <h2>편집 설정</h2>
-      <div class="field"><label>컷 강도</label>
+      <div class="field"><label>컷 강도 <span style="font-weight:500">(시작 1.5초·끝 인사 8초는 항상 살림)</span></label>
         <div class="seg" data-key="cut">
-          <button data-v="gentle">자연스럽게</button><button data-v="normal">보통</button><button data-v="strong">과감하게</button>
+          <button data-v="none">안 자름</button><button data-v="gentle">자연스럽게</button><button data-v="normal">보통</button><button data-v="strong">과감하게</button>
         </div></div>
       <div class="field"><label>받아쓰기 정확도</label>
         <div class="seg" data-key="accuracy">
@@ -633,6 +639,15 @@ function emphMenu(e, i, k) {
   const m = document.createElement('div'); m.className = 'menu'; m.id = 'menu';
   const c = CAPS[i];
   const cur = c.emph && c.emph[k];
+  // 맨 위: 이 단어 바로 고치기 (띄어쓰면 두 단어로, 비우면 단어 삭제)
+  const ed = document.createElement('div'); ed.className = 'medit';
+  ed.innerHTML = `<input spellcheck="false"><button class="btn sm primary">바꾸기</button>`;
+  const inp = ed.querySelector('input'); inp.value = tokens(c.text)[k] || '';
+  const apply = () => { const v = inp.value.trim(); closeMenu(); if (v !== tokens(c.text)[k]) replaceToken(i, k, v); };
+  inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); apply(); } if (ev.key === 'Escape') closeMenu(); });
+  ed.querySelector('button').onclick = apply;
+  m.appendChild(ed);
+  const hint = document.createElement('div'); hint.className = 'mhint'; hint.textContent = '강조'; m.appendChild(hint);
   const items = [[null, '강조 없음', '#E6EAF2'], ['color', '포인트색', EMPH_SW.color], ['big', '크게', EMPH_SW.big], ['marker', '형광펜', EMPH_SW.marker], ['red', '빨강', EMPH_SW.red]];
   items.forEach(([v, label, sw]) => {
     const b = document.createElement('button');
@@ -646,10 +661,44 @@ function emphMenu(e, i, k) {
   });
   document.body.appendChild(m);
   const r = e.target.getBoundingClientRect();
-  m.style.left = Math.min(r.left, innerWidth - 170) + 'px';
-  m.style.top = (r.bottom + 6 + 200 > innerHeight ? r.top - 206 : r.bottom + 6) + 'px';
+  m.style.left = Math.min(r.left, innerWidth - 250) + 'px';
+  const mh = m.offsetHeight || 290;
+  m.style.top = (r.bottom + 6 + mh > innerHeight ? Math.max(8, r.top - mh - 6) : r.bottom + 6) + 'px';
+  inp.focus(); inp.select();
 }
 function closeMenu() { const m = $('#menu'); if (m) m.remove(); }
+
+// 단어 하나만 바꾸기 — 줄바꿈·다른 단어의 강조·말한 타이밍은 그대로 유지
+function replaceToken(i, k, val) {
+  const c = CAPS[i];
+  const parts = val.split(/\s+/).filter(Boolean);   // 띄어쓰면 여러 단어, 비우면 삭제
+  const n = parts.length;
+  const oldCount = tokens(c.text).length;
+  let idx = 0;
+  const lines = c.text.split('\n').map(line => line.split(/\s+/).filter(Boolean).flatMap(tk => (idx++ === k ? parts : [tk])).join(' ')).filter(Boolean);
+  const text = lines.join('\n');
+  if (!text) { CAPS.splice(i, 1); changed(); renderList(); return; }
+  // 강조 번호 옮기기
+  if (c.emph) {
+    const ne = {};
+    // 여러 단어로 나눴으면 강조는 원래 단어와 가장 닮은 조각에 남긴다
+    const oldWord = tokens(c.text)[k] || '';
+    let keepAt = parts.findIndex(p => p === oldWord);
+    if (keepAt < 0) keepAt = parts.findIndex(p => p.includes(oldWord) || oldWord.includes(p));
+    if (keepAt < 0) keepAt = 0;
+    Object.entries(c.emph).forEach(([x, v]) => { x = +x; if (x < k) ne[x] = v; else if (x === k) { if (n) ne[k + keepAt] = v; } else ne[x + n - 1] = v; });
+    c.emph = ne;
+  }
+  // 단어 타이밍: 바꾼 단어의 시간만 나눠 갖고 나머지는 그대로
+  if (c.words && c.words.length === oldCount) {
+    const w = c.words[k];
+    const pieces = parts.map((p, j) => ({start: w.start + (w.end - w.start) * j / n, end: w.start + (w.end - w.start) * (j + 1) / n, text: p, prob: 1}));
+    c.words = [...c.words.slice(0, k), ...pieces, ...c.words.slice(k + 1)];
+  }
+  c.text = text;
+  changed(); rerowKeep(i); drawOverlay(true);
+  toast(n ? `"${val}" 로 바꿨어요` : '단어를 지웠어요');
+}
 // 메뉴 밖을 누르면 닫기 (단어 칩을 누른 경우는 새 메뉴가 열리므로 제외)
 document.addEventListener('click', e => { if (!e.target.closest('#menu') && !e.target.closest('.tk')) closeMenu(); });
 

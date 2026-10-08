@@ -20,7 +20,7 @@ from .audio import enhance_audio
 from .branding import apply_branding
 from .config import Config
 from .fillers import find_filler_ranges, remap_captions
-from .ffmpeg import ensure_ffmpeg, probe_dimensions, probe_duration
+from .ffmpeg import ensure_ffmpeg, probe_dimensions, probe_duration, probe_fps
 from .metadata import write_metadata
 from .silence import cut_silence, render_cut
 from .subtitles import burn_subtitles
@@ -50,6 +50,10 @@ def _match_orientation(config: Config, video: Path) -> None:
     if dims and dims[1] > dims[0] and out.width > out.height:
         out.width, out.height = out.height, out.width
         logger.info("세로 영상 → 출력도 세로 %dx%d", out.width, out.height)
+    # 원본 fps 유지 (60fps로 찍은 영상을 30fps로 깎지 않도록)
+    fps = probe_fps(video)
+    if fps:
+        out.fps = fps
 
 
 @dataclass
@@ -135,6 +139,13 @@ def _speech_only_cut(
             raw.append((c.start, c.end))
 
     padded = [(max(0.0, s - pad), min(total, e + pad)) for s, e in raw]
+    # 시작 직전·끝(마지막 말 뒤 손 흔들기·인사 같은 '말 없는 동작')은 살린다
+    if padded and sil.keep_head > 0:
+        first = min(s for s, _ in padded)
+        padded.append((max(0.0, first - sil.keep_head), first))
+    if padded and sil.keep_tail > 0:
+        last = max(e for _, e in padded)
+        padded.append((last, min(total, last + sil.keep_tail)))
     keep_ranges = merge_intervals(padded, gap=sil.bridge_gap)
     segments = [Segment(s, e) for s, e in keep_ranges if e - s >= sil.min_keep]
     if not segments:

@@ -33,6 +33,8 @@ class SilenceConfig:
     min_silence: float = 0.4     # (dB 방식) 잘라낼 무음 최소 길이(초)
     keep_pad: float = 0.07       # (dB 방식) 말 앞뒤 여유(초)
     min_keep: float = 0.30       # 이보다 짧은 말 토막은 버린다 (초)
+    keep_head: float = 1.5       # 첫 말 앞을 이만큼 살림 (초) — 등장·인사 동작
+    keep_tail: float = 8.0       # 마지막 말 뒤를 이만큼 살림 (초) — 손 흔들기·끝 인사
 
 
 @dataclass
@@ -99,10 +101,12 @@ class OutputConfig:
 
     width: int = 1920
     height: int = 1080
-    fps: int = 30
+    fps: int = 30                # 원본 fps 를 못 읽을 때만 사용 (보통은 원본 fps 유지)
     video_codec: str = "libx264"
-    crf: int = 22                # 화질 (낮을수록 고화질, 18~23 권장)
-    preset: str = "veryfast"     # 인코딩 속도 (veryfast=빠름. 더 고화질 원하면 medium/slow)
+    crf: int = 18                # 최종 화질 (낮을수록 고화질, 18 = 눈으로 원본과 거의 구분 안 됨)
+    preset: str = "fast"         # 최종 인코딩 속도 (veryfast/fast/medium/slow)
+    inter_crf: int = 12          # 중간 파일(컷 편집본 등) 화질 — 여러 번 다시 압축해도 안 깎이게 거의 무손실
+    inter_preset: str = "veryfast"
     audio_bitrate: str = "192k"
 
 

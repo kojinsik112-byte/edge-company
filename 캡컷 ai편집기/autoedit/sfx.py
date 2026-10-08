@@ -27,6 +27,17 @@ SFX_LIST: Dict[str, Tuple[str, str]] = {
     "sparkle": ("반짝", "반짝이는 소리 — 신제품·자랑"),
     "correct": ("딩동", "정답 소리 — 맞아요·추천"),
     "click": ("딸깍", "가벼운 클릭 — 목록·순서"),
+    "notify": ("띵똥", "알림음 — 새 소식·꿀팁"),
+    "rise": ("슝", "위로 솟는 소리 — 등장·상승"),
+    "boing": ("띠용", "통통 튀는 소리 — 반전·웃음"),
+    "coin": ("띠링(코인)", "동전 소리 — 가격·할인·이득"),
+    "shutter": ("찰칵", "카메라 셔터 — 사진·비교 컷"),
+    "drumroll": ("두구두구", "드럼롤 + 심벌 — 공개 직전"),
+    "fail": ("빠밤", "아쉬운 소리 — 실패·불편 사례"),
+    "tada": ("짜잔", "팡파레 화음 — 결과 공개·완성"),
+    "bubble": ("뽀록", "물방울 — 귀여운 강조"),
+    "laser": ("삐융", "레이저 — 빠른 전환"),
+    "clap": ("박수", "짧은 박수 — 축하·마무리"),
 }
 
 # 사람이 효과음을 안 골랐을 때, 강조 종류별 자동 효과음
@@ -111,10 +122,87 @@ def _synth(name: str):
         n = int(SR * 0.05)
         t = np.arange(n) / SR
         out = (np.sin(2 * math.pi * 2200 * t) + 0.5 * rng.standard_normal(n)) * _env(np, n, 0.0005, 0.006)
+    elif name == "notify":
+        out = np.zeros(int(SR * 0.9))
+        _place(np, out, _bell(np, 1567.98, 0.5, 0.18), 0.0)
+        _place(np, out, _bell(np, 1174.66, 0.7, 0.3), 0.16)
+    elif name == "rise":
+        n = int(SR * 0.5)
+        t = np.arange(n) / SR
+        f = 300 * np.exp(t * 5.2)
+        tone = np.sin(2 * math.pi * np.cumsum(f) / SR) * 0.6
+        noise = rng.standard_normal(n) * 0.25
+        out = (tone + noise * (t / t[-1])) * np.sin(np.pi * t / t[-1]) ** 1.5
+    elif name == "boing":
+        n = int(SR * 0.6)
+        t = np.arange(n) / SR
+        f = 220 + 160 * np.sin(2 * math.pi * 9 * t) * np.exp(-t * 4) + 120 * np.exp(-t * 8)
+        out = np.sin(2 * math.pi * np.cumsum(f) / SR) * _env(np, n, 0.003, 0.22)
+    elif name == "coin":
+        out = np.zeros(int(SR * 0.6))
+        for at, f, d in ((0.0, 987.77, 0.08), (0.08, 1318.51, 0.45)):
+            n = int(SR * d)
+            t = np.arange(n) / SR
+            sq = np.sign(np.sin(2 * math.pi * f * t)) * 0.35 + np.sin(2 * math.pi * f * t) * 0.4
+            _place(np, out, sq * _env(np, n, 0.002, d * 0.6), at)
+    elif name == "shutter":
+        out = np.zeros(int(SR * 0.25))
+        for at, dec in ((0.0, 0.008), (0.07, 0.02)):
+            n = int(SR * 0.06)
+            hit = rng.standard_normal(n) * _env(np, n, 0.0005, dec)
+            _place(np, out, hit, at)
+    elif name == "drumroll":
+        out = np.zeros(int(SR * 1.8))
+        k = 0
+        while k * 0.045 < 1.0:
+            n = int(SR * 0.05)
+            amp = 0.35 + 0.5 * (k * 0.045)
+            _place(np, out, rng.standard_normal(n) * _env(np, n, 0.001, 0.012) * amp, k * 0.045)
+            k += 1
+        n = int(SR * 0.8)
+        crash = rng.standard_normal(n)
+        crash = np.diff(crash, prepend=0) * _env(np, n, 0.002, 0.25)  # 고음 위주 = 심벌 느낌
+        _place(np, out, crash * 0.9, 1.0)
+    elif name == "fail":
+        out = np.zeros(int(SR * 1.5))
+        for j, f in enumerate((392.0, 369.99, 349.23, 329.63)):
+            dur = 0.6 if j == 3 else 0.28
+            n = int(SR * dur)
+            t = np.arange(n) / SR
+            ff = f * (1 - 0.03 * t / dur) if j == 3 else np.full(n, f)
+            ph = 2 * math.pi * np.cumsum(ff) / SR
+            saw = sum(np.sin(ph * h) / h for h in range(1, 7))
+            _place(np, out, saw * _env(np, n, 0.02, dur * 0.7) * 0.5, j * 0.3)
+    elif name == "tada":
+        out = np.zeros(int(SR * 1.3))
+        for at, chord in ((0.0, (523.25, 659.25)), (0.12, (523.25, 659.25, 783.99, 1046.5))):
+            dur = 0.12 if at == 0 else 1.1
+            n = int(SR * dur)
+            t = np.arange(n) / SR
+            tone = sum(sum(np.sin(2 * math.pi * f * h * t) / h for h in range(1, 5)) for f in chord)
+            _place(np, out, tone * _env(np, n, 0.008, dur * 0.5) * 0.3, at)
+    elif name == "bubble":
+        n = int(SR * 0.16)
+        t = np.arange(n) / SR
+        f = 350 + 900 * (t / t[-1]) ** 2
+        out = np.sin(2 * math.pi * np.cumsum(f) / SR) * _env(np, n, 0.004, 0.05)
+    elif name == "laser":
+        n = int(SR * 0.3)
+        t = np.arange(n) / SR
+        f = 2200 * np.exp(-t * 9) + 180
+        out = np.sign(np.sin(2 * math.pi * np.cumsum(f) / SR)) * 0.4 * _env(np, n, 0.002, 0.1)
+    elif name == "clap":
+        out = np.zeros(int(SR * 1.2))
+        for k in range(14):
+            n = int(SR * 0.04)
+            hit = np.diff(rng.standard_normal(n), prepend=0) * _env(np, n, 0.0008, 0.01)
+            _place(np, out, hit * float(rng.uniform(0.5, 1.0)), k * 0.07 + float(rng.uniform(0, 0.02)))
     else:
         raise KeyError(name)
+    # 효과음끼리 체감 크기를 맞춘다: 평균 세기(RMS) 0.22 목표, 단 최고점은 0.9 넘지 않게
     peak = float(np.max(np.abs(out))) or 1.0
-    return out / peak * 0.9
+    rms = float(np.sqrt(np.mean(out ** 2))) or 1.0
+    return out * min(0.9 / peak, 0.22 / rms)
 
 
 def _write_wav(path: Path, samples) -> Path:

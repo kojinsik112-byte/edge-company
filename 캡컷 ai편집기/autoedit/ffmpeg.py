@@ -242,6 +242,16 @@ def probe_dimensions(path: Path) -> Optional[tuple[int, int]]:
     return None
 
 
+def probe_fps(path: Path) -> Optional[int]:
+    """영상 fps (정수로 반올림, 24~60). 못 읽으면 None."""
+    for line in _header(path).splitlines():
+        if "Video:" in line:
+            m = re.search(r"(\d+(?:\.\d+)?) fps", line)
+            if m:
+                return max(24, min(60, round(float(m.group(1)))))
+    return None
+
+
 def has_audio(path: Path) -> bool:
     """영상에 오디오 트랙이 있는지 확인한다."""
     return "Audio:" in _header(path)

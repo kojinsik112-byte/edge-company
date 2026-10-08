@@ -102,9 +102,10 @@ def render_short(
     """하이라이트 구간을 9:16 세로 클립으로 렌더링한다."""
     # 1) 구간을 잘라 세로 비율로 cover-crop (가운데 정렬)
     raw = work_dir / f"short_{index}_raw.mp4"
+    # 원본에서 9:16 만큼 먼저 잘라낸 뒤 고품질(lanczos) 확대 → 덜 뭉개짐
     vf = (
-        f"scale={cfg.width}:{cfg.height}:force_original_aspect_ratio=increase,"
-        f"crop={cfg.width}:{cfg.height}"
+        f"crop='min(iw,ih*{cfg.width}/{cfg.height})':'min(ih,iw*{cfg.height}/{cfg.width})',"
+        f"scale={cfg.width}:{cfg.height}:flags=lanczos,setsar=1"
     )
     run(
         [
@@ -123,9 +124,11 @@ def render_short(
             "-c:v",
             out_cfg.video_codec,
             "-crf",
-            str(out_cfg.crf),
+            str(out_cfg.inter_crf if (cfg.burn_subtitles and captions) else out_cfg.crf),
             "-preset",
-            out_cfg.preset,
+            out_cfg.inter_preset if (cfg.burn_subtitles and captions) else out_cfg.preset,
+            "-pix_fmt",
+            "yuv420p",
             "-c:a",
             "aac",
             "-b:a",

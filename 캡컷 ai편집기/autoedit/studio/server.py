@@ -78,7 +78,7 @@ def _allowed(p: Path) -> bool:
 # ───────────────────────────── 설정 저장 ─────────────────────────────
 
 DEFAULT_SETTINGS: Dict[str, Any] = {
-    "cut": "normal",          # gentle / normal / strong
+    "cut": "gentle",          # none / gentle / normal / strong
     "accuracy": "small",      # base / small / medium
     "smart_edit": True,
     "ai_typo_fix": True,
@@ -122,8 +122,9 @@ def has_api_key() -> bool:
 def build_config(opts: Dict[str, Any]) -> Config:
     cfg_path = APP_ROOT / "config.yaml"
     cfg = Config.load(cfg_path if cfg_path.exists() else None)
-    cut = opts.get("cut", "normal")
-    pad, gap = {"gentle": (0.25, 0.6), "normal": (0.12, 0.3), "strong": (0.08, 0.18)}.get(cut, (0.12, 0.3))
+    cut = opts.get("cut", "gentle")
+    pad, gap = {"gentle": (0.25, 0.6), "normal": (0.12, 0.3), "strong": (0.08, 0.18)}.get(cut, (0.25, 0.6))
+    cfg.silence.enabled = cut != "none"  # 안 자름 = 자막·효과음만
     cfg.silence.speech_pad, cfg.silence.bridge_gap = pad, gap
     cfg.subtitle.model = opts.get("accuracy", "small")
     cfg.subtitle.ai_typo_fix = bool(opts.get("ai_typo_fix", True))

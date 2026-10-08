@@ -165,6 +165,8 @@ def _encode(video: Path, vf: str, out_path: Path, out_cfg: OutputConfig) -> None
             str(out_cfg.crf),
             "-preset",
             out_cfg.preset,
+            "-pix_fmt",
+            "yuv420p",
             "-c:a",
             "copy",
             str(out_path),
