@@ -263,7 +263,7 @@ QUAL = [
     ("‘행사대행·전시·광고기획’ 업종", "전시·박람회 및 행사대행업 등재", "사업자등록증"),
     ("자본금 1억원 이상", "자본금 [[2억원]]", "법인등기부(2026.10.02)"),
     ("4대보험 정직원 5명 이상", "가입자 명부 [[10명]]", "4대보험 가입자 명부(2026.10.02)"),
-    ("최근 3년 1,000세대 이상 5회 이상", f"최근 3년(2023.10 이후) [[{sum(1 for r in D.RECORDS if r[0] >= '2023.10')}건]] · 2023.01부터 {len(D.RECORDS)}건 · {total3:,}세대", "실적 증빙 · NICE 연혁"),
+    ("최근 3년 1,000세대 이상 5회 이상", f"최근 3년(2023.10.06 이후) [[{len(D.RECENT3)}건]] · {sum(r[3] for r in D.RECENT3):,}세대 (NICE 연혁 주관 시기 기준)", "제출서류 08 · NICE 연혁"),
     ("공동구매 하자담보 이행능력", "하자 예치금 현금 1억 · 이행보증보험 2년 10억 · 업체 특약이행각서", "협약 시 증권·예치 증빙"),
     ("등록 소재지 사무소 방문 가능", "울산 본사(사옥·쇼룸) 상시 방문 가능", "사업자등록증 주소"),
     ("신축 아파트 행사·단지 업무 실적", "누적 67개 단지 · 56,361세대 주관·수임(전신 실적 포함) · ISO 3종", "회사소개서 · 인증서"),
@@ -780,7 +780,7 @@ def p_cover_company():
 <div class="tag2">연혁 · 조직도 · 주관 실적 · 자격과 증빙<br>전기공사업 면허를 갖춘 입주박람회 주관사</div>
 </div>
 {sub2}
-<div class="bt"><span>COMPANY PROFILE · 회사소개서</span><span>2026.10</span></div>
+<div class="bt"><span>COMPANY PROFILE · 철산역 자이</span><span>2026.10</span></div>
 </section>"""
 
 
@@ -817,7 +817,8 @@ def p_contact():
     s = sub(s, "삼성전자 MOU 체결</div>", "삼성전자 · 세스코 MOU 체결</div>")
     s = sub(s, '<div class="who">주식회사 엣지컴퍼니<br>대표이사 고진식</div>', "")
     s = sub(s, '<div class="addr">', '<div class="addr" style="font-size:14.2px">')
-    return sub(s, "SUMMARY PROPOSAL · 요약제안서", "BID PROPOSAL · 철산역 자이")
+    label = "COMPANY PROFILE · 철산역 자이" if COVER.get("kind") == "company" else "BID PROPOSAL · 철산역 자이"
+    return sub(s, "SUMMARY PROPOSAL · 요약제안서", label)
 
 
 B_p_contact = B.p_contact
@@ -1020,17 +1021,19 @@ def company_pages():
     d01 = [p for p in B.PAGES if p[0] == "divider" and p[1].get("n") == "01"]
     assert len(d01) == 1 and len(pick) > 15, (len(d01), len(pick))
     key = ("설립", "등록", "ISO", "MOU")
-    items = "".join(f'<li class="{"k" if any(x in t for x in key) else ""}"><b>{d}</b><span>{_h.escape(t)}</span><i>{src}</i></li>'
+    def keep(t):  # '주관 · 1,643세대'는 한 줄로
+        return re.sub(r"(주관 · [\d,]+세대)", r'<span style="white-space:nowrap">\1</span>', _h.escape(t))
+    items = "".join(f'<li class="{"k" if any(x in t for x in key) else ""}"><b>{d}</b><span>{keep(t)}</span><i>{src}</i></li>'
                     for d, t, src in D.HISTORY)
     half = (len(D.HISTORY) + 1) // 2
     lis = items.split("</li>")
     left = "</li>".join(lis[:half]) + "</li>"
     right = "</li>".join(lis[half:])
     hist = ("std", dict(sec="01. 회사소개", title="엣지컴퍼니 [[연혁]]",
-        lead=f"법인 설립({D.FOUNDED})부터 지금까지 - 서류로 확인되는 기록만 적었습니다.",
+        lead=f"법인 설립({D.FOUNDED})부터 지금까지 - 등기부 · 등록증 · 인증서 · NICE 연혁 · 협약으로 확인되는 기록만 적었습니다.",
         body=f'<div class="nb"><div class="hist"><ol>{left}</ol><ol>{right}</ol></div></div>',
-        kp=("설립 4년 7개월, 1,000세대 이상 입주박람회를 [[해마다]] 맡아 왔습니다.",
-            "출처: 법인등기부 · 전기공사업 등록증 · ISO 인증서 · NICE 기업신용평가보고서 연혁 · MOU")))
+        kp=("2023년부터 [[해마다]] 1,000세대 이상 입주박람회를 맡아 왔습니다.",
+            "출처: 법인등기부 · 전기공사업 등록증 · ISO 인증서 · NICE 기업신용평가보고서 연혁 · 세스코 협약")))
     contact = [p for p in B.PAGES if p[0] == "contact"]
     return [("cover", {})] + d01 + [hist] + pick + contact
 

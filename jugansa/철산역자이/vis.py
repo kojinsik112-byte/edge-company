@@ -359,7 +359,7 @@ def apply(B, D, take, sub):
     rows = k["body"].replace("grid-template-columns:46px 268px 1fr", "grid-template-columns:40px 170px 1fr")
     chs = "".join(f'<div class="ch">{ic(n)}{t}</div>' for n, t in [("phone", "상담 콜센터"), ("bell", "카페 신문고"), ("chat", "카카오채널"), ("globe", "홈페이지")])
     hub = ('<div class="hubd"><div class="col">' + chs + '<div class="vd">입주민 접수</div></div>'
-           f'<div class="ctr">{ic("headset")}<b>주관 콜센터</b><span>365일 · 1창구</span></div>'
+           f'<div class="ctr">{ic("headset")}<b>주관 접수창구</b><span>365일 접수 · 1창구</span></div>'
            '<div class="col"><div class="bd"><span>24시간 내 피드백</span><span>48시간 내 처리</span><span>선보상 후 정산</span><span>해피콜 검수</span></div>'
            '<div class="vd">참여업체 관리·감독</div></div></div>')
     k["body"] = f'<div class="nb"><div class="hub">{rows}{hub}</div></div>'
@@ -616,7 +616,7 @@ def apply2(B, D, take, sub):
     qb = [("01 사업 경력", "요건 3년", 3, "현황 4년 7개월", 4.58),
           ("04 자본금", "요건 1억원", 1, "현황 2억원", 2),
           ("05 4대보험 정직원", "요건 5명", 5, "현황 10명", 10),
-          ("06 1,000세대↑ 실적(최근 3년)", "요건 5회", 5, "현황 8건", 8)]
+          ("06 1,000세대↑ 실적(최근 3년)", "요건 5회", 5, f"현황 {len(D.RECENT3)}건", len(D.RECENT3))]
     cards = "".join(f'<div><h5>{h}</h5><div class="r"><span>공고</span><i style="width:{100 * a / max(a, c):.0f}%">{al}</i></div>'
                     f'<div class="r g"><span>당사</span><i style="width:{100 * c / max(a, c):.0f}%">{cl}</i></div></div>'
                     for h, al, a, cl, c in qb)
