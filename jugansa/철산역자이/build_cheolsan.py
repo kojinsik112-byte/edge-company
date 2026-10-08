@@ -9,6 +9,7 @@
 
 사용: python build_cheolsan.py
 """
+import html as _h
 import json
 import os
 import re
@@ -750,6 +751,8 @@ def p_cover_impact():
 def p_cover():
     if COVER.get("kind") == "impact":
         return p_cover_impact()
+    if COVER.get("kind") == "company":
+        return p_cover_company()
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
     # 조감도(본부장 제공 2026-10-07) — 네이비 배경에 스며들도록 위·왼쪽을 배경색으로 페이드
     art = ('<div class="cvart"><img src="assets_ins/cs_cover_art.jpg" alt="">'
@@ -762,6 +765,22 @@ def p_cover():
 </div>
 {sub2}
 <div class="bt"><span>BID PROPOSAL · 입주박람회 주관사 제안서</span><span>2026.10</span></div>
+</section>"""
+
+
+def p_cover_company():
+    """제출서류 07 회사소개서 표지 — 제안서 표지 틀 그대로, 제목·띠만 회사소개서로."""
+    art = ('<div class="cvart"><img src="assets_ins/cs_cover_art.jpg" alt="">'
+           '<span class="credit">철산역 자이 조감도 · 홍보용 이미지</span></div>')
+    sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제출서류</i><b>07 회사소개서 (연혁 · 조직도 포함)</b></div></div>'
+    return f"""<section class="page cv cv4">{art}{COVER_TOP}
+<div class="mid"><span class="pill">회사소개서</span>
+<h1>{D.COMPANY}<br><em>회사소개서</em></h1>
+<div class="gbar"></div>
+<div class="tag2">연혁 · 조직도 · 주관 실적 · 자격과 증빙<br>전기공사업 면허를 갖춘 입주박람회 주관사</div>
+</div>
+{sub2}
+<div class="bt"><span>COMPANY PROFILE · 회사소개서</span><span>2026.10</span></div>
 </section>"""
 
 
@@ -979,6 +998,41 @@ def emit(pages, out_html, title):
 
 
 NAME22 = "엣지컴퍼니_철산역자이_2-2_요약제안서"
+NAME07 = "엣지컴퍼니_철산역자이_07_회사소개서"
+
+HIST_CSS = r"""
+.hist{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:0 34px}
+.hist ol{list-style:none;margin:0;padding:0;position:relative;display:flex;flex-direction:column;justify-content:space-between}
+.hist ol:before{content:'';position:absolute;left:92px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--gold2),rgba(200,168,106,.25))}
+.hist li{position:relative;display:grid;grid-template-columns:76px 1fr auto;gap:0 34px;align-items:center;padding:6px 0}
+.hist li:before{content:'';position:absolute;left:88px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#0d1e33;border:2px solid var(--gold2)}
+.hist li.k:before{background:var(--gold);box-shadow:0 0 8px rgba(235,203,143,.55)}
+.hist li b{font-size:17px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+.hist li span{font-size:17px;line-height:1.4}
+.hist li.k span{font-weight:700}
+.hist li i{font-style:normal;font-size:11.5px;color:var(--mute);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:1px 8px;white-space:nowrap}
+"""
+
+
+def company_pages():
+    """제출서류 07 회사소개서 — 표지 + 01 간지 + 연혁 + 제안서 01장(조직도 포함) + 연락처."""
+    pick = [p for p in B.PAGES if p[1].get("sec") == "01. 회사소개" and p[0] != "divider"]
+    d01 = [p for p in B.PAGES if p[0] == "divider" and p[1].get("n") == "01"]
+    assert len(d01) == 1 and len(pick) > 15, (len(d01), len(pick))
+    key = ("설립", "등록", "ISO", "MOU")
+    items = "".join(f'<li class="{"k" if any(x in t for x in key) else ""}"><b>{d}</b><span>{_h.escape(t)}</span><i>{src}</i></li>'
+                    for d, t, src in D.HISTORY)
+    half = (len(D.HISTORY) + 1) // 2
+    lis = items.split("</li>")
+    left = "</li>".join(lis[:half]) + "</li>"
+    right = "</li>".join(lis[half:])
+    hist = ("std", dict(sec="01. 회사소개", title="엣지컴퍼니 [[연혁]]",
+        lead=f"법인 설립({D.FOUNDED})부터 지금까지 - 서류로 확인되는 기록만 적었습니다.",
+        body=f'<div class="nb"><div class="hist"><ol>{left}</ol><ol>{right}</ol></div></div>',
+        kp=("설립 4년 7개월, 1,000세대 이상 입주박람회를 [[해마다]] 맡아 왔습니다.",
+            "출처: 법인등기부 · 전기공사업 등록증 · ISO 인증서 · NICE 기업신용평가보고서 연혁 · MOU")))
+    contact = [p for p in B.PAGES if p[0] == "contact"]
+    return [("cover", {})] + d01 + [hist] + pick + contact
 
 
 def summary_pages():
@@ -1047,6 +1101,10 @@ def build():
         CLOSING_DROP[:] = ["03", "04"]  # 요약본 약속 장: 03 A 입주민 특화서비스 · 04 옵션 중복 확인 삭제(본부장 10-07)
         emit(summary_pages(), os.path.join(HERE, NAME22 + ".html"), "엣지컴퍼니 철산역 자이 요약 제안서")
         CLOSING_DROP[:] = []
+        # 제출서류 07 회사소개서 — 연혁 장 + 제안서 01장(조직도 포함)
+        COVER.update(kind="company")
+        B.CSS += HIST_CSS
+        emit(company_pages(), os.path.join(HERE, NAME07 + ".html"), "엣지컴퍼니 회사소개서")
         COVER.update(kind="stats", pill="입주박람회 주관사 제안서")
 
 
