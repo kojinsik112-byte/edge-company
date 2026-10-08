@@ -130,7 +130,8 @@ def apply(G):
 .sumx.tight .tbl.xs td{padding:3.4px 10px}
 .pkx .pk ul[style] li{break-inside:avoid}
 .toc5{grid-template-columns:repeat(5,1fr)!important}
-.toc5 .col{padding:0 16px;gap:22px}
+.toc5{grid-template-rows:auto 1fr}
+.toc5 .col{padding:0 16px;gap:22px;display:grid;grid-template-rows:subgrid;grid-row:1 / 3;align-content:start}
 .toc5 .s h3{font-size:20px;margin:4px 0 6px}
 .toc5 .s li{font-size:14.5px;line-height:1.7}
 .toc5 .s li i{font-size:12px;margin-right:8px}

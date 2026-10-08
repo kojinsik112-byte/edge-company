@@ -526,7 +526,8 @@ def blk(b):
             if it.get("cap"):
                 sub_ = f'<small>{t(it["sub"])}</small>' if it.get("sub") else ""
                 cap = f'<figcaption>{t(it["cap"])}{sub_}</figcaption>'
-            figs += f'<figure class="{cls}"{span}><img src="assets_ins/{it["img"]}.jpg" alt="">{cap}</figure>'
+            pos = f' style="object-position:{it["pos"]}"' if it.get("pos") else ""  # 사진 초점(선택)
+            figs += f'<figure class="{cls}"{span}><img src="assets_ins/{it["img"]}.jpg"{pos} alt="">{cap}</figure>'
         g = b.get("grow", 1)
         return f'<div class="gal" style="grid-template-columns:repeat({cols},1fr){rs};flex:{g} 1 0">{figs}</div>'
     if k == "docs":

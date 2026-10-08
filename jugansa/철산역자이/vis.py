@@ -86,7 +86,7 @@ CSS = r"""
 .mbar .g i{background:var(--gold)}.mbar .g b{color:var(--gold)}
 .mbar span{font-size:10px;color:var(--mute);margin-top:3px}
 .bnr{position:relative;flex:0 0 29%;min-height:0;border-radius:14px;overflow:hidden;border:1px solid rgba(200,168,106,.4)}
-.bnr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 58%}
+.bnr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 80%}
 .bnr:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(13,30,51,.85) 0%,rgba(13,30,51,0) 45%)}
 .bnr span{position:absolute;z-index:1;right:14px;bottom:10px;font-size:11px;color:rgba(255,255,255,.75)}
 .bnr b{position:absolute;z-index:1;left:18px;bottom:10px;font-size:17px;color:var(--gold)}
