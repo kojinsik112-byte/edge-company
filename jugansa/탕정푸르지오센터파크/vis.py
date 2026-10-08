@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""철산역 자이 제안서 — 쪽별 시각화(본부장 10-08: '이미지 넣을 것·이미지화할 것 확인해서 넣어줘').
+"""탕정 푸르지오 센터파크 제안서 — 쪽별 시각화(본부장 10-08: '이미지 넣을 것·이미지화할 것 확인해서 넣어줘').
 
 글자만 있던 장에 금색 선 아이콘 · 도식 · 기존 사진을 더한다. 숫자는 각 장에 이미 있는 값만 쓴다(새 수치 없음).
 reorg.apply() 안에서 재배치 전에 apply(...)로 부른다.
@@ -154,7 +154,7 @@ CSS = r"""
 .r2 .rows .row .dd{font-size:14.5px}
 .r2 .rows .row .cic{width:26px;height:26px;margin:0}
 .r2 .gal{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
-/* 31개월 타임라인 */
+/* 17개월 타임라인 */
 .tl31{position:relative;height:96px;margin:4px 8px 14px}
 .tl31 .ln{position:absolute;left:0;right:60px;top:40px;height:3px;background:linear-gradient(90deg,var(--gold2),var(--gold))}
 .tl31 .ext{position:absolute;right:0;width:60px;top:40px;border-top:3px dashed rgba(235,203,143,.6)}
@@ -267,19 +267,23 @@ def apply(B, D, take, sub):
     k = take("입주박람회 [[운영 계획]]")[1]
     k["body"] = k["body"].replace('class="tiles lg"', 'class="tiles lg opw"', 1)
     B.CSS += ".opw .tile:first-child .nm{font-size:18.5px;letter-spacing:-.02em;white-space:nowrap}"
-    k = take("철산역 자이 [[특화 제안]]")[1]
-    k["body"] = inject(k["body"], ["checklist", "calendar", "streetlight", "tape", "phone_live", "member"], "tile")
+    k = take("탕정 푸르지오 센터파크 [[특화 제안]]")[1]
+    k["body"] = inject(k["body"], ["checklist", "tape", "streetlight", "person", "users", "truck2"], "tile")
 
-    # 철산역 자이, 이런 단지입니다 — 조감도 배너 + 조합/일반분양 막대
-    k = take("철산역 자이, [[이런 단지]]입니다")[1]
-    hh, tot, gen = D.SITE["households"], D.SITE["total"], D.SITE["general"]
+    # 탕정 푸르지오 센터파크, 이런 단지입니다 — 야간 경관 배너 + 타입 구성 막대(최초 입주자모집공고 타입별 세대수)
+    k = take("탕정 푸르지오 센터파크, [[이런 단지]]입니다")[1]
+    hh, tp = D.SITE["households"], dict(D.SITE["types"])
+    grp = [("59㎡", tp["59A"] + tp["59B"]), ("84㎡", tp["84A"] + tp["84B"] + tp["84C"]), ("109㎡", tp["109"]), ("136", tp["136PH"])]
+    tb = "".join(f'<i style="flex:{n}">{nm} {n:,}</i>' if n > 60 else f'<i style="flex:{max(n, 30)}" class="sm"></i>' for nm, n in grp)
     cards = k["body"].replace(
         f'<div class="big">{hh:,}<small>세대</small></div>',
-        f'<div class="big">{hh:,}<small>세대</small></div><div class="sbar"><i style="flex:{hh}">조합 {hh:,}</i><i style="flex:{gen}">일반 {gen}</i></div>', 1)
+        f'<div class="big">{hh:,}<small>세대</small></div><div class="sbar t4">{tb}</div>', 1)
     assert cards != k["body"]
-    k["body"] = ('<div class="nb"><div class="bnr"><img src="assets_ins/tj_aerial_night.jpg" alt="">'
-                 f'<b>철산역 자이 · 총 {tot:,}세대 · 19개동</b><span>철산역 자이 조감도 · 실제와 다를 수 있습니다</span></div>'
+    k["body"] = ('<div class="nb"><div class="bnr" style="flex-basis:25%"><img src="assets_ins/tj_aerial_night.jpg" alt="" style="object-position:50% 55%">'
+                 f'<b>{D.SITE["official"]} · {hh:,}세대 · {D.SITE["buildings"]}개동</b><span>단지 야간 경관 · 연출 이미지(실제와 다를 수 있습니다)</span></div>'
                  + cards + '</div>')
+    B.CSS += (".sbar.t4 i{background:rgba(255,255,255,.14)!important;color:var(--ink)!important;border-right:1px solid #0d1e33;padding-left:5px;font-size:10px}"
+              ".sbar.t4 i:nth-child(2){background:var(--gold)!important;color:#0d1e33!important}.sbar.t4 i.sm{padding:0}")
 
     # 최저가 차액 10배 — 막대 비교
     k = take("[[최저가 차액 10배]] 보상")[1]
@@ -332,14 +336,14 @@ def apply(B, D, take, sub):
                          ("g12_plan_a", "타입별 평면·실측", "타 단지 제작 예시"), ("n01_yt1", "영상 콘텐츠", "타 단지 유튜브 화면")]) + '</div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
-    # 입주까지 31개월 — 타임라인 띠
-    k = take("입주까지 31개월, [[긴 시간]]을 관리합니다")[1]
+    # 입주까지 17개월 — 타임라인 띠
+    k = take("입주까지 17개월, [[빈틈없이]] 관리합니다")[1]
     tl = ('<div class="tl31"><div class="ln"></div><div class="ext"></div>'
-          + "".join(f'<div class="q" style="left:{x}%"></div>' for x in (12, 20, 28, 36, 44, 52, 60, 68))
+          + "".join(f'<div class="q" style="left:{x}%"></div>' for x in (14, 24, 34, 44, 54))
           + '<div class="m" style="left:2%"><b>2026.10</b><span>주관사 선정</span></div>'
-          + '<div class="m" style="left:73%"><b>2029.02 ~ 03</b><span>입주박람회</span></div>'
-          + '<div class="m" style="left:86%"><b>2029.05</b><span>입주</span></div>'
-          + '<div class="qa">● 분기마다 진행 보고</div><div class="ex">지연 시 일정 재조정</div></div>')
+          + '<div class="m" style="left:66%"><b>2027.12 ~ 2028.01</b><span>입주박람회</span></div>'
+          + '<div class="m" style="left:86%"><b>2028.03</b><span>입주</span></div>'
+          + '<div class="qa">● 정례회의마다 진행 보고</div><div class="ex">지연 시 일정 재조정</div></div>')
     k["body"] = '<div class="nb">' + tl + k["body"] + '</div>'
 
     # 4단계 공개 심사 — 깔때기
@@ -510,7 +514,7 @@ CSS2 = r"""
 .cards.chain .card:not(:last-child):after{content:'›';position:absolute;right:-26px;top:50%;width:26px;height:26px;margin-top:-13px;border-radius:50%;
   background:#0d1e33;border:1.5px solid var(--gold2);color:var(--gold);font-weight:800;font-size:17px;line-height:22px;text-align:center;z-index:2}
 .chipx{display:inline-block;margin-top:10px;border:1px solid rgba(235,203,143,.6);border-radius:99px;padding:3px 10px;font-size:12px;color:var(--gold)}
-/* 조합 단지: 벤 + 단지별 시간 분리 */
+/* 단지 특성: 벤 + 진입 높이 */
 .vn{display:grid;grid-template-columns:1.35fr 1fr;gap:22px;flex:1;min-height:0}
 .vn .rows .row{grid-template-columns:40px 28px 172px 1fr !important;padding-bottom:10px}
 .vn .rows .row .cic{width:24px;height:24px;margin:0}
@@ -608,36 +612,23 @@ def apply2(B, D, take, sub):
     B.CSS += (".wty .bx{display:flex;flex-direction:column;gap:6px}.wty .bx p{font-size:15.5px}.wty h4{font-size:16.5px}"
               ".wty .stp{flex:1;height:auto;min-height:120px}.wty .fl{flex:1}.wty .fl div{font-size:14.5px;padding:14px 6px}")
 
-    # 입찰 참가 자격 10개 — 충족 체크 열 + 요건 대비 막대(표 문구 그대로)
-    k = take("입찰 참가 자격 [[10개 항목]] 대응")[1]
-    chk = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>'
-    b = sub(k["body"].replace('<table class="tbl sm">', '<table class="tbl sm q10">'), "<th>증빙</th></tr>", '<th>증빙</th><th style="width:7%;text-align:center">충족</th></tr>')
-    b, n = re.subn(r"(</td>)(</tr>)", rf'\1<td class="ok">{chk}</td>\2', b)
-    assert n == 10, n
-    b = sub(b, "<th>NO</th>", "<th>NO</th>")
-    qb = [("01 사업 경력", "요건 3년", 3, "현황 4년 7개월", 4.58),
-          ("04 자본금", "요건 1억원", 1, "현황 2억원", 2),
-          ("05 4대보험 정직원", "요건 5명", 5, "현황 10명", 10),
-          ("06 1,000세대↑ 실적(최근 3년)", "요건 5회", 5, f"현황 {len(D.RECENT3)}건", len(D.RECENT3))]
-    cards = "".join(f'<div><h5>{h}</h5><div class="r"><span>공고</span><i style="width:{100 * a / max(a, c):.0f}%">{al}</i></div>'
-                    f'<div class="r g"><span>당사</span><i style="width:{100 * c / max(a, c):.0f}%">{cl}</i></div></div>'
-                    for h, al, a, cl, c in qb)
-    k["body"] = '<div class="nb" style="gap:10px">' + b + f'<div class="qb">{cards}</div></div>'
-    k["title"] = k["title"]  # 제목 유지
-    k["kp"] = ("자격은 말이 아니라 [[제출 서류로]] 확인받겠습니다.", "10개 항목 모두 충족 · 증빙은 제출서류와 같음")
+    # 입찰 참가 자격 22개(① 1~11 · ② 12~22) — 표 문구 그대로, 열 너비만 고정
+    B.CSS += (".q22{table-layout:fixed;width:100%}.q22 td{padding:4px 12px !important;font-size:14px !important;line-height:1.38 !important}"
+              ".q22 td.k{font-size:14.5px !important}.q22 th{padding-bottom:6px !important}"
+              ".q22 th:nth-child(1){width:5%}.q22 th:nth-child(2){width:27%}.q22 th:nth-child(3){width:46%}.q22 th:nth-child(4){width:22%}")
 
-    # 선정부터 입주까지 추진 일정 — 간트(개월 m: 2026.10=0 … 2029.10=36)
+    # 선정부터 입주까지 추진 일정 — 간트(개월 m: 2026.10=0 … 2029.04=30)
     k = take("선정부터 입주까지 [[추진 일정]] (안)")[1]
-    X = lambda m: f"{100 * m / 36:.2f}%"
-    W = lambda a, b: f"{100 * (b - a) / 36:.2f}%"
-    bars = [("01", 0, 2, "l1", "w", "선정·협약"), ("02", 3, 27, "l2", "w in", "분기 보고 · 협의 자료 지원"), ("03", 21, 25, "l1", "w in", "수요조사"),
-            ("04", 25, 28, "l1", "s in", "입찰·심사"), ("05", 28, 30, "l1", "s up", "박람회"), ("06", 31, 36, "l2", "o", "입주 후 관리")]
+    X = lambda m: f"{100 * m / 30:.2f}%"
+    W = lambda a, b: f"{100 * (b - a) / 30:.2f}%"
+    bars = [("01", 0, 2, "l1", "w", "선정·협약"), ("02", 2, 17, "l2", "w in", "정례 보고 · 건의 관리 · 조경조명 진단"), ("03", 9, 12, "l1", "w in", "수요조사"),
+            ("04", 12, 14, "l1", "s in", "심사"), ("05", 14, 16, "l1", "s up", "박람회"), ("06", 17, 29, "l2", "o", "입주 후 1년 관리")]
     g = '<div class="gnt"><div class="ar">'
     g += "".join(f'<div class="yl" style="left:{X(m)}"><span>{y}</span></div>' for y, m in [("2027", 3), ("2028", 15), ("2029", 27)])
-    g += f'<div class="bk" style="left:0;width:{W(0, 31)}"><b>선정에서 입주까지 31개월</b></div>'
+    g += f'<div class="bk" style="left:0;width:{W(0, 17)}"><b>선정에서 입주까지 17개월</b></div>'
     g += "".join(f'<div class="br {ln} {c}" style="left:{X(a)};width:{W(a, b)}">{no}{f"<small>{tx}</small>" if tx else ""}</div>'
                  for no, a, b, ln, c, tx in bars)
-    g += f'<div class="pn" style="left:{X(31)}"><span>2029.05 입주</span></div>'
+    g += f'<div class="pn" style="left:{X(17)}"><span>2028.03 입주</span></div>'
     g += '</div></div>'
     k["body"] = '<div class="nb" style="gap:10px">' + g + k["body"].replace('<div class="rows">', '<div class="rows cmp">', 1) + '</div>'
 
@@ -693,30 +684,52 @@ def apply2(B, D, take, sub):
     b = sub(b, "하자가 나도 다른 업체를 찾을 필요가 없습니다.</div>", '하자가 나도 다른 업체를 찾을 필요가 없습니다.<br><span class="chipx">전기공사업 등록 제 울산-00821호</span></div>')
     k["body"] = b
 
-    # 조합 단지 — 벤 + 단지별 시간 분리(개념도)
-    k = take("조합 단지라서 [[챙겨야 하는 것]]")[1]
+    # 이 단지라서 먼저 챙길 것 — 벤(유상옵션 × 공동구매) + 지하 진입 높이(최초 입주자모집공고)
+    k = take("이 단지라서 [[먼저 챙길 것]]")[1]
     rows = k["body"]
-    for n_, name in enumerate(["checklist", "lockdoc", "building", "truck2", "member"], 1):
+    for n_, name in enumerate(["checklist", "tape", "truck2", "wrench", "lockdoc"], 1):
         rows = sub(rows, f'<div class="no">{n_:02d}</div>', f'<div class="no">{n_:02d}</div>{ic(name)}')
     venn = ('<svg viewBox="0 0 340 176"><defs><clipPath id="vA"><circle cx="130" cy="88" r="78"/></clipPath></defs>'
             '<circle cx="130" cy="88" r="78" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>'
             '<circle cx="210" cy="88" r="78" fill="rgba(235,203,143,.06)" stroke="#C8A86A" stroke-width="1.5"/>'
             '<circle cx="210" cy="88" r="78" fill="rgba(235,203,143,.38)" clip-path="url(#vA)"/>'
-            '<text x="90" y="74" text-anchor="middle" font-size="12.5" font-weight="700" fill="#DCE3EC">조합원</text>'
-            '<text x="90" y="91" text-anchor="middle" font-size="10.5" fill="#A9B4C2">유상옵션 ·</text>'
+            '<text x="90" y="74" text-anchor="middle" font-size="12.5" font-weight="700" fill="#DCE3EC">유상옵션</text>'
+            '<text x="90" y="91" text-anchor="middle" font-size="10.5" fill="#A9B4C2">시공사 선택 ·</text>'
             '<text x="90" y="105" text-anchor="middle" font-size="10.5" fill="#A9B4C2">기본 제공</text>'
             '<text x="170" y="84" text-anchor="middle" font-size="11.5" font-weight="800" fill="#0D1E33">겹치면</text>'
             '<text x="170" y="99" text-anchor="middle" font-size="11.5" font-weight="800" fill="#0D1E33">권하지 않음</text>'
             '<text x="250" y="74" text-anchor="middle" font-size="12.5" font-weight="700" fill="#EBCB8F">공동구매</text>'
             '<text x="250" y="91" text-anchor="middle" font-size="10.5" fill="#A9B4C2">가격 공개표로</text>'
             '<text x="250" y="105" text-anchor="middle" font-size="10.5" fill="#A9B4C2">비교 안내</text></svg>')
-    lanes = ('<div class="lns">'
-             '<div class="l">1단지<div class="t"><i class="a" style="left:2%;width:30%">설치 예약</i><i class="b" style="left:36%;width:22%">하역</i><i class="c" style="left:62%;width:30%">엘리베이터</i></div></div>'
-             '<div class="l">2단지<div class="t"><i class="c" style="left:4%;width:28%">엘리베이터</i><i class="a" style="left:36%;width:30%">설치 예약</i><i class="b" style="left:70%;width:22%">하역</i></div></div>'
-             '<div class="l">3단지<div class="t"><i class="b" style="left:6%;width:22%">하역</i><i class="c" style="left:32%;width:30%">엘리베이터</i><i class="a" style="left:66%;width:30%">설치 예약</i></div></div></div>')
-    pan = (f'<div class="vnp"><h5>옵션 중복 확인</h5>{venn}<h5>3개 단지 분리 운영</h5>{lanes}'
-           '<div class="cp">개념도 · 실제 시간대는 단지별 입주 일정에 맞춰 정합니다</div></div>')
+    hts = ('<div class="hts">'
+           '<div class="h"><b>지하 1층</b><div class="t"><i style="width:100%">차로·주출입구 2.7m 이상</i></div></div>'
+           '<div class="h"><b>지하 2층</b><div class="t"><i style="width:85%">차로 2.3m 이상</i></div></div>'
+           '<div class="h x"><b>택배차량</b><div class="t"><i>지하 진입 불가 (모집공고)</i></div></div></div>')
+    pan = (f'<div class="vnp"><h5>유상옵션 중복 확인</h5>{venn}<h5>지하 진입 높이 · 반입 동선</h5>{hts}'
+           '<div class="cp">최초 입주자모집공고 기준 · 현장 실측으로 다시 확인합니다</div></div>')
     k["body"] = f'<div class="nb"><div class="vn">{rows}{pan}</div></div>'
+    B.CSS += (".hts{display:flex;flex-direction:column;gap:7px}.hts .h{display:grid;grid-template-columns:62px 1fr;align-items:center;gap:8px;font-size:12px}"
+              ".hts .h b{font-weight:700;color:var(--ink)}.hts .t{height:20px;border-radius:4px;background:rgba(255,255,255,.05);position:relative}"
+              ".hts .t i{position:absolute;left:0;top:2px;bottom:2px;border-radius:3px;background:var(--gold);color:#0d1e33;font-style:normal;font-size:11px;font-weight:800;display:flex;align-items:center;padding-left:8px;white-space:nowrap}"
+              ".hts .h:nth-child(2) .t i{background:rgba(235,203,143,.65)}.hts .h.x .t i{position:static;display:flex;height:100%;background:transparent;border:1.5px dashed rgba(255,255,255,.45);color:var(--sub)}")
+
+    # 중앙광장·물의정원 — 단계 목록 + 경관조명 연출 사진 2장
+    k = take("중앙광장 · 물의정원, [[밤까지]] 살피겠습니다")[1]
+    rows = k["body"]
+    for n_, name in enumerate(["streetlight", "pin", "search", "report"], 1):
+        rows = sub(rows, f'<div class="no">{n_:02d}</div>', f'<div class="no">{n_:02d}</div>{ic(name)}')
+    gal = ('<div class="gal lx2">'
+           '<figure><img src="assets_ins/tj_facade_night.jpg" alt=""><figcaption>단지 경관조명<small>동 외벽 라인조명 · 연출 예시</small></figcaption></figure>'
+           '<figure><img src="assets_ins/tj_gate_night.jpg" alt=""><figcaption>문주 · 진입부 조명<small>간접조명 · 보행등 · 연출 예시</small></figcaption></figure></div>')
+    k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
+    B.CSS += ".r2 .gal.lx2{grid-template-columns:1fr;grid-template-rows:1fr 1fr}"
+
+    # 개인정보 — 아이콘 목록
+    k = take("입주민 개인정보는 [[행사 운영에만]] 씁니다")[1]
+    for n_, name in enumerate(["search", "ban", "lockdoc", "users", "megaphone", "shield"], 1):
+        k["body"] = sub(k["body"], f'<div class="no">{n_:02d}</div>', f'<div class="no">{n_:02d}</div>{ic(name)}')
+    k["body"] = k["body"].replace("grid-template-columns:46px 210px 1fr", "grid-template-columns:46px 30px 210px 1fr")
+    B.CSS += ".rows .row .cic{width:26px;height:26px;margin:0;align-self:center}"
 
     # 위임장 — 오프라인 회의 사진 → 휴대폰 서명 화면(예시)
     k = take("위임장, 이제 [[휴대폰으로]] 받습니다")[1]
@@ -761,12 +774,12 @@ def apply2(B, D, take, sub):
     k = take("사전점검 당일 [[현장 지원]]")[1]
     banner = ('<div class="bnx"><div class="bl"><i>01</i><b>행사 물품</b>'
               '<p>부스용 현수막·X배너·서면 자료 제작</p><small>시안 · 협의 후 확정</small></div>'
-              '<div class="hbw"><div class="hbn"><span class="t1">철산역 자이(조합) 입주예정자협의회</span>'
-              '<b>철산역 자이 입주민 여러분, <em>사전점검을 환영합니다</em></b>'
+              '<div class="hbw"><div class="hbn"><span class="t1">탕정 푸르지오 센터파크 입주예정자협의회</span>'
+              '<b>탕정 푸르지오 센터파크 입주민 여러분, <em>사전점검을 환영합니다</em></b>'
               '<span class="t2">입예협 안내 부스 · 라돈 측정 · 하자 체크리스트 배포</span></div><span class="cp">현수막 시안</span></div>'
-              '<div class="xbw"><div class="xbn"><div class="xh"><span>철산역 자이</span><b>사전점검<br>안내</b></div>'
-              '<ol><li>입예협 부스 방문 · 정회원 가입</li><li>라돈 측정 지원</li><li>하자 체크리스트 · 점검 요령</li><li>입주박람회 2029년 2~3월(예정)</li></ol>'
-              '<div class="xf">철산역 자이(조합)<br>입주예정자협의회</div></div><span class="cp">X배너 시안</span></div></div>')
+              '<div class="xbw"><div class="xbn"><div class="xh"><span>탕정 푸르지오 센터파크</span><b>사전점검<br>안내</b></div>'
+              '<ol><li>입예협 부스 방문 · 정회원 가입</li><li>라돈 측정 지원</li><li>하자 체크리스트 · 점검 요령</li><li>입주박람회 2027.12 ~ 2028.01(예정)</li></ol>'
+              '<div class="xf">탕정 푸르지오 센터파크<br>입주예정자협의회</div></div><span class="cp">X배너 시안</span></div></div>')
     items = [("02", "입예협 도우미", "부스 운영 인력 별도 지원", ("g09_helper_ai", "50% 30%")),
              ("03", "라돈측정기 10대", "입주민이 내 집 라돈을 직접 측정", ("g09_radon_u", "50% 50%")),
              ("04", "냉·난방용품", "점검 시기에 맞춰 부스용 준비", ("g09_heater_ai", "50% 50%")),
@@ -826,7 +839,7 @@ def apply2(B, D, take, sub):
               ".opk b{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#0d1e33;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:center}")
 
     # 핵심 혜택 6가지 — 앞 장들과 같은 아이콘을 오른쪽 위에(높이 영향 없음)
-    k = take("철산역 자이에 드리는 [[핵심 혜택 6가지]]")[1]
+    k = take("탕정 푸르지오 센터파크에 드리는 [[핵심 혜택 6가지]]")[1]
     k["body"] = inject(k["body"], ["coins", "shield", "coin10", "lockdoc", "clock", "vault"], "tile").replace('class="tiles lg"', 'class="tiles lg c6"', 1)
     B.CSS += (".c6 .tile{position:relative}.c6 .tile>.cic{position:absolute;right:18px;top:16px;width:44px;height:44px;padding:10px;border-radius:12px;"
               "background:rgba(235,203,143,.09);border:1px solid rgba(235,203,143,.38);margin:0}")
