@@ -9,7 +9,7 @@ ASS에 PlayResX/Y(영상 크기)를 명시하므로 글자 크기·여백이 픽
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from .config import OutputConfig, SubtitleConfig
 from .ffmpeg import probe_dimensions, run
@@ -104,15 +104,38 @@ def burn_subtitles(
     height: int,
     font_size: Optional[int] = None,
     margin_v: Optional[int] = None,
+    keywords: Optional[Set[str]] = None,
 ) -> Path:
     """영상에 자막을 구워 넣어 새 파일로 저장한다."""
     # ASS PlayRes를 실제 영상 해상도에 맞추면 글자 크기/여백이 픽셀 단위로 정확하다.
     real = probe_dimensions(video)
     if real:
         width, height = real
+    ass_path = work_dir / f"{out_path.stem}.ass"
+    if sub_cfg.style and sub_cfg.style != "classic":
+        from .styles import Layout, fonts_dir, write_styled_ass
+
+        layout = Layout.from_dict(
+            {
+                "pos": sub_cfg.pos,
+                "align": sub_cfg.align,
+                "scale": sub_cfg.scale,
+                "offset": sub_cfg.offset,
+            }
+        )
+        ass = write_styled_ass(
+            captions, ass_path, sub_cfg.style, width, height,
+            keywords=keywords, layout=layout,
+        )
+        fdir = fonts_dir()
+        vf = f"subtitles='{_escape_filter_path(ass)}'"
+        if fdir.exists():
+            vf += f":fontsdir='{_escape_filter_path(fdir)}'"
+        _encode(video, vf, out_path, out_cfg)
+        return out_path
     ass = write_ass(
         captions,
-        work_dir / f"{out_path.stem}.ass",
+        ass_path,
         width=width,
         height=height,
         font=sub_cfg.font,
@@ -123,6 +146,11 @@ def burn_subtitles(
         margin_v=margin_v if margin_v is not None else sub_cfg.margin_v,
     )
     vf = f"subtitles='{_escape_filter_path(ass)}'"
+    _encode(video, vf, out_path, out_cfg)
+    return out_path
+
+
+def _encode(video: Path, vf: str, out_path: Path, out_cfg: OutputConfig) -> None:
     run(
         [
             "ffmpeg",
@@ -143,4 +171,3 @@ def burn_subtitles(
         ],
         show_progress=True,
     )
-    return out_path

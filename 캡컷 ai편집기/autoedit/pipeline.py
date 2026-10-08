@@ -14,7 +14,7 @@ import shutil
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from .audio import enhance_audio
 from .branding import apply_branding
@@ -28,6 +28,7 @@ from .thumbnail import make_thumbnail
 from .transcribe import (
     Caption,
     WhisperUnavailable,
+    captions_to_json,
     parse_srt,
     transcribe,
     write_srt,
@@ -51,6 +52,9 @@ class PipelineResult:
     metadata_file: Optional[Path] = None
     shorts: List[Path] = field(default_factory=list)
     steps: List[str] = field(default_factory=list)
+    captions_json: Optional[Path] = None
+    captions: Optional[List[Caption]] = None
+    keywords: Set[str] = field(default_factory=set)
 
 
 def _remove_fillers(
@@ -140,14 +144,34 @@ def _speech_only_cut(
     out = work_dir / "speechcut.mp4"
     render_cut(video, segments, out, config.output)
 
-    new_caps = [
-        Caption(
-            start=_shift(c.start, removed_ranges),
-            end=_shift(c.end, removed_ranges),
-            text=c.text,
+    from .transcribe import Word
+
+    new_caps = []
+    for c in kept:
+        words = None
+        if c.words:
+            # 단어 타이밍도 새 타임라인으로 옮긴다 (움직이는 자막용). 추임새 단어는 뺀다.
+            words = [
+                Word(
+                    _shift(w.start, removed_ranges),
+                    _shift(w.end, removed_ranges),
+                    w.text,
+                    w.prob,
+                )
+                for w in c.words
+                if not is_filler(w.text)
+            ]
+            text = " ".join(w.text for w in words) or c.text
+        else:
+            text = c.text
+        new_caps.append(
+            Caption(
+                start=_shift(c.start, removed_ranges),
+                end=_shift(c.end, removed_ranges),
+                text=text,
+                words=words or None,
+            )
         )
-        for c in kept
-    ]
     return out, new_caps
 
 
@@ -160,6 +184,7 @@ def _finish(
     config: Config,
     assets_dir: Path,
     result: PipelineResult,
+    keywords: Optional[Set[str]] = None,
 ) -> None:
     """자막 굽기 → 숏츠 → 브랜딩. process/reburn 공통 마무리 단계."""
     # 자막 번인 (메인 영상)
@@ -176,9 +201,22 @@ def _finish(
             work_dir,
             width=config.output.width,
             height=config.output.height,
+            keywords=keywords,
         )
         main = burned
         result.steps.append("자막 번인")
+
+    # 효과음 (자막마다 고른 소리 / 강조 단어 자동)
+    if captions:
+        from .sfx import apply_sfx
+
+        with_sfx = apply_sfx(
+            main, captions, work_dir / "sfx.mp4", work_dir,
+            volume=config.subtitle.sfx_volume, auto=config.subtitle.auto_sfx,
+        )
+        if with_sfx != main:
+            main = with_sfx
+            result.steps.append("효과음")
 
     # 숏츠 — 항상 '자막 안 구운' clean 영상에서 생성 (이중 자막 방지)
     if config.shorts.enabled:
@@ -192,6 +230,7 @@ def _finish(
             config.output,
             config.subtitle,
             stem,
+            keywords,
         )
         if result.shorts:
             result.steps.append(f"숏츠 {len(result.shorts)}개")
@@ -219,8 +258,13 @@ def process(
     *,
     assets_dir: Optional[Path] = None,
     keep_temp: bool = False,
+    review: bool = False,
 ) -> PipelineResult:
-    """원본 영상 한 개를 받아 완성 영상과 숏츠를 만든다."""
+    """원본 영상 한 개를 받아 완성 영상과 숏츠를 만든다.
+
+    review=True 면 컷 편집 + 자막 분석까지만 하고 멈춘다(자막 오타를 사람이 고친 뒤
+    render_final 로 완성본을 만든다).
+    """
     ensure_ffmpeg()
     input_video = input_video.resolve()
     if not input_video.exists():
@@ -298,6 +342,35 @@ def process(
                 (1 - new_dur / dur) * 100 if dur else 0,
             )
 
+        # ── AI 오타 교정 + 핵심 단어 ───────────────────────────────
+        keywords: Set[str] = set()
+        if captions and config.subtitle.ai_typo_fix:
+            from .smart_edit import SmartEditUnavailable
+            from .typofix import fix_and_pick_keywords
+
+            try:
+                captions, keywords, nfix = fix_and_pick_keywords(
+                    captions, config.subtitle.vocab, config.smart_edit
+                )
+                result.steps.append(f"AI 오타교정 {nfix}줄")
+            except SmartEditUnavailable as exc:
+                logger.info("AI 오타 교정 건너뜀: %s", exc)
+        if captions:
+            # 숫자·핵심 단어에 자동 강조 → 편집 화면에서 사람이 켜고 끌 수 있게 미리 표시
+            from .styles import auto_emphasis
+
+            auto_emphasis(captions, keywords)
+        result.captions = captions
+        result.keywords = keywords
+
+        if captions:
+            result.captions_json = captions_to_json(
+                captions, output_dir / f"{stem}_자막.json"
+            )
+            (output_dir / f"{stem}_키워드.txt").write_text(
+                "\n".join(sorted(keywords)), encoding="utf-8"
+            )
+
         if captions:
             srt_out = output_dir / f"{stem}.srt"
             write_srt(captions, srt_out, config.subtitle.max_line_chars)
@@ -318,9 +391,14 @@ def process(
         shutil.copy2(current, clean_out)
         result.clean_video = clean_out
 
+        if review:
+            logger.info("자막 검토 대기 — 오타를 고친 뒤 완성본을 만드세요.")
+            return result
+
         # ── 3·4) 자막 굽기(선택) / 숏츠 / 브랜딩 ────────────────────
         _finish(
-            current, captions, stem, output_dir, work_dir, config, assets_dir, result
+            current, captions, stem, output_dir, work_dir, config, assets_dir, result,
+            keywords,
         )
 
         # ── 5) 썸네일 ───────────────────────────────────────────────
@@ -384,6 +462,67 @@ def reburn(
         _finish(
             clean_video, captions, stem, output_dir, work_dir, config, assets_dir, result
         )
+        return result
+    finally:
+        if keep_temp:
+            logger.info("임시 폴더 보존: %s", work_dir)
+        else:
+            shutil.rmtree(work_dir, ignore_errors=True)
+
+
+def render_final(
+    clean_video: Path,
+    captions: List[Caption],
+    output_dir: Path,
+    config: Config,
+    *,
+    keywords: Optional[Set[str]] = None,
+    assets_dir: Optional[Path] = None,
+    keep_temp: bool = False,
+) -> PipelineResult:
+    """(사람이 검토·수정한) 자막으로 완성 영상·숏츠·썸네일을 만든다."""
+    ensure_ffmpeg()
+    clean_video = Path(clean_video).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir = (assets_dir or (Path.cwd() / "assets")).resolve()
+    stem = clean_video.stem
+    if stem.endswith("_clean"):
+        stem = stem[: -len("_clean")]
+    result = PipelineResult(clean_video=clean_video, captions=captions)
+    result.keywords = set(keywords or ())
+
+    work_dir = Path(tempfile.mkdtemp(prefix="autoedit_render_"))
+    try:
+        if captions:
+            result.srt = write_srt(
+                captions, output_dir / f"{stem}.srt", config.subtitle.max_line_chars
+            )
+            result.captions_json = captions_to_json(
+                captions, output_dir / f"{stem}_자막.json"
+            )
+        title = None
+        if captions and config.metadata.enabled:
+            # 사람이 고친 자막 기준으로 제목·설명·해시태그를 다시 만든다
+            meta_out = output_dir / f"{stem}_업로드정보.txt"
+            _, meta = write_metadata(captions, meta_out, config.metadata)
+            result.metadata_file = meta_out
+            title = meta["titles"][0] if meta and meta.get("titles") else None
+        _finish(
+            clean_video, captions, stem, output_dir, work_dir, config, assets_dir,
+            result, keywords,
+        )
+        if config.thumbnail.enabled:
+            logger.info("[5/5] 썸네일 생성")
+            thumb_out = output_dir / f"{stem}_썸네일.png"
+            try:
+                make_thumbnail(
+                    clean_video, thumb_out, work_dir, captions, config.thumbnail,
+                    probe_duration(clean_video), title=title,
+                )
+                result.thumbnail = thumb_out
+                result.steps.append("썸네일")
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("썸네일 생성 건너뜀: %s", exc)
         return result
     finally:
         if keep_temp:

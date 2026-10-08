@@ -96,6 +96,15 @@
         "jugansa"
       ],
       "port": 8790
+    },
+    {
+      "name": "edge-studio",
+      "runtimeExecutable": "C:/Users/win11/AppData/Local/Programs/Python/Python312/python.exe",
+      "runtimeArgs": [
+        "-c",
+        "import sys,os; os.chdir('캡컷 ai편집기'); sys.path.insert(0,'.'); from autoedit.studio.server import main; main(['--no-window'])"
+      ],
+      "port": 8817
     }
   ]
 }

@@ -175,3 +175,76 @@ def test_find_duplicate_takes():
     assert 0 in drop          # 앞 NG 테이크는 버린다
     assert 1 not in drop      # 마지막 테이크는 유지
     assert 2 not in drop and 3 not in drop  # 서로 다른 문장은 유지
+
+
+# ── 프리미엄 자막 엔진 / 자막 편집 ──────────────────────────────
+
+from autoedit.styles import (  # noqa: E402
+    Layout,
+    auto_emphasis,
+    build_ass,
+    line_breaks_of,
+    make_phrases,
+    words_for,
+)
+from autoedit.transcribe import Word, captions_from_json  # noqa: E402
+
+
+def test_words_keep_timing_when_typo_fixed():
+    c = Caption(0, 2, "아그로 실링팬", words=[Word(0, 1, "아그로"), Word(1, 2, "실링팬")])
+    c.text = "아크로 실링팬"  # 사람이 오타 수정 (단어 수 같음)
+    ws = words_for(c)
+    assert [w.text for w in ws] == ["아크로", "실링팬"]
+    assert ws[1].start == 1
+
+
+def test_words_reestimated_when_spacing_changes():
+    c = Caption(0, 3, "14 .5cm로 얇다", words=[Word(0, 1, "14"), Word(1, 2, ".5cm로"), Word(2, 3, "얇다")])
+    c.text = "14.5cm로 얇다"
+    ws = words_for(c)
+    assert len(ws) == 2 and ws[0].start == 0 and ws[-1].end == 3
+
+
+def test_manual_line_break_kept_as_one_screen():
+    c = Caption(0, 4, "몸통 두께가 14.5cm로\n아주 얇습니다")
+    assert line_breaks_of(c.text) == {2}
+    ph = make_phrases([c], max_chars=8)
+    assert len(ph) == 1 and ph[0].breaks == {2}
+
+
+def test_auto_phrases_split_long_caption():
+    c = Caption(0, 6, "이 제품은 몸통 두께가 아주 얇아서 천장이 낮은 집에도 좋습니다")
+    assert len(make_phrases([c], max_chars=10)) >= 3
+
+
+def test_auto_emphasis_respects_manual_choice():
+    a = Caption(0, 1, "소음 24dB")
+    b = Caption(1, 2, "소음 24dB", emph={})  # 사람이 강조를 전부 끔
+    auto_emphasis([a, b])
+    assert a.emph == {1: "color"} and b.emph == {}
+
+
+def test_build_ass_emphasis_and_position():
+    c = Caption(0, 2, "아주 얇습니다", emph={1: "marker"}, pos="top", align="left")
+    ass = build_ass([c], "pop", 1920, 1080, layout=Layout())
+    assert r"\an7" in ass            # 왼쪽 위
+    assert "Dialogue: 1" in ass and ",Marker," in ass  # 형광펜 레이어
+
+
+def test_captions_json_roundtrip(tmp_path=None):
+    import tempfile
+    from pathlib import Path
+    from autoedit.transcribe import captions_to_json
+
+    d = Path(tmp_path or tempfile.mkdtemp())
+    c = Caption(0, 1, "가 나\n다", words=[Word(0, 0.5, "가", 0.3)], emph={2: "big"}, pos="middle", sfx="chime")
+    back = captions_from_json(captions_to_json([c], d / "c.json"))[0]
+    assert back.text == "가 나\n다" and back.emph == {2: "big"}
+    assert back.pos == "middle" and back.sfx == "chime" and back.words[0].prob == 0.3
+
+
+def test_sfx_cue_at_first_emphasis():
+    from autoedit.sfx import plan_cues
+
+    c = Caption(0, 2, "가 나", words=[Word(0, 1, "가"), Word(1, 2, "나")], emph={1: "big"})
+    assert plan_cues([c], auto=True) == [(1, "pop")]

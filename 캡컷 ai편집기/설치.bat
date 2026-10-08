@@ -39,9 +39,9 @@ if not exist "%VPY%" (
 )
 
 echo.
-echo [1/2] 핵심 구성요소 설치 중 ... 무음컷 / 숏츠 / 브랜딩 + ffmpeg
+echo [1/3] 핵심 구성요소 설치 중 ... 무음컷 / 숏츠 / 브랜딩 + ffmpeg
 "%VPY%" -m pip install --upgrade pip
-"%VPY%" -m pip install pyyaml imageio-ffmpeg anthropic
+"%VPY%" -m pip install pyyaml imageio-ffmpeg anthropic numpy
 if errorlevel 1 (
   echo.
   echo [오류] 핵심 구성요소 설치 실패. 인터넷 연결을 확인하고 다시 시도하세요.
@@ -50,7 +50,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/2] 자막 AI 음성인식 구성요소 설치 중 ...
+echo [2/3] 자막 AI 음성인식 구성요소 설치 중 ...
 "%VPY%" -m pip install faster-whisper
 if errorlevel 1 (
   echo.
@@ -59,9 +59,17 @@ if errorlevel 1 (
 )
 
 echo.
+echo [3/3] 자막 전용 글꼴 내려받는 중 ... (무료 OFL 글꼴)
+"%VPY%" -m autoedit.fonts_install
+
+echo.
+echo 바탕화면에 "엣지 스튜디오" 바로가기를 만듭니다 ...
+powershell -NoProfile -Command "$s=(New-Object -ComObject WScript.Shell).CreateShortcut([Environment]::GetFolderPath('Desktop')+'\엣지 스튜디오.lnk'); $s.TargetPath='%CD%\.venv\Scripts\pythonw.exe'; $s.Arguments='-m autoedit.studio'; $s.WorkingDirectory='%CD%'; $s.IconLocation='%SystemRoot%\System32\imageres.dll,186'; $s.Save()"
+
+echo.
 echo ============================================
 echo    설치 완료!
-echo    이제 "편집하기.bat" 위로 영상 파일을
-echo    마우스로 끌어다 놓으세요.
+echo    바탕화면의 "엣지 스튜디오" 를 더블클릭하세요.
+echo    (예전 방식: "편집하기.bat" 위로 영상 끌어다 놓기도 그대로 됩니다)
 echo ============================================
 pause

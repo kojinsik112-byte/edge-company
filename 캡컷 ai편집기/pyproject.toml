@@ -13,6 +13,7 @@ dependencies = [
     "faster-whisper>=1.0.0",
     "pyyaml>=6.0",
     "imageio-ffmpeg>=0.4.9",
+    "numpy",
 ]
 
 [project.optional-dependencies]
@@ -20,6 +21,10 @@ dev = ["pytest>=7.0"]
 
 [project.scripts]
 autoedit = "autoedit.cli:main"
+edge-studio = "autoedit.studio.server:main"
 
 [tool.setuptools]
-packages = ["autoedit"]
+packages = ["autoedit", "autoedit.studio"]
+
+[tool.setuptools.package-data]
+"autoedit.studio" = ["index.html"]

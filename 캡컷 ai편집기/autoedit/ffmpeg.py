@@ -22,6 +22,41 @@ class FFmpegError(RuntimeError):
     """ffmpeg/ffprobe 실행 실패."""
 
 
+# 화면 프로그램(스튜디오)이 인코딩 진행 시간을 받아 갈 수 있는 콜백. fn(처리한 초)
+PROGRESS_HOOK = None
+_TIME_RE = re.compile(r"time=(\d+):(\d+):(\d+(?:\.\d+)?)")
+
+
+def _run_with_hook(args: List[str]) -> subprocess.CompletedProcess:
+    proc = subprocess.Popen(args, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+    tail: List[str] = []
+    buf = b""
+    assert proc.stderr is not None
+    while True:
+        chunk = proc.stderr.read(512)
+        if not chunk:
+            break
+        buf += chunk
+        parts = re.split(rb"[\r\n]", buf)
+        buf = parts.pop()
+        for raw in parts:
+            line = raw.decode("utf-8", "replace")
+            if not line.strip():
+                continue
+            tail = (tail + [line])[-15:]
+            m = _TIME_RE.search(line)
+            if m and PROGRESS_HOOK:
+                h, mi, sec = m.groups()
+                try:
+                    PROGRESS_HOOK(int(h) * 3600 + int(mi) * 60 + float(sec))
+                except Exception:  # noqa: BLE001
+                    pass
+    code = proc.wait()
+    if code != 0:
+        raise FFmpegError(f"명령 실패 ({args[0]}, code={code}):\n" + "\n".join(tail))
+    return subprocess.CompletedProcess(args, code)
+
+
 def _which(name: str) -> Optional[str]:
     return shutil.which(name)
 
@@ -84,6 +119,8 @@ def run(
     그 외에는 출력을 캡처해 실패 시 마지막 로그를 예외에 담는다.
     """
     logger.debug("실행: %s", " ".join(args))
+    if show_progress and PROGRESS_HOOK is not None:
+        return _run_with_hook(args)
     if show_progress:
         display = args
         if args and Path(args[0]).name.startswith("ffmpeg"):
@@ -99,7 +136,7 @@ def run(
         args,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
     if proc.returncode != 0:
         tail = "\n".join(proc.stderr.strip().splitlines()[-15:])
@@ -135,7 +172,7 @@ def probe_duration(path: Path) -> float:
         ["ffmpeg", "-i", str(path), "-f", "null", "-"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
     times = re.findall(r"time=(\d+):(\d+):(\d+\.\d+)", proc.stderr)
     if times:
@@ -171,7 +208,7 @@ def probe_dimensions(path: Path) -> Optional[tuple[int, int]]:
         ["ffmpeg", "-i", str(path), "-f", "null", "-"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
     match = re.search(r"(\d{2,5})x(\d{2,5})", proc.stderr)
     if match:
@@ -185,7 +222,7 @@ def has_audio(path: Path) -> bool:
         ["ffmpeg", "-i", str(path), "-f", "null", "-"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
     return "Audio:" in proc.stderr
 

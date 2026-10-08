@@ -98,12 +98,16 @@ def _strip_particle(token: str) -> str:
 
 def extract_keywords(captions: List[Caption], top_n: int = 12) -> List[str]:
     """자막에서 빈도 높은 키워드를 뽑는다."""
+    from .config import DEFAULT_VOCAB
+
+    # 고유명사는 조사 떼기에서 보호 ("아크로"의 '로'를 조사로 착각해 "아크"가 되는 문제)
+    vocab = sorted(DEFAULT_VOCAB, key=len, reverse=True)
     counter: Counter = Counter()
     for cap in captions:
         for raw in _WORD_RE.findall(cap.text):
             if len(raw) < 2:
                 continue
-            token = _strip_particle(raw)
+            token = next((v for v in vocab if raw.startswith(v)), None) or _strip_particle(raw)
             if len(token) < 2 or token in _STOPWORDS:
                 continue
             counter[token] += 1
@@ -145,8 +149,9 @@ def suggest_titles(keywords: List[str], n: int = 5) -> List[str]:
     """키워드 기반 제목 후보(초안)를 만든다."""
     kw = keywords + ["", "", ""]
     templates = [
-        f"{kw[0]} 완벽 정리 (이거 모르면 손해)",
-        f"{kw[0]}, 이것만 알면 끝납니다",
+        # (표시광고법: '완벽·최고·이거 모르면 손해' 같은 과장·낚시 표현은 쓰지 않는다)
+        f"{kw[0]} {kw[1]} 한눈에 정리".strip(),
+        f"{kw[0]}, 핵심만 알려드립니다",
         f"{kw[0]} 핵심만 빠르게 정리",
         f"초보도 이해하는 {kw[0]} {kw[1]}".strip(),
         f"{kw[0]} 하는 법 | {kw[1]} 총정리".strip().strip("|").strip(),

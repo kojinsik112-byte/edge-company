@@ -7,7 +7,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
+
+# 음성인식이 자주 틀리는 회사·제품 용어 (Whisper 힌트 + AI 교정 사전)
+DEFAULT_VOCAB = [
+    "엣지컴퍼니", "아크로", "실링팬", "주관사", "입주박람회", "입주민", "분양",
+    "엣지리브커튼", "전동커튼", "블라인드", "스마트스토어", "BLDC", "블루투스",
+]
 
 try:
     import yaml  # type: ignore
@@ -34,7 +40,7 @@ class SubtitleConfig:
     """자동 자막(번인) 설정."""
 
     enabled: bool = True
-    model: str = "base"          # whisper 모델 크기 (tiny/base/small/medium/large-v3). base=빠름·괜찮은 정확도
+    model: str = "small"         # whisper 모델 크기 (tiny/base/small/medium/large-v3). base=빠름·괜찮은 정확도
     device: str = "cpu"          # "cpu"(권장, 어디서나 동작) 또는 "cuda"(NVIDIA GPU+CUDA 설치 시)
     language: Optional[str] = "ko"
     burn_in: bool = False        # 화면에 자막 글자 표시 (오타 우려로 기본 끔). 켜려면 true
@@ -48,6 +54,15 @@ class SubtitleConfig:
     outline: int = 3             # 외곽선 두께 (px)
     margin_v: int = 60           # 화면 하단 여백 (px)
     max_line_chars: int = 28     # SRT 파일 줄바꿈 기준 (번인은 자동 줄바꿈)
+    style: str = "pop"           # 자막 디자인 (pop/clean/box/variety/neon/edge/cinema, classic=예전 방식)
+    vocab: List[str] = field(default_factory=lambda: list(DEFAULT_VOCAB))  # 자주 쓰는 고유명사 (오타 감소)
+    ai_typo_fix: bool = True     # AI가 문맥으로 음성인식 오타 교정 (API 키 있을 때)
+    pos: str = "bottom"          # 자막 기본 위치 bottom/middle/top (자막마다 따로 지정 가능)
+    align: str = "center"        # 자막 기본 정렬 left/center/right
+    scale: int = 100             # 자막 글자 크기 (%)
+    offset: float = 0.0          # 위아래 미세조정 (화면 높이 %, +면 위로)
+    sfx_volume: float = 0.5      # 효과음 크기 (0~1)
+    auto_sfx: bool = False       # 강조 단어(크게/형광펜/빨강)에 효과음 자동
 
 
 @dataclass

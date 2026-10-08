@@ -6,11 +6,12 @@ faster-whisper 미설치 시 명확한 안내와 함께 자막 단계만 건너�
 
 from __future__ import annotations
 
+import json
 import re
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from .config import SubtitleConfig
 from .ffmpeg import extract_audio
@@ -26,14 +27,20 @@ class Word:
     start: float
     end: float
     text: str
+    prob: float = 1.0  # 음성인식 확신도 (낮으면 오타 의심 → 편집 화면에서 빨간 표시)
 
 
 @dataclass
 class Caption:
     start: float
     end: float
-    text: str
+    text: str                     # 줄바꿈("\n")은 화면에서도 그대로 줄이 바뀜
     words: Optional[List["Word"]] = None
+    # ── 편집 화면에서 사람이 지정하는 값 (없으면 스타일 기본값) ──
+    emph: Optional[Dict[int, str]] = None  # 단어 번호 → 강조 종류(color/big/marker/red)
+    pos: Optional[str] = None     # bottom / middle / top
+    align: Optional[str] = None   # left / center / right
+    sfx: Optional[str] = None     # 효과음 이름 (첫 강조 단어 타이밍, 없으면 자막 시작에 재생)
 
 
 def _load_model(cfg: SubtitleConfig):
@@ -74,6 +81,9 @@ def transcribe(
         vad_filter=True,
         beam_size=5,
         word_timestamps=need_words,
+        # 회사·제품 고유명사를 미리 알려주면 '아크로→아그로' 같은 오타가 크게 줄어든다.
+        # (쉼표로 나열하면 Whisper가 자막에도 쉼표를 끼워 넣으므로 띄어쓰기로만 잇는다)
+        initial_prompt=(" ".join(cfg.vocab) + " 이야기를 해 볼게요.") if cfg.vocab else None,
     )
     logger.info("음성 인식 언어: %s", getattr(info, "language", cfg.language))
 
@@ -89,7 +99,12 @@ def transcribe(
             words = None
             if need_words and getattr(s, "words", None):
                 words = [
-                    Word(start=w.start, end=w.end, text=w.word.strip())
+                    Word(
+                        start=w.start,
+                        end=w.end,
+                        text=w.word.strip(),
+                        prob=float(getattr(w, "probability", 1.0) or 1.0),
+                    )
                     for w in s.words
                     if w.word.strip()
                 ]
@@ -168,11 +183,96 @@ def slice_captions(
     for cap in captions:
         if cap.end <= start or cap.start >= end:
             continue
+        # 자막 한 줄은 통째로 유지(편집한 글자·강조·위치가 그대로 살도록), 시간만 옮긴다.
+        words = None
+        if cap.words:
+            words = [
+                Word(
+                    max(0.0, w.start - start),
+                    max(0.0, min(end, w.end) - start),
+                    w.text,
+                    w.prob,
+                )
+                for w in cap.words
+            ]
         out.append(
             Caption(
                 start=max(0.0, cap.start - start),
                 end=min(end, cap.end) - start,
                 text=cap.text,
+                words=words,
+                emph=cap.emph,
+                pos=cap.pos,
+                align=cap.align,
+                sfx=cap.sfx if cap.start >= start else None,
+            )
+        )
+    return out
+
+
+def captions_to_json(captions: List[Caption], out_path: Path) -> Path:
+    """자막을 단어 타이밍까지 포함해 JSON으로 저장한다 (자막 편집 화면용)."""
+    data = [
+        {
+            "start": round(c.start, 3),
+            "end": round(c.end, 3),
+            "text": c.text,
+            "words": [
+                {
+                    "start": round(w.start, 3),
+                    "end": round(w.end, 3),
+                    "text": w.text,
+                    "prob": round(w.prob, 3),
+                }
+                for w in (c.words or [])
+            ],
+            "emph": {str(k): v for k, v in c.emph.items()} if c.emph is not None else None,
+            "pos": c.pos,
+            "align": c.align,
+            "sfx": c.sfx,
+        }
+        for c in captions
+    ]
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    return out_path
+
+
+def captions_from_json(data) -> List[Caption]:
+    """captions_to_json 형식(파일 경로 또는 리스트)을 자막 목록으로 되돌린다."""
+    if isinstance(data, (str, Path)):
+        data = json.loads(Path(data).read_text(encoding="utf-8"))
+    out: List[Caption] = []
+    for d in data:
+        text = "\n".join(
+            ln.strip() for ln in str(d.get("text", "")).splitlines() if ln.strip()
+        )
+        if not text:
+            continue
+        words = [
+            Word(
+                float(w["start"]),
+                float(w["end"]),
+                str(w["text"]),
+                float(w.get("prob", 1.0)),
+            )
+            for w in d.get("words") or []
+        ] or None
+        emph = d.get("emph")
+        if isinstance(emph, dict):
+            emph = {int(k): str(v) for k, v in emph.items() if v}
+        else:
+            emph = None
+        out.append(
+            Caption(
+                float(d["start"]),
+                float(d["end"]),
+                text,
+                words,
+                emph=emph,
+                pos=d.get("pos") or None,
+                align=d.get("align") or None,
+                sfx=d.get("sfx") or None,
             )
         )
     return out
