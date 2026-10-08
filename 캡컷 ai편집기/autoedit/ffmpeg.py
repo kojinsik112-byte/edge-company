@@ -167,7 +167,13 @@ def probe_duration(path: Path) -> float:
         except (KeyError, ValueError, json.JSONDecodeError):
             pass  # 일부 컨테이너는 format.duration이 비어 있다 → 대체 경로로
 
-    # ffprobe가 없거나 길이를 못 읽은 경우: ffmpeg를 null 출력으로 돌려 time= 파싱
+    # ffprobe가 없으면: 먼저 파일 머리(헤더)의 Duration 을 읽는다 (즉시 끝남).
+    m = re.search(r"Duration: (\d+):(\d+):(\d+(?:\.\d+)?)", _header(path))
+    if m:
+        h, mi, sec = m.groups()
+        return int(h) * 3600 + int(mi) * 60 + float(sec)
+
+    # 헤더에 길이가 없는 드문 경우에만 전체를 훑어 time= 파싱 (느림)
     proc = subprocess.run(
         ["ffmpeg", "-i", str(path), "-f", "null", "-"],
         stdout=subprocess.PIPE,
@@ -179,6 +185,23 @@ def probe_duration(path: Path) -> float:
         h, m, s = times[-1]
         return int(h) * 3600 + int(m) * 60 + float(s)
     raise FFmpegError(f"미디어 길이를 측정할 수 없습니다: {path}")
+
+
+def _header(path: Path) -> str:
+    """ffmpeg -i 로 파일 정보만 읽는다 (영상 전체를 디코딩하지 않음 → 대용량도 즉시)."""
+    proc = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-i", str(path)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True, encoding="utf-8", errors="replace",
+    )
+    return proc.stderr or ""
+
+
+def _rotated(info: str) -> bool:
+    """폰 세로 촬영 영상(회전 정보 ±90°)인지."""
+    m = re.search(r"rotation of (-?\d+(?:\.\d+)?) degrees", info) or re.search(r"rotate\s*:\s*(-?\d+)", info)
+    return bool(m) and abs(round(float(m.group(1)))) % 180 == 90
 
 
 def probe_dimensions(path: Path) -> Optional[tuple[int, int]]:
@@ -204,27 +227,24 @@ def probe_dimensions(path: Path) -> Optional[tuple[int, int]]:
             return int(stream["width"]), int(stream["height"])
         except (KeyError, IndexError, ValueError, json.JSONDecodeError):
             return None
-    proc = subprocess.run(
-        ["ffmpeg", "-i", str(path), "-f", "null", "-"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True, encoding="utf-8", errors="replace",
-    )
-    match = re.search(r"(\d{2,5})x(\d{2,5})", proc.stderr)
+    info = _header(path)
+    # 영상 스트림 줄의 해상도만 (앨범아트·자막 스트림 제외)
+    match = None
+    for line in info.splitlines():
+        if "Video:" in line and "attached pic" not in line:
+            match = re.search(r"\b(\d{2,5})x(\d{2,5})\b", line)
+            if match:
+                break
     if match:
-        return int(match.group(1)), int(match.group(2))
+        w, h = int(match.group(1)), int(match.group(2))
+        # 폰으로 세로 촬영한 영상은 가로로 저장되고 '회전' 표시만 붙어 있다 → 실제 보이는 크기로
+        return (h, w) if _rotated(info) else (w, h)
     return None
 
 
 def has_audio(path: Path) -> bool:
     """영상에 오디오 트랙이 있는지 확인한다."""
-    proc = subprocess.run(
-        ["ffmpeg", "-i", str(path), "-f", "null", "-"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True, encoding="utf-8", errors="replace",
-    )
-    return "Audio:" in proc.stderr
+    return "Audio:" in _header(path)
 
 
 def extract_audio(video: Path, out_wav: Path, sample_rate: int = 16000) -> Path:

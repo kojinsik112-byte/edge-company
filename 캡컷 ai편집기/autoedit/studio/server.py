@@ -566,14 +566,40 @@ class Handler(BaseHTTPRequestHandler):
     def _job(self, jid: str) -> Optional[Job]:
         return JOBS.get(jid)
 
+    # 보안: 이 PC의 스튜디오 화면에서 온 요청만 받는다.
+    def _guard(self, write: bool) -> bool:
+        host = (self.headers.get("Host") or "").lower()
+        ok_hosts = {f"127.0.0.1:{PORT}", f"localhost:{PORT}"}
+        if host not in ok_hosts:
+            # 다른 도메인 이름으로 우회 접속(DNS 리바인딩) 차단
+            self._json({"error": "허용되지 않은 접속"}, 403)
+            return False
+        if write:
+            origin = self.headers.get("Origin")
+            if origin and urllib.parse.urlparse(origin).netloc.lower() not in ok_hosts:
+                self._json({"error": "다른 사이트의 요청은 받지 않습니다"}, 403)
+                return False
+            # 전용 표식 헤더: 다른 웹사이트는 이 헤더를 붙여 보낼 수 없다(브라우저가 차단)
+            if self.headers.get("X-Edge-Studio") != "1":
+                self._json({"error": "허용되지 않은 요청"}, 403)
+                return False
+        return True
+
     # 라우팅
     def do_GET(self):
+        if not self._guard(False):
+            return
         u = urllib.parse.urlparse(self.path)
         q = urllib.parse.parse_qs(u.query)
         path = u.path
         try:
             if path in ("/", "/index.html"):
                 return self._file(HERE / "index.html", "text/html; charset=utf-8")
+            m = re.match(r"^/fonts/([\w\-]+\.(?:ttf|otf))$", path)
+            if m:
+                from ..styles import fonts_dir
+
+                return self._file(fonts_dir() / m.group(1), "font/" + m.group(1).rsplit(".", 1)[1])
             if path == "/api/ping":
                 return self._json({"ok": True, "app": "edge-studio"})
             if path == "/api/init":
@@ -591,7 +617,7 @@ class Handler(BaseHTTPRequestHandler):
                              "box_color": s.box_color, "glow": s.glow,
                              "size": s.size, "size_v": s.size_v, "max_chars": s.max_chars,
                              "max_chars_v": s.max_chars_v, "outline": s.outline,
-                             "outline_color": s.outline_color}
+                             "outline_color": s.outline_color, "font": s.font, "bold": s.bold}
                             for s in STYLES.values()
                         ],
                         "emphasis": EMPHASIS,
@@ -634,6 +660,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"error": str(exc)}, 500)
 
     def do_PUT(self):
+        if not self._guard(True):
+            return
         u = urllib.parse.urlparse(self.path)
         q = urllib.parse.parse_qs(u.query)
         if u.path != "/api/upload":
@@ -663,12 +691,28 @@ class Handler(BaseHTTPRequestHandler):
         return self._json(job.public())
 
     def do_POST(self):
+        if not self._guard(True):
+            return
         u = urllib.parse.urlparse(self.path)
         path = u.path
         try:
             body = self._body()
             if path == "/api/settings":
                 return self._json(save_settings(body))
+            if path == "/api/pick":
+                # 윈도우 파일 선택창 → 원본을 복사하지 않고 그 자리에서 바로 편집 (대용량에 유리)
+                picked = _pick_file()
+                if not picked:
+                    return self._json({"cancelled": True})
+                src = Path(picked)
+                job = Job(src, _safe_name(src.stem))
+                try:
+                    job.duration = ff.probe_duration(src)
+                    job.poster = _poster(src, PREVIEWS / f"{job.id}_poster.jpg", min(3.0, job.duration / 3))
+                except Exception:  # noqa: BLE001
+                    pass
+                JOBS[job.id] = job
+                return self._json(job.public())
             if path == "/api/projects/open":
                 d = Path(body.get("dir", ""))
                 if not _allowed(d) or not (d / "_project.json").exists():
@@ -710,6 +754,31 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as exc:  # noqa: BLE001
             traceback.print_exc()
             return self._json({"error": str(exc)}, 500)
+
+
+_PICK_LOCK = threading.Lock()
+
+
+def _pick_file() -> Optional[str]:
+    """윈도우 '열기' 창으로 영상 파일을 고른다."""
+    with _PICK_LOCK:
+        try:
+            import tkinter as tk
+            from tkinter import filedialog
+        except Exception:  # noqa: BLE001
+            return None
+        root = tk.Tk()
+        root.withdraw()
+        root.attributes("-topmost", True)
+        try:
+            path = filedialog.askopenfilename(
+                title="편집할 영상 선택",
+                filetypes=[("영상", "*.mp4 *.mov *.m4v *.mkv *.avi *.webm"), ("모든 파일", "*.*")],
+                initialdir=str(Path.home() / "Videos"),
+            )
+        finally:
+            root.destroy()
+        return path or None
 
 
 # ───────────────────────────── 실행 ─────────────────────────────

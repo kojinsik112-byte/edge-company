@@ -65,6 +65,25 @@ def _load_model(cfg: SubtitleConfig):
         raise
 
 
+def _hallucinated(seg, text: str, vocab: List[str]) -> bool:
+    """음성인식이 '말하지 않은 말'을 지어낸 구간인지 판정한다.
+
+    - 용어 사전 힌트를 그대로 되풀이 (예: 말이 없는데 "엣지컴퍼니 아크로 실링팬 주관사…")
+    - 같은 말 무한 반복 (압축률이 비정상적으로 높음)
+    - 말소리가 아닐 확률이 높고 확신도도 낮음 (음악·소음 구간)
+    """
+    tokens = [t.strip(".,!?…") for t in text.split()]
+    if vocab and len(tokens) >= 3:
+        in_vocab = sum(1 for t in tokens if any(t.startswith(v) for v in vocab))
+        if in_vocab / len(tokens) >= 0.6:
+            return True
+    if getattr(seg, "compression_ratio", 0) > 2.4:
+        return True
+    nsp = getattr(seg, "no_speech_prob", 0.0)
+    lp = getattr(seg, "avg_logprob", 0.0)
+    return nsp > 0.6 and lp < -0.8
+
+
 def transcribe(
     video: Path, work_dir: Path, cfg: SubtitleConfig, *, want_words: bool = False
 ) -> List[Caption]:
@@ -95,6 +114,9 @@ def transcribe(
     logger.info("음성 인식 시작... (영상 길이에 비례해 시간이 걸립니다)")
     for s in segments:
         text = s.text.strip()
+        if text and _hallucinated(s, text, cfg.vocab):
+            logger.info("받아쓰기 환각 의심 → 제외: %s", text[:40])
+            text = ""
         if text:
             words = None
             if need_words and getattr(s, "words", None):

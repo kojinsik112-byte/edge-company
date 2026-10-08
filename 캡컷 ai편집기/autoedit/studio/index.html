@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>엣지 스튜디오</title>
 <style>
+/* 자막 글꼴 (프로그램 폴더 assets/fonts — 없으면 맑은 고딕) */
+@font-face{font-family:"Black Han Sans";src:url(/fonts/BlackHanSans-Regular.ttf)}
+@font-face{font-family:"Do Hyeon";src:url(/fonts/DoHyeon-Regular.ttf)}
+@font-face{font-family:"Jua";src:url(/fonts/Jua-Regular.ttf)}
+@font-face{font-family:"Pretendard";font-weight:700;src:url(/fonts/Pretendard-Bold.otf)}
+@font-face{font-family:"Pretendard";font-weight:400;src:url(/fonts/Pretendard-Regular.otf)}
 :root{
   --bg:#F4F6FA; --panel:#FFFFFF; --ink:#0F172A; --sub:#64748B; --faint:#94A3B8;
   --line:#E6EAF2; --soft:#F1F4F9; --accent:#3557FF; --accent-ink:#fff; --accent-soft:#EEF2FF;
@@ -164,6 +170,10 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 .cap:hover .opts,.cap.sel .opts,.cap:focus-within .opts{opacity:1;height:auto;overflow:visible}
 .opts select{border:1px solid var(--line);border-radius:7px;padding:3px 6px;font-size:12px;background:#fff}
 .opts .sp{flex:1}
+.timing{width:100%;display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding-top:6px;margin-top:2px;border-top:1px dashed var(--line)}
+.timing .tl{font-size:11px;font-weight:700;color:var(--faint);margin:0 2px 0 6px}
+.timing .btn.sm{padding:3px 7px;font-size:11px}
+.btn:disabled{opacity:.4;cursor:default}
 .flag{font-size:11px;font-weight:700;color:var(--sub);background:var(--soft);padding:2px 6px;border-radius:5px}
 .flag.sfx{background:#F3E8FF;color:#7C3AED}
 .menu{position:fixed;z-index:50;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px rgba(15,23,42,.18);padding:6px;min-width:150px}
@@ -296,7 +306,11 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
       <div class="hd">
         <div class="row" style="justify-content:space-between">
           <h2 style="margin:0">자막 편집 <span class="muted" id="capCount" style="font-weight:500;font-size:13px"></span></h2>
-          <span class="saved" id="saved"></span>
+          <span class="row" style="gap:4px">
+            <span class="saved" id="saved"></span>
+            <button class="btn sm" id="undoBtn" title="되돌리기 (Ctrl+Z)" disabled>↶ 되돌리기</button>
+            <button class="btn sm" id="redoBtn" title="다시 하기 (Ctrl+Y)" disabled>↷</button>
+          </span>
         </div>
         <div class="tools">
           <input id="findIn" placeholder="찾기 (예: 아그로)">
@@ -360,6 +374,7 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const api = async (url, opt = {}) => {
+  opt.headers = {...(opt.headers || {}), 'X-Edge-Studio': '1'};
   const r = await fetch(url, opt);
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error || r.statusText);
@@ -422,7 +437,18 @@ $('#vocabIn').addEventListener('keydown', e => {
 
 // ───────── 업로드
 const drop = $('#drop');
-drop.onclick = () => $('#file').click();
+// 클릭 = 윈도우 파일 선택창 (원본 복사 없이 바로 편집 → 대용량도 빠름). 실패하면 브라우저 선택창.
+drop.onclick = async () => {
+  try {
+    $('#dropTitle').textContent = '파일 선택 창을 확인하세요…';
+    const j = await post('/api/pick');
+    resetDrop();
+    if (j.cancelled) return;
+    JOB = j;
+    await post(`/api/jobs/${JOB.id}/analyze`, {options: S});
+    JOB.stage = 'analyzing'; startPoll();
+  } catch (e) { resetDrop(); $('#file').click(); }
+};
 $('#file').onchange = e => e.target.files[0] && upload(e.target.files[0]);
 ['dragenter', 'dragover'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); if (!$('#vHome').classList.contains('hidden')) drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); if (ev === 'drop' || e.target === drop) drop.classList.remove('over'); }));
@@ -435,6 +461,7 @@ function upload(file) {
   $('#upbar').classList.remove('hidden');
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', '/api/upload?name=' + encodeURIComponent(file.name));
+  xhr.setRequestHeader('X-Edge-Studio', '1');
   xhr.upload.onprogress = e => { if (e.lengthComputable) $('#upbar i').style.width = (e.loaded / e.total * 100) + '%'; };
   xhr.onload = async () => {
     if (xhr.status !== 200) { toast('불러오기 실패'); resetDrop(); return; }
@@ -492,6 +519,7 @@ async function openEditor() {
   bindSettings();
   buildStyleCards(); renderList(); drawOverlay(true);
   $('#saved').textContent = '';
+  HIST = []; FUT = []; lastSnap = JSON.stringify(CAPS); histButtons();
 }
 
 function tokens(text) { return text.split(/\s+/).filter(Boolean); }
@@ -533,7 +561,7 @@ function capRow(c, i, ls) {
   if (c.align) flags.push({left: '왼쪽', center: '가운데정렬', right: '오른쪽'}[c.align]);
   el.innerHTML = `
     <div class="row" style="gap:6px">
-      <span class="tm" title="여기부터 재생">▶ ${fmt(c.start)}</span>
+      <span class="tm" title="여기부터 재생">▶ ${fmt(c.start)} → ${fmt(c.end)}</span>
       ${flags.map(f => `<span class="flag">${f}</span>`).join('')}
       ${c.sfx ? `<span class="flag sfx">🔔 ${INIT.sfx[c.sfx] || c.sfx}</span>` : ''}
     </div>
@@ -548,6 +576,16 @@ function capRow(c, i, ls) {
       <button class="btn sm ghost o-split" title="커서 위치에서 두 줄로 나누기 (Ctrl+Enter)">나누기</button>
       <button class="btn sm ghost o-merge" title="다음 줄과 합치기">합치기</button>
       <button class="btn sm ghost o-del" title="이 자막 지우기 (영상은 그대로)" style="color:var(--warn)">삭제</button>
+      <div class="timing">
+        <span class="tl">⏱ 시작</span>
+        <button class="btn sm" data-t="s,-0.1" title="0.1초 빨리 나오게">−0.1</button><button class="btn sm" data-t="s,0.1" title="0.1초 늦게 나오게">+0.1</button>
+        <button class="btn sm" data-t="s,now" title="지금 영상 위치를 시작으로">지금 위치</button>
+        <span class="tl">끝</span>
+        <button class="btn sm" data-t="e,-0.1">−0.1</button><button class="btn sm" data-t="e,0.1">+0.1</button>
+        <button class="btn sm" data-t="e,now" title="지금 영상 위치를 끝으로">지금 위치</button>
+        <span class="tl">통째로</span>
+        <button class="btn sm" data-t="a,-0.2" title="자막 전체를 0.2초 앞으로">◀ 0.2</button><button class="btn sm" data-t="a,0.2" title="자막 전체를 0.2초 뒤로">0.2 ▶</button>
+      </div>
     </div>`;
   const ta = el.querySelector('textarea');
   ta.value = c.text;
@@ -571,6 +609,7 @@ function capRow(c, i, ls) {
   el.querySelector('.o-split').onclick = () => splitAt(i, ta.selectionStart || Math.floor(ta.value.length / 2));
   el.querySelector('.o-merge').onclick = () => mergeNext(i);
   el.querySelector('.o-del').onclick = () => { CAPS.splice(i, 1); changed(); renderList(); };
+  el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => nudgeTime(i, ...b.dataset.t.split(',')));
   return el;
 }
 
@@ -686,9 +725,58 @@ $('#findIn').addEventListener('input', () => {
 });
 $$('#filters button').forEach(b => b.onclick = () => { filter = b.dataset.f; $$('#filters button').forEach(x => x.classList.toggle('on', x === b)); renderList(); });
 
+// 자막 시간 조절
+function nudgeTime(i, which, amount) {
+  const c = CAPS[i];
+  const now = $('#vid').currentTime || 0;
+  const prevEnd = i > 0 ? CAPS[i - 1].end : 0;
+  const nextStart = i + 1 < CAPS.length ? CAPS[i + 1].start : Infinity;
+  const r = x => Math.round(x * 100) / 100;
+  if (which === 'a') {
+    const d = parseFloat(amount);
+    const dd = Math.max(-c.start, d);
+    c.start = r(c.start + dd); c.end = r(c.end + dd);
+    (c.words || []).forEach(w => { w.start = r(w.start + dd); w.end = r(w.end + dd); });
+  } else {
+    let v = amount === 'now' ? now : (which === 's' ? c.start : c.end) + parseFloat(amount);
+    if (which === 's') c.start = r(Math.max(0, Math.min(v, c.end - 0.2)));
+    else c.end = r(Math.max(v, c.start + 0.2));
+  }
+  let warn = '';
+  if (c.start < prevEnd - 0.01) warn = '앞 자막과 겹쳐요';
+  if (c.end > nextStart + 0.01) warn = '뒤 자막과 겹쳐요';
+  changed(); rerowKeep(i); drawOverlay(true);
+  toast(`${fmt(c.start)} → ${fmt(c.end)}${warn ? ' · ' + warn : ''}`);
+  if (which !== 'e') seek(c.start, false);
+}
+
+// 되돌리기 / 다시 하기
+let HIST = [], FUT = [], lastSnap = '[]';
+function histButtons() { $('#undoBtn').disabled = !HIST.length; $('#redoBtn').disabled = !FUT.length; }
+function restoreSnap(snap) { CAPS = JSON.parse(snap); lastSnap = snap; renderList(); drawOverlay(true); saveNow(); histButtons(); }
+function undo() { if (!HIST.length) return toast('되돌릴 게 없어요'); FUT.push(lastSnap); restoreSnap(HIST.pop()); toast('되돌렸어요'); }
+function redo() { if (!FUT.length) return; HIST.push(lastSnap); restoreSnap(FUT.pop()); toast('다시 적용했어요'); }
+$('#undoBtn').onclick = undo; $('#redoBtn').onclick = redo;
+document.addEventListener('keydown', e => {
+  if ($('#vEdit').classList.contains('hidden')) return;
+  if (/TEXTAREA|INPUT/.test(document.activeElement.tagName)) return; // 글자 칸 안에서는 칸 자체의 되돌리기
+  const k = e.key.toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+  else if ((e.ctrlKey || e.metaKey) && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
+});
+
 // 자동 저장
 let saveH = null;
+function saveNow() {
+  clearTimeout(saveH);
+  saveH = setTimeout(async () => {
+    try { const r = await post(`/api/jobs/${JOB.id}/captions`, {captions: CAPS}); $('#saved').textContent = '✓ 저장됨 ' + r.saved; }
+    catch { $('#saved').textContent = '저장 실패'; }
+  }, 500);
+}
 function changed() {
+  const snap = JSON.stringify(CAPS);
+  if (snap !== lastSnap) { HIST.push(lastSnap); if (HIST.length > 200) HIST.shift(); FUT = []; lastSnap = snap; histButtons(); }
   $('#saved').textContent = '저장 중…';
   clearTimeout(saveH);
   saveH = setTimeout(async () => {
@@ -765,7 +853,8 @@ function drawOverlay(force) {
   const y = pos === 'bottom' ? `bottom:${(vertical ? 30 : 8.5) + S.offset}%` : pos === 'top' ? `top:${8 - S.offset}%` : `top:50%;transform:translateY(-50%) translateY(${-S.offset}%)`;
   const ai = align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center';
   const box = st.box ? `background:${st.box_color === '#000000' ? 'rgba(0,0,0,.75)' : st.box_color};` : '';
-  ov.innerHTML = `<div class="line" style="${y};align-items:${ai};text-align:${align};font-size:${sizePx}px;${outline}${glow}">
+  const ff = `font-family:"${st.font}","Malgun Gothic",sans-serif;font-weight:${st.bold ? 700 : 400};`;
+  ov.innerHTML = `<div class="line" style="${y};align-items:${ai};text-align:${align};font-size:${sizePx}px;${ff}${outline}${glow}">
     <div class="${st.box ? 'box' : ''}" style="${box}">${html}</div></div>`;
 }
 $('#vid').addEventListener('timeupdate', () => drawOverlay(false));

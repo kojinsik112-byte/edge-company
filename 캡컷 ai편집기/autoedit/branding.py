@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 from typing import List, Optional
 
@@ -178,6 +179,10 @@ def apply_branding(
         concat_videos(sequence, out_path, out_cfg, work_dir)
     else:
         # 붙일 게 없으면 현재 결과를 그대로 최종 파일로.
+        # 입력 영상 자체(=다시 편집할 때 쓰는 clean 영상일 수 있음)는 옮기지 말고 복사한다.
         if current != out_path:
-            current.replace(out_path)
+            if current == video:
+                shutil.copy2(current, out_path)
+            else:
+                current.replace(out_path)
     return out_path

@@ -16,8 +16,8 @@ FONTS = [
     ("BlackHanSans-Regular.ttf", "https://github.com/google/fonts/raw/main/ofl/blackhansans/BlackHanSans-Regular.ttf"),
     ("DoHyeon-Regular.ttf", "https://github.com/google/fonts/raw/main/ofl/dohyeon/DoHyeon-Regular.ttf"),
     ("Jua-Regular.ttf", "https://github.com/google/fonts/raw/main/ofl/jua/Jua-Regular.ttf"),
-    ("Pretendard-Bold.otf", "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/public/static/Pretendard-Bold.otf"),
-    ("Pretendard-Regular.otf", "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/public/static/Pretendard-Regular.otf"),
+    ("Pretendard-Bold.otf", "https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/Pretendard-Bold.otf"),
+    ("Pretendard-Regular.otf", "https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/Pretendard-Regular.otf"),
 ]
 
 

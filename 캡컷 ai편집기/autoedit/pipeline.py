@@ -20,7 +20,7 @@ from .audio import enhance_audio
 from .branding import apply_branding
 from .config import Config
 from .fillers import find_filler_ranges, remap_captions
-from .ffmpeg import ensure_ffmpeg, probe_duration
+from .ffmpeg import ensure_ffmpeg, probe_dimensions, probe_duration
 from .metadata import write_metadata
 from .silence import cut_silence, render_cut
 from .subtitles import burn_subtitles
@@ -41,6 +41,15 @@ from .utils import (
     logger,
     merge_intervals,
 )
+
+
+def _match_orientation(config: Config, video: Path) -> None:
+    """세로로 찍은 영상이면 출력 규격(인트로/아웃트로 맞춤 등)도 세로로 바꾼다."""
+    dims = probe_dimensions(video)
+    out = config.output
+    if dims and dims[1] > dims[0] and out.width > out.height:
+        out.width, out.height = out.height, out.width
+        logger.info("세로 영상 → 출력도 세로 %dx%d", out.width, out.height)
 
 
 @dataclass
@@ -279,6 +288,7 @@ def process(
     logger.info("작업 폴더: %s", work_dir)
     try:
         dur = probe_duration(input_video)
+        _match_orientation(config, input_video)
         logger.info("입력 영상: %s (%s)", input_video.name, fmt_duration(dur))
 
         # ── 0) 오디오 음질 개선 ─────────────────────────────────────
@@ -490,6 +500,7 @@ def render_final(
         stem = stem[: -len("_clean")]
     result = PipelineResult(clean_video=clean_video, captions=captions)
     result.keywords = set(keywords or ())
+    _match_orientation(config, clean_video)
 
     work_dir = Path(tempfile.mkdtemp(prefix="autoedit_render_"))
     try:

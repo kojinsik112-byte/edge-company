@@ -312,7 +312,13 @@ def words_for(cap: Caption) -> List[Word]:
     """
     tokens = tokens_of(cap.text)
     if cap.words and len(cap.words) == len(tokens):
-        return [Word(w.start, w.end, tok, w.prob) for w, tok in zip(cap.words, tokens)]
+        # 사람이 자막 시작/끝 시간을 조절했으면 단어 타이밍도 그 범위 안으로 맞춘다
+        out = []
+        for w, tok in zip(cap.words, tokens):
+            s = min(max(w.start, cap.start), cap.end)
+            e = min(max(w.end, s), cap.end)
+            out.append(Word(s, e, tok, w.prob))
+        return out
     return estimate_words(cap)
 
 

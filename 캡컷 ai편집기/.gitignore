@@ -29,3 +29,6 @@ assets/*.wav
 
 # OS
 .DS_Store
+
+# 자막 글꼴 (설치.bat 이 내려받음)
+assets/fonts/
