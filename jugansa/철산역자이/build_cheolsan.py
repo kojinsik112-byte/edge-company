@@ -85,6 +85,7 @@ B.CSS += r"""
 .cv3 .sub2{justify-content:center;border-top:0;padding:16px 0 14px}
 .cv5>.top,.cv5>.mid,.cv5>.sub2,.cv5>.bt{position:relative;z-index:1;width:57%}
 .cv5 .mid{justify-content:center;padding-top:22px}
+.cv5 .bt{height:40px;margin-bottom:38px}
 .cv5 .top .who{display:none}
 .cv5 h1{font-size:27px;line-height:1.32;margin-top:14px}
 .cv5 h1 em{display:block}
@@ -282,7 +283,7 @@ new("std", sec=S0, title="선정부터 입주까지 [[추진 일정]] (안)",
         ("2028.07~10", "[[품목 수요조사]] 설문 · 타입별 실측 데이터 준비 · 행사장 후보 답사"),
         ("2028.11~2029.01", "참여업체 [[공개 입찰공고]](이메일 동시 접수) · 4단계 심사 → [[입예협 최종 컨펌]] · 특약이행각서 징구"),
         ("2029.02~03", "단가표 사전 공개 · [[입주박람회 금·토·일 3일]] · 온라인 박람회 오픈 · 사전점검 행사 지원"),
-        ("2029.05~", "입주 지원 · 단지별 설치 예약·하역 관리 · 콜센터 운영 → 입주 후 1년 운영 관리 · [[결과 보고서]] (품목 A/S는 최소 2년)"),
+        ("2029.05~", "입주 지원 · 단지별 설치 예약·하역 관리 · 콜센터 운영 → 입주 후 1년 운영 관리 · [[결과 보고서]] (품목 A/S는 최소 2년 · 업체별 상이)"),
     ], title_w=170),
     kp="세부 일정은 사전점검·입주지원센터 일정에 맞춰 [[입예협과 확정]]합니다.")
 
@@ -1043,7 +1044,7 @@ def build():
         # 요약본 [2-2] — 본 제안서 틀 그대로, 표지는 숫자(15만원·10억·1억)로
         COVER.update(kind="impact", pill="입주박람회 주관사 요약 제안서")
         CLOSING_DROP[:] = ["03", "04"]  # 요약본 약속 장: 03 A 입주민 특화서비스 · 04 옵션 중복 확인 삭제(본부장 10-07)
-        emit(summary_pages(), os.path.join(HERE, NAME22 + ".html"), "엣지컴퍼니 철산역 자이 요약 제안서 [2-2]")
+        emit(summary_pages(), os.path.join(HERE, NAME22 + ".html"), "엣지컴퍼니 철산역 자이 요약 제안서")
         CLOSING_DROP[:] = []
         COVER.update(kind="stats", pill="입주박람회 주관사 제안서")
 

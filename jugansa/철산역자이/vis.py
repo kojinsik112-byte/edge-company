@@ -625,8 +625,8 @@ def apply2(B, D, take, sub):
     k = take("선정부터 입주까지 [[추진 일정]] (안)")[1]
     X = lambda m: f"{100 * m / 36:.2f}%"
     W = lambda a, b: f"{100 * (b - a) / 36:.2f}%"
-    bars = [("01", 0, 2, "l1", "w", "선정·협약"), ("02", 3, 25, "l2", "w in", "분기 보고 · 협의 자료 지원"), ("03", 21, 25, "l1", "w in", "수요조사"),
-            ("04", 25, 28, "l2", "s in", "입찰·심사"), ("05", 28, 30, "l1", "s up", "박람회"), ("06", 31, 36, "l2", "o", "입주 후 관리")]
+    bars = [("01", 0, 2, "l1", "w", "선정·협약"), ("02", 3, 27, "l2", "w in", "분기 보고 · 협의 자료 지원"), ("03", 21, 25, "l1", "w in", "수요조사"),
+            ("04", 25, 28, "l1", "s in", "입찰·심사"), ("05", 28, 30, "l1", "s up", "박람회"), ("06", 31, 36, "l2", "o", "입주 후 관리")]
     g = '<div class="gnt"><div class="ar">'
     g += "".join(f'<div class="yl" style="left:{X(m)}"><span>{y}</span></div>' for y, m in [("2027", 3), ("2028", 15), ("2029", 27)])
     g += f'<div class="bk" style="left:0;width:{W(0, 31)}"><b>선정에서 입주까지 31개월</b></div>'
@@ -730,11 +730,11 @@ def apply2(B, D, take, sub):
     # 입주민 자금 — 결제·해약 흐름 띠(카드 문구 그대로)
     k = take("입주민 [[자금]]을 먼저 지킵니다")[1]
     mny = ('<div class="mny"><div class="rl"><div class="ln"></div>'
-           '<div class="zone" style="left:0;width:37%"><b>제작·시공 전 100% 해약 가능</b></div>'
+           '<div class="zone" style="left:0;width:37%"><b>취소 기한 내 100% 해약 가능</b></div>'
            '<div class="nd g" style="left:0"></div><div class="nd" style="left:37%"></div><div class="nd" style="left:70%"></div><div class="nd g" style="left:100%"></div>'
            '<div class="lb2" style="left:5%">계약<small>계약금 10% 이하</small></div>'
-           '<div class="lb2" style="left:37%">제작·시공 착수<small>맞춤 제작은 출고 지시 전 협의</small></div>'
-           '<div class="lb2" style="left:70%">시공·설치<small>품목별 시공일 7일·15일 전까지 취소</small></div>'
+           '<div class="lb2" style="left:37%">취소 기한<small>시공일 7일·15일 전 · 맞춤 제작은 출고 지시 전</small></div>'
+           '<div class="lb2" style="left:70%">시공·설치<small>기한 뒤 취소는 실제 자재·제작비만 공제</small></div>'
            '<div class="lb2" style="left:94%">잔금 납부<small>시공·설치 후</small></div>'
            '</div></div>')
     k["body"] = '<div class="nb">' + mny + k["body"] + '</div>'

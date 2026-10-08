@@ -44,7 +44,7 @@
 
 ## 진행 중 입찰
 
-- **철산역 자이(조합) 1,395세대 · 입예협 주관사** — `철산역자이/` · `python build_cheolsan.py` → 제안서(09) 110쪽 + 요약본 [2-2] 22쪽. 마감 2026.10.13 24:00(메일 richgorich@naver.com).
+- **철산역 자이(조합) 1,395세대 · 입예협 주관사** — `철산역자이/` · `python build_cheolsan.py` → 제안서(09) 109쪽 + 요약본 [2-2] 22쪽. 마감 2026.10.13 24:00(메일 richgorich@naver.com).
   - 구조: 기본틀(요약제안서/build.py) → `build_cheolsan.py`(01장·특수 장) → `polish.py` → `reorg.py`(목차 10장·15만원 현금/패키지 A·B·C·특화서비스 요약·조직도) → `vis.py`(쪽별 아이콘·도식·사진, 재배치 뒤 실행 — 숫자는 각 장에 있는 값만). 표기: '조합 입예협', 줄표 '-', 범위 '2018 ~ 2022'.
   - 조직도 실명은 `org_private.json`(깃 제외). 없으면 ○○○로 나오니 통합제안서 기본틀 '06 회사 조직도' 장에서 다시 옮겨 적는다. 빌드 결과 HTML도 실명 때문에 깃 제외.
   - 사진 `assets_ins/`(동탄 폴더 공유, 깃 제외): 본부장 제공 `cs_birdseye`(조감도)·`cs_gate_night`·`cs_aerial_night`·`n12_meeting_cs`·`n02_raycounty_v2`·`n02_oceancity_v2`·`n02_ydp` — 컨테이너가 바뀌면 다시 받아야 한다. `g14_light1c`는 `g14_light1` 아래 검은 띠를 잘라낸 파생본.
