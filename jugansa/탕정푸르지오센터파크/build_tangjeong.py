@@ -133,10 +133,13 @@ B.CSS += r"""
 .cv4>.cvart{position:absolute;z-index:0;right:0;bottom:128px;width:62%;height:400px}
 .cvart img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 85%}
 .cvart .credit{position:absolute;right:72px;bottom:8px;font-size:10.5px;color:rgba(255,255,255,.55)}
-.cv4>.cvart.tj{right:48px;top:118px;bottom:150px;height:auto;width:45%;border-radius:16px;overflow:hidden;border:1px solid rgba(200,168,106,.55);box-shadow:0 18px 40px rgba(0,0,0,.35)}
-.cvart.tj img{object-position:50% 78%}
-.cvart.tj:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(13,30,51,.6) 0%,rgba(13,30,51,0) 28%)}
-.cvart.tj .credit{z-index:1;right:14px;bottom:10px;color:rgba(255,255,255,.75)}
+.cv4>.cvart.tj{right:0;top:0;bottom:0;height:auto;width:56%}
+.cvart.tj img{object-position:50% 82%}
+.cvart.tj:after{content:'';position:absolute;inset:0;background:
+  linear-gradient(90deg,#0D1E33 0%,rgba(13,30,51,.82) 12%,rgba(13,30,51,.35) 28%,rgba(13,30,51,0) 46%),
+  linear-gradient(180deg,#0D1E33 0%,rgba(13,30,51,.55) 14%,rgba(13,30,51,0) 34%,rgba(13,30,51,0) 66%,rgba(13,30,51,.7) 84%,#0D1E33 100%),
+  linear-gradient(270deg,rgba(13,30,51,.45) 0%,rgba(13,30,51,0) 14%)}
+.cvart.tj .credit{z-index:1;right:40px;bottom:122px;color:rgba(255,255,255,.55)}
 .cv4 h1.tj{font-size:48px}
 .cv4 .gbar{width:150px;height:2px;background:var(--gold2);margin:26px 0 20px}
 .cv4 h1{font-size:52px;line-height:1.28;margin-top:24px}
@@ -350,10 +353,10 @@ _nice7 = sum(1 for h in D.HISTORY if "주관" in h[1])
 QUAL22 = [  # 공고 5항 입찰자격 1) ~ 22) — (요건 요약, 엣지컴퍼니 현황, 증빙) · 문구는 자격 대조(2026.10.08) 결과 기준
     ("1년 이상 사업 영위 · 대표자 본인 명의", "법인 개업 2022.02.28 — 공고일 기준 4년 7개월 · 대표이사 고진식 본인 명의", "사업자등록증 · 등기부"),
     ("박람회 기획·운영 업태·종목", "종목 ‘전시, 박람회 및 행사 대행업’ · 등기 목적 ‘전시 박람회 사업 · 행사대행업 · 이벤트 기획 및 대행업’", "사업자등록증 · 등기부"),
-    ("5개 단지 이상 주관사 선정 이력 · 유상옵션 행사 실적", f"입주박람회 주관 [[{_nice7}개 단지]] (NICE 연혁 2023.03 ~ 2026.07) · " + TODO("유상옵션 행사 실적 확인 필요"), "실적 증명 · NICE 연혁"),
-    ("최근 5년 벌금 이상 형사처분 없음", "해당 사항 없음 " + TODO("대표 확인"), "대표이사 확약"),
+    ("5개 단지 이상 주관사 선정 이력 · 유상옵션 행사 실적", f"입주박람회 주관 [[{_nice7}개 단지]] (NICE 연혁 2023.03 ~ 2026.07) · " + TODO("유상옵션 행사 실적 — 대표 확인 후 기입"), "실적 증명 · NICE 연혁"),
+    ("최근 5년 벌금 이상 형사처분 없음", "해당 사항 없음", "대표이사 확약"),
     ("국세·지방세 완납", "체납 없음 — 공고일 이후 발급 납세증명서 제출", "국세·지방세 완납증명서"),
-    ("입주예정자·입예협 분쟁·소송 없음", "해당 사항 없음 " + TODO("대표 확인"), "대표이사 확약"),
+    ("입주예정자·입예협 분쟁·소송 없음", "해당 사항 없음", "대표이사 확약"),
     ("A/S 대책 · 사후 보증기간 명확", "주관사 단일 창구 · 48시간 하자보수 원칙 · 무상 A/S [[최소 2년]](업체·품목별 상이)", "사후관리 방안 · 각서(별지 2호)"),
     ("이행보증보험 발행 가능", "계약이행 · 하자보수 보증증권 — 2년 · 최대 10억, 협약 시 증권 실물 제출", "제안서 04장"),
     ("비밀유지 · 이의제기 금지", "선정 과정 비밀유지 · 선정 결과 이의 제기 없음", "서약서(별지 3호)"),
@@ -365,11 +368,11 @@ QUAL22 = [  # 공고 5항 입찰자격 1) ~ 22) — (요건 요약, 엣지컴퍼
     ("입주민 자율 구매 제한 요구 없음", "박람회 밖 개별 구매·업체 선택을 제한·요구하지 않음", "제안서 명시"),
     ("혜택 · 입예협 지원 · 최저가 · A/S 제안", f"세대당 {D.FUND}만원 · 최저가 차액 10배 · A/S 정책 명시", "제안서 03 · 08장"),
     ("1,000세대 이상 3개 단지 이상 실적", f"최근 3년 1,000세대 이상 [[{len(_r3)}건]] · {sum(r[3] for r in _r3):,}세대 (NICE 연혁)", "실적 증명 · NICE 연혁 · " + TODO("계약서")),
-    ("컨설팅 부서 세분화", "본부장 아래 영업 · 행사관리 · 이벤트 · 대외지원 4개 팀 · " + TODO("행정지원 담당 팀"), "회사소개 · 조직 구성"),
-    ("커뮤니티 홍보 마케팅 전문 부서", TODO("담당 팀") + " — 카페 콘텐츠 · 카드뉴스 · 영상, 입예협 사전 승인 범위에서만 운영", "제안서 02장"),
+    ("컨설팅 부서 세분화", "4개 팀 분업 — 대외지원팀 3명 행정지원 전담 · 행사관리팀 4명 · 영업팀 2명", "조직 구성 · 전담 체계"),
+    ("커뮤니티 홍보 마케팅 전문 부서", "이벤트팀 3명 — 카페·오픈채팅 콘텐츠 · 카드뉴스 · 영상, 입예협 승인 범위에서만", "전담 체계 · 02장"),
     ("자본금 1억원 이상", "자본금 [[2억원]] (2026.04.30 등기)", "등기부"),
     ("타 주관사와 다른 차별점", "전기공사업 등록 업체의 경관조명 검토·시공 · 직영 품목 · 온라인 박람회", "전기공사업 등록증 · 09장"),
-    ("행정 전문인력 · 부서 직접 대응", "본부장 직접 관리 · 전기 분야 직접 대응 · " + TODO("전문인력"), "회사소개 · 등록증"),
+    ("행정 전문인력 · 부서 직접 대응", "본부장 + 대외지원팀 전담 · 외부 전문 7명(건축·조경·설비·하자진단) · 전기 직접", "전담 체계 · 등록증"),
 ]
 for _part, (_a, _b) in enumerate([(0, 11), (11, 22)], 1):
     new("std", sec=S0, title=f"입찰 참가 자격 [[22개 항목]] 대응 {'①②'[_part - 1]}",
@@ -378,6 +381,43 @@ for _part, (_a, _b) in enumerate([(0, 11), (11, 22)], 1):
             f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
             for i, (a, b, c) in enumerate(QUAL22[_a:_b], _a + 1)), "sm q22"),
         kp="자격은 말이 아니라 [[제출 서류로]] 확인받겠습니다.")
+
+_stf = {n: (c, r) for n, c, r in D.STAFF}
+_next = sum(c for _, c in D.STAFF_EXT)
+
+
+def _dcard(no, req, head, items):
+    li = "".join(f"<li>{t(x)}</li>" for x in items)
+    return f'<div class="dcd"><i>공고 자격 {no}</i><h4>{req}</h4><b>{head}</b><ul>{li}</ul></div>'
+
+
+new("std", sec=S0, title="입예협 [[전담 체계]] — 자격 18 · 19 · 22 대응",
+    lead="탕정 전담 인원 배치(안)를 바탕으로, 공고가 요구한 부서·전문인력을 업무별로 나눠 맡깁니다.",
+    body='<div class="nb"><div class="dcx">'
+         + _dcard("18", "컨설팅 부서 세분화", "업무별 4개 팀 분업", [
+             f"행정 — 대외지원팀 {_stf['대외지원팀'][0]}명: 공문·민원·하자 접수, 시공사 협의 자료",
+             f"현장 — 행사관리팀 {_stf['행사관리팀'][0]}명: 박람회·사전점검·입주지원센터",
+             f"소통 — 영업팀 {_stf['영업팀'][0]}명: 입예협 창구 · 참여업체 심사 지원",
+             "입예협 요청은 담당 팀을 지정해 [[24시간 안에 1차 회신]]"])
+         + _dcard("19", "커뮤니티 홍보 전문 부서", f"이벤트팀 {_stf['이벤트팀'][0]}명 전담", [
+             "카페·오픈채팅 콘텐츠 캘린더 · 카드뉴스 · 영상 · 드론",
+             "모든 게시물은 [[입예협 사전 승인 후]] 게시",
+             "카페 밖 세대까지 — 동별 안내문 · 공지채널로 전 세대 도달",
+             "입주민 개인정보 · DB는 홍보에 쓰지 않음"])
+         + _dcard("22", "단지 이슈 직접 대응", f"본부장 + 대외지원팀 + 외부 전문 {_next}명", [
+             "주관사업 총괄 본부장이 이슈를 직접 관리",
+             "건축·구조 · 조경 · 설비 · 하자진단은 외부 전문 협력 자문",
+             "전기·조명은 전기공사업 등록 업체로 [[직접 검토·시공]]",
+             "시공사·기관 협의에 자료 준비 · 동석"])
+         + '</div><div class="hflow"><span>입예협 요청</span><i>›</i><span>담당 팀 지정</span><i>›</i><span>기술·행정 검토</span><i>›</i>'
+           '<span>시공사 · 기관 협의</span><i>›</i><span>회신 · 기록 · 보고</span></div></div>',
+    kp=("부서 이름이 아니라 [[누가 무엇을 맡는지]]로 답합니다.", "인원·담당은 협약 시 명단 제출 · 외부 협력은 자문·촬영 등 전문 업무"))
+B.CSS += (".dcx{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1;min-height:0}"
+          ".dcd{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 40%);display:flex;flex-direction:column;gap:4px}"
+          ".dcd i{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--gold2)}"
+          ".dcd h4{font-size:15px;color:var(--sub);font-weight:600}.dcd>b{font-size:21px;color:var(--gold);margin-bottom:4px}"
+          ".dcd ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}"
+          ".dcd li{font-size:15.5px;line-height:1.5;padding-left:14px;position:relative}.dcd li:before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--gold2)}")
 
 new("std", sec=S0, title="입주민 개인정보는 [[행사 운영에만]] 씁니다",
     lead="공고 4항 6) 개인정보 보호·홍보 관리 — 주관사와 참여업체가 지킬 기준을 미리 정했습니다.",
@@ -857,7 +897,7 @@ def p_cover_impact():
 <h1>탕정 푸르지오 센터파크 <em>입주박람회 주관사 요약 제안서</em></h1>
 <div class="hero3">
 <div class="h1x"><i>세대당 발전지원금</i><b>{D.FUND}<small>만원</small></b>
-<p>{hh:,}세대 × {D.FUND}만원 = <em>총 {won(hh * D.FUND)}</em> (부가세 포함) · 현금 또는 같은 금액의 혜택 패키지 중 선택</p></div>
+<p>{hh:,}세대 × {D.FUND}만원 = <em>총 {won(hh * D.FUND)}</em> (부가세 포함) · {'현금 또는 같은 금액의 혜택 패키지 중 선택' if getattr(D, 'FUND_CASH', False) else '혜택 패키지 또는 입예협이 고른 항목으로 직접 제공'}</p></div>
 <div><i>이행보증보험 2년</i><b><small class="mx">최대</small>10<small>억</small></b><p>증권 실물 제출</p></div>
 <div><i>하자 예치금</i><b><small class="mx">최대</small>1<small>억</small></b><p>하자 시 입주민 선보상</p></div>
 </div>
@@ -1191,7 +1231,7 @@ def summary_pages():
         '</div>')
     pages = [
         ("cover", {}),
-        take("세대당 15만원, [[현금 또는 혜택 패키지]] 중 선택", sec=S1),
+        take(B.FUND_CHOICE_TITLE, sec=S1),
         take("혜택 패키지 [[A · B · C]] 구성 항목", sec=S1,
              kp=("다음 장은 받으시는 방식별 [[패키지 구성 예시]]입니다.", "항목별 상세는 본 제안서 08장 · 공용부 항목은 입예협·관리주체 협의 전제")),
         take("이렇게 [[패키지로]] 받으실 수 있습니다 (예시)", sec=S1),

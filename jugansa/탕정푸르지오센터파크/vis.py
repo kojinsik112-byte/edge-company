@@ -634,7 +634,10 @@ def apply2(B, D, take, sub):
 
     # 패키지 예시 — 열 하단 대표 사진
     k = take("이렇게 [[패키지로]] 받으실 수 있습니다 (예시)")[1]
-    tails = [f'<div class="exi cs">{ic("vault")}<b>2억 925만원</b><small>입예협 공식 통장</small></div>',
+    _hh, _f = D.SITE["households"], D.FUND
+    _tot = f"{_hh * _f // 10000}억 {_hh * _f % 10000:,}만원" if _hh * _f % 10000 else f"{_hh * _f // 10000}억원"
+    tails = [(f'<div class="exi cs">{ic("vault")}<b>{_tot}</b><small>입예협 공식 통장</small></div>' if getattr(D, "FUND_CASH", False) else
+              f'<div class="exi cs">{ic("checklist")}<b>{_tot} 상당</b><small>주관사가 직접 구매·제공 · 사용 내역 공개</small></div>'),
              '<div class="exi"><img src="assets_ins/g08_thermal.jpg" alt=""><span>열화상 점검 화면 · 타 단지</span></div>',
              '<div class="exi"><img src="assets_ins/g12_style_after.jpg" alt=""><span>3D 홈스타일링 · 제작 예시</span></div>',
              '<div class="exi"><img src="assets_ins/tj_gate_night.jpg" alt=""><span>문주·경관조명 · 연출 예시 이미지</span></div>']
@@ -825,12 +828,22 @@ def apply2(B, D, take, sub):
 """
 
     # 15만원 선택 — 카드 아래: 현금 흐름 / A·B·C 구성
-    k = take("세대당 15만원, [[현금 또는 혜택 패키지]] 중 선택")[1]
+    k = take(B.FUND_CHOICE_TITLE)[1]
     opf = ('<div class="opf">'
            f'<div>{ic("vault")}주관사 지급</div><em>›</em><div>{ic("coins")}입예협 공식 통장</div><em>›</em><div>{ic("checklist")}쓰임새는 입예협 결정</div></div>')
+    if not getattr(D, "FUND_CASH", False):
+        opf = ('<div class="opf">'
+               f'<div>{ic("checklist")}입예협 항목 지정</div><em>›</em><div>{ic("truck")}주관사 직접 구매·시공</div><em>›</em><div>{ic("report")}검수 · 사용 내역 공개</div></div>')
+        opk_first = True
+    else:
+        opk_first = False
     opk = ('<div class="opk"><div><b>A</b>입주민<br>특화서비스</div><div><b>B</b>협의회<br>단지발전지원</div><div><b>C</b>단지지원<br>컨설팅</div></div>')
-    b = sub(k["body"], '</li></ul></div><div class="or">', '</li></ul>' + opf + '</div><div class="or">')
-    k["body"] = sub(b, '</li></ul></div></div><div class="basex">', '</li></ul>' + opk + '</div></div><div class="basex">')
+    if opk_first:  # 패키지안: 왼쪽 = A·B·C, 오른쪽 = 지정 흐름
+        b = sub(k["body"], '</li></ul></div><div class="or">', '</li></ul>' + opk + '</div><div class="or">')
+        k["body"] = sub(b, '</li></ul></div></div><div class="basex">', '</li></ul>' + opf + '</div></div><div class="basex">')
+    else:
+        b = sub(k["body"], '</li></ul></div><div class="or">', '</li></ul>' + opf + '</div><div class="or">')
+        k["body"] = sub(b, '</li></ul></div></div><div class="basex">', '</li></ul>' + opk + '</div></div><div class="basex">')
     B.CSS += (".opf{margin-top:auto;display:flex;align-items:stretch;gap:4px}"
               ".opf div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:12px 6px;background:#0f2237;font-size:14px;text-align:center;line-height:1.3}"
               ".opf .cic{margin:0;width:30px;height:30px}.opf em{display:flex;align-items:center;color:var(--gold);font-style:normal;font-weight:800;font-size:18px}"

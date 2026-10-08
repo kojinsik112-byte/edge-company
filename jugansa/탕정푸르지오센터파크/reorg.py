@@ -21,6 +21,9 @@ def apply(G):
     P = B.PAGES
     t = B.t
     hh, fund = D.SITE["households"], D.FUND
+    CASH = getattr(D, "FUND_CASH", False)
+    B.FUND_CHOICE_TITLE = (f"세대당 {fund}만원, [[현금 또는 혜택 패키지]] 중 선택" if CASH else
+                           f"세대당 {fund}만원 상당, [[혜택 패키지]]로 드립니다")
     total = won(hh * fund)
 
     def take(title=None, kind=None):
@@ -60,10 +63,17 @@ def apply(G):
     # 15만원 장: 현금 또는 패키지
     def p_hi_fund(no, sec):
         s = B_hi_fund(no, sec)
-        s = sub(s, f"<em>공고 단지 전 세대 {hh:,}세대</em>를 기준으로 지급하고, <em>입예협 공식 통장</em>으로 입금합니다.",
-                f"<em>전 세대 {hh:,}세대</em> 기준 — <em>현금</em> 또는 같은 금액 범위의 <em>혜택 패키지</em> 중 입예협이 고릅니다.")
-        s = sub(s, "<span>현금성 지원 · 입예협 공식 통장 입금 가능</span><span>단지 시설 투자</span><span>협의회 활동 지원</span>",
-                "<span>① 현금 — 입예협 공식 통장 입금</span><span>② 혜택 패키지 A · B · C</span>")
+        if CASH:
+            s = sub(s, f"<em>공고 단지 전 세대 {hh:,}세대</em>를 기준으로 지급하고, <em>입예협 공식 통장</em>으로 입금합니다.",
+                    f"<em>전 세대 {hh:,}세대</em> 기준 — <em>현금</em> 또는 같은 금액 범위의 <em>혜택 패키지</em> 중 입예협이 고릅니다.")
+            s = sub(s, "<span>현금성 지원 · 입예협 공식 통장 입금 가능</span><span>단지 시설 투자</span><span>협의회 활동 지원</span>",
+                    "<span>① 현금 — 입예협 공식 통장 입금</span><span>② 혜택 패키지 A · B · C</span>")
+        else:  # 본부장 10-08: 입예협(비조합)은 통장 입금이 어려움 → 15만원 상당 패키지 · 입예협 지정 항목
+            s = sub(s, f"<em>공고 단지 전 세대 {hh:,}세대</em>를 기준으로 지급하고, <em>입예협 공식 통장</em>으로 입금합니다.",
+                    f"<em>전 세대 {hh:,}세대</em> 기준 — 세대당 {fund}만원 상당을 <em>혜택 패키지</em>로 구성하거나, <em>입예협이 필요한 항목</em>을 골라 주관사가 직접 제공합니다.")
+            s = sub(s, "<span>현금성 지원 · 입예협 공식 통장 입금 가능</span><span>단지 시설 투자</span><span>협의회 활동 지원</span>",
+                    "<span>① 혜택 패키지 A · B · C</span><span>② 입예협 지정 항목</span>")
+            s = s.replace("의 발전지원 규모.", " 상당의 발전지원 규모.")
         return s
     B_hi_fund = B.p_hi_fund
     B.p_hi_fund = p_hi_fund
@@ -173,7 +183,20 @@ def apply(G):
         return f'<div class="pk"><div class="hd2"><div class="L">{L}</div><h3>{name}<small>{en}</small></h3></div>{ul}{li}</ul>{nt}</div>'
 
     S8 = "08. 혜택안내"
-    p_choice = ("std", dict(sec=S8 + " · 발전지원 15만원", title=f"세대당 {fund}만원, [[현금 또는 혜택 패키지]] 중 선택",
+    _choice_pkg = ("std", dict(sec=S8 + " · 발전지원 15만원", title=B.FUND_CHOICE_TITLE,
+        lead="현금으로 드리지 않고, 입예협이 고른 항목을 주관사가 직접 구매·시공·제공합니다.",
+        body=('<div class="nb"><div class="optx">'
+              '<div class="op"><i>방법 1</i><h3>혜택 패키지로 받기</h3><div class="v">A · B · C</div>'
+              f'<ul><li>{hh:,}세대 × {fund}만원 상당 (총 {total}, 부가세 포함)</li><li>A · B · C 세 가지 패키지에서 골라 구성</li>'
+              '<li>항목·범위는 협의 후 협약서로 확정</li></ul></div>'
+              '<div class="or">또는</div>'
+              '<div class="op"><i>방법 2</i><h3>입예협이 필요한 것 지정</h3><div class="v">지정</div>'
+              '<ul><li>공용물품 · 커뮤니티 집기 · 입주 행사</li><li>총회·설명회 운영 지원 · 단지 개선 용역</li>'
+              f'<li>같은 금액({total}) 범위 · 협약서로 확정</li></ul></div></div>'
+              '<div class="basex"><b>A 입주민 특화서비스</b>에는 <em>백화점 상품권 10만원(현물)</em> · 박람회 상품권(정회원 30만원 = 일반 20만원 + 정회원 추가 10만원) · 정회원 혜택 · '
+              '사은품·경품 · 사전점검 할인 · 실측·VR·3D 서비스가 들어 있습니다.</div></div>'),
+        kp=(f"세대당 {fund}만원 상당 = [[패키지 구성]] 또는 [[입예협 지정 항목]]", "주관사가 직접 제공 · 사용 내역 공개 · 현금 지급 없음")))
+    p_choice = ("std", dict(sec=S8 + " · 발전지원 15만원", title=B.FUND_CHOICE_TITLE,
         lead="두 가지를 다 드리는 것이 아니라, 받는 방식을 입예협이 고르십니다.",
         body=('<div class="nb"><div class="optx">'
               f'<div class="op"><i>OPTION ①</i><h3>현금으로 받기</h3><div class="v">{total.replace("만원", "")}<small>만원</small></div>'
@@ -185,6 +208,8 @@ def apply(G):
               '<div class="basex"><b>A 입주민 특화서비스</b>에는 <em>백화점 상품권 10만원(현물)</em> · 박람회 상품권(정회원 30만원 = 일반 20만원 + 정회원 추가 10만원) · 정회원 혜택 · '
               '사은품·경품 · 사전점검 할인 · 실측·VR·3D 서비스가 들어 있습니다.</div></div>'),
         kp=f"세대당 {fund}만원 = [[현금 또는 패키지]], 둘 중 하나로 드립니다."))
+    if not CASH:
+        p_choice = _choice_pkg
     p_pack = ("std", dict(sec=S8 + " · 혜택 패키지", title="혜택 패키지 [[A · B · C]] 구성 항목",
         lead=f"입예협이 필요한 항목을 골라 세대당 {fund}만원 범위를 채웁니다.",
         body='<div class="nb"><div class="pkx">' + pk("A", "입주민 특화서비스", "세대가 직접 받는 서비스", A)
@@ -199,8 +224,11 @@ def apply(G):
     p_examples = ("std", dict(sec=S8 + " · 혜택 패키지", title="이렇게 [[패키지로]] 받으실 수 있습니다 (예시)",
         lead="입예협이 무엇을 먼저 챙기고 싶은지에 따라 구성이 달라집니다.",
         body='<div class="nb"><div class="exx">'
-             + ex("CASH", "현금형", "쓰임새를 직접 정할 때",
-                  [("현금", f"전액 {total}"), ("통장", "입예협 공식 통장 입금")], "cash")
+             + (ex("CASH", "현금형", "쓰임새를 직접 정할 때",
+                  [("현금", f"전액 {total}"), ("통장", "입예협 공식 통장 입금")], "cash") if CASH else
+                ex("방법 2", "입예협 지정형", "필요한 것을 직접 고를 때",
+                  [("지정", "공용물품 · 커뮤니티 집기"), ("지정", "입주 기념 점등식 · 입주 행사"), ("지정", "총회·설명회 운영 지원"),
+                   ("지정", "단지 개선 용역(조경·조명)")], "cash"))
              + ex("EXAMPLE 1", "하자 대응형", "품질·하자를 먼저 챙길 때",
                   [("B", "공용부 품질 점검"), ("B", "열화상 드론 · 라돈 측정"), ("B", "도면 분석보고서"),
                    ("B", "공용·조경 하자진단"), ("B", "협상 미팅 동석"), ("A", "사전점검 대행 할인")])
@@ -242,9 +270,11 @@ def apply(G):
         body='<div class="nb"><div class="sumx roomy">' + sb("01", "박람회 혜택", base) + sb("02", "정회원 혜택", member, "정회원 방문 세대") + "</div></div>",
         kp="정회원 박람회 상품권 [[30만원]] (일반회원 20만원 + 정회원 추가 10만원)"))
     p_s2 = ("std", dict(sec=S10, title="특화서비스 요약 ② [[B 협의회 단지발전지원 · C 단지지원 컨설팅]]",
-        lead=f"세대당 {fund}만원(총 {total}) — ① 현금 또는 ② 패키지 A·B·C 항목으로 구성 중 선택.",
+        lead=(f"세대당 {fund}만원(총 {total}) — ① 현금 또는 ② 패키지 A·B·C 항목으로 구성 중 선택." if CASH else
+              f"세대당 {fund}만원 상당(총 {total}) — 패키지 A·B·C 또는 입예협 지정 항목으로 구성합니다."),
         body='<div class="nb"><div class="sumx tight">' + sb("B", "협의회 단지발전지원", Bk) + sb("C", "단지지원 컨설팅", C) + "</div></div>",
-        kp="[[현금 또는 패키지]] 중 하나 · 항목·범위는 협약서로 확정 · 공용부 항목은 입예협·관리주체 협의 전제"))
+        kp=("[[현금 또는 패키지]] 중 하나 · 항목·범위는 협약서로 확정 · 공용부 항목은 입예협·관리주체 협의 전제" if CASH else
+            "[[패키지 또는 입예협 지정 항목]] · 항목·범위는 협약서로 확정 · 공용부 항목은 입예협·관리주체 협의 전제")))
     safety = [("이행보증보험", "2년 · 최대 10억 · 증권 실물 제출"),
               ("하자 예치금", "최대 1억 · 엣지컴퍼니 자산 · 선보상 재원"),
               ("업체 하자보증", "특약이행각서 9개 항 · 패널티 3단계"),
@@ -272,7 +302,7 @@ def apply(G):
     k = take("탕정 푸르지오 센터파크에 드리는 [[핵심 혜택 6가지]]")[1]
     k["sec"] = S10
     k["body"] = B.tiles([
-        dict(lb="발전지원금", big=f"{fund}", unit="만원", nm="현금 또는 패키지", ds=f"{hh:,}세대 기준 총 {total} (부가세 포함) · 입예협 선택"),
+        dict(lb="발전지원금", big=f"{fund}", unit="만원", nm="현금 또는 패키지" if CASH else "패키지 · 입예협 지정", ds=f"{hh:,}세대 기준 총 {total}{'' if CASH else ' 상당'} (부가세 포함) · 입예협 선택"),
         dict(lb="이행보증보험 2년", big="@@MX10", unit="억원", nm="주관사 이행 보증", ds="증권 실물을 입예협에 전달"),
         dict(lb="최저가 차액", big="10", unit="배", nm="차액 보상", ds="동일 모델 새 제품 · 인근 오프라인 정상가 · 계약 후 7일 이내"),
         dict(lb="계약금 상한", big=f"{D.DEPOSIT_MAX}", unit="%", nm="계약 보호", ds="시공 전 취소·환불 절차를 품목별로 공개"),
@@ -282,7 +312,8 @@ def apply(G):
 
     def p_closing(no, sec):
         s = B_closing(no, sec)
-        s = sub(s, f"<p>전 세대 {hh:,}세대 기준 · 총 {total}(부가세 포함)</p>", f"<p>{hh:,}세대 · 총 {total} · 현금 또는 혜택 패키지 선택</p>")
+        s = sub(s, f"<p>전 세대 {hh:,}세대 기준 · 총 {total}(부가세 포함)</p>",
+                f"<p>{hh:,}세대 · 총 {total} · 현금 또는 혜택 패키지 선택</p>" if CASH else f"<p>{hh:,}세대 · 총 {total} 상당 · 혜택 패키지 또는 입예협 지정 항목</p>")
         s = sub(s, "<b>입예협 전용 8가지 무상 지원</b><p>별도 비용 없음 · 자체 인력</p>",
                 "<b>A 입주민 특화서비스</b><p>정회원 박람회 상품권 30만원 · 정회원 혜택 · 사은품·경품 · 사전점검 할인</p>")
         s = sub(s, "<b>하자 예치금 1억 · 이행보증보험 10억</b><p>엣지컴퍼니 자산으로 공동통장 예치 · 증권 실물 제출</p>",
@@ -548,14 +579,29 @@ def apply(G):
               f'<div class="tms">{tms}</div></div></div>'),
         kp="팀별로 역할을 나눠 [[수임부터 박람회·사후관리까지]] 함께합니다."))
     # 제출서류 07용 — 실명 없이 팀 구성 + 인원(본부장 10-08: 조직도는 제안서에서 빼고, 07은 공고상 '조직도 포함'이라 이름 없는 구성도)
-    tms0 = "".join(f'<div class="tm"><svg viewBox="0 0 24 24">{SVG.get(n, "")}</svg><i>{ICON.get(n, "")}</i><h3>{_h.escape(n)}</h3></div>'
+    _st = {n: (c, r) for n, c, r in getattr(D, "STAFF", [])}
+    tms0 = "".join(f'<div class="tm"><svg viewBox="0 0 24 24">{SVG.get(n, "")}</svg><i>{ICON.get(n, "")}</i><h3>{_h.escape(n)}'
+                   + (f' <em>{_st[n][0]}명</em></h3><p>{_h.escape(_st[n][1])}</p>' if n in _st else "</h3>") + "</div>"
                    for n, _ in org["teams"])
-    B.ORG_ANON = ("std", dict(sec="01. 회사소개", title="회사 [[조직 구성]]", lead="대표이사 아래 주관사업 총괄 본부장이 4개 팀을 이끕니다.",
+    _ext = getattr(D, "STAFF_EXT", [])
+    _n_in = getattr(D, "STAFF_LEAD", 2) + sum(c for _, c, _ in getattr(D, "STAFF", []))
+    _n_ext = sum(c for _, c in _ext)
+    _exb = ('<div class="oext"><b>외부 전문 협력 <em>' + str(_n_ext) + '명</em></b><div>'
+            + "".join(f"<span>{_h.escape(a)}</span>" for a, _ in _ext) + "</div></div>") if _ext else ""
+    B.ORG_ANON = ("std", dict(sec="01. 회사소개", title="회사 [[조직 구성]] · 탕정 전담 인원 (안)",
+        lead="대표이사 아래 주관사업 총괄 본부장이 4개 팀과 외부 전문 협력을 이끕니다.",
         body=('<div class="nb"><div class="org">'
               '<div class="ceo"><i>㈜엣지컴퍼니</i><b>CEO</b><span>대표이사</span></div>'
               '<div class="gmr"><div class="gm"><i>주관사업</i><b>총괄 본부장</b></div></div>'
-              f'<div class="tms">{tms0}</div></div></div>'),
-        kp=("임직원 [[14명]] = 정규직(4대보험) 10명 + 인턴(프리랜서) 4명", "팀별 담당·인원은 협약 시 입예협에 명단으로 제출")))
+              f'<div class="tms">{tms0}</div>{_exb}</div></div>'),
+        kp=(f"탕정 전담 [[{_n_in + _n_ext}명]] = 임직원 {_n_in}명(정규직 10 · 인턴·프리랜서 4) + 외부 전문 협력 {_n_ext}명",
+            "팀별 인원·담당은 협약 시 입예협에 명단으로 제출 · 외부 협력은 자문·촬영 등 전문 업무(사업 하도급 아님)")))
+    B.CSS += (".org .tm h3 em{font-style:normal;font-size:15px;color:var(--ink);margin-left:4px}"
+              ".org .tm p{font-size:12.5px;color:var(--sub);text-align:center;line-height:1.4;margin:0}"
+              ".org .ceo{width:150px!important;height:150px!important}.org .ceo b{font-size:36px!important}"
+              ".oext{width:100%;margin-top:16px;border:1.5px dashed rgba(235,203,143,.5);border-radius:14px;padding:10px 16px;display:flex;align-items:center;gap:16px;background:rgba(235,203,143,.04)}"
+              ".oext b{font-size:15.5px;color:var(--gold);white-space:nowrap}.oext b em{font-style:normal;color:var(--ink);margin-left:4px}"
+              ".oext div{display:flex;flex-wrap:wrap;gap:6px}.oext span{font-size:12.5px;border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:3px 10px;color:var(--sub)}")
     B.CSS += r"""
 .org{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .org .ceo{width:176px;height:176px;border-radius:50%;border:2px solid var(--gold2);box-shadow:0 0 0 6px rgba(200,168,106,.12),0 0 34px rgba(235,203,143,.22);
@@ -681,6 +727,43 @@ def apply(G):
 .lxs p{font-size:14.5px;color:var(--sub);margin-top:4px;line-height:1.45}
 """
 
+    # 단지 내부 경관조명 — 물의정원·중앙광장·산책로·외벽(본부장 제공 연출 예시 10-08)
+    def ph2(img, cap, sub_, pos="50% 50%"):
+        return (f'<figure><img src="assets_ins/{img}.jpg" alt="" style="object-position:{pos}"><figcaption>{cap}<small>{sub_}</small></figcaption></figure>')
+    _lx = [("수변 라인조명", "물의정원 테두리 간접광으로 수면 반사를 살립니다."),
+           ("수목 업라이트", "주요 수목을 아래에서 비춰 밤의 랜드마크를 만듭니다."),
+           ("보행등 · 볼라드", "산책로·계단 바닥 밝기를 확보해 야간 보행이 안전합니다."),
+           ("조형물 조명", "중앙광장 상징 조형물에 포인트 빛을 줍니다.")]
+    _pr = [("빛공해 차단", "세대 창 방향 눈부심·빛샘을 배광 각도로 막습니다."),
+           ("타이머 · 심야 감광", "시간대별 밝기를 나눠 관리비를 줄입니다."),
+           ("유지관리", "방수형 LED · 교체 쉬운 구조로 고장을 줄입니다."),
+           ("승인 후 시공", "기존 도면 대조 뒤 입예협·관리주체 승인으로 진행합니다.")]
+    p_inner = ("std", dict(sec="08. 혜택안내 · C 단지지원 컨설팅", title="단지 내부 [[경관조명]] 제안",
+        lead="물의정원 · 중앙광장 · 산책로를 밤에도 걷고 머무는 공간으로 — 연출 예시와 적용 원칙입니다.",
+        body=('<div class="nb"><div class="lxi">'
+              '<div class="gal lxq">'
+              + ph2("tj_water_garden", "물의정원", "수변 라인조명 · 수목 업라이트", "50% 70%")
+              + ph2("tj_central_plaza", "중앙광장", "조형물 조명 · 잔디광장 보행등", "50% 50%")
+              + ph2("tj_aerial_night", "단지 전체", "동선을 따라 이어지는 야간 경관", "50% 55%")
+              + ph2("tj_facade_night", "동 외벽", "외벽 라인조명 · 단지 실루엣", "50% 60%")
+              + '</div><div class="lxd"><h5>조명 구성</h5>'
+              + "".join(f"<div><b>{a}</b><p>{b}</p></div>" for a, b in _lx)
+              + '<h5>적용 원칙</h5>'
+              + "".join(f"<div><b>{a}</b><p>{b}</p></div>" for a, b in _pr)
+              + '</div></div></div>'),
+        kp=("같은 조명도 [[어디를 · 언제 · 얼마나]] 밝히느냐가 단지의 밤을 바꿉니다.", "사진은 개선 연출 예시 · 범위·금액은 도면 검토 후 확정")))
+    B.CSS += r"""
+.lxi{display:grid;grid-template-columns:1.45fr 1fr;gap:20px;flex:1;min-height:0}
+.gal.lxq{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:0}
+.gal.lxq figcaption{font-size:15px;padding:24px 12px 9px}
+.gal.lxq figcaption small{font-size:12px}
+.lxd{display:flex;flex-direction:column;gap:6px;min-height:0}
+.lxd h5{font-size:12.5px;letter-spacing:.2em;color:var(--gold2);font-weight:700;margin-top:4px}
+.lxd>div{border-left:2px solid var(--gold2);padding:1px 0 1px 12px}
+.lxd b{font-size:15.5px}
+.lxd p{font-size:13px;color:var(--sub);line-height:1.4;margin-top:1px}
+"""
+
     # A·B·C 패키지 표지 장
     def pkg(L, name, en, desc, groups, cols=2):
         rt = ""
@@ -757,11 +840,11 @@ def apply(G):
         ("07. 탕정 푸르지오 센터파크 맞춤 제안", [d07] + [T(x) for x in [
             "탕정 푸르지오 센터파크, [[이런 단지]]입니다", "이 단지라서 [[먼저 챙길 것]]", "입주민 건의, [[관리표로]] 끝까지 챙깁니다",
             "중앙광장 · 물의정원, [[밤까지]] 살피겠습니다", "입주까지 17개월, [[빈틈없이]] 관리합니다", "탕정 푸르지오 센터파크 [[특화 제안]]",
-            "공고 업무 범위 [[8개 항목]] 대응", "입찰 참가 자격 [[22개 항목]] 대응 ①", "입찰 참가 자격 [[22개 항목]] 대응 ②",
+            "공고 업무 범위 [[8개 항목]] 대응", "입찰 참가 자격 [[22개 항목]] 대응 ①", "입찰 참가 자격 [[22개 항목]] 대응 ②", "입예협 [[전담 체계]] — 자격 18 · 19 · 22 대응",
             "입주민 개인정보는 [[행사 운영에만]] 씁니다", "하자 접수, [[책임부터]] 나눕니다", "보고는 [[항목과 시점]]을 정해 둡니다",
             "선정부터 입주까지 [[추진 일정]] (안)", "품목별 [[예상 참가 업체]]"]]),
         ("08. 혜택안내 · 발전지원 15만원", [dv("08", "입주민과 협의회를 [[함께]] 챙깁니다",
-            [f"세대당 {fund}만원 — 현금 또는 패키지 선택", "A 입주민 특화서비스", "B 협의회 단지발전지원", "C 단지지원 컨설팅"]),
+            [f"세대당 {fund}만원 — 현금 또는 패키지 선택" if CASH else f"세대당 {fund}만원 상당 — 패키지 · 입예협 지정", "A 입주민 특화서비스", "B 협의회 단지발전지원", "C 단지지원 컨설팅"]),
             T(kind="hi_fund"), p_choice, p_pack, p_examples]),
         ("08. 혜택안내 · A 입주민 특화서비스", [pkA] + [T(x) for x in ["방문 세대 [[박람회 상품권 · 현장 혜택]]"]] + [p_gift_rule]
          + [T("정회원 전용 [[추가 혜택]]"), p_member, T("사진으로 보는 [[정회원 혜택]]"), T("박람회 [[사은품 · 경품]]")]
@@ -771,7 +854,7 @@ def apply(G):
             "도면·하자 분석 [[보고서 샘플]]", "입주 전부터 [[끝까지]] 붙어 있습니다", "사전점검 당일 [[현장 지원]]", "위임장, 이제 [[휴대폰으로]] 받습니다",
             "사전점검 세미나, [[영상으로]] 다시 봅니다"]] + [p_badd]),
         ("08. 혜택안내 · C 단지지원 컨설팅", [pkC] + [T(x) for x in [
-            "커뮤니티·공용부 [[조명 개선]]", "문주·경관조명 [[컨설팅]]", "피트니스·키즈 공간 [[개선 제안]]", "전기차 충전 [[인프라 검토]]"]]),
+            "커뮤니티·공용부 [[조명 개선]]", "문주·경관조명 [[컨설팅]]"]] + [p_inner] + [T(x) for x in ["피트니스·키즈 공간 [[개선 제안]]", "전기차 충전 [[인프라 검토]]"]]),
         ("09. 차별화 포인트", [T(kind="divider_lx"), T(kind="landscape"), T("[[조명 수직계열화]] · 유통 단계 없는 공급")]),
         ("10. 특화서비스 요약", [dv("10", "한눈에 보는 [[특화서비스]]", ["A 입주민 특화서비스", "B 협의회 단지발전지원 · C 단지지원 컨설팅", "안전망 · 업체선정 · 홍보", "탕정 푸르지오 센터파크 맞춤"]),
                                 p_s1, p_s2, p_s3, T("탕정 푸르지오 센터파크에 드리는 [[핵심 혜택 6가지]]")]),
@@ -806,7 +889,7 @@ def apply(G):
         [("02", "마케팅전략", ["카페 홍보 콘텐츠", "사전점검 언박싱", "드론 · 검색 · 언론", "현수막 · 버스 광고"]),
          ("07", "탕정 푸르지오 센터파크 맞춤", ["단지 이해 · 입주민 건의", "업무 8개 · 자격 22개", "일정 · 17개월 관리", "예상 참가 업체"])],
         [("03", "업체선정", ["공동구매 품목 · 수요조사", "4단계 공개 심사", "인근 지역업체 선정", "최저가 차액 10배", "계약·환불 보호"]),
-         ("08", "혜택안내", [f"{fund}만원 · 현금 또는 패키지", "A 입주민 특화서비스", "B 협의회 단지발전지원", "C 단지지원 컨설팅"])],
+         ("08", "혜택안내", [f"{fund}만원 · 현금 또는 패키지" if CASH else f"{fund}만원 상당 · 패키지 선택", "A 입주민 특화서비스", "B 협의회 단지발전지원", "C 단지지원 컨설팅"])],
         [("04", "하자보증", ["이행보증보험 최대 10억", "업체 하자보증 · 특약이행각서", "클레임 보상 기준", "패널티 3단계"]),
          ("09", "차별화 포인트", ["경관조명 설계·생산·시공", "조명 수직계열화"])],
         [("05", "주관 콜센터", ["콜센터 · 선보상", "하자 예치금 최대 1억", "클레임 처리 · CRM", "후기 · 실시간 응대"]),
