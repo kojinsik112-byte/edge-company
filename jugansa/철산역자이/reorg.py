@@ -605,11 +605,11 @@ def apply(G):
               + zn("safe", "안전 · 구급", "보안 2 · 구급 1 · 119 연계", "3명", "sf")
               + zn("park", "주차장 · 외부 동선", "차량 유도 · 하역 구역 분리", "5명", "pk")
               + '</div><div class="fps">'
-              + '<div class="tot"><i>현장 배치 인원 (안)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주</span></div>'
+              + '<div class="tot"><i>현장 배치 인원 (안)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주 · 행사 규모에 따라 변동</span></div>'
               + '<ul>' + "".join(f'<li><span>{_h.escape(a)}</span><b>{n}명</b></li>' for a, n in staff) + '</ul>'
-              + '<div class="bdg"><span>영업배상 책임보험 가입</span><span>119 연계 · 구급차 대비</span><span>운영 인원 전원 어깨띠</span><span>금·토·일 3일 · 목요일 설치</span></div>'
+              + '<div class="bdg"><span>영업배상 책임보험 가입</span><span>119 연계 · 구급차 대비</span><span>전 인원 금색 명찰(직책·이름)</span><span>금·토·일 3일 운영</span></div>'
               + '</div></div></div>'),
-        kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "인원 수는 타 단지 운영 기준(안) · 행사장 확정 후 조정")))
+        kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "인원은 행사 규모에 따라 변동 · 타 단지 운영 기준(안)")))
     B.CSS += r"""
 .fpx{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;flex:1;min-height:0}
 .fp{display:grid;gap:8px;grid-template-columns:1fr 1.15fr 1.15fr 1fr;grid-template-rows:repeat(3,1fr) .82fr .62fr;
@@ -780,6 +780,10 @@ def apply(G):
     left = [p[1].get("title", p[0]) for p in P if id(p) not in used]
     assert not left, f"재배치에서 빠진 장: {left}"
     P[:] = out
+
+    # ------------------------------------------------ 쪽별 시각화(아이콘·도식·사진, 본부장 10-08)
+    import vis
+    vis.apply(B, D, take, sub)
 
     B.p_divider_lx = lambda: sub(G["B_p_divider_lx"](), '<div class="n">02</div>', '<div class="n">09</div>')
 

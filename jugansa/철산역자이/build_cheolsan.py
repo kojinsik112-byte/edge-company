@@ -288,8 +288,8 @@ new("std", sec=S0, title="선정부터 입주까지 [[추진 일정]] (안)",
 new("std", sec=S0, title="입주박람회 [[운영 계획]]",
     lead="계약을 재촉하는 자리가 아니라, 확인하고 비교하는 자리로 만듭니다.",
     body=B.tiles([
-        dict(lb="WHEN", nm="금·토·일 3일 개최", ds="입주 1~2개월 전, 2029년 3~4월 금·토·일(안) · 목요일 설치. 사전점검 일정에 맞춰 확정합니다."),
-        dict(lb="WHERE", nm="aT센터 · SETEC 후보", ds="광명에서 가까운 전문 전시장 2곳을 우선 후보로, 입예협과 답사한 뒤 확정합니다."),
+        dict(lb="WHEN", nm="금·토·일 3일 개최", ds="입주 1~2개월 전, 2029년 3~4월 금·토·일(안). 사전점검 일정에 맞춰 확정합니다."),
+        dict(lb="WHERE", nm="aT센터 · SETEC · 수원메쎄", ds="광명에서 가까운 전문 전시장 3곳을 순위별 후보로, 입예협과 답사한 뒤 확정합니다."),
         dict(lb="SAFETY", nm="행사 배상책임보험 가입", ds="안전요원·동선·비상구 계획 수립. 화재·상해 예방 수칙은 참여업체 서약."),
         dict(lb="MEMBERS", nm="정회원 사전예약 · 체크인", ds="정회원 우선 입장·혜택. 입예협 부스를 행사장 중앙에 배치합니다."),
         dict(lb="ONLINE", nm="온라인 박람회 · 라이브", ds="단지 입주민만 들어오는 폐쇄몰. 박람회와 같은 공동구매가."),
@@ -793,6 +793,8 @@ def p_contact():
             f"울산 본사 · {D.ADDRESS}<br>대전 지사 · 디펠리체 204호 &nbsp;|&nbsp; 청주 지사 · 청주시 흥덕구 직지대로 642 &nbsp;|&nbsp; "
             "부산 해운대 지사 · 해운대구 아르파나 B1<br>직영 4곳 + 협력 8곳 = 전국 12개 지사망 · 평일 09:00–18:00 · 24시간 이내 회신<br>")
     s = sub(s, "삼성전자 MOU 체결</div>", "삼성전자 · 세스코 MOU 체결</div>")
+    # 오른쪽: 울산 본사 사옥 실사(표지 오른쪽 단지 사진과 대칭)
+    s = sub(s, '<section class="page cv">', '<section class="page cv cvc"><div class="cvhq"><img src="assets_ins/hq_tower.jpg" alt=""><span>울산 본사 사옥</span></div>')
     return sub(s, "SUMMARY PROPOSAL · 요약제안서", "BID PROPOSAL · 철산역 자이")
 
 
@@ -833,8 +835,25 @@ B_p_hi_money = B.p_hi_money
 
 
 def p_pricing(no, sec):
-    """사전점검 STANDARD: 평당 14,500원의 35% 할인 = 9,425원(본부장 10-08 '35%' 기준)."""
-    return sub(B_p_pricing(no, sec), "9,450원", "9,425원")
+    """사전점검 STANDARD = 50% · 평당 13,500원 → 6,750원(본부장 10-08 확정). 평당가는 2026.06 기준 소비자가."""
+    s = B_p_pricing(no, sec)
+    s = sub(s, '<div class="lb">STANDARD</div><div class="big">35<small>', '<div class="lb">STANDARD</div><div class="big">50<small>')
+    s = sub(s, "평당 14,500원 → <em>9,450원</em>", "평당 13,500원 → <em>6,750원</em>")
+    # 카드 위: 점검 인원(아이콘) + 정가→할인가 막대(축 25,000원 = 100%, 카드 숫자 그대로)
+    import vis
+    P = vis.ic("person")
+    tiers = [(P * 2, 13500, 6750), (P * 3, 13500, 6750), (P * 3 + "<em></em>" + P * 2 + "<small>1차 + 2차</small>", 25000, 16250)]
+    it = iter(tiers)
+
+    def pv(m):
+        pp, a, b = next(it)
+        return (m.group(0) + f'<div class="pv"><div class="pp">{pp}</div>'
+                f'<div class="r"><span>정가</span><i style="width:{100 * a / 25000:.0f}%">{a:,}원</i></div>'
+                f'<div class="r g"><span>할인가</span><i style="width:{100 * b / 25000:.0f}%">{b:,}원</i></div></div>')
+    s, n = re.subn(r'<div class="card">', pv, s)
+    assert n == 3, n
+    return sub(s, '</div></div></div>\n<div class="kp">',
+               '</div></div></div>\n<div class="notex" style="margin-top:14px">※ 평당 가격은 2026년 6월 기준 기본 소비자가이며, 변동될 수 있습니다.</div>\n<div class="kp">')
 
 
 B_p_pricing = B.p_pricing
