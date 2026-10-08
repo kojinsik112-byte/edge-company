@@ -586,16 +586,16 @@ def apply(G):
     _ext = getattr(D, "STAFF_EXT", [])
     _n_in = getattr(D, "STAFF_LEAD", 2) + sum(c for _, c, _ in getattr(D, "STAFF", []))
     _n_ext = sum(c for _, c in _ext)
-    _exb = ('<div class="oext"><b>외부 전문 협력 <em>' + str(_n_ext) + '명</em></b><div>'
+    _exb = ('<div class="oext"><b>분야별 외부 전문 협력</b><div>'
             + "".join(f"<span>{_h.escape(a)}</span>" for a, _ in _ext) + "</div></div>") if _ext else ""
-    B.ORG_ANON = ("std", dict(sec="01. 회사소개", title="회사 [[조직 구성]] · 탕정 전담 인원 (안)",
+    B.ORG_ANON = ("std", dict(sec="01. 회사소개", title="회사 [[조직 구성]] · 탕정 전담 배치 (안)",
         lead="대표이사 아래 주관사업 총괄 본부장이 4개 팀과 외부 전문 협력을 이끕니다.",
         body=('<div class="nb"><div class="org">'
               '<div class="ceo"><i>㈜엣지컴퍼니</i><b>CEO</b><span>대표이사</span></div>'
               '<div class="gmr"><div class="gm"><i>주관사업</i><b>총괄 본부장</b></div></div>'
               f'<div class="tms">{tms0}</div>{_exb}</div></div>'),
-        kp=(f"탕정 전담 [[{_n_in + _n_ext}명]] = 임직원 {_n_in}명(정규직 10 · 인턴·프리랜서 4) + 외부 전문 협력 {_n_ext}명",
-            "팀별 인원·담당은 협약 시 입예협에 명단으로 제출 · 외부 협력은 자문·촬영 등 전문 업무(사업 하도급 아님)")))
+        kp=(f"임직원 [[{_n_in}명]]이 4개 팀으로 나눠 맡고, 분야별 [[외부 전문 협력]]이 받칩니다.",
+            "박람회 현장은 외부 인력 포함 약 21명(06장) · 팀별 담당은 협약 시 명단 제출 · 외부 협력은 전문 업무(하도급 아님)")))
     B.CSS += (".org .tm h3 em{font-style:normal;font-size:15px;color:var(--ink);margin-left:4px}"
               ".org .tm p{font-size:12.5px;color:var(--sub);text-align:center;line-height:1.4;margin:0}"
               ".org .ceo{width:150px!important;height:150px!important}.org .ceo b{font-size:36px!important}"
