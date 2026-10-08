@@ -148,7 +148,7 @@ class SmartEditConfig:
     """AI 스마트 편집 설정 (자막 내용을 이해해 반복·비문·잡담 컷)."""
 
     enabled: bool = True         # API 키가 있으면 사용, 없으면 자동으로 휴리스틱 폴백
-    model: str = "claude-opus-4-8"
+    model: str = "claude-opus-5-5"
     api_key: Optional[str] = None  # 비워두면 ANTHROPIC_API_KEY 또는 api_key.txt 사용
 
 

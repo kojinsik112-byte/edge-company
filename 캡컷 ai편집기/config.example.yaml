@@ -43,7 +43,7 @@ metadata:
 
 smart_edit:
   enabled: true        # AI가 자막 내용을 이해해 반복·비문·잡담까지 컷 (API 키 있을 때)
-  model: claude-opus-4-8
+  model: claude-opus-5-5
   api_key:             # 비워두면 api_key.txt 또는 ANTHROPIC_API_KEY 사용
 
 branding:

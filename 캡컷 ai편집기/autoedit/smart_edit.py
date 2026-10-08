@@ -30,11 +30,12 @@ def _read_key_file(p: Path) -> Optional[str]:
     except Exception:  # noqa: BLE001
         return None
     text = text.strip().strip('"').strip("'").strip()
-    # 혹시 메모장이 아닌 곳에 키만 들어있다면 sk- 로 시작하는 토큰을 추출
-    if "sk-ant" in text:
-        for token in text.split():
-            if token.startswith("sk-ant"):
-                return token.strip().strip('"').strip("'")
+    # 메모장·HTML 등 어디에 붙여 넣었든 sk-ant- 로 시작하는 키만 정확히 뽑는다
+    import re
+
+    m = re.search(r"sk-ant-[A-Za-z0-9_\-]{20,}", text)
+    if m:
+        return m.group(0)
     if text.startswith("sk-"):
         return text
     return None
@@ -49,7 +50,8 @@ def _resolve_api_key(cfg: SmartEditConfig) -> Optional[str]:
     # 파일 위치/확장자를 조금 틀려도 찾아낸다:
     # 작업폴더 · autoedit 폴더 · 그 상위 폴더에서 'api_key*'/'apikey*' 파일을 모두 확인.
     here = Path(__file__).resolve().parent
-    search_dirs = [Path.cwd(), here, here.parent]
+    # 프로그램 폴더 + 바탕화면 (회장님 바탕화면의 api_key.txt / api_key.html 도 자동으로 찾음)
+    search_dirs = [Path.cwd(), here, here.parent, Path.home() / "Desktop", Path.home() / "OneDrive" / "Desktop"]
     seen = set()
     for d in search_dirs:
         if not d.exists() or d in seen:
