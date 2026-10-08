@@ -452,6 +452,8 @@ CSS2 = r"""
 .q10 td{padding:3px 12px !important;font-size:14.5px !important}
 .q10 td.k{font-size:15px !important}
 .q10 th{padding-bottom:5px !important}
+.q10{table-layout:fixed;width:100%}
+.q10 th:nth-child(1){width:5%} .q10 th:nth-child(2){width:23%} .q10 th:nth-child(3){width:45%} .q10 th:nth-child(4){width:20%} .q10 th:nth-child(5){width:7%}
 .gnt{position:relative;border:1px solid var(--line);border-radius:14px;padding:10px 22px 6px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01))}
 .gnt .ar{position:relative;height:96px;margin:0 6px}
 .gnt .yl{position:absolute;top:16px;bottom:16px;border-left:1px dashed rgba(255,255,255,.22)}
