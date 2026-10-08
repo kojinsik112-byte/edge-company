@@ -1016,7 +1016,7 @@ HIST_CSS = r"""
 
 
 def company_pages():
-    """제출서류 07 회사소개서 — 표지 + 01 간지 + 연혁 + 제안서 01장(조직도 포함) + 연락처."""
+    """제출서류 07 회사소개서 — 표지 + 01 간지 + 연혁 + 조직 구성(실명 없음) + 제안서 01장 + 연락처."""
     pick = [p for p in B.PAGES if p[1].get("sec") == "01. 회사소개" and p[0] != "divider"]
     d01 = [p for p in B.PAGES if p[0] == "divider" and p[1].get("n") == "01"]
     assert len(d01) == 1 and len(pick) > 15, (len(d01), len(pick))
@@ -1035,7 +1035,7 @@ def company_pages():
         kp=("2023년부터 [[해마다]] 1,000세대 이상 입주박람회를 맡아 왔습니다.",
             "출처: 법인등기부 · 전기공사업 등록증 · ISO 인증서 · NICE 기업신용평가보고서 연혁 · 세스코 협약")))
     contact = [p for p in B.PAGES if p[0] == "contact"]
-    return [("cover", {})] + d01 + [hist] + pick + contact
+    return [("cover", {})] + d01 + [hist, B.ORG_ANON] + pick + contact
 
 
 def summary_pages():
