@@ -11,13 +11,39 @@ from .ffmpeg import has_audio, run
 from .utils import logger
 
 
+def _is_mono(video: Path) -> bool:
+    from .ffmpeg import _header
+
+    return any("Audio:" in ln and " mono" in ln for ln in _header(video).splitlines())
+
+
 def add_bgm(
     video: Path, bgm: Path, out_path: Path, out_cfg: OutputConfig, volume: float
 ) -> Path:
     """본 영상의 음성은 유지하면서 배경음악을 낮은 볼륨으로 깐다.
 
     BGM은 영상 길이에 맞춰 반복(loop)되고, 영상이 끝나면 함께 끝난다(duration=first).
+    - 말소리는 원래 크기 그대로 (예전엔 amix 정규화 때문에 목소리가 절반으로 줄었음)
+    - 말할 때는 음악이 자동으로 작아지는 '덕킹'(sidechain) — 방송 편집 방식
+    - 처음 1.5초 서서히 커지고, 끝 2초 서서히 작아짐
     """
+    from .ffmpeg import probe_duration
+
+    dur = probe_duration(video)
+    fade_out = max(0.0, dur - 2.0)
+    filt = (
+        f"[1:a]aformat=channel_layouts=stereo,volume={volume * 2.2:.3f},"
+        f"afade=t=in:d=1.5,afade=t=out:st={fade_out:.2f}:d=2[bg];"
+        # 모노 목소리는 크기 손실 없이 양쪽에 복사 (그냥 스테레오로 바꾸면 -3dB 작아짐)
+        f"[0:a]{'pan=stereo|c0=c0|c1=c0' if _is_mono(video) else 'aformat=channel_layouts=stereo'},asplit=2[voice][sc];"
+        "[bg][sc]sidechaincompress=threshold=0.02:ratio=6:attack=15:release=350[duck];"
+        "[voice][duck]amix=inputs=2:duration=first:normalize=0:dropout_transition=0[a]"
+    )
+    if not has_audio(video):
+        filt = (
+            f"[1:a]volume={volume * 2.2:.3f},afade=t=in:d=1.5,"
+            f"afade=t=out:st={fade_out:.2f}:d=2[a]"
+        )
     run(
         [
             "ffmpeg",
@@ -29,8 +55,7 @@ def add_bgm(
             "-i",
             str(bgm),
             "-filter_complex",
-            f"[1:a]volume={volume}[bg];"
-            f"[0:a][bg]amix=inputs=2:duration=first:dropout_transition=0[a]",
+            filt,
             "-map",
             "0:v",
             "-map",
@@ -41,6 +66,7 @@ def add_bgm(
             "aac",
             "-b:a",
             out_cfg.audio_bitrate,
+            "-shortest",
             str(out_path),
         ],
         show_progress=True,

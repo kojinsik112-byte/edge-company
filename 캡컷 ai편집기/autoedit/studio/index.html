@@ -130,6 +130,16 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 .ov .w.active{transform:scale(1.12)}
 .ov .box{padding:.1em .45em;border-radius:.12em}
 .design{margin-top:18px;padding:18px}
+.ovl{position:absolute;inset:0;pointer-events:none}
+.ovl img{position:absolute;transition:transform .15s,opacity .15s}
+.ovrow{display:grid;grid-template-columns:56px 1fr;gap:12px;padding:10px;border:1px solid var(--line);border-radius:12px;margin-top:8px;align-items:start}
+.ovrow.now{border-color:#CBD5FF;background:var(--accent-soft)}
+.ovrow .th{width:56px;height:56px;border-radius:8px;background:#eef1f6 center/contain no-repeat;border:1px solid var(--line)}
+.ovrow .ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px}
+.ovrow .ctl select,.ovrow .ctl input[type=number]{border:1px solid var(--line);border-radius:7px;padding:3px 6px;font-size:12px;background:#fff}
+.ovrow .ctl input[type=number]{width:62px}
+.ovrow .ctl input[type=range]{width:90px;accent-color:var(--accent)}
+.ovrow .lb{font-weight:700;color:var(--faint);font-size:11px}
 .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .scard{border:2px solid transparent;border-radius:12px;overflow:hidden;background:var(--soft);cursor:pointer;transition:.15s;position:relative}
 .scard img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#2b3440}
@@ -189,6 +199,8 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 .foot{position:sticky;bottom:0;z-index:15;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);
   padding:12px 28px;display:flex;align-items:center;gap:22px;margin:24px -28px -28px}
 .foot .grow{flex:1}
+.foot{flex-wrap:wrap;gap:10px 18px}
+.foot .switch,.foot .row>span,.foot .btn{white-space:nowrap}
 .foot select{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff}
 .saved{font-size:12px;color:var(--faint)}
 
@@ -198,6 +210,15 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 .shorts{display:flex;gap:12px;overflow:auto;padding-bottom:6px}
 .shorts video{width:160px;aspect-ratio:9/16;border-radius:12px;background:#000;object-fit:cover;flex:none}
 .meta-box{white-space:pre-wrap;font-size:13px;line-height:1.6;max-height:300px;overflow:auto;background:var(--soft);border-radius:10px;padding:12px}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:80;display:grid;place-items:center;padding:20px}
+.mbox{width:min(760px,100%);padding:22px;max-height:90vh;overflow:auto}
+.ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gcard{border:2px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;transition:.15s;background:#fff}
+.gcard:hover{border-color:#C9D2E3}
+.gcard.on{border-color:var(--accent);box-shadow:0 0 0 4px rgba(53,87,255,.12);background:var(--accent-soft)}
+.gcard b{display:block;font-size:15px;margin-bottom:4px}
+.gcard span{font-size:12px;color:var(--sub);line-height:1.5}
+#bgmSel{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-weight:600;z-index:99;opacity:0;transition:.2s;pointer-events:none}
 .toast.on{opacity:1}
 .kbd{font:11px Consolas,monospace;background:var(--soft);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 5px}
@@ -290,6 +311,7 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
       <div class="stage" id="stage">
         <video id="vid" controls preload="metadata"></video>
         <div class="ov" id="ov"></div>
+        <div class="ovl" id="ovl"></div>
       </div>
       <div class="card design">
         <div class="row" style="justify-content:space-between;margin-bottom:12px">
@@ -306,14 +328,26 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
           <div class="field" style="margin:0"><label>높이 미세조정 <span id="offV"></span></label><input type="range" min="-20" max="20" step="1" data-key="offset"></div>
         </div>
       </div>
+      <div class="card design" id="ovCard">
+        <div class="row" style="justify-content:space-between;margin-bottom:6px">
+          <h2 style="margin:0">로고 · 스티커</h2>
+          <button class="btn sm primary" id="ovAdd">+ 이미지 넣기</button>
+        </div>
+        <p class="muted" style="font-size:12px;margin:0 0 10px">자이 로고·제품 사진 등 PNG/JPG. 영상을 원하는 장면에 멈추고 넣으면 <b>그 시점부터</b> 나타나요. 투명 배경 PNG가 제일 깔끔해요.</p>
+        <input type="file" id="ovFile" accept="image/png,image/jpeg,image/webp" class="hidden">
+        <div id="ovList"></div>
+      </div>
     </div>
 
     <aside class="card side">
       <div class="hd">
         <div class="row" style="justify-content:space-between">
           <h2 style="margin:0">자막 편집 <span class="muted" id="capCount" style="font-weight:500;font-size:13px"></span></h2>
+          <button class="btn sm" id="dirOpen" style="background:linear-gradient(135deg,#3557FF,#7B5CFF);color:#fff;border:0">🎬 AI 자동 연출</button>
           <span class="row" style="gap:4px">
             <span class="saved" id="saved"></span>
+            <button class="btn sm primary" id="verSave" title="지금 상태를 따로 보관 (Ctrl+S)">💾 임시저장</button>
+            <button class="btn sm" id="verList" title="임시저장한 것 불러오기">저장본 ▾</button>
             <button class="btn sm" id="undoBtn" title="되돌리기 (Ctrl+Z)" disabled>↶ 되돌리기</button>
             <button class="btn sm" id="redoBtn" title="다시 하기 (Ctrl+Y)" disabled>↷</button>
           </span>
@@ -329,8 +363,12 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
           <button data-f="emph">강조된 줄</button>
           <button data-f="sfx">효과음</button>
         </div>
+        <div class="row" style="gap:6px;margin-top:8px">
+          <button class="btn sm" id="fixSpace" title="쉼표·마침표 뒤 띄우기, 앞 공백·겹친 공백 정리">띄어쓰기 정리</button>
+          <button class="btn sm" id="fitAll" title="긴 자막을 보기 좋은 두 줄로">긴 자막 두 줄로</button>
+        </div>
         <p class="muted" style="font-size:12px;margin:10px 0 0;line-height:1.6">
-          글자·띄어쓰기는 바로 고치세요. <span class="kbd">Enter</span> 줄바꿈 · <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> 커서 위치에서 나누기<br>
+          글자·띄어쓰기는 바로 고치세요. <span class="kbd">Tab</span> 다음 칸 · <span class="kbd">Enter</span> 줄바꿈 · <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> 커서 위치에서 나누기<br>
           아래 <b>단어 칩</b>을 누르면 강조(포인트색·크게·형광펜·빨강) · <u style="text-decoration:underline wavy #E5484D">물결 밑줄</u> = 오타 의심
         </p>
       </div>
@@ -341,7 +379,9 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
     <div class="row"><span class="muted">숏츠</span>
       <select data-key="shorts"><option value="0">안 만듦</option><option value="1">1개</option><option value="2">2개</option><option value="3">3개</option><option value="5">5개</option></select></div>
     <label class="switch"><input type="checkbox" data-key="shorts_subs"><i></i>숏츠에도 자막</label>
-    <label class="switch"><input type="checkbox" data-key="bgm"><i></i>배경음악</label>
+    <div class="row"><span class="muted">배경음악</span>
+      <select id="bgmSel" title="배경음악 분위기"></select>
+      <button class="btn sm ghost" id="bgmPlay" title="미리듣기">▶</button></div>
     <label class="switch"><input type="checkbox" data-key="auto_sfx"><i></i>강조 단어 효과음 자동</label>
     <div class="row"><span class="muted">효과음 크기</span><input type="range" min="0.1" max="1" step="0.05" data-key="sfx_volume" style="width:90px;accent-color:var(--accent)"></div>
     <div class="grow"></div>
@@ -375,6 +415,22 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 </section>
 </main>
 <div class="toast" id="toast"></div>
+<div class="modal hidden" id="dirModal">
+  <div class="card mbox">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">🎬 AI 자동 연출 — 어떤 편집인가요?</h2><button class="btn sm ghost" id="dirClose">✕</button></div>
+    <p class="muted" style="margin:6px 0 14px;font-size:13px" id="dirAi"></p>
+    <div class="ggrid" id="genres"></div>
+    <div class="row" style="flex-wrap:wrap;gap:16px;margin:16px 0 6px">
+      <label class="switch"><input type="checkbox" id="dTidy" checked><i></i>한 문장씩 정리</label>
+      <label class="switch"><input type="checkbox" id="dEmph" checked><i></i>강조 단어</label>
+      <label class="switch"><input type="checkbox" id="dSfx" checked><i></i>효과음</label>
+      <label class="switch"><input type="checkbox" id="dBgm" checked><i></i>배경음악</label>
+      <label class="switch"><input type="checkbox" id="dStyle"><i></i>자막 디자인도 추천대로</label>
+    </div>
+    <p class="muted" style="font-size:12px;margin:0 0 14px">이미 직접 고른 효과음은 그대로 둬요. 마음에 안 들면 <b>↶ 되돌리기</b> 한 번이면 원래대로.</p>
+    <div class="row" style="justify-content:flex-end"><button class="btn primary big" id="dirRun">연출 시작</button></div>
+  </div>
+</div>
 
 <script>
 const $ = s => document.querySelector(s);
@@ -391,7 +447,7 @@ const media = p => '/media?p=' + encodeURIComponent(p);
 const fmt = t => { t = Math.max(0, t || 0); const m = Math.floor(t / 60), s = t - m * 60; return `${String(m).padStart(2, '0')}:${s.toFixed(1).padStart(4, '0')}`; };
 const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1800); };
 
-let INIT = null, S = {}, JOB = null, CAPS = [], pollH = null, filter = 'all', selIdx = -1;
+let INIT = null, S = {}, JOB = null, CAPS = [], OVS = [], pollH = null, filter = 'all', selIdx = -1;
 
 // ───────── 화면 전환
 function show(view) {
@@ -519,13 +575,14 @@ $('#retry').onclick = () => goHome();
 async function openEditor() {
   const d = await api(`/api/jobs/${JOB.id}/captions`);
   CAPS = d.captions || [];
+  OVS = d.overlays || [];
   show('vEdit');
   const v = $('#vid');
   if (JOB.clean_video && v.dataset.src !== JOB.clean_video) { v.src = media(JOB.clean_video); v.dataset.src = JOB.clean_video; }
   bindSettings();
-  buildStyleCards(); renderList(); drawOverlay(true);
+  buildStyleCards(); buildBgm(); renderList(); renderOverlays(); drawOverlay(true);
   $('#saved').textContent = '';
-  HIST = []; FUT = []; lastSnap = JSON.stringify(CAPS); histButtons();
+  HIST = []; FUT = []; lastSnap = snapNow(); histButtons();
 }
 
 function tokens(text) { return text.split(/\s+/).filter(Boolean); }
@@ -579,6 +636,7 @@ function capRow(c, i, ls) {
       <select class="o-sfx" title="효과음"><option value="">효과음 없음</option>${Object.entries(INIT.sfx).map(([k, v]) => `<option value="${k}">🔔 ${v}</option>`).join('')}</select>
       <button class="btn sm ghost o-play" title="효과음 미리듣기">▶︎</button>
       <span class="sp"></span>
+      <button class="btn sm ghost o-fit" title="한 줄 ↔ 보기 좋은 두 줄">줄 맞춤</button>
       <button class="btn sm ghost o-split" title="커서 위치에서 두 줄로 나누기 (Ctrl+Enter)">나누기</button>
       <button class="btn sm ghost o-merge" title="다음 줄과 합치기">합치기</button>
       <button class="btn sm ghost o-del" title="이 자막 지우기 (영상은 그대로)" style="color:var(--warn)">삭제</button>
@@ -603,6 +661,11 @@ function capRow(c, i, ls) {
   ta.addEventListener('focus', () => { selIdx = i; $$('.cap.sel').forEach(x => x.classList.remove('sel')); el.classList.add('sel'); seek(c.start, false); });
   ta.addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); updateText(i, ta.value, true); splitAt(i, ta.selectionStart); }
+    if (e.key === 'Tab' || (e.altKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp'))) {
+      e.preventDefault();
+      const back = e.shiftKey || e.key === 'ArrowUp';
+      focusCap(i + (back ? -1 : 1));   // 칸을 떠나면(blur) 고친 글자가 자동 반영
+    }
   });
   el.querySelector('.tm').onclick = () => seek(c.start, true);
   drawTokens(el.querySelector('.words'), c, i, ls);
@@ -614,6 +677,7 @@ function capRow(c, i, ls) {
   el.querySelector('.o-play').onclick = () => playSfx(os.value || 'chime');
   el.querySelector('.o-split').onclick = () => splitAt(i, ta.selectionStart || Math.floor(ta.value.length / 2));
   el.querySelector('.o-merge').onclick = () => mergeNext(i);
+  el.querySelector('.o-fit').onclick = () => { updateText(i, fitLines(CAPS[i].text)); };
   el.querySelector('.o-del').onclick = () => { CAPS.splice(i, 1); changed(); renderList(); };
   el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => nudgeTime(i, ...b.dataset.t.split(',')));
   return el;
@@ -760,12 +824,92 @@ function mergeNext(i) {
   changed(); renderList(); toast('합쳤어요');
 }
 
+// 임시저장 (따로 보관 — 자동 저장과 달리 덮어쓰지 않음)
+async function saveVersion() {
+  document.activeElement && document.activeElement.blur && document.activeElement.blur();
+  await new Promise(r => setTimeout(r, 30));
+  try {
+    const r = await post(`/api/jobs/${JOB.id}/versions`, {captions: CAPS, overlays: OVS, settings: S});
+    $('#saved').textContent = '💾 임시저장 ' + r.saved; toast('임시저장했어요 — "저장본 ▾"에서 언제든 불러올 수 있어요');
+  } catch (e) { toast('임시저장 실패: ' + e.message); }
+}
+$('#verSave').onclick = saveVersion;
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's' && !$('#vEdit').classList.contains('hidden')) { e.preventDefault(); saveVersion(); }
+});
+$('#verList').onclick = async e => {
+  e.stopPropagation(); closeMenu();
+  const list = await api(`/api/jobs/${JOB.id}/versions`);
+  const m = document.createElement('div'); m.className = 'menu'; m.id = 'menu';
+  if (!list.length) m.innerHTML = '<div class="mhint" style="padding:10px">아직 임시저장한 게 없어요</div>';
+  list.slice(0, 20).forEach(v => {
+    const b = document.createElement('button');
+    b.innerHTML = `<span style="flex:1">${v.saved}${v.label ? ' · ' + v.label.replace(/</g, '&lt;') : ''}</span><span class="muted" style="font-size:11px">${v.n}줄${v.logos ? ' · 로고 ' + v.logos : ''}</span>`;
+    b.onclick = async () => {
+      closeMenu();
+      if (!confirm(`${v.saved} 임시저장본을 불러올까요?\n(지금 상태는 되돌리기로 돌아올 수 있어요)`)) return;
+      const d = await api(`/api/jobs/${JOB.id}/versions/${v.id}`);
+      CAPS = d.captions || []; OVS = d.overlays || [];
+      if (d.settings && d.settings.style) { Object.assign(S, d.settings); bindSettings(); buildStyleCards(); }
+      changed(); renderList(); renderOverlays(); drawOverlay(true); toast('불러왔어요');
+    };
+    m.appendChild(b);
+  });
+  document.body.appendChild(m);
+  const r = e.target.getBoundingClientRect();
+  m.style.left = Math.max(8, Math.min(r.left, innerWidth - 300)) + 'px'; m.style.top = (r.bottom + 6) + 'px'; m.style.minWidth = '280px';
+};
+
+// 칸 이동
+function focusCap(j) {
+  if (j < 0 || j >= CAPS.length) return;
+  setTimeout(() => {
+    const ta = $(`.cap[data-i="${j}"] textarea`);
+    if (!ta) return;
+    ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+    ta.closest('.cap').scrollIntoView({block: 'nearest', behavior: 'smooth'});
+  }, 30);
+}
+// 한 줄 ↔ 균형 잡힌 두 줄
+function fitLines(text) {
+  if (text.includes('\n')) return text.split('\n').join(' ');
+  const t = tokens(text);
+  if (t.length < 2) return text;
+  let best = 1, bestDiff = 1e9;
+  for (let k = 1; k < t.length; k++) {
+    const a = t.slice(0, k).join(' ').length, b = t.slice(k).join(' ').length;
+    // 위 줄이 살짝 짧은 쪽을 선호 (자막은 아랫줄이 길 때 안정감)
+    const d = Math.abs(a - b) + (a > b ? 0.5 : 0);
+    if (d < bestDiff) { bestDiff = d; best = k; }
+  }
+  return t.slice(0, best).join(' ') + '\n' + t.slice(best).join(' ');
+}
+// 띄어쓰기 정리 (규칙 기반 — 의미가 바뀌는 수정은 하지 않음)
+function tidySpaces(text) {
+  return text.split('\n').map(l => l
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([.,?!…])/g, '$1')                 // 문장부호 앞 공백 제거
+    .replace(/([,?!…])(?=[가-힣A-Za-z])/g, '$1 ')     // 쉼표·물음표 뒤 띄우기
+    .replace(/(?<!\d)\.(?=[가-힣A-Za-z])/g, '. ')     // 마침표 뒤 띄우기 (14.5 같은 숫자는 제외)
+    .trim()).filter(Boolean).join('\n');
+}
+$('#fixSpace').onclick = () => {
+  let n = 0;
+  bulk(() => CAPS.forEach((c, i) => { const v = tidySpaces(c.text); if (v !== c.text) { n++; updateText(i, v, true); } }));
+  renderList(); toast(n ? `${n}줄 띄어쓰기를 정리했어요 (되돌리기 가능)` : '정리할 게 없어요');
+};
+$('#fitAll').onclick = () => {
+  let n = 0;
+  bulk(() => CAPS.forEach((c, i) => { if (!c.text.includes('\n') && c.text.replace(/\s/g, '').length > 18) { n++; updateText(i, fitLines(c.text), true); } }));
+  renderList(); toast(n ? `${n}줄을 두 줄로 맞췄어요 (되돌리기 가능)` : '긴 자막이 없어요');
+};
+
 // 모두 바꾸기
 $('#replAll').onclick = () => {
   const f = $('#findIn').value, r = $('#replIn').value;
   if (!f) return toast('찾을 말을 입력하세요');
   let n = 0;
-  CAPS.forEach((c, i) => { if (c.text.includes(f)) { n += c.text.split(f).length - 1; updateText(i, c.text.split(f).join(r), true); } });
+  bulk(() => CAPS.forEach((c, i) => { if (c.text.includes(f)) { n += c.text.split(f).length - 1; updateText(i, c.text.split(f).join(r), true); } }));
   renderList(); toast(n ? `${n}곳 바꿨어요` : '찾는 말이 없어요');
 };
 $('#findIn').addEventListener('input', () => {
@@ -802,7 +946,8 @@ function nudgeTime(i, which, amount) {
 // 되돌리기 / 다시 하기
 let HIST = [], FUT = [], lastSnap = '[]';
 function histButtons() { $('#undoBtn').disabled = !HIST.length; $('#redoBtn').disabled = !FUT.length; }
-function restoreSnap(snap) { CAPS = JSON.parse(snap); lastSnap = snap; renderList(); drawOverlay(true); saveNow(); histButtons(); }
+function snapNow() { return JSON.stringify([CAPS, OVS]); }
+function restoreSnap(snap) { [CAPS, OVS] = JSON.parse(snap); lastSnap = snap; renderList(); renderOverlays(); drawOverlay(true); saveNow(); histButtons(); }
 function undo() { if (!HIST.length) return toast('되돌릴 게 없어요'); FUT.push(lastSnap); restoreSnap(HIST.pop()); toast('되돌렸어요'); }
 function redo() { if (!FUT.length) return; HIST.push(lastSnap); restoreSnap(FUT.pop()); toast('다시 적용했어요'); }
 $('#undoBtn').onclick = undo; $('#redoBtn').onclick = redo;
@@ -819,17 +964,25 @@ let saveH = null;
 function saveNow() {
   clearTimeout(saveH);
   saveH = setTimeout(async () => {
-    try { const r = await post(`/api/jobs/${JOB.id}/captions`, {captions: CAPS}); $('#saved').textContent = '✓ 저장됨 ' + r.saved; }
+    try { const r = await post(`/api/jobs/${JOB.id}/captions`, {captions: CAPS, overlays: OVS}); $('#saved').textContent = '✓ 저장됨 ' + r.saved; }
     catch { $('#saved').textContent = '저장 실패'; }
   }, 500);
 }
+let BULK = false;
+// 여러 줄을 한 번에 바꾸는 작업은 되돌리기 1번으로 묶는다
+function bulk(fn) {
+  BULK = true; let r;
+  try { r = fn(); } finally { BULK = false; }
+  changed(); return r;
+}
 function changed() {
-  const snap = JSON.stringify(CAPS);
+  if (BULK) return;
+  const snap = snapNow();
   if (snap !== lastSnap) { HIST.push(lastSnap); if (HIST.length > 200) HIST.shift(); FUT = []; lastSnap = snap; histButtons(); }
   $('#saved').textContent = '저장 중…';
   clearTimeout(saveH);
   saveH = setTimeout(async () => {
-    try { const r = await post(`/api/jobs/${JOB.id}/captions`, {captions: CAPS}); $('#saved').textContent = '✓ 저장됨 ' + r.saved; }
+    try { const r = await post(`/api/jobs/${JOB.id}/captions`, {captions: CAPS, overlays: OVS}); $('#saved').textContent = '✓ 저장됨 ' + r.saved; }
     catch { $('#saved').textContent = '저장 실패'; }
   }, 700);
 }
@@ -843,6 +996,8 @@ function curIndex(t) {
 }
 function styleOf() { return (INIT.styles || []).find(s => s.key === S.style) || INIT.styles[0]; }
 function drawOverlay(force) {
+  if (force) { const l = $('#ovl'); if (l) l.dataset.key = ''; }
+  drawLogos();
   const v = $('#vid'), ov = $('#ov');
   if (!v || !CAPS) return;
   const t = v.currentTime || 0;
@@ -935,6 +1090,133 @@ function refreshPreviews(layoutOnly) {
   }, layoutOnly ? 350 : 0);
 }
 
+// ───── 로고 · 스티커
+const OV_POS = [['top-left', '왼쪽 위'], ['top', '위 가운데'], ['top-right', '오른쪽 위'], ['left', '왼쪽'], ['center', '가운데'], ['right', '오른쪽'], ['bottom-left', '왼쪽 아래'], ['bottom', '아래 가운데'], ['bottom-right', '오른쪽 아래']];
+$('#ovAdd').onclick = () => $('#ovFile').click();
+$('#ovFile').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  const r = await fetch(`/api/jobs/${JOB.id}/asset?name=${encodeURIComponent(f.name)}`, {method: 'PUT', headers: {'X-Edge-Studio': '1'}, body: f});
+  const j = await r.json();
+  if (!r.ok) return toast(j.error || '이미지를 넣지 못했어요');
+  const v = $('#vid');
+  OVS.push({path: j.path, start: Math.round((v.currentTime || 0) * 10) / 10, dur: 3, pos: 'top-right', size: 22, anim: 'pop', sfx: 'pop'});
+  changed(); renderOverlays(); drawOverlay(true); toast('이미지를 넣었어요 — 위치·시간을 조절하세요');
+};
+function renderOverlays() {
+  const box = $('#ovList'); box.innerHTML = '';
+  if (!OVS.length) { box.innerHTML = '<p class="muted" style="font-size:12px;margin:4px 0 0">아직 없어요</p>'; return; }
+  OVS.forEach((o, i) => {
+    const el = document.createElement('div'); el.className = 'ovrow'; el.dataset.i = i;
+    el.innerHTML = `<div class="th" style="background-image:url('${media(o.path)}')"></div>
+      <div class="ctl">
+        <span class="lb">시작</span><input type="number" step="0.1" min="0" class="o-start" value="${o.start}"><button class="btn sm o-now" title="지금 영상 위치부터">지금 위치</button>
+        <span class="lb">길이</span><input type="number" step="0.5" min="0.5" class="o-dur" value="${o.dur}"><span class="muted">초</span>
+        <button class="btn sm ghost o-play">▶ 확인</button>
+        <span style="flex-basis:100%;height:0"></span>
+        <span class="lb">위치</span><select class="o-pos">${OV_POS.map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select>
+        <span class="lb">크기</span><input type="range" min="5" max="80" class="o-size" value="${o.size}">
+        <span class="lb">등장</span><select class="o-anim"><option value="pop">톡 튀어나오기</option><option value="fade">서서히</option><option value="none">그냥</option></select>
+        <span class="lb">효과음</span><select class="o-sfx"><option value="">없음</option>${Object.entries(INIT.sfx).map(([k, v]) => `<option value="${k}">🔔 ${v}</option>`).join('')}</select>
+        <button class="btn sm ghost o-del" style="color:var(--warn)">삭제</button>
+      </div>`;
+    const q = s => el.querySelector(s);
+    q('.o-pos').value = o.pos; q('.o-anim').value = o.anim; q('.o-sfx').value = o.sfx || '';
+    const upd = (k, v) => { o[k] = v; changed(); drawOverlay(true); };
+    q('.o-start').onchange = e => upd('start', Math.max(0, parseFloat(e.target.value) || 0));
+    q('.o-dur').onchange = e => upd('dur', Math.max(0.5, parseFloat(e.target.value) || 3));
+    q('.o-now').onclick = () => { upd('start', Math.round(($('#vid').currentTime || 0) * 10) / 10); renderOverlays(); };
+    q('.o-pos').onchange = e => upd('pos', e.target.value);
+    q('.o-size').oninput = e => { o.size = +e.target.value; drawOverlay(true); };
+    q('.o-size').onchange = () => changed();
+    q('.o-anim').onchange = e => upd('anim', e.target.value);
+    q('.o-sfx').onchange = e => { upd('sfx', e.target.value || null); if (e.target.value) playSfx(e.target.value); };
+    q('.o-play').onclick = () => { seek(Math.max(0, o.start - 0.5), true); if (o.sfx) setTimeout(() => playSfx(o.sfx), 500); };
+    q('.o-del').onclick = () => { OVS.splice(i, 1); changed(); renderOverlays(); drawOverlay(true); };
+    box.appendChild(el);
+  });
+}
+function drawLogos() {
+  const layer = $('#ovl'); if (!layer) return;
+  const t = $('#vid').currentTime || 0, W = layer.clientWidth, H = layer.clientHeight, m = Math.min(W, H) * 0.04;
+  const want = OVS.map((o, i) => [o, i]).filter(([o]) => t >= o.start && t <= o.start + o.dur);
+  const key = want.map(([o, i]) => i + o.pos + o.size + o.path).join('|') + W;
+  $$('.ovrow').forEach(r => r.classList.toggle('now', want.some(([, i]) => i === +r.dataset.i)));
+  if (layer.dataset.key === key) return;
+  layer.dataset.key = key;
+  layer.innerHTML = '';
+  want.forEach(([o]) => {
+    const pos = Object.fromEntries([['top-left', [0, 0]], ['top', [.5, 0]], ['top-right', [1, 0]], ['left', [0, .5]], ['center', [.5, .5]], ['right', [1, .5]], ['bottom-left', [0, 1]], ['bottom', [.5, 1]], ['bottom-right', [1, 1]]])[o.pos] || [1, 0];
+    const img = document.createElement('img'); img.src = media(o.path);
+    const w = W * o.size / 100;
+    img.style.width = w + 'px';
+    img.style.left = `${m + (W - 2 * m) * pos[0]}px`; img.style.top = `${m + (H - 2 * m) * pos[1]}px`;
+    img.style.transform = `translate(${-pos[0] * 100}%, ${-pos[1] * 100}%)`;
+    layer.appendChild(img);
+  });
+}
+
+// ───── 배경음악 선택
+function buildBgm() {
+  const sel = $('#bgmSel');
+  const opts = [['', '없음']].concat(Object.entries(INIT.bgm_moods || {}).map(([k, v]) => ['mood:' + k, '🎵 ' + v]))
+    .concat((INIT.bgm_files || []).map(f => ['file:' + f, '📁 ' + f]));
+  sel.innerHTML = opts.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
+  sel.value = S.bgm === false ? '' : (S.bgm_choice ?? 'mood:bright');
+  sel.onchange = () => { setS('bgm_choice', sel.value); setS('bgm', !!sel.value); if (sel.value) playBgm(); };
+}
+const bgmAudio = new Audio();
+function playBgm() {
+  const v = $('#bgmSel').value;
+  if (!bgmAudio.paused) { bgmAudio.pause(); $('#bgmPlay').textContent = '▶'; return; }
+  if (!v) return;
+  bgmAudio.src = v.startsWith('mood:') ? `/api/bgm/${v.slice(5)}.wav` : `/api/bgmfile/${encodeURIComponent(v.slice(5))}`;
+  bgmAudio.volume = 0.5; bgmAudio.play().catch(() => {}); $('#bgmPlay').textContent = '■';
+  clearTimeout(bgmAudio._t); bgmAudio._t = setTimeout(() => { bgmAudio.pause(); $('#bgmPlay').textContent = '▶'; }, 12000);
+}
+$('#bgmPlay').onclick = playBgm;
+
+// ───── AI 자동 연출
+let GENRE = null;
+$('#dirOpen').onclick = () => {
+  GENRE = S.genre || 'promo';
+  $('#dirAi').innerHTML = INIT.api_key
+    ? '✅ AI 연결됨 — Claude가 문장을 읽고 오타·띄어쓰기·문장부호까지 다듬은 뒤 연출해요.'
+    : 'ℹ️ AI 키가 없어 <b>편집 규칙</b>으로 연출해요 (문장 나누기·강조·효과음·음악). api_key.txt 를 넣으면 AI가 글까지 다듬어요.';
+  $('#genres').innerHTML = '';
+  (INIT.genres || []).forEach(g => {
+    const d = document.createElement('div'); d.className = 'gcard' + (g.key === GENRE ? ' on' : '');
+    d.innerHTML = `<b>${g.label}</b><span>${g.desc}</span>`;
+    d.onclick = () => { GENRE = g.key; $$('.gcard').forEach(x => x.classList.toggle('on', x === d)); };
+    $('#genres').appendChild(d);
+  });
+  $('#dirModal').classList.remove('hidden');
+};
+$('#dirClose').onclick = () => $('#dirModal').classList.add('hidden');
+$('#dirModal').addEventListener('click', e => { if (e.target.id === 'dirModal') $('#dirModal').classList.add('hidden'); });
+$('#dirRun').onclick = async () => {
+  const btn = $('#dirRun'); btn.disabled = true; btn.textContent = INIT.api_key ? 'AI가 연출하는 중…' : '연출하는 중…';
+  try {
+    document.activeElement && document.activeElement.blur && document.activeElement.blur();
+    const r = await post(`/api/jobs/${JOB.id}/direct`, {
+      captions: CAPS, genre: GENRE, tidy: $('#dTidy').checked, emph: $('#dEmph').checked, sfx: $('#dSfx').checked, ai: true,
+    });
+    bulk(() => {
+      CAPS = r.captions;
+      if ($('#dSfx').checked) S.auto_sfx = false;            // 연출이 직접 고른 효과음만 쓰기
+      if ($('#dBgm').checked) { S.bgm_choice = r.bgm; S.bgm = true; }
+      if ($('#dStyle').checked && r.style) S.style = r.style;
+      S.genre = GENRE;
+    });
+    post('/api/settings', S).catch(() => {});
+    bindSettings(); buildStyleCards(); buildBgm(); renderList(); drawOverlay(true);
+    const nSfx = CAPS.filter(c => c.sfx).length, nEmph = CAPS.filter(c => c.emph && Object.keys(c.emph).length).length;
+    $('#dirModal').classList.add('hidden');
+    toast(`${r.used_ai ? 'AI' : '규칙'} 연출 완료 — ${CAPS.length}문장 · 강조 ${nEmph}줄 · 효과음 ${nSfx}개 (되돌리기 가능)`);
+  } catch (e) { toast('연출 실패: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = '연출 시작'; }
+};
+
 // 효과음 미리듣기
 const sfxAudio = new Audio();
 function playSfx(k) { sfxAudio.src = `/api/sfx/${k}.wav`; sfxAudio.volume = Math.min(1, S.sfx_volume * 1.4); sfxAudio.play().catch(() => {}); }
@@ -943,7 +1225,7 @@ function playSfx(k) { sfxAudio.src = `/api/sfx/${k}.wav`; sfxAudio.volume = Math
 $('#renderBtn').onclick = async () => {
   document.activeElement && document.activeElement.blur();
   await new Promise(r => setTimeout(r, 50));
-  try { await post(`/api/jobs/${JOB.id}/render`, {captions: CAPS, options: S}); }
+  try { await post(`/api/jobs/${JOB.id}/render`, {captions: CAPS, overlays: OVS, options: S}); }
   catch (e) { return toast(e.message); }
   JOB.stage = 'rendering'; startPoll();
 };

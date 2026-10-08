@@ -234,7 +234,14 @@ def slice_captions(
 
 def captions_to_json(captions: List[Caption], out_path: Path) -> Path:
     """자막을 단어 타이밍까지 포함해 JSON으로 저장한다 (자막 편집 화면용)."""
-    data = [
+    data = captions_to_list(captions)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    return out_path
+
+
+def captions_to_list(captions: List[Caption]) -> list:
+    return [
         {
             "start": round(c.start, 3),
             "end": round(c.end, 3),
@@ -255,9 +262,6 @@ def captions_to_json(captions: List[Caption], out_path: Path) -> Path:
         }
         for c in captions
     ]
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
-    return out_path
 
 
 def captions_from_json(data) -> List[Caption]:

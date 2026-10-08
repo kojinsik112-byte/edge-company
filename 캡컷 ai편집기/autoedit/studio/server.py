@@ -36,6 +36,22 @@ APP_ROOT = HERE.parent.parent  # 캡컷 ai편집기/
 PORT = int(os.environ.get("EDGE_STUDIO_PORT", "8817"))
 
 
+def _code_version() -> str:
+    """프로그램 파일이 바뀌면 달라지는 버전 표식 (업데이트 감지용)."""
+    import hashlib
+
+    h = hashlib.md5()
+    for f in sorted((HERE.parent).rglob("*.py")) + [HERE / "index.html"]:
+        try:
+            h.update(f"{f.name}:{f.stat().st_mtime_ns}".encode())
+        except OSError:
+            pass
+    return h.hexdigest()[:10]
+
+
+APP_VERSION = _code_version()
+
+
 # ───────────────────────────── 경로 ─────────────────────────────
 
 
@@ -91,6 +107,8 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "shorts": 3,
     "shorts_subs": True,
     "bgm": True,
+    "bgm_choice": "mood:bright",  # mood:<분위기> / file:<내 음악> / ""
+    "genre": "promo",
     "auto_sfx": True,
     "sfx_volume": 0.5,
 }
@@ -144,8 +162,10 @@ def build_config(opts: Dict[str, Any]) -> Config:
     cfg.shorts.count = max(1, n)
     cfg.shorts.burn_subtitles = bool(opts.get("shorts_subs", True)) and style != "none"
     cfg.branding.enabled = True
-    if not opts.get("bgm", True):
-        cfg.branding.bgm = None
+    from ..bgm import resolve as bgm_resolve
+
+    track = bgm_resolve(str(opts.get("bgm_choice") or ""), APP_ROOT / "assets") if opts.get("bgm", True) else None
+    cfg.branding.bgm = str(track) if track else None
     return cfg
 
 
@@ -184,6 +204,7 @@ class Job:
         self.clean_video: Optional[Path] = None
         self.captions: List[Dict[str, Any]] = []
         self.keywords: List[str] = []
+        self.overlays: List[Dict[str, Any]] = []  # 로고·스티커
         self.result: Dict[str, Any] = {}
         self.duration = 0.0
         self.poster: Optional[Path] = None
@@ -346,6 +367,7 @@ def _run_render(job: Job, opts: Dict[str, Any]):
             res = render_final(
                 job.clean_video, caps, job.out_dir, cfg,
                 keywords=set(job.keywords), assets_dir=APP_ROOT / "assets",
+                overlays=job.overlays,
             )
             job.finish_steps()
             job.progress = 100
@@ -374,6 +396,7 @@ def _save_project(job: Job):
         "name": job.name,
         "clean_video": str(job.clean_video) if job.clean_video else None,
         "keywords": job.keywords,
+        "overlays": job.overlays,
         "saved": time.strftime("%Y-%m-%d %H:%M"),
     }
     (job.out_dir / "_project.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -381,6 +404,40 @@ def _save_project(job: Job):
         (job.out_dir / f"{job.name}_자막.json").write_text(
             json.dumps(job.captions, ensure_ascii=False, indent=1), encoding="utf-8"
         )
+
+
+def _save_version(job: Job, label: str, settings: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """임시저장: 지금 자막·로고·디자인 설정을 따로 보관 (덮어쓰지 않음)."""
+    d = job.out_dir / "_versions"
+    d.mkdir(parents=True, exist_ok=True)
+    vid = time.strftime("%Y%m%d-%H%M%S")
+    data = {
+        "id": vid,
+        "label": (label or "").strip()[:40],
+        "saved": time.strftime("%m/%d %H:%M:%S"),
+        "captions": job.captions,
+        "overlays": job.overlays,
+        "settings": settings or {},
+    }
+    (d / f"{vid}.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    # 너무 많아지면 오래된 것부터 정리 (최근 50개 보관)
+    files = sorted(d.glob("*.json"))
+    for old in files[:-50]:
+        old.unlink(missing_ok=True)
+    return {"id": vid, "saved": data["saved"]}
+
+
+def _list_versions(job: Job) -> List[Dict[str, Any]]:
+    d = job.out_dir / "_versions"
+    out = []
+    for f in sorted(d.glob("*.json"), reverse=True) if d.exists() else []:
+        try:
+            j = json.loads(f.read_text(encoding="utf-8"))
+            out.append({"id": j["id"], "label": j.get("label", ""), "saved": j.get("saved", ""),
+                        "n": len(j.get("captions", [])), "logos": len(j.get("overlays", []))})
+        except Exception:  # noqa: BLE001
+            continue
+    return out
 
 
 def list_projects() -> List[Dict[str, Any]]:
@@ -419,6 +476,7 @@ def open_project(dir_path: Path) -> Job:
     job.out_dir = dir_path
     job.clean_video = clean
     job.keywords = info.get("keywords", [])
+    job.overlays = info.get("overlays", [])
     cj = dir_path / f"{name}_자막.json"
     job.captions = json.loads(cj.read_text(encoding="utf-8")) if cj.exists() else []
     job.duration = ff.probe_duration(clean) if clean.exists() else 0
@@ -604,8 +662,10 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/ping":
                 if q.get("alive"):
                     _touch()
-                return self._json({"ok": True, "app": "edge-studio"})
+                return self._json({"ok": True, "app": "edge-studio", "version": APP_VERSION})
             if path == "/api/init":
+                from ..bgm import MOODS, user_tracks
+                from ..director import GENRES
                 from ..sfx import SFX_LIST
                 from ..styles import EMPHASIS, STYLES, font_available
 
@@ -627,6 +687,10 @@ class Handler(BaseHTTPRequestHandler):
                         "sfx": {k: v[0] for k, v in SFX_LIST.items()},
                         "sfx_desc": {k: v[1] for k, v in SFX_LIST.items()},
                         "projects": list_projects(),
+                        "genres": [{"key": g.key, "label": g.label, "desc": g.desc} for g in GENRES.values()],
+                        "bgm_moods": {k: v[0] for k, v in MOODS.items()},
+                        "bgm_desc": {k: v[1] for k, v in MOODS.items()},
+                        "bgm_files": [p.name for p in user_tracks(APP_ROOT / "assets")],
                         "out_root": str(OUT_ROOT),
                     }
                 )
@@ -636,17 +700,43 @@ class Handler(BaseHTTPRequestHandler):
             if m:
                 job = self._job(m.group(1))
                 return self._json(job.public() if job else {"error": "없음"}, 200 if job else 404)
+            m = re.match(r"^/api/jobs/(\w+)/versions$", path)
+            if m:
+                job = self._job(m.group(1))
+                if not job:
+                    return self._json({"error": "없음"}, 404)
+                return self._json(_list_versions(job))
+            m = re.match(r"^/api/jobs/(\w+)/versions/([\w\-]+)$", path)
+            if m:
+                job = self._job(m.group(1))
+                f = job.out_dir / "_versions" / f"{m.group(2)}.json" if job else None
+                if not f or not f.exists():
+                    return self._json({"error": "없음"}, 404)
+                return self._json(json.loads(f.read_text(encoding="utf-8")))
             m = re.match(r"^/api/jobs/(\w+)/captions$", path)
             if m:
                 job = self._job(m.group(1))
                 if not job:
                     return self._json({"error": "없음"}, 404)
-                return self._json({"captions": job.captions, "keywords": job.keywords})
+                return self._json({"captions": job.captions, "keywords": job.keywords, "overlays": job.overlays})
             m = re.match(r"^/api/preview/(\w+)\.jpg$", path)
             if m:
                 job = self._job(q.get("job", [""])[0])
                 opts = {k: v[0] for k, v in q.items()}
                 return self._file(style_preview(job, m.group(1), opts), "image/jpeg")
+            m = re.match(r"^/api/bgm/(\w+)\.wav$", path)
+            if m:
+                from ..bgm import MOODS, mood_path
+
+                if m.group(1) not in MOODS:
+                    return self._json({"error": "없음"}, 404)
+                return self._file(mood_path(m.group(1)), "audio/wav")
+            m = re.match(r"^/api/bgmfile/(.+)$", path)
+            if m:
+                from ..bgm import resolve as bgm_resolve
+
+                f = bgm_resolve("file:" + urllib.parse.unquote(m.group(1)), APP_ROOT / "assets")
+                return self._file(f) if f else self._json({"error": "없음"}, 404)
             m = re.match(r"^/api/sfx/(\w+)\.wav$", path)
             if m:
                 from ..sfx import sample_path
@@ -667,6 +757,23 @@ class Handler(BaseHTTPRequestHandler):
             return
         u = urllib.parse.urlparse(self.path)
         q = urllib.parse.parse_qs(u.query)
+        m = re.match(r"^/api/jobs/(\w+)/asset$", u.path)
+        if m:
+            job = JOBS.get(m.group(1))
+            if not job:
+                return self._json({"error": "작업이 없습니다"}, 404)
+            name = os.path.basename(q.get("name", ["logo.png"])[0])
+            stem, ext = os.path.splitext(name)
+            if ext.lower() not in (".png", ".jpg", ".jpeg", ".webp", ".gif"):
+                return self._json({"error": "PNG·JPG 이미지만 넣을 수 있어요"}, 400)
+            d = job.out_dir / "_assets"
+            d.mkdir(parents=True, exist_ok=True)
+            dst = d / f"{_safe_name(stem)}_{uuid.uuid4().hex[:6]}{ext.lower()}"
+            n = int(self.headers.get("Content-Length") or 0)
+            if n > 30 * 1024 * 1024:
+                return self._json({"error": "이미지가 너무 큽니다 (30MB 이하)"}, 400)
+            dst.write_bytes(self.rfile.read(n))
+            return self._json({"path": str(dst)})
         if u.path != "/api/upload":
             return self._json({"error": "없는 주소"}, 404)
         name = q.get("name", ["video.mp4"])[0]
@@ -702,6 +809,12 @@ class Handler(BaseHTTPRequestHandler):
             body = self._body()
             if path == "/api/settings":
                 return self._json(save_settings(body))
+            if path == "/api/shutdown":
+                # 새 버전이 켜질 때 예전 버전을 끈다 (작업 중이면 거절)
+                if WORK_LOCK.locked():
+                    return self._json({"ok": False, "busy": True})
+                threading.Thread(target=lambda: (time.sleep(0.3), os._exit(0)), daemon=True).start()
+                return self._json({"ok": True})
             if path == "/api/pick":
                 # 윈도우 파일 선택창 → 원본을 복사하지 않고 그 자리에서 바로 편집 (대용량에 유리)
                 picked = _pick_file()
@@ -730,6 +843,39 @@ class Handler(BaseHTTPRequestHandler):
                 else:
                     os.startfile(str(p))  # type: ignore[attr-defined]
                 return self._json({"ok": True})
+            m = re.match(r"^/api/jobs/(\w+)/direct$", path)
+            if m:
+                # AI 자동 연출: 문장 정리 + 강조 + 효과음 + 배경음악
+                from ..config import SmartEditConfig
+                from ..director import direct
+                from ..transcribe import captions_from_json, captions_to_list
+
+                job = self._job(m.group(1))
+                if not job:
+                    return self._json({"error": "작업이 없습니다"}, 404)
+                caps = captions_from_json(body.get("captions", job.captions))
+                st = load_settings()
+                plan = direct(
+                    caps, body.get("genre", "promo"),
+                    vocab=st.get("vocab"), smart_cfg=SmartEditConfig(),
+                    tidy=bool(body.get("tidy", True)), do_sfx=bool(body.get("sfx", True)),
+                    do_emph=bool(body.get("emph", True)), try_ai=bool(body.get("ai", True)) and has_api_key(),
+                )
+                return self._json({
+                    "captions": captions_to_list(plan.captions),
+                    "bgm": f"mood:{plan.bgm}", "style": plan.style,
+                    "used_ai": plan.used_ai, "notes": plan.notes,
+                })
+            m = re.match(r"^/api/jobs/(\w+)/versions$", path)
+            if m:
+                job = self._job(m.group(1))
+                if not job:
+                    return self._json({"error": "작업이 없습니다"}, 404)
+                job.captions = body.get("captions", job.captions)
+                if isinstance(body.get("overlays"), list):
+                    job.overlays = body["overlays"]
+                _save_project(job)
+                return self._json(_save_version(job, body.get("label", ""), body.get("settings")))
             m = re.match(r"^/api/jobs/(\w+)/(analyze|captions|render)$", path)
             if m:
                 job = self._job(m.group(1))
@@ -738,6 +884,8 @@ class Handler(BaseHTTPRequestHandler):
                 action = m.group(2)
                 if action == "captions":
                     job.captions = body.get("captions", [])
+                    if isinstance(body.get("overlays"), list):
+                        job.overlays = body["overlays"]
                     if job.out_dir.exists():
                         _save_project(job)
                     return self._json({"ok": True, "saved": time.strftime("%H:%M:%S")})
@@ -748,6 +896,8 @@ class Handler(BaseHTTPRequestHandler):
                 if action == "analyze":
                     threading.Thread(target=_run_analyze, args=(job, opts), daemon=True).start()
                 else:
+                    if isinstance(body.get("overlays"), list):
+                        job.overlays = body["overlays"]
                     if body.get("captions") is not None:
                         job.captions = body["captions"]
                         _save_project(job)
@@ -820,14 +970,59 @@ def _edge_path() -> Optional[str]:
     return None
 
 
+def _kill_port_owner() -> None:
+    """PORT 를 붙잡고 있는 python(w).exe 만 종료한다 (다른 프로그램은 건드리지 않음)."""
+    if os.name != "nt":
+        return
+    try:
+        out = subprocess.run(["netstat", "-ano", "-p", "TCP"], capture_output=True, text=True,
+                             encoding="utf-8", errors="replace").stdout
+        pids = {line.split()[-1] for line in out.splitlines()
+                if f"127.0.0.1:{PORT}" in line and "LISTENING" in line}
+        for pid in pids:
+            name = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/FO", "CSV", "/NH"], capture_output=True,
+                                  text=True, encoding="utf-8", errors="replace").stdout.lower()
+            if "python" in name and str(os.getpid()) != pid:
+                subprocess.run(["taskkill", "/PID", pid, "/F"], capture_output=True)
+    except Exception:  # noqa: BLE001
+        pass
+
+
 def _already_running(url: str) -> bool:
+    """같은 버전이 이미 켜져 있으면 True. 예전 버전이 켜져 있으면 끄고 False(새로 시작)."""
     import urllib.request
 
     try:
         with urllib.request.urlopen(url + "api/ping", timeout=0.6) as r:
-            return b"edge-studio" in r.read()
+            info = json.loads(r.read().decode("utf-8"))
     except Exception:  # noqa: BLE001
         return False
+    if info.get("app") != "edge-studio":
+        return False
+    if info.get("version") == APP_VERSION:
+        return True
+    if not info.get("version"):
+        # 아주 예전 버전(끄기 기능 없음) → 그 포트를 쓰는 파이썬 프로세스를 직접 종료
+        _kill_port_owner()
+        time.sleep(0.8)
+        return False
+    # 예전 버전 → 끄기 요청 (영상 만드는 중이면 그대로 둠)
+    try:
+        req = urllib.request.Request(url + "api/shutdown", data=b"{}", method="POST",
+                                     headers={"X-Edge-Studio": "1", "Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=2) as r:
+            res = json.loads(r.read().decode("utf-8"))
+        if not res.get("ok"):
+            return True  # 작업 중 → 그 창을 그대로 씀
+    except Exception:  # noqa: BLE001
+        pass
+    for _ in range(30):  # 꺼질 때까지 최대 3초
+        time.sleep(0.1)
+        try:
+            urllib.request.urlopen(url + "api/ping", timeout=0.3)
+        except Exception:  # noqa: BLE001
+            return False
+    return True
 
 
 def _cleanup_uploads(days: int = 3):

@@ -34,7 +34,7 @@ class SilenceConfig:
     keep_pad: float = 0.07       # (dB 방식) 말 앞뒤 여유(초)
     min_keep: float = 0.30       # 이보다 짧은 말 토막은 버린다 (초)
     keep_head: float = 1.5       # 첫 말 앞을 이만큼 살림 (초) — 등장·인사 동작
-    keep_tail: float = 8.0       # 마지막 말 뒤를 이만큼 살림 (초) — 손 흔들기·끝 인사
+    keep_tail: float = 600.0     # 마지막 말 뒤는 끝까지 살림 (초) — 손 흔들기·끝 인사는 절대 안 자름
 
 
 @dataclass

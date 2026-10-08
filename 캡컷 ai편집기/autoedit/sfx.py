@@ -239,7 +239,9 @@ def _cue_time(cap: Caption) -> float:
     return cap.start
 
 
-def plan_cues(captions: List[Caption], auto: bool = False) -> List[Tuple[float, str]]:
+def plan_cues(
+    captions: List[Caption], auto: bool = False, extra: Optional[List[Tuple[float, str]]] = None
+) -> List[Tuple[float, str]]:
     """(재생 시각, 효과음 이름) 목록. auto=True 면 강조 종류에 맞춰 자동 배치."""
     cues: List[Tuple[float, str]] = []
     for cap in captions:
@@ -251,6 +253,7 @@ def plan_cues(captions: List[Caption], auto: bool = False) -> List[Tuple[float, 
                     break
         if name and name in SFX_LIST:
             cues.append((_cue_time(cap), name))
+    cues += [(t, n) for t, n in (extra or []) if n in SFX_LIST]
     # 너무 붙어 있으면(0.6초 이내) 시끄러우니 뒤의 것을 뺀다
     cues.sort()
     out: List[Tuple[float, str]] = []
@@ -269,12 +272,13 @@ def apply_sfx(
     volume: float = 0.5,
     auto: bool = False,
     run: Optional[Callable] = None,
+    extra: Optional[List[Tuple[float, str]]] = None,
 ) -> Path:
     """효과음을 영상 음성에 섞는다. 효과음이 하나도 없으면 원본 경로를 그대로 돌려준다."""
     from .ffmpeg import probe_duration, run as ff_run
     from .utils import logger
 
-    cues = plan_cues(captions, auto)
+    cues = plan_cues(captions, auto, extra)
     if not cues:
         return video
     np = _np()

@@ -205,8 +205,9 @@ def _finish(
     assets_dir: Path,
     result: PipelineResult,
     keywords: Optional[Set[str]] = None,
+    overlays: Optional[List[dict]] = None,
 ) -> None:
-    """자막 굽기 → 숏츠 → 브랜딩. process/reburn 공통 마무리 단계."""
+    """자막 굽기 → 로고 → 효과음 → 숏츠 → 브랜딩. process/reburn 공통 마무리 단계."""
     # 자막 번인 (메인 영상)
     main = clean
     if config.subtitle.burn_in and captions:
@@ -227,12 +228,23 @@ def _finish(
         result.steps.append("자막 번인")
 
     # 효과음 (자막마다 고른 소리 / 강조 단어 자동)
-    if captions:
+    # 로고·스티커
+    from .overlays import apply_overlays, sfx_cues, valid
+
+    overlays = valid(overlays)
+    if overlays:
+        with_ov = apply_overlays(main, overlays, work_dir / "overlay.mp4", config.output)
+        if with_ov != main:
+            main = with_ov
+            result.steps.append(f"로고 {len(overlays)}개")
+
+    if captions or overlays:
         from .sfx import apply_sfx
 
         with_sfx = apply_sfx(
-            main, captions, work_dir / "sfx.mp4", work_dir,
+            main, captions or [], work_dir / "sfx.mp4", work_dir,
             volume=config.subtitle.sfx_volume, auto=config.subtitle.auto_sfx,
+            extra=sfx_cues(overlays),
         )
         if with_sfx != main:
             main = with_sfx
@@ -251,6 +263,7 @@ def _finish(
             config.subtitle,
             stem,
             keywords,
+            overlays,
         )
         if result.shorts:
             result.steps.append(f"숏츠 {len(result.shorts)}개")
@@ -500,6 +513,7 @@ def render_final(
     keywords: Optional[Set[str]] = None,
     assets_dir: Optional[Path] = None,
     keep_temp: bool = False,
+    overlays: Optional[List[dict]] = None,
 ) -> PipelineResult:
     """(사람이 검토·수정한) 자막으로 완성 영상·숏츠·썸네일을 만든다."""
     ensure_ffmpeg()
@@ -531,7 +545,7 @@ def render_final(
             title = meta["titles"][0] if meta and meta.get("titles") else None
         _finish(
             clean_video, captions, stem, output_dir, work_dir, config, assets_dir,
-            result, keywords,
+            result, keywords, overlays,
         )
         if config.thumbnail.enabled:
             logger.info("[5/5] 썸네일 생성")

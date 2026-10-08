@@ -98,6 +98,7 @@ def render_short(
     work_dir: Path,
     index: int,
     keywords: Optional[Set[str]] = None,
+    overlays: Optional[List[dict]] = None,
 ) -> Path:
     """하이라이트 구간을 9:16 세로 클립으로 렌더링한다."""
     # 1) 구간을 잘라 세로 비율로 cover-crop (가운데 정렬)
@@ -156,12 +157,15 @@ def render_short(
                 keywords=keywords,
             )
             raw.unlink(missing_ok=True)
-            _add_sfx(out_path, clip_caps, sub_cfg, work_dir)
+            _finish_short(out_path, clip_caps, sub_cfg, out_cfg, work_dir, overlays, highlight)
             return out_path
 
     raw.replace(out_path)
-    if captions:
-        _add_sfx(out_path, slice_captions(captions, highlight.start, highlight.end), sub_cfg, work_dir)
+    _finish_short(
+        out_path,
+        slice_captions(captions, highlight.start, highlight.end) if captions else [],
+        sub_cfg, out_cfg, work_dir, overlays, highlight,
+    )
     return out_path
 
 
@@ -175,6 +179,7 @@ def make_shorts(
     sub_cfg: SubtitleConfig,
     stem: str,
     keywords: Optional[Set[str]] = None,
+    overlays: Optional[List[dict]] = None,
 ) -> List[Path]:
     """숏츠 여러 개를 만들어 경로 목록을 반환한다."""
     highlights = pick_highlights(video, captions, cfg)
@@ -195,19 +200,34 @@ def make_shorts(
         )
         out_path = out_dir / f"{stem}_short{i}.mp4"
         render_short(
-            video, h, out_path, cfg, out_cfg, captions, sub_cfg, work_dir, i, keywords
+            video, h, out_path, cfg, out_cfg, captions, sub_cfg, work_dir, i, keywords, overlays
         )
         results.append(out_path)
     return results
 
 
-def _add_sfx(clip: Path, caps: List[Caption], sub_cfg: SubtitleConfig, work_dir: Path) -> None:
-    """숏츠에도 같은 효과음을 넣는다 (제자리 교체)."""
+def _finish_short(
+    clip: Path,
+    caps: List[Caption],
+    sub_cfg: SubtitleConfig,
+    out_cfg: OutputConfig,
+    work_dir: Path,
+    overlays: Optional[List[dict]],
+    highlight: "Highlight",
+) -> None:
+    """숏츠에도 같은 로고·효과음을 넣는다 (제자리 교체)."""
+    from .overlays import apply_overlays, sfx_cues, shift, valid
     from .sfx import apply_sfx
 
+    ovs = shift(valid(overlays), highlight.start, highlight.end)
+    if ovs:
+        tmp = work_dir / f"{clip.stem}_ov.mp4"
+        if apply_overlays(clip, ovs, tmp, out_cfg) != clip:
+            tmp.replace(clip)
     tmp = work_dir / f"{clip.stem}_sfx.mp4"
     out = apply_sfx(
-        clip, caps, tmp, work_dir, volume=sub_cfg.sfx_volume, auto=sub_cfg.auto_sfx
+        clip, caps, tmp, work_dir, volume=sub_cfg.sfx_volume, auto=sub_cfg.auto_sfx,
+        extra=sfx_cues(ovs),
     )
     if out != clip:
         out.replace(clip)
