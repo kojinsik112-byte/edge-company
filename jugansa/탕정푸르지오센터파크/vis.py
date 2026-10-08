@@ -720,7 +720,7 @@ def apply2(B, D, take, sub):
         rows = sub(rows, f'<div class="no">{n_:02d}</div>', f'<div class="no">{n_:02d}</div>{ic(name)}')
     gal = ('<div class="gal lx2">'
            '<figure><img src="assets_ins/tj_water_garden.jpg" alt="" style="object-position:50% 70%"><figcaption>물의정원 경관조명<small>수변 라인조명 · 수목 업라이트 · 개선 연출 예시</small></figcaption></figure>'
-           '<figure><img src="assets_ins/tj_central_plaza.jpg" alt="" style="object-position:50% 55%"><figcaption>중앙광장 경관조명<small>보행등 · 산책로 간접조명 · 개선 연출 예시</small></figcaption></figure></div>')
+           '<figure><img src="assets_ins/tj_central_plaza.jpg" alt="" style="object-position:50% 55%"><figcaption>중앙광장 경관조명<small>조형물 조명 · 보행등 · 산책로 간접조명 · 개선 연출 예시</small></figcaption></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
     B.CSS += ".r2 .gal.lx2{grid-template-columns:1fr;grid-template-rows:1fr 1fr}"
 
