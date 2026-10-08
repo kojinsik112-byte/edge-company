@@ -44,10 +44,10 @@ def apply(G):
              ds="일반회원 20만원 + 정회원 추가 10만원. 박람회 계약 시 품목(업체)당 1매 사용."),
         dict(lb="GIFT 02", big="+5", unit="만원", nm="특정 입주민 추가 상품권",
              ds="소년·소녀가장, 80세 이상 노부모 부양, 장애인, 다자녀(3자녀↑), 다문화, 임산부."),
-        dict(lb="GIFT 03", big="백화점", nm="백화점 상품권", ds="박람회 방문·신청 시 1세대 1회 교부. 행사장 안에서 현금처럼 사용."),
+        dict(lb="GIFT 03 · 현물", big="10", unit="만원", nm="백화점 상품권", hl=True, ds="방문·신청 시 1세대 1회 현물 지급(금액은 단지별 상이). 행사장에서 현금처럼 사용."),
         dict(lb="GIFT 04", big="10", unit="%", nm="현장 특별할인", ds="박람회 기간 품목별 현장 할인 특가 최대 10% 추가할인."),
     ])
-    k["kp"] = "정회원 박람회 상품권 [[30만원]] — 일반회원 20만원에 정회원 10만원을 더 드립니다."
+    k["kp"] = ("[[백화점 상품권 10만원]]은 현물로, 박람회 상품권 [[30만원]]은 계약금으로 씁니다.", "정회원 기준 · 백화점 상품권 금액은 단지별 상이")
     k = take("정회원 전용 [[세대당 60만원 상당]]")[1]
     k["title"] = "정회원 전용 [[추가 혜택]]"
     k["lead"] = "정회원으로 박람회에 방문하시면 아래 혜택을 더 받으실 수 있습니다."
@@ -137,7 +137,7 @@ def apply(G):
 .toc5 .s .sn{font-size:26px}
 """
 
-    A = [("박람회 혜택", "정회원 상품권 30만원 · 현장할인 최대 10%"),
+    A = [("박람회 혜택", "백화점 상품권 10만원(현물) · 박람회 상품권 30만원 · 현장할인 10%"),
          ("정회원 혜택", "정회원 전용 품목 특가·시공 지원"),
          ("사은품 · 경품", "원터치 말발굽 · 업체 사은품 · 경품 추첨"),
          ("사전점검 대행 할인", "전문 점검원 대행 최대 50% 할인 · 이벤트 당첨 세대 동행"),
@@ -183,7 +183,7 @@ def apply(G):
               '<div class="op hl"><i>OPTION ②</i><h3>혜택 패키지로 받기</h3><div class="v">A · B · C</div>'
               f'<ul><li>같은 금액({total}) 범위 안에서 항목 선택</li><li>A · B · C 세 가지 패키지에서 골라 구성</li>'
               '<li>항목·범위는 협의 후 협약서로 확정</li></ul></div></div>'
-              '<div class="basex"><b>A 입주민 특화서비스</b>에는 박람회 상품권(정회원 30만원 = 일반회원 20만원 + 정회원 추가 10만원) · 정회원 혜택 · '
+              '<div class="basex"><b>A 입주민 특화서비스</b>에는 <em>백화점 상품권 10만원(현물)</em> · 박람회 상품권(정회원 30만원 = 일반 20만원 + 정회원 추가 10만원) · 정회원 혜택 · '
               '사은품·경품 · 사전점검 할인 · 실측·VR·3D 서비스가 들어 있습니다.</div></div>'),
         kp=f"세대당 {fund}만원 = [[현금 또는 패키지]], 둘 중 하나로 드립니다."))
     p_pack = ("std", dict(sec=S8 + " · 혜택 패키지", title="혜택 패키지 [[A · B · C]] 구성 항목",
@@ -206,8 +206,8 @@ def apply(G):
                   [("B", "공용부 품질 점검"), ("B", "열화상 드론 · 라돈 측정"), ("B", "도면 분석보고서"),
                    ("B", "공용·조경 하자진단"), ("B", "협상 미팅 동석"), ("A", "사전점검 대행 할인")])
              + ex("EXAMPLE 2", "입주민 체감형", "세대 체감 혜택이 먼저일 때",
-                  [("A", "박람회 혜택 · 정회원 혜택"), ("A", "사은품 · 경품"), ("A", "사전점검 대행 할인"), ("A", "타입별 실측 사이즈"),
-                   ("A", "3D 홈스타일링"), ("B", "사전점검 당일 지원")])
+                  [("A", "백화점 상품권 10만원(현물)"), ("A", "박람회 혜택 · 정회원 혜택"), ("A", "사은품 · 경품"), ("A", "사전점검 대행 할인"),
+                   ("A", "타입별 실측 사이즈"), ("A", "3D 홈스타일링"), ("B", "사전점검 당일 지원")])
              + ex("EXAMPLE 3", "단지 가치형", "단지 가치를 높이고 싶을 때",
                   [("C", "문주·경관조명 컨설팅"), ("C", "커뮤니티·공용부 조명"), ("C", "피트니스·키즈 공간"),
                    ("C", "전기차 충전 인프라"), ("B", "일조 시뮬레이션")])
@@ -227,7 +227,7 @@ def apply(G):
     base = [("정회원 박람회 상품권", "30만원 (일반 20만원 + 정회원 추가 10만원)"),
             ("상품권 사용", "박람회 계약 시 품목(업체)당 1매"),
             ("특정 입주민 추가 상품권", "5만원 추가 · 소년·소녀가장·장애인·다자녀 등"),
-            ("백화점 상품권", "방문·신청 시 1세대 1회"),
+            ("백화점 상품권 (현물)", "[[10만원]] (금액 상이) · 방문·신청 시 1세대 1회"),
             ("현장 특별할인", "품목별 최대 10% 추가할인"),
             ("방문 선물 · 계약 사은품", "원터치 말발굽 · 업체별 사은품"),
             ("경품 추첨", "대형·소형 가전 · 참여 업체 경품"),
@@ -504,18 +504,18 @@ def apply(G):
              + rc("GIFT 02", "특정 입주민 추가 상품권", "5만원 추가",
                   ["대상: 소년·소녀가장, 80세 이상 노부모 부양가정, 장애인, 다자녀(3자녀 이상), 다문화가정, 임산부",
                    "품목(업체) 제한 없이 사용", "박람회 상품권 1매와 함께 사용 가능"])
-             + rc("GIFT 03", "백화점 상품권", "박람회 방문·신청 세대 (금액 입예협 협의)",
+             + rc("GIFT 03", "백화점 상품권 · 현물", "10만원 현물 지급<br><small>(금액은 단지별 상이 · 입예협 협의)</small>",
                   ["안내부스에서 명부 작성 후 배부", "1세대 1회 교부 · 중복 발행 불가", "행사장 안에서 현금처럼 사용 · 박람회 상품권과 함께 사용 가능",
-                   "상품권 종류는 상황에 따라 바뀔 수 있습니다"])
+                   "상품권 종류는 상황에 따라 바뀔 수 있습니다"], True)
              + "</div></div>",
         kp=("사용 조건은 박람회 전 [[카페 공지와 현장 안내]]로 미리 알려 드립니다.", "세부 조건은 입예협 협의 후 확정")))
-    mem = [("백화점 상품권", "박람회 방문·신청 시 증정 (금액 협의)"), ("도어락 나노코팅", "생활방수 코팅 · 오염·물때 방지"),
+    mem = [("백화점 상품권", "10만원 현물 증정 (금액 상이)"), ("도어락 나노코팅", "생활방수 코팅 · 오염·물때 방지"),
            ("실링팬 50% 특가", "아크로(ACRO) BLDC 실링팬 정회원 특가"), ("우물 간접조명", "거실 우물천장 간접조명 지원"),
            ("갤러리조명 2구", "복도 매입등 2구 시공 지원"), ("피톤치드 항균", "편백 추출물 항균·탈취 시공"),
            ("인테리어 30% 할인", "인테리어 전문 업체 프로모션"), ("미세촘촘망 거실창", "거실창 안전 방충망 시공 지원"),
            ("홈케어 진드기 박멸", "열 살균 방식 · 약품 미사용"), ("욕실케어 1회", "곰팡이·물때 전문 장비 세정"),
            ("현관 줄눈", "현관 줄눈 시공 지원"), ("프리미엄 중문", "박람회 특가"),
-           ("욕실 휴젠뜨", "제습·온풍·환기 욕실 가전 박람회 특가"), ("화재보험 2년", "신청 세대 가입 지원 (보험사 협력)"),
+           ("욕실 휴젠뜨", "제습·온풍·환기 욕실 가전 박람회 최저 특가"), ("화재보험 2년", "신청 세대 가입 지원 (보험사 협력)"),
            ("사전점검 할인", "사전점검 대행 최대 50% 할인"), ("경품 응모", "박람회 경품 추첨 응모")]
     half = len(mem) // 2
 
@@ -534,8 +534,13 @@ def apply(G):
         "ceo": "○○○", "gm": ["주관사업 총괄 본부장", "○○○"],
         "teams": [[n, [["담당", "○○○"]]] for n in ("영업팀", "행사관리팀", "이벤트팀", "대외지원팀")]}
     ICON = {"영업팀": "SALES", "행사관리팀": "OPERATION", "이벤트팀": "EVENT", "대외지원팀": "SUPPORT"}
+    SVG = {  # 금색 선 아이콘(장식)
+        "영업팀": '<path d="M4 9h16v10H4z"/><path d="M9 9V6h6v3"/><path d="M4 13h16"/>',
+        "행사관리팀": '<rect x="4" y="6" width="16" height="14" rx="2"/><path d="M4 10h16M9 4v4M15 4v4"/><path d="M9 15l2 2 4-4"/>',
+        "이벤트팀": '<path d="M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4 7.2 18.9l.9-5.4-3.9-3.8 5.4-.8z"/>',
+        "대외지원팀": '<path d="M5 13v-1a7 7 0 0 1 14 0v1"/><rect x="3.5" y="13" width="4" height="6" rx="1.5"/><rect x="16.5" y="13" width="4" height="6" rx="1.5"/><path d="M18.5 19c0 1.5-2 2.5-5 2.5"/>'}
     tms = "".join(
-        f'<div class="tm"><i>{ICON.get(n, "")}</i><h3>{_h.escape(n)}</h3><ul>'
+        f'<div class="tm"><svg viewBox="0 0 24 24">{SVG.get(n, "")}</svg><i>{ICON.get(n, "")}</i><h3>{_h.escape(n)}</h3><ul>'
         + "".join(f"<li><span>{_h.escape(r)}</span><b>{_h.escape(nm)}</b></li>" for r, nm in mem_) + "</ul></div>"
         for n, mem_ in org["teams"])
     p_org = ("std", dict(sec="01. 회사소개", title="회사 [[조직도]]", lead="전문가로 구성된 조직, 효율적인 운영의 핵심입니다.",
@@ -546,27 +551,30 @@ def apply(G):
         kp="팀별로 역할을 나눠 [[수임부터 박람회·사후관리까지]] 함께합니다."))
     B.CSS += r"""
 .org{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center}
-.org .ceo{width:150px;height:150px;border-radius:50%;border:2px solid var(--gold2);box-shadow:0 0 0 6px rgba(200,168,106,.12);
+.org .ceo{width:128px;height:128px;border-radius:50%;border:2px solid var(--gold2);box-shadow:0 0 0 6px rgba(200,168,106,.12),0 0 34px rgba(235,203,143,.22);
   display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle,#16304f,#0b1a2d)}
 .org .ceo i{font-style:normal;font-size:12px;color:var(--sub)}
-.org .ceo b{font-family:var(--serif);font-size:34px;color:var(--gold);line-height:1.1;margin:2px 0}
+.org .ceo b{font-family:var(--serif);font-size:30px;color:var(--gold);line-height:1.1;margin:2px 0}
 .org .ceo span{font-size:19px;font-weight:700;letter-spacing:.3em;padding-left:.3em}
-.org .gmr{position:relative;width:100%;height:58px}
+.org .gmr{position:relative;width:100%;height:48px}
 .org .gmr:before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--gold2)}
-.org .gm{position:absolute;left:calc(50% + 40px);top:10px;display:flex;align-items:center;gap:14px;border:1.5px solid var(--gold2);border-radius:10px;padding:6px 16px;background:#0b1a2d}
+.org .gm{position:absolute;left:calc(50% + 40px);top:6px;display:flex;align-items:center;gap:14px;border:1.5px solid var(--gold2);border-radius:10px;padding:6px 16px;background:#0b1a2d}
 .org .gm:before{content:'';position:absolute;right:100%;top:50%;width:40px;height:2px;background:var(--gold2)}
 .org .gm i{font-style:normal;font-size:13px;color:var(--gold2);font-weight:700;padding-right:14px;border-right:1px solid rgba(255,255,255,.25)}
 .org .gm b{font-size:18px;letter-spacing:.2em}
 .org .tms{position:relative;width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;padding-top:24px;flex:1;min-height:0}
-.org .tms:before{content:'';position:absolute;left:12.5%;right:12.5%;top:0;height:2px;background:var(--gold2)}
-.org .tm{position:relative;border:1px solid var(--line);border-radius:14px;padding:14px 18px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015))}
-.org .tm:before{content:'';position:absolute;left:50%;top:-24px;width:2px;height:24px;background:var(--gold2)}
+.org .tms:before{content:'';position:absolute;left:calc((100% - 66px) / 8);right:calc((100% - 66px) / 8);top:0;height:2px;background:var(--gold2)}
+.org .tm{position:relative;border:1px solid rgba(200,168,106,.35);border-top:2px solid var(--gold2);border-radius:14px;padding:12px 18px 14px;background:linear-gradient(180deg,rgba(235,203,143,.09),rgba(255,255,255,.015) 45%)}
+.org .tm:after{content:'';position:absolute;left:50%;top:-29px;width:10px;height:10px;margin-left:-4px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(235,203,143,.7)}
+.org .tm svg{display:block;width:26px;height:26px;margin:0 auto 2px;fill:none;stroke:var(--gold);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.org .gm{box-shadow:0 0 18px rgba(235,203,143,.15)}
+.org .tm:before{content:'';position:absolute;left:50%;top:-26px;width:2px;height:26px;background:var(--gold2)}
 .org .tm>i{display:block;font-style:normal;font-size:11.5px;letter-spacing:.26em;color:var(--gold2);font-weight:700;text-align:center}
-.org .tm h3{font-size:21px;font-weight:800;color:var(--gold);text-align:center;margin:4px 0 10px}
-.org .tm ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.org .tm h3{font-size:20px;font-weight:800;color:var(--gold);text-align:center;margin:2px 0 8px}
+.org .tm ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .org .tm li{display:grid;grid-template-columns:64px 1fr;border:1px solid rgba(200,168,106,.35);border-radius:8px;overflow:hidden}
-.org .tm li span{background:rgba(200,168,106,.16);color:var(--gold);font-size:14px;font-weight:700;text-align:center;padding:6px 0}
-.org .tm li b{font-size:15.5px;text-align:center;padding:6px 0;letter-spacing:.06em}
+.org .tm li span{background:rgba(200,168,106,.16);color:var(--gold);font-size:14px;font-weight:700;text-align:center;padding:5px 0}
+.org .tm li b{font-size:15.5px;text-align:center;padding:5px 0;letter-spacing:.06em}
 """
 
     # 실적 기간은 전신 실적 포함(본부장 10-08)
@@ -574,6 +582,61 @@ def apply(G):
     k["lead"] = sub(k["lead"], "8년간 쌓인 운영 데이터", "전신 실적을 포함해 8년간 쌓인 운영 데이터")
     k = take("주관 [[성공사례]] · 수임실적")[1]
     k["lead"] = sub(k["lead"], "2018년 첫 단지부터", "2018년 첫 단지(전신 실적 포함)부터")
+
+    # 박람회장 배치와 인원 운영(본부장 10-08: 입예협이 인원 배치를 중요하게 봄) — 인원 수는 56쪽 운영 준비 표와 같음
+    def zn(area, name, desc, staff="", cls=""):
+        st = f'<b class="st">{staff}</b>' if staff else ""
+        return f'<div class="z {cls}" style="grid-area:{area}"><h4>{name}{st}</h4><p>{desc}</p></div>'
+    staff = [("주차 안내요원", 5), ("조합 입예협 안내 도우미", 3), ("보안요원", 2), ("구급요원", 1),
+             ("카페테리아", 3), ("어린이 편의시설", 4), ("이벤트(네일·타로·캐리커처)", 3)]
+    tot = sum(n for _, n in staff)
+    p_floor = ("std", dict(sec="06. 입주박람회", title="박람회장 배치와 [[인원 운영]] (안)",
+        lead="방문 동선을 따라 구역마다 담당 인원을 둡니다. 배치는 행사장 확정 후 조합 입예협과 확정합니다.",
+        body=('<div class="nb"><div class="fpx"><div class="fp">'
+              + zn("kids", "키즈존", "어린이 편의시설", "4명")
+              + zn("brand", "브랜드 존", "가전 · 가구 · 렌탈")
+              + zn("cafe", "카페테리아", "휴게 · 음료", "3명")
+              + zn("own", "직영 품목 존", "조명 · 커튼 · 실링팬")
+              + zn("coun", "조합 입예협 부스", "행사장 중앙 · 가입·안내", "도우미 3명", "hl")
+              + zn("sign", "상담·계약 데스크", "공개 단가표 그대로 계약")
+              + zn("build", "시공 품목 존", "청소 · 줄눈 · 탄성 · 방충망")
+              + zn("event", "이벤트 · 경품존", "네일 · 타로 · 캐리커처", "3명")
+              + zn("entry", "입구 · 체크인", "정회원 등록 · 방문 선물 · 주관사 운영팀", "", "ent")
+              + zn("safe", "안전 · 구급", "보안 2 · 구급 1 · 119 연계", "3명", "sf")
+              + zn("park", "주차장 · 외부 동선", "차량 유도 · 하역 구역 분리", "5명", "pk")
+              + '</div><div class="fps">'
+              + '<div class="tot"><i>현장 배치 인원 (안)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주</span></div>'
+              + '<ul>' + "".join(f'<li><span>{_h.escape(a)}</span><b>{n}명</b></li>' for a, n in staff) + '</ul>'
+              + '<div class="bdg"><span>영업배상 책임보험 가입</span><span>119 연계 · 구급차 대비</span><span>운영 인원 전원 어깨띠</span><span>금·토·일 3일 · 목요일 설치</span></div>'
+              + '</div></div></div>'),
+        kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "인원 수는 타 단지 운영 기준(안) · 행사장 확정 후 조정")))
+    B.CSS += r"""
+.fpx{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;flex:1;min-height:0}
+.fp{display:grid;gap:8px;grid-template-columns:1fr 1.15fr 1.15fr 1fr;grid-template-rows:repeat(3,1fr) .82fr .62fr;
+  grid-template-areas:"kids brand brand cafe" "own coun coun sign" "build coun coun event" "safe entry entry event" "park park park park";
+  border:1.5px dashed rgba(200,168,106,.55);border-radius:14px;padding:12px;min-height:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 22px),repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 22px)}
+.fp .z{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:rgba(13,30,51,.85);display:flex;flex-direction:column;justify-content:center;min-height:0}
+.fp .z h4{font-size:14px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.fp .z p{font-size:11.5px;color:var(--sub);margin-top:3px;line-height:1.35}
+.fp .z .st{font-size:11.5px;font-weight:800;color:#0d1e33;background:var(--gold);border-radius:99px;padding:2px 8px;white-space:nowrap}
+.fp .z.hl{border:1.5px solid var(--gold2);background:linear-gradient(180deg,rgba(235,203,143,.18),rgba(13,30,51,.9));align-items:center;text-align:center}
+.fp .z.hl h4{font-size:18px;color:var(--gold);flex-direction:column}
+.fp .z.ent{border-color:rgba(235,203,143,.6)}
+.fp .z.sf{border-color:rgba(255,120,110,.55)}
+.fp .z.pk{background:rgba(255,255,255,.04);border-style:dashed}
+.fps{display:flex;flex-direction:column;gap:10px;min-height:0}
+.fps .tot{border:1px solid rgba(235,203,143,.6);border-radius:12px;padding:12px 16px;background:linear-gradient(180deg,rgba(235,203,143,.14),rgba(235,203,143,.02))}
+.fps .tot i{display:block;font-style:normal;font-size:12px;letter-spacing:.16em;color:var(--gold2);font-weight:700}
+.fps .tot b{font-size:44px;font-weight:800;color:var(--gold);line-height:1.05}
+.fps .tot b small{font-size:20px;margin-left:3px}
+.fps .tot span{font-size:13.5px;color:var(--sub);margin-left:8px}
+.fps ul{list-style:none;margin:0;padding:0;border-top:1px solid rgba(200,168,106,.35)}
+.fps li{display:flex;justify-content:space-between;font-size:14px;color:var(--sub);padding:5px 2px;border-bottom:1px dashed rgba(255,255,255,.12)}
+.fps li b{color:var(--ink);font-variant-numeric:tabular-nums}
+.fps .bdg{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.fps .bdg span{font-size:12.5px;border:1px solid rgba(200,168,106,.55);border-radius:99px;padding:4px 10px;color:var(--gold)}
+"""
 
     # 교차 검수 반영(10-07): 법령명 · 줄바꿈 · 증권 확인 기준
     k = take("[[조명 수직계열화]] · 유통 단계 없는 공급")[1]
@@ -624,7 +687,7 @@ def apply(G):
                 f'<p>{desc}</p></div><div class="rt">{rt}</div></div></div>')
     pkA = ("std", dict(sec=SA, title="A 패키지 · [[입주민 특화서비스]]", lead="입주민 한 세대 한 세대가 직접 받는 혜택과 서비스입니다.",
         body=pkg("A", "입주민 특화서비스", "FOR RESIDENTS", f"세대당 {fund}만원 혜택 패키지 A — 박람회 혜택부터 사전점검·실측·VR·3D까지 입주민이 직접 받는 혜택으로 구성합니다.",
-                 [("박람회 혜택", [("박람회 혜택", "정회원 상품권 30만원 · 현장할인 최대 10%"), ("정회원 혜택", "정회원 전용 품목 특가·시공 지원"),
+                 [("박람회 혜택", [("박람회 혜택", "백화점 상품권 10만원(현물) · 박람회 상품권 30만원 · 현장할인 10%"), ("정회원 혜택", "정회원 전용 품목 특가·시공 지원"),
                                                 ("사은품", "원터치 말발굽 · 업체 계약 사은품"), ("경품 이벤트", "대형·소형 가전 · 업체 경품 추첨")]),
                   ("입주 준비 서비스", [("사전점검 혜택", "대행 최대 50% 할인 · 당첨 세대 동행"), ("실측 & 샘플하우스", "타입별 실측 사이즈 · 샘플하우스"),
                                        ("항공 VR 촬영", "단지 주변 입지 확인"), ("3D 홈스타일링", "대표 타입 맞춤 공간 제안")])]),
@@ -680,7 +743,7 @@ def apply(G):
         ("05. 주관 콜센터", [dv("05", "클레임은 [[주관사가 먼저]] 받습니다", ["주관 콜센터 · 선보상", "하자 예치금 최대 1억", "클레임 처리 흐름 · CRM", "입주민 후기 · 실시간 응대"])]
          + [T("주관 [[콜센터]]와 선보상"), p_deposit] + [T(x) for x in ["클레임 [[처리 흐름]]과 CRM 관리", "입주민 후기 · [[실시간 응대]] 화면"]]),
         ("06. 입주박람회", [dv("06", "확인하고 비교하는 [[입주박람회]]", ["운영 계획 · 행사장 대관", "즐거운 박람회 · 편의시설", "온라인 박람회 · 라이브커머스", "실제 박람회 현장"])]
-         + [T(x) for x in ["입주박람회 [[운영 계획]]", "행사장 대관과 [[운영 준비]]", "하루가 [[즐거운]] 박람회", "가족이 머무는 [[편의시설]]",
+         + [T(x) for x in ["입주박람회 [[운영 계획]]", "행사장 대관과 [[운영 준비]]"]] + [p_floor] + [T(x) for x in [ "하루가 [[즐거운]] 박람회", "가족이 머무는 [[편의시설]]",
                            "못 오셔도 [[괜찮습니다]]", "실제 박람회 [[현장]]"]]),
         ("07. 철산역 자이 맞춤 제안", [d07] + [T(x) for x in [
             "철산역 자이, [[이런 단지]]입니다", "조합 단지라서 [[챙겨야 하는 것]]", "입주까지 31개월, [[긴 시간]]을 관리합니다", "철산역 자이 [[특화 제안]]",
@@ -723,7 +786,7 @@ def apply(G):
     # ------------------------------------------------ 목차 10장(5열 × 2)
     G["TOC4"][:] = [
         [("01", "회사소개", ["숫자·누적 실적", "법인·재무 서류 · 인증", "조직도 · 지사망", "수임실적 · 대단지", "추천·감사 · 나눔"]),
-         ("06", "입주박람회", ["운영 계획 · 대관", "즐거운 박람회 · 편의시설", "온라인 박람회", "박람회 현장"])],
+         ("06", "입주박람회", ["금·토·일 3일 · 대관", "배치·인원 운영", "편의시설 · 온라인", "박람회 현장"])],
         [("02", "마케팅전략", ["카페 홍보 콘텐츠", "사전점검 언박싱", "드론 · 검색 · 언론", "현수막 · 버스 광고"]),
          ("07", "철산역 자이 맞춤", ["단지 이해 · 조합 특화", "참가 자격 10개 항목", "일정 · 31개월 관리", "예상 참가 업체"])],
         [("03", "업체선정", ["공동구매 품목", "4단계 공개 심사", "인근 지역업체 선정", "최저가 차액 10배", "계약·환불 보호"]),
