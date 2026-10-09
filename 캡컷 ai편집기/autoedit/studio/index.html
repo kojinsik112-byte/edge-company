@@ -276,6 +276,9 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
         </div>
         <input type="file" id="file" accept="video/*" class="hidden">
       </div>
+      <div class="card hidden" id="busyBar" style="margin-top:16px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer">
+        <b style="flex:1" id="busyText"></b><button class="btn sm primary">진행 상황 보기</button>
+      </div>
       <div class="projects" id="projWrap">
         <h2>최근 작업 <span class="muted" style="font-weight:500;font-size:13px">— 눌러서 자막을 다시 고칠 수 있어요</span></h2>
         <div class="pgrid" id="projects"></div>
@@ -568,7 +571,7 @@ const api = async (url, opt = {}) => {
   opt.headers = {...(opt.headers || {}), 'X-Edge-Studio': '1'};
   const r = await fetch(url, opt);
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.error || r.statusText);
+  if (!r.ok) { const e = new Error(j.error || r.statusText); e.data = j; throw e; }
   return j;
 };
 const post = (url, body) => api(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body || {})});
@@ -632,13 +635,15 @@ $('#vocabIn').addEventListener('keydown', e => {
 const drop = $('#drop');
 // 클릭 = 윈도우 파일 선택창 (원본 복사 없이 바로 편집 → 대용량도 빠름). 실패하면 브라우저 선택창.
 drop.onclick = async () => {
+  try { if (showBusy((await api('/api/active')).job)) return; } catch {}
   try {
     $('#dropTitle').textContent = '파일 선택 창을 확인하세요…';
     const j = await post('/api/pick');
     resetDrop();
     if (j.cancelled) return;
     JOB = j;
-    await post(`/api/jobs/${JOB.id}/analyze`, {options: S});
+    try { await post(`/api/jobs/${JOB.id}/analyze`, {options: S}); }
+    catch (e) { if (showBusy(e.data && e.data.busy)) return; throw e; }
     JOB.stage = 'analyzing'; startPoll();
   } catch (e) { resetDrop(); $('#file').click(); }
 };
@@ -647,8 +652,15 @@ $('#file').onchange = e => e.target.files[0] && upload(e.target.files[0]);
 ['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); if (ev === 'drop' || e.target === drop) drop.classList.remove('over'); }));
 document.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f && !$('#vHome').classList.contains('hidden')) upload(f); });
 
-function upload(file) {
+// 이미 다른 영상을 분석·완성 중이면 → 그 작업 진행 화면으로 데려간다 (홈에선 안 보여서 막힌 줄 앎)
+function showBusy(job) {
+  if (!job) return false;
+  JOB = job; toast(`"${job.name}" ${job.stage === 'rendering' ? '완성본 만들기' : '분석'}가 아직 진행 중이에요 — 끝나면 새 영상을 넣을 수 있어요`);
+  startPoll(); return true;
+}
+async function upload(file) {
   if (!/^video\//.test(file.type) && !/\.(mp4|mov|mkv|m4v|avi|webm)$/i.test(file.name)) return toast('영상 파일만 넣을 수 있어요');
+  try { if (showBusy((await api('/api/active')).job)) return; } catch {}
   $('#dropTitle').textContent = `"${file.name}" 불러오는 중…`;
   $('#dropSub').textContent = `${(file.size / 1048576).toFixed(0)}MB`;
   $('#upbar').classList.remove('hidden');
@@ -659,7 +671,7 @@ function upload(file) {
   xhr.onload = async () => {
     if (xhr.status !== 200) { toast('불러오기 실패'); resetDrop(); return; }
     JOB = JSON.parse(xhr.responseText);
-    try { await post(`/api/jobs/${JOB.id}/analyze`, {options: S}); } catch (e) { toast(e.message); resetDrop(); return; }
+    try { await post(`/api/jobs/${JOB.id}/analyze`, {options: S}); } catch (e) { resetDrop(); if (!showBusy(e.data && e.data.busy)) toast(e.message); return; }
     JOB.stage = 'analyzing';
     resetDrop(); startPoll();
   };
@@ -1610,7 +1622,7 @@ function drawLogoPreview() {
 async function startRender() {
   await new Promise(r => setTimeout(r, 50));
   try { await post(`/api/jobs/${JOB.id}/render`, {captions: CAPS, overlays: OVS, options: S}); }
-  catch (e) { return toast(e.message); }
+  catch (e) { const b = e.data && e.data.busy; if (b && b.id !== JOB.id) return toast(`"${b.name}" 작업이 끝난 뒤에 완성본을 만들 수 있어요`); return toast(e.message); }
   JOB.stage = 'rendering'; startPoll();
 }
 $('#backHome').onclick = () => goHome();
@@ -1634,8 +1646,16 @@ $('#copyMeta').onclick = () => { navigator.clipboard.writeText($('#meta').textCo
 async function goHome() {
   clearInterval(pollH); show('vHome');
   try { const p = await api('/api/projects'); INIT.projects = p; } catch {}
-  renderProjects(); bindSettings();
+  renderProjects(); bindSettings(); refreshBusy();
 }
+async function refreshBusy() {
+  let job = null; try { job = (await api('/api/active')).job; } catch {}
+  $('#busyBar').classList.toggle('hidden', !job);
+  if (!job) return;
+  $('#busyText').textContent = `⏳ 지금 "${job.name}" ${job.stage === 'rendering' ? '완성본 만드는 중' : '분석 중'} · ${Math.round(job.progress || 0)}%`;
+  $('#busyBar').onclick = () => { JOB = job; startPoll(); };
+}
+setInterval(() => { if (!$('#vHome').classList.contains('hidden')) refreshBusy(); }, 3000);
 function renderProjects() {
   const g = $('#projects'); const ps = INIT.projects || [];
   $('#projWrap').classList.toggle('hidden', !ps.length);
@@ -1662,7 +1682,7 @@ fetch('/api/ping?alive=1').catch(() => {});
   $('#apiBadge').textContent = ok ? 'AI 연결됨' : 'AI 키 없음 (기본 편집)'; $('#apiBadge').classList.toggle('ok', ok);
   $('#noKey').classList.toggle('hidden', ok);
   $('#swSmart').classList.toggle('disabled', !ok); $('#swTypo').classList.toggle('disabled', !ok);
-  bindSettings(); renderProjects(); show('vHome');
+  bindSettings(); renderProjects(); show('vHome'); refreshBusy();
 })();
 document.addEventListener('keydown', e => {
   if (e.key === ' ' && !$('#vEdit').classList.contains('hidden') && !/TEXTAREA|INPUT|SELECT/.test(document.activeElement.tagName)) {

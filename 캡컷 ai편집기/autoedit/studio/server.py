@@ -14,6 +14,7 @@ import mimetypes
 import os
 import re
 import shutil
+from contextlib import contextmanager
 import subprocess
 import sys
 import threading
@@ -318,6 +319,22 @@ class Job:
 
 JOBS: Dict[str, Job] = {}
 WORK_LOCK = threading.Lock()  # 한 번에 한 작업 (CPU를 다 쓰므로)
+ACTIVE_JOB: Optional["Job"] = None  # 지금 WORK_LOCK 을 쥐고 도는 작업 (화면이 '무슨 작업 중인지' 보여주려고)
+
+
+@contextmanager
+def _working(job: "Job"):
+    global ACTIVE_JOB
+    with WORK_LOCK:
+        ACTIVE_JOB = job
+        try:
+            yield
+        finally:
+            ACTIVE_JOB = None
+
+
+def _busy_json() -> Dict[str, Any]:
+    return {"error": "다른 작업이 진행 중입니다", "busy": ACTIVE_JOB.public() if ACTIVE_JOB else None}
 
 
 class JobLog(logging.Handler):
@@ -388,7 +405,7 @@ def _detach(h: JobLog):
 def _run_analyze(job: Job, opts: Dict[str, Any]):
     from ..pipeline import process
 
-    with WORK_LOCK:
+    with _working(job):
         job.stage, job.started, job.progress, job.error = "analyzing", time.time(), 0, ""
         job.set_steps(ANALYZE_STEPS)
         h = _attach(job, JobLog.ANALYZE)
@@ -425,7 +442,7 @@ def _run_render(job: Job, opts: Dict[str, Any]):
     from ..pipeline import render_final
     from ..transcribe import captions_from_json
 
-    with WORK_LOCK:
+    with _working(job):
         job.stage, job.started, job.progress, job.error = "rendering", time.time(), 0, ""
         job.result = {}
         job.set_steps(RENDER_STEPS)
@@ -765,6 +782,8 @@ class Handler(BaseHTTPRequestHandler):
                         "out_root": str(OUT_ROOT),
                     }
                 )
+            if path == "/api/active":
+                return self._json({"job": ACTIVE_JOB.public() if ACTIVE_JOB else None})
             if path == "/api/projects":
                 return self._json(list_projects())
             m = re.match(r"^/api/jobs/(\w+)$", path)
@@ -979,7 +998,7 @@ class Handler(BaseHTTPRequestHandler):
                 if not job or not job.cut:
                     return self._json({"error": "컷 정보가 없는 작업입니다 (새로 분석한 영상부터 가능)"}, 400)
                 if not WORK_LOCK.acquire(blocking=False):
-                    return self._json({"error": "다른 작업이 진행 중입니다"}, 409)
+                    return self._json(_busy_json(), 409)
                 try:
                     total = float(job.cut["total"])
                     old_keep = tl.normalize(job.cut["keep"], total)
@@ -1091,7 +1110,7 @@ class Handler(BaseHTTPRequestHandler):
                         _save_project(job)
                     return self._json({"ok": True, "saved": time.strftime("%H:%M:%S")})
                 if WORK_LOCK.locked():
-                    return self._json({"error": "다른 작업이 진행 중입니다"}, 409)
+                    return self._json(_busy_json(), 409)
                 opts = {**load_settings(), **body.get("options", {})}
                 save_settings(opts)
                 if action == "analyze":
