@@ -76,6 +76,20 @@ SETTINGS_FILE = DATA_DIR / "settings.json"
 for _d in (UPLOADS, PREVIEWS):
     _d.mkdir(parents=True, exist_ok=True)
 
+# 엣지컴퍼니 로고는 studio/brand/ 에 같이 들고 다닌다. 서버를 띄우는 방식(바로가기·Claude 앱)에 따라
+# LOCALAPPDATA 가 다른 폴더로 잡혀도 로고가 항상 있도록 서버가 보는 DATA_DIR/brand 에 채워 넣는다.
+BUNDLED_BRAND = HERE / "brand"
+(DATA_DIR / "brand").mkdir(parents=True, exist_ok=True)
+for _f in BUNDLED_BRAND.glob("*.png"):
+    if not (DATA_DIR / "brand" / _f.name).exists():
+        shutil.copy2(_f, DATA_DIR / "brand" / _f.name)
+
+
+def _brand_file(name: str) -> Path:
+    """로고 파일 경로 — DATA_DIR/brand 에 없으면 studio/brand 의 기본 로고."""
+    p = DATA_DIR / "brand" / Path(name).name
+    return p if p.exists() else BUNDLED_BRAND / Path(name).name
+
 
 def _safe_name(name: str) -> str:
     name = re.sub(r'[\\/:*?"<>|]+', "_", name).strip() or "영상"
@@ -190,6 +204,8 @@ def build_config(opts: Dict[str, Any]) -> Config:
     wm = cfg.watermark
     wm.enabled = bool(opts.get("wm_on"))
     wm.path = opts.get("wm_path", "")
+    if wm.path and not Path(wm.path).exists():  # 다른 데이터 폴더에서 저장된 경로 → 같은 이름의 로고로
+        wm.path = str(_brand_file(wm.path))
     if opts.get("wm_white") and wm.path:  # 어두운 영상용 흰색 로고
         w = Path(wm.path).with_name(Path(wm.path).stem + "_white.png")
         if w.exists():
@@ -204,6 +220,8 @@ def build_config(opts: Dict[str, Any]) -> Config:
     cc.company, cc.phone = opts.get("card_company", "엣지컴퍼니"), opts.get("card_phone", "")
     cc.site, cc.message = opts.get("card_site", ""), opts.get("card_message", "")
     cc.logo, cc.qr = opts.get("card_logo", ""), opts.get("card_qr", "")
+    if cc.logo and not Path(cc.logo).exists():
+        cc.logo = str(_brand_file(cc.logo))
     n = int(opts.get("shorts", 3))
     cfg.shorts.enabled = n > 0
     cfg.shorts.count = max(1, n)
@@ -792,7 +810,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._file(out, "image/jpeg")
             m = re.match(r"^/api/brand/(.+)$", path)
             if m:
-                return self._file(DATA_DIR / "brand" / Path(urllib.parse.unquote(m.group(1))).name)
+                return self._file(_brand_file(urllib.parse.unquote(m.group(1))))
             if path == "/api/products":
                 from ..products import load as load_products
 
@@ -812,7 +830,7 @@ class Handler(BaseHTTPRequestHandler):
                 W, H = (ff.probe_dimensions(vid) if vid else None) or (1920, 1080)
                 info = CardInfo(title=st.get("card_title") or (job.name if job else ""), subtitle=st.get("card_subtitle", ""),
                                 company=st.get("card_company", ""), phone=st.get("card_phone", ""), site=st.get("card_site", ""),
-                                message=st.get("card_message", ""), logo=st.get("card_logo", ""), qr=st.get("card_qr", ""),
+                                message=st.get("card_message", ""), logo=str(_brand_file(st["card_logo"])) if st.get("card_logo") else "", qr=st.get("card_qr", ""),
                                 theme=st.get("card_theme", "blur"))
                 return self._file(preview_png(m.group(1), info, vid, W, H), "image/jpeg")
             m = re.match(r"^/api/bgm/(\w+)\.wav$", path)

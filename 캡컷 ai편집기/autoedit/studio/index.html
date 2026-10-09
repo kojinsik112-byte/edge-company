@@ -1571,11 +1571,10 @@ const sfxAudio = new Audio();
 function playSfx(k) { sfxAudio.src = `/api/sfx/${k}.wav`; sfxAudio.volume = Math.min(1, S.sfx_volume * 1.4); sfxAudio.play().catch(() => {}); }
 
 // 완성본 만들기
+// 엣지컴퍼니 로고는 묻지 않고 항상 넣는다 (기본 오른쪽 위 — 자리·크기는 '로고 · 스티커'에서 바꿈)
 $('#renderBtn').onclick = () => {
   document.activeElement && document.activeElement.blur();
-  $('#laPos').value = S.wm_pos || 'top-right'; $('#laSize').value = S.wm_size || 11; $('#laWhite').checked = !!S.wm_white;
-  $('#logoAsk').classList.remove('hidden');
-  drawLogoPreview();
+  setS('wm_on', true); bindSettings(); drawOverlay(true); startRender();
 };
 $('#logoYes').onclick = () => { $('#logoAsk').classList.add('hidden'); setS('wm_on', true); bindSettings(); startRender(); };
 $('#logoNo').onclick = () => { $('#logoAsk').classList.add('hidden'); setS('wm_on', false); bindSettings(); drawOverlay(true); startRender(); };
