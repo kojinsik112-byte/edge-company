@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
-"""철산역 자이(조합) 입주박람회 주관사 입찰 — 공고 04항 필수 제출서류 중 직접 작성하는 문서(A4 세로).
+"""아산 탕정 푸르지오 센터파크 입주박람회 주관사 입찰 — 공고 7항 제출서류 중 직접 작성하는 문서(A4 세로).
 
-01 입찰참가 신청서 · 04 사용인감계 · 08 최근 3년 주관사 실적 증빙(+별첨 1 NICE 연혁 발췌)
-10 사후관리 대책 방안서 · 12 서약서 · 13 기타 추가 제안사항
-04 사용인감계는 사용인감(직인) 칸만 디지털 날인하고, 법인인감 칸·서명란은 등록 법인인감 실물을 찍어 스캔한다
-(직인 이미지는 등록 법인인감과 다른 도장 — 디지털로 법인인감을 만들어 넣지 않는다).
-숫자·문구는 data.py와 제안서(09)에 이미 쓴 약속만 옮긴다(새 약속 없음). 직인은 ../동탄파라곤3차/stamp.py.
+  01 입찰 참가 신청서 [별지 1호] + 제출서류 목록     03 사용인감계(인감증명서와 함께 제출)
+  06 하자보수 및 계약 이행 각서 [별지 2호]           07 입주박람회 실적 증빙(+별첨 1 NICE 연혁 발췌 · 별첨 2 실적 확약서)
+  08 이의 제기 금지 서약서 [별지 3호]                09 계약 취소 · 환불 규정
+  11 청렴계약 이행준수 서약서 [별지 4호]             12 입주박람회 성과 및 성공사례 자료(카페 이벤트 포함)
+  14 기타 입찰제안 자료(요약 제안서 · 회사소개서)
+별지 1~4호는 공고문 양식 문구를 그대로 옮기고 빈칸만 채운다. 숫자·약속은 data.py와 입찰제안서(05)에 이미 쓴 것만 옮긴다(새 약속 없음).
+03 사용인감계는 사용인감 칸만 디지털 날인, 법인인감 칸은 등록 법인인감 실물을 찍어 스캔한다(디지털로 법인인감을 만들지 않는다).
+별지 1호 대리인 칸은 ‘( 인 )’으로 적어 직인이 찍히지 않게 둔다(대리인 본인 도장 자리).
 
-사용: python docs_cs.py [NICE_기업신용평가.pdf]
-  NICE 원본·직인이 들어간 결과물은 깃에 올리지 않는다(.gitignore: *.pdf, 엣지컴퍼니_*.html).
+사용: python docs_tj.py <NICE.pdf> <직인.png> [--final]
+  --final : '확인 필요' 칸(재발급 발급일 · 생년월일 등)이 남아 있으면 멈춘다.
+  NICE 원본·직인·인감이 들어간 결과물은 깃에 올리지 않는다(.gitignore: *.pdf, 엣지컴퍼니_*.html).
 """
 import html
+import json
 import os
-import sys as _sys
-
-if __name__ == "__main__" and "--allow-cheolsan-draft" not in _sys.argv:
-    # 검증(10-08): 이 파일은 아직 철산 복사본(조합·철산역 자이·31개월·현금 문구) — 탕정 공고 7항·별지 1~4호로 다시 쓰기 전에는 실행하지 않는다
-    _sys.exit("docs_tj.py: 탕정용으로 다시 쓰기 전 — 실행 금지 (철산 문구가 그대로 나감)")
 import pathlib
 import subprocess
 import sys
@@ -24,74 +24,114 @@ import sys
 import pymupdf as fitz
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path[:0] = [HERE, os.path.join(HERE, "..", "요약제안서")]
+sys.path[:0] = [HERE, os.path.join(HERE, "..", "요약제안서"), os.path.join(HERE, "..", "동탄파라곤3차")]
 import data as D  # noqa: E402
 from build import find_chrome  # noqa: E402
 
 e = html.escape
-PFX = "엣지컴퍼니_철산역자이_"
+PFX = "엣지컴퍼니_탕정푸르지오센터파크_"
+SITE = "아산 탕정 푸르지오 센터파크"
+TODOS = []
+
+
+def todo(x):
+    TODOS.append(x)
+    return f'<mark class="todo">{e(x)}</mark>'
+
+
+_priv = os.path.join(HERE, "org_private.json")
+PRIV = json.load(open(_priv, encoding="utf-8")) if os.path.exists(_priv) else {}
+CEO_BIRTH = D.CEO_BIRTH or PRIV.get("ceo_birth")
 
 CSS = r"""
-@page{size:A4;margin:13mm 17mm 13mm}
+@page{size:A4;margin:14mm 17mm 13mm}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Pretendard','Malgun Gothic','맑은 고딕',sans-serif;color:#1B2433;font-size:10pt;line-height:1.6;
   word-break:keep-all;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{page-break-after:always}.pg:last-child{page-break-after:auto}
+mark.todo{background:#FFE066;color:#0D1E33;font-weight:700;padding:0 4pt}
 .top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2.5pt solid #0D1E33;padding-bottom:6pt}
 .top .lb{font-size:9pt;font-weight:700;letter-spacing:.18em;color:#9A7B3F}
 .top .co{font-size:9pt;color:#5B6676;text-align:right}
-h1{font-size:20pt;font-weight:800;color:#0D1E33;margin-top:12pt;letter-spacing:-.01em}
-h1.c{text-align:center;font-size:24pt;letter-spacing:.3em;margin-top:22pt}
+h1{font-size:20pt;font-weight:800;color:#0D1E33;margin-top:12pt}
+h1.c{text-align:center;font-size:22pt;letter-spacing:.25em;margin-top:18pt}
 .case{font-size:10pt;color:#5B6676;margin-top:3pt}
 .info{width:100%;border-collapse:collapse;margin-top:12pt;font-size:9.8pt}
 .info th{width:17%;background:#F1EDE4;color:#0D1E33;font-weight:700;text-align:left;padding:5pt 9pt;border:.6pt solid #D5CCB9}
 .info td{padding:5pt 9pt;border:.6pt solid #D5CCB9}
 h2{font-size:12pt;font-weight:800;color:#0D1E33;margin:12pt 0 5pt;padding-left:8pt;border-left:3.5pt solid #C8A86A;line-height:1.3}
-.t{width:100%;border-collapse:collapse;font-size:9.6pt}
+.t{width:100%;border-collapse:collapse;font-size:9.5pt}
 .t th{background:#0D1E33;color:#fff;font-weight:700;padding:4pt 6pt;border:.6pt solid #0D1E33;text-align:center}
-.t td{padding:3.6pt 6pt;border:.6pt solid #C9CED6;text-align:center;vertical-align:middle}
-.t td.l{text-align:left}
-.t td.r{text-align:right;font-variant-numeric:tabular-nums}
+.t td{padding:3.4pt 6pt;border:.6pt solid #C9CED6;text-align:center;vertical-align:middle}
+.t td.l{text-align:left}.t td.r{text-align:right;font-variant-numeric:tabular-nums}
 .t tr.sum td{background:#F1EDE4;font-weight:800}
 .t td.k{font-weight:700;background:#F6F7F9;text-align:left;width:22%}
 .box{border:1pt solid #C8A86A;background:#FBF8F1;border-radius:4pt;padding:8pt 11pt;margin-top:10pt;font-size:10pt}
 .box b{color:#0D1E33}
 .ok{color:#1F7A4D;font-weight:800}
 p.body{margin-top:12pt;font-size:10.5pt;line-height:1.8}
-ol.pl{margin:10pt 0 0 0;padding-left:0;list-style:none;font-size:10.5pt;line-height:1.75}
-ol.pl li{padding-left:18pt;text-indent:-18pt;margin-top:5pt}
 .note{font-size:9pt;color:#5B6676;margin-top:5pt}
-.art{margin-top:8pt;break-inside:avoid}
-.art h3{font-size:10.8pt;font-weight:800;color:#0D1E33}
+.art{margin-top:7pt;break-inside:avoid}
+.art h3{font-size:10.6pt;font-weight:800;color:#0D1E33}
+.art p{margin-top:2pt}
 .art ol{list-style:none;margin-top:2pt}
 .art ol li{padding-left:16pt;text-indent:-16pt;margin-top:2pt}
 .sign{margin-top:14pt;text-align:center;break-inside:avoid}
 .sign .d{font-size:11pt;letter-spacing:.06em}
-.sign .who{margin-top:5pt;font-size:12pt;font-weight:700;display:inline-flex;gap:14pt;align-items:center}
-.sign .seal{color:#5B6676;font-size:10pt;font-weight:400;margin-left:6pt}
-.to{margin-top:24pt;text-align:center;font-size:12.5pt;font-weight:800;color:#0D1E33}
+.sign .who{margin-top:5pt;font-size:12pt;font-weight:700}
+.sign .seal{color:#5B6676;font-size:10pt;font-weight:400;margin-left:30pt}
+.to{margin-top:20pt;text-align:center;font-size:12.5pt;font-weight:800;color:#0D1E33}
 .seals{display:grid;grid-template-columns:1fr 1fr;gap:18pt;margin-top:14pt}
 .seals div{border:.8pt solid #9AA3B0;height:122pt;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:8pt}
 .seals b{font-size:10.5pt;color:#0D1E33}
-.seals span{color:#8A93A0;font-size:9.5pt}
 .seals span.mk{color:#ECEEF1;font-size:5pt}
 .seals small{font-size:8.5pt;color:#5B6676}
+/* 공고 별지 양식 — 흑백 서식 */
+.form{color:#111;font-size:11pt;line-height:1.85}
+.form .no{font-size:10pt;color:#333}
+.form h1{text-align:center;font-size:21pt;letter-spacing:.3em;color:#111;margin:14pt 0 16pt}
+.form .ft{width:100%;border-collapse:collapse;font-size:10.5pt}
+.form .ft th,.form .ft td{border:.8pt solid #333;padding:7pt 9pt;vertical-align:middle}
+.form .ft th{background:#F2F2F2;font-weight:700;text-align:center;white-space:nowrap}
+.form .ft td.v{min-width:120pt}
+.form p.tx{margin-top:14pt;text-indent:10pt;text-align:justify}
+.form ol{list-style:none;margin-top:8pt}
+.form ol li{padding-left:16pt;text-indent:-16pt;margin-top:6pt;text-align:justify}
+.form .dt{text-align:center;margin-top:26pt;font-size:12pt;letter-spacing:.15em}
+.form .sg{margin:18pt 0 0 52%;font-size:11.5pt;line-height:2.1}
+.form .sg b{font-weight:700}
+.form .to2{margin-top:22pt;text-align:center;font-size:13pt;font-weight:800;line-height:1.6}
+.form .agent{font-size:10.2pt;line-height:1.9}
+.form .agent .ln{margin-left:150pt}
+.form .chk{display:flex;gap:16pt;align-items:center;margin-top:16pt}
+.form .chk .stamp{border:.8pt solid #333;width:64pt;height:64pt;display:flex;align-items:center;justify-content:center;font-size:9pt;text-align:center;line-height:1.4;color:#333}
 """
 
+HEAD = ('<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>{t}</title>'
+        '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">'
+        '<style>{css}</style></head><body>')
 
-def page(label, title, body, sign=True, center=False):
+
+def doc(title, sections):
+    return HEAD.format(t=e(title), css=CSS) + "".join(f'<section class="pg">{s}</section>' for s in sections) + "</body></html>"
+
+
+def ymd():
     yy, mm, dd = D.SIGN_DATE
-    sig = f"""<div class="sign"><div class="d">{yy}년 {mm}월 {dd}일</div>
-<div class="who"><span>{D.COMPANY} &nbsp; 대표이사 &nbsp; {D.CEO}</span><span class="seal">(인)</span></div></div>
-<div class="to">{e(D.CLIENT)} 귀중</div>""" if sign else ""
-    return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>{e(title)}</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<style>{CSS}</style></head><body>
-<div class="top"><div class="lb">{e(label)}</div><div class="co">{D.COMPANY} · 입주박람회 주관사</div></div>
-<h1 class="{'c' if center else ''}">{e(title)}</h1>
-<div class="case" style="{'text-align:center' if center else ''}">건명 : {e(D.NOTICE)} ({D.NOTICE_DATE} 공고)</div>
-{body}
-{sig}
-</body></html>"""
+    return yy, mm, dd
+
+
+def head(label, title, center=False):
+    return (f'<div class="top"><div class="lb">{e(label)}</div><div class="co">{D.COMPANY} · 입주박람회 주관사</div></div>'
+            f'<h1 class="{"c" if center else ""}">{e(title)}</h1>'
+            f'<div class="case" style="{"text-align:center" if center else ""}">건명 : {e(D.NOTICE)} ({D.NOTICE_DATE} 공고)</div>')
+
+
+def sign():
+    yy, mm, dd = ymd()
+    return (f'<div class="sign"><div class="d">{yy}년 {mm}월 {dd}일</div>'
+            f'<div class="who">{D.COMPANY} &nbsp; 대표이사 &nbsp; {D.CEO}<span class="seal">(인)</span></div></div>'
+            f'<div class="to">{e(D.CLIENT)} 귀중</div>')
 
 
 def company_table(extra=""):
@@ -105,188 +145,306 @@ def company_table(extra=""):
 </table>"""
 
 
-_p09 = os.path.join(HERE, PFX + "09_입주박람회_주관사_제안서.pdf")
-PAGES09 = len(fitz.open(_p09)) if os.path.exists(_p09) else 108
-
-# 공고 04항 필수 제출서류(번호 = 공고 번호)
-SUBMIT = [
-    ("01", "입찰참가 신청서", "본 서류", "1부"),
-    ("02", "사업자등록증 사본", "2026.08.04 발급", "1부"),
-    ("03", "법인 등기부등본(최근 1개월 이내)", "2026.10.02 발행", "1부"),
-    ("04", "인감증명서 및 사용인감계(최근 1개월 이내)", f"인감증명서 {D.INGAM_DATE} 발급 · 사용인감계", "각 1부"),
-    ("05", "국세 및 지방세 완납증명서", "각 2026.10.02 발급 (유효 ~2026.11.01)", "각 1부"),
-    ("06", "4대 보험 사업장 가입자 명부(최근 1개월 이내)", "2026.10.02 출력", "1부"),
-    ("07", "회사소개서(연혁 · 조직도 포함)", "", "1부"),
-    ("08", "최근 3년 주관사 실적 증빙서류", "별첨 NICE 연혁 발췌", "1부"),
-    ("09", "입주박람회 주관사 제안서", f"{PAGES09}쪽", "1부"),
-    ("10", "사후관리 대책 방안서", "", "1부"),
-    ("11", "기업신용평가서", "NICE CLIP · 2026.06.19 (유효 ~2027.06.18)", "1부"),
-    ("12", "서류 반환 불가 · 이의제기 금지 서약서", "", "1부"),
-    ("13", "기타 추가 제안사항", "별도 2쪽 · 붙임 요약 제안서", "1부"),
-]
+def form_tail(addr=False):
+    """별지 공통 꼬리: 날짜 → 귀중 → 주관사·대표자 (인). 공고 양식의 순서를 따른다."""
+    yy, mm, dd = ymd()
+    a = f"주 &nbsp;소 : {D.ADDRESS}<br>" if addr else ""
+    return (f'<div class="dt">{yy}년 &nbsp; {mm}월 &nbsp; {dd}일</div>'
+            f'<div class="to2">{SITE}<br>입주예정자협의회 귀중</div>'
+            f'<div class="sg">{a}주관사 : <b>{D.COMPANY}</b><br>대표자 : <b>대표이사 {D.CEO}</b><span style="margin-left:30pt">(인)</span></div>')
 
 
-# ============================================================ 01 입찰참가 신청서
+def birth():
+    return e(CEO_BIRTH) if CEO_BIRTH else todo("대표자 생년월일 — 본부장 확인")
+
+
+# ------------------------------------------------------------------ 발급일
+def issued(key, label):
+    v = D.ISSUE.get(key)
+    return f"{v} 발급" if v else todo(f"{label} 재발급일(공고일 이후)")
+
+
+_p05 = os.path.join(HERE, PFX + "05_입주박람회_입찰제안서.pdf")
+PROP = fitz.open(_p05) if os.path.exists(_p05) else None
+
+
+def submit_rows():
+    n05 = len(PROP) if PROP else 118
+    return [
+        ("01", "입찰 신청서 [별지서식 제 1호]", "본 서류", "1부"),
+        ("02", "법인 사업자등록증 및 등기부등본 사본", f"사업자등록증 {issued('biz', '사업자등록증')} · 등기부등본 {issued('reg', '등기부등본')}", "각 1부"),
+        ("03", "법인 인감증명서 및 사용인감계", f"인감증명서 {D.INGAM_DATE} 발급 · 사용인감계", "1부"),
+        ("04", "국세 및 지방세 완납 증명서", f"국세 {issued('tax', '국세 납세증명서')} · 지방세 {issued('ltax', '지방세 납세증명서')}", "각 1부"),
+        ("05", "입주박람회 입찰제안서", f"{n05}쪽", "1부"),
+        ("06", "하자보수 및 계약 이행 각서 [별지서식 제 2호]", "", "1부"),
+        ("07", "입주박람회 실적 및 공동구매 증빙자료(최근 3년간 실적 증명서)", "별첨 1 NICE 연혁 발췌 · 별첨 2 실적 확약서(카페 공지 붙임)", "1부"),
+        ("08", "선정 결과 이의 제기 금지 서약서 [별지서식 제 3호]", "", "1부"),
+        ("09", "계약자의 계약 취소 건에 대한 환불 규정", "제1 ~ 10조 · 별표", "1부"),
+        ("10", "회사 기업신용평가서", f"NICE디앤비 CLIP · 평가 {D.NICE_DATE} (유효 ~2027.06.18)", "1부"),
+        ("11", "청렴 계약 이행각서 [별지서식 제 4호]", "", "1부"),
+        ("12", "입주박람회 성과 및 성공사례 자료(카페 이벤트 등 포함)", "", "1부"),
+        ("13", "가장 최근 진행된 공동구매 물품 단가비교표", "가능한 경우 제출 항목 — " + todo("제출 여부 본부장 확인"), "-"),
+        ("14", "기타 입찰제안에 필요한 자료", "요약 제안서 · 회사소개서", "1부"),
+    ]
+
+
+# ================================================================== 01 입찰 참가 신청서 [별지 1호]
 def doc01():
-    rows = "".join(f'<tr><td>{n}</td><td class="l">{e(t)}</td><td class="l">{e(r)}</td><td>{q}</td></tr>' for n, t, r, q in SUBMIT)
-    body = f"""<style>.t td{{padding:2.3pt 6pt}} h1.c{{margin-top:10pt}} .sign{{margin-top:8pt}} .to{{margin-top:10pt}} h2{{margin:8pt 0 4pt}} p.body{{margin-top:8pt;line-height:1.65}} .info{{margin-top:9pt}} .info th,.info td{{padding:4pt 9pt}} .note{{margin-top:3pt;font-size:8.6pt}}</style>
-{company_table()}
-<p class="body">당사는 {e(D.CLIENT)}의 「{e(D.NOTICE)}」({D.NOTICE_DATE})에 따라 위 입찰에 참가하고자
-공고 04항의 필수 제출서류를 갖추어 신청합니다. 공고의 입찰 참가 자격(03항) · 입찰 참가 제한(05항) · 주의사항(06항)을
-모두 확인하였으며, 제출한 서류의 내용이 사실과 다름없음을 확인합니다.</p>
-<h2>제출서류 목록 (공고 04항 순서)</h2>
-<table class="t"><thead><tr><th style="width:7%">No</th><th>서류</th><th style="width:30%">비고</th><th style="width:8%">부수</th></tr></thead>
-<tbody>{rows}</tbody></table>
-<p class="note">※ 11 기업신용평가서의 본사 주소는 본점 이전(2026.07.02 등기) 전 주소입니다. 현재 본점은 위 소재지와 같습니다.</p>"""
-    return page("제출서류 01", "입찰참가 신청서", body, center=True)
+    ag = D.AGENT
+    agent = (f'직 위 : {e(ag[0])}<br><span class="ln"></span>성 명 : {e(ag[1])} &nbsp; ( 인 )' if ag else
+             '직 위 : <br><span class="ln"></span>성 명 : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ( 인 )')
+    yy, mm, dd = ymd()
+    f1 = f"""<div class="form"><div class="no">[별지서식 제 1호]</div><h1>입찰 참가 신청서</h1>
+<table class="ft">
+<tr><th>입 찰 명</th><td colspan="4">“{SITE}” 주관사 선정 입찰 공고</td></tr>
+<tr><th rowspan="4">신청인</th><th>업체명</th><td class="v">{D.COMPANY}</td><th>법인등록번호</th><td class="v">{D.CORP_NO}</td></tr>
+<tr><th>주 소</th><td colspan="3">{D.ADDRESS}</td></tr>
+<tr><th>전화번호</th><td>{D.TEL}</td><th>대표자명</th><td>{D.CEO}</td></tr>
+<tr><th>대표자 생년월일</th><td colspan="3">{birth()}</td></tr>
+<tr><th>(입찰)<br>대리인</th><td colspan="4" class="agent">본 입찰에 관한 일체의 권한을 다음의 자에게 위임합니다.<br><span class="ln"></span>{agent}</td></tr>
+</table>
+<p class="tx">“{SITE}” 주관사 선정 입찰에 참여하고자 귀 입예협에서 정한 입찰 공고사항을 모두 승낙하고 제출서류를 첨부하며, 주관사 선정 입찰 조건 및 지시 사항을 준수하겠음을 확약하고 입찰에 참가하고자 신청합니다.</p>
+<div class="chk"><div style="flex:1;font-size:11.5pt;line-height:2.1;padding-left:30%">주 &nbsp;소 : {D.ADDRESS}<br>상 &nbsp;호 : <b>{D.COMPANY}</b><br>대표자 : <b>대표이사 {D.CEO}</b><span style="margin-left:30pt">(인)</span></div>
+<div class="stamp">인 &nbsp;감<br>대조필</div></div>
+<div class="dt">{yy}년 &nbsp; {mm}월 &nbsp; {dd}일</div>
+<div class="to2">{SITE}<br>입주예정자협의회 귀중</div></div>"""
+    rows = "".join(f'<tr><td>{n}</td><td class="l">{e(t)}</td><td class="l">{r}</td><td>{q}</td></tr>' for n, t, r, q in submit_rows())
+    f2 = f"""{head("입찰 신청서 붙임", "제출서류 목록")}
+<h2>공고 7항 제출서류 (공고 순서)</h2>
+<table class="t"><thead><tr><th style="width:6%">No</th><th>서류</th><th style="width:38%">비고</th><th style="width:7%">부수</th></tr></thead><tbody>{rows}</tbody></table>
+<p class="note">※ 공고 7항 15): 모든 제출 서류는 입찰공고일({D.NOTICE_DATE}) 이후 발급분 기준. 2차 심사 시 원본을 제출합니다(원본과 동등한 효력이 있는 서류 제외).</p>
+<p class="note">※ 10 기업신용평가서의 본사 주소는 본점 이전(2026.07.02 등기) 전 주소입니다. 현재 본점은 위 소재지와 같습니다.</p>
+<p class="note">※ 메일 제출: {D.SUBMIT_TO} · 제목 「[아산탕정 푸르지오 센터파크 입찰 참가]_{D.COMPANY}」 · 마감 {D.DEADLINE}</p>"""
+    return doc("01 입찰 참가 신청서", [f1, f2])
 
 
-# ============================================================ 04 사용인감계
-def doc04():
-    body = f"""{company_table()}
+# ================================================================== 03 사용인감계
+def doc03():
+    body = f"""{head("제출서류 03", "사용인감계", True)}{company_table()}
 <p class="body">위 법인은 아래 사용인감을 「{e(D.NOTICE)}」 입찰 참가 및 이에 따른 협약 체결에 관한 일체의 서류에 사용하고자
 신고합니다. 이 인감의 사용으로 생기는 모든 책임은 당사가 집니다.</p>
 <div class="seals">
 <div><b>사용인감</b><span class="mk">(인감날인)</span><small>입찰 · 협약 서류에 사용</small></div>
 <div><b>법인인감</b><span></span><small>인감증명서상 등록 인감</small></div>
 </div>
-<p class="note" style="margin-top:8pt">※ 첨부: 법인 인감증명서 1부({D.INGAM_DATE} 발급)</p>"""
-    return page("제출서류 04", "사용인감계", body, center=True)
+<p class="note" style="margin-top:8pt">※ 첨부: 법인 인감증명서 1부({D.INGAM_DATE} 발급)</p>{sign()}"""
+    return doc("03 사용인감계", [body])
 
 
-# ============================================================ 08 최근 3년 주관사 실적
-def doc08():
-    recs = D.RECENT3
+# ================================================================== 06 하자보수 및 계약 이행 각서 [별지 2호]
+def doc06():
+    yy, mm, dd = ymd()
+    body = f"""<div class="form"><div class="no">[별지서식 제 2호]</div><h1>하자보수 및 계약 이행 각서</h1>
+<p class="tx">“{SITE}” 입주예정자협의회에서 시행하는 공동구매 행사와 관련하여 발생하는 사후 하자보수를 이행함에 있어, 계약(또는 협약) 일반조건에 따라 하자보증기간 내 주관한 행사에 참여한 업체가 납품한 공사 또는 물품에 하자가 발생한 경우, 당사는 해당 업체와 연대하여 즉시 하자보수 및 원상복구를 이행하고, 이로 인하여 발생한 모든 손해에 대하여 배상할 것을 서약합니다.</p>
+<div class="dt">{yy}년 &nbsp; {mm}월 &nbsp; {dd}일</div>
+<div class="to2">{SITE}<br>입주예정자협의회 귀중</div>
+<table class="ft" style="margin-top:20pt"><tr><th>업체명</th><th>직 위</th><th>성 명</th><th>생년월일</th><th>본사주소</th></tr>
+<tr><td style="text-align:center">{D.COMPANY}</td><td style="text-align:center">대표이사</td><td style="text-align:center">{D.CEO}</td>
+<td style="text-align:center">{birth()}</td><td>{D.ADDRESS}</td></tr></table>
+<div class="sg">주관사 : <b>{D.COMPANY}</b><br>대표자 : <b>대표이사 {D.CEO}</b><span style="margin-left:30pt">(인)</span></div></div>"""
+    return doc("06 하자보수 및 계약 이행 각서", [body])
+
+
+# ================================================================== 07 입주박람회 실적 증빙
+CAFE_DAESUNG = ("2024.11 ~ 2025.12", "에코델타 대성베르힐", "부산 에코델타시티", 1120)
+
+
+def doc07():
+    recs = [(d, nm, reg, n, "NICE 연혁(별첨 1)") for d, nm, reg, n in D.RECENT3]
+    recs.append(CAFE_DAESUNG + ("입예협 카페 공지(별첨 2 붙임 ②)",))
+    recs.sort(key=lambda r: r[0])
     rows = "".join(
-        f'<tr><td>{i}</td><td>{d}</td><td class="l">{e(nm)}</td><td>{e(reg)}</td><td class="r">{n:,}</td>'
-        f'<td style="white-space:nowrap">입주박람회 주관</td><td>별첨 1</td></tr>'
-        for i, (d, nm, reg, n) in enumerate(recs, 1))
+        f'<tr><td>{i}</td><td style="white-space:nowrap">{d}</td><td class="l">{e(nm)}</td><td>{e(reg)}</td><td class="r">{n:,}</td>'
+        f'<td class="l">{e(ev)}</td></tr>'
+        for i, (d, nm, reg, n, ev) in enumerate(recs, 1))
     total = sum(r[3] for r in recs)
-    body = f"""{company_table()}
-<h2>1. 최근 3년 1,000세대 이상 아파트 입주박람회 주관 실적</h2>
-<p class="note" style="margin:0 0 5pt">기준: 공고일({D.NOTICE_DATE}) 기준 최근 3년(2023.10.06 ~ 2026.10.06) · 1,000세대 이상 아파트 입주박람회 주관 (공고 03항 6호).
-주관 시기·세대수는 NICE디앤비 CLIP 기업신용평가보고서(평가완료일 2026.06.19) ‘연혁’(별첨 1)에 기재된 내용과 같습니다.</p>
-<table class="t"><thead><tr><th style="width:5%">No</th><th style="width:10%">주관 시기</th><th>단지명</th><th style="width:11%">지역</th>
-<th style="width:10%">세대수</th><th style="width:16%">수행 내용</th><th style="width:9%">증빙</th></tr></thead>
+    body = f"""{head("제출서류 07", "입주박람회 실적 및 공동구매 증빙자료")}
+<p class="note" style="margin-top:8pt">제출: {D.COMPANY} (사업자등록번호 {D.BIZ_NO} · 대표이사 {D.CEO})</p>
+<h2>1. 최근 3년 1,000세대 이상 입주박람회 주관 실적</h2>
+<p class="note" style="margin:0 0 5pt">기준: 공고일({D.NOTICE_DATE}) 기준 최근 3년(2023.10.06 ~ 2026.10.06) · 1,000세대 이상 공동주택 입주박람회 주관(박람회 · 공동구매 · 사후관리 수행).
+시기·세대수는 NICE디앤비 CLIP 기업신용평가보고서(평가 {D.NICE_DATE}) ‘연혁’과 해당 단지 입주예정자협의회 공식 카페의 주관사 명의 공지 기준입니다.</p>
+<table class="t"><thead><tr><th style="width:5%">No</th><th style="width:13%">주관 시기</th><th>단지명</th><th style="width:12%">지역</th>
+<th style="width:10%">세대수</th><th style="width:24%">증빙</th></tr></thead>
 <tbody>{rows}
-<tr class="sum"><td colspan="4">합계</td><td class="r">{total:,}</td><td colspan="2">{len(recs)}건</td></tr></tbody></table>
-<div class="box"><b>참가 자격 대비</b> &nbsp; 요건: 최근 3년간 1,000세대 이상 입주박람회 진행 경험 5회 이상
-&nbsp;→&nbsp; 보유: <b>{len(recs)}회 · 합계 {total:,}세대</b> &nbsp; <span class="ok">충족</span></div>
+<tr class="sum"><td colspan="4">합계 {len(recs)}개 단지</td><td class="r">{total:,}</td><td></td></tr></tbody></table>
+<div class="box"><b>공고 5항 17) 대비</b> &nbsp; 요건: 1,000세대 이상 공동주택 3개 단지 이상 입주컨설팅 · 입주박람회 수행 실적
+&nbsp;→&nbsp; 최근 3년만 <b>{len(recs)}개 단지 · {total:,}세대</b> &nbsp; <span class="ok">충족</span><br>
+3년 이전을 포함한 1,000세대 이상 주관 실적은 <b>9개 단지 · 18,261세대</b>입니다(별첨 2 실적 확약서).</div>
 <h2>2. 별첨 증빙</h2>
-<ol class="pl" style="font-size:10pt;margin-top:2pt"><li>1. NICE디앤비 CLIP 기업신용평가보고서 ‘연혁’ 발췌 (표지 · 9쪽) — 1매 (보고서 전문은 제출서류 11)</li></ol>
-<p class="body" style="font-size:10pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 05항 8)에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>"""
-    return page("제출서류 08", "최근 3년 주관사 실적 증빙", body)
+<ol style="list-style:none;font-size:10pt;line-height:1.8">
+<li>별첨 1. NICE디앤비 CLIP 기업신용평가보고서 ‘연혁’ 발췌 — 1매 (보고서 전문은 제출서류 10)</li>
+<li>별첨 2. 대표이사 실적 확약서 — 1매 · 붙임: 입예협 공식 카페 주관사 공지 캡처 2매(입주민 닉네임 동·호수 가림)</li>
+<li>입예협 요청 시 계약서 · 실적 확인서 · 정산 자료를 지체 없이 추가 제출합니다(공고 5항 13).</li></ol>
+<p class="body" style="font-size:10pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 6항 5) · 8항 4)에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign()}"""
+    return doc("07 입주박람회 실적 및 공동구매 증빙자료", [body])
 
 
-# ============================================================ 10 사후관리 대책 방안서
-def doc10():
+# ================================================================== 08 이의 제기 금지 서약서 [별지 3호]
+def doc08():
+    items = [
+        "입찰 참가신청과 관련하여 작성된 모든 증빙자료는 신의성실의 원칙에 입각하여 작성하였으며, 귀사의 제안서 평가 및 협상 결과 등에 대하여 어떠한 이의도 제기하지 않겠습니다.",
+        "협의회의 평가 결과에 대하여 부당하게 이의를 제기하거나 계약자 선정 통보에 불응한 경우 관계법령에 따라 부정 사업자로 제재 등 어떠한 처분도 감수하겠습니다.",
+        "주관사로 선정될 경우, 사업 전체를 타인(타사)에게 일괄 도급하지 않으며, 계약 이후라도 일괄 도급한 사실이 적발될 경우, 계약이 해지되어도 민사 소송 등 이의를 일절 제기하지 않겠습니다.",
+        "주관사 미 선정 시 입주예정자협의회의 승인 없이 공식 주관사 또는 협력업체로 오인될 수 있는 홍보 및 영업행위를 하지 않을 것을 서약합니다.",
+    ]
+    lis = "".join(f"<li>{i}. {x}</li>" for i, x in enumerate(items, 1))
+    body = f"""<div class="form"><div class="no">[별지서식 제 3호]</div><h1>이의 제기 금지 서약서</h1>
+<p class="tx">본 업체는 {SITE} 입주예정자협의회에서 진행하는 주관사 선정, 행사 주관 및 사후관리 위탁 제안과 관련하여 아래 내용을 준수하고 이행할 것을 확약하며 본 서약서를 제출합니다.</p>
+<ol>{lis}</ol>{form_tail()}</div>"""
+    return doc("08 이의 제기 금지 서약서", [body])
+
+
+# ================================================================== 09 계약 취소 · 환불 규정
+CANCEL_7 = "청소·줄눈, 탄성코트, 유리막코팅, 선반·잡물, 음식물처리기, 인덕션, 벽걸이TV, LED조명"
+CANCEL_15 = "미세방충망, 인테리어, 단열필름, 시스템에어컨, 포장이사"
+CUSTOM = "커튼·블라인드, 중문, 안전방충망, 맞춤가구"
+
+
+def doc09():
     arts = [
-        ("1. 기본 방침", [
-            "사후관리는 박람회가 끝난 뒤부터 시작합니다. 주관사는 <b>입주 후 1년</b> 동안 운영 관리를 맡고 결과 보고서를 제출합니다.",
-            "공동구매 품목의 무상 A/S는 <b>최소 2년</b>(업체·품목별 상이)이며, 장기 사후관리는 <b>최대 10년</b>까지 이어갑니다.",
-            "입주민은 업체를 따로 찾지 않고 <b>주관사 한 곳</b>에 접수합니다. 처리 책임도 주관사가 집니다.",
+        ("제1조 (목적)", None,
+         f"이 규정은 {D.COMPANY}(이하 ‘주관사’)가 주관하는 {SITE} 입주박람회 및 공동구매(이하 ‘공동구매’)에서 "
+         "입주예정자(이하 ‘계약자’)와 참여업체 사이에 체결되는 계약의 계약금·잔금 지급 조건과 취소·환불 기준을 정하여 계약자의 권리를 보호함을 목적으로 한다."),
+        ("제2조 (적용 범위)", [
+            "공동구매를 통해 체결된 모든 품목의 계약에 적용한다. 박람회 현장 계약과 온라인 박람회(폐쇄몰) 계약을 모두 포함한다.",
+            "참여업체는 이 규정을 계약서에 반영하고 계약 체결 전에 계약자에게 설명하여야 한다.",
+            "브랜드 본사 직영 품목(가전·가구 등)과 사전점검 대행은 각 본사 계약 규정을 따르되, 그 내용을 계약 전에 서면으로 고지하여야 한다.",
         ]),
-        ("2. 접수 창구와 처리 기준", [
-            f"접수 채널 4종: 공식카페 신문고 · 카카오채널 · 홈페이지는 <b>365일</b> 접수하고, 상담 콜센터({D.TEL})는 평일 09:00 ~ 18:00 운영합니다.",
-            "VOC 접수 후 <b>24시간 안에 1차 회신</b>(주말·공휴일 접수 건은 다음 영업일 기준)하고, 주관사 관리·감독 아래 <b>48시간 안에 하자보수</b>를 원칙으로 합니다. 업체가 응답하지 않으면 주관사가 직접 개입합니다.",
-            "보수가 끝나면 주관사가 입주민에게 직접 전화해 확인(해피콜 검수)하고, 모든 접수·처리 내역은 CRM에 기록합니다.",
+        ("제3조 (계약금)", [
+            f"계약금은 계약 총액의 <b>{D.DEPOSIT_MAX}% 이하</b>로 한다(계약금 {D.DEPOSIT_MAX}% 상한제).",
+            "계약금과 잔금 모두 카드 결제 시 현금가와 <b>동일한 가격</b>을 적용하며, 현금 결제 시 현금영수증을 발행한다.",
         ]),
-        ("3. 보증과 보상 재원", [
-            "<b>이행보증보험 2년 · 최대 10억원</b>: 제안 내용 미이행·업체 도산·검증 미비에 대비하며, 협약 시 증권 실물을 제출합니다. 보험기간 개시일은 박람회·입주 일정에 맞춰 협약으로 정합니다. 본 방안서는 대표이사 명의의 이행 확약이며, 증권과 예치 확인서는 협약 시 제출합니다.",
-            "<b>하자 예치금 최대 1억원</b>: 참여 업체에게 걷은 돈이 아닌 엣지컴퍼니 자산으로 예치하며, 업체 책임이 확인되면 입주민에게 <b>먼저 보상(선보상)</b>하고 업체와는 나중에 정산합니다. 예치 규모는 단지 규모와 조합 입예협 협의로 정하고, 사용 내역을 공개합니다.",
-            "모든 참여업체로부터 <b>하자보수 이행각서</b>와 <b>입주박람회 특약이행각서</b>를 받습니다.",
+        ("제4조 (잔금 지급 조건)", [
+            "잔금은 <b>시공·설치가 끝나고 계약자가 확인한 후</b> 지급한다. 제품만 납품하는 품목은 납품·설치 확인 후 지급한다.",
+            "참여업체가 입찰 때 약속한 기대매출을 넘긴 경우의 실적 비례 추가할인은 잔금에서 차감한다. 품목별 할인율은 입예협과 검토해 정한다.",
+            "시공 결과 확인 시 하자·미시공 부분이 있으면 계약자는 해당 부분의 보수가 끝난 후 잔금을 지급할 수 있다.",
         ]),
-        ("4. 참여업체 관리", [
-            "업체가 도산하면 동종업체로 사후관리를 이관하고, 그 A/S 비용은 <b>주관사가 전액 부담</b>합니다.",
-            "위반 업체에는 패널티 3단계를 적용합니다: ① 홍보정지 → ② 총액 10% 배상 → ③ 자격박탈 및 조합 입예협 승인을 받아 전 계약을 대체업체로 이관. 하자보수 지연 시에는 하자지연 패널티를 부과합니다.",
-            "업체는 4단계 공개 심사로 고르며, 시공 품목은 인근 지역업체를 우선 선정해 48시간 처리가 가능한 거리를 확보합니다.",
+        ("제5조 (취소·환불 기준)", [
+            "품목별 취소 가능 기한은 [별표]와 같다. 기한 안에 취소하면 납부한 금액 <b>전액</b>을 환불한다.",
+            f"맞춤 제작 품목({CUSTOM})은 출고 지시 전까지 참여업체와 협의하여 취소한다. 브랜드 가전·가구는 미제작·출고 지시 전에는 전액 취소·환불한다.",
+            "참여업체가 사전 해피콜을 이행하지 않은 경우, 계약자 미동의 주문제작 건을 포함한 <b>모든 품목은 당일 취소·환불</b>할 수 있다(공급사 귀책).",
+            "인테리어는 시공일 15일 전까지 취소할 수 있으며, 세부 조건은 참여업체가 계약 전에 서면으로 고지하여야 한다.",
+            "취소 기한이 지난 뒤의 취소는 실제 발생한 자재·제작 비용만 공제할 수 있으며, 참여업체는 공제 내역을 서면으로 제시하여야 한다. 주관사는 공제 내역의 적정성을 검토한다.",
+            "시공 지연, 계약과 다른 제품·시공, 하자 미보수 등 참여업체 귀책으로 계약을 해지하는 경우에는 기한과 관계없이 납부 금액 전액을 환불한다.",
         ]),
-        ("5. 계약 보호 · 취소 · 환불", [
-            f"계약금은 총액의 <b>{D.DEPOSIT_MAX}% 이하</b>, 잔금은 시공·설치 확인 후 납부합니다. 카드 결제도 현금가와 같습니다.",
-            "품목별 취소 기한 안에는 100% 해약할 수 있습니다: 청소·줄눈·탄성코트·유리막코팅·선반·잡물·음식물처리기·인덕션·벽걸이TV·LED조명은 <b>시공일 7일 전</b>, 미세방충망·인테리어·단열필름·시스템에어컨·포장이사는 <b>시공일 15일 전</b>, 맞춤 제작 품목은 출고 지시 전 업체 협의.",
-            "환불은 <b>3영업일 이내</b>에 처리하고, 업체가 미루면 주관사가 먼저 보상합니다. 사전 해피콜 미이행 · 업체 귀책이면 기한과 관계없이 전액 환불하며, 세부는 계약 취소·환불 규정을 따릅니다.",
+        ("제6조 (취소 신청 및 환급)", [
+            "취소는 참여업체 또는 주관사 콜센터 · 공식카페 신문고 · 카카오채널로 신청하며, 문자·메신저 등 기록이 남는 방법으로 한다.",
+            "환불금은 취소 확정일로부터 <b>3영업일 이내</b>에 지급하고, 카드 결제분은 같은 기한 안에 승인 취소한다.",
+            "주관사는 환불 완료 여부를 계약자에게 확인(해피콜)한다.",
         ]),
-        ("6. 철산역 자이 맞춤 운영", [
-            "1단지(101~110동) · 2단지(201~207동) · 3단지(301~302동)로 나뉜 단지 특성에 맞춰 단지별 설치 예약 · 하역 위치 · 엘리베이터 사용 시간을 나눠 운영합니다.",
-            "조합원 유상옵션 · 기본 제공 품목 목록을 받아 공동구매 품목과 대조하고, 이미 들어간 품목은 권하지 않습니다.",
-            "가구·가전 포장재는 납품업체가 직접 회수하도록 협약에 넣고, 단지 쓰레기 설비 사용 기준을 입주 안내에 담습니다.",
+        ("제7조 (불이행 시 조치 및 주관사 책임)", [
+            "참여업체가 취소·환불을 지연하거나 거부하면 계약자는 주관사 콜센터에 접수할 수 있다. 주관사는 사실을 확인한 뒤 계약자에게 피해 금액을 <b>먼저 보상</b>하고, 참여업체와는 계약 조항에 따라 정산한다(하자보수 및 계약 이행 각서 [별지서식 제 2호] 준용).",
+            "불이행 업체에는 ① 홍보정지 ② 총액 10% 배상 ③ 자격박탈 및 입예협 승인을 받아 전 계약을 대체업체로 이관하는 3단계 패널티를 부과한다.",
+            "참여업체가 도산한 경우 동종업체로 사후관리를 이관하고, 그 A/S 비용은 주관사가 전액 부담한다.",
+            "주관사의 보상 재원으로 하자 예치금 최대 1억원(엣지컴퍼니 자산으로 예치)과 이행보증보험(2년 · 최대 10억원)을 둔다.",
         ]),
-        ("7. 보고와 기록", [
-            "입주까지 분기마다 진행 상황을 조합 입예협에 보고하고, 입주 후 1년 운영 관리가 끝나면 결과 보고서를 제출합니다.",
-            "클레임 접수·처리 현황은 CRM으로 관리해 결과 보고서(입주 후 1년)에 담고, 하자 예치금 사용 내역은 공개합니다.",
+        ("제8조 (가격 보호 — 최저가 차액 10배 보상)", [
+            "공동구매 품목과 브랜드·모델명이 같은 새 제품이 계약 후 7일 이내에 인근(아산·천안권) 오프라인 매장에서 "
+            "더 낮은 정상 판매가로 판매된 사실이 견적서·영수증으로 확인되면, 참여업체는 차액의 10배를 보상하고 판매가를 조정한다.",
+            "온라인·홈쇼핑 판매, 시공 품목, 카드 청구할인·사은품·결합할인, 전시·리퍼 상품, 법인 특판, 한정 수량 행사가는 비교 대상에서 제외한다.",
+            "계약자는 주관사 콜센터에 접수하고, 주관사는 사실 확인 후 7일 이내에 보상이 이행되도록 관리한다.",
         ]),
+        ("제9조 (고지)", None,
+         "주관사는 이 규정을 박람회장 · 온라인 박람회 · 입주예정자협의회 카페에 게시하고, 모든 공동구매 계약서에 첨부한다."),
+        ("제10조 (효력)", None,
+         "이 규정은 협약 체결일부터 협약 종료일(입주 후 1년)까지 체결된 계약에 적용하며, 협약 종료 후에도 해당 계약의 이행·보증 기간 동안 효력을 가진다."),
     ]
     out = []
-    for h, items in arts:
-        lis = "".join(f"<li>{'①②③④⑤'[i]} {x}</li>" for i, x in enumerate(items))
-        out.append(f'<div class="art"><h3>{h}</h3><ol>{lis}</ol></div>')
-    flow = """<table class="t" style="margin-top:6pt"><thead><tr><th>접수</th><th>1차 회신</th><th>처리</th><th>검수</th><th>정산·기록</th></tr></thead>
-<tbody><tr><td>신문고 · 카카오 · 홈페이지 365일<br>콜센터 평일 09 ~ 18시</td><td>24시간 이내</td><td>48시간 이내 보수<br>(업체 미응답 시 주관사 개입)</td>
-<td>주관사 해피콜</td><td>선보상 후 업체 정산<br>CRM 기록</td></tr></tbody></table>"""
-    summary = """<div class="box"><b>핵심 요약</b> &nbsp; 주관사 1창구 · 365일 접수(온라인) · 24시간 회신 · 48시간 처리 · 선보상 후 정산 ·
-이행보증보험 2년 최대 10억 · 하자 예치금 최대 1억 · 무상 A/S 최소 2년(업체·품목별 상이) · 장기 관리 최대 10년</div>"""
-    return page("제출서류 10", "사후관리 대책 방안서", summary + flow + "".join(out))
+    for a in arts:
+        h, items = a[0], a[1]
+        if items:
+            lis = "".join(f"<li>{'①②③④⑤⑥⑦⑧'[i]} {x}</li>" for i, x in enumerate(items))
+            out.append(f'<div class="art"><h3>{h}</h3><ol>{lis}</ol></div>')
+        else:
+            out.append(f'<div class="art"><h3>{h}</h3><p>{e(a[2])}</p></div>')
+    table = f"""<h2>[별표] 품목별 취소 가능 기한 (시공일 기준)</h2>
+<table class="t"><thead><tr><th style="width:24%">취소 가능 기한</th><th>품목</th></tr></thead><tbody>
+<tr><td class="k" style="text-align:center">시공일 7일 전까지</td><td class="l">{CANCEL_7}</td></tr>
+<tr><td class="k" style="text-align:center">시공일 15일 전까지</td><td class="l">{CANCEL_15}</td></tr>
+<tr><td class="k" style="text-align:center">출고 지시 전까지</td><td class="l">맞춤 제작 품목({CUSTOM})은 업체와 협의 후 취소 · 브랜드 가전·가구(미제작 시)</td></tr>
+<tr><td class="k" style="text-align:center">당일 취소 가능</td><td class="l">사전 해피콜 미이행 시 모든 품목(공급사 귀책)</td></tr>
+</tbody></table>
+<p class="note">※ 품목 구성은 입주예정자협의회 수요조사 결과에 따라 확정되며, 추가 품목의 기한은 성격이 같은 품목의 기한을 따른다.</p>"""
+    summary = f"""<div class="box"><b>핵심 요약</b> &nbsp; 계약금 {D.DEPOSIT_MAX}% 이하 · 현금·카드 동일가 · 잔금은 시공·설치 확인 후 ·
+품목별 취소 기한 안 전액 환불(맞춤 제작은 출고 지시 전 업체 협의) · 환불 3영업일 이내 · 업체 불이행 시 주관사 선보상</div>"""
+    return doc("09 계약 취소 · 환불 규정", [head("제출서류 09", "공동구매 계약 취소 · 환불 규정") + summary + "".join(out) + table + sign()])
 
 
-# ============================================================ 12 서약서
-def doc12():
-    body = f"""{company_table()}
-<p class="body">당사는 {e(D.CLIENT)}의 「{e(D.NOTICE)}」({D.NOTICE_DATE}) 입찰에 참가하면서 다음 사항을 서약합니다.</p>
-<ol class="pl">
-<li>1. 본 입찰에 제출한 서류는 반환되지 않음에 동의합니다.</li>
-<li>2. 제안서 평가 및 선정 결과를 포함한 입찰 결과에 대하여 일체의 이의를 제기하지 않겠습니다.</li>
-<li>3. 제출한 서류에 허위의 사실이 있는 경우 공고 05항 8)에 따른 입주예정자협의회의 조치를 이의 없이 따르겠습니다.</li>
-</ol>"""
-    return page("제출서류 12", "서약서", body, center=True)
-
-
-# ============================================================ 13 기타 추가 제안사항
-def doc13():
-    hh, fund = D.SITE["households"], D.FUND
-    eok, rest = divmod(hh * fund, 10000)
-    total = f"{eok}억 {rest:,}만원" if eok else f"{rest:,}만원"
-
-    def tbl(rows, head=("구분", "제안 내용")):
-        tr = "".join(f'<tr><td class="k">{a}</td><td class="l">{b}</td></tr>' for a, b in rows)
-        return f'<table class="t" style="margin-top:4pt"><thead><tr><th style="width:22%">{head[0]}</th><th>{head[1]}</th></tr></thead><tbody>{tr}</tbody></table>'
-
-    fund_rows = [
-        ("지급 기준", f"조합 {hh:,}세대 × 세대당 <b>{fund}만원</b> = 총 <b>{total}</b> (부가세 포함)"),
-        ("받는 방식", "① <b>현금</b> — 입예협 공식 통장 입금, 쓰임새는 입예협이 결정<br>② <b>혜택 패키지 A · B · C</b> — 같은 금액 범위 안에서 필요한 항목을 골라 구성<br>두 가지를 다 드리는 것이 아니라, 둘 중 하나를 입예협이 고릅니다."),
-        ("확정 방법", "항목 · 범위 · 금액 환산은 협의 후 협약서로 확정합니다. 공용부 항목은 조합 · 관리주체 협의를 전제로 합니다."),
+# ================================================================== 11 청렴계약 이행준수 서약서 [별지 4호]
+def doc11():
+    items = [
+        "유리한 입찰가격 또는 특정인의 낙찰을 위한 담합을 하거나 다른 업체와 협정, 결의, 합의하여 입찰의 자유경쟁을 부당하게 저해하는 일체의 불공정한 행위를 하지 않겠습니다.",
+        "참여업체간 상호 비방 또는 흑색선전행위, 과대선전은 물론 부정한 방법, 공정한 경쟁을 저해하는 행위를 하지 않겠으며, 타 업체의 관련 업무를 일체 방해하지 않겠습니다.",
+        "입찰, 계약 체결, 계약 이행, 행사 개최 및 완료와 관련하여 입예협에서 요구하는 자료 제출, 서류 열람, 현장 확인 등 활동에 적극 협조하겠습니다.",
+        "위법행위가 발견되었을 경우나, 위 각 호를 위반하는 경우에는 선정취소, 형사고발 등 입예협의 결정에 일체의 이의를 제기하지 않겠습니다.",
+        "[공동구매 및 입주박람회] 관련 하도급 계약 체결 및 이행에 있어서 하도급자로부터 금품을 수수하거나 부당 또는 불공정한 행위를 하지 아니하겠습니다.",
     ]
-    pack_rows = [
-        ("A 입주민<br>특화서비스", "백화점 상품권 10만원(현물) · 정회원 박람회 상품권 30만원(일반 20만원 + 정회원 추가 10만원) · 현장 특별할인 최대 10% · "
-                            "정회원 혜택 · 사은품 · 경품 · 사전점검 대행 할인 · 셀프 점검 지원 · 타입별 실측 사이즈 · 샘플하우스 · 항공 VR · 3D 홈스타일링"),
-        ("B 협의회<br>단지발전지원", "공용부 품질 점검 · 건설현장 안전점검 · 온라인 위임장 · 민원 · 의견 전달 지원 · 공정 · 하자 분석 · 도면 분석보고서 · 협상 미팅 동석 · "
-                             "세미나 영상 · 사전점검 당일 지원(물품 · 도우미 · 라돈측정기 10대 · 커피차) · 공용 · 조경 하자진단 · 열화상 드론 · 라돈 측정 · "
-                             "일조 시뮬레이션 · 공용부 항균나노코팅 · 세스코 특수해충 점검(2025.11 MOU) · 공용부 새집증후군 지원"),
-        ("C 단지지원<br>컨설팅", "커뮤니티 · 공용부 조명(조도 재설계 · 관리비 절감안) · 문주 · 경관조명 컨설팅 · 피트니스 · 키즈 공간 개선안 · 전기차 충전 인프라 검토 · 입주 기념 점등식<br>"
-                           f"<span style=\"color:#5B6676;font-size:9pt\">경관조명 · 공용부 조명은 전기공사업 면허({e(D.ELEC_LICENSE.replace('전기공사업 등록 ', ''))})를 갖춘 주관사가 시공 가능 여부까지 검토합니다. 시공은 조합 · 관리주체 승인 후 선택합니다.</span>"),
-    ]
-    site_rows = [
-        ("옵션 중복 확인표", "조합원 유상옵션 · 기본 제공 품목 목록을 받아 공동구매 품목과 대조하고, 이미 들어간 품목은 권하지 않습니다."),
-        ("가격 공개표", "모델코드 · 시공비 · 추가금을 박람회 전에 공개합니다. 현장에서 가격을 바꾸지 않습니다."),
-        ("3개 단지 분리 운영", "1단지(101 ~ 110동) · 2단지(201 ~ 207동) · 3단지(301 ~ 302동)별로 설치 예약 · 하역 위치 · 엘리베이터 사용 시간을 나눕니다."),
-        ("31개월 관리", "선정부터 입주 후 1년까지 관리하고, 입주까지 분기마다 진행 상황을 조합 입예협에 보고합니다."),
-    ]
-    guard_rows = [
-        ("최저가 차액 10배", "동일 브랜드 · 동일 제품이 더 싸면 차액의 10배를 보상합니다(온라인 판매 · 시공 품목 제외)."),
-        ("계약 보호", f"계약금은 총액의 {D.DEPOSIT_MAX}% 이하, 잔금은 시공 · 설치 확인 후 납부 · 품목별 취소 기한(시공일 7일 · 15일 전) 안에는 100% 환불"),
-        ("보증 · 보상 재원", "이행보증보험 2년 · 최대 10억원(증권 실물 제출) · 하자 예치금 최대 1억원(엣지컴퍼니 자산, 선보상 재원)"),
-        ("하자 · A/S", "48시간 하자보수 원칙 · 무상 A/S 최소 2년(업체 · 품목별 상이) · 장기 관리 최대 10년 — 세부는 제출서류 10"),
-    ]
-    body = f"""<div class="box"><b>안내</b> &nbsp; 공고 04항 13호(입주자 및 당 아파트에 도움이 될 만한 사항)에 대한 제안입니다.
-아래 항목은 모두 제안서(제출서류 09)에 담은 내용이며, 선정 후 협약서에 그대로 옮겨 이행합니다.</div>
-<h2>1. 단지발전지원금 — 세대당 {fund}만원</h2>{tbl(fund_rows)}
-<h2>2. 혜택 패키지 A · B · C 구성 항목</h2>{tbl(pack_rows, ("패키지", "구성 항목"))}
-<h2>3. 철산역 자이 맞춤 운영</h2>{tbl(site_rows)}
-<h2>4. 입주민 돈을 지키는 장치</h2>{tbl(guard_rows)}
-<p class="note">※ 붙임: 요약 제안서(제안서 09의 핵심을 22쪽으로 정리) 1부.</p>"""
-    return page("제출서류 13", "기타 추가 제안사항", body)
+    lis = "".join(f"<li>{i}. {x}</li>" for i, x in enumerate(items, 1))
+    body = f"""<div class="form"><div class="no">[별지서식 제 4호]</div><h1>청렴계약 이행준수 서약서</h1>
+<p class="tx">{SITE} 입주예정자협의회에서 시행하는 입찰, 계약체결 및 계약이행 과정에 있어서 당사 임직원과 대리인은</p>
+<ol>{lis}</ol>
+<p class="tx">위 청렴 계약 이행 서약은 상호 신뢰를 바탕으로 한 약속으로서 반드시 지킬 것이며, 낙찰자로 결정될 시 본 서약 내용을 그대로 계약조건으로 계약하여 이행하고, 입찰 참가 자격 제한, 계약 해지 등 협의회의 조치와 관련하여 당사는 협의회를 상대로 손해배상을 청구하거나, 배제하는 입찰에 관하여 민‧형사상 일체 이의제기를 하지 않을 것을 서약합니다.</p>
+{form_tail()}</div>"""
+    return doc("11 청렴계약 이행준수 서약서", [body])
 
 
-# ============================================================ 08 별첨 1 — NICE 연혁 발췌(동탄 annex.py와 같은 방식)
+# ================================================================== 12 성과 및 성공사례 자료
+# 입찰제안서(05)에서 성과·사례 쪽만 제목으로 찾아 붙인다(쪽 번호가 바뀌어도 안전).
+CASE_PAGES = ["숫자로 보는 엣지컴퍼니", "주관 성공사례 · 수임실적", "2,000세대 이상 초대형 단지를 맡아 왔습니다", "대단지 운영 경험",
+              "사진으로 보는 주관 단지 2023 ~ 2026", "한 단지가 아니라 한 신도시를 맡습니다", "타 단지 협의회의 추천과 감사",
+              "행사 밖에서도 현장 지원", "입예협 카페 홍보 콘텐츠 제작", "입주민 후기 · 실시간 응대 화면", "실제 박람회 현장"]
+CAFE = [  # (캡처 파일, 단지, 카페 주소, 이벤트·공지 — 캡처 화면에 보이는 글 제목 · 날짜 · 댓글 수 그대로)
+    ("cafe_daesung.png", "에코델타 대성베르힐 (1,120세대)", "cafe.naver.com/f-e/cafes/30960655/menus/126",
+     [("2024.11.08", "주관사 주식회사 엣지컴퍼니 인사", "댓글 14"), ("2024.12.07", "엣지컴퍼니 이벤트 ① 주관사 선정 기념 응원 댓글 이벤트 · 선착순 500세대", "댓글 426"),
+      ("2025.11.26", "80여 업체가 참여하는 최강 혜택 입주박람회 개최 안내", "조회 1,103"), ("2025.12.02", "입주박람회 성료 안내 및 주관사 업무 안내", "댓글 3")]),
+    ("cafe_sasang_2.png", "부산사상 중흥S-클래스 그랜드센트럴 (1,572세대)", "cafe.naver.com/f-e/cafes/30121620/menus/111",
+     [("2022.12.14", "[주관사 댓글 이벤트] 알찬 입주 박람회를 위한 수요조사 및 대규모 댓글 이벤트", "댓글 268"),
+      ("2023.01.16", "입주 설명회 참석 감사 인사", ""), ("2023.02.03", "입주박람회 일정 및 박람회 개최 기념 댓글 이벤트", "댓글 543"),
+      ("2023.02.20", "입주박람회 날짜 · 장소 · 혜택 안내", "댓글 12")]),
+]
+
+
+def find_pages(titles):
+    idx = []
+    for t in titles:
+        hit = [i for i, p in enumerate(PROP) if t in p.get_text().replace("\n", " ")[:400]]
+        assert hit, f"제안서에서 쪽을 찾지 못함: {t}"
+        idx.append(hit[0])
+    return idx
+
+
+def doc12_cover():
+    rows = "".join(f'<tr><td style="white-space:nowrap">{d}</td><td class="l">{e(t)}</td><td>{e(c)}</td></tr>'
+                   for _, _, _, ev in CAFE for d, t, c in ev)
+    pages = find_pages(CASE_PAGES) if PROP else []
+    lst = " · ".join(f"{t}({i + 1}쪽)" for t, i in zip(CASE_PAGES, pages))
+    body = f"""{head("제출서류 12", "입주박람회 성과 및 성공사례 자료")}
+<div class="box"><b>요약</b> &nbsp; 누적 주관·수임 <b>67개 단지 · 56,361세대</b>(전신 실적 포함, 2027년 입주 예정 단지까지) ·
+1,000세대 이상 주관 <b>9개 단지 · 18,261세대</b> · 최대 단일 단지 <b>레이카운티 4,470세대</b> · 사송 · 에코델타 신도시 연속 수임</div>
+<h2>1. 입예협 카페 이벤트 · 공지 사례 (붙임 캡처)</h2>
+<table class="t"><thead><tr><th style="width:13%">날짜</th><th>글 제목(작성자: 주관사 엣지컴퍼니)</th><th style="width:13%">반응</th></tr></thead><tbody>{rows}</tbody></table>
+<p class="note">※ 단지별 입예협 공식 카페 화면 그대로입니다(붙임 1 · 2). 입주민 닉네임의 동 · 호수는 개인정보 보호를 위해 가렸습니다.</p>
+<h2>2. 성공사례 · 현장 자료 (입찰제안서 발췌)</h2>
+<p style="font-size:9.8pt;line-height:1.8">{e(lst)}</p>
+<p class="note">※ 사진 속 단지 · 행사는 타 단지 실제 운영 사례이며, 세부는 입찰제안서(제출서류 05) 해당 쪽과 같습니다.</p>"""
+    caps = [f'<h2>붙임 {i}. {e(nm)} 입예협 카페</h2><p class="note">{e(url)} · 입주민 닉네임(동·호수) 가림</p>'
+            f'<img src="assets_ins/{f}" style="display:block;max-width:100%;max-height:228mm;margin:6pt auto 0;border:.6pt solid #C9CED6">'
+            for i, (f, nm, url, _) in enumerate(CAFE, 1)]
+    return doc("12 입주박람회 성과 및 성공사례 자료", [body] + caps)
+
+
+# ================================================================== 14 기타 입찰제안 자료
+def doc14_cover():
+    body = f"""{head("제출서류 14", "기타 입찰제안 자료")}
+<p class="body">공고 7항 14)에 따라 입찰제안 검토에 도움이 되는 자료를 첨부합니다.</p>
+<table class="t" style="margin-top:10pt"><thead><tr><th style="width:8%">No</th><th>자료</th><th style="width:40%">내용</th></tr></thead><tbody>
+<tr><td>1</td><td class="l">요약 제안서</td><td class="l">입찰제안서(05)의 핵심을 한 권으로 정리</td></tr>
+<tr><td>2</td><td class="l">회사소개서</td><td class="l">연혁 · 조직 구성 · 주관 실적 · 자격과 증빙</td></tr>
+</tbody></table>"""
+    return doc("14 기타 입찰제안 자료", [body])
+
+
+# ================================================================== 07 별첨 1 — NICE 연혁 발췌(철산 docs_cs.annex08과 같은 방식)
 FONTS = os.path.join(HERE, "..", "통합제안서", "fonts")
 NAVY, GOLD, GRAY, LINE = (0.051, 0.118, 0.2), (0.78, 0.66, 0.42), (0.36, 0.4, 0.46), (0.79, 0.81, 0.84)
 CLIP_TITLE = fitz.Rect(0, 0, 595, 76)
@@ -295,7 +453,7 @@ ROWS_RECENT = (398, 506)     # 연혁 표 중 최근 3년 주관 실적 6행(202
 CLIP_FOOT = fitz.Rect(36, 800, 560, 828)
 
 
-def annex08(nice_path, out_path):
+def annex07(nice_path, out_path):
     nice = fitz.open(nice_path)
     out = fitz.open()
     pg = out.new_page(width=595.28, height=841.89)
@@ -314,7 +472,7 @@ def annex08(nice_path, out_path):
     L, R = 48, 547
     pg.draw_rect(fitz.Rect(L, 40, L + 46, 56), color=GOLD, width=1)
     text(L + 23, 51.5, "별첨 1", 8.5, "b", GOLD, "c")
-    text(R, 51.5, "제출서류 08 최근 3년 주관사 실적 증빙", 8.5, "r", GRAY, "r")
+    text(R, 51.5, "제출서류 07 입주박람회 실적 및 공동구매 증빙자료", 8.5, "r", GRAY, "r")
     pg.draw_line((L, 64), (R, 64), color=NAVY, width=2)
     text(L, 92, "NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌", 17, "b")
     text(L, 110, f"건명 : {D.NOTICE} ({D.NOTICE_DATE} 공고)", 8.8, "r", GRAY)
@@ -325,7 +483,7 @@ def annex08(nice_path, out_path):
     info = [("보고서명", "CLIP 기업신용평가보고서"), ("발행 기관", "NICE디앤비 (dun & bradstreet)"),
             ("평가 대상", f"{D.COMPANY} ({D.BIZ_NO})"), ("관리번호", "11125949-202605-001"),
             ("평가완료일", "2026.06.19"), ("발췌 범위", "9쪽 ‘04 영업 현황(기업개요)’ 중 ‘연혁’"),
-            ("원본 분량", f"전 {len(nice)}쪽 (전문은 제출서류 11)")]
+            ("원본 분량", f"전 {len(nice)}쪽 (전문은 제출서류 10)")]
     x0, x1, xk, rh = L + 186, R, L + 186 + 70, 24
     for i, (k, v) in enumerate(info):
         y = top + i * rh
@@ -366,38 +524,83 @@ def annex08(nice_path, out_path):
     text((L + R) / 2, y + 26, f"{yy}년 {mm}월 {dd}일", 10, "r", (0.1, 0.14, 0.2), "c")
     who = f"{D.COMPANY}   대표이사   {D.CEO}"
     text((L + R) / 2 - 14, y + 52, who, 11, "b", NAVY, "c")
-    sx = (L + R) / 2 - 14 + F["b"].text_length(who, fontsize=11) / 2 + 8
+    sx = (L + R) / 2 - 14 + F["b"].text_length(who, fontsize=11) / 2 + 30
     text(sx, y + 52, "(인)", 10, "r", GRAY)
     out.set_metadata({"title": "별첨 1 NICE 기업신용평가보고서 연혁 발췌", "author": D.COMPANY})
     out.save(out_path, garbage=4, deflate=True)
 
 
+
+# ------------------------------------------------------------------ PDF
 def to_pdf(html_path, pdf_path):
-    exe = find_chrome()
-    subprocess.run([exe, "--headless", "--no-sandbox", "--disable-gpu", "--no-pdf-header-footer",
+    subprocess.run([find_chrome(), "--headless", "--no-sandbox", "--disable-gpu", "--no-pdf-header-footer",
                     "--virtual-time-budget=8000", f"--print-to-pdf={pdf_path}", pathlib.Path(html_path).as_uri()],
                    check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-DOCS = [("01_입찰참가신청서", doc01), ("04_사용인감계", doc04), ("08_최근3년_주관사실적", doc08),
-        ("10_사후관리_대책방안서", doc10), ("12_서약서", doc12), ("13_기타추가제안사항", doc13)]
+def render(name, html_text):
+    h = os.path.join(HERE, PFX + name + ".html")
+    pathlib.Path(h).write_text(html_text, encoding="utf-8")
+    p = h[:-5] + ".pdf"
+    to_pdf(h, p)
+    return p
+
+
+def merge(out_name, parts, title):
+    out = fitz.open()
+    for p in parts:
+        out.insert_pdf(p if isinstance(p, fitz.Document) else fitz.open(p))
+    out.set_metadata({"title": title, "author": D.COMPANY})
+    path = os.path.join(HERE, PFX + out_name + ".pdf")
+    out.save(path, garbage=4, deflate=True)
+    return path
 
 
 def main():
-    for name, fn in DOCS:
-        h = os.path.join(HERE, PFX + name + ".html")
-        with open(h, "w", encoding="utf-8") as f:
-            f.write(fn())
-        to_pdf(h, h[:-5] + ".pdf")
-        print("saved", h[:-5] + ".pdf", len(fitz.open(h[:-5] + ".pdf")), "p")
-    if len(sys.argv) > 1:
-        ann = os.path.join(HERE, PFX + "08_별첨1_NICE연혁발췌.pdf")
-        annex08(sys.argv[1], ann)
-        both = fitz.open(os.path.join(HERE, PFX + "08_최근3년_주관사실적.pdf"))
-        both.insert_pdf(fitz.open(ann))
-        both.set_metadata({"title": "08 최근 3년 주관사 실적 증빙 (별첨 1 포함)", "author": D.COMPANY})
-        both.save(os.path.join(HERE, PFX + "08_최근3년_주관사실적_별첨포함.pdf"), garbage=4, deflate=True)
-        print("saved 08 + 별첨", len(both), "p")
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    final = "--final" in sys.argv
+    if len(args) < 2:
+        sys.exit(__doc__)
+    nice, seal_path = args[0], args[1]
+    import stamp as ST
+    seal = ST.seal_png(seal_path)
+    assert PROP is not None, "입찰제안서(05) PDF가 없음 — build_tangjeong.py 먼저"
+
+    def stamped(p):
+        out, n = ST.stamp(seal, p)
+        assert n >= 1, f"날인 자리 없음: {p}"
+        return out
+
+    res = {}
+    res["01"] = stamped(render("01_입찰참가신청서", doc01()))
+    res["03s"] = stamped(render("03_사용인감계", doc03()))
+    res["06"] = stamped(render("06_하자보수_계약이행각서", doc06()))
+    # 07 = 실적표 + 별첨 1 NICE 발췌 + 별첨 2 실적 확약서(붙임 카페 캡처)
+    p07 = stamped(render("07_실적증빙", doc07()))
+    ann = os.path.join(HERE, PFX + "07_별첨1_NICE연혁발췌.pdf")
+    annex07(nice, ann)
+    ann = stamped(ann)
+    hw = os.path.join(HERE, PFX + "실적확약서.pdf")
+    assert os.path.exists(hw), "hwakyak.py 탕정 <capture_dir> 2026.10.22 먼저"
+    hw_s, n = ST.stamp(seal, hw)
+    res["07"] = merge("07_실적및공동구매증빙_별첨포함_직인", [p07, ann, hw_s], "07 입주박람회 실적 및 공동구매 증빙자료")
+    res["08"] = stamped(render("08_이의제기금지서약서", doc08()))
+    res["09"] = stamped(render("09_계약취소_환불규정", doc09()))
+    res["11"] = stamped(render("11_청렴계약이행서약서", doc11()))
+    cov12 = render("12_성과_성공사례_표지", doc12_cover())
+    sel = fitz.open()
+    for i in find_pages(CASE_PAGES):
+        sel.insert_pdf(PROP, from_page=i, to_page=i)
+    res["12"] = merge("12_성과_성공사례", [cov12, sel], "12 입주박람회 성과 및 성공사례 자료")
+    cov14 = render("14_기타_표지", doc14_cover())
+    res["14"] = merge("14_기타_요약제안서_회사소개서", [cov14, os.path.join(HERE, PFX + "요약제안서.pdf"), os.path.join(HERE, PFX + "회사소개서.pdf")],
+                      "14 기타 입찰제안 자료 (요약 제안서 · 회사소개서)")
+    for k, v in res.items():
+        print(k, os.path.basename(v), len(fitz.open(v)), "p")
+    if TODOS:
+        print(f"[확인 필요 {len(set(TODOS))}칸]", " / ".join(sorted(set(TODOS))))
+        if final:
+            sys.exit("--final: 확인 필요 칸이 남아 있음")
 
 
 if __name__ == "__main__":
