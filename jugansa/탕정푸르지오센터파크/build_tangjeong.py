@@ -510,7 +510,7 @@ def vendor_rows():
 new("std", sec=S0, title="품목별 [[예상 참가 업체]]",
     lead="확정은 입예협 공개 입찰·심사 후 — 시공 품목은 인근 지역(아산·천안권) 업체가 우선입니다.",
     body=table(["구분", "품목", "예상 참가 업체", "비고"], vendor_rows(), "sm"),
-    kp=("주관사 직영 품목도 [[같은 심사 · 같은 단가 공개 · 같은 최저가 보장]].", "하도급·타 주관사 연동 계약 없음"))
+    kp=("주관사 직영 품목도 [[같은 심사 · 같은 단가 공개 · 같은 가격 보호 규정]] 적용.", "최저가 차액 10배 보상은 계약 취소·환불 규정 제8조 기준 · 하도급·타 주관사 연동 계약 없음"))
 
 new("std", sec=S0, title="공동구매 단가를 지키는 [[4가지 장치]]",
     lead="‘행사비 때문에 오르는 단가’를 구조로 막습니다.",
@@ -942,10 +942,10 @@ def p_cover():
 
 
 def p_cover_company():
-    """제출서류 07 회사소개서 표지 — 제안서 표지 틀 그대로, 제목·띠만 회사소개서로."""
+    """회사소개서 표지(제출서류 14 기타 자료) — 제안서 표지 틀 그대로, 제목·띠만 회사소개서로."""
     art = ('<div class="cvart"><img src="assets_ins/tj_cover_art.jpg" alt="">'
-           '<span class="credit">탕정 푸르지오 센터파크 조감도 · 홍보용 이미지</span></div>')
-    sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제출서류</i><b>07 회사소개서 (연혁 · 조직도 포함)</b></div></div>'
+           '<span class="credit">탕정 푸르지오 센터파크 투시도 · 홍보용 이미지</span></div>')
+    sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제출서류</i><b>14 기타 자료 · 회사소개서 (연혁 · 조직 구성)</b></div></div>'
     return f"""<section class="page cv cv4">{art}{COVER_TOP}
 <div class="mid"><span class="pill">회사소개서</span>
 <h1>{D.COMPANY}<br><em>회사소개서</em></h1>
