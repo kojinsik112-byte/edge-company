@@ -30,6 +30,7 @@ DEADLINE = "2026.10.23(금) 18:00"
 SIGN_DATE = (2026, 10, 22)        # 제출서류 작성일 — 제출일에 맞춰 바꾼다
 INGAM_DATE = "2026.10.08"         # 법인 인감증명서 발급일(2026.10.08 재발급본 — 마감 10.13 기준 1개월 이내)
 ELEC_LICENSE = "전기공사업 등록 제 울산-00821호"
+NEW_LOGO = True                   # 새 로고(본부장 10-09) — assets_ins/logo_*_rev.png 필요(깃 제외)
 
 # 제출서류 발급일(공고 7항 15) '공고일 이후 발급분' — 재발급본을 받으면 여기에 날짜를 넣는다. None = 재발급 전(목록에 '확인 필요' 표시)
 ISSUE = dict(biz=None, reg=None, tax=None, ltax=None)

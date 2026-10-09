@@ -948,7 +948,7 @@ def p_cover_company():
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제출서류</i><b>14 기타 자료 · 회사소개서 (연혁 · 조직 구성)</b></div></div>'
     return f"""<section class="page cv cv4">{art}{COVER_TOP}
 <div class="mid"><span class="pill">회사소개서</span>
-<h1>{D.COMPANY}<br><em>회사소개서</em></h1>
+<h1 class="tj">{D.COMPANY}<br><em>회사소개서</em></h1>
 <div class="gbar"></div>
 <div class="tag2">연혁 · 조직도 · 주관 실적 · 자격과 증빙<br>전기공사업 면허를 갖춘 입주박람회 주관사</div>
 </div>
@@ -1145,6 +1145,10 @@ def finish(path, title):
     doc = term(doc)
     doc = doc.replace("<span>주식회사 엣지컴퍼니 · 대표이사 고진식</span>", "<span>주식회사 엣지컴퍼니</span>")
     doc = doc.replace("지역업체", "인근 지역업체").replace("인근 인근", "인근")  # 본부장님 지시: '인근 지역업체'
+    if getattr(D, "NEW_LOGO", False):  # 새 로고(본부장 10-09) — 남색 배경용 반전본(남색 → 아이보리), 깃 제외 자산
+        doc = doc.replace('<div class="logo">EG</div><div class="en">EDGE COMPANY</div>',
+                          '<img class="nlg" src="assets_ins/logo_lockup_rev.png" alt="엣지컴퍼니 EDGE COMPANY">')
+        doc = doc.replace("</style>", ".nlg{height:64px;width:auto;display:block}</style>", 1)  # 표지·마지막 장만(본부장 10-09 — 중간 쪽 머리글은 EG 그대로)
     # 보유 자격의 법정 명칭은 '전기공사업 등록'(제 울산-00821호) — '면허' 표기 통일(검증 10-08)
     for _a, _b in [("전기공사업 면허를 갖춘 주관사", "전기공사업 등록 업체인 주관사"),
                    ("전기공사업 면허를 갖춘 입주박람회 주관사", "전기공사업 등록 업체인 입주박람회 주관사"),

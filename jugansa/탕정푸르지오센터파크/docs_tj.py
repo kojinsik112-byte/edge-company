@@ -416,7 +416,8 @@ CAFE = [  # (캡처 파일, 단지, 카페 주소, [(날짜, 글 제목 — 캡�
 def find_pages(titles):
     idx = []
     for t in titles:
-        hit = [i for i, p in enumerate(PROP) if (lambda x: x.startswith("EG") and t in x[:400])(p.get_text().replace("\n", " ").strip())]
+        # 본문 쪽만(머리글의 '“입주민의 든든한 파트너' 문구가 있는 쪽) — 장 간지·표지는 제외
+        hit = [i for i, p in enumerate(PROP) if (lambda x: "든든한 파트너" in x[:200] and t in x[:400])(p.get_text().replace("\n", " ").strip())]
         assert hit, f"제안서에서 쪽을 찾지 못함: {t}"
         idx.append(hit[0])
     return idx
