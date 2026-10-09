@@ -735,7 +735,7 @@ def apply2(B, D, take, sub):
     # 입주민 자금 — 결제·해약 흐름 띠(카드 문구 그대로)
     k = take("입주민 [[자금]]을 먼저 지킵니다")[1]
     mny = ('<div class="mny"><div class="rl"><div class="ln"></div>'
-           '<div class="zone" style="left:0;width:37%"><b>취소 기한 내 100% 해약 가능</b></div>'
+           '<div class="zone" style="left:0;width:37%"><b>취소 기한 내 전액 환불</b></div>'
            '<div class="nd g" style="left:0"></div><div class="nd" style="left:37%"></div><div class="nd" style="left:70%"></div><div class="nd g" style="left:100%"></div>'
            '<div class="lb2" style="left:5%">계약<small>계약금 10% 이하</small></div>'
            '<div class="lb2" style="left:37%">취소 기한<small>시공일 7일·15일 전 · 맞춤 제작은 출고 지시 전</small></div>'
