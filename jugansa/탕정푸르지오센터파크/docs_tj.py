@@ -187,7 +187,7 @@ def submit_rows():
         ("11", "청렴 계약 이행각서 [별지서식 제 4호]", "", "1부"),
         ("12", "입주박람회 성과 및 성공사례 자료(카페 이벤트 등 포함)", "", "1부"),
         ("13", "가장 최근 진행된 공동구매 물품 단가비교표", "가능한 경우 제출 항목 — " + todo("제출 여부 본부장 확인"), "-"),
-        ("14", "기타 입찰제안에 필요한 자료", "요약 제안서 · 회사소개서", "1부"),
+        ("14", "기타 입찰제안에 필요한 자료", "자격 확약서(5항 4·6) · 요약 제안서 · 회사소개서", "1부"),
     ]
 
 
@@ -443,13 +443,26 @@ def doc12_cover():
     return doc("12 입주박람회 성과 및 성공사례 자료", [body] + caps)
 
 
+# ================================================================== 14-1 입찰 참가 자격 확약서(공고 5항 4·6)
+def doc_qual():
+    body = f"""{head("제출서류 14-1", "입찰 참가 자격 확약서", True)}{company_table()}
+<p class="body">당사는 {e(D.CLIENT)}의 「{e(D.NOTICE)}」({D.NOTICE_DATE}) 입찰에 참가하면서, 공고 5항 입찰자격 중 아래 사항이 사실임을 확약합니다.</p>
+<table class="t" style="margin-top:10pt"><thead><tr><th style="width:12%">공고 5항</th><th>입찰 자격</th><th style="width:18%">당사 현황</th></tr></thead><tbody>
+<tr><td>4)</td><td class="l">최근 5년간 법규 위반으로 벌금 이상의 형사처분을 받지 아니한 회사</td><td>해당 사항 없음</td></tr>
+<tr><td>6)</td><td class="l">공고일 기준 공동구매 및 입주박람회와 관련하여 예비입주자 또는 입예협과 분쟁 및 소송이 없는 회사</td><td>해당 사항 없음</td></tr>
+</tbody></table>
+<p class="body" style="font-size:10pt">위 내용이 사실과 다른 것으로 밝혀질 경우 공고 6항 5) · 8항 4) · 9항 1)에 따른 선정 무효 · 계약 해지 등 귀 협의회의 조치를 이의 없이 따르겠습니다.</p>{sign()}"""
+    return doc("14-1 입찰 참가 자격 확약서", [body])
+
+
 # ================================================================== 14 기타 입찰제안 자료
 def doc14_cover():
     body = f"""{head("제출서류 14", "기타 입찰제안 자료")}
 <p class="body">공고 7항 14)에 따라 입찰제안 검토에 도움이 되는 자료를 첨부합니다.</p>
 <table class="t" style="margin-top:10pt"><thead><tr><th style="width:8%">No</th><th>자료</th><th style="width:40%">내용</th></tr></thead><tbody>
-<tr><td>1</td><td class="l">요약 제안서</td><td class="l">입찰제안서(05)의 핵심을 한 권으로 정리</td></tr>
-<tr><td>2</td><td class="l">회사소개서</td><td class="l">연혁 · 조직 구성 · 주관 실적 · 자격과 증빙</td></tr>
+<tr><td>1</td><td class="l">입찰 참가 자격 확약서</td><td class="l">공고 5항 4) · 6) 해당 사항 없음 확약 (대표이사 날인)</td></tr>
+<tr><td>2</td><td class="l">요약 제안서</td><td class="l">입찰제안서(05)의 핵심을 한 권으로 정리</td></tr>
+<tr><td>3</td><td class="l">회사소개서</td><td class="l">연혁 · 조직 구성 · 주관 실적 · 자격과 증빙</td></tr>
 </tbody></table>"""
     return doc("14 기타 입찰제안 자료", [body])
 
@@ -603,7 +616,8 @@ def main():
         sel.insert_pdf(PROP, from_page=i, to_page=i)
     res["12"] = merge("12_성과_성공사례", [cov12, sel], "12 입주박람회 성과 및 성공사례 자료")
     cov14 = render("14_기타_표지", doc14_cover())
-    res["14"] = merge("14_기타_요약제안서_회사소개서", [cov14, os.path.join(HERE, PFX + "요약제안서.pdf"), os.path.join(HERE, PFX + "회사소개서.pdf")],
+    qual = stamped(render("14_1_자격확약서", doc_qual()))
+    res["14"] = merge("14_기타_요약제안서_회사소개서", [cov14, qual, os.path.join(HERE, PFX + "요약제안서.pdf"), os.path.join(HERE, PFX + "회사소개서.pdf")],
                       "14 기타 입찰제안 자료 (요약 제안서 · 회사소개서)")
     for k, v in res.items():
         print(k, os.path.basename(v), len(fitz.open(v)), "p")
