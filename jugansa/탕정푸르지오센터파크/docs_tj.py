@@ -605,7 +605,7 @@ def main():
     annex07(nice, ann)
     ann = stamped(ann)
     hw = os.path.join(HERE, PFX + "실적확약서.pdf")
-    assert os.path.exists(hw), "hwakyak.py 탕정 <capture_dir> 2026.10.22 먼저"
+    assert os.path.exists(hw), "hwakyak.py 탕정 <capture_dir> 2026.10.20 먼저"
     hw_s, n = ST.stamp(seal, hw)
     res["07"] = merge("07_실적및공동구매증빙_별첨포함_직인", [p07, ann, hw_s], "07 입주박람회 실적 및 공동구매 증빙자료")
     res["08"] = stamped(render("08_이의제기금지서약서", doc08()))
