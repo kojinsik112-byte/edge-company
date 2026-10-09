@@ -98,8 +98,13 @@ def make_card_png(kind: str, info: CardInfo, W: int, H: int, frame: Optional[Pat
     cx = W // 2
     y = int(H * (0.30 if vertical else 0.24))
 
-    if info.logo:
-        lh = _paste_fit(img, info.logo, int(W * (0.5 if vertical else 0.24)), int(unit * 0.16), cx, y)
+    logo = info.logo
+    if logo and info.theme in ("blur", "navy"):
+        white = Path(logo).with_name(Path(logo).stem + "_white.png")
+        if white.exists():
+            logo = str(white)
+    if logo:
+        lh = _paste_fit(img, logo, int(W * (0.5 if vertical else 0.24)), int(unit * 0.16), cx, y)
         y += lh // 2 + int(unit * 0.07)
     else:
         y += int(unit * 0.04)

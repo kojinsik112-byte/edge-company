@@ -85,6 +85,9 @@ def apply_overlays(
         fx, fy = POSITIONS.get(o.get("pos", "top-right"), POSITIONS["top-right"])
 
         f = f"[{i}:v]format=rgba,scale={ow}:-2:flags=lanczos"
+        op = float(o.get("opacity", 1.0))
+        if op < 0.999:  # 워터마크처럼 반투명
+            f += f",colorchannelmixer=aa={max(0.05, op):.2f}"
         if anim == "pop":
             # 0.12초 동안 115%까지 커졌다가 100%로 — '톡' 튀어나오는 느낌
             k = (

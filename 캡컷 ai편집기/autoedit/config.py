@@ -134,6 +134,17 @@ class VideoFixConfig:
 
 
 @dataclass
+class WatermarkConfig:
+    """회사 로고 워터마크 — 영상 내내 한쪽 구석에."""
+
+    enabled: bool = False
+    path: str = ""               # 로고 이미지 (투명 배경 PNG)
+    pos: str = "top-right"       # top-right / bottom-right / top-left / bottom-left
+    size: float = 11.0           # 화면 폭 대비 %
+    opacity: float = 0.9
+
+
+@dataclass
 class CardsConfig:
     """오프닝·엔딩 카드."""
 
@@ -189,6 +200,7 @@ class Config:
     audio: AudioConfig = field(default_factory=AudioConfig)
     video: VideoFixConfig = field(default_factory=VideoFixConfig)
     cards: CardsConfig = field(default_factory=CardsConfig)
+    watermark: WatermarkConfig = field(default_factory=WatermarkConfig)
     subtitle: SubtitleConfig = field(default_factory=SubtitleConfig)
     shorts: ShortsConfig = field(default_factory=ShortsConfig)
     branding: BrandingConfig = field(default_factory=BrandingConfig)
@@ -213,6 +225,7 @@ class Config:
             ("audio", AudioConfig),
             ("video", VideoFixConfig),
             ("cards", CardsConfig),
+            ("watermark", WatermarkConfig),
             ("subtitle", SubtitleConfig),
             ("shorts", ShortsConfig),
             ("branding", BrandingConfig),

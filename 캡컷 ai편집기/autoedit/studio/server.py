@@ -114,6 +114,12 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "punch_zoom": True,
     "speed": 1.0,
     "short_frame": "auto",
+    "wm_on": True,
+    "wm_path": str(DATA_DIR / "brand" / "edge_logo_gold.png"),
+    "wm_white": False,
+    "wm_pos": "top-right",
+    "wm_size": 11,
+    "wm_opacity": 0.85,
     "auto_products": True,
     "card_opening": False,
     "card_ending": False,
@@ -124,7 +130,7 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "card_phone": "",
     "card_site": "",
     "card_message": "박람회에서 뵙겠습니다",
-    "card_logo": "",
+    "card_logo": str(DATA_DIR / "brand" / "edge_logo_gold.png"),
     "card_qr": "",
     "auto_sfx": True,
     "sfx_volume": 0.5,
@@ -179,6 +185,16 @@ def build_config(opts: Dict[str, Any]) -> Config:
     cfg.video.stabilize = bool(opts.get("stabilize", False))
     cfg.output.speed = float(opts.get("speed", 1.0) or 1.0)
     cfg.shorts.frame = opts.get("short_frame", "auto")
+    wm = cfg.watermark
+    wm.enabled = bool(opts.get("wm_on"))
+    wm.path = opts.get("wm_path", "")
+    if opts.get("wm_white") and wm.path:  # 어두운 영상용 흰색 로고
+        w = Path(wm.path).with_name(Path(wm.path).stem + "_white.png")
+        if w.exists():
+            wm.path = str(w)
+    wm.pos = opts.get("wm_pos", "top-right")
+    wm.size = float(opts.get("wm_size", 11))
+    wm.opacity = float(opts.get("wm_opacity", 0.85))
     cc = cfg.cards
     cc.opening, cc.ending = bool(opts.get("card_opening")), bool(opts.get("card_ending"))
     cc.theme = opts.get("card_theme", "blur")
@@ -757,6 +773,9 @@ class Handler(BaseHTTPRequestHandler):
                 job = self._job(q.get("job", [""])[0])
                 opts = {k: v[0] for k, v in q.items()}
                 return self._file(style_preview(job, m.group(1), opts), "image/jpeg")
+            m = re.match(r"^/api/brand/(.+)$", path)
+            if m:
+                return self._file(DATA_DIR / "brand" / Path(urllib.parse.unquote(m.group(1))).name)
             if path == "/api/products":
                 from ..products import load as load_products
 
@@ -829,7 +848,10 @@ class Handler(BaseHTTPRequestHandler):
             d.mkdir(parents=True, exist_ok=True)
             dst = d / f"logo_{uuid.uuid4().hex[:6]}{os.path.splitext(name)[1].lower()}"
             dst.write_bytes(data)
-            save_settings({"card_logo": str(dst)})
+            if q.get("for", [""])[0] == "wm":
+                save_settings({"wm_path": str(dst), "wm_on": True})
+            else:
+                save_settings({"card_logo": str(dst)})
             return self._json({"path": str(dst)})
         m = re.match(r"^/api/jobs/(\w+)/asset$", u.path)
         if m:

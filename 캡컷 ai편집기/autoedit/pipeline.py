@@ -232,9 +232,15 @@ def _finish(
         result.steps.append("자막 번인")
 
     # 효과음 (자막마다 고른 소리 / 강조 단어 자동)
-    # 로고·스티커
+    # 로고·스티커 (+ 회사 로고 워터마크: 처음부터 끝까지)
     from .overlays import apply_overlays, sfx_cues, valid
 
+    wm = config.watermark
+    if wm.enabled and wm.path and Path(wm.path).exists():
+        overlays = list(overlays or []) + [{
+            "path": wm.path, "start": 0.0, "dur": 100000.0, "pos": wm.pos, "size": wm.size,
+            "anim": "none", "sfx": None, "opacity": wm.opacity, "watermark": True,
+        }]
     overlays = valid(overlays)
     if overlays:
         with_ov = apply_overlays(main, overlays, work_dir / "overlay.mp4", config.output)
