@@ -276,6 +276,27 @@ def tokens_of(text: str) -> List[str]:
     return text.split()
 
 
+def wrap_balanced(text: str, max_line: int) -> str:
+    """한 문장을 끊지 않고, 줄 길이가 고르게 여러 줄로 나눈다 (방송 자막식)."""
+    flat = " ".join(text.split())
+    toks = flat.split()
+    n_lines = max(1, -(-len(flat) // max_line))  # 올림
+    if n_lines == 1 or len(toks) < 2:
+        return flat
+    n_lines = min(n_lines, len(toks))
+    target = len(flat) / n_lines
+    lines, cur = [], []
+    for tk in toks:
+        cand = " ".join(cur + [tk])
+        if cur and len(cand) > target + 2 and len(lines) < n_lines - 1:
+            lines.append(" ".join(cur))
+            cur = [tk]
+        else:
+            cur.append(tk)
+    lines.append(" ".join(cur))
+    return "\n".join(lines)
+
+
 def line_breaks_of(text: str) -> Set[int]:
     """사람이 Enter로 넣은 줄바꿈 위치 = '이 번호 단어 뒤에서 줄바꿈'."""
     breaks: Set[int] = set()
@@ -350,48 +371,52 @@ class Phrase:
     breaks: Set[int]
     pos: Optional[str]
     align: Optional[str]
+    scale: float = 1.0   # 아주 긴 문장은 한 화면에 담으려고 글자를 살짝 줄임
 
 
-def make_phrases(captions: List[Caption], max_chars: int) -> List[Phrase]:
-    """자막을 화면에 띄울 구절로 나눈다.
+def make_phrases(captions: List[Caption], max_chars: int, max_lines: int = 3) -> List[Phrase]:
+    """자막을 화면에 띄울 단위로 만든다 — 방송 자막식: 한 자막(=한 문장)은 끝날 때까지 한 화면.
 
-    - 사람이 줄바꿈(Enter)을 넣은 자막 → 사람이 정한 모양 그대로 한 화면에
-    - 그 외 → 한 줄짜리 짧은 구절로 자동 분할 (캡컷식)
+    - 사람이 줄바꿈(Enter)을 넣은 자막 → 그 모양 그대로
+    - 긴 자막 → 문장 중간에서 다음 화면으로 넘기지 않고 '보기 좋은 여러 줄'로 줄바꿈
+    - 정말 길어서 max_lines 를 넘으면 그때만 줄 단위로 화면을 나눈다
     """
+    line_len = max_chars + 4
     phrases: List[Phrase] = []
     for cap in captions:
         words = words_for(cap)
         if not words:
             continue
         emph = dict(cap.emph or {})
-        if "\n" in cap.text.strip():
-            phrases.append(
-                Phrase(words, words[0].start, words[-1].end, emph,
-                       line_breaks_of(cap.text), cap.pos, cap.align)
-            )
-            continue
-
-        cur: List[int] = []
-        n = 0
-
-        def flush() -> None:
-            nonlocal cur, n
-            if cur:
-                ws = [words[i] for i in cur]
-                local = {k - cur[0]: v for k, v in emph.items() if k in cur}
-                phrases.append(Phrase(ws, ws[0].start, ws[-1].end, local, set(), cap.pos, cap.align))
-            cur, n = [], 0
-
-        for i, w in enumerate(words):
-            L = len(w.text)
-            gap = (w.start - words[cur[-1]].end) if cur else 0.0
-            if cur and (n + 1 + L > max_chars or gap > 0.7):
-                flush()
-            cur.append(i)
-            n += L + (1 if n else 0)
-            if _SENT_END.search(w.text) and n >= max_chars * 0.4:
-                flush()
-        flush()
+        text = cap.text.strip()
+        shrink = 1.0
+        if "\n" not in text and len(" ".join(text.split())) > line_len:
+            text = wrap_balanced(text, line_len)
+            # 그래도 max_lines 를 넘으면 화면을 나누지 말고 글자를 줄여(최대 75%) 한 화면에
+            for sc in (0.88, 0.8, 0.75):
+                if text.count("\n") + 1 <= max_lines:
+                    break
+                shrink = sc
+                text = wrap_balanced(cap.text, int(line_len / sc))
+        lines = [ln.split() for ln in text.split("\n") if ln.strip()]
+        # 줄 → 단어 번호 범위
+        groups: List[List[int]] = []
+        k = 0
+        for ln in lines:
+            groups.append(list(range(k, min(k + len(ln), len(words)))))
+            k += len(ln)
+        groups = [g for g in groups if g]
+        # max_lines 줄씩 한 화면 (보통은 한 화면에 다 들어감)
+        for si in range(0, len(groups), max_lines):
+            screen = groups[si:si + max_lines]
+            idx = [i for g in screen for i in g]
+            ws = [words[i] for i in idx]
+            local = {i - idx[0]: v for i, v in emph.items() if i in idx}
+            br, acc = set(), 0
+            for g in screen[:-1]:
+                acc += len(g)
+                br.add(acc - 1)
+            phrases.append(Phrase(ws, ws[0].start, ws[-1].end, local, br, cap.pos, cap.align, shrink))
 
     # 표시 시간: 다음 구절 시작 전까지(최대 0.6초 여유), 너무 짧으면 늘림
     for i, ph in enumerate(phrases):
@@ -505,6 +530,7 @@ def build_ass(
     *,
     keywords: Optional[Set[str]] = None,
     layout: Optional[Layout] = None,
+    auto_emph: bool = False,
 ) -> str:
     """자막 → 완성된 ASS 문서 문자열."""
     lay = layout or Layout()
@@ -523,7 +549,8 @@ def build_ass(
 
     # 자동 강조(숫자·AI 키워드)는 사람이 아무 강조도 안 건드린 자막에만
     caps = [replace(c) for c in captions]
-    auto_emphasis(caps, keywords)
+    if auto_emph:
+        auto_emphasis(caps, keywords)
 
     if st.box:
         # BorderStyle 4 = 줄 전체를 하나의 박스로 (단어별 색 바꿔도 박스가 안 끊김)
@@ -571,7 +598,9 @@ def build_ass(
     rise = max(6, int(fs * 0.18))
     off = int(height * lay.offset / 100)
     lines: List[str] = [header]
-    for ph in make_phrases(caps, max_chars):
+    # 한 줄 글자 수 = 화면 폭(여백 제외) ÷ 글자 크기 → 4:3·세로 영상에서도 글자가 화면 밖으로 안 넘침
+    fit_chars = max(6, int(width * 0.86 / (fs * 1.0)))
+    for ph in make_phrases(caps, fit_chars - 4):
         pos = ph.pos if ph.pos in POSITIONS else lay.pos
         align = ph.align if ph.align in ALIGNS else lay.align
         an = _an(pos, align)
@@ -599,6 +628,8 @@ def build_ass(
             first = k == 0
             last = k == len(segs) - 1
             lead = f"\\an{an}"
+            if getattr(ph, "scale", 1.0) < 0.999:
+                lead += f"\\fs{int(fs * ph.scale)}"
             if st.pop_in and first:
                 lead += f"\\move({x},{y + rise},{x},{y},0,120)\\alpha&HFF&\\t(0,90,\\alpha&H00&)"
             else:
@@ -630,9 +661,10 @@ def write_styled_ass(
     *,
     keywords: Optional[Set[str]] = None,
     layout: Optional[Layout] = None,
+    auto_emph: bool = False,
 ) -> Path:
     out_path.write_text(
-        build_ass(captions, style_key, width, height, keywords=keywords, layout=layout),
+        build_ass(captions, style_key, width, height, keywords=keywords, layout=layout, auto_emph=auto_emph),
         encoding="utf-8",
     )
     return out_path

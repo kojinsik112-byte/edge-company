@@ -445,8 +445,8 @@ def process(
                 result.steps.append(f"AI 오타교정 {nfix}줄")
             except SmartEditUnavailable as exc:
                 logger.info("AI 오타 교정 건너뜀: %s", exc)
-        if captions:
-            # 숫자·핵심 단어에 자동 강조 → 편집 화면에서 사람이 켜고 끌 수 있게 미리 표시
+        if captions and config.subtitle.auto_emph:
+            # 숫자·핵심 단어에 자동 강조 (옵션) → 편집 화면에서 사람이 켜고 끌 수 있게 미리 표시
             from .styles import auto_emphasis
 
             auto_emphasis(captions, keywords)

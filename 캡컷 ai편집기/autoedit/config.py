@@ -65,7 +65,8 @@ class SubtitleConfig:
     offset: float = 0.0          # 위아래 미세조정 (화면 높이 %, +면 위로)
     sfx_volume: float = 0.5      # 효과음 크기 (0~1)
     auto_sfx: bool = False       # 강조 단어(크게/형광펜/빨강)에 효과음 자동
-    punch_zoom: bool = True      # 강조 순간 화면 살짝 확대(펀치인)
+    punch_zoom: bool = False     # 강조 순간 화면 살짝 확대(펀치인) — 기본 끔
+    auto_emph: bool = False      # 숫자·핵심어 자동 색칠 — 기본 끔 (직접 고른 강조만)
     zoom_strength: float = 1.08  # 확대 정도 (1.05~1.15)
 
 

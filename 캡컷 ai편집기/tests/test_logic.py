@@ -212,9 +212,11 @@ def test_manual_line_break_kept_as_one_screen():
     assert len(ph) == 1 and ph[0].breaks == {2}
 
 
-def test_auto_phrases_split_long_caption():
+def test_long_sentence_stays_on_one_screen():
+    # 문장 중간에서 다음 화면으로 넘기지 않고, 여러 줄로 줄바꿈해 한 화면에
     c = Caption(0, 6, "이 제품은 몸통 두께가 아주 얇아서 천장이 낮은 집에도 좋습니다")
-    assert len(make_phrases([c], max_chars=10)) >= 3
+    ph = make_phrases([c], max_chars=12)
+    assert len(ph) == 1 and 1 <= len(ph[0].breaks) <= 2
 
 
 def test_auto_emphasis_respects_manual_choice():

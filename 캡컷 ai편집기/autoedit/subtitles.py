@@ -125,7 +125,7 @@ def burn_subtitles(
         )
         ass = write_styled_ass(
             captions, ass_path, sub_cfg.style, width, height,
-            keywords=keywords, layout=layout,
+            keywords=keywords, layout=layout, auto_emph=getattr(sub_cfg, "auto_emph", False),
         )
         fdir = fonts_dir()
         vf = f"subtitles='{_escape_filter_path(ass)}'"

@@ -94,9 +94,9 @@ def _allowed(p: Path) -> bool:
 # ───────────────────────────── 설정 저장 ─────────────────────────────
 
 DEFAULT_SETTINGS: Dict[str, Any] = {
-    "cut": "gentle",          # none / gentle / normal / strong
+    "cut": "none",            # none / gentle / normal / strong — 기본은 자르지 않음
     "accuracy": "small",      # base / small / medium
-    "smart_edit": True,
+    "smart_edit": False,
     "ai_typo_fix": True,
     "vocab": list(DEFAULT_VOCAB),
     "style": "pop",
@@ -104,14 +104,15 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "align": "center",
     "scale": 100,
     "offset": 0,
-    "shorts": 3,
+    "shorts": 0,
     "shorts_subs": True,
-    "bgm": True,
-    "bgm_choice": "mood:bright",  # mood:<분위기> / file:<내 음악> / ""
+    "bgm": False,
+    "bgm_choice": "",  # mood:<분위기> / file:<내 음악> / ""
     "genre": "promo",
-    "color_fix": True,
+    "color_fix": False,
     "stabilize": False,
-    "punch_zoom": True,
+    "punch_zoom": False,
+    "auto_emph": False,
     "speed": 1.0,
     "short_frame": "auto",
     "wm_on": True,
@@ -120,7 +121,7 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "wm_pos": "top-right",
     "wm_size": 11,
     "wm_opacity": 0.85,
-    "auto_products": True,
+    "auto_products": False,
     "card_opening": False,
     "card_ending": False,
     "card_theme": "blur",
@@ -132,7 +133,7 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "card_message": "박람회에서 뵙겠습니다",
     "card_logo": str(DATA_DIR / "brand" / "edge_logo_gold.png"),
     "card_qr": "",
-    "auto_sfx": True,
+    "auto_sfx": False,
     "sfx_volume": 0.5,
 }
 
@@ -180,7 +181,8 @@ def build_config(opts: Dict[str, Any]) -> Config:
     cfg.subtitle.offset = float(opts.get("offset", 0))
     cfg.subtitle.auto_sfx = bool(opts.get("auto_sfx", True))
     cfg.subtitle.sfx_volume = float(opts.get("sfx_volume", 0.5))
-    cfg.subtitle.punch_zoom = bool(opts.get("punch_zoom", True))
+    cfg.subtitle.punch_zoom = bool(opts.get("punch_zoom", False))
+    cfg.subtitle.auto_emph = bool(opts.get("auto_emph", False))
     cfg.video.color = bool(opts.get("color_fix", True))
     cfg.video.stabilize = bool(opts.get("stabilize", False))
     cfg.output.speed = float(opts.get("speed", 1.0) or 1.0)
@@ -374,6 +376,8 @@ def _run_analyze(job: Job, opts: Dict[str, Any]):
         h = _attach(job, JobLog.ANALYZE)
         try:
             cfg = build_config(opts)
+            if re.search(r"[가-힣A-Za-z]{2,}", job.name) and job.name not in cfg.subtitle.vocab:
+                cfg.subtitle.vocab = list(cfg.subtitle.vocab) + [job.name]  # 예: 영주자이시그니처
             if not has_api_key():
                 cfg.smart_edit.enabled = False
                 cfg.subtitle.ai_typo_fix = False
@@ -1008,7 +1012,7 @@ class Handler(BaseHTTPRequestHandler):
                 st = load_settings()
                 plan = direct(
                     caps, body.get("genre", "promo"),
-                    vocab=st.get("vocab"), smart_cfg=SmartEditConfig(),
+                    vocab=list(st.get("vocab") or []) + [job.name], smart_cfg=SmartEditConfig(),
                     tidy=bool(body.get("tidy", True)), do_sfx=bool(body.get("sfx", True)),
                     do_emph=bool(body.get("emph", True)), try_ai=bool(body.get("ai", True)) and has_api_key(),
                 )

@@ -116,7 +116,7 @@ def resegment(
             flush()
         elif gap > 1.2 and length >= min_chars:
             flush()
-        elif length >= max_chars * 1.3:
+        elif length >= max_chars * 2.2:  # 아주 긴 문장만 이음말·쉼표에서
             before = len(cur)
             split_long()
             if len(cur) == before:  # 자를 곳이 없으면 그냥 여기서

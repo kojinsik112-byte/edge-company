@@ -424,7 +424,7 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
       <div class="hd">
         <div class="row" style="justify-content:space-between">
           <h2 style="margin:0">자막 편집 <span class="muted" id="capCount" style="font-weight:500;font-size:13px"></span></h2>
-          <button class="btn sm" id="dirOpen" style="background:linear-gradient(135deg,#3557FF,#7B5CFF);color:#fff;border:0">🎬 AI 자동 연출</button>
+          <button class="btn sm" id="dirOpen" style="background:linear-gradient(135deg,#3557FF,#7B5CFF);color:#fff;border:0">✨ AI 자막 다듬기</button>
           <span class="row" style="gap:4px">
             <span class="saved" id="saved"></span>
             <button class="btn sm primary" id="verSave" title="지금 상태를 따로 보관 (Ctrl+S)">💾 임시저장</button>
@@ -504,6 +504,18 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 </section>
 </main>
 <div class="toast" id="toast"></div>
+<div class="modal hidden" id="logoAsk">
+  <div class="card mbox" style="width:min(460px,100%);text-align:center">
+    <div id="logoAskImg" style="width:120px;height:120px;margin:4px auto 12px;background:#F1F4F9 center/contain no-repeat;border-radius:14px"></div>
+    <h2 style="margin:0 0 6px">엣지컴퍼니 로고를 넣을까요?</h2>
+    <p class="muted" style="font-size:13px;margin:0 0 18px">영상 내내 한쪽 구석에 작게 들어가요 (위치·크기는 로고·스티커 칸에서)</p>
+    <div class="row" style="justify-content:center;gap:10px">
+      <button class="btn big" id="logoNo">안 넣기</button>
+      <button class="btn primary big" id="logoYes">로고 넣기</button>
+    </div>
+    <button class="btn sm ghost" id="logoCancel" style="margin-top:10px">취소</button>
+  </div>
+</div>
 <div class="modal hidden" id="prodModal">
   <div class="card mbox" style="width:min(860px,100%)">
     <div class="row" style="justify-content:space-between"><h2 style="margin:0">📦 제품 사진 라이브러리</h2><button class="btn sm ghost" id="prodClose">✕</button></div>
@@ -526,19 +538,19 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 </div>
 <div class="modal hidden" id="dirModal">
   <div class="card mbox">
-    <div class="row" style="justify-content:space-between"><h2 style="margin:0">🎬 AI 자동 연출 — 어떤 편집인가요?</h2><button class="btn sm ghost" id="dirClose">✕</button></div>
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">✨ AI 자막 다듬기 — 프로 자막처럼</h2><button class="btn sm ghost" id="dirClose">✕</button></div>
     <p class="muted" style="margin:6px 0 14px;font-size:13px" id="dirAi"></p>
     <div class="ggrid" id="genres"></div>
     <div class="row" style="flex-wrap:wrap;gap:16px;margin:16px 0 6px">
-      <label class="switch"><input type="checkbox" id="dTidy" checked><i></i>한 문장씩 정리</label>
-      <label class="switch"><input type="checkbox" id="dEmph" checked><i></i>강조 단어</label>
-      <label class="switch"><input type="checkbox" id="dSfx" checked><i></i>효과음</label>
-      <label class="switch"><input type="checkbox" id="dBgm" checked><i></i>배경음악</label>
-      <label class="switch"><input type="checkbox" id="dProd" checked><i></i>제품 사진 자동</label>
+      <label class="switch"><input type="checkbox" id="dTidy" checked><i></i>한 문장씩 정리 + 오타·띄어쓰기·문장부호</label>
+      <label class="switch"><input type="checkbox" id="dEmph"><i></i>핵심 단어 강조</label>
+      <label class="switch"><input type="checkbox" id="dSfx"><i></i>효과음</label>
+      <label class="switch"><input type="checkbox" id="dBgm"><i></i>배경음악</label>
+      <label class="switch"><input type="checkbox" id="dProd"><i></i>제품 사진</label>
       <label class="switch"><input type="checkbox" id="dStyle"><i></i>자막 디자인도 추천대로</label>
     </div>
-    <p class="muted" style="font-size:12px;margin:0 0 14px">이미 직접 고른 효과음은 그대로 둬요. 마음에 안 들면 <b>↶ 되돌리기</b> 한 번이면 원래대로.</p>
-    <div class="row" style="justify-content:flex-end"><button class="btn primary big" id="dirRun">연출 시작</button></div>
+    <p class="muted" style="font-size:12px;margin:0 0 14px">위 종류는 AI가 말투·맥락을 이해하는 데만 써요. 영상은 자르지 않고 <b>자막 글자만</b> 다듬어요. 마음에 안 들면 <b>↶ 되돌리기</b> 한 번이면 원래대로.</p>
+    <div class="row" style="justify-content:flex-end"><button class="btn primary big" id="dirRun">자막 다듬기</button></div>
   </div>
 </div>
 
@@ -978,6 +990,21 @@ $('#verList').onclick = async e => {
   m.style.left = Math.max(8, Math.min(r.left, innerWidth - 300)) + 'px'; m.style.top = (r.bottom + 6) + 'px'; m.style.minWidth = '280px';
 };
 
+// 한 문장을 끊지 않고 줄 길이가 고르게 여러 줄로 (styles.wrap_balanced 와 같은 규칙)
+function wrapBalanced(text, maxLine) {
+  const flat = text.split(/\s+/).filter(Boolean).join(' '), toks = flat.split(' ');
+  let n = Math.max(1, Math.ceil(flat.length / maxLine));
+  if (n === 1 || toks.length < 2) return flat;
+  n = Math.min(n, toks.length);
+  const target = flat.length / n, lines = []; let cur = [];
+  toks.forEach(tk => {
+    const cand = cur.concat([tk]).join(' ');
+    if (cur.length && cand.length > target + 2 && lines.length < n - 1) { lines.push(cur.join(' ')); cur = [tk]; } else cur.push(tk);
+  });
+  lines.push(cur.join(' '));
+  return lines.join('\n');
+}
+
 // 칸 이동
 function focusCap(j) {
   if (j < 0 || j >= CAPS.length) return;
@@ -1135,21 +1162,20 @@ function drawOverlay(force) {
   let cur = -1; times.forEach((tt, k) => { if (t >= tt) cur = k; });
   // 렌더링과 같은 규칙으로 짧은 구절로 나누기 (사람이 줄바꿈한 자막은 통째로)
   const vertical = ($('#vid').videoHeight || 9) > ($('#vid').videoWidth || 16);
-  let maxc = vertical ? st.max_chars_v : st.max_chars;
-  if (S.scale !== 100) maxc = Math.max(5, Math.floor(maxc * 100 / S.scale));
-  let chunk = allToks.map((_, k) => k);
-  if (!c.text.includes('\n')) {
-    const groups = []; let g = [], n = 0;
-    allToks.forEach((tk, k) => {
-      if (g.length && n + 1 + tk.length > maxc) { groups.push(g); g = []; n = 0; }
-      g.push(k); n += tk.length + (n ? 1 : 0);
-      if (/[.?!…]$/.test(tk) && n >= maxc * 0.4) { groups.push(g); g = []; n = 0; }
-    });
-    if (g.length) groups.push(g);
-    chunk = groups.find(gr => gr.includes(Math.max(0, cur))) || groups[0];
-  }
+  // 렌더링과 같은 계산: 한 줄 글자 수 = 화면 폭 ÷ 글자 크기
+  const vw = $('#vid').videoWidth || 1920, vh = $('#vid').videoHeight || 1080;
+  const fsVid = (vertical ? vw * st.size_v : vh * st.size) * S.scale / 100;
+  const maxc = Math.max(6, Math.floor(vw * 0.86 / fsVid)) - 4;
+  // 렌더링과 같은 규칙: 한 자막(=한 문장)은 끝날 때까지 한 화면, 길면 보기 좋은 여러 줄 (최대 3줄씩)
+  let shown = c.text;
+  if (!shown.includes('\n') && shown.replace(/\s+/g, ' ').length > maxc + 4) shown = wrapBalanced(shown, maxc + 4);
+  const lineIdx = []; let kk = 0;
+  shown.split('\n').filter(l => l.trim()).forEach(l => { const n = tokens(l).length; lineIdx.push([...Array(n).keys()].map(x => x + kk)); kk += n; });
+  const screens = []; for (let si = 0; si < lineIdx.length; si += 3) screens.push(lineIdx.slice(si, si + 3));
+  const scr = screens.find(sc => sc.flat().includes(Math.max(0, cur))) || screens[0] || [allToks.map((_, k) => k)];
+  const chunk = scr.flat();
   const toks = chunk.map(k => allToks[k]);
-  const br = new Set([...allBr].filter(k => chunk.includes(k)).map(k => k - chunk[0]));
+  const br = new Set(); { let acc = 0; scr.slice(0, -1).forEach(g => { acc += g.length; br.add(acc - 1); }); }
   const emphLocal = {}; Object.entries(c.emph || {}).forEach(([k, v]) => { if (chunk.includes(+k)) emphLocal[+k - chunk[0]] = v; });
   const active = st.active && cur >= 0 ? cur - chunk[0] : -1;
   const cv = {...c, emph: emphLocal};
@@ -1315,7 +1341,7 @@ $('#dirOpen').onclick = () => {
 $('#dirClose').onclick = () => $('#dirModal').classList.add('hidden');
 $('#dirModal').addEventListener('click', e => { if (e.target.id === 'dirModal') $('#dirModal').classList.add('hidden'); });
 $('#dirRun').onclick = async () => {
-  const btn = $('#dirRun'); btn.disabled = true; btn.textContent = INIT.api_key ? 'AI가 연출하는 중…' : '연출하는 중…';
+  const btn = $('#dirRun'); btn.disabled = true; btn.textContent = INIT.api_key ? 'AI가 자막을 다듬는 중…' : '정리하는 중…';
   try {
     document.activeElement && document.activeElement.blur && document.activeElement.blur();
     const r = await post(`/api/jobs/${JOB.id}/direct`, {
@@ -1333,9 +1359,9 @@ $('#dirRun').onclick = async () => {
     bindSettings(); buildStyleCards(); buildBgm(); renderList(); drawOverlay(true);
     const nSfx = CAPS.filter(c => c.sfx).length, nEmph = CAPS.filter(c => c.emph && Object.keys(c.emph).length).length;
     $('#dirModal').classList.add('hidden');
-    toast(`${r.used_ai ? 'AI' : '규칙'} 연출 완료 — ${CAPS.length}문장 · 강조 ${nEmph}줄 · 효과음 ${nSfx}개${nProd ? ' · 제품 사진 ' + nProd + '개' : ''} (되돌리기 가능)`);
-  } catch (e) { toast('연출 실패: ' + e.message); }
-  finally { btn.disabled = false; btn.textContent = '연출 시작'; }
+    toast(`${r.used_ai ? 'AI' : '규칙'} 자막 다듬기 완료 — ${CAPS.length}문장 · 강조 ${nEmph}줄 · 효과음 ${nSfx}개${nProd ? ' · 제품 사진 ' + nProd + '개' : ''} (되돌리기 가능)`);
+  } catch (e) { toast('자막 다듬기 실패: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = '자막 다듬기'; }
 };
 
 // ───── 속도
@@ -1523,13 +1549,20 @@ const sfxAudio = new Audio();
 function playSfx(k) { sfxAudio.src = `/api/sfx/${k}.wav`; sfxAudio.volume = Math.min(1, S.sfx_volume * 1.4); sfxAudio.play().catch(() => {}); }
 
 // 완성본 만들기
-$('#renderBtn').onclick = async () => {
+$('#renderBtn').onclick = () => {
   document.activeElement && document.activeElement.blur();
+  $('#logoAskImg').style.backgroundImage = S.wm_path ? `url('/api/brand/${encodeURIComponent(wmPath().split(/[\\/]/).pop())}')` : '';
+  $('#logoAsk').classList.remove('hidden');
+};
+$('#logoYes').onclick = () => { $('#logoAsk').classList.add('hidden'); setS('wm_on', true); bindSettings(); startRender(); };
+$('#logoNo').onclick = () => { $('#logoAsk').classList.add('hidden'); setS('wm_on', false); bindSettings(); drawOverlay(true); startRender(); };
+$('#logoCancel').onclick = () => $('#logoAsk').classList.add('hidden');
+async function startRender() {
   await new Promise(r => setTimeout(r, 50));
   try { await post(`/api/jobs/${JOB.id}/render`, {captions: CAPS, overlays: OVS, options: S}); }
   catch (e) { return toast(e.message); }
   JOB.stage = 'rendering'; startPoll();
-};
+}
 $('#backHome').onclick = () => goHome();
 
 // 완성
