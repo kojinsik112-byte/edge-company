@@ -427,6 +427,7 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
           <button class="btn sm" id="dirOpen" style="background:linear-gradient(135deg,#3557FF,#7B5CFF);color:#fff;border:0">✨ AI 자막 다듬기</button>
           <span class="row" style="gap:4px">
             <span class="saved" id="saved"></span>
+            <button class="btn sm" id="capAdd" title="지금 재생 위치에 자막 한 줄 추가">+ 자막 추가</button>
             <button class="btn sm primary" id="verSave" title="지금 상태를 따로 보관 (Ctrl+S)">💾 임시저장</button>
             <button class="btn sm" id="verList" title="임시저장한 것 불러오기">저장본 ▾</button>
             <button class="btn sm" id="undoBtn" title="되돌리기 (Ctrl+Z)" disabled>↶ 되돌리기</button>
@@ -505,10 +506,16 @@ h2{font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
 </main>
 <div class="toast" id="toast"></div>
 <div class="modal hidden" id="logoAsk">
-  <div class="card mbox" style="width:min(460px,100%);text-align:center">
-    <div id="logoAskImg" style="width:120px;height:120px;margin:4px auto 12px;background:#F1F4F9 center/contain no-repeat;border-radius:14px"></div>
-    <h2 style="margin:0 0 6px">엣지컴퍼니 로고를 넣을까요?</h2>
-    <p class="muted" style="font-size:13px;margin:0 0 18px">영상 내내 한쪽 구석에 작게 들어가요 (위치·크기는 로고·스티커 칸에서)</p>
+  <div class="card mbox" style="width:min(640px,100%);text-align:center">
+    <h2 style="margin:0 0 10px">엣지컴퍼니 로고를 넣을까요?</h2>
+    <canvas id="logoAskCv" width="1280" height="720" style="width:100%;border-radius:12px;background:#000;display:block"></canvas>
+    <div class="row" style="justify-content:center;gap:8px;margin:10px 0 4px;flex-wrap:wrap;font-size:12px">
+      <span class="muted">미리보기 —</span>
+      <select id="laPos" style="border:1px solid var(--line);border-radius:7px;padding:3px 6px"><option value="top-right">오른쪽 위</option><option value="bottom-right">오른쪽 아래</option><option value="top-left">왼쪽 위</option><option value="bottom-left">왼쪽 아래</option></select>
+      <span class="muted">크기</span><input type="range" id="laSize" min="5" max="25" step="1" style="width:90px;accent-color:var(--accent)">
+      <label class="switch"><input type="checkbox" id="laWhite"><i></i>흰색</label>
+    </div>
+    <p class="muted" style="font-size:12px;margin:0 0 14px">지금 영상 장면에 실제로 들어갈 모습이에요. 영상 내내 이 자리에 떠 있어요.</p>
     <div class="row" style="justify-content:center;gap:10px">
       <button class="btn big" id="logoNo">안 넣기</button>
       <button class="btn primary big" id="logoYes">로고 넣기</button>
@@ -1005,6 +1012,20 @@ function wrapBalanced(text, maxLine) {
   return lines.join('\n');
 }
 
+// + 자막 추가: 지금 재생 위치에 2초짜리 빈 자막 → 바로 입력
+$('#capAdd').onclick = () => {
+  const t = Math.round(($('#vid').currentTime || 0) * 100) / 100;
+  const nxt = CAPS.find(c => c.start > t);
+  const end = Math.min(t + 2.5, nxt ? nxt.start - 0.05 : t + 2.5);
+  if (end - t < 0.3) return toast('바로 뒤에 자막이 있어요 — 조금 앞이나 빈 곳으로 옮겨서 추가하세요');
+  const c = {start: t, end, text: '새 자막', words: [], emph: null, pos: null, align: null, sfx: null, zoom: null};
+  CAPS.push(c); CAPS.sort((a, b) => a.start - b.start);
+  changed(); renderList();
+  const i = CAPS.indexOf(c); selIdx = i;
+  setTimeout(() => { const ta = $(`.cap[data-i="${i}"] textarea`); if (ta) { ta.closest('.cap').scrollIntoView({block: 'center'}); ta.focus(); ta.select(); } }, 50);
+  toast(`${fmt(t)}에 자막을 추가했어요 — 글자를 입력하세요`);
+};
+
 // 칸 이동
 function focusCap(j) {
   if (j < 0 || j >= CAPS.length) return;
@@ -1454,7 +1475,7 @@ $('#tlMarkB').onclick = () => {
   EKEEP = normSegs(subSeg(EKEEP, a, c)); MARK_A = null; drawTimeline(); toast(`${(c - a).toFixed(1)}초를 자를 부분으로 표시했어요`);
 };
 $('#tlApply').onclick = async () => {
-  const btn = $('#tlApply'); btn.disabled = true; btn.textContent = '적용 중… (영상 다시 만드는 중)';
+  const btn = $('#tlApply'); btn.disabled = true; btn.textContent = '적용 중… (영상 다시 만들고 살린 부분 받아쓰는 중)';
   try {
     document.activeElement && document.activeElement.blur && document.activeElement.blur();
     const r = await post(`/api/jobs/${JOB.id}/recut`, {keep: normSegs(EKEEP), captions: CAPS, overlays: OVS});
@@ -1462,7 +1483,8 @@ $('#tlApply').onclick = async () => {
     CUT = r.cut; EKEEP = normSegs(CUT.keep);
     const v = $('#vid'); v.src = media(r.clean_video) + '&v=' + r.v; v.dataset.src = r.clean_video + r.v;
     renderList(); renderOverlays(); drawTimeline(); drawOverlay(true);
-    toast('컷을 다시 적용했어요 — 자막·로고 시간도 맞췄어요');
+    toast(r.added ? `컷 적용 완료 — 살린 부분 자막 ${r.added}줄을 새로 받아썼어요 (확인해 보세요)` : (r.restored ? '컷 적용 완료 — 살린 부분엔 또렷한 말이 없어 자막을 넣지 않았어요 (필요하면 [+ 자막 추가])' : '컷을 다시 적용했어요 — 자막·로고 시간도 맞췄어요'));
+    if (r.added_at && r.added_at.length) { const i = CAPS.findIndex(c => Math.abs(c.start - r.added_at[0]) < 0.05); if (i >= 0) { selIdx = i; renderList(); const row = $(`.cap[data-i="${i}"]`); if (row) row.scrollIntoView({block: 'center'}); seek(CAPS[i].start, false); } }
   } catch (e) { toast('컷 적용 실패: ' + e.message); drawTimeline(); }
 };
 
@@ -1551,12 +1573,41 @@ function playSfx(k) { sfxAudio.src = `/api/sfx/${k}.wav`; sfxAudio.volume = Math
 // 완성본 만들기
 $('#renderBtn').onclick = () => {
   document.activeElement && document.activeElement.blur();
-  $('#logoAskImg').style.backgroundImage = S.wm_path ? `url('/api/brand/${encodeURIComponent(wmPath().split(/[\\/]/).pop())}')` : '';
+  $('#laPos').value = S.wm_pos || 'top-right'; $('#laSize').value = S.wm_size || 11; $('#laWhite').checked = !!S.wm_white;
   $('#logoAsk').classList.remove('hidden');
+  drawLogoPreview();
 };
 $('#logoYes').onclick = () => { $('#logoAsk').classList.add('hidden'); setS('wm_on', true); bindSettings(); startRender(); };
 $('#logoNo').onclick = () => { $('#logoAsk').classList.add('hidden'); setS('wm_on', false); bindSettings(); drawOverlay(true); startRender(); };
 $('#logoCancel').onclick = () => $('#logoAsk').classList.add('hidden');
+$('#laPos').onchange = e => { setS('wm_pos', e.target.value); $('#wmPos').value = e.target.value; drawLogoPreview(); };
+$('#laSize').oninput = e => { S.wm_size = +e.target.value; drawLogoPreview(); };
+$('#laSize').onchange = e => setS('wm_size', +e.target.value);
+$('#laWhite').onchange = e => { setS('wm_white', e.target.checked); bindSettings(); drawLogoPreview(); };
+// 지금 영상 장면 + 로고를 실제 들어갈 자리·크기로 그려서 보여준다
+function drawLogoPreview() {
+  const cv = $('#logoAskCv'), v = $('#vid'), ctx = cv.getContext('2d');
+  const vw = v.videoWidth || 1920, vh = v.videoHeight || 1080;
+  cv.width = 1280; cv.height = Math.round(1280 * vh / vw);
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
+  // 장면은 서버에서 그 시점 화면을 직접 뽑아 온다 (플레이어가 아직 안 그려졌어도 보이게)
+  const bg = new Image();
+  bg.onload = () => { ctx.drawImage(bg, 0, 0, cv.width, cv.height); drawLogoOn(); };
+  bg.onerror = () => drawLogoOn();
+  bg.src = `/api/jobs/${JOB.id}/frame.jpg?t=${(v.currentTime || 1).toFixed(1)}`;
+  function drawLogoOn() {
+  if (!S.wm_path) return;
+  const img = new Image();
+  img.onload = () => {
+    const W = cv.width, H = cv.height, m = Math.min(W, H) * 0.04;
+    const w = W * (S.wm_size || 11) / 100, h = w * img.height / img.width;
+    const pos = {'top-left': [0, 0], 'top-right': [1, 0], 'bottom-left': [0, 1], 'bottom-right': [1, 1]}[S.wm_pos || 'top-right'] || [1, 0];
+    const x = m + (W - 2 * m) * pos[0] - w * pos[0], y = m + (H - 2 * m) * pos[1] - h * pos[1];
+    ctx.globalAlpha = S.wm_opacity || 0.9; ctx.drawImage(img, x, y, w, h); ctx.globalAlpha = 1;
+  };
+  img.src = '/api/brand/' + encodeURIComponent(wmPath().split(/[\\/]/).pop());
+  }
+}
 async function startRender() {
   await new Promise(r => setTimeout(r, 50));
   try { await post(`/api/jobs/${JOB.id}/render`, {captions: CAPS, overlays: OVS, options: S}); }

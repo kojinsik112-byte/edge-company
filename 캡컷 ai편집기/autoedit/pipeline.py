@@ -595,7 +595,11 @@ def render_final(
 
     work_dir = Path(tempfile.mkdtemp(prefix="autoedit_render_"))
     try:
-        # 속도 조절: 영상·소리 속도를 바꾸고 자막·로고 시간도 같은 비율로
+        # 편집용 자막 파일(_자막.json)은 '편집 화면 시간' 그대로 저장 — 속도 조절 전에!
+        # (예전엔 속도 바꾼 시간이 저장돼, 다시 열 때마다 자막이 밀렸음)
+        if captions:
+            result.captions_json = captions_to_json(captions, output_dir / f"{stem}_자막.json")
+        # 속도 조절: 영상·소리 속도를 바꾸고 자막·로고 시간도 같은 비율로 (완성본에만)
         sp = float(getattr(config.output, "speed", 1.0) or 1.0)
         if abs(sp - 1.0) >= 0.01 and captions is not None:
             from .speed import change_speed, scale_captions, scale_overlays
@@ -606,11 +610,9 @@ def render_final(
             overlays = scale_overlays(overlays or [], sp)
             result.steps.append(f"속도 {sp:g}배")
         if captions:
+            # SRT 는 완성본(속도 반영) 시간 기준
             result.srt = write_srt(
                 captions, output_dir / f"{stem}.srt", config.subtitle.max_line_chars
-            )
-            result.captions_json = captions_to_json(
-                captions, output_dir / f"{stem}_자막.json"
             )
         title = None
         if captions and config.metadata.enabled:

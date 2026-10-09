@@ -777,6 +777,19 @@ class Handler(BaseHTTPRequestHandler):
                 job = self._job(q.get("job", [""])[0])
                 opts = {k: v[0] for k, v in q.items()}
                 return self._file(style_preview(job, m.group(1), opts), "image/jpeg")
+            m = re.match(r"^/api/jobs/(\w+)/frame\.jpg$", path)
+            if m:
+                # 로고 미리보기용: 그 시점 장면 한 장
+                from ..cards import grab_frame
+
+                job = self._job(m.group(1))
+                if not job or not job.clean_video:
+                    return self._json({"error": "없음"}, 404)
+                t = float(q.get("t", ["1"])[0])
+                out = PREVIEWS / f"{job.id}_frame_{int(t * 10)}.jpg"
+                if not out.exists():
+                    grab_frame(job.clean_video, t, out)
+                return self._file(out, "image/jpeg")
             m = re.match(r"^/api/brand/(.+)$", path)
             if m:
                 return self._file(DATA_DIR / "brand" / Path(urllib.parse.unquote(m.group(1))).name)
@@ -961,13 +974,28 @@ class Handler(BaseHTTPRequestHandler):
                     tmp = job.out_dir / f"{job.name}_clean_new.mp4"
                     tl.recut(Path(job.cut["source"]), new_keep, tmp, cfg.output)
                     tmp.replace(job.clean_video)
-                    job.captions = captions_to_list(tl.remap_captions(caps, old_keep, new_keep))
+                    new_caps = tl.remap_captions(caps, old_keep, new_keep)
+                    # 살린 구간은 원래 받아쓰기에서 빠져 있었으므로 그 부분만 새로 받아써서 자막을 채운다
+                    restored = tl.restored_ranges(old_keep, new_keep)
+                    added = []
+                    if restored:
+                        import tempfile
+
+                        sub = cfg.subtitle
+                        sub.vocab = list(sub.vocab) + [job.name]
+                        wd = Path(tempfile.mkdtemp(prefix="restored_"))
+                        added = tl.transcribe_restored(Path(job.cut["source"]), restored, new_keep, sub, wd)
+                        shutil.rmtree(wd, ignore_errors=True)
+                        new_caps = sorted(new_caps + added, key=lambda c: c.start)
+                    job.captions = captions_to_list(new_caps)
                     job.overlays = tl.remap_overlays(ovs, old_keep, new_keep)
                     job.cut = {**job.cut, "keep": new_keep}
                     job.duration = ff.probe_duration(job.clean_video)
                     _save_project(job)
                     return self._json({"captions": job.captions, "overlays": job.overlays, "cut": job.cut,
-                                       "clean_video": str(job.clean_video), "v": int(time.time())})
+                                       "clean_video": str(job.clean_video), "v": int(time.time()),
+                                       "added": len(added), "added_at": [round(c.start, 2) for c in added],
+                                       "restored": len(restored)})
                 finally:
                     WORK_LOCK.release()
             if path == "/api/pick":

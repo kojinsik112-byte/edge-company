@@ -109,3 +109,52 @@ def recut(source: Path, new_keep: List[Seg], out_path: Path, out_cfg) -> Path:
 
     render_cut(source, [Segment(a, b) for a, b in new_keep], out_path, out_cfg)
     return out_path
+
+
+def restored_ranges(old_keep: List[Seg], new_keep: List[Seg], min_len: float = 0.3) -> List[Seg]:
+    """새로 살린 구간 (원본 시간) = 새 컷엔 있고 옛 컷엔 없는 곳."""
+    out: List[Seg] = []
+    for a, b in new_keep:
+        cur = [(a, b)]
+        for x, y in old_keep:
+            nxt = []
+            for s, e in cur:
+                if e <= x or s >= y:
+                    nxt.append((s, e))
+                else:
+                    if s < x:
+                        nxt.append((s, x))
+                    if e > y:
+                        nxt.append((y, e))
+            cur = nxt
+        out.extend((s, e) for s, e in cur if e - s >= min_len)
+    return out
+
+
+def transcribe_restored(source: Path, ranges: List[Seg], new_keep: List[Seg], sub_cfg, work_dir: Path) -> List[Caption]:
+    """살린 구간만 받아써서 '새 편집 시간' 기준 자막으로 돌려준다."""
+    from .ffmpeg import run
+    from .transcribe import WhisperUnavailable, transcribe
+
+    out: List[Caption] = []
+    for i, (a, b) in enumerate(ranges):
+        pad = 0.15
+        s0 = max(0.0, a - pad)
+        wav = work_dir / f"restored_{i}.wav"
+        run(["ffmpeg", "-y", "-ss", f"{s0:.3f}", "-t", f"{(b + pad) - s0:.3f}", "-i", str(source),
+             "-vn", "-ac", "1", "-ar", "16000", "-c:a", "pcm_s16le", str(wav)])
+        try:
+            caps = transcribe(wav, work_dir, sub_cfg, want_words=True, strict=True)
+        except WhisperUnavailable:
+            return out
+        for c in caps:
+            def m(t: float) -> Optional[float]:
+                return to_edit(min(max(s0 + t, a), b), new_keep)
+            s, e = m(c.start), m(c.end)
+            if s is None or e is None or e - s < 0.1:
+                continue
+            words = None
+            if c.words:
+                words = [Word(m(w.start) or s, m(w.end) or e, w.text, w.prob) for w in c.words]
+            out.append(Caption(s, e, c.text, words))
+    return out

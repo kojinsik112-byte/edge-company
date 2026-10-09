@@ -66,7 +66,11 @@ def _load_model(cfg: SubtitleConfig):
         raise
 
 
-def _hallucinated(seg, text: str, vocab: List[str]) -> bool:
+# 무음·잡음에서 음성인식이 흔히 지어내는 말
+_STOCK = {"고맙습니다", "감사합니다", "시청해주셔서감사합니다", "구독과좋아요", "다음영상에서만나요"}
+
+
+def _hallucinated(seg, text: str, vocab: List[str], strict: bool = False) -> bool:
     """음성인식이 '말하지 않은 말'을 지어낸 구간인지 판정한다.
 
     - 용어 사전 힌트를 그대로 되풀이 (예: 말이 없는데 "엣지컴퍼니 아크로 실링팬 주관사…")
@@ -74,6 +78,16 @@ def _hallucinated(seg, text: str, vocab: List[str]) -> bool:
     - 말소리가 아닐 확률이 높고 확신도도 낮음 (음악·소음 구간)
     """
     tokens = [t.strip(".,!?…") for t in text.split()]
+    nsp = getattr(seg, "no_speech_prob", 0.0)
+    lp = getattr(seg, "avg_logprob", 0.0)
+    if strict:
+        # 살린 구간처럼 짧고 애매한 소리: 사전 단어만 나열·흔한 인사말·말소리 아닐 확률 높음 → 버림
+        if vocab and tokens and sum(1 for t in tokens if any(t.startswith(v) or v.startswith(t) for v in vocab)) / len(tokens) >= 0.5:
+            return True
+        if "".join(tokens) in _STOCK and nsp > 0.3:
+            return True
+        if nsp > 0.5 and lp < -0.6:
+            return True
     if vocab and len(tokens) >= 3:
         in_vocab = sum(1 for t in tokens if any(t.startswith(v) for v in vocab))
         if in_vocab / len(tokens) >= 0.6:
@@ -81,13 +95,11 @@ def _hallucinated(seg, text: str, vocab: List[str]) -> bool:
     if getattr(seg, "compression_ratio", 0) > 2.4:
         return True
     # 말소리가 아닐 확률이 '매우' 높고 확신도도 매우 낮을 때만 (흐릿한 끝인사 같은 진짜 말은 살림)
-    nsp = getattr(seg, "no_speech_prob", 0.0)
-    lp = getattr(seg, "avg_logprob", 0.0)
     return nsp > 0.85 and lp < -1.1
 
 
 def transcribe(
-    video: Path, work_dir: Path, cfg: SubtitleConfig, *, want_words: bool = False
+    video: Path, work_dir: Path, cfg: SubtitleConfig, *, want_words: bool = False, strict: bool = False
 ) -> List[Caption]:
     """영상에서 오디오를 추출해 자막 구간을 인식한다.
 
@@ -116,7 +128,7 @@ def transcribe(
     logger.info("음성 인식 시작... (영상 길이에 비례해 시간이 걸립니다)")
     for s in segments:
         text = s.text.strip()
-        if text and _hallucinated(s, text, cfg.vocab):
+        if text and _hallucinated(s, text, cfg.vocab, strict):
             logger.info("받아쓰기 환각 의심 → 제외: %s", text[:40])
             text = ""
         if text:
