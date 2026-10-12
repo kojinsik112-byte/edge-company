@@ -132,13 +132,13 @@ CSS = r"""
 .ct2 .hb b{text-align:right;font-variant-numeric:tabular-nums}
 /* 대단지 타임라인 막대 */
 .tlb{flex:1;min-height:0;display:flex;flex-direction:column}
-.tlb .cols{flex:1;min-height:0;display:grid;grid-template-columns:repeat(10,1fr);gap:12px;align-items:end;border-bottom:1.5px solid rgba(200,168,106,.6);padding:0 6px}
+.tlb .cols{flex:1;min-height:0;display:grid;grid-template-columns:repeat(9,1fr);gap:12px;align-items:end;border-bottom:1.5px solid rgba(200,168,106,.6);padding:0 6px}
 .tlb .c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
 .tlb .c b{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:6px;font-variant-numeric:tabular-nums}
 .tlb .c i{display:block;width:70%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,rgba(235,203,143,.85),rgba(200,168,106,.35))}
 .tlb .c.mx i{background:linear-gradient(180deg,var(--gold),rgba(235,203,143,.5));box-shadow:0 0 14px rgba(235,203,143,.35)}
 .tlb .c.mx b{color:var(--gold);font-size:18px}
-.tlb .nm{display:grid;grid-template-columns:repeat(10,1fr);gap:12px;padding:8px 6px 0}
+.tlb .nm{display:grid;grid-template-columns:repeat(9,1fr);gap:12px;padding:8px 6px 0}
 .tlb .nm div{text-align:center;font-size:12.5px;line-height:1.3;font-weight:700}
 .tlb .nm div small{display:block;font-size:11.5px;color:var(--mute);font-weight:500;margin-top:2px}
 /* 카드 사진 */
@@ -298,7 +298,9 @@ def apply(B, D, take, sub):
     k = take("지웰 엘리움 양주 덕계역, [[이런 단지]]입니다")[1]
     hh, tp = D.SITE["households"], dict(D.SITE["types"])
     grp = [("49㎡", tp["49"]), ("84㎡", tp["84A"] + tp["84B"] + tp["84C"]), ("122㎡", tp["122A"] + tp["122B"]), ("임대", D.SITE["rental"])]
-    tb = "".join(f'<i style="flex:{n}">{nm} {n:,}</i>' if n > 200 else f'<i style="flex:{max(n, 30)}" class="sm"></i>' for nm, n in grp)
+    # 막대 길이는 세대수 비례(min-width:0) · 글자는 넓은 칸(84㎡)만, 나머지는 아래 범례로
+    tb = "".join(f'<i style="flex:{n} 1 0">{nm} {n:,}</i>' if n > 600 else f'<i style="flex:{n} 1 0" class="sm"></i>' for nm, n in grp)
+    tb += '</div><div class="sblg">' + " · ".join(f"{nm} {n:,}" for nm, n in grp if n <= 600)
     cards = k["body"].replace(
         f'<div class="big">{hh:,}<small>세대</small></div>',
         f'<div class="big">{hh:,}<small>세대</small></div><div class="sbar t4">{tb}</div>', 1)
@@ -307,7 +309,8 @@ def apply(B, D, take, sub):
                  f'<b>{D.SITE["official"]} · {hh:,}세대 · {D.SITE["buildings"]}개동</b><span>단지 야간 경관 · 연출 이미지(실제와 다를 수 있습니다)</span></div>'
                  + cards + '</div>')
     B.CSS += (".sbar.t4 i{background:rgba(255,255,255,.14)!important;color:var(--ink)!important;border-right:1px solid #0d1e33;padding-left:5px;font-size:10px}"
-              ".sbar.t4 i:nth-child(2){background:var(--gold)!important;color:#0d1e33!important}.sbar.t4 i.sm{padding:0}")
+              ".sbar.t4 i:nth-child(2){background:var(--gold)!important;color:#0d1e33!important}.sbar.t4 i.sm{padding:0}.sbar.t4 i{min-width:0;overflow:hidden;white-space:nowrap}"
+              ".sblg{font-size:10.5px;color:var(--mute);margin:-1px 0 4px;white-space:nowrap}")
 
     # 최저가 차액 10배 — 막대 비교
     k = take("[[최저가 차액 10배]] 보상")[1]
@@ -331,14 +334,14 @@ def apply(B, D, take, sub):
         r, cfr = 62, 2 * 3.14159 * 62
         donut = (f'<div class="dn"><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="{r}" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="14"/>'
                  f'<circle cx="75" cy="75" r="{r}" fill="none" stroke="#EBCB8F" stroke-width="14" stroke-linecap="round" '
-                 f'stroke-dasharray="{cfr * pct / 100:.1f} {cfr:.1f}"/></svg><div class="v"><b>{pct}<small>%</small></b><span>입주 단지</span></div></div>')
+                 f'stroke-dasharray="{cfr * pct / 100:.1f} {cfr:.1f}"/></svg><div class="v"><b>{pct}<small>%</small></b><span>입주 세대</span></div></div>')
         bars = "".join(f'<div class="hb"><span>{_h.escape(a)}</span><div class="t"><i style="width:{100 * n / cmx:.1f}%"></i></div><b>{n:,}</b></div>' for a, n in cx)
         blocks += f'<div>{donut}<div><h3>{nm}</h3><div class="sb2">{cap}</div>{bars}</div></div>'
     k["body"] = f'<div class="nb"><div class="ct2">{blocks}</div></div>'
 
     # 대단지 운영 경험 — 입주 순 막대(세대수 비례)
     k = take("[[대단지]] 운영 경험")[1]
-    SHORT = {"부산사상 중흥S-클래스 그랜드센트럴": "사상 중흥S-클래스", "e편한세상 송도 더퍼스트비치": "송도 더퍼스트비치",
+    SHORT = {"부산사상 중흥S-클래스 그랜드센트럴": "사상 중흥S클래스", "e편한세상 송도 더퍼스트비치": "송도 더퍼스트비치",
              "두산위브더제니스 센트럴사하": "센트럴사하", "양정자이더샵SK VIEW 1·2단지": "양정자이 1·2단지",
              "춘천 학곡지구 중해마루힐 포레스트": "춘천 중해마루힐", "에코델타 대성베르힐": "대성베르힐",
              "두산위브더제니스 오션시티": "오션시티", "창원 센트럴 아이파크": "창원 센트럴 아이파크"}
