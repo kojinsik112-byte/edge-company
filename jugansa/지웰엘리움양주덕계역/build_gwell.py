@@ -303,8 +303,17 @@ GW_REQ = [  # 입예협 카페 게시글 기준 — 건의 '제목' 확인 수�
 new("std", sec=S0, title="입주민 건의, [[관리표로]] 끝까지 챙깁니다",
     lead="입예협 카페에 올라온 건의를 접수 → 기술 검토 → 시공사·기관 협의 → 반영·보류 사유 → 공유까지 기록합니다.",
     body=table(["분야", "입주민 건의 (입예협 카페)", "주관사 지원", "완료 기준"], "".join(
-        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td></tr>' for a, b, c, d in GW_REQ), "sm"),
+        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td></tr>' for a, b, c, d in GW_REQ), "sm")
+         + '<div class="hflow" style="margin-top:20px"><span>카페 건의 접수</span><i>›</i><span>기술 검토 · 담당 지정</span><i>›</i>'
+           '<span>시공사 · 기관 협의</span><i>›</i><span>반영 / 보류 사유</span><i>›</i><span>입예협 공유 · 기록</span></div>'
+         + '<div class="gq3"><div><b>관리표 칸</b><span>건의 번호 · 제목 · 담당 · 기한 · 회신 · 상태</span></div>'
+           '<div><b>상태 구분</b><span>접수 → 검토 중 → 협의 완료 → 설치 완료 · 보류(사유 기재)</span></div>'
+           '<div><b>공유 주기</b><span>입예협 정례회의마다 · 시공사 회신이 오면 바로 갱신</span></div></div>',
     kp=("‘협의 완료’와 ‘설치 완료’를 [[구분해서]] 보고합니다.", "건의 제목 기준 · 처리 결과는 시공사 회신으로 갱신"))
+B.CSS += (".gq3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}"
+          ".gq3>div{border:1px solid var(--line);border-radius:11px;padding:12px 16px;display:flex;flex-direction:column;gap:4px}"
+          ".gq3 b{font-size:15px;color:var(--gold)}.gq3 span{font-size:14px;color:var(--sub);line-height:1.45}"
+          ".tbl.sm.tjs td{padding-top:16px;padding-bottom:16px}")
 
 new("std", sec=S0, title=T_LX,
     lead="입주민이 건의한 조경을 도면·현장·예산으로 바꿉니다 — 전기공사업 등록 업체이자 사내 조경 전문 인력을 둔 주관사의 방식입니다.",
@@ -409,7 +418,7 @@ new("std", sec=S0, title=T_MUST,
     body=table(["NO", "공고 필수 포함 항목", "엣지컴퍼니 제안", "본 제안서"], "".join(
         f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
         for i, (a, b, c) in enumerate(GW_MUST, 1)), "lgx")
-        + '<div style="margin-top:22px">' + B.tiles([
+        + '<div style="margin-top:12px">' + B.tiles([
             dict(lb="A/S", big="48", unit="시간", nm="하자보수 원칙", ds="주관사 단일 창구 접수 → 업체 연결 → 완료 확인"),
             dict(lb="A/S", big="2", unit="년 이상", nm="무상 A/S", ds="업체·품목별 상이 · 계약서에 품목별로 명시"),
             dict(lb="REFUND", big="3", unit="영업일", nm="환불 처리", ds="취소 기한 안의 취소는 위약금 없이 환불"),
@@ -1302,6 +1311,7 @@ def finish(path, title):
     i = doc.index("<body")
     body = doc[i:].replace("—", "-")  # 본부장 10-07: 굵은 긴 줄표 → 하이픈
     body = re.sub(r"(\d)\s*[–~]\s*(\d)", r"\1 ~ \2", body)  # 본부장 10-07: 범위는 '2018 ~ 2022'(띄어쓰기 + 물결)
+    body = re.sub(r">([^<]+)<", lambda m: ">" + re.sub(r"(?<=[^\s>])·(?=[^\s<])", "\u2060·\u2060", m.group(1).replace(" · ", "\u00a0· ")) + "<", body)  # 줄 첫머리 가운뎃점 방지
     doc = doc[:i] + body
     doc = sub(doc, "<title>엣지컴퍼니 요약제안서</title>", f"<title>{title}</title>")
     doc = sub(doc, "</body>", ALIGN_JS + "</body>")
@@ -1455,7 +1465,7 @@ S5_CSS = r"""
 .s5 .op6 b{font-size:13.8px}
 .s5 .op6 span{font-size:12px;display:block;line-height:1.35;margin-top:1px}
 .s5 .tl{display:flex;flex-direction:column;flex:1;justify-content:space-around;position:relative}
-.s5 .tl>div{display:grid;grid-template-columns:118px 1fr;gap:10px;align-items:center;font-size:12.8px;line-height:1.4;padding:3px 0;border-bottom:1px solid var(--line)}
+.s5 .tl>div{display:grid;grid-template-columns:132px 1fr;gap:10px;align-items:center;font-size:12.8px;line-height:1.4;padding:3px 0;border-bottom:1px solid var(--line)}
 .s5 .tl>div:last-child{border-bottom:0}
 .s5 .tl>div b{font-size:13px;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
 .s5 .tl>div.k b{color:#0d1e33;background:var(--gold);border-radius:6px;padding:1px 7px;justify-self:start}
@@ -1465,7 +1475,7 @@ S5_CSS = r"""
 .s5 table.mt{width:100%;border-collapse:collapse;flex:1}
 .s5 table.mt td{font-size:12.6px;line-height:1.38;padding:5px 5px;border-bottom:1px solid var(--line);color:var(--sub);vertical-align:middle}
 .s5 table.mt td.n{width:26px;color:var(--gold);font-weight:800;font-size:12px}
-.s5 table.mt td.k{color:var(--ink);font-weight:700;width:34%}
+.s5 table.mt td.k{color:var(--ink);font-weight:700;width:42%}
 .s5 table.mt tr:last-child td{border-bottom:0}
 .s5 .rec{display:grid;grid-template-columns:repeat(4,1fr) 1.55fr;border:1px solid rgba(200,168,106,.5);border-radius:12px;background:rgba(235,203,143,.05)}
 .s5 .rec>div{padding:9px 13px;border-left:1px solid rgba(200,168,106,.25);display:flex;flex-direction:column;justify-content:center}
@@ -1544,7 +1554,7 @@ def summary_pages():
 <div class="rf">
 <div><b>시공일 7일 전</b><span>청소·줄눈 · 탄성코트 · 유리막코팅 · LED조명 등</span></div>
 <div><b>시공일 15일 전</b><span>미세방충망 · 인테리어 · 단열필름 · 시스템에어컨 · 포장이사</span></div>
-<div><b>출고 지시 전</b><span>커튼·블라인드 · 중문 등 맞춤 제작(업체 협의)</span></div>
+<div><b>출고 지시 전</b><span>커튼·블라인드 · 중문 등 맞춤 제작 · 업체 협의</span></div>
 <div class="x"><b>당일 취소</b><span>사전 해피콜 미이행 시 모든 품목</span></div>
 <div class="x"><b>업체 귀책</b><span>시공 지연·계약과 다른 제품은 기한과 관계없이 전액 환불</span></div>
 </div></div>

@@ -155,16 +155,16 @@ CSS = r"""
 .r2 .rows .row .cic{width:26px;height:26px;margin:0}
 .r2 .gal{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
 /* 30개월 타임라인 */
-.tl31{position:relative;height:96px;margin:4px 8px 14px}
+.tl31{position:relative;height:104px;margin:4px 8px 14px}
 .tl31 .ln{position:absolute;left:0;right:60px;top:40px;height:3px;background:linear-gradient(90deg,var(--gold2),var(--gold))}
 .tl31 .ext{position:absolute;right:0;width:60px;top:40px;border-top:3px dashed rgba(235,203,143,.6)}
 .tl31 .q{position:absolute;top:36px;width:11px;height:11px;margin-left:-5px;border-radius:50%;background:#0d1e33;border:2px solid var(--gold2)}
 .tl31 .m{position:absolute;top:0;transform:translateX(-50%);text-align:center;white-space:nowrap}
 .tl31 .m b{display:block;font-size:14.5px;color:var(--gold);font-weight:800}
-.tl31 .m span{display:block;font-size:12px;color:var(--sub);margin-top:30px}
+.tl31 .m span{display:block;font-size:12px;color:var(--sub);margin-top:38px}
 .tl31 .m:after{content:'';position:absolute;left:50%;top:32px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px rgba(235,203,143,.6)}
-.tl31 .qa{position:absolute;top:64px;left:24%;font-size:12px;color:var(--gold2)}
-.tl31 .ex{position:absolute;right:0;top:64px;font-size:12px;color:var(--sub)}
+.tl31 .qa{position:absolute;top:74px;left:24%;font-size:12px;color:var(--gold2)}
+.tl31 .ex{position:absolute;right:0;top:74px;font-size:12px;color:var(--sub)}
 /* 4단계 깔때기 */
 .fnw{display:grid;grid-template-columns:200px 1fr;gap:14px;flex:1;min-height:0}
 .fnw .pre{position:relative;border:1.5px dashed rgba(235,203,143,.65);border-radius:14px;padding:16px 16px;display:flex;flex-direction:column;background:rgba(235,203,143,.06)}
@@ -360,7 +360,7 @@ def apply(B, D, take, sub):
     gal = ('<div class="gal">' + "".join(
         f'<figure><img src="assets_ins/{im}.jpg" alt=""><figcaption>{c}<small>{s}</small></figcaption></figure>'
         for im, c, s in [("g12_aerial_u", "항공 VR 촬영", "타 단지 제작 예시"), ("g12_room_a", "3D 홈스타일링", "타 단지 제작 예시"),
-                         ("g12_plan_a", "타입별 평면·실측", "타 단지 제작 예시"), ("n01_yt1", "영상 콘텐츠", "타 단지 유튜브 화면")]) + '</div>')
+                         ("g12_plan_a_c", "타입별 평면·실측", "타 단지 제작 예시"), ("n01_yt1", "영상 콘텐츠", "타 단지 유튜브 화면")]) + '</div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
     # 입주까지 30개월 — 타임라인 띠
@@ -648,7 +648,7 @@ def apply2(B, D, take, sub):
     k = take("선정부터 입주까지 [[추진 일정]] (안)")[1]
     X = lambda m: f"{100 * m / 42:.2f}%"
     W = lambda a, b: f"{100 * (b - a) / 42:.2f}%"
-    bars = [("01", 0, 2, "l1", "w", "선정·협약"), ("02", 2, 30, "l2", "w in", "정례 보고 · 건의 관리 · 조경조명 진단"), ("03", 22, 24, "l1", "w up", "수요조사"),
+    bars = [("01", 0, 2, "l1", "w", "선정·협약"), ("02", 2, 24, "l2", "w in", "정례 보고 · 건의 관리 · 조경조명 진단"), ("03", 22, 24, "l1", "w up", "수요조사"),
             ("04", 24, 27, "l1", "s in", "심사"), ("05", 27, 29, "l1", "s up", "박람회"), ("06", 30, 42, "l2", "o", "입주 후 1년 관리")]
     g = '<div class="gnt"><div class="ar">'
     g += "".join(f'<div class="yl" style="left:{X(m)}"><span>{y}</span></div>' for y, m in [("2027", 3), ("2028", 15), ("2029", 27), ("2030", 39)])
@@ -808,7 +808,7 @@ def apply2(B, D, take, sub):
               '<b>지웰 엘리움 양주 덕계역 입주민 여러분, <em>사전점검을 환영합니다</em></b>'
               '<span class="t2">입예협 안내 부스 · 라돈 측정 · 하자 체크리스트 배포</span></div><span class="cp">현수막 시안</span></div>'
               '<div class="xbw"><div class="xbn"><div class="xh"><span>지웰 엘리움 양주 덕계역</span><b>사전점검<br>안내</b></div>'
-              '<ol><li>입예협 부스 방문 · 정회원 가입</li><li>라돈 측정 지원</li><li>하자 체크리스트 · 점검 요령</li><li>입주박람회 2029.01 ~ 02(예정)</li></ol>'
+              '<ol><li>입예협 부스 방문 · 정회원 가입</li><li>라돈 측정 지원</li><li>하자 체크리스트 · 점검 요령</li><li>박람회 2029.01 ~ 02</li></ol>'
               '<div class="xf">지웰 엘리움 양주 덕계역<br>입주예정자협의회</div></div><span class="cp">X배너 시안</span></div></div>')
     items = [("02", "입예협 도우미", "부스 운영 인력 별도 지원", ("g09_helper_ai", "50% 30%")),
              ("03", "라돈측정기 10대", "입주민이 내 집 라돈을 직접 측정", ("g09_radon_u", "50% 50%")),

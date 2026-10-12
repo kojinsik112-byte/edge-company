@@ -385,7 +385,7 @@ def apply(G):
 .pkp .gh:after{content:'';flex:1;height:1px;background:rgba(200,168,106,.4)}
 .pkp ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pkp li{border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.035)}
-.pkp li .no{font-family:var(--serif);font-size:20px;color:var(--gold2);line-height:1.1;flex:none;width:26px}
+.pkp li .no{font-family:var(--serif);font-size:17px;color:var(--gold2);line-height:1.1;flex:none;width:32px;text-align:center}
 .pkp li b{display:block;font-size:16.5px}
 .pkp li span{display:block;font-size:13.5px;color:var(--sub);margin-top:2px;line-height:1.4}
 .ruls{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;flex:1;min-height:0}
@@ -535,7 +535,7 @@ def apply(G):
              + rc("GIFT 01", "박람회 상품권", "정회원 30만원<br><small>(일반회원 20만원 + 정회원 추가 10만원)</small>",
                   ["박람회장에서 업체 계약 시 품목(업체)당 1매 사용", "같은 품목에 중복 사용 불가 (특정 입주민 5만원권과는 함께 사용 가능)",
                    "제외 품목: 가전, 브랜드 가구, 선반·잡물, 청소 단독 계약", "벽걸이TV는 20만원 이상 계약 시 사용"], True)
-             + rc("GIFT 02", "특정 입주민 추가 상품권", "5만원 추가",
+             + rc("GIFT 02", "특정 입주민 추가 상품권", "5만원 추가<br><small>(품목 제한 없이 사용)</small>",
                   ["대상: 소년·소녀가장, 80세 이상 노부모 부양가정, 장애인, 다자녀(3자녀 이상), 다문화가정, 임산부",
                    "대상 확인은 입예협 협의 방식(증빙 확인 후 보관하지 않음) · 명부에는 세대·수령 여부만 기록",
                    "품목(업체) 제한 없이 사용", "박람회 상품권 1매와 함께 사용 가능"])
@@ -549,7 +549,7 @@ def apply(G):
            ("갤러리조명 2구", "복도 매입등 2구 시공 지원"), ("피톤치드 항균", "편백 추출물 항균·탈취 시공"),
            ("인테리어 30% 할인", "인테리어 전문 업체 프로모션"), ("미세촘촘망 거실창", "거실창 안전 방충망 시공 지원"),
            ("홈케어 진드기 박멸", "열 살균 방식 · 약품 미사용"), ("욕실케어 1회", "곰팡이·물때 전문 장비 세정"),
-           ("현관 줄눈", "현관 줄눈 시공 지원"), ("프리미엄 중문", "박람회 특가"),
+           ("현관 줄눈 무상", "현관 줄눈 시공 지원"), ("프리미엄 중문", "박람회 특가"),
            ("욕실 휴젠뜨", "제습·온풍·환기 욕실 가전 박람회 특가"), ("화재보험 2년", "신청 세대 가입 지원 (보험사 협력)"),
            ("사전점검 할인", "사전점검 대행 최대 50% 할인"), ("경품 응모", "박람회 경품 추첨 응모")]
     half = len(mem) // 2
