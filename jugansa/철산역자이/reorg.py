@@ -797,7 +797,14 @@ def apply(G):
     import vis
     vis.apply(B, D, take, sub)
 
-    B.p_divider_lx = lambda: sub(G["B_p_divider_lx"](), '<div class="n">02</div>', '<div class="n">09</div>')
+    # 09 간지 — 일러스트 대신 자이 단지 야간 경관조명 연출 이미지(본부장 10-12), 전면 배치 + 왼쪽 어둡게(글 가독)
+    _lx_css = ('<style>.dv-lx .art.ph{right:0;width:100%;opacity:1;-webkit-mask-image:none;mask-image:none;'
+               "background:url('assets_ins/cs_lx_xi.jpg') 62% 50%/cover no-repeat}"
+               '.dv-lx .veil{background:linear-gradient(90deg,rgba(5,14,26,.94) 0%,rgba(5,14,26,.78) 38%,rgba(5,14,26,.15) 72%,rgba(5,14,26,0) 100%)}'
+               '.dv-lx .lxcap{position:absolute;right:22px;bottom:16px;z-index:1;font-size:11px;color:rgba(255,255,255,.72);letter-spacing:.02em}</style>')
+    B.p_divider_lx = lambda: sub(sub(G["B_p_divider_lx"](), '<div class="n">02</div>', '<div class="n">09</div>'),
+                                 '<div class="art"></div>',
+                                 _lx_css + '<div class="art ph"></div><span class="lxcap">자이 단지 야간 경관조명 · 연출 예시 이미지</span>')
 
     # ------------------------------------------------ 목차 10장(5열 × 2)
     G["TOC4"][:] = [
