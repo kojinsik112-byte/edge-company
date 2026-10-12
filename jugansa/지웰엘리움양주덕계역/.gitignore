@@ -1,0 +1,9 @@
+# 통합제안서 발췌·사진(증빙 원본 포함) — 공개 저장소 제외, 동탄 폴더에서 공유
+assets_ins
+assets_full
+*.png
+*.pdf
+
+# 직원 실명(조직도) · 빌드 결과 HTML(조직도 실명 포함) — 공개 저장소 제외
+org_private.json
+엣지컴퍼니_*.html
