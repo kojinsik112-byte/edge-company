@@ -264,6 +264,26 @@ def apply(B, D, take, sub):
     ]:
         k = take(title)[1]
         k["body"] = inject(k["body"], names, "card" if 'class="card' in k["body"] else "tile")
+    # 공인된 자격과 신뢰 — 카드 아래 자격·협회 등록 전문 인력 띠(본부장 10-12 제공 인원). 역할은 제안서에 이미 있는 업무만.
+    k = take("공인된 [[자격과 신뢰]]")[1]
+    pro = [("전기", 3, "경관·공용부 조명 점검 · 전기 하자 확인"), ("도장", 2, "사전점검 도장 하자 확인"),
+           ("타일", 1, "타일 들뜸·줄눈 하자 확인"), ("조경", 1, "공용·조경 하자진단 · 식재 자문"),
+           ("간호사", 1, "대한간호사협회 · 박람회 현장 응급 대응")]
+    k["body"] = ('<div class="nb">' + k["body"] + '<div class="pro"><div class="h"><i>PROFESSIONALS</i>'
+                 '<b>자격 · 협회 등록<br><em>5개 분야</em> 전문 인력</b><span>보유 현황 · 2026.10 기준</span></div>'
+                 + "".join(f'<div class="c"><b>{n}<small>명</small></b><div>{f}</div><p>{r}</p></div>' for f, n, r in pro)
+                 + '</div></div>')
+    B.CSS += (".pro{flex:0 0 auto;display:grid;grid-template-columns:190px repeat(5,1fr);gap:12px;padding:14px 18px;"
+              "border:1px solid rgba(200,168,106,.45);border-radius:14px;background:rgba(235,203,143,.05)}"
+              ".pro .h{display:flex;flex-direction:column;justify-content:center}"
+              ".pro .h i{font-style:normal;font-size:10.5px;letter-spacing:.2em;color:var(--gold);font-weight:700}"
+              ".pro .h b{font-size:16.5px;line-height:1.35;color:var(--ink);margin-top:4px}.pro .h b em{font-style:normal;color:var(--gold)}"
+              ".pro .h span{font-size:10.5px;color:var(--mute);margin-top:4px}"
+              ".pro .c{border-left:1px solid rgba(255,255,255,.12);padding-left:12px}"
+              ".pro .c b{font-size:24px;font-weight:800;color:var(--gold);line-height:1.1}.pro .c b small{font-size:12px;margin-left:2px}"
+              ".pro .c div{font-size:14.5px;font-weight:700;color:var(--ink);margin-top:2px}"
+              ".pro .c p{font-size:11.5px;line-height:1.4;color:var(--sub);margin-top:3px}")
+
     k = take("입주박람회 [[운영 계획]]")[1]
     k["body"] = k["body"].replace('class="tiles lg"', 'class="tiles lg opw"', 1)
     B.CSS += ".opw .tile:first-child .nm{font-size:18.5px;letter-spacing:-.02em;white-space:nowrap}"
