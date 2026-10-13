@@ -292,7 +292,7 @@ def apply(B, D, take, sub):
     k["body"] = k["body"].replace('class="tiles lg"', 'class="tiles lg opw"', 1)
     B.CSS += ".opw .tile:first-child .nm{font-size:18.5px;letter-spacing:-.02em;white-space:nowrap}"
     k = take("지웰 엘리움 양주 덕계역 [[특화 제안]]")[1]
-    k["body"] = inject(k["body"], ["checklist", "tape", "streetlight", "monitor", "pin", "truck2"], "tile")
+    k["body"] = inject(k["body"], ["checklist", "tape", "streetlight", "monitor", "pin", "lockdoc"], "tile")
 
     # 지웰 엘리움 양주 덕계역, 이런 단지입니다 — 야간 조감 배너 + 타입 구성 막대(분양 타입 + 임대 49㎡)
     k = take("지웰 엘리움 양주 덕계역, [[이런 단지]]입니다")[1]
@@ -717,7 +717,7 @@ def apply2(B, D, take, sub):
     # 이 단지라서 먼저 챙길 것 — 벤(유상옵션 × 공동구매) + 입주민 관심(입예협 카페 게시글 제목)
     k = take("이 단지라서 [[먼저 챙길 것]]")[1]
     rows = k["body"]
-    for n_, name in enumerate(["checklist", "tape", "truck2", "house_shield", "lockdoc"], 1):
+    for n_, name in enumerate(["checklist", "tape", "house_shield", "lockdoc"], 1):
         rows = sub(rows, f'<div class="no">{n_:02d}</div>', f'<div class="no">{n_:02d}</div>{ic(name)}')
     venn = ('<svg viewBox="0 0 340 176"><defs><clipPath id="vA"><circle cx="130" cy="88" r="78"/></clipPath></defs>'
             '<circle cx="130" cy="88" r="78" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>'
