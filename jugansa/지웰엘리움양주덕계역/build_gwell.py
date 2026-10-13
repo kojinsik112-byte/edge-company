@@ -635,6 +635,33 @@ B.CSS += (".rgl{flex:1;min-height:0;column-count:3;column-gap:24px;column-fill:b
           ".rgl .rn{font-size:11.5px;color:var(--mute);margin-top:5px}")
 
 
+# 발전지원 15만원 ≠ 공구가 인상(본부장 10-13) — 참가비 정액·판매 수수료 없음 + 입예협 가격 검증
+T_SEP = f"세대당 {D.FUND}만원 상당, [[공구가와 따로]]입니다"
+new("std", sec=S0, title=T_SEP,
+    lead=f"‘{D.FUND}만원을 주면 공구가가 오르지 않느냐’는 질문에 구조로 답합니다 - 발전지원은 주관사 몫에서 나가고, 공구가는 입예협이 직접 검증합니다.",
+    body=('<div class="sepx"><div class="sepf">'
+          '<div class="sb1"><i>업체</i><b>참가비 정액</b><span>판매 수수료 없음 · 많이 팔아도 주관사 몫은 같음</span></div><em>›</em>'
+          '<div class="sb1 hl"><i>주관사</i><b>운영비 + 발전지원</b><span>박람회 운영비와 세대당 ' + str(D.FUND) + '만원 상당을 주관사 몫에서 부담</span></div><em>›</em>'
+          '<div class="sb1"><i>입예협 · 입주민</i><b>혜택 패키지</b><span>패키지 A·B·C 또는 입예협 지정 · 사용 내역 공개</span></div></div>'
+          '<div class="sepn">공구가는 이 흐름과 따로 - <b>업체 공개 입찰 경쟁</b>과 <b>시장가 비교</b>로 정해집니다</div>'
+          + B.tiles([
+              dict(lb="01 · 정액", big="0", unit="%", nm="판매 수수료 없음", ds="참가비는 정액으로 받습니다. 매출에 비례하는 수수료가 없어 단가에 얹을 이유가 없습니다."),
+              dict(lb="02 · 공개", nm="단가표 사전 공개", ds="박람회 전 품목별 단가·할인율·모델코드를 입예협이 검수합니다. 현장 가격 변경 없음."),
+              dict(lb="03 · 검증", nm="입예협 시장가 비교", ds="입예협이 품목 3 ~ 5개를 직접 골라 시장가와 비교 - 비싸면 그 업체는 탈락합니다."),
+              dict(lb="04 · 보상", big="10", unit="배", nm="최저가 차액 보상", ds="동일 모델 · 인근 오프라인 정상가 · 계약 후 7일 이내 기준."),
+          ], cols=4) + '</div>'),
+    kp=(f"발전지원을 0원으로 해도 공구가는 같습니다 - 가격은 [[업체 경쟁과 시장가 비교]]로 정해집니다.", "참가비 정액 · 판매 수수료 없음 · 카드·현금 동일가"))
+B.CSS += (".sepx{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px}"
+          ".sepf{display:grid;grid-template-columns:1fr 30px 1.15fr 30px 1fr;align-items:stretch}"
+          ".sepf em{display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:var(--gold)}"
+          ".sepf .sb1{border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:4px}"
+          ".sepf .sb1.hl{border-color:rgba(235,203,143,.7);background:linear-gradient(180deg,rgba(235,203,143,.14),rgba(235,203,143,.03))}"
+          ".sepf i{font-style:normal;font-size:12px;letter-spacing:.18em;color:var(--gold2);font-weight:700}"
+          ".sepf b{font-size:21px;font-weight:800}.sepf span{font-size:14.5px;color:var(--sub);line-height:1.45}"
+          ".sepn{border:1px dashed rgba(200,168,106,.6);border-radius:10px;padding:10px 16px;font-size:15.5px;color:var(--sub);text-align:center}"
+          ".sepn b{color:var(--gold)}")
+
+
 GW_CPL = [  # 공고 5항 9 — 입주민 컴플레인 예시와 처리 기준(본 제안서의 약속과 같은 기준)
     ("커튼 · 블라인드", "설치일에 치수가 맞지 않음", "재실측 → 재제작 → 재방문 설치 · 비용은 업체 부담", "48시간 내 재실측"),
     ("입주청소", "청소 상태 미흡(창틀·욕실)", "사진 접수 → 업체 재청소 → 입주민 확인 서명", "48시간 내 재방문"),
