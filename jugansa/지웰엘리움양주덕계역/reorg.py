@@ -760,7 +760,7 @@ def apply(G):
               + '<h5>적용 원칙</h5>'
               + "".join(f"<div><b>{a}</b><p>{b}</p></div>" for a, b in _pr)
               + '</div></div></div>'),
-        kp=("같은 조명도 [[어디를 · 언제 · 얼마나]] 밝히느냐가 단지의 밤을 바꿉니다.", "사진은 연출 이미지 · 범위·금액은 도면 검토 후 확정")))
+        kp=("같은 조명도 [[어디를 · 언제 · 얼마나]] 밝히느냐가 단지의 밤을 바꿉니다.", "사진은 모집공고 이미지에 경관조명을 입힌 연출(실제와 다를 수 있음) · 범위·금액은 도면 검토 후 확정")))
     B.CSS += r"""
 .lxi{display:grid;grid-template-columns:1.45fr 1fr;gap:20px;flex:1;min-height:0}
 .gal.lxq{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:0}

@@ -1082,7 +1082,7 @@ def p_cover_impact():
     CASHV = getattr(D, "FUND_CASH", False)
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
     return f"""<section class="page cv cv5"><div class="cvlx"><img src="assets_ins/gw_facade_night.jpg" alt=""><div class="fd"></div>
-<span class="cap">단지 경관조명 · 연출 이미지</span></div>{COVER_TOP}
+<span class="cap">경관조명 연출 이미지 · 실제와 다를 수 있음</span></div>{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
 <h1>지웰 엘리움 양주 덕계역 <em>입주박람회 주관사 제안</em></h1>
 <div class="hero3">
@@ -1106,7 +1106,7 @@ def p_cover():
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
     # 조감도(본부장 제공 2026-10-07) — 네이비 배경에 스며들도록 위·왼쪽을 배경색으로 페이드
     art = ('<div class="cvart tj"><img src="assets_ins/gw_aerial_night2.jpg" alt="">'
-           '<span class="credit">지웰 엘리움 양주 덕계역 · 야간 조감 연출 이미지</span></div>')
+           '<span class="credit">모집공고 조감도에 경관조명을 입힌 연출 이미지 · 실제와 다를 수 있음</span></div>')
     return f"""<section class="page cv cv4">{art}{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
 <h1 class="tj">{TITLE_H1}</h1>
@@ -1121,7 +1121,7 @@ def p_cover():
 def p_cover_company():
     """회사소개서 표지(참고 자료) — 제안서 표지 틀 그대로, 제목·띠만 회사소개서로."""
     art = ('<div class="cvart"><img src="assets_ins/gw_aerial_night2.jpg" alt="">'
-           '<span class="credit">지웰 엘리움 양주 덕계역 · 야간 조감 연출 이미지</span></div>')
+           '<span class="credit">모집공고 조감도에 경관조명을 입힌 연출 이미지 · 실제와 다를 수 있음</span></div>')
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제출서류</i><b>참고 자료 · 회사소개서 (연혁 · 조직 구성)</b></div></div>'
     return f"""<section class="page cv cv4">{art}{COVER_TOP}
 <div class="mid"><span class="pill">회사소개서</span>
