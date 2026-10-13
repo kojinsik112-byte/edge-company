@@ -202,7 +202,7 @@ def submit_rows():
         ("8", "최근 3년간 주관사 실적 증빙서류", f"[별지 제2호] 실적증명서 {len(GW_RECS)}건 · NICE 연혁 발췌 · 실적 확약서", "1부"),
         ("9", "입주박람회 제안서", f"{n09}쪽 · A/S 및 사후관리 · 품목별 취소·환불 규정 · 컴플레인 예시 및 해결 우수 사례 포함", "1부"),
         ("10", "제안 요약본 (5페이지 이내)", "5쪽", "1부"),
-        ("11", "서약서 및 별지 서식", "[별지 제3 ~ 6호] 청렴계약이행 · 비밀유지 · 분쟁 책임배상 이행각서 · 입찰결과 승복", "1부"),
+        ("11", "서약서 및 별지 서식", "[별지 제3 ~ 6호] 청렴계약이행 · 비밀유지 · 분쟁 책임배상 이행각서 · 입찰결과 승복 + 서류 반환 불가 · 결과 이의 제기 불가 서약서", "1부"),
     ]
 
 
@@ -269,11 +269,8 @@ def doc08():
                f'<td>{e(sch) if sch else todo(f"{nm} 행사일정")}</td><td>{e(plc) if plc else todo(f"{nm} 행사장소")}</td></tr>')
     yy, mm, dd = ymd()
     p2 = f"""<div class="form"><div class="no">[별지 제2호]</div><h1 style="letter-spacing:.15em">최근 3년간 실적증명서</h1>
-<table class="ft"><tr><th>회 사 명</th><td>{D.COMPANY}</td></tr><tr><th>주 &nbsp; &nbsp; 소</th><td>{D.ADDRESS}</td></tr>
-<tr><th>대 표 자</th><td>대표이사 {D.CEO}<span style="margin-left:60pt;color:#555">(인)</span></td></tr></table>
-<table class="ft" style="margin-top:14pt;font-size:10pt"><tr><th>단지명</th><th>세대수</th><th>행사일정</th><th>행사장소</th></tr>{vr}</table>
-<div class="dt">{yy}년 &nbsp; {mm}월 &nbsp; {dd}일</div>
-<div class="to2" style="margin-top:30pt">{SITE} 입주예정자협의회 귀하</div></div>"""
+<table class="ft" style="font-size:10pt"><tr><th>단지명</th><th>세대수</th><th>행사일정</th><th>행사장소</th></tr>{vr}</table>
+{form_tail2()}</div>"""
     return doc("8 최근 3년간 주관사 실적 증빙서류", [p1, p2])
 
 
@@ -305,7 +302,13 @@ def doc11():
 <p class="tx">주관사로 선정될 경우, 사업 전체를 타인(타사)에게 일괄 도급하지 않으며, 계약 이후라도 일괄 도급한 사실이 적발될 경우 계약이 해지되어도 민사 소송 등 이의를 일절 제기하지 않겠습니다.</p>
 <p class="tx">주관사 미선정 시 {SITE}에 대한 별도의 입주박람회 주관 및 공동구매 등 행사 개최를 일절 하지 않을 것을 서약합니다.</p>
 {form_tail2()}</div>"""
-    return doc("11 서약서 및 별지 서식", [s3, s4, s5, s6])
+    s7 = f"""<div class="form"><h1 style="letter-spacing:.3em">서 약 서</h1>
+<p class="tx" style="margin-top:20pt">당사는 「{e(D.NOTICE)}」({D.NOTICE_DATE})에 따라 입찰에 참가하면서 아래 사항을 서약합니다.</p>
+<ol style="font-size:10.8pt"><li>1. 당사가 제출한 서류 일체는 반환되지 않음을 확인하며, 반환을 요구하지 않겠습니다(공고 8항 1).</li>
+<li>2. 제안서 평가 결과 및 선정 결과에 대하여 어떠한 이의도 제기하지 않겠습니다(공고 8항 5).</li>
+<li>3. 제출 서류에 허위 사실이 발견될 경우 계약 체결 이후라도 무효 처리됨을 확인합니다(공고 8항 1).</li></ol>
+<div style="height:50pt"></div>{form_tail2()}</div>"""
+    return doc("11 서약서 및 별지 서식", [s3, s4, s5, s6, s7])
 
 
 
@@ -336,7 +339,7 @@ def annex07(nice_path, out_path):
 
     L, R = 48, 547
     pg.draw_rect(fitz.Rect(L, 40, L + 46, 56), color=GOLD, width=1)
-    text(L + 23, 51.5, "별첨 1", 8.5, "b", GOLD, "c")
+    text(L + 23, 51.5, "붙임 ②", 8.5, "b", GOLD, "c")
     text(R, 51.5, "제출서류 8 최근 3년간 주관사 실적 증빙서류", 8.5, "r", GRAY, "r")
     pg.draw_line((L, 64), (R, 64), color=NAVY, width=2)
     text(L, 92, "NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌", 17, "b")
@@ -391,7 +394,7 @@ def annex07(nice_path, out_path):
     text((L + R) / 2 - 14, y + 52, who, 11, "b", NAVY, "c")
     sx = (L + R) / 2 - 14 + F["b"].text_length(who, fontsize=11) / 2 + 30
     text(sx, y + 52, "(인)", 10, "r", GRAY)
-    out.set_metadata({"title": "별첨 1 NICE 기업신용평가보고서 연혁 발췌", "author": D.COMPANY})
+    out.set_metadata({"title": "붙임 ② NICE 기업신용평가보고서 연혁 발췌", "author": D.COMPANY})
     out.save(out_path, garbage=4, deflate=True)
 
 
@@ -436,7 +439,11 @@ def main():
 
     res = {}
     res["01"] = stamped(render("01_입찰참가신청서", doc01()))
-    res["02"] = merge("02_사업자등록증", [f"{EV}/사업자등록증.pdf"], "2 사업자등록증 사본")
+    biz = fitz.open(f"{EV}/사업자등록증.pdf")
+    for pg_ in biz:
+        for a in list(pg_.annots()):  # 발급 뒤 덧붙인 '세금계산서 발행정보' 스탬프 주석 — 원본 칸을 가리므로 뺀다
+            pg_.delete_annot(a)
+    res["02"] = merge("02_사업자등록증", [biz], "2 사업자등록증 사본")
     # 3 통장 사본 — 원본 스캔(통장 크기)을 A4 가운데에 그대로 배치
     bank = fitz.open(f"{EV}/법인통장_사본.pdf")
     b3 = fitz.open()
