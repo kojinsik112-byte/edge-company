@@ -1504,7 +1504,7 @@ def summary_pages():
 <div class="two"><div><b>방법 1 · 혜택 패키지</b><span>A · B · C에서 골라 구성</span></div><em>또는</em>
 <div><b>방법 2 · 입예협 지정</b><span>공용물품 · 입주 행사 · 단지 개선 용역</span></div></div>
 <div class="pkl">
-<div><b class="L">A</b><div><strong>입주민 특화서비스</strong><span>백화점 상품권 10만원(현물) · 사전점검 대행 최대 50% 할인 · 타입별 실측 · 샘플하우스 · VR · 3D 홈스타일링</span></div></div>
+<div><b class="L">A</b><div><strong>입주민 특화서비스</strong><span>백화점 상품권 최대 10만원(현물 · 입예협이 금액 조정 가능) · 사전점검 대행 최대 50% 할인 · 타입별 실측 · 샘플하우스 · VR · 3D</span></div></div>
 <div><b class="L">B</b><div><strong>협의회 단지발전지원</strong><span>공용부 품질 점검 · 도면·하자 분석보고서 · 열화상 드론·라돈 측정 · 사전점검 당일 지원 · 온라인 위임장</span></div></div>
 <div><b class="L">C</b><div><strong>단지지원 컨설팅</strong><span>문주·경관조명 · 커뮤니티·공용부 조명 · 전기차 충전 인프라 · 입주 기념 점등식</span></div></div>
 </div>
