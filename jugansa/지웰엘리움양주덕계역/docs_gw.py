@@ -186,7 +186,15 @@ GW_RECS = [  # 공고일(2026.10.10) 기준 최근 3년 1,000세대 이상 주�
     ("2026.01", "두산위브더제니스 오션시티", "부산", 2813, "NICE 연혁"),
     ("2026.07", "창원 센트럴 아이파크", "경남 창원", 1540, "NICE 연혁"),
 ]
-VENUE = {}  # 단지명 → (행사일정, 행사장소) — 본부장 확인 후 채움
+VENUE = {  # 단지명 → (행사일정, 행사장소) — 본부장 확인 10-13
+    "레이카운티": ("1차 2023.08.12 ~ 13\n2차 2023.10.21 ~ 22", "벡스코(BEXCO)"),
+    "두산위브더제니스 센트럴사하": ("1차 2024.06.08 ~ 09\n2차 2024.08.10 ~ 11", "벡스코(BEXCO)"),
+    "에코델타 대성베르힐": ("2025.11.28 ~ 30", "벡스코(BEXCO)"),
+    "양정자이더샵SK VIEW 1·2단지": ("2025.01.11 ~ 12", "벡스코(BEXCO)"),
+    "춘천 학곡지구 중해마루힐 포레스트": ("2025.08.09 ~ 10", "춘천 베어스호텔"),
+    "두산위브더제니스 오션시티": ("2025.12.06 ~ 07", "벡스코(BEXCO)"),
+    "창원 센트럴 아이파크": ("2026.07.03 ~ 05", "창원컨벤션센터(CECO)"),
+}
 
 
 def submit_rows():
@@ -252,8 +260,9 @@ def doc08():
 <h2>1. 최근 3년 1,000세대 이상 입주박람회 주관 실적</h2>
 <p class="note" style="margin:0 0 5pt">기준: 공고일({D.NOTICE_DATE}) 기준 최근 3년(2023.10.10 ~ 2026.10.10) · 1,000세대 이상 공동주택 입주박람회 주관.
 시기·세대수는 NICE디앤비 CLIP 기업신용평가보고서(평가 {D.NICE_DATE}) ‘연혁’과 해당 단지 입주예정자협의회 공식 카페의 주관사 명의 공지 기준입니다.</p>
-<table class="t"><thead><tr><th style="width:5%">No</th><th style="width:15%">주관 시기</th><th>단지명</th><th style="width:13%">지역</th><th style="width:10%">세대수</th><th style="width:18%">근거</th></tr></thead>
+<table class="t"><thead><tr><th style="width:5%">No</th><th style="width:15%">연혁 기재 시기</th><th>단지명</th><th style="width:13%">지역</th><th style="width:10%">세대수</th><th style="width:18%">근거</th></tr></thead>
 <tbody>{rows}<tr class="sum"><td colspan="4">합계 {len(GW_RECS)}개 단지</td><td class="r">{tot:,}</td><td></td></tr></tbody></table>
+<p class="note">※ 연혁 기재 시기는 NICE 보고서·카페 공지 기준이며, 실제 박람회 일정·장소는 [별지 제2호]에 단지별로 적었습니다(레이카운티 · 센트럴사하는 1·2차 2회 개최).</p>
 <div class="box"><b>공고 3항 수임 실적</b> &nbsp; 요건: 입찰공고일 이전 1,000세대 이상 단지 5개 이상 수임 &nbsp;→&nbsp; 최근 3년만 <b>{len(GW_RECS)}개 단지 · {tot:,}세대</b> &nbsp; <span class="ok">충족</span><br>
 3년 이전을 포함한 1,000세대 이상 주관 실적은 <b>9개 단지 · 18,261세대</b>입니다(붙임 실적 확약서).</div>
 <h2>2. 붙임</h2>
@@ -266,7 +275,7 @@ def doc08():
     for d, nm, reg, n, ev in GW_RECS:
         sch, plc = VENUE.get(nm, (None, None))
         vr += (f'<tr><td>{e(nm)}</td><td style="text-align:right">{n:,}</td>'
-               f'<td>{e(sch) if sch else todo(f"{nm} 행사일정")}</td><td>{e(plc) if plc else todo(f"{nm} 행사장소")}</td></tr>')
+               f'<td style="white-space:nowrap">{e(sch).replace(chr(10), "<br>") if sch else todo(f"{nm} 행사일정")}</td><td>{e(plc) if plc else todo(f"{nm} 행사장소")}</td></tr>')
     yy, mm, dd = ymd()
     p2 = f"""<div class="form"><div class="no">[별지 제2호]</div><h1 style="letter-spacing:.15em">최근 3년간 실적증명서</h1>
 <table class="ft" style="font-size:10pt"><tr><th>단지명</th><th>세대수</th><th>행사일정</th><th>행사장소</th></tr>{vr}</table>
