@@ -647,7 +647,7 @@ new("std", sec=S0, title=T_SEP,
           + B.tiles([
               dict(lb="01 · 정액", nm="참가비 정액제", ds="업체 참가비는 정액으로 받습니다. 발전지원을 공구가에 얹는 구조가 아닙니다."),
               dict(lb="02 · 공개", nm="단가표 사전 공개", ds="박람회 전 품목별 단가·할인율·모델코드를 입예협이 검수합니다. 현장 가격 변경 없음."),
-              dict(lb="03 · 검증", nm="입예협 시장가 비교", ds="입예협이 품목 3 ~ 5개를 직접 골라 시장가와 비교 - 비싸면 그 업체는 탈락합니다."),
+              dict(lb="03 · 검증", nm="입예협 시장가 비교", ds="입예협이 품목 3 ~ 5개를 직접 골라 시장가와 비교합니다."),
               dict(lb="04 · 보상", big="10", unit="배", nm="최저가 차액 보상", ds="동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)"),
           ], cols=4) + '</div>'),
     kp=(f"발전지원을 0원으로 해도 공구가는 같습니다 - 가격은 [[업체 경쟁과 시장가 비교]]로 정해집니다.", "참가비 정액제 · 카드·현금 동일가 · 최저가 차액 10배(온라인·시공 품목 제외)"))
@@ -1105,8 +1105,8 @@ def p_cover():
         return p_cover_company()
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
     # 조감도(본부장 제공 2026-10-07) — 네이비 배경에 스며들도록 위·왼쪽을 배경색으로 페이드
-    art = ('<div class="cvart tj"><img src="assets_ins/gw_aerial_night2.jpg" alt="">'
-           '<span class="credit">모집공고 조감도에 경관조명을 입힌 연출 이미지 · 실제와 다를 수 있음</span></div>')
+    art = ('<div class="cvart tj"><img src="assets_ins/gw_aerial_day.jpg" alt="">'
+           '<span class="credit">지웰 엘리움 양주 덕계역 조감도 · 모집공고 이미지 · 실제와 다를 수 있음</span></div>')
     return f"""<section class="page cv cv4">{art}{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
 <h1 class="tj">{TITLE_H1}</h1>
