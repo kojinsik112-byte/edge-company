@@ -58,7 +58,7 @@ def apply(G):
     k["title"] = "정회원 전용 [[추가 혜택]]"
     k["body"] = sub(k["body"], '<div class="nm">백화점 상품권</div>', '<div class="nm">박람회 상품권 +10만원</div>')  # 백화점 상품권은 15만원 패키지 A
     k["lead"] = "정회원으로 박람회에 방문하시면 아래 혜택을 더 받으실 수 있습니다."
-    k["kp"] = ("품목은 입예협 협의 후 [[조정 가능]]합니다.", "유상옵션과 겹치는 품목은 제외")
+    k["kp"] = ("품목 · 할인율은 참여업체 확정 후 [[입예협 승인으로 확정]]합니다.", "확정 전 항목은 공지하지 않음(공고 10항 2) · 공식 유상옵션과 겹치는 품목 제외")
     # 특화 제안 03: 조명 점검은 C 패키지(단지지원 컨설팅) 항목 → '무상' 표기 삭제
     k = take("전기차 충전 [[인프라 검토]]")[1]
     k["lead"] = sub(k["lead"], "충전기 설치 컨설팅을 무상으로 지원합니다.", "충전기 설치 컨설팅을 지원합니다.")
@@ -309,7 +309,7 @@ def apply(G):
     k = take(G["T_CORE6"])[1]
     k["sec"] = S10
     k["body"] = B.tiles([
-        dict(lb="발전지원금" if CASH else "발전지원 · 혜택 패키지", big=f"{fund}", unit="만원" if CASH else "만원 상당", nm="현금 또는 패키지" if CASH else "패키지 · 입예협 지정", ds=f"{SL} {hh:,}세대 기준 총 {total}{'' if CASH else ' 상당'} (부가세 포함) · 입예협 선택"),
+        dict(lb="발전지원금" if CASH else "발전지원 · 혜택 패키지", big=f"{fund}", unit="만원" if CASH else "만원 상당", nm="현금 또는 패키지" if CASH else "패키지 · 입예협 지정", ds=f"{SL} {hh:,}세대 × {fund}만원{'' if CASH else ' 상당'} = {total}{'' if CASH else ' 상당'} · {'입예협 선택' if CASH else '현금 아님'}"),
         dict(lb="이행보증보험 2년", big="@@MX10", unit="억원", nm="주관사 이행 보증", ds="증권 실물을 입예협에 전달"),
         dict(lb="최저가 차액", big="10", unit="배", nm="차액 보상", ds="동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)"),
         dict(lb="계약금 상한", big=f"{D.DEPOSIT_MAX}", unit="%", nm="계약 보호", ds="시공 전 취소·환불 절차를 품목별로 공개"),
@@ -467,7 +467,7 @@ def apply(G):
 
     k = take("이행보증보험 [[2년 · 10억]]")[1]
     k["title"] = "이행보증보험 [[2년 · 최대 10억]]"
-    k["lead"] = "공고 입찰 자격 '하자담보 이행능력' — 계약이행 보증과 하자보수 이행 보증을 협약 시 증권으로 제출합니다."
+    k["lead"] = "공고 4항 8 · 10 — 계약이행 보증과 하자보수 이행 보증을 협약 시 증권으로 제출합니다."
     bond = ('<div class="paper bond"><div class="stamp">견본</div><div class="wm">견 본</div>'
             '<div class="bt">이행(하자)보증보험증권</div><div class="bs">증권 항목 설명용 견본 · 실제 증권은 보증보험사가 발급합니다</div>'
             '<h5>기본사항</h5><table>'
@@ -564,7 +564,7 @@ def apply(G):
     p_member = ("std", dict(sec=SA, title="정회원 혜택 [[상세]]",
         lead="정회원으로 박람회장을 방문한 세대가 받는 혜택입니다.",
         body='<div class="nb"><div class="sumx roomy">' + f'<div class="sb">{mtb(mem[:half], 1)}</div><div class="sb">{mtb(mem[half:], half + 1)}</div>' + "</div></div>",
-        kp=("품목은 입예협 협의 후 [[조정 가능]]합니다.", "유상옵션과 겹치는 품목은 제외")))
+        kp=("품목 · 할인율은 참여업체 확정 후 [[입예협 승인으로 확정]]합니다.", "확정 전 항목은 공지하지 않음(공고 10항 2) · 공식 유상옵션과 겹치는 품목 제외")))
 
     # 회사 조직도(본부장 10-07, 통합제안서 '06 회사 조직도') — 실명은 org_private.json(깃 제외)에서 읽는다
     import json, os

@@ -1485,7 +1485,7 @@ def p_hi_fund(no, sec):
             f"<em>공고 단지 전 세대 {hh:,}세대</em>를 기준으로 지급하고, <em>입예협 공식 통장</em>으로 입금합니다.")
     s = sub(s, "<span>현금성 지원</span>", "<span>현금성 지원 · 입예협 공식 통장 입금 가능</span>")  # 본부장 10-07
     return sub(s, "예: 1,000세대 단지 기준 <em>1억 5천만원</em>의 발전지원 규모.",
-               f"{hh:,}세대 × {D.FUND}만원 = <em>총 {won(n)}</em>(부가세 포함)의 발전지원 규모.")
+               f"{D.SITE['sale_label']} {hh:,}세대 × {D.FUND}만원 상당 = <em>{won(n)} 상당</em>(현금 아님 · 부가세 포함)")
 
 
 B_p_hi_fund = B.p_hi_fund
@@ -1659,12 +1659,12 @@ def finish(path, title):
         if os.path.exists(os.path.join(HERE, "assets_ins", name + ".jpg")):
             return m.group(0)
         PH_MISSING.add(name)
-        return f'<div class="phd"><span>{PH_LABEL.get(name, "사진 자리")}</span><small>{name}.jpg</small></div>'
+        return f'<div class="phd"><div class="phl">{PH_LABEL.get(name, "사진 자리")}</div><div class="phf">{name}.jpg</div></div>'
     doc = re.sub(r'<img src="assets_ins/(bd_\w+)\.jpg"([^>]*)>', _ph, doc)
     doc = doc.replace("</style>", ".phd{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;"
                       "background:linear-gradient(160deg,#16314f,#0b1a2d);border:1px dashed rgba(235,203,143,.35)}"
-                      ".phd span{font-size:13px;letter-spacing:.12em;color:rgba(235,203,143,.75);font-weight:700}"
-                      ".phd small{font-size:10px;color:rgba(255,255,255,.35)}</style>", 1)
+                      ".phd .phl{font-size:13px;letter-spacing:.12em;color:rgba(235,203,143,.75);font-weight:700}"
+                      ".phd .phf{font-size:10px;color:rgba(255,255,255,.35)}</style>", 1)
     doc = re.sub(r"⟦(.*?)⟧", r'<mark class="todo">\1</mark>', doc)
     _todo = re.findall(r'<mark class="todo">(.*?)</mark>', doc)
     if _todo:
