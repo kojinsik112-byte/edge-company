@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
-"""지웰 엘리움 양주 덕계역 — 입주박람회 주관사 제안서 빌더 (공고 5항 제출서류 9 제안서 · 10 제안 요약본 5쪽 이내).
+"""e편한세상 분당 퍼스트빌리지 — 입주박람회 주관사 제안서 빌더 (입예협 공고 제2026-1호 7항 제출서류 2 '입주박람회 주관사 제안서').
 
-동탄 파라곤3차 2-1 빌더를 토대로 한다. 기본틀(요약제안서 v5, ../요약제안서/build.py)은 건드리지 않고 불러와서 고친다.
-- 표지: 지웰 엘리움 양주 덕계역 입주박람회 주관사 제안서 (본부장 제공 야간 조감 연출 이미지 gw_*)
-- 01장(재배치 후 07장) = 지웰 맞춤 제안(단지 이해 · 입주민 관심 · 조경·경관조명 · 업무범위 5 · 자격 7 · 제한 9 · 필수 3 · 개인정보 · 일정 · 운영 · 참가 업체)
-- 실적: 2023.01~2026.10 1,000세대 이상(본부장 지시), 날짜는 입주 연월
-- 사진·발췌 장은 동탄 폴더 assets_ins / assets_full 을 공유(심볼릭 링크, 깃 제외)
+지웰 엘리움 양주 덕계역 빌더(../지웰엘리움양주덕계역/build_gwell.py)를 복제·개조했다. 기본틀(요약제안서 v5, ../요약제안서/build.py)은
+건드리지 않고 불러와서 고친다.
+- 표지: e편한세상 분당 퍼스트빌리지 입주박람회 주관사 제안서 (조감도 bd_cover.jpg — 없으면 남색 자리표시)
+- 01장(재배치 후 07장) = 분당 맞춤 제안: 공고 8항 필수 9항목 ↔ 쪽 대응표 · 단지 이해 · 신혼희망타운 품목 · 유상옵션 겹침 확인 ·
+  시중가·온라인 최저가 검수 · 혜택·가격 비교 한 장 · 협의회 지원 · 정당계약일 부스 · 전담 PM · 업무 11 · 자격 10 · 제한 10 · 유의사항
+- 01 회사소개에 연혁 · 대표자·핵심 운영인력 장 추가(공고 8항 1 · 2)
+- 공고 7항에 요약본 · 회사소개서가 없어 제안서(02)만 출력한다.
+- 사진·발췌 장은 동탄 폴더 assets_ins / assets_full 을 공유(심볼릭 링크, 깃 제외). 본부장 제공 예정 사진(bd_*)은 파일이 생기면 자동 반영.
 
-사용: python build_gwell.py
+사용: python3 build_bd.py [--no-pdf] [--final]
 """
 import html as _h
 import json
@@ -21,7 +24,7 @@ sys.path[:0] = [BASE, HERE]
 import build as B  # noqa: E402  (기본틀 — import 시 PAGES가 채워짐)
 import data as D  # noqa: E402
 
-NAME = "엣지컴퍼니_지웰엘리움양주덕계역_09_입주박람회_제안서"
+NAME = "엣지컴퍼니_분당퍼스트빌리지_02_입주박람회_주관사_제안서"
 FULL_DIR = os.path.join(HERE, "assets_full")  # 통합제안서 기본틀 발췌 페이지(JPEG, 깃 제외)
 FULL_DPI = 170
 FULL_CLIP = (196, 34, 850, 600)  # 원본 페이지에서 본문 패널만(좌측 메뉴·상단 띠 제외)
@@ -43,7 +46,7 @@ def sub(s, old, new):
 
 
 def term(s):
-    """지웰 엘리움 양주 덕계역은 입주예정자협의회(입예협) — 기본틀 용어 그대로."""
+    """분당 퍼스트빌리지는 입주예정자협의회(입예협) — 기본틀 용어 그대로."""
     return s
 
 
@@ -237,130 +240,16 @@ def table(head, rows_html, cls=""):
     return f'<table class="tbl {cls}"><thead><tr>{th}</tr></thead><tbody>{rows_html}</tbody></table>'
 
 
-# ============================================================ 01장 신설 — 지웰 엘리움 양주 덕계역 맞춤 제안 (재배치 후 07장)
-# 근거: 지웰 엘리움 양주 덕계역 입주박람회 주관사 모집 공고(참가 2026.10.10 ~ 10.17 17:00) · 공식 사업개요·정정 모집공고 ·
-# 입예협 카페(2026.02.23 개설) 게시글 '제목' 수준. 공고 8항 4) 제안 내용의 책임은 제출 업체 · 8항 7) 무리한 혜택은 감점
-# → 확인된 사실과 이미 하고 있는 약속만 쓴다.
-S0 = "01. 지웰 엘리움 양주 덕계역 맞춤 제안"
+# ============================================================ 01장 신설 — e편한세상 분당 퍼스트빌리지 맞춤 제안 (재배치 후 07장)
+# 근거: 입예협 공고 제2026-1호(2026.10.12) 4항 참가자격 · 5항 업무 범위 · 6항 선정 절차(PT 대표자 참석) · 7항 제출서류 ·
+# 8항 제안서 필수 포함 9항목 · 9항 참가 제한·무효 · 10항 유의사항(확정되지 않은 혜택 제시 금지) + 확인된 단지 사실(data.py).
+# → 확인된 사실과 이행할 수 있는 약속만 쓴다. 확인 전 칸은 TODO("…")(노란 칸).
+S0 = "01. e편한세상 분당 퍼스트빌리지 맞춤 제안"
 NEW = []
 
 
 def new(kind, **kw):
     NEW.append((kind, kw))
-
-
-ST = D.SITE
-_tp = dict(ST["types"])
-_n49, _n84, _n122 = _tp["49"], _tp["84A"] + _tp["84B"] + _tp["84C"], _tp["122A"] + _tp["122B"]
-_sale, _rent = ST["sale"], ST["rental"]
-T_SITE = f"{ST['name']}, [[이런 단지]]입니다"
-T_LX = "광장 · 104동 주변 조경, [[밤까지]] 살피겠습니다"
-T_MONTHS = "입주까지 30개월, [[빈틈없이]] 관리합니다"
-T_SPECIAL = f"{ST['name']} [[특화 제안]]"
-T_SCOPE = "공고 업무 범위 [[5개 항목]] 대응"
-T_QUAL = "입찰 자격 [[7개 항목]] 대응"
-T_LIMIT = "입찰 제한 [[9개 항목]] 확인"
-T_MUST = "공고 [[필수 포함 3가지]], 여기에 담았습니다"
-T_STAFF = "입예협 [[전담 체계]] — 공고 업무별 담당"
-T_CORE6 = f"{ST['name']}에 드리는 [[핵심 혜택 6가지]]"
-T_DIV = f"{ST['name']}을 위한 [[맞춤 제안]]"
-T_CPL = "입주민 [[컴플레인]], 이렇게 해결합니다"
-
-new("divider", n="01", title=T_DIV,
-    bl=["단지 이해 · 입주민 관심", "공고 업무 5개 · 자격 7개 대응", "추진 일정 · 30개월 관리", "조경·경관조명 특화"])
-
-new("std", sec=S0, title=T_SITE,
-    lead="입찰 공고문 단지개요 · 정정 입주자모집공고 기준 — 입주예정자협의회(이하 입예협)와 함께 설계합니다.",
-    body=B.cards([
-        dict(lb="SCALE", big=f"{ST['households']:,}", unit="세대", nm=f"{ST['buildings']}개동 · {ST['floors']}",
-             ds=f"분양 {_sale:,} · 임대 {_rent}(전용 49㎡). 동별 입주 일정에 맞춰 설치 일정을 안내합니다."),
-        dict(lb="TYPE", big=f"{100 * _n84 / _sale:.1f}", unit="%", nm=f"분양 전용 84㎡ {_n84}세대 중심",
-             ds=f"분양 49㎡ {_n49} · 84㎡ A·B·C {_n84} · 122㎡ A·B {_n122}세대. 같은 84㎡도 [[타입별로]] 견적합니다."),
-        dict(lb="MOVE-IN", big="2029", unit=".04", nm="입주 예정",
-             ds="입주까지 약 30개월. 사전점검 일정은 미정 — 확정되는 대로 박람회·지원 일정을 맞춥니다."),
-        dict(lb="LOCATION", big="덕계역", nm=f"시행 {ST['developer']} · 시공 {ST['builder']}", hl=True,
-             ds="양주 덕계공업지구 특별계획구역 복합용지 2BL · 1호선 덕계역 도보권."),
-    ]),
-    kp=f"{ST['households']:,}세대 · 84㎡ 중심 · 입주까지 약 30개월 — [[타입별 맞춤 견적]]과 [[입주민 건의 관리]]가 핵심입니다.")
-
-new("std", sec=S0, title="이 단지라서 [[먼저 챙길 것]]",
-    lead="대단지 · 49㎡ · 84㎡ 3개 · 122㎡ 2개 타입 · 최고 39층 10개동 — 공동구매 전에 확인할 것부터 정리했습니다.",
-    body=B.rows([
-        ("유상옵션 중복 확인", "시공사 유상옵션 선택 여부·설치 호환을 확인한 뒤 품목을 권합니다. [[이미 선택한 것은 권하지 않습니다.]]"),
-        ("타입별 견적", "49·84A·84B·84C·122A·122B는 창호·수납·설치 면적이 다릅니다. 일괄 가격이 아니라 [[타입별 견적·실측 데이터]]로 안내합니다."),
-        ("창호 · 발코니 확인", "입주민이 물은 창호·발코니 빗물처리 사항을 방충망·단열필름·탄성코트 시공 전 체크리스트에 넣어 [[시공 하자와 공동구매 하자]]를 구분합니다."),
-        ("가격 공개표", "품목·모델코드·물량·부가세·설치·철거·추가금을 한 장에 맞춰 [[같은 조건으로 비교]]합니다. 결제 방식(카드·현금)에 따른 단가 차이는 없습니다."),
-    ], title_w=230),
-    kp="같은 84㎡라도 [[타입마다 다르게]] — 견적·실측을 타입별로 준비합니다.")
-
-GW_REQ = [  # 입예협 카페 게시글 기준 — 건의 '제목' 확인 수준, 처리 결과는 시공사 회신으로 갱신
-    ("품질 · 시공", "창호·승강기 브랜드와 시공 질문 · 발코니 누수·빗물처리 질문", "사양·시공 기준 자료 확인 · 시공사 질의서 작성 지원 · 사전점검 체크리스트 반영", "시공사 회신 확보"),
-    ("단지 가치", "광장 조경 · 104동 주변 조경 건의", "기존 조경·조명 설계와 현장 진단 → 개선 대안별 비용·관리비 비교", "반영 도면 확보"),
-    ("편의 · 공간", "승강기 냉방 건의 · 세대별 창고 추가 질문", "기본 설계와 반영 가능성 대조 · 비용·관리 주체 정리", "건별 회신 공유"),
-    ("정보 · 일정", "실물 유니트 없는 타입 VR 요청 · 사업계획 변경 공문 · 유상옵션 일정 협의", "공문 작성·발송 지원 · 회신 일정 추적 · 유상옵션 일정과 박람회 일정 조율", "공문 회신 · 일정 공유"),
-]
-new("std", sec=S0, title="입주민 건의, [[관리표로]] 끝까지 챙깁니다",
-    lead="입예협 카페에 올라온 건의를 접수 → 기술 검토 → 시공사·기관 협의 → 반영·보류 사유 → 공유까지 기록합니다.",
-    body=table(["분야", "입주민 건의 (입예협 카페)", "주관사 지원", "완료 기준"], "".join(
-        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td></tr>' for a, b, c, d in GW_REQ), "sm")
-         + '<div class="hflow" style="margin-top:20px"><span>카페 건의 접수</span><i>›</i><span>기술 검토 · 담당 지정</span><i>›</i>'
-           '<span>시공사 · 기관 협의</span><i>›</i><span>반영 / 보류 사유</span><i>›</i><span>입예협 공유 · 기록</span></div>'
-         + '<div class="gq3"><div><b>관리표 칸</b><span>건의 번호 · 제목 · 담당 · 기한 · 회신 · 상태</span></div>'
-           '<div><b>상태 구분</b><span>접수 → 검토 중 → 협의 완료 → 설치 완료 · 보류(사유 기재)</span></div>'
-           '<div><b>공유 주기</b><span>입예협 정례회의마다 · 시공사 회신이 오면 바로 갱신</span></div></div>',
-    kp=("‘협의 완료’와 ‘설치 완료’를 [[구분해서]] 보고합니다.", "건의 제목 기준 · 처리 결과는 시공사 회신으로 갱신"))
-B.CSS += (".gq3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}"
-          ".gq3>div{border:1px solid var(--line);border-radius:11px;padding:12px 16px;display:flex;flex-direction:column;gap:4px}"
-          ".gq3 b{font-size:15px;color:var(--gold)}.gq3 span{font-size:14px;color:var(--sub);line-height:1.45}"
-          ".tbl.sm.tjs td{padding-top:16px;padding-bottom:16px}")
-
-new("std", sec=S0, title=T_LX,
-    lead="입주민이 건의한 조경을 도면·현장·예산으로 바꿉니다 — 전기공사업 등록 업체이자 사내 조경 전문 인력을 둔 주관사의 방식입니다.",
-    body=B.rows([
-        ("우선 1 · 조명 · 보행", "광장·104동 주변 동선 조명, 수목 강조, 눈부심·빛샘·타이머 조정 — 기존 경관조명 도면·배선·조도부터 확인합니다."),
-        ("우선 2 · 조경 · 체류", "수목·식재 보완, 휴게공간, 동선과 시설 연결 — 토심·관수·배수·유지관리와 인접 세대 영향을 함께 봅니다."),
-        ("조건부 · 시설 추가", "조명·시설 추가는 관리비·유지관리 주체·인접 세대 눈부심을 [[모두 확인한 뒤]] 판단합니다."),
-        ("산출물 4가지", "① 현황 진단 1장 ② 기본·개선·선택안 비교(물량·공사비·유지관리비) ③ 협의 기록 ④ 완료 검수(수량·위치·사양·A/S)"),
-    ], title_w=210),
-    kp=("공사 범위·금액은 [[도면 검토와 비용 승인 후]] 확정합니다.", "전기공사업 등록 제 울산-00821호"))
-
-new("std", sec=S0, title=T_MONTHS,
-    lead="공고부터 입주까지 약 30개월 — 그사이 바뀔 수 있는 것을 미리 약속해 둡니다.",
-    body=B.cards([
-        dict(lb="FACT", big="30", unit="개월", nm="공고 ~ 입주", ds="2026.10 공고 → 2029.04 입주 예정. 가격·모델·업체 사정이 바뀔 수 있어 [[변경 기준]]을 협약에 넣습니다."),
-        dict(lb="ANSWER 01", big="정례", nm="정례 진행 보고", ds="입예협 정례회의에 맞춰 진행 상황 · 미결 건의 목록 · 다음 일정을 보고합니다."),
-        dict(lb="ANSWER 02", big="대체", nm="업체·모델 변경 기준", ds="단종·폐업 시 동급 이상 모델·대체 업체를 입예협 승인으로 정합니다. 단가 인상은 [[승인 없이 하지 않습니다.]]"),
-        dict(lb="ANSWER 03", big="연기", nm="입주 지연 대응", ds="입주·사전점검이 늦어지면 박람회·시공 일정을 함께 조정하고, 계약 세대에 변경 일정을 개별 안내합니다."),
-    ]),
-    kp="기간이 길수록 [[변경 기준]]을 먼저 정해 두는 것이 약속입니다.")
-
-new("std", sec=S0, title=T_SPECIAL,
-    lead="박람회 운영 경험과 주관사 직영 품목(조명·커튼·실링팬)을 이 단지에 맞게 다시 짰습니다.",
-    body=B.tiles([
-        dict(lb="01", nm="유상옵션 중복 확인", ds="세대별 유상옵션 선택 여부를 확인해 겹치는 품목은 안내 단계에서 걸러 드립니다."),
-        dict(lb="02", nm="타입별 표준 견적", ds="49 · 84A·B·C · 122A·B 타입별 실측 데이터를 확보하면, 심사에서 선정된 업체가 미리 제작해 입주 일정에 맞춰 설치를 예약합니다."),
-        dict(lb="03", nm="광장 · 104동 주변 조명 진단", ds="야간 보행·조경 조명을 진단해 개선안을 제출합니다. 설치는 입예협·관리주체 승인 후 선택."),
-        dict(lb="04", nm="실물 없는 타입 미리 보기", ds="실물 유니트가 없는 타입은 평면·실측 자료와 3D 홈스타일링으로 가구·커튼 배치를 미리 보여 드립니다."),
-        dict(lb="05", nm="교통 · 생활권 안내", ds="1호선 덕계역 · 회천중앙역 · GTX-C 덕정역 등 철도 정보를 기관 발표 기준으로 정리해 안내합니다."),
-        dict(lb="06", nm="입주민 건의 관리표", ds="입예협 카페 건의를 접수 → 검토 → 시공사 협의 → 회신까지 기록하고 정례회의마다 공유합니다."),
-    ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"'),
-    kp=("제안 품목·혜택은 수요조사 결과에 따라 [[입예협과 최종 확정]]합니다.", "철도 개통 일정은 기관 발표 기준 — 주관사가 보장하지 않습니다"))
-
-GW_SCOPE = [  # 공고 2항 주요 업무 범위 1 ~ 5
-    ("입주박람회 참여 업체 선정 · 사후관리", "4단계 공개 심사 · [[A/S 보장기간 명시]](무상 A/S 최소 2년, 업체·품목별 상이) · 시공 전 해약·환불(품목별 취소 기한 시공일 7일·15일 전, 3영업일 내 환불, 업체 지연 시 주관사 선보상)", "03 · 04 · 05장"),
-    ("총회 · 입주박람회 대관 섭외 · 운영 총괄", "박람회장·총회장 후보 답사·대관 · 배치·안전·동선·인력 운영 총괄 · 행사(영업)배상책임보험", "06 · 07장"),
-    ("입주박람회 기획 · 홍보", "[[결제 방식(카드·현금)에 따른 단가 변동 없음]] · 안내데스크·카페테리아·어린이 놀이방 · 카페 콘텐츠·온라인 박람회 등 온/오프라인 마케팅(입예협 사전 승인)", "02 · 06장"),
-    ("사전점검 · 총회 · 세미나 등 입예협 행사 지원", "행사 인력·장비·비품 · 공용부·전유부 공사 전반 [[하자점검]] · 하자 대응 컨설팅(시공사 협의 자료·동석)", "05 · 07장 (08장 B는 추가)"),
-    ("기타 입예협 요청 업무", "입예협이 요청하는 업무는 범위·일정을 협의해 협약서에 반영", "협약서"),
-]
-new("std", sec=S0, title=T_SCOPE,
-    lead="공고 2항 주요 업무 범위를 빠짐없이 맡고, 각 항목을 제안서의 어느 장에서 설명하는지 함께 적었습니다.",
-    body=table(["NO", "공고 업무 범위", "엣지컴퍼니 수행 내용", "본 제안서"], "".join(
-        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
-        for i, (a, b, c) in enumerate(GW_SCOPE, 1)), "sm tjs"),
-    kp="업무 범위가 바뀌어도 [[입예협과 협의해]] 협약서에 그대로 옮깁니다.")
-
-_r3 = D.RECENT3
 
 
 def TODO(x):
@@ -369,173 +258,147 @@ def TODO(x):
 
 
 B.CSS += ".todo{background:#FFE066;color:#0D1E33;font-weight:700;padding:0 5px;border-radius:3px}"
-_nice7 = sum(1 for h in D.HISTORY if "주관" in h[1])
-_rec_hh = sum(r[3] for r in D.RECORDS)
-_rec3 = [r for r in D.RECORDS if r[0] >= "2023.10" and r[1] not in D.NO_DOC08]  # 공고일(2026.10.10) 기준 최근 3년 중 제출서류 8 · 별지 제2호에 넣은 단지
-_rec3_hh = sum(r[3] for r in _rec3)
-GW_QUAL = [  # 공고 3항 입찰 자격 — (요건, 엣지컴퍼니 현황, 증빙 = 공고 5항 제출서류 번호)
-    ("업력 — 법인 1년 이상 · 대표자 본인 명의", "법인 개업 2022.02.28 — 공고일 기준 4년 7개월 · 대표이사 고진식 본인 명의", "제출서류 2 · 4"),
-    ("업태·종목 — 행사대행 · 전시 등", "종목 ‘전시, 박람회 및 행사 대행업’ · 등기 목적 ‘전시 박람회 사업 · 행사대행업 · 이벤트 기획 및 대행업’", "제출서류 2 · 4"),
-    ("자본금 1억원 이상", "자본금 [[2억원]] (2026.04.30 등기)", "제출서류 4"),
-    ("4대보험 정직원 5명 이상", "4대보험 가입 정규직 [[10명]]", "제출서류 7"),
-    ("1,000세대 이상 5개 단지 이상 수임", f"1,000세대 이상 주관 [[{len(D.RECORDS)}개 단지]] · {_rec_hh:,}세대 (최근 3년 실적증명서 {len(_rec3)}개 단지 · {_rec3_hh:,}세대 = 별지 제2호)", "제출서류 8 · 별지 제2호"),
-    ("공동구매 계약 이행 · 하자담보 능력", "이행보증보험 2년 · 최대 10억 · 하자 예치금 최대 1억 · 참여업체 특약이행각서 · 무상 A/S 최소 2년", "04 · 05장 · 별지 제5호"),
-    ("국세 · 지방세 체납 없음", "체납 없음 — 유효기한 내 완납증명서 제출", "제출서류 6"),
+
+
+def PG(key):
+    """제안서 쪽 번호 자리(우측 상단 번호) — 재배치가 끝난 뒤 emit()에서 PGREF 제목으로 찾아 채운다."""
+    return f"⟪pg:{key}⟫"
+
+
+ST = D.SITE
+_tp = dict(ST["types"])
+_sale, _rent = ST["sale"], ST["rental"]
+SL, RL = ST["sale_label"], ST["rental_label"]
+_ap_n, _ap_c, _ap_r = ST["apply"]
+_rec_n, _rec_hh = len(D.RECORDS), sum(r[3] for r in D.RECORDS)
+_types_txt = " · ".join(a for a, _ in ST["types"])
+
+T_DIV = f"{ST['name']}를 위한 [[맞춤 제안]]"
+T_MAP = "공고 8항 [[필수 9항목]], 이 쪽에 있습니다"
+T_SITE = f"{ST['name']}, [[이런 단지]]입니다"
+T_FIRST = "신혼희망타운이라서 [[먼저 챙길 것]]"
+T_OPT = "공식 유상옵션, [[겹침부터]] 확인합니다"
+T_ITEMS = "신혼희망타운 맞춤 [[품목 구성]] (안)"
+T_VENDORS = "품목별 [[예상 참가 업체]]"
+T_VMGT = "입점 업체, [[계약부터 설치까지]] 관리합니다"
+T_CHECK = "시중가 · 온라인 최저가 [[대비 검수]]"
+T_ONE = "혜택 · 가격 비교, [[한 장]]으로 보여 드립니다"
+T_SPECIAL = f"{ST['short']} [[특화 제안]]"
+T_SUPPORT = "협의회 지원, [[시기별로]] 약속합니다"
+T_BOOTH = "정당계약일 [[부스 지원]]"
+T_REQ = "입예협 건의, [[관리표로]] 끝까지 챙깁니다"
+T_LX = "단지 야간 경관 · 조경 조명, [[입주 전에]] 진단합니다"
+T_PM = "본사는 울산, 대응은 [[분당 현장]]에서"
+T_STAFF = "입예협 [[전담 체계]] - 공고 업무별 담당"
+T_PRIV = "입주민 개인정보는 [[행사 운영에만]] 씁니다"
+T_DEFECT = "하자 접수, [[책임부터]] 나눕니다"
+T_REPORT = "보고는 [[항목과 시점]]을 정해 둡니다"
+T_MONTHS = f"입주까지 {ST['months']}개월, [[빈틈없이]] 관리합니다"
+T_SCHED = "선정부터 입주까지 [[추진 일정]] (안)"
+T_SCOPE = "공고 업무 범위 [[11개 항목]] 대응"
+T_QUAL = "입찰 참가자격 [[10개 항목]] 대응"
+T_LIMIT = "참가 제한 · 무효 [[10개 항목]] 확인"
+T_NOTE = "공고 유의사항 · 서약, [[그대로 지킵니다]]"
+T_EXPO = "입주박람회 [[운영 계획]]"
+T_PEOPLE = "대표자 · 핵심 운영인력 [[수행 경험]]"
+T_HIST = "엣지컴퍼니 [[연혁]] · 주요 이력"
+T_CPL = "입주민 [[컴플레인]], 이렇게 해결합니다"
+T_CORE6 = f"{ST['short']}에 드리는 [[핵심 혜택 6가지]]"
+
+new("divider", n="01", title=T_DIV,
+    bl=["공고 8항 필수 9항목 대응표", "신혼희망타운 맞춤 품목 · 유상옵션 확인", "가격 검수 · 혜택 비교 한 장", "업무 11 · 자격 10 · 제한 10 대응"])
+
+# ------------------------------------------------------------ 공고 8항 필수 9항목 ↔ 쪽 대응표(맞춤 장 첫머리)
+MUST9 = [  # (공고 8항 필수 포함 항목, 엣지컴퍼니 제안 핵심, [PGREF 키])
+    ("회사소개 및 주요 이력 현황", f"법인 2022.02 설립 · 자본금 2억 · 1,000세대 이상 주관 {_rec_n}개 단지 · {_rec_hh:,}세대", ["num", "hist", "succ", "big"]),
+    ("대표자 · 핵심 운영인력 수행경험 · 현장 운영 이력", "대표이사 · 총괄 본부장 · 4개 팀 · 자격·협회 등록 전문 인력", ["people", "org"]),
+    ("입주박람회 운영 계획", f"{ST['expo']} 금·토·일 3일(안) · 행사장 후보 3곳 · 배치 · 인원 · 안전 · 편의", ["expo", "venue", "floor", "comfort"]),
+    ("품목 구성 및 입점 예정 업체 관리 방안", "신혼희망타운 맞춤 품목 · 공식 옵션 겹침 확인 · 4단계 심사 · 계약~설치 관리", ["items", "opt", "vendors", "vmgt", "screen"]),
+    ("입주민 혜택 및 가격 투명성 확보 방안", f"세대당 {D.FUND}만원 상당 패키지 · 혜택·가격 비교 한 장 · 단가 4가지 장치", ["one", "fund", "sep", "guard4"]),
+    ("민원 · 하자 대응 체계 및 사후관리 방안", "3중 안전망 · 하자 책임 구분 · 선보상 · 컴플레인 처리 기준 · 취소·환불 규정", ["safe3", "defect", "cpl", "rule1"]),
+    ("협의회 지원 사항 및 계획", "시기별 지원 계획 · 정당계약일 부스 · 건의 관리표 · B 협의회 단지발전지원", ["support", "booth", "req", "pkb"]),
+    ("품목별 시중가 · 온라인 최저가 대비 검수 방안", "같은 조건 총액 비교 · 입예협 검수 · 사전 공개 · 최저가 차액 10배", ["check", "x10"]),
+    ("A/S 접수창구 또는 전담 연락체계 운영계획", "전담 PM · 주관 콜센터 한 창구 · 24시간 회신 · 48시간 처리", ["pm", "call", "crm"]),
 ]
-new("std", sec=S0, title=T_QUAL,
-    lead="공고 3항 입찰 자격을 항목마다 현황과 객관적 증빙으로 답합니다.",
-    body=table(["NO", "공고 입찰 자격", "엣지컴퍼니 현황", "증빙"], "".join(
-        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
-        for i, (a, b, c) in enumerate(GW_QUAL, 1)), "q7"),
-    kp="자격은 말이 아니라 [[제출 서류로]] 확인받겠습니다.")
+new("std", sec=S0, title=T_MAP,
+    lead="공고 8항이 제안서에 꼭 넣으라고 한 9가지를 어느 쪽에서 설명하는지 정리했습니다. 쪽 번호는 각 장 우측 상단 번호입니다.",
+    body=table(["NO", "공고 8항 필수 포함 항목", "엣지컴퍼니 제안 핵심", "제안서 쪽"], "".join(
+        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td class="pg">{" · ".join(PG(k) for k in ks)}</td></tr>'
+        for i, (a, b, ks) in enumerate(MUST9, 1)), "m9"),
+    kp=("필수 9항목 모두 [[숫자와 기한]]으로 답했습니다.", "공고 4항 자격 · 5항 업무 범위 · 9항 제한 · 10항 유의사항 대응은 이 장 뒤쪽"))
+B.CSS += (".tbl.m9 td{padding:8px 14px;font-size:15.5px;line-height:1.4}.tbl.m9 td.k{font-size:16px;width:33%}"
+          ".tbl.m9 td.pg{white-space:nowrap;color:var(--gold);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;width:17%}"
+          ".tbl.m9 tr:nth-child(odd) td{background:rgba(255,255,255,.025)}")
 
-GW_LIMIT = [  # 공고 4항 입찰 제한(참가 배제) 1 ~ 9 — (제한 사유, 확인, 근거)
-    ("계약의 공정한 이행을 해칠 우려", "해당 없음", "별지 제3호 청렴계약이행서약서"),
-    ("특정 업체 낙찰을 위한 담합", "해당 없음", "별지 제3호"),
-    ("관계자 대가성 금품 · 향응 제공", "해당 없음 — 행사 종료 이후 포함", "별지 제3호"),
-    ("타 업체 입찰 참가 방해", "해당 없음", "별지 제3호 · 제6호"),
-    ("필수 제출 서류 누락", "공고 5항 11종 모두 제출", "제출서류 목록"),
-    ("제시 조건 이외의 불법 발전기금", f"제안서에 적은 [[발전지원(세대당 {D.FUND}만원 상당)과 박람회 상품권]] 외 금품·현금 제공 없음", "본 제안서 08장"),
-    ("제출 서류 허위 기재", "공식 발급 서류와 NICE 평가로 증빙", "제출서류 2 ~ 8"),
-    ("타 단지 협약 불성실 이행 이력", "해당 없음", "별지 제2호 실적증명서"),
-    ("타 입예협과 고소 · 고발 · 소송 이력", "해당 없음", "대표이사 확인"),
-]
-new("std", sec=S0, title=T_LIMIT,
-    lead="공고 4항 입찰 제한(참가 배제) 9개 항목에 해당하지 않음을 항목마다 확인했습니다.",
-    body=table(["NO", "공고 입찰 제한", "엣지컴퍼니 확인", "근거"], "".join(
-        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
-        for i, (a, b, c) in enumerate(GW_LIMIT, 1)), "q7"),
-    kp=("발전지원과 박람회 혜택은 [[제안서에 적은 것]]이 전부입니다.", "허위가 확인되면 계약 이후라도 무효 처리(공고 8항 1)를 받아들입니다"))
+# ------------------------------------------------------------ 단지 이해
+new("std", sec=S0, title=T_SITE,
+    lead="입찰 공고문 단지 개요 · 입주자모집공고 기준 - 입주예정자협의회(이하 입예협)와 함께 설계합니다.",
+    body=B.cards([
+        dict(lb="SCALE", big=f"{ST['households']:,}", unit="세대", nm=f"{ST['buildings']}개동 · {ST['floors']}",
+             ds=f"{SL}(신혼희망타운) {_sale:,} · {RL} {_rent}. 2026.07 본청약 신규 {_ap_n}가구에 {_ap_c:,}건 접수(평균 {_ap_r}:1)."),
+        dict(lb="TYPE", big="51~59", unit="㎡", nm="전 세대 전용 60㎡ 이하",
+             ds=f"{SL} {_types_txt}. 소형 타입이라 [[수납 · 커튼 · 조명]]을 타입별 실측으로 맞춥니다."),
+        dict(lb="MOVE-IN", big="2029", unit=".02", nm="입주 예정",
+             ds=f"정당계약 {ST['contract']} · 입주까지 약 {ST['months']}개월. 사전점검 일정은 미정 - 확정되는 대로 박람회 일정을 맞춥니다."),
+        dict(lb="LOCATION", big="성남낙생", nm=f"시행 {ST['developer_short']} · 시공 {ST['builder']}", hl=True,
+             ds=f"{ST['project']} · 성남낙생지구 첫 분양. 판교·분당 업무지구 인접 · {ST['station']}."),
+    ]),
+    kp=("신혼부부 · 영유아 가구가 실거주하는 [[소형 타입 단지]] - 공간 효율 · 가성비 · 안심이 기준입니다.", "모집공고 기준 사실만 적었습니다"))
 
-GW_MUST = [  # 공고 5항 9 — 입주박람회 제안서 필수 포함 3가지
-    ("A/S 및 사후관리 제안", "주관사 단일 창구 · 48시간 하자보수 원칙 · 무상 A/S 최소 2년(업체·품목별 상이) · 하자 예치금 선보상 · 입주 후 1년 운영 관리", "04 하자보증 · 05 주관 콜센터"),
-    ("참여 품목별 계약 취소 · 환불 규정", "품목별 취소 기한(시공일 7일 전 · 15일 전 · 맞춤 제작은 출고 지시 전) · 3영업일 내 환불 · 계약금 10% 이하 · 규정 전문(제1 ~ 10조 · 별표)", "03 업체선정 · 취소 기한 · 규정 전문"),
-    ("입주민 컴플레인 예시 · 해결 우수 사례", "유형별 컴플레인과 처리 기준 · 타 단지 해결 사례 3건 · 입주민 후기 원문 캡처", "05 주관 콜센터"),
-]
-new("std", sec=S0, title=T_MUST,
-    lead="공고 5항 9가 제안서에 꼭 넣으라고 한 3가지를 어느 장에서 설명하는지 정리했습니다.",
-    body=table(["NO", "공고 필수 포함 항목", "엣지컴퍼니 제안", "본 제안서"], "".join(
-        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
-        for i, (a, b, c) in enumerate(GW_MUST, 1)), "lgx")
-        + '<div style="margin-top:12px">' + B.tiles([
-            dict(lb="A/S", big="48", unit="시간", nm="하자보수 원칙", ds="주관사 단일 창구 접수 → 업체 연결 → 완료 확인"),
-            dict(lb="A/S", big="2", unit="년 이상", nm="무상 A/S", ds="업체·품목별 상이 · 계약서에 품목별로 명시"),
-            dict(lb="REFUND", big="3", unit="영업일", nm="환불 처리", ds="취소 기한 안의 취소는 위약금 없이 환불"),
-            dict(lb="CLAIM", big="10", unit="배", nm="최저가 차액 보상", ds="동일 제품이 더 싸면 차액 10배 · 온라인·시공 품목 제외"),
-        ], cols=4) + '</div>',
-    kp="세 가지 모두 [[숫자와 기한]]으로 약속합니다.")
-
-_stf = {n: (c, r) for n, c, r in D.STAFF}
-_next = sum(c for _, c in D.STAFF_EXT)
-
-
-def _dcard(no, req, head, items):
-    li = "".join(f"<li>{t(x)}</li>" for x in items)
-    return f'<div class="dcd"><i>공고 업무 {no}</i><h4>{req}</h4><b>{head}</b><ul>{li}</ul></div>'
-
-
-new("std", sec=S0, title=T_STAFF,
-    lead="지웰 전담 인원 배치(안)를 바탕으로, 공고 업무를 팀별로 나눠 맡깁니다.",
-    body='<div class="nb"><div class="dcx">'
-         + _dcard("1 · 2 · 5", "업체 선정 · 대관 · 요청 대응", "업무별 4개 팀 분업", [
-             f"행정 — 대외지원팀 {_stf['대외지원팀'][0]}명: 공문·민원·하자 접수, 시공사 협의 자료",
-             f"현장 — 행사관리팀 {_stf['행사관리팀'][0]}명: 박람회·총회·사전점검 지원",
-             f"소통 — 영업팀 {_stf['영업팀'][0]}명: 입예협 창구 · 참여업체 심사 지원",
-             "입예협 요청은 담당 팀을 지정해 [[24시간 안에 1차 회신]]"])
-         + _dcard("3", "박람회 기획 · 홍보", f"이벤트팀 {_stf['이벤트팀'][0]}명 전담", [
-             "카페·오픈채팅 콘텐츠 캘린더 · 카드뉴스 · 영상 · 드론",
-             "모든 게시물은 [[입예협 사전 승인 후]] 게시",
-             "카페 밖 세대까지 — 동별 안내문 · 공지채널로 전 세대 도달",
-             "입주민 개인정보 · DB는 홍보에 쓰지 않음"])
-         + _dcard("4", "하자점검 · 하자 대응 컨설팅", "본부장 + 대외지원팀 + 전문 인력", [
-             "본부장이 이슈 직접 관리 · 시공사·기관 협의 자료 준비·동석",
-             "전기·조명은 전기공사업 등록 업체로 [[직접 검토·시공]]",
-             "조경 · 도장 · 타일은 사내 자격·협회 등록 인력이 [[직접 점검·자문]]",
-             "건축·구조·설비·기계·하자진단은 외부 협력 자문"])
-         + '</div><div class="hflow"><span>입예협 요청</span><i>›</i><span>담당 팀 지정</span><i>›</i><span>기술·행정 검토</span><i>›</i>'
-           '<span>시공사 · 기관 협의</span><i>›</i><span>회신 · 기록 · 보고</span></div></div>',
-    kp=("부서 이름이 아니라 [[누가 무엇을 맡는지]]로 답합니다.", "인원·담당은 협약 시 명단 제출 · 외부 협력은 자문·촬영 등 전문 업무"))
-B.CSS += (".dcx{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1;min-height:0}"
-          ".dcd{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 40%);display:flex;flex-direction:column;gap:4px}"
-          ".dcd i{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--gold2)}"
-          ".dcd h4{font-size:15px;color:var(--sub);font-weight:600}.dcd>b{font-size:21px;color:var(--gold);margin-bottom:4px}"
-          ".dcd ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}"
-          ".dcd li{font-size:15.5px;line-height:1.5;padding-left:14px;position:relative}.dcd li:before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--gold2)}")
-
-new("std", sec=S0, title="입주민 개인정보는 [[행사 운영에만]] 씁니다",
-    lead="별지 제4호 비밀유지 서약서 — 입주예정자 개인정보와 협의회 운영정보를 지킬 기준을 미리 정했습니다.",
+new("std", sec=S0, title=T_FIRST,
+    lead=f"전 세대 전용 60㎡ 이하 · 공식 유상옵션이 많은 단지 - 공동구매 전에 확인할 것부터 정리했습니다.",
     body=B.rows([
-        ("수집 최소화", "상담·계약에 필요한 정보만, 목적·보관기간을 정해 [[별도 동의]]를 받습니다."),
-        ("영업 이용 금지", "입주예정자 정보를 영업·마케팅·광고·고객유치에 쓰지 않고, [[DB를 만들거나 판매하지 않습니다.]]"),
-        ("제3자 제공 금지", "입예협 사전 서면 승인 없이 참여업체·제3자에게 제공하지 않습니다. 필요하면 정보주체 동의를 따로 받습니다."),
-        ("참여업체 관리", "참여업체의 개인정보 취급을 주관사가 관리·감독하고, 보호 의무를 계약 조건에 넣습니다."),
-        ("홍보물 사전 승인", "입예협 명칭·로고·카페·오픈채팅은 승인 범위에서만 쓰고, 모든 홍보물은 [[게시 전 승인]]받습니다."),
-        ("파기 · 위반 시 조치", "보관기간이 지나면 파기하고, 위반이 확인되면 별지 제4호에 따른 참가 제한·손해배상을 받아들입니다."),
+        ("유상옵션 겹침 확인", "시스템에어컨 · 현관 중문 · 탄성코트 · 붙박이장 · 식기세척기는 공식 유상옵션이 있습니다. 선택 결과를 확인한 뒤 [[남은 수요 품목만]] 모집합니다."),
+        ("소형 타입 맞춤", f"{_types_txt} - 수납 · 커튼 · 조명은 일괄 가격이 아니라 [[타입별 실측]]으로 사이즈부터 맞춥니다."),
+        ("영유아 가족 안심", "설치 품목은 KC 등 법정 인증 서류를 확인하고, 박람회장에는 [[어린이 놀이방 · 수유실 · 유모차 대여]]를 둡니다."),
+        ("같은 조건 가격 비교", "제품가 · 설치 · 철거 · 배송 · A/S를 맞춘 [[총액으로]] 시중가 · 온라인 최저가와 비교해 공개합니다."),
     ], title_w=210),
-    kp="입주민 명단은 [[업체 영업 명단이 아닙니다.]]")
+    kp="이미 고른 옵션은 권하지 않고, [[남은 수요]]만 같은 조건으로 비교해 드립니다.")
 
-FLOWX = ('<div class="hflow"><span>한 창구 접수</span><i>›</i><span>유형 분류</span><i>›</i><span>책임 주체 연결</span><i>›</i>'
-         '<span>처리 · 회신 추적</span><i>›</i><span>완료 확인 · 정기 보고</span></div>')
-B.CSS += (".tbl.lgx td{padding:17px 14px;font-size:16.5px;line-height:1.5}.tbl.lgx td.k{font-size:18px}"
-          ".hflow{display:flex;align-items:center;gap:10px;margin-top:18px}.hflow span{flex:1;text-align:center;border:1px solid rgba(200,168,106,.5);"
-          "border-radius:10px;padding:12px 8px;font-size:15.5px;font-weight:700;background:rgba(235,203,143,.06)}"
-          ".hflow span:last-child{background:var(--gold);color:#0d1e33;border-color:var(--gold)}.hflow i{font-style:normal;color:var(--gold);font-weight:800;font-size:20px}"
-          ".tbl.q7 td{padding:11px 14px;font-size:16px;line-height:1.45}.tbl.q7 td.k{font-size:16.5px;width:30%}.tbl.q7 td:last-child{width:22%;white-space:nowrap}")
+B.CSS += (".tbl.op5 td{padding:10px 14px;font-size:15px;line-height:1.45}.tbl.op5 td.k{font-size:16px;width:16%}"
+          ".tbl.op5 td:nth-child(2){width:36%}")
+new("std", sec=S0, title=T_OPT,
+    lead="모집공고의 공식 유상옵션과 겹치는 품목은, 수요조사로 옵션 선택 여부를 확인한 뒤 남은 수요만 모집합니다.",
+    body=table(["품목", "공식 유상옵션 (모집공고 기재가 · 부가세 포함)", "외부 업체 설치 시 확인할 조건"], "".join(
+        f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>' for a, b, c in D.OPTIONS), "op5")
+         + '<div class="hflow"><span>수요조사 · 옵션 선택 여부 문항</span><i>›</i><span>겹치는 품목 걸러내기</span><i>›</i>'
+           '<span>남은 수요 품목만 모집</span><i>›</i><span>조건 차이까지 비교 안내</span><i>›</i><span>입예협 승인</span></div>'
+         + '<div class="notex" style="margin-top:12px">※ 외부 설치가 공식 옵션과 같은 기능을 제공한다고 안내하지 않습니다(예: 시스템에어컨 월패드 연동). '
+           '옵션 금액은 일부 타입·구성 예시이며, 옵션 계약 일정·조건은 사업주체 안내를 따릅니다.</div>',
+    kp=("공식 옵션을 고른 세대에는 [[같은 품목을 권하지 않습니다.]]", "옵션 선택 여부는 수요조사 설문으로만 확인 · 개인정보 최소 수집"))
 
-new("std", sec=S0, title="하자 접수, [[책임부터]] 나눕니다",
-    lead="공고 업무 4 공용부·전유부 하자점검과 하자 대응 컨설팅 — 접수는 한 곳에서 받고, 처리 책임은 유형별로 나눠 끝까지 추적합니다.",
-    body=table(["접수 유형", "예", "처리 책임", "주관사 역할"], "".join(
-        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td></tr>' for a, b, c, d in [
-            ("건설사 시공 · 공용부", "세대 마감·설비 하자, 공용부 시설", f"시공사({ST['builder']})·사업주체({ST['developer']}) 하자 처리 창구", "접수 대행 · 회신 추적 · 현장 확인 지원 · 정기 보고"),
-            ("공동구매 납품 · 시공", "박람회에서 계약한 품목의 설치·제품 하자", "참여업체 + 주관사 책임(별지 제5호)", "48시간 하자보수 원칙 · 업체 미응답 시 개입 · 선보상"),
-            ("성능 향상 · 추가 설치", "조경·조명·집기 개선, 시설 추가", "입예협·관리주체 결정 사항", "하자와 구분 · 도면·예산·운영비 검토 후 추진"),
-        ]), "lgx") + FLOWX,
-    kp=("시공 하자를 [[공동구매 업체에 떠넘기지 않고]], 공동구매 하자를 [[시공사 탓으로 돌리지 않습니다.]]", "접수는 주관 콜센터·카카오채널·홈페이지 한 창구"))
+ITEMS = [  # (묶음, 대상, [품목], 기준)
+    ("공간 효율", "전용 51 ~ 59㎡", ["커튼 · 블라인드 (타입별 실측 제작)", "수납 · 선반 · 가구", "LED 조명 · 실링팬"], "타입별 실측 데이터로 사이즈부터"),
+    ("입주 준비", "모든 세대", ["입주청소 · 줄눈 · 새집증후군", "방충망(미세 · 안전) · 단열필름", "포장이사 · 사전점검 대행"], f"{ST['local']} 업체 우선 · 48시간 A/S"),
+    ("생활 가전 · 렌탈", "필요 세대", ["가전 · 식기세척기", "정수기 · 비데 · 공기청정 렌탈", "욕실 환기 가전"], "식기세척기는 콘센트 전기공사 포함 견적"),
+    ("조건부 시공", "옵션 겹침 확인 후", ["시스템에어컨", "현관 중문 · 탄성코트", "붙박이장"], "공식 옵션 선택 결과 확인 → 남은 수요만"),
+]
 
-RPRIN = ('<div class="rprin">' + "".join(f'<div><b>{a}</b><p>{b}</p></div>' for a, b in [
-    ("협의 ≠ 설치", "‘협의 완료’와 ‘설치 완료’를 나눠 표시"),
-    ("지연은 사유와 함께", "지연 건은 사유·다음 일정을 같이 보고"),
-    ("최소 정보", "입예협과 공유할 수 있는 범위로 집계"),
-    ("원자료 열람", "입예협이 요청하면 근거 자료를 열람"),
-]) + '</div>')
-B.CSS += (".rprin{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}.rprin div{border:1px solid rgba(200,168,106,.45);"
-          "border-radius:12px;padding:12px 14px;background:rgba(235,203,143,.05)}.rprin b{display:block;font-size:16px;color:var(--gold)}"
-          ".rprin p{font-size:13.5px;color:var(--sub);margin-top:4px;line-height:1.45}")
 
-new("std", sec=S0, title="보고는 [[항목과 시점]]을 정해 둡니다",
-    lead="공고 업무 1(사후관리) · 4(하자 대응) — 결과보고서와 정기 보고에 무엇을 담을지 미리 정했습니다.",
-    body=table(["보고", "시점", "담는 내용"], "".join(
-        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td></tr>' for a, b, c in [
-            ("정례 진행 보고", "입예협 정례회의마다", "진행 상황 · 미결 건의 목록 · 다음 일정 · 시공사 회신 현황"),
-            ("하자처리 현황 보고", "입주 후 정기(주기는 입예협과 협의)", "하자 접수 · 처리 완료 · 지연 건과 사유 · 재접수"),
-            ("입주박람회 결과보고서", "박람회 종료 후", "[[공동구매 진행현황 · A/S 접수현황 · 하자처리 현황 · 민원처리 결과]]"),
-            ("최종 결과 보고서", "입주 후 1년 운영 관리 종료 시", "계약 · 환불 · A/S · 하자 처리 결과 · 하자 예치금 사용 내역"),
-        ]), "lgx") + RPRIN,
-    kp=("보고서는 입예협과 공유할 수 있는 [[최소 정보]]로 집계합니다.", "개인 연락처·동호수는 싣지 않습니다"))
+def _item_card(nm, who, its, rule):
+    li = "".join(f"<li>{t(x)}</li>" for x in its)
+    return f'<div class="itc"><i>{t(who)}</i><h3>{t(nm)}</h3><ul>{li}</ul><p>{t(rule)}</p></div>'
 
-new("std", sec=S0, title="선정부터 입주까지 [[추진 일정]] (안)",
-    lead="입주 2029.04에서 거꾸로 짰습니다. 약 30개월을 ‘대기’가 아니라 ‘준비’로 씁니다.",
-    body=B.rows([
-        ("2026.10~11", "주관사 선정·협약 체결 · 입예협 카페/공지채널 지원 시작 · [[유상옵션·기본 제공 품목]] 목록 확보 · 건의 관리표 개설"),
-        ("2026.12~2028.09", "정례 진행 보고 · 건의 관리(창고·승강기 냉방·VR) · 광장·104동 주변 조경·조명 진단 · 유상옵션 일정 협의 지원 · 품목 시장가 점검"),
-        ("2028.08~10", "[[품목 수요조사]] 설문 · 타입별(49 · 84A·B·C · 122A·B) 실측 데이터 준비 · 박람회장·총회장 후보 답사"),
-        ("2028.10~12", "참여업체 [[공개 입찰공고]] · 4단계 심사 → [[입예협 최종 컨펌]] · 특약이행각서 징구"),
-        ("2029.01~02", "단가표 사전 공개 · [[입주박람회 금·토·일 3일]] · 온라인 박람회 오픈 · 사전점검 행사 지원"),
-        ("2029.04~", "입주 지원 · 하자 접수 창구 → 입주 후 1년 운영 관리 · [[결과 보고서]] (품목 A/S는 최소 2년 · 업체별 상이)"),
-    ], title_w=170),
-    kp="세부 일정은 사전점검·입주지원센터 일정에 맞춰 [[입예협과 확정]]합니다.")
 
-new("std", sec=S0, title="입주박람회 [[운영 계획]]",
-    lead="계약을 재촉하는 자리가 아니라, 확인하고 비교하는 자리로 만듭니다.",
-    body=B.tiles([
-        dict(lb="WHEN", nm="2029.01 ~ 02 금·토·일 (안)", ds="입주 2~3개월 전 3일간, 사전점검 일정에 맞춰 확정합니다."),
-        dict(lb="WHERE", nm="전시장 후보 3곳", ds="① KINTEX ② SETEC ③ 양주 인근 대체시설 - 입예협과 답사한 뒤 확정합니다. 총회장도 함께 섭외합니다."),
-        dict(lb="SAFETY", nm="행사(영업)배상책임보험 가입", ds="안전요원·동선·비상구 계획 수립. 화재·상해 예방 수칙은 참여업체 서약."),
-        dict(lb="COMFORT", nm="안내데스크 · 카페 · 놀이방", ds="입구 안내데스크(체크인·입예협 부스), 카페테리아, 어린이 놀이방을 둡니다."),
-        dict(lb="ONLINE", nm="온라인 박람회 · 라이브", ds="단지 입주민만 들어오는 폐쇄몰. 박람회와 같은 공동구매가."),
-        dict(lb="PR", nm="카페·공지채널 콘텐츠", ds="카드뉴스·영상·현수막·알림톡 — 게시 전 입예협 사전 승인을 받습니다."),
-    ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"'),
-    kp="박람회장 가격 = 사전 공개 단가 — [[결제 방식과 관계없이]] 같습니다.")
+new("std", sec=S0, title=T_ITEMS,
+    lead="공고 8항 4 - 신혼부부 · 영유아 가구의 실거주에 필요한 품목을 네 묶음으로 나누고, 공식 옵션과 겹치는 품목은 조건부로 둡니다.",
+    body=('<div class="nb"><div class="itx">' + "".join(_item_card(*x) for x in ITEMS) + '</div>'
+          f'<div class="itr"><b>{RL} {_rent}세대</b><span>운영기관 · 입예협 협의 후 박람회 참여를 안내합니다. 생활 가구 · 가전 · 이사 · 청소 등 '
+          '비고정 품목 위주이며, 고정 시설 시공은 임대계약 · 운영기관 승인 · 원상복구 조건을 확인한 뒤에만 안내합니다.</span></div>'
+          '<div class="itr g"><b>영유아 가구 안심 기준</b><span>설치 품목은 KC 등 법정 인증 서류 확인 · 마감재는 친환경 인증 서류를 낸 업체 우선 · '
+          '새집증후군 · 라돈 측정은 B 패키지 항목으로 선택</span></div></div>'),
+    kp=("품목 수와 업체 수는 [[수요조사 결과]]로 정합니다.", "품목 · 가격은 입예협과 사전 협의 후 확정(공고 10항 7)"))
+B.CSS += (".itx{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;flex:1;min-height:0}"
+          ".itc{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;"
+          "background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 45%)}"
+          ".itc i{font-style:normal;font-size:12px;letter-spacing:.14em;color:var(--gold2);font-weight:700}"
+          ".itc h3{font-size:23px;font-weight:800;color:var(--gold);margin:2px 0 8px}"
+          ".itc ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;flex:1}"
+          ".itc li{font-size:15.5px;line-height:1.4;padding-left:14px;position:relative}.itc li:before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--gold2)}"
+          ".itc p{margin-top:10px;border-top:1px dashed rgba(200,168,106,.45);padding-top:8px;font-size:13.5px;color:var(--sub);line-height:1.45}"
+          ".itr{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center;border:1px dashed rgba(200,168,106,.55);border-radius:12px;padding:10px 16px}"
+          ".itr b{font-size:16px;color:var(--gold)}.itr span{font-size:14px;color:var(--sub);line-height:1.5}"
+          ".itr.g{border-style:solid;border-color:rgba(235,203,143,.55);background:rgba(235,203,143,.06)}")
 
 
 def vendor_rows():
@@ -551,13 +414,466 @@ def vendor_rows():
     return "".join(out)
 
 
-new("std", sec=S0, title="품목별 [[예상 참가 업체]]",
-    lead="확정은 입예협 공개 입찰·심사 후 — 시공 품목은 양주 인근(경기 북부권) 업체가 우선입니다.",
+new("std", sec=S0, title=T_VENDORS,
+    lead=f"확정은 수요조사와 입예협 공개 입찰 · 심사 후 - 시공 품목은 현장 인근({ST['local']}) 업체가 우선입니다.",
     body=table(["구분", "품목", "예상 참가 업체", "비고"], vendor_rows(), "sm"),
-    kp=("주관사 직영 품목도 [[같은 심사 · 같은 단가 공개 · 같은 가격 보호 규정]] 적용.", "최저가 차액 10배 보상은 계약 취소·환불 규정 기준 · 사업 전체 일괄 도급 없음"))
+    kp=("주관사 직영 품목도 [[같은 심사 · 같은 단가 공개 · 같은 가격 보호 규정]] 적용.", "‘참가 협의 중’은 확정 전 업체 · 사업 전체 일괄 도급 없음"))
 
-# 계약 취소 · 환불 규정 전문(공고 5항 9 '참여 품목별 계약 취소 및 환불 규정 포함') — 제안서 03장에 2쪽으로 싣는다.
-# 문구는 탕정 제출서류 09(docs_tj.py)와 같은 기준 · 지웰 맞춤(인근 = 양주·의정부권, 별지 제5호 분쟁 책임배상 이행각서)
+VMGT = [  # 공고 5항 2 · 3 — (단계, 관리 방법, 기준)
+    ("선정", "수요조사 → 공개 입찰공고 → 4단계 심사 → [[입예협 최종 컨펌]]", "품목별 업체 수는 입예협 승인 · 하청 금지"),
+    ("계약", "표준 계약서에 취소·환불 규정 첨부 · 모델코드 · 포함 조건(설치·철거·배송·A/S) 명시", f"계약금 {D.DEPOSIT_MAX}% 이하 · 카드·현금 동일가"),
+    ("일정", "세대별 상담 · 계약 · 납품 · 시공 · 설치 [[일정 관리표]] · 동별 일정 충돌 조정", "시공 가능 시점 · 관리사무소 신고 확인"),
+    ("검수", "시공 · 설치 후 세대 확인 서명 → 잔금 · 해피콜", "하자 · 미시공은 보수 후 잔금"),
+    ("평가", "박람회 후 업체별 민원 · A/S 처리 현황 집계 → 입예협 보고", "패널티 3단계 · 재참여 제한"),
+    ("공정", "모든 참여업체에 균등한 기회 · 가격 담합 · 독점 유도 · 비방 금지", "서식 5 청렴계약 3"),
+]
+new("std", sec=S0, title=T_VMGT,
+    lead="공고 5항 2 · 3 - 품목 구성 · 업체 섭외 · 계약관리부터 납품 · 시공 · 설치 일정까지 주관사가 같은 표로 관리합니다.",
+    body=table(["단계", "관리 방법", "기준"], "".join(
+        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td></tr>' for a, b, c in VMGT), "lgx vm"),
+    kp=("업체는 [[같은 기준]]으로 뽑고, [[같은 표]]로 관리합니다.", "4단계 심사 · 특약이행각서 · 패널티는 03 · 04장"))
+B.CSS += ".tbl.vm td{padding:14px 14px}.tbl.vm td.k{width:12%}.tbl.vm td:last-child{width:30%}"
+
+CHECK5 = [("STEP 01", "단가 제출", "모델코드 · 규격 · 설치 · 철거 · 배송 · A/S 포함 여부"),
+          ("STEP 02", "시중가 조사", f"{ST['local']} 오프라인 매장 2곳 이상 견적서"),
+          ("STEP 03", "온라인 최저가", "같은 모델 최저 총액 · 조사일 · 화면 캡처 보관"),
+          ("STEP 04", "입예협 검수", "비교표 제출 · 입예협이 품목을 골라 직접 확인"),
+          ("STEP 05", "공개 · 보호", "박람회 전 카페 공개 · 계약 후 최저가 차액 10배")]
+new("std", sec=S0, title=T_CHECK,
+    lead="공고 8항 8 - 박람회 전에 품목별로 시중가 · 온라인 최저가와 비교하고, 입예협 검수를 거친 단가만 공개합니다.",
+    body=('<div class="nb"><div class="flowx">' + "".join(
+        (('<div class="ar">›</div>' if i else "") + f'<div class="st{" hl" if i == 3 else ""}"><i>{a}</i><b>{b}</b><p>{t(c)}</p></div>')
+        for i, (a, b, c) in enumerate(CHECK5)) + '</div>'
+          + B.rows([
+              ("같은 조건 총액으로", "제품가만이 아니라 설치 · 철거 · 배송 · 부가세 · A/S 기간을 맞춘 [[총액]]으로 비교합니다."),
+              ("높으면 사유 또는 조정", "박람회 단가가 시중가 · 온라인 최저가보다 높으면 사유(설치 포함 · A/S 연장 등)를 표기하거나 단가 조정을 요청하고, [[입예협이 승인하지 않으면 재입찰]]합니다."),
+              ("공식 옵션과도 비교", "시스템에어컨 · 중문 · 탄성코트 · 붙박이장 · 식기세척기는 모집공고 옵션가와 조건 차이(연동 · 콘센트 등)까지 표기합니다."),
+              ("기록 보관 · 열람", "조사 화면 · 견적서는 협약 기간 동안 보관하고, 입예협이 요청하면 원자료를 열람합니다."),
+          ], title_w=210) + '</div>'),
+    kp=("검수는 [[박람회 전]], 보상은 [[계약 후]] - 두 번 확인합니다.", "최저가 차액 10배 보상은 인근 오프라인 매장 동일 제품 기준(온라인 · 시공 품목 제외) · 규정 제8조"))
+
+ONE_L = [  # (숫자, 단위, 혜택, 조건)
+    (f"{D.FUND}", "만원 상당", "세대당 혜택 패키지", f"{SL} {D.FUND_HH:,}세대 · 현금 아님 · A·B·C 또는 입예협 지정"),
+    ("30", "만원", "정회원 박람회 상품권", "일반 20 + 정회원 10 · 업체 계약 시 품목당 1매"),
+    ("10", "%", "현장 특별할인 (최대)", "사전 공개 단가표에 적은 품목만"),
+    ("10", "배", "최저가 차액 보상", "인근 오프라인 동일 제품 · 계약 후 7일 · 온라인·시공 제외"),
+    (f"{D.DEPOSIT_MAX}", "%", "계약금 상한", "잔금은 시공 · 설치 후 · 카드 · 현금 동일가"),
+    ("3", "영업일", "환불", "취소 기한 안이면 위약금 없이 전액"),
+    ("2", "년 이상", "무상 A/S", "업체 · 품목별 상이 · 48시간 하자보수 원칙"),
+]
+_ph = '<span class="ph0">조사 후 기입</span>'
+ONE_R = [("식기세척기 · 14인용", "전기공사 포함", "165만원 (콘센트 포함)"),
+         ("현관 중문 · 슬라이딩", "55A 기준", "150만원"),
+         ("커튼 · 블라인드", "55A 거실 · 실측", "옵션 없음")]
+new("std", sec=S0, title=T_ONE,
+    lead="정회원 온라인 투표 전에 한눈에 보시도록 - 왼쪽은 우리 집이 받는 혜택과 조건, 오른쪽은 박람회 전에 공개할 가격 비교표 양식입니다.",
+    body=('<div class="nb"><div class="one">'
+          '<div class="ol"><h3><i>BENEFIT</i>우리 집이 받는 혜택 · 조건까지</h3><div class="obx">' + "".join(
+              f'<div><b>{a}<small>{u}</small></b><div><strong>{t(n)}</strong><span>{t(c)}</span></div></div>' for a, u, n, c in ONE_L)
+          + '</div></div>'
+          '<div class="orr"><h3><i>PRICE</i>가격 비교표 · 공개 양식</h3>'
+          '<table class="ocmp"><thead><tr><th>품목</th><th>시중가<small>' + ST["local"] + ' 매장</small></th><th>온라인 최저가<small>배송·설치 포함</small></th>'
+          '<th>공식 유상옵션가<small>모집공고</small></th><th class="ex">박람회 단가<small>사전 공개</small></th></tr></thead><tbody>'
+          + "".join(f'<tr><td><b>{a}</b><small>{b}</small></td><td>{_ph}</td><td>{_ph}</td><td>{c}</td><td class="ex">{_ph}</td></tr>' for a, b, c in ONE_R)
+          + '</tbody></table>'
+          '<ul class="ont"><li>같은 모델코드 · 같은 포함 조건(설치 · 철거 · 배송 · A/S)의 <b>총액</b>으로 비교</li>'
+          '<li>박람회 전 <b>입예협 검수 · 승인 후 카페 공개</b> · 박람회장 가격 변경 없음</li>'
+          '<li>공식 옵션과 기능 차이가 있으면 함께 표기(예: 외부 시스템에어컨 월패드 연동 불가)</li></ul></div>'
+          '</div></div>'),
+    kp=("혜택은 [[조건까지]], 가격은 [[같은 조건 총액]]으로 보여 드립니다.", "공고 10항 2 - 확정되지 않은 혜택은 적지 않았습니다 · 표의 빈칸은 업체 선정 후 기입"))
+B.CSS += (".one{display:grid;grid-template-columns:1fr 1.25fr;gap:20px;flex:1;min-height:0}"
+          ".one h3{font-size:17px;font-weight:800;margin-bottom:10px;display:flex;align-items:baseline;gap:10px}"
+          ".one h3 i{font-style:normal;font-size:11px;letter-spacing:.2em;color:var(--gold2);font-weight:700}"
+          ".one .ol,.one .orr{border:1px solid var(--line);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;min-height:0;"
+          "background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01))}"
+          ".one .ol{border-color:rgba(235,203,143,.6);background:linear-gradient(180deg,rgba(235,203,143,.12),rgba(235,203,143,.02))}"
+          ".obx{display:flex;flex-direction:column;justify-content:space-between;flex:1}"
+          ".obx>div{display:grid;grid-template-columns:108px 1fr;gap:12px;align-items:center;padding:4px 0;border-bottom:1px dashed rgba(255,255,255,.12)}"
+          ".obx>div:last-child{border-bottom:0}"
+          ".obx b{font-size:30px;font-weight:800;color:var(--gold);line-height:1;text-align:right;white-space:nowrap}.obx b small{font-size:13px;margin-left:2px}"
+          ".obx strong{display:block;font-size:15.5px}.obx span{display:block;font-size:12.8px;color:var(--sub);line-height:1.4}"
+          ".ocmp{width:100%;border-collapse:collapse;flex:1}"
+          ".ocmp th{font-size:12.5px;font-weight:700;color:var(--gold2);text-align:center;padding:0 6px 8px;border-bottom:1.5px solid rgba(200,168,106,.55);line-height:1.3}"
+          ".ocmp th small{display:block;font-size:10.5px;color:var(--mute);font-weight:400}"
+          ".ocmp th:first-child{text-align:left}"
+          ".ocmp td{font-size:14px;padding:10px 6px;border-bottom:1px dashed rgba(255,255,255,.14);text-align:center;color:var(--sub)}"
+          ".ocmp td:first-child{text-align:left}.ocmp td b{display:block;color:var(--ink);font-size:15px}.ocmp td small{font-size:12px;color:var(--mute)}"
+          ".ocmp .ex{background:rgba(235,203,143,.08)}"
+          ".ph0{display:inline-block;border:1px dashed rgba(235,203,143,.55);border-radius:6px;padding:4px 8px;font-size:11.5px;color:var(--gold2)}"
+          ".ont{list-style:none;margin:12px 0 0;padding:10px 0 0;border-top:1px solid rgba(200,168,106,.35);display:flex;flex-direction:column;gap:6px}"
+          ".ont li{font-size:13.5px;color:var(--sub);line-height:1.45;padding-left:14px;position:relative}.ont li:before{content:'·';position:absolute;left:2px;color:var(--gold2);font-weight:800}"
+          ".ont b{color:var(--ink)}")
+
+new("std", sec=S0, title=T_SPECIAL,
+    lead="박람회 운영 경험과 주관사 직영 품목(조명 · 커튼 · 실링팬)을 신혼희망타운에 맞게 다시 짰습니다.",
+    body=B.tiles([
+        dict(lb="01", nm="유상옵션 겹침 확인", ds="옵션 선택 여부를 수요조사로 확인해, 겹치는 품목은 권하지 않고 남은 수요만 모집합니다."),
+        dict(lb="02", nm="타입별 표준 견적", ds=f"{_types_txt} 타입별 실측 데이터로 커튼 · 수납 · 조명을 사이즈부터 맞춥니다."),
+        dict(lb="03", nm="가격 비교 한 장", ds="시중가 · 온라인 최저가 · 공식 옵션가를 같은 조건 총액으로 비교해 박람회 전에 공개합니다."),
+        dict(lb="04", nm="영유아 가족 박람회", ds="어린이 놀이방 · 수유실 · 유모차 대여를 두고, 가족이 함께 비교 · 상담하도록 운영합니다."),
+        dict(lb="05", nm="온라인 박람회 · 카카오 상담", ds="박람회장에 오기 어려운 세대도 폐쇄몰과 카카오채널로 같은 공동구매가에 상담합니다."),
+        dict(lb="06", nm="단지 야간 경관 진단", ds="전기공사업 등록 업체로서 공용부 · 경관조명 개선안을 제출합니다. 설치는 입예협 · 관리주체 승인 후 선택."),
+    ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"'),
+    kp=("제안 품목 · 혜택은 수요조사 결과에 따라 [[입예협과 최종 확정]]합니다.", "공고 10항 7 - 품목 · 가격은 입예협과 사전 협의 후 확정"))
+
+SUPPORT = [  # (시기, 기본 업무 — 공고 5항, 비용 주관사, 선택 지원 — 15만원 상당 패키지 B)
+    ("선정 직후 · 2026.11", "[[정당계약일 부스 지원]](입예협 요청 시) · 협약 · 카페/공지 채널 콘텐츠 지원 시작", "온라인 위임장 · 민원 양식"),
+    ("계약 후 ~ 옵션 선택", "유상옵션 일정 · 조건 안내 콘텐츠 · 옵션 선택 여부 설문 지원", "도면 분석보고서"),
+    ("2027 ~ 2028 상반기", "정례 진행 보고 · 건의 관리표 · 공문 작성 · 시공사 협의 자료", "공용부 품질 점검 · 협상 미팅 동석"),
+    ("2028 하반기", "품목 수요조사 · 업체 공개 입찰 · 가격 검수 · 사전점검 체크리스트 · 입주설명회 지원", "세미나 영상 · 일조 시뮬레이션"),
+    ("사전점검 · 박람회", "입주박람회 3일 운영 · 사전점검 행사 인력 · 비품 · 안내물", "사전점검 당일 지원 · 열화상 드론 · 라돈"),
+    ("입주 후 1년", "하자 접수 창구 · 하자처리 현황 보고 · 결과 보고서", "공용 · 조경 하자진단 · 세스코 점검"),
+]
+new("std", sec=S0, title=T_SUPPORT,
+    lead="공고 8항 7 - 공고 업무 범위의 기본 지원은 주관사 비용으로 하고, 15만원 상당 패키지 B는 입예협이 골라 더합니다.",
+    body=table(["시기", "기본 지원 · 공고 5항 (주관사 부담)", "선택 지원 · 패키지 B (입예협 선택)"], "".join(
+        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td></tr>' for a, b, c in SUPPORT), "lgx sp6"),
+    kp=("기본 지원은 [[15만원과 별도]]로 합니다 - 패키지는 입예협이 더 고르는 몫입니다.", "B 패키지 항목은 08장 · 일정은 입예협 정례회의에서 확정"))
+B.CSS += ".tbl.sp6 td{padding:12px 14px;font-size:15.5px}.tbl.sp6 td.k{width:17%;white-space:nowrap}.tbl.sp6 td:last-child{width:30%;color:var(--gold)}"
+
+new("std", sec=S0, title=T_BOOTH,
+    lead=f"공고 5항 11 - 정당계약({ST['contract']}) 부스 지원. 선정 통보 후 입예협 요청에 맞춰 남은 계약 기간에 지원합니다.",
+    body=B.tiles([
+        dict(lb="01 · BOOTH", nm="안내 부스 지원", ds="테이블 · 의자 · 현수막 · X배너 · 안내물을 준비합니다. 문구는 입예협 승인 후 제작합니다."),
+        dict(lb="02 · MEMBER", nm="정회원 · 위임장 안내", ds="입예협 양식 · 절차 그대로 안내합니다. 개인정보는 입예협이 직접 받고, 주관사는 보관하지 않습니다."),
+        dict(lb="03 · STAFF", nm="도우미 지원", ds="인원 · 일수는 입예협 요청에 맞춰 협의합니다. 전 인원 명찰(직책 · 이름)을 답니다."),
+        dict(lb="04 · COMFORT", nm="대기 편의", ds="생수 · 음료 등 대기 편의를 계약 장소 운영 주체의 승인 범위 안에서 준비합니다."),
+        dict(lb="05 · NO SALES", nm="판매 · 영업 없음", ds="공동구매 안내 · 업체 홍보 · 사전 예약을 하지 않습니다. 입예협 안내를 돕는 자리입니다."),
+        dict(lb="06 · COST", nm="비용은 주관사 부담", ds="부스 지원 비용은 주관사가 부담하며, 세대당 15만원 상당 패키지와 별개입니다."),
+    ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"'),
+    kp=("계약일 부스는 [[입예협 안내]]를 돕는 자리 - 영업하지 않습니다.", "계약 장소 운영 주체의 승인 범위 안에서 · 일정 · 인원은 입예협과 협의"))
+
+REQ = [  # 예상 건의 유형 — 실제 항목은 입예협과 정한다
+    ("품질 · 시공", "사전점검 하자 · 마감 · 설비 질의", "점검 체크리스트 반영 · 시공사 질의서 작성 지원", "시공사 회신 확보"),
+    ("옵션 · 계약", "유상옵션 일정 · 조건 · 계약 안내", "사업주체 안내 정리 · 카페 안내 콘텐츠(입예협 승인)", "공지 게시"),
+    ("생활 인프라", "국공립어린이집 · 다함께돌봄센터 · 교통 · 상가 일정", "기관 발표 자료 확인 · 질의 공문 작성 지원", "기관 회신 공유"),
+    ("정보 · 일정", "사업 일정 · 사전점검 · 입주 일정", "공문 작성 · 발송 지원 · 회신 일정 추적", "일정 공유"),
+]
+new("std", sec=S0, title=T_REQ,
+    lead="입예협에 들어오는 건의를 접수 → 기술 검토 → 시공사 · 기관 협의 → 반영 · 보류 사유 → 공유까지 기록합니다.",
+    body=table(["분야", "건의 예 (유형)", "주관사 지원", "완료 기준"], "".join(
+        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td></tr>' for a, b, c, d in REQ), "sm tjs")
+         + '<div class="hflow" style="margin-top:20px"><span>건의 접수</span><i>›</i><span>기술 검토 · 담당 지정</span><i>›</i>'
+           '<span>시공사 · 기관 협의</span><i>›</i><span>반영 / 보류 사유</span><i>›</i><span>입예협 공유 · 기록</span></div>'
+         + '<div class="gq3"><div><b>관리표 칸</b><span>건의 번호 · 제목 · 담당 · 기한 · 회신 · 상태</span></div>'
+           '<div><b>상태 구분</b><span>접수 → 검토 중 → 협의 완료 → 설치 완료 · 보류(사유 기재)</span></div>'
+           '<div><b>공유 주기</b><span>입예협 정례회의마다 · 시공사 회신이 오면 바로 갱신</span></div></div>',
+    kp=("‘협의 완료’와 ‘설치 완료’를 [[구분해서]] 보고합니다.", "건의 유형은 예시 · 실제 항목은 입예협과 정합니다"))
+B.CSS += (".gq3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}"
+          ".gq3>div{border:1px solid var(--line);border-radius:11px;padding:12px 16px;display:flex;flex-direction:column;gap:4px}"
+          ".gq3 b{font-size:15px;color:var(--gold)}.gq3 span{font-size:14px;color:var(--sub);line-height:1.45}"
+          ".tbl.sm.tjs td{padding-top:16px;padding-bottom:16px}")
+
+new("std", sec=S0, title=T_LX,
+    lead="전기공사업 등록 업체이자 사내 조경 전문 인력을 둔 주관사로서, 단지의 밤길과 조경을 도면 · 현장 · 예산으로 살핍니다.",
+    body=B.rows([
+        ("우선 1 · 조명 · 보행", "주 동선 · 산책로 야간 밝기, 눈부심 · 빛샘 · 타이머 조정 - 기존 경관조명 도면 · 배선 · 조도부터 확인합니다."),
+        ("우선 2 · 어린이 동선", "어린이집 · 놀이터 주변 보행 동선과 계단 · 단차 바닥 밝기를 함께 봅니다."),
+        ("조건부 · 시설 추가", "조명 · 시설 추가는 관리비 · 유지관리 주체 · 인접 세대 눈부심을 [[모두 확인한 뒤]] 판단합니다."),
+        ("산출물 4가지", "① 현황 진단 1장 ② 기본 · 개선 · 선택안 비교(물량 · 공사비 · 유지관리비) ③ 협의 기록 ④ 완료 검수(수량 · 위치 · 사양 · A/S)"),
+    ], title_w=210),
+    kp=("공사 범위 · 금액은 [[도면 검토와 비용 승인 후]] 확정합니다.", "전기공사업 등록 제 울산-00821호"))
+
+new("std", sec=S0, title=T_PM,
+    lead="공고 8항 9 · 4항 5 - 본사가 멀어도 입주민은 한 창구로 연락하고, 전담 PM과 현장 인근 업체가 기한 안에 처리합니다.",
+    body=('<div class="nb"><div class="pmx">'
+          '<div class="pc"><h3><i>CONTACT</i>전담 연락 체계</h3>'
+          + B.rows([
+              ("총괄 책임", f"주관사업 총괄 본부장 · [[{D.MANAGER[2]}]]"),
+              ("전담 PM", f"{ST['short']} 전담 1명 지정 · 협약 시 성명 · 연락처 제출"),
+              ("한 창구 접수", f"주관 콜센터 {D.TEL}(평일 09:00 ~ 18:00) · 온라인 365일(카페 신문고 · 카카오채널 · 홈페이지)"),
+              ("회신 · 처리", "[[24시간 안에 1차 회신]] · 48시간 하자보수 원칙 · 해피콜로 종결"),
+          ], title_w=128) + '</div>'
+          '<div class="pc"><h3><i>ON SITE</i>거리를 메우는 현장 체계</h3>'
+          + B.rows([
+              ("정례 · 행사", "입예협 정례회의 · PT · 박람회 · 사전점검에 본부장 · 운영팀이 현장 참석"),
+              ("입주 집중기", "단지 안 임시 상주 창구(입예협 · 관리주체 협의)"),
+              ("시공 · A/S", f"{ST['local']} 시공업체 우선 선정 - [[48시간 A/S가 가능한 거리]]"),
+              ("수도권 거점", TODO("수도권 현장 거점 · 상주 인원 - 확정 시 기재")),
+          ], title_w=128) + '</div></div></div>'),
+    kp=("입주민은 [[한 창구]]로 연락하시면 됩니다.", "콜센터 평일 09:00 ~ 18:00 · 온라인 365일 접수 · 24시간 이내 회신"))
+B.CSS += (".pmx{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;min-height:0}"
+          ".pmx .pc{border:1px solid var(--line);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;min-height:0;"
+          "background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01))}"
+          ".pmx .pc:first-child{border-color:rgba(235,203,143,.6);background:linear-gradient(180deg,rgba(235,203,143,.12),rgba(235,203,143,.02))}"
+          ".pmx h3{font-size:18px;font-weight:800;margin-bottom:8px;display:flex;align-items:baseline;gap:10px}"
+          ".pmx h3 i{font-style:normal;font-size:11px;letter-spacing:.2em;color:var(--gold2);font-weight:700}"
+          ".pmx .rows{flex:1}")
+
+_stf = {n: (c, r) for n, c, r in D.STAFF}
+
+
+def _dcard(no, req, head, items):
+    li = "".join(f"<li>{t(x)}</li>" for x in items)
+    return f'<div class="dcd"><i>공고 업무 {no}</i><h4>{req}</h4><b>{head}</b><ul>{li}</ul></div>'
+
+
+new("std", sec=S0, title=T_STAFF,
+    lead="분당 전담 인원 배치(안)를 바탕으로, 공고 5항 업무 11개를 팀별로 나눠 맡깁니다.",
+    body='<div class="nb"><div class="dcx">'
+         + _dcard("1 · 2 · 3 · 6 · 9", "박람회 · 업체 · 일정 · 대관 · 안전", "행사관리 · 영업 분업", [
+             f"현장 - 행사관리팀 {_stf['행사관리팀'][0]}명: 박람회 · 대관 · 배치 · 안전 · 편의공간",
+             f"업체 - 영업팀 {_stf['영업팀'][0]}명: 섭외 · 심사 지원 · 계약 · 설치 일정 관리",
+             "가격 검수 - 시중가 · 온라인 최저가 비교표 작성",
+             "입예협 요청은 담당 팀을 지정해 [[24시간 안에 1차 회신]]"])
+         + _dcard("5 · 7 · 11", "입예협 행사 · 홍보 · 요청 업무", f"이벤트 {_stf['이벤트팀'][0]} · 대외지원 {_stf['대외지원팀'][0]}명", [
+             "카페 · 공지 채널 콘텐츠 · 카드뉴스 · 영상",
+             "모든 게시물은 [[입예협 사전 승인 후]] 게시",
+             "사전점검 · 입주설명회 · 정당계약일 부스 지원",
+             "입주민 개인정보 · DB는 홍보에 쓰지 않음"])
+         + _dcard("4 · 8 · 10", "수요조사 · A/S · 하자 · 민원", "본부장 + 대외지원팀 + 전문 인력", [
+             "본부장이 이슈 직접 관리 · 시공사 · 기관 협의 자료 준비 · 동석",
+             "전기 · 조명은 전기공사업 등록 업체로 [[직접 검토 · 시공]]",
+             "조경 · 도장 · 타일은 사내 자격 · 협회 등록 인력이 [[직접 점검 · 자문]]",
+             "업체 부도 · 미시공은 동종업체 이관 · 비용 주관사 부담"])
+         + '</div><div class="hflow"><span>입예협 요청</span><i>›</i><span>담당 팀 지정</span><i>›</i><span>기술 · 행정 검토</span><i>›</i>'
+           '<span>시공사 · 기관 협의</span><i>›</i><span>회신 · 기록 · 보고</span></div></div>',
+    kp=("부서 이름이 아니라 [[누가 무엇을 맡는지]]로 답합니다.", "인원 · 담당은 협약 시 명단 제출 · 외부 협력은 자문 · 촬영 등 전문 업무(재위탁 아님)"))
+B.CSS += (".dcx{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1;min-height:0}"
+          ".dcd{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 40%);display:flex;flex-direction:column;gap:4px}"
+          ".dcd i{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--gold2)}"
+          ".dcd h4{font-size:15px;color:var(--sub);font-weight:600}.dcd>b{font-size:21px;color:var(--gold);margin-bottom:4px}"
+          ".dcd ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}"
+          ".dcd li{font-size:15.5px;line-height:1.5;padding-left:14px;position:relative}.dcd li:before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--gold2)}")
+
+new("std", sec=S0, title=T_PRIV,
+    lead="공고 9항 8 · 서식 3 비밀유지 서약서 - 입주예정자 개인정보와 협의회 운영정보를 지킬 기준을 미리 정했습니다.",
+    body=B.rows([
+        ("수집 최소화", "상담 · 계약에 필요한 정보만, 목적 · 보관기간을 정해 [[별도 동의]]를 받습니다."),
+        ("영업 이용 금지", "입주예정자 정보를 영업 · 마케팅 · 광고 · 고객유치에 쓰지 않고, [[DB를 만들거나 판매하지 않습니다.]]"),
+        ("제3자 제공 금지", "입예협 사전 서면 승인 없이 참여업체 · 제3자에게 제공하지 않습니다. 필요하면 정보주체 동의를 따로 받습니다."),
+        ("참여업체 관리", "참여업체의 개인정보 취급을 주관사가 관리 · 감독하고, 보호 의무를 계약 조건에 넣습니다."),
+        ("홍보물 사전 승인", "입예협 명칭 · 로고 · 카페 · 공지 채널은 승인 범위에서만 쓰고, 모든 홍보물은 [[게시 전 승인]]받습니다."),
+        ("파기 · 위반 시 조치", "보관기간이 지나면 파기하고, 위반이 확인되면 서식 3에 따른 입찰 · 협약 제외와 손해배상을 받아들입니다."),
+    ], title_w=210),
+    kp="입주민 명단은 [[업체 영업 명단이 아닙니다.]]")
+
+FLOWX = ('<div class="hflow"><span>한 창구 접수</span><i>›</i><span>유형 분류</span><i>›</i><span>책임 주체 연결</span><i>›</i>'
+         '<span>처리 · 회신 추적</span><i>›</i><span>완료 확인 · 정기 보고</span></div>')
+B.CSS += (".tbl.lgx td{padding:17px 14px;font-size:16.5px;line-height:1.5}.tbl.lgx td.k{font-size:18px}"
+          ".hflow{display:flex;align-items:center;gap:10px;margin-top:18px}.hflow span{flex:1;text-align:center;border:1px solid rgba(200,168,106,.5);"
+          "border-radius:10px;padding:12px 8px;font-size:15.5px;font-weight:700;background:rgba(235,203,143,.06)}"
+          ".hflow span:last-child{background:var(--gold);color:#0d1e33;border-color:var(--gold)}.hflow i{font-style:normal;color:var(--gold);font-weight:800;font-size:20px}"
+          ".tbl.q7 td{padding:11px 14px;font-size:16px;line-height:1.45}.tbl.q7 td.k{font-size:16.5px;width:30%}.tbl.q7 td:last-child{width:22%;white-space:nowrap}"
+          ".tbl.q10 td{padding:7.5px 12px;font-size:14.5px;line-height:1.4}.tbl.q10 td.k{font-size:15px;width:30%}.tbl.q10 td:last-child{width:17%;white-space:nowrap}"
+          ".tbl.q10 td.n{width:38px}")
+
+new("std", sec=S0, title=T_DEFECT,
+    lead="공고 5항 4 · 10 - 접수는 한 곳에서 받고, 처리 책임은 유형별로 나눠 끝까지 추적합니다.",
+    body=table(["접수 유형", "예", "처리 책임", "주관사 역할"], "".join(
+        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td></tr>' for a, b, c, d in [
+            ("건설사 시공 · 공용부", "세대 마감 · 설비 하자, 공용부 시설", f"시공사({ST['builder']}) · 사업주체({ST['developer_short']}) 하자 처리 창구", "접수 대행 · 회신 추적 · 현장 확인 지원 · 정기 보고"),
+            ("공동구매 납품 · 시공", "박람회에서 계약한 품목의 설치 · 제품 하자", "참여업체 + 주관사 책임(서식 2)", "48시간 하자보수 원칙 · 업체 미응답 시 개입 · 선보상"),
+            ("업체 부도 · 미시공", "참여업체 폐업 · 연락 두절 · 시공 중단", "주관사 책임 처리", "동종업체 이관 · A/S 비용 주관사 부담 · 이행보증 · 예치금"),
+            ("성능 향상 · 추가 설치", "조경 · 조명 · 집기 개선, 시설 추가", "입예협 · 관리주체 결정 사항", "하자와 구분 · 도면 · 예산 · 운영비 검토 후 추진"),
+        ]), "lgx df4") + FLOWX,
+    kp=("시공 하자를 [[공동구매 업체에 떠넘기지 않고]], 공동구매 하자를 [[시공사 탓으로 돌리지 않습니다.]]", "접수는 주관 콜센터 · 카카오채널 · 홈페이지 한 창구"))
+B.CSS += ".tbl.df4 td{padding:13px 14px}"
+
+RPRIN = ('<div class="rprin">' + "".join(f'<div><b>{a}</b><p>{b}</p></div>' for a, b in [
+    ("협의 ≠ 설치", "‘협의 완료’와 ‘설치 완료’를 나눠 표시"),
+    ("지연은 사유와 함께", "지연 건은 사유 · 다음 일정을 같이 보고"),
+    ("최소 정보", "입예협과 공유할 수 있는 범위로 집계"),
+    ("원자료 열람", "입예협이 요청하면 근거 자료를 열람"),
+]) + '</div>')
+B.CSS += (".rprin{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}.rprin div{border:1px solid rgba(200,168,106,.45);"
+          "border-radius:12px;padding:12px 14px;background:rgba(235,203,143,.05)}.rprin b{display:block;font-size:16px;color:var(--gold)}"
+          ".rprin p{font-size:13.5px;color:var(--sub);margin-top:4px;line-height:1.45}")
+
+new("std", sec=S0, title=T_REPORT,
+    lead="공고 5항 4 · 8항 6 - 결과보고서와 정기 보고에 무엇을 담을지 미리 정했습니다.",
+    body=table(["보고", "시점", "담는 내용"], "".join(
+        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td></tr>' for a, b, c in [
+            ("정례 진행 보고", "입예협 정례회의마다", "진행 상황 · 미결 건의 목록 · 다음 일정 · 시공사 회신 현황"),
+            ("하자처리 현황 보고", "입주 후 정기(주기는 입예협과 협의)", "하자 접수 · 처리 완료 · 지연 건과 사유 · 재접수"),
+            ("입주박람회 결과보고서", "박람회 종료 후", "[[공동구매 진행현황 · A/S 접수현황 · 하자처리 현황 · 민원처리 결과]]"),
+            ("최종 결과 보고서", "입주 후 1년 운영 관리 종료 시", "계약 · 환불 · A/S · 하자 처리 결과 · 하자 예치금 사용 내역"),
+        ]), "lgx") + RPRIN,
+    kp=("보고서는 입예협과 공유할 수 있는 [[최소 정보]]로 집계합니다.", "개인 연락처 · 동호수는 싣지 않습니다"))
+
+new("std", sec=S0, title=T_MONTHS,
+    lead=f"공고부터 입주까지 약 {ST['months']}개월 - 그사이 바뀔 수 있는 것을 미리 약속해 둡니다.",
+    body=B.cards([
+        dict(lb="FACT", big=str(ST["months"]), unit="개월", nm="공고 ~ 입주", ds="2026.10 공고 → 2029.02 입주 예정. 가격 · 모델 · 업체 사정이 바뀔 수 있어 [[변경 기준]]을 협약에 넣습니다."),
+        dict(lb="ANSWER 01", big="정례", nm="정례 진행 보고", ds="입예협 정례회의에 맞춰 진행 상황 · 미결 건의 목록 · 다음 일정을 보고합니다."),
+        dict(lb="ANSWER 02", big="대체", nm="업체 · 모델 변경 기준", ds="단종 · 폐업 시 동급 이상 모델 · 대체 업체를 입예협 승인으로 정합니다. 단가 인상은 [[승인 없이 하지 않습니다.]]"),
+        dict(lb="ANSWER 03", big="연기", nm="입주 지연 대응", ds="입주 · 사전점검이 늦어지면 박람회 · 시공 일정을 함께 조정하고, 계약 세대에 변경 일정을 개별 안내합니다."),
+    ]),
+    kp="기간이 길수록 [[변경 기준]]을 먼저 정해 두는 것이 약속입니다.")
+
+new("std", sec=S0, title=T_SCHED,
+    lead="입주 2029.02에서 거꾸로 짰습니다. 약 28개월을 ‘대기’가 아니라 ‘준비’로 씁니다.",
+    body=B.rows([
+        ("2026.10 ~ 11", "PT(대표이사 참석) · 선정 · 협약 · [[정당계약일 부스 지원]](입예협 요청 시) · 카페/공지 채널 지원 시작"),
+        ("2026.12 ~ 2027", "유상옵션 일정 · 조건 안내 · [[옵션 선택 여부 설문]] · 정례 진행 보고 · 건의 관리표"),
+        ("2028.01 ~ 06", "단지 야간 경관 · 조경 조명 진단 · 품목 시장가 점검 · 행사장 후보 답사(SETEC · aT센터 · 수원메쎄)"),
+        ("2028.06 ~ 10", f"[[품목 수요조사]] · 타입별({_types_txt}) 실측 · 참여업체 [[공개 입찰]] · 4단계 심사 → 입예협 컨펌 · 가격 검수 · 카페 공개"),
+        ("2028.11 ~ 12", "[[입주박람회 금·토·일 3일]] · 온라인 박람회 오픈 · 사전점검 행사 지원(일정 확정 시)"),
+        ("2029.02 ~", "입주 지원 · 하자 접수 창구 → 입주 후 1년 운영 관리 · [[결과 보고서]] (품목 A/S는 최소 2년 · 업체별 상이)"),
+    ], title_w=170),
+    kp="세부 일정은 사전점검 · 입주지원센터 일정에 맞춰 [[입예협과 확정]]합니다.")
+
+new("std", sec=S0, title=T_EXPO,
+    lead="계약을 재촉하는 자리가 아니라, 신혼 가족이 함께 확인하고 비교하는 자리로 만듭니다.",
+    body=B.tiles([
+        dict(lb="WHEN", nm=f"{ST['expo']} 금·토·일 (안)", ds="입주(2029.02) 2 ~ 3개월 전 3일간, 사전점검 일정에 맞춰 협의회와 확정합니다."),
+        dict(lb="WHERE", nm="행사장 후보 3곳", ds="① " + ST["venues"][0] + " ② " + ST["venues"][1] + " ③ " + ST["venues"][2] + " - 입예협과 답사한 뒤 확정합니다."),
+        dict(lb="SAFETY", nm="행사(영업)배상책임보험 가입", ds="박람회 개최 전 가입 · 안전요원 · 동선 · 비상구 계획 수립. 화재 · 상해 예방 수칙은 참여업체 서약."),
+        dict(lb="FAMILY", nm="놀이방 · 수유실 · 유모차", ds="영유아 가족을 위해 어린이 놀이방 · 수유실 · 유모차 대여와 입구 안내데스크 · 카페테리아를 둡니다."),
+        dict(lb="ONLINE", nm="온라인 박람회 · 라이브", ds="단지 입주민만 들어오는 폐쇄몰. 박람회와 같은 공동구매가."),
+        dict(lb="PR", nm="카페 · 공지채널 콘텐츠", ds="카드뉴스 · 영상 · 현수막 · 알림톡 - 게시 전 입예협 사전 승인을 받습니다."),
+    ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"'),
+    kp="박람회장 가격 = 사전 공개 단가 - [[결제 방식과 관계없이]] 같습니다.")
+
+# ------------------------------------------------------------ 공고 대응표(5항 · 4항 · 9항 · 10항)
+SCOPE11 = [  # 공고 5항 주요 업무 범위 1 ~ 11 — (업무, 수행 내용, [PGREF 키])
+    ("입주박람회 개최 및 운영 업무 일체", "기획 · 대관 · 배치 · 인원 · 안전 · 홍보 · 금·토·일 3일 · 온라인 박람회", ["expo"]),
+    ("품목 구성 · 업체 섭외 · 계약관리 · 가격 및 조건 검수", "수요조사 → 공개 입찰 → 4단계 심사 → 입예협 컨펌 · [[시중가 · 온라인 최저가 검수]]", ["items", "check"]),
+    ("상담 · 계약 · 납품 · 시공 · 설치 일정 관리 지원", "세대별 일정 관리표 · 시공 가능 시점 · 관리사무소 신고 확인", ["vmgt"]),
+    ("입주 후 A/S · 하자보수 접수 및 이행관리", "주관 콜센터 한 창구 · 48시간 원칙 · 업체 미응답 시 선보상", ["call", "defect"]),
+    ("사전점검 · 입주지원 · 입주설명회 등 행사 지원", "행사 인력 · 비품 · 안내물 · 점검 체크리스트 · 세미나 영상", ["support", "pre"]),
+    ("대관 · 부스 배치 · 동선 · 안전 · 안내 인력 · 비품 · 홍보물", "후보 답사 · 대관 · 배치도 · 구역별 담당 인원 · 배상책임보험 가입", ["venue", "floor"]),
+    ("입예협 카페 · 공지 채널 홍보 · 안내 콘텐츠", "카드뉴스 · 영상 · 안내문 · [[게시 전 입예협 승인]]", ["cafe"]),
+    ("품목 · 업체 선정 전 수요조사", "옵션 선택 여부 문항 포함 설문 · 남은 수요 품목만 모집", ["opt"]),
+    ("안전사고 예방계획 · 방문객 편의공간", "보안 · 구급 · 119 연계 · 놀이방 · 수유실 · 카페테리아", ["floor", "comfort"]),
+    ("참여업체 부도 · 미시공 · 하자 피해 시 민원 · 사후관리", "동종업체 이관 · A/S 비용 주관사 부담 · 이행보증 · 예치금", ["wty", "defect"]),
+    ("기타 입예협 요청 업무 (정당계약일 부스 등)", "[[정당계약일 부스 지원]] · 추가 요청은 범위 · 일정 협의 후 협약 반영", ["booth"]),
+]
+new("std", sec=S0, title=T_SCOPE,
+    lead="공고 5항 주요 업무 범위 11개를 빠짐없이 맡고, 각 항목을 제안서의 어느 쪽에서 설명하는지 함께 적었습니다.",
+    body=table(["NO", "공고 업무 범위", "엣지컴퍼니 수행 내용", "제안서 쪽"], "".join(
+        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td class="pg">{" · ".join(PG(k) for k in ks)}</td></tr>'
+        for i, (a, b, ks) in enumerate(SCOPE11, 1)), "q10 m9"),
+    kp="업무 범위가 바뀌어도 [[입예협과 협의해]] 협약서에 그대로 옮깁니다.")
+
+QUAL10 = [  # 공고 4항 입찰 참가자격 1 ~ 10 — (요건, 현황, 증빙)
+    ("정상 영업 중인 법인사업자", f"법인 설립 · 개업 {D.FOUNDED} · 사업자등록번호 {D.BIZ_NO} · 공고일 현재 정상 영업", "제출서류 3 · 4"),
+    ("등기부상 자본금 1억원 이상", "자본금 [[2억원]] (2026.04 증자 등기)", "제출서류 4"),
+    ("입주박람회 · 행사기획 · 전시 관련 업태 · 종목", "종목 ‘전시, 박람회 및 행사 대행업’ · 등기 목적 ‘전시 박람회 사업 · 행사대행업 · 이벤트 기획 및 대행업’", "제출서류 3 · 4"),
+    ("법인 · 대표자 · 핵심 인력의 실무 수행경험 · 현장 운영 역량", f"1,000세대 이상 주관 [[{_rec_n}개 단지 · {_rec_hh:,}세대]] · 대표자 · 핵심 운영인력 쪽", "제안서 01장"),
+    ("전담 PM과 운영체계 구성", "전담 PM 지정 · 4개 팀 12명 + 대표 · 본부장 · 공고 업무별 담당", "제안서 07장"),
+    ("국세 · 지방세 · 4대보험 체납 없음", "체납 없음 - 유효기간 내 완납증명서 제출", "제출서류 5 · 6"),
+    ("금품 · 담합 · 중대 위반 · 분쟁으로 해지 · 취소 이력 없음", "해당 없음", "서식 1 · 5"),
+    ("계약이행보증보험 등 보증증권 발행 가능", "협약 시 이행보증보험증권 제출(최대 10억 · 2년) · " + TODO("보증보험사 발급 한도 확인"), "협약 시 제출"),
+    ("취소 · 환불 기준과 하자 · 분쟁 대응 절차", "계약 취소 · 환불 규정 전문(제1 ~ 10조 · 별표) · 하자 접수 책임 구분", "03장 · 제출서류 8"),
+    ("A/S 대책 · 사후보증기간 · 손해배상 이행", "무상 A/S 최소 2년(업체 · 품목별 상이) · 48시간 하자보수 · 하자 예치금 최대 1억 선보상", "04 · 05장 · 서식 2"),
+]
+new("std", sec=S0, title=T_QUAL,
+    lead="공고 4항 입찰 참가자격 10개를 항목마다 현황과 객관적 증빙으로 답합니다.",
+    body=table(["NO", "공고 참가자격", "엣지컴퍼니 현황", "증빙"], "".join(
+        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
+        for i, (a, b, c) in enumerate(QUAL10, 1)), "q10"),
+    kp="자격은 말이 아니라 [[제출 서류로]] 확인받겠습니다.")
+
+LIMIT10 = [  # 공고 9항 참가 제한 및 무효 1 ~ 10 — (제한 사유, 확인, 근거)
+    ("참가자격 미달 · 필수 제출서류 누락", "해당 없음 - 4항 자격 10개 충족 · 7항 제출서류 1 ~ 13 제출(14 선택)", "제출서류 목록"),
+    ("접수기간 · 방법 · 파일명 기준 위반", "PDF 이메일 접수 · 공고 양식 메일 제목 · 10.19 정오 전 제출", "공고 3항"),
+    ("허위자료 · 위조 · 실적 과장 · 명의대여 · 담합", "해당 없음 - 실적은 NICE 연혁 · 입예협 카페 공지 · BEXCO 행사일정으로 증빙", "서식 1 · 5"),
+    ("금품 · 향응 · 사익 제공 제안 · 부당 접근", "해당 없음 - 문의는 공고 지정 이메일로만", "서식 5"),
+    ("선정 후 권리 · 의무 임의 위임 · 양도", "하지 않음 - 외부 협력은 자문 · 촬영 등 전문 업무 · 재위탁은 입예협 사전 승인", "공고 10항 6"),
+    ("협약 이행 능력 현저 부족", f"자본금 2억 · NICE BB- · 현금흐름 A · 1,000세대 이상 주관 {_rec_n}개 단지", "제출서류 3 ~ 6"),
+    ("입예협 분쟁 중 · 타 단지 해지 · 선정 취소 이력", "해당 없음", "서식 1"),
+    ("개인정보 무단 수집 · 이용 · 제공 · 목적 외 사용", "해당 없음 - 행사 운영에만 사용", "서식 3"),
+    ("대표자 범죄사실확인서 등 서류 검토 결과 문제", "공고 7항 7 대표자 범죄사실확인서 제출", "제출서류 7"),
+    ("대표자 · 배우자 · 직계존비속이 본 단지 당첨자", TODO("해당 없음 - 대표 확인 후 확정"), "대표 확인"),
+]
+new("std", sec=S0, title=T_LIMIT,
+    lead="공고 9항 참가 제한 · 무효 사유 10개에 해당하지 않음을 항목마다 확인했습니다.",
+    body=table(["NO", "공고 참가 제한 · 무효", "엣지컴퍼니 확인", "근거"], "".join(
+        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
+        for i, (a, b, c) in enumerate(LIMIT10, 1)), "q10"),
+    kp=("사유가 [[선정 이후]] 확인되면 선정 · 협약 무효(9항 11)를 받아들입니다.", "허위 기재 · 중요 사항 누락 시 협약 취소(10항 10) 포함"))
+
+NOTE7 = [  # 공고 6항 · 10항 · 서식 — (공고, 약속)
+    ("10항 2 · 미확정 혜택 금지", "혜택은 [[확정 · 이행 가능한 것]]만, 조건과 함께 적었습니다. 참여업체가 정해져야 하는 항목은 ‘(안)’ · ‘참가 협의 중’으로 표기했습니다."),
+    ("6항 · PT 발표", "제출한 제안 조건을 [[바꾸거나 추가 혜택을 얹지 않습니다.]] 대표이사가 참석해 질의에 직접 답합니다."),
+    ("10항 3 · 공정 경쟁", "담합 · 응찰 포기 유도 · 특정 업체 낙찰을 위한 사전 합의를 하지 않습니다(서식 5)."),
+    ("10항 6 · 재위탁 · 양도 금지", "입예협 사전 승인 없이 본 사업의 권리 · 의무를 제3자에게 넘기지 않습니다."),
+    ("10항 7 · 품목 · 가격 사전 협의", "품목과 가격은 입예협과 사전 협의한 뒤 확정합니다."),
+    ("서식 4 · 패찰 시 영업 금지", "선정되지 않으면 이 단지 대상 별도 박람회 · 사전예약 · 방문판매 · 온라인 단체영업을 하지 않습니다(조명 · 커튼 · 실링팬 사업부 포함)."),
+    ("10항 4 · 10 · 성실 이행", "불이행 시 계약 해지, 허위 기재 · 중요 사항 누락이 확인되면 협약 취소를 받아들입니다."),
+]
+new("std", sec=S0, title=T_NOTE,
+    lead="공고 6항 · 10항 유의사항과 서식 1 ~ 5 서약을 제안서 내용에 그대로 반영했습니다.",
+    body=table(["공고", "엣지컴퍼니 약속"], "".join(
+        f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td></tr>' for a, b in NOTE7), "q10 nt7"),
+    kp=("제안서에 쓴 조건 그대로 [[PT에서도, 협약서에서도]] 같습니다.", "서식 1 ~ 5 서약서 제출"))
+B.CSS += ".tbl.nt7 td{padding:11px 14px;font-size:15.5px}.tbl.nt7 td.k{width:26%}.tbl.nt7 td:last-child{width:auto;white-space:normal}"
+
+# ------------------------------------------------------------ 01장으로 보낼 장(공고 8항 1 · 2)
+B.CSS += r"""
+.hist{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:0 34px}
+.hist ol{list-style:none;margin:0;padding:0;position:relative;display:flex;flex-direction:column;justify-content:space-between}
+.hist ol:before{content:'';position:absolute;left:92px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--gold2),rgba(200,168,106,.25))}
+.hist li{position:relative;display:grid;grid-template-columns:76px 1fr auto;gap:0 34px;align-items:center;padding:6px 0}
+.hist li:before{content:'';position:absolute;left:88px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#0d1e33;border:2px solid var(--gold2)}
+.hist li.k:before{background:var(--gold);box-shadow:0 0 8px rgba(235,203,143,.55)}
+.hist li b{font-size:17px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+.hist li span{font-size:17px;line-height:1.4}
+.hist li.k span{font-weight:700}
+.hist li i{font-style:normal;font-size:11.5px;color:var(--mute);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:1px 8px;white-space:nowrap}
+"""
+_key = ("설립", "등록", "ISO", "MOU")
+
+
+def _keep1(x):  # '주관 · 1,643세대'는 한 줄로
+    return re.sub(r"(주관 · [\d,]+세대)", r'<span style="white-space:nowrap">\1</span>', _h.escape(x))
+
+
+_items = [f'<li class="{"k" if any(k in x for k in _key) else ""}"><b>{d}</b><span>{_keep1(x)}</span><i>{src}</i></li>' for d, x, src in D.HISTORY]
+_half = (len(_items) + 1) // 2
+new("std", sec=S0, title=T_HIST,
+    lead=f"공고 8항 1 - 법인 설립({D.FOUNDED})부터 지금까지, 등기부 · 등록증 · 인증서 · NICE 연혁 · 협약으로 확인되는 기록만 적었습니다.",
+    body=f'<div class="nb"><div class="hist"><ol>{"".join(_items[:_half])}</ol><ol>{"".join(_items[_half:])}</ol></div></div>',
+    kp=("2023년부터 [[해마다]] 1,000세대 이상 입주박람회를 맡아 왔습니다.",
+        "출처: 법인등기부 · 전기공사업 등록증 · ISO 인증서 · NICE 기업신용평가보고서 연혁 · 세스코 협약"))
+
+_songdo = next(r for r in D.RECORDS if "송도" in r[1])
+_lead_n = getattr(D, "STAFF_LEAD", 2) + sum(c for _, c, _ in D.STAFF)
+PRO5 = [("전기", 3), ("도장", 2), ("타일", 1), ("조경", 1), ("간호사", 1)]
+new("std", sec=S0, title=T_PEOPLE,
+    lead="공고 8항 2 · 4항 4 - 대표자와 핵심 운영인력이 직접 맡아 온 현장과, 분당 퍼스트빌리지에서 맡을 역할입니다.",
+    body=('<div class="nb"><div class="ppx">'
+          '<div class="pp1"><i>대표이사</i><h3>고진식</h3><ul>'
+          f'<li>법인 설립({D.FOUNDED[:7]})부터 대표 · 대표자 본인 명의 법인</li>'
+          f'<li>1,000세대 이상 입주박람회 주관 <b>{_rec_n}개 단지 · {_rec_hh:,}세대</b> 의사결정</li>'
+          '<li>PT · 질의응답 직접 참석(공고 6항) · 협약 서명</li>'
+          f'<li>{TODO("대표 개인 경력 · 주요 현장 - 확인 후 기재")}</li></ul></div>'
+          '<div class="pp1"><i>주관사업 총괄 본부장 · 전담 총괄</i><h3>총괄 본부장</h3><ul>'
+          f'<li>{ST["short"]} 총괄 책임 · 직통 {D.MANAGER[2]}</li>'
+          f'<li>{_songdo[1]}({_songdo[0]} 입주 · {_songdo[3]:,}세대) <b>현장 직접 주관</b></li>'
+          '<li>입예협 정례회의 · 박람회 · 사전점검 현장 참석 · 이슈 직접 관리</li>'
+          f'<li>{TODO("본부장 경력 연수 · 주요 현장 - 확인 후 기재")}</li></ul></div>'
+          '<div class="pp2"><i>핵심 운영인력</i><h3>임직원 ' + str(_lead_n) + '명</h3>'
+          + "".join(f'<div><b>{c}<small>명</small></b><span>{n}</span><p>{t(r)}</p></div>' for n, c, r in D.STAFF)
+          + '<div class="pro2">' + "".join(f'<span>{f} {c}</span>' for f, c in PRO5) + '<em>자격 · 협회 등록 인력 · 2026.10 기준</em></div></div>'
+          '</div><div class="ppb">'
+          f'<div><b>{_rec_n}<small>개 단지</small></b><span>1,000세대 이상 주관<br>2023.04 ~ 2026.09 입주</span></div>'
+          f'<div><b>{_rec_hh:,}<small>세대</small></b><span>1,000세대 이상<br>주관 세대 합계</span></div>'
+          '<div><b>4,470<small>세대</small></b><span>단일 단지 최대<br>레이카운티</span></div>'
+          '<div><b>67<small>개 단지</small></b><span>누적 주관 · 수임 56,361세대<br>(전신 실적 · 입주 예정 포함)</span></div>'
+          '</div></div>'),
+    kp=("박람회 경험은 회사 이름이 아니라 [[현장을 맡은 사람]]에게 있습니다.", "팀별 담당은 협약 시 명단 제출 · 실적 증빙은 제출서류(NICE 연혁 · 카페 공지 · BEXCO 행사일정)"))
+B.CSS += (".ppx{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:16px;flex:1;min-height:0}"
+          ".ppx>div{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;min-height:0;"
+          "background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 45%)}"
+          ".ppx i{font-style:normal;font-size:12px;letter-spacing:.14em;color:var(--gold2);font-weight:700}"
+          ".ppx h3{font-size:26px;font-weight:800;color:var(--gold);margin:2px 0 10px}"
+          ".pp1 ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}"
+          ".pp1 li{font-size:15px;line-height:1.5;padding-left:14px;position:relative}.pp1 li:before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--gold2)}"
+          ".pp1 li b{color:var(--gold)}"
+          ".pp2>div:not(.pro2){display:grid;grid-template-columns:54px 92px 1fr;gap:8px;align-items:center;padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.12)}"
+          ".pp2>div b{font-size:24px;font-weight:800;color:var(--gold);line-height:1}.pp2>div b small{font-size:12px;margin-left:1px}"
+          ".pp2>div span{font-size:15px;font-weight:700}.pp2>div p{font-size:12.5px;color:var(--sub);line-height:1.4}"
+          ".pro2{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding-top:8px}"
+          ".pro2 span{font-size:12.5px;font-weight:700;border:1px solid rgba(200,168,106,.55);border-radius:99px;padding:3px 10px;color:var(--gold)}"
+          ".pro2 em{font-style:normal;font-size:11px;color:var(--mute)}"
+          ".ppb{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(200,168,106,.5);border-radius:12px;background:rgba(235,203,143,.05)}"
+          ".ppb>div{padding:9px 16px;border-left:1px solid rgba(200,168,106,.25)}.ppb>div:first-child{border-left:0}"
+          ".ppb b{font-size:26px;font-weight:800;color:var(--gold);line-height:1.1;white-space:nowrap}.ppb b small{font-size:13px;margin-left:2px}"
+          ".ppb span{display:block;font-size:12.5px;color:var(--sub);line-height:1.35;margin-top:2px}")
+
+# 계약 취소 · 환불 규정 전문(공고 4항 9 · 8항 5 · 6) — 제안서 03장에 2쪽으로 싣는다. 제출서류 8(방안서)과 같은 기준.
 T_RULE1 = "계약 취소 · 환불 규정 [[전문]] ① 제1 ~ 5조"
 T_RULE2 = "계약 취소 · 환불 규정 [[전문]] ② 제6 ~ 10조 · 별표"
 _C7 = "청소·줄눈, 탄성코트, 유리막코팅, 선반·잡물, 음식물처리기, 인덕션, 벽걸이TV, LED조명"
@@ -584,11 +900,11 @@ _ARTS2 = [
     ("제6조 (취소 신청 및 환급)", ["취소는 참여업체 또는 주관사 콜센터 · 공식카페 신문고 · 카카오채널로 신청하며, 문자·메신저 등 기록이 남는 방법으로 한다.",
                             "환불금은 취소 확정일로부터 <b>3영업일 이내</b>에 지급하고, 카드 결제분은 같은 기한 안에 승인 취소한다.",
                             "주관사는 환불 완료 여부를 계약자에게 확인(해피콜)한다."]),
-    ("제7조 (불이행 시 조치 및 주관사 책임)", ["참여업체가 취소·환불을 지연하거나 거부하면 계약자는 주관사 콜센터에 접수할 수 있다. 주관사는 사실을 확인한 뒤 계약자에게 피해 금액을 <b>먼저 보상</b>하고, 참여업체와는 계약 조항에 따라 정산한다(분쟁발생 시 책임배상 이행각서 [별지 제5호] 준용).",
+    ("제7조 (불이행 시 조치 및 주관사 책임)", ["참여업체가 취소·환불을 지연하거나 거부하면 계약자는 주관사 콜센터에 접수할 수 있다. 주관사는 사실을 확인한 뒤 계약자에게 피해 금액을 <b>먼저 보상</b>하고, 참여업체와는 계약 조항에 따라 정산한다(하자보수 및 사후관리 이행각서 [서식 2] 준용).",
                                   "불이행 업체에는 1단계 홍보정지, 2단계 총액 10% 배상, 3단계 자격박탈 및 입예협 승인을 받아 전 계약을 대체업체로 이관하는 패널티를 차례로 부과한다.",
                                   "참여업체가 도산한 경우 동종업체로 사후관리를 이관하고, 그 A/S 비용은 주관사가 전액 부담한다.",
                                   "주관사의 보상 재원으로 하자 예치금 최대 1억원(엣지컴퍼니 자산으로 예치)과 이행보증보험(2년 · 최대 10억원)을 둔다."]),
-    ("제8조 (가격 보호 — 최저가 차액 10배 보상)", ["공동구매 품목과 브랜드·모델명이 같은 새 제품이 계약 후 7일 이내에 인근(양주·의정부권) 오프라인 매장에서 더 낮은 정상 판매가로 판매된 사실이 견적서·영수증으로 확인되면, 참여업체는 차액의 10배를 보상하고 판매가를 조정한다.",
+    ("제8조 (가격 보호 — 최저가 차액 10배 보상)", [f"공동구매 품목과 브랜드·모델명이 같은 새 제품이 계약 후 7일 이내에 인근({ST['local']}) 오프라인 매장에서 더 낮은 정상 판매가로 판매된 사실이 견적서·영수증으로 확인되면, 참여업체는 차액의 10배를 보상하고 판매가를 조정한다.",
                                          "온라인·홈쇼핑 판매, 시공 품목, 카드 청구할인·사은품·결합할인, 전시·리퍼 상품, 법인 특판, 한정 수량 행사가는 비교 대상에서 제외한다.",
                                          "계약자는 주관사 콜센터에 접수하고, 주관사는 사실 확인 후 7일 이내에 보상이 이행되도록 관리한다."]),
     ("제9조 (고지)", ["주관사는 이 규정을 박람회장 · 온라인 박람회에 게시하고, 입주예정자협의회 카페에는 입예협 승인 후 게시하며, 모든 공동구매 계약서에 첨부한다."]),
@@ -607,9 +923,9 @@ def _arts(arts):
 
 
 new("std", sec=S0, title=T_RULE1,
-    lead="공고 5항 9 — 참여 품목별 계약 취소 및 환불 규정입니다. 모든 공동구매 계약서에 이 규정을 첨부합니다.",
+    lead="공고 4항 9 · 8항 5 · 6 - 참여 품목별 계약 취소 및 환불 규정입니다. 모든 공동구매 계약서에 이 규정을 첨부합니다.",
     body=f'<div class="rgl">{_arts(_ARTS1)}</div>',
-    kp=("기한 안 취소는 [[전액 환불]], 업체 귀책이면 [[기한과 관계없이]] 전액 환불합니다.", "세부 품목 기한은 다음 장 [별표]"))
+    kp=("기한 안 취소는 [[전액 환불]], 업체 귀책이면 [[기한과 관계없이]] 전액 환불합니다.", "세부 품목 기한은 다음 장 [별표] · 제출서류 8 방안서와 같은 기준"))
 new("std", sec=S0, title=T_RULE2,
     lead="환불 절차 · 주관사 책임 · 가격 보호와 품목별 취소 가능 기한[별표]입니다.",
     body=f'<div class="rgl">{_arts(_ARTS2)}<div class="art bt"><h4>[별표] 품목별 취소 가능 기한 (시공일 기준)</h4>'
@@ -634,22 +950,22 @@ B.CSS += (".rgl{flex:1;min-height:0;column-count:3;column-gap:24px;column-fill:b
           ".rgl .rn{font-size:11.5px;color:var(--mute);margin-top:5px}")
 
 
-# 발전지원 15만원 ≠ 공구가 인상(본부장 10-13) — 참가비 정액·판매 수수료 없음 + 입예협 가격 검증
+# 발전지원 15만원 ≠ 공구가 인상 — 참가비 정액·판매 수수료 없음 + 입예협 가격 검증
 T_SEP = f"세대당 {D.FUND}만원 상당, [[공구가와 따로]]입니다"
 new("std", sec=S0, title=T_SEP,
-    lead=f"‘{D.FUND}만원을 주면 공구가가 오르지 않느냐’는 질문에 구조로 답합니다 - 발전지원은 주관사 몫에서 나가고, 공구가는 입예협이 직접 검증합니다.",
+    lead=f"‘{D.FUND}만원 상당을 주면 공구가가 오르지 않느냐’는 질문에 구조로 답합니다 - 발전지원은 주관사 몫에서 나가고, 공구가는 입예협이 직접 검증합니다.",
     body=('<div class="sepx"><div class="sepf">'
           '<div class="sb1"><i>업체</i><b>참가비 정액제</b><span>업체 참가비는 정액으로 - 공구가와 연동하지 않음</span></div><em>›</em>'
           '<div class="sb1 hl"><i>주관사</i><b>운영비 + 발전지원</b><span>박람회 운영비와 세대당 ' + str(D.FUND) + '만원 상당을 주관사 몫에서 부담</span></div><em>›</em>'
           '<div class="sb1"><i>입예협 · 입주민</i><b>혜택 패키지</b><span>패키지 A·B·C 또는 입예협 지정 · 사용 내역 공개</span></div></div>'
-          '<div class="sepn">공구가는 이 흐름과 따로 - <b>업체 공개 입찰 경쟁</b>과 <b>시장가 비교</b>로 정해집니다</div>'
+          '<div class="sepn">공구가는 이 흐름과 따로 - <b>업체 공개 입찰 경쟁</b>과 <b>시중가 · 온라인 최저가 검수</b>로 정해집니다</div>'
           + B.tiles([
               dict(lb="01 · 정액", nm="참가비 정액제", ds="업체 참가비는 정액으로 받습니다. 발전지원을 공구가에 얹는 구조가 아닙니다."),
-              dict(lb="02 · 공개", nm="단가표 사전 공개", ds="박람회 전 품목별 단가·할인율·모델코드를 입예협이 검수합니다. 현장 가격 변경 없음."),
-              dict(lb="03 · 검증", nm="입예협 시장가 비교", ds="입예협이 품목 3 ~ 5개를 직접 골라 시장가와 비교합니다."),
+              dict(lb="02 · 공개", nm="단가표 사전 공개", ds="박람회 전 품목별 단가 · 할인율 · 모델코드를 입예협이 검수합니다. 현장 가격 변경 없음."),
+              dict(lb="03 · 검증", nm="시중가 · 온라인 최저가 비교", ds="같은 조건 총액으로 비교하고, 입예협이 품목을 골라 직접 확인합니다."),
               dict(lb="04 · 보상", big="10", unit="배", nm="최저가 차액 보상", ds="동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)"),
           ], cols=4) + '</div>'),
-    kp=(f"발전지원을 0원으로 해도 공구가는 같습니다 - 가격은 [[업체 경쟁과 시장가 비교]]로 정해집니다.", "참가비 정액제 · 카드·현금 동일가 · 최저가 차액 10배(온라인·시공 품목 제외)"))
+    kp=(f"발전지원을 0원으로 해도 공구가는 같습니다 - 가격은 [[업체 경쟁과 가격 검수]]로 정해집니다.", "참가비 정액제 · 카드·현금 동일가 · 최저가 차액 10배(온라인·시공 품목 제외)"))
 B.CSS += (".sepx{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px}"
           ".sepf{display:grid;grid-template-columns:1fr 30px 1.15fr 30px 1fr;align-items:stretch}"
           ".sepf em{display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:var(--gold)}"
@@ -661,7 +977,7 @@ B.CSS += (".sepx{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px
           ".sepn b{color:var(--gold)}")
 
 
-GW_CPL = [  # 공고 5항 9 — 입주민 컴플레인 예시와 처리 기준(본 제안서의 약속과 같은 기준)
+CPL = [  # 공고 8항 6 — 입주민 컴플레인 예시와 처리 기준(본 제안서의 약속과 같은 기준)
     ("커튼 · 블라인드", "설치일에 치수가 맞지 않음", "재실측 → 재제작 → 재방문 설치 · 비용은 업체 부담", "48시간 내 재실측"),
     ("입주청소", "청소 상태 미흡(창틀·욕실)", "사진 접수 → 업체 재청소 → 입주민 확인 서명", "48시간 내 재방문"),
     ("시스템에어컨 · 설치 품목", "배관 누수 · 작동 불량", "방문 점검 · 수리 → 업체 미응답 시 주관사가 먼저 보상 후 업체 정산", "48시간 하자보수 원칙"),
@@ -670,17 +986,16 @@ GW_CPL = [  # 공고 5항 9 — 입주민 컴플레인 예시와 처리 기준(�
     ("계약 취소", "시공 전 취소 요청", "품목별 취소 기한 확인 → 위약금 없이 환불", "3영업일 내 환불"),
 ]
 new("std", sec=S0, title=T_CPL,
-    lead="공고 5항 9 — 박람회 뒤 자주 생기는 컴플레인 예시와 처리 기준, 타 단지 해결 사례입니다. 접수부터 완료까지 주관 콜센터가 기록합니다.",
+    lead="공고 8항 6 - 박람회 뒤 자주 생기는 컴플레인 예시와 처리 기준, 타 단지 해결 사례입니다. 접수부터 완료까지 주관 콜센터가 기록합니다.",
     body=table(["품목", "컴플레인 예시", "해결 방법", "처리 기준"], "".join(
-        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td></tr>' for a, b, c, d in GW_CPL), "sm")
+        f'<tr><td class="k">{a}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td></tr>' for a, b, c, d in CPL), "sm")
          + '<div class="hflow"><span>접수 · 콜센터 · 카카오</span><i>›</i><span>업체 연결</span><i>›</i><span>기한 추적</span><i>›</i>'
            '<span>미응답 시 주관사 선보상</span><i>›</i><span>완료 확인 · 결과 보고</span></div>'
-         # 공고 5항 9 '해결 우수 사례' — 다음 장(입주민 후기 · 실시간 응대 화면) 원문 캡처 3건 요약(문장 창작 없음)
          + '<div class="gcase"><div class="gch"><i>해결 우수 사례</i><b>타 단지 실제 응대</b><span>원문 캡처는 다음 장</span></div>'
            '<div><i>입주민 카페 글 · 2024.10</i><b>A/S · 하자 즉시 처리</b><span>주관사와 청소 업체가 함께 처리 - 입주민이 카페에 감사 글을 남김</span></div>'
            '<div><i>단지 단톡방</i><b>입주 전날 긴급 재청소 연결</b><span>외부 업체 청소 뒤 생긴 문제도 입주 전날 재청소 업체를 연결</span></div>'
            '<div><i>타 단지 협의회</i><b>업체 응대 공유 · 감사 인사</b><span>업체 응대 내용을 협의회와 공유 - 협의회 측이 감사 인사를 전함</span></div></div>',
-    kp=("컴플레인은 [[기한 안에 끝까지]] — 처리 결과를 입예협 결과보고서에 담습니다.", "처리 기준은 본 제안서 03 · 04 · 05장과 같습니다"))
+    kp=("컴플레인은 [[기한 안에 끝까지]] - 처리 결과를 입예협 결과보고서에 담습니다.", "처리 기준은 본 제안서 03 · 04 · 05장과 같습니다"))
 B.CSS += (".gcase{display:grid;grid-template-columns:1fr 1.25fr 1.25fr 1.25fr;gap:10px;margin-top:16px}"
           ".gcase>div{border:1px solid var(--line);border-radius:11px;padding:11px 14px;display:flex;flex-direction:column;gap:3px}"
           ".gcase .gch{border-color:rgba(235,203,143,.6);background:rgba(235,203,143,.08);justify-content:center}"
@@ -697,6 +1012,21 @@ new("std", sec=S0, title="공동구매 단가를 지키는 [[4가지 장치]]",
         dict(lb="04", big=str(D.DEPOSIT_MAX), unit="%", nm="계약금 상한", ds=f"계약금은 총액의 {D.DEPOSIT_MAX}% 이하, 잔금은 시공·설치 후. 현금·카드 동일가."),
     ]),
     kp="가격은 말이 아니라 [[사전 공개 단가 + 최저가 보장]]으로 검증받습니다.")
+
+# 대응표 쪽 번호 — 재배치 뒤 제목으로 찾는다(reorg에서 바뀐 제목은 바뀐 뒤 제목)
+PGREF = {
+    "num": "숫자로 보는 [[엣지컴퍼니]]", "hist": T_HIST, "succ": "주관 [[성공사례]] · 수임실적", "big": "[[대단지]] 운영 경험",
+    "people": T_PEOPLE, "org": "회사 [[조직 구성]] · 분당 전담 배치 (안)",
+    "expo": T_EXPO, "venue": "행사장 대관과 [[운영 준비]]", "floor": "박람회장 배치와 [[인원 운영]] (안)", "comfort": "가족이 머무는 [[편의시설]]",
+    "items": T_ITEMS, "opt": T_OPT, "vendors": T_VENDORS, "vmgt": T_VMGT, "screen": "[[4단계]] 공개 심사 프로세스",
+    "one": T_ONE, "fund": "세대당 15만원 상당, [[혜택 패키지]]로 드립니다", "sep": T_SEP, "guard4": "공동구매 단가를 지키는 [[4가지 장치]]",
+    "safe3": "입주민을 지키는 [[3중 안전망]]", "defect": T_DEFECT, "cpl": T_CPL, "rule1": T_RULE1, "wty": "참여업체 [[하자보증]] 체계",
+    "support": T_SUPPORT, "booth": T_BOOTH, "req": T_REQ, "pkb": "B 패키지 · [[협의회 단지발전지원]]",
+    "check": T_CHECK, "x10": "[[최저가 차액 10배]] 보상",
+    "pm": T_PM, "call": "주관 [[콜센터]]와 선보상", "crm": "클레임 [[처리 흐름]]과 CRM 관리",
+    "pre": "사전점검 당일 [[현장 지원]]", "cafe": "입예협 카페 [[홍보 콘텐츠]] 제작", "map": T_MAP,
+}
+PGNO = {}
 
 
 # ============================================================ 기존 장 고치기
@@ -797,7 +1127,7 @@ i = find("행사는 [[운영]]이 전부입니다")
 B.PAGES[i][1]["body"] = sub(B.PAGES[i][1]["body"], "주말 양일 개최, 2차 박람회 협의.", "주말 양일 개최.")
 B.PAGES[i][1]["kp"] = "행사 후에도 콜센터·CRM이 [[계속 돌아갑니다.]]"
 
-# 입증하기 어려운 표현 정리(지웰 공고 4항 7 허위 기재 · 8항 7 무리한 혜택 감점)
+# 입증하기 어려운 표현 정리(공고 9항 3 허위·실적 과장 · 10항 2 확정되지 않은 혜택 금지)
 i = find("정회원 전용")
 B.PAGES[i][1]["lead"] = "공동구매가에 더해지는 정회원 전용 혜택입니다."
 
@@ -1011,7 +1341,7 @@ if not os.environ.get("NO_NATIVE"):
     # 핵심 혜택 한 장(본부장 지시 10-07: 표지 수치 대신 뒤쪽에 임팩트 있게) — 마무리 약속 장 바로 앞
     _ci = next(i for i, (k, _) in enumerate(B.PAGES) if k == "closing")
     _hh = D.FUND_HH
-    B.PAGES.insert(_ci, ("std", dict(sec=B.PAGES[_ci][1].get("sec", ""), title="지웰 엘리움 양주 덕계역에 드리는 [[핵심 혜택 6가지]]",
+    B.PAGES.insert(_ci, ("std", dict(sec=B.PAGES[_ci][1].get("sec", ""), title=T_CORE6,
         lead="숫자로 약속하고, 협약서로 지킵니다.",
         body=B.tiles([
             dict(lb="발전지원금", big=f"{D.FUND}", unit="만원", nm="세대당 발전지원금",
@@ -1070,42 +1400,16 @@ def render_full_pages(src_pdf):
 # ============================================================ 특수 페이지
 COVER = dict(kind="stats", pill="입주박람회 주관사 제안서",
              tag=f"박람회를 여는 회사가 아니라, 단지를 완성시키는 회사.<br>{D.SITE['households']:,}세대의 입주를 입주 후 1년까지 책임지겠습니다.")
-TITLE_H1 = "지웰 엘리움 양주 덕계역<br><em>입주박람회 주관사 제안서</em>"
+TITLE_H1 = "e편한세상<br>분당 퍼스트빌리지<br><em>입주박람회 주관사 제안서</em>"
 COVER_TOP = """<div class="top"><div><div class="logo">EG</div><div class="en">EDGE COMPANY</div></div>
 <div class="who">주식회사 엣지컴퍼니<br>입주박람회 전문 주관사</div></div>"""
 
 
-def p_cover_impact():
-    """제안 요약본 표지 — 숫자(15만원 상당 · 10억 · 1억)로 시작, 오른쪽은 단지 경관조명 연출 이미지."""
-    hh = D.FUND_HH
-    CASHV = getattr(D, "FUND_CASH", False)
-    sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
-    return f"""<section class="page cv cv5"><div class="cvlx"><img src="assets_ins/gw_facade_night.jpg" alt=""><div class="fd"></div>
-<span class="cap">경관조명 연출 이미지 · 실제와 다를 수 있음</span></div>{COVER_TOP}
-<div class="mid"><span class="pill">{COVER['pill']}</span>
-<h1>지웰 엘리움 양주 덕계역 <em>입주박람회 주관사 제안</em></h1>
-<div class="hero3">
-<div class="h1x"><i>{'세대당 발전지원금' if CASHV else '세대당 발전지원 · 혜택 패키지'}</i><b>{D.FUND}<small>{'만원' if CASHV else '만원 상당'}</small></b>
-<p>분양 {hh:,}세대 × {D.FUND}만원 = <em>총 {won(hh * D.FUND)}{'' if CASHV else ' 상당'}</em>(부가세 포함) · {'현금 또는 같은 금액의 혜택 패키지 중 선택' if CASHV else '패키지 또는 입예협 지정 항목으로 제공'}</p></div>
-<div><i>이행보증보험 2년</i><b><small class="mx">최대</small>10<small>억</small></b><p>증권 실물 제출</p></div>
-<div><i>하자 예치금</i><b><small class="mx">최대</small>1<small>억</small></b><p>하자 시 입주민 선보상</p></div>
-</div>
-<div class="lxband"><b>전기공사업 면허 주관사</b><span>경관조명·공용부 조명 개선을 제안에서 직접 시공까지<br>전기공사업 등록 제 울산-00821호</span></div>
-</div>
-{sub2}
-<div class="bt"><span>입주박람회 주관사 선정 · 제안 요약본</span><span>2026.10</span></div>
-</section>"""
-
-
 def p_cover():
-    if COVER.get("kind") == "impact":
-        return p_cover_impact()
-    if COVER.get("kind") == "company":
-        return p_cover_company()
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
-    # 조감도(본부장 제공 2026-10-07) — 네이비 배경에 스며들도록 위·왼쪽을 배경색으로 페이드
-    art = ('<div class="cvart tj"><img src="assets_ins/gw_aerial_day.jpg" alt="">'
-           '<span class="credit">지웰 엘리움 양주 덕계역 조감도 · 모집공고 이미지 · 실제와 다를 수 있음</span></div>')
+    # 조감도(본부장 제공 예정) — 네이비 배경에 스며들도록 위·왼쪽을 배경색으로 페이드. 파일이 없으면 남색 자리표시(finish)
+    art = ('<div class="cvart tj"><img src="assets_ins/bd_cover.jpg" alt="">'
+           f'<span class="credit">{D.SITE["name"]} 조감도 · 실제와 다를 수 있음</span></div>')
     return f"""<section class="page cv cv4">{art}{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
 <h1 class="tj">{TITLE_H1}</h1>
@@ -1117,24 +1421,8 @@ def p_cover():
 </section>"""
 
 
-def p_cover_company():
-    """회사소개서 표지(참고 자료) — 제안서 표지 틀 그대로, 제목·띠만 회사소개서로."""
-    art = ('<div class="cvart"><img src="assets_ins/gw_aerial_night2.jpg" alt="">'
-           '<span class="credit">모집공고 조감도에 경관조명을 입힌 연출 이미지 · 실제와 다를 수 있음</span></div>')
-    sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제출서류</i><b>참고 자료 · 회사소개서 (연혁 · 조직 구성)</b></div></div>'
-    return f"""<section class="page cv cv4">{art}{COVER_TOP}
-<div class="mid"><span class="pill">회사소개서</span>
-<h1 class="tj">{D.COMPANY}<br><em>회사소개서</em></h1>
-<div class="gbar"></div>
-<div class="tag2">연혁 · 조직도 · 주관 실적 · 자격과 증빙<br>전기공사업 면허를 갖춘 입주박람회 주관사</div>
-</div>
-{sub2}
-<div class="bt"><span>회사소개서 · 지웰 엘리움 양주 덕계역</span><span>2026.10</span></div>
-</section>"""
-
-
 TOC4 = [
-    [("01", "지웰 엘리움 양주 덕계역 맞춤 제안", ["단지 이해 · 입주민 관심", "업무 5개 · 자격 7개", "일정 · 30개월 관리", "참가 업체 · 품목"]),
+    [("01", "분당 퍼스트빌리지 맞춤 제안", ["공고 필수 9항목 대응표", "신혼희망타운 품목", "가격 검수 · 비교 한 장", "업무 11 · 자격 10"]),
      ("02", "회사 역량", ["실적·성장", "인증·재무", "지사망", "직영 운영"])],
     [("03", "조명 특화", ["경관조명 컨설팅", "직수입·생산·KC·시공", "공용부 조명·단지 업그레이드"]),
      ("04", "안전망", ["예치금 1억·보증 10억", "업체 하자보증·패널티", "클레임 보상 규정", "콜센터·선보상"])],
@@ -1166,7 +1454,7 @@ def p_contact():
     s = sub(s, "삼성전자 MOU 체결</div>", "삼성전자 · 세스코 MOU 체결</div>")
     s = sub(s, '<div class="who">주식회사 엣지컴퍼니<br>대표이사 고진식</div>', "")
     s = sub(s, '<div class="addr">', '<div class="addr" style="font-size:14.2px">')
-    label = f"회사소개서 · {D.SITE['name']}" if COVER.get("kind") == "company" else f"입주박람회 주관사 선정 · {D.SITE['name']}"
+    label = f"입주박람회 주관사 선정 · {D.SITE['name']}"
     return sub(s, "SUMMARY PROPOSAL · 요약제안서", label)
 
 
@@ -1267,6 +1555,17 @@ if not os.environ.get("NO_NATIVE"):
     import reorg  # noqa: E402  (목차 10장 재배치 · 15만원 현금/패키지 선택 · 특화서비스 요약 — reorg.py)
     reorg.apply(globals())
 
+
+def p_toc_bd(no):
+    """목차 아래 띠: 공고 8항 필수 9항목 대응표 쪽(평가위원이 목차에서 바로 찾도록)."""
+    s = p_toc(no)
+    band = (f'<div class="kp"><b>KEY POINT</b><span>공고 8항 필수 9항목 대응표 · <em>{PG("map")}</em>'
+            '<small>공고 4항 자격 · 5항 업무 범위 · 9항 제한 · 10항 유의사항 대응은 07장</small></span></div>')
+    return sub(s, '<div class="ft">', band + '\n<div class="ft">')
+
+
+B.p_toc = p_toc_bd
+
 CLOSING_DROP = []  # 요약본에서 뺄 약속 번호
 
 
@@ -1341,8 +1640,23 @@ def finish(path, title):
     doc = doc[:i] + body
     doc = sub(doc, "<title>엣지컴퍼니 요약제안서</title>", f"<title>{title}</title>")
     doc = sub(doc, "</body>", ALIGN_JS + "</body>")
-    left = re.findall(r".{0,12}(?:동탄|임예협|임차|임대사업자|철산|광명|조합|1,395|aT센터|수원메쎄|GS건설|탕정|센터파크|아산|천안|세종|OSCO|DCC|유관순|물의정원|중앙광장|1,416|2028\.03|17개월|22개 항목|prugiocenterpark|tj_|대우건설).{0,6}", re.sub(r"<style.*?</style>", "", doc, flags=re.S))
-    assert not left, left  # 동탄·철산·탕정 문구가 남지 않게(지웰은 입예협 — '조합' 없음)
+    left = re.findall(r".{0,12}(?:지웰|양주|덕계|1,595|1,355|대방산업|대방 |대방건설|신영|gwell|gw_|KINTEX|104동|덕정|회천|의정부|경기 북부|30개월|동탄|임예협|임차|임대사업자|철산|광명|조합|1,395|GS건설|탕정|센터파크|아산|천안|세종|OSCO|DCC|유관순|물의정원|중앙광장|1,416|17개월|22개 항목|prugiocenterpark|tj_|대우건설|사전청약|632세대|301세대|1,741|총회장).{0,6}", re.sub(r"<style.*?</style>", "", doc, flags=re.S))
+    assert not left, left  # 지웰·동탄·철산·탕정 문구가 남지 않게(분당은 입예협 — '조합' 없음)
+    # 대응표 쪽 번호(⟪pg:키⟫) — emit()에서 재배치가 끝난 B.PAGES로 계산
+    doc = re.sub(r"⟪pg:(\w+)⟫", lambda m: f"p.{PGNO[m.group(1)]:02d}", doc)
+    assert "⟪" not in doc
+    # 본부장 제공 예정 사진(bd_*) — 파일이 없으면 남색 자리표시(파일을 assets_ins/에 넣으면 다음 빌드에 자동 반영)
+    def _ph(m):
+        name, attrs = m.group(1), m.group(2)
+        if os.path.exists(os.path.join(HERE, "assets_ins", name + ".jpg")):
+            return m.group(0)
+        PH_MISSING.add(name)
+        return f'<div class="phd"><span>{PH_LABEL.get(name, "사진 자리")}</span><small>{name}.jpg</small></div>'
+    doc = re.sub(r'<img src="assets_ins/(bd_\w+)\.jpg"([^>]*)>', _ph, doc)
+    doc = doc.replace("</style>", ".phd{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;"
+                      "background:linear-gradient(160deg,#16314f,#0b1a2d);border:1px dashed rgba(235,203,143,.35)}"
+                      ".phd span{font-size:13px;letter-spacing:.12em;color:rgba(235,203,143,.75);font-weight:700}"
+                      ".phd small{font-size:10px;color:rgba(255,255,255,.35)}</style>", 1)
     doc = re.sub(r"⟦(.*?)⟧", r'<mark class="todo">\1</mark>', doc)
     _todo = re.findall(r'<mark class="todo">(.*?)</mark>', doc)
     if _todo:
@@ -1353,351 +1667,34 @@ def finish(path, title):
         f.write(doc)
 
 
+PH_LABEL = {"bd_cover": "조감도 자리", "bd_gate_night": "문주 경관조명 사진 자리", "bd_aerial_night": "단지 야간 경관 사진 자리",
+            "bd_facade_night": "외벽 경관조명 사진 자리", "bd_plaza_night": "단지 조경 경관 사진 자리"}
+PH_MISSING = set()
+
+
 def emit(pages, out_html, title):
     keep = list(B.PAGES)
     B.PAGES[:] = pages
+    PGNO.clear()
+    for k, tt in PGREF.items():
+        hits = [i for i, (_, kw) in enumerate(pages) if kw.get("title") == tt]
+        assert len(hits) == 1, ("대응표 쪽 번호 — 제목을 찾지 못함", k, tt, hits)
+        PGNO[k] = hits[0] + 1
     B.OUT_HTML, B.OUT_PDF = out_html, out_html[:-5] + ".pdf"
     B.build_html()
     B.PAGES[:] = keep
     finish(out_html, title)
+    if PH_MISSING:
+        print(f"[사진 자리표시 {len(PH_MISSING)}종] " + " / ".join(sorted(PH_MISSING)))
     if "--no-pdf" not in sys.argv:
         B.build_pdf()
-
-
-NAME22 = "엣지컴퍼니_지웰엘리움양주덕계역_10_제안요약본"
-NAME07 = "엣지컴퍼니_지웰엘리움양주덕계역_참고_회사소개서"
-
-HIST_CSS = r"""
-.hist{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:0 34px}
-.hist ol{list-style:none;margin:0;padding:0;position:relative;display:flex;flex-direction:column;justify-content:space-between}
-.hist ol:before{content:'';position:absolute;left:92px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--gold2),rgba(200,168,106,.25))}
-.hist li{position:relative;display:grid;grid-template-columns:76px 1fr auto;gap:0 34px;align-items:center;padding:6px 0}
-.hist li:before{content:'';position:absolute;left:88px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#0d1e33;border:2px solid var(--gold2)}
-.hist li.k:before{background:var(--gold);box-shadow:0 0 8px rgba(235,203,143,.55)}
-.hist li b{font-size:17px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
-.hist li span{font-size:17px;line-height:1.4}
-.hist li.k span{font-weight:700}
-.hist li i{font-style:normal;font-size:11.5px;color:var(--mute);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:1px 8px;white-space:nowrap}
-"""
-
-
-def company_pages():
-    """제출서류 07 회사소개서 — 표지 + 01 간지 + 연혁 + 조직 구성(실명 없음) + 제안서 01장 + 연락처."""
-    pick = [p for p in B.PAGES if p[1].get("sec") == "01. 회사소개" and p[0] != "divider"]
-    d01 = [p for p in B.PAGES if p[0] == "divider" and p[1].get("n") == "01"]
-    assert len(d01) == 1 and len(pick) > 15, (len(d01), len(pick))
-    key = ("설립", "등록", "ISO", "MOU")
-    def keep(t):  # '주관 · 1,643세대'는 한 줄로
-        return re.sub(r"(주관 · [\d,]+세대)", r'<span style="white-space:nowrap">\1</span>', _h.escape(t))
-    items = "".join(f'<li class="{"k" if any(x in t for x in key) else ""}"><b>{d}</b><span>{keep(t)}</span><i>{src}</i></li>'
-                    for d, t, src in D.HISTORY)
-    half = (len(D.HISTORY) + 1) // 2
-    lis = items.split("</li>")
-    left = "</li>".join(lis[:half]) + "</li>"
-    right = "</li>".join(lis[half:])
-    hist = ("std", dict(sec="01. 회사소개", title="엣지컴퍼니 [[연혁]]",
-        lead=f"법인 설립({D.FOUNDED})부터 지금까지 - 등기부 · 등록증 · 인증서 · NICE 연혁 · 협약으로 확인되는 기록만 적었습니다.",
-        body=f'<div class="nb"><div class="hist"><ol>{left}</ol><ol>{right}</ol></div></div>',
-        kp=("2023년부터 [[해마다]] 1,000세대 이상 입주박람회를 맡아 왔습니다.",
-            "출처: 법인등기부 · 전기공사업 등록증 · ISO 인증서 · NICE 기업신용평가보고서 연혁 · 세스코 협약")))
-    contact = [p for p in B.PAGES if p[0] == "contact"]
-    return [("cover", {})] + d01 + [hist] + pick + contact  # 조직 구성 장은 01장(pick)에 이미 들어 있음
-
-
-S5_CSS = r"""
-.s5{flex:1;min-height:0;display:grid;gap:12px}
-.s5 .col{display:flex;flex-direction:column;gap:12px;min-height:0;min-width:0}
-.s5 .bx{border:1px solid var(--line);border-radius:13px;padding:12px 16px;background:rgba(255,255,255,.025);display:flex;flex-direction:column;min-height:0;min-width:0}
-.s5 .bx.hl{border-color:rgba(235,203,143,.6);background:linear-gradient(180deg,rgba(235,203,143,.12),rgba(235,203,143,.02))}
-.s5 .bx.fl{flex:1}
-.s5 h3{font-size:15.5px;font-weight:800;margin:0 0 8px;display:flex;align-items:baseline;gap:9px;color:var(--ink)}
-.s5 h3 i{font-style:normal;font-size:10.5px;letter-spacing:.18em;color:var(--gold2);font-weight:700}
-.s5 strong{color:var(--ink);font-weight:800}
-.s5 span,.s5 p{color:var(--sub)}
-/* p2 — 발전지원 */
-.s5 .fx{display:flex;align-items:flex-end;gap:16px;padding-bottom:9px;border-bottom:1px solid rgba(200,168,106,.35)}
-.s5 .fx .big{font-size:52px;font-weight:800;color:var(--gold);line-height:.95;white-space:nowrap}
-.s5 .fx .big small{font-size:19px;margin-left:3px}
-.s5 .fx .fm{font-size:14.5px;line-height:1.45;color:var(--sub)}
-.s5 .two{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;margin:10px 0;align-items:stretch}
-.s5 .two>div{border:1px solid rgba(200,168,106,.4);border-radius:9px;padding:7px 11px;display:flex;flex-direction:column;gap:2px}
-.s5 .two>em{align-self:center;font-size:13px;font-weight:800}
-.s5 .two b{font-size:14px;color:var(--gold)}
-.s5 .two span{font-size:12.5px}
-.s5 .pkl{display:flex;flex-direction:column;gap:7px;flex:1;justify-content:space-around}
-.s5 .pkl>div{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:center}
-.s5 .pkl .L{width:30px;height:30px;border-radius:50%;background:var(--gold);color:#0d1e33;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
-.s5 .pkl strong{font-size:14.5px;display:block}
-.s5 .pkl span{font-size:12.8px;line-height:1.42;display:block}
-.s5 .nt{margin-top:8px;font-size:12px;color:var(--mute);border-top:1px dashed rgba(200,168,106,.35);padding-top:7px}
-.s5 .sn{display:flex;flex-direction:column;gap:8px;flex:1;justify-content:space-around}
-.s5 .sn>div{display:grid;grid-template-columns:78px 1fr;gap:12px;align-items:center}
-.s5 .sn .nm{text-align:center;border-right:1px solid rgba(200,168,106,.35);padding-right:8px}
-.s5 .sn .nm b{display:block;font-size:30px;font-weight:800;color:var(--gold);line-height:1}
-.s5 .sn .nm b small{font-size:14px;margin-left:1px}
-.s5 .sn .nm i{font-style:normal;font-size:11px;color:var(--mute)}
-.s5 .sn strong{font-size:14.5px;display:block}
-.s5 .sn span{font-size:12.8px;line-height:1.42;display:block}
-.s5 .pc4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.s5 .pc4>div{border:1px solid var(--line);border-radius:9px;padding:8px 6px;text-align:center}
-.s5 .pc4 b{display:block;font-size:22px;font-weight:800;color:var(--gold);line-height:1.15}
-.s5 .pc4 span{font-size:12px;line-height:1.4;display:block;margin-top:3px}
-/* p3 — 공고 필수 3가지 */
-.s5 .flw{display:flex;align-items:stretch;gap:6px;border:1px solid rgba(200,168,106,.45);border-radius:12px;padding:9px 12px}
-.s5 .flw .fh{display:flex;flex-direction:column;justify-content:center;padding-right:12px;border-right:1px solid rgba(200,168,106,.35);margin-right:4px}
-.s5 .flw .fh i{font-style:normal;font-size:10.5px;letter-spacing:.18em;color:var(--gold2);font-weight:700}
-.s5 .flw .fh b{font-size:15px;white-space:nowrap}
-.s5 .flw .st{flex:1;border-radius:8px;background:rgba(255,255,255,.05);padding:6px 8px;display:flex;flex-direction:column;justify-content:center}
-.s5 .flw .st i{font-style:normal;font-size:10px;letter-spacing:.12em;color:var(--gold2);font-weight:700}
-.s5 .flw .st b{font-size:13.5px;white-space:nowrap}
-.s5 .flw .st.hl{background:var(--gold)}.s5 .flw .st.hl i,.s5 .flw .st.hl b{color:#0d1e33}
-.s5 .flw .ar{align-self:center;color:var(--gold);font-weight:800}
-.s5 .fnt{font-size:12.5px;color:var(--sub);margin-top:-4px}
-.s5 .g3{display:grid;grid-template-columns:1fr 1.08fr 1.22fr;gap:12px;min-height:0}
-.s5 .bg{display:flex;align-items:baseline;gap:8px;margin:-2px 0 8px}
-.s5 .bg b{font-size:34px;font-weight:800;color:var(--gold);line-height:1}
-.s5 .bg b small{font-size:15px;margin-left:2px}
-.s5 .bg span{font-size:12.5px}
-.s5 ul.ls{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;flex:1;justify-content:space-around}
-.s5 ul.ls li{font-size:13px;line-height:1.45;color:var(--sub);padding-left:12px;position:relative}
-.s5 ul.ls li:before{content:'·';position:absolute;left:2px;color:var(--gold2);font-weight:800}
-.s5 ul.ls li b{color:var(--ink)}
-.s5 .rf{display:flex;flex-direction:column;gap:5px;flex:1;justify-content:space-around}
-.s5 .rf>div{display:grid;grid-template-columns:84px 1fr;gap:9px;align-items:center;font-size:12.8px;line-height:1.4}
-.s5 .rf>div b{font-size:12.5px;color:#0d1e33;background:rgba(235,203,143,.85);border-radius:6px;padding:3px 0;text-align:center}
-.s5 .rf>div.x b{background:transparent;border:1px solid rgba(235,203,143,.6);color:var(--gold)}
-.s5 .rf>div span{color:var(--sub)}
-.s5 table.cpl{width:100%;border-collapse:collapse}
-.s5 table.cpl td{font-size:12.6px;line-height:1.38;padding:5.5px 4px;border-bottom:1px solid var(--line);color:var(--sub);vertical-align:middle}
-.s5 table.cpl td:first-child{color:var(--ink);font-weight:700;width:31%}
-.s5 table.cpl td:last-child{color:var(--gold);font-weight:700;white-space:nowrap;text-align:right;width:23%}
-.s5 table.cpl tr:last-child td{border-bottom:0}
-.s5 .gc2{margin-top:auto;border:1px solid rgba(235,203,143,.55);background:rgba(235,203,143,.07);border-radius:9px;padding:7px 10px;display:flex;flex-direction:column;gap:2px}
-.s5 .gc2 b{font-size:12.5px;color:var(--gold)}.s5 .gc2 span{font-size:12.3px;line-height:1.42}
-/* p4 — 지웰 맞춤 */
-.s5 .st4{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(200,168,106,.45);border-radius:12px}
-.s5 .st4>div{padding:8px 12px;border-left:1px solid rgba(200,168,106,.25)}
-.s5 .st4>div:first-child{border-left:0}
-.s5 .st4 b{display:block;font-size:24px;font-weight:800;color:var(--gold);line-height:1.1;white-space:nowrap}
-.s5 .st4 b small{font-size:13px;margin-left:2px}
-.s5 .st4 span{font-size:11.8px;line-height:1.35;display:block;margin-top:2px}
-.s5 ol.ck{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;flex:1;justify-content:space-around;counter-reset:c}
-.s5 ol.ck li{display:grid;grid-template-columns:24px 118px 1fr;gap:8px;align-items:center;font-size:12.8px;line-height:1.4;color:var(--sub);counter-increment:c}
-.s5 ol.ck li:before{content:counter(c,decimal-leading-zero);font-size:11.5px;font-weight:800;color:var(--gold);border:1px solid rgba(235,203,143,.55);border-radius:6px;text-align:center;padding:2px 0}
-.s5 ol.ck li b{color:var(--ink);font-size:13.5px}
-.s5 .op6{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.s5 .op6>div{border:1px solid var(--line);border-radius:9px;padding:6px 10px}
-.s5 .op6 i{font-style:normal;font-size:10.5px;letter-spacing:.14em;color:var(--gold2);font-weight:700;margin-right:6px}
-.s5 .op6 b{font-size:13.8px}
-.s5 .op6 span{font-size:12px;display:block;line-height:1.35;margin-top:1px}
-.s5 .tl{display:flex;flex-direction:column;flex:1;justify-content:space-around;position:relative}
-.s5 .tl>div{display:grid;grid-template-columns:132px 1fr;gap:10px;align-items:center;font-size:12.8px;line-height:1.4;padding:3px 0;border-bottom:1px solid var(--line)}
-.s5 .tl>div:last-child{border-bottom:0}
-.s5 .tl>div b{font-size:13px;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
-.s5 .tl>div.k b{color:#0d1e33;background:var(--gold);border-radius:6px;padding:1px 7px;justify-self:start}
-.s5 .tl>div span{color:var(--sub)}
-.s5 .tl>div span em{font-weight:700}
-/* p5 — 공고 대응 · 실적 */
-.s5 table.mt{width:100%;border-collapse:collapse;flex:1}
-.s5 table.mt td{font-size:12.6px;line-height:1.38;padding:5px 5px;border-bottom:1px solid var(--line);color:var(--sub);vertical-align:middle}
-.s5 table.mt td.n{width:26px;color:var(--gold);font-weight:800;font-size:12px}
-.s5 table.mt td.k{color:var(--ink);font-weight:700;width:42%}
-.s5 table.mt tr:last-child td{border-bottom:0}
-.s5 .rec{display:grid;grid-template-columns:repeat(4,1fr) 1.55fr;border:1px solid rgba(200,168,106,.5);border-radius:12px;background:rgba(235,203,143,.05)}
-.s5 .rec>div{padding:9px 13px;border-left:1px solid rgba(200,168,106,.25);display:flex;flex-direction:column;justify-content:center}
-.s5 .rec>div:first-child{border-left:0}
-.s5 .rec b{font-size:22px;font-weight:800;color:var(--gold);line-height:1.1;white-space:nowrap}
-.s5 .rec b small{font-size:12.5px;margin-left:2px}
-.s5 .rec span{font-size:11.6px;line-height:1.35;margin-top:2px}
-.s5 .rec .ct5 i{font-style:normal;font-size:10.5px;letter-spacing:.14em;color:var(--gold2);font-weight:700}
-.s5 .rec .ct5 strong{font-size:17px;letter-spacing:.02em}
-.s5 .rec .ct5 span{font-size:11.8px}
-"""
-
-
-def summary_pages():
-    """제안 요약본 — 공고 5항 10 '5페이지 이내 · 입주박람회 제안서 내용 포함 필수'.
-    표지(숫자) + 4쪽: ① 발전지원·안전망·가격 보호 ② 공고 필수 3가지(A/S · 취소·환불 · 컴플레인)
-    ③ 지웰 맞춤·박람회 운영·일정 ④ 공고 업무 5 · 자격 7 · 실적 · 연락처. 숫자는 모두 본 제안서(09)와 같은 값."""
-    hh, fund = D.FUND_HH, D.FUND
-    tot = won(hh * fund)
-    rental = D.SITE["rental"]
-    sec = "제안 요약본"
-    p2 = f"""<div class="s5" style="grid-template-columns:1.1fr 1fr">
-<div class="bx hl"><h3><i>FUND · 08장</i>발전지원 · 혜택 패키지</h3>
-<div class="fx"><div class="big">{fund}<small>만원 상당</small></div>
-<div class="fm">분양 {hh:,}세대 × 세대당 {fund}만원 상당<br><em>총 {tot} 상당</em> (부가세 포함) · 현금 지급 없음</div></div>
-<div class="two"><div><b>방법 1 · 혜택 패키지</b><span>A · B · C에서 골라 구성</span></div><em>또는</em>
-<div><b>방법 2 · 입예협 지정</b><span>공용물품 · 입주 행사 · 단지 개선 용역</span></div></div>
-<div class="pkl">
-<div><b class="L">A</b><div><strong>입주민 특화서비스</strong><span>백화점 상품권 5만원 또는 10만원(입예협 활동·입주민 혜택) · 정회원 혜택 · 사은품·경품 · 사전점검 대행 할인 · 실측 · VR · 3D</span></div></div>
-<div><b class="L">B</b><div><strong>협의회 단지발전지원</strong><span>공용부 품질 점검 · 도면·하자 분석보고서 · 열화상 드론·라돈 측정 · 사전점검 당일 지원 · 온라인 위임장</span></div></div>
-<div><b class="L">C</b><div><strong>단지지원 컨설팅</strong><span>문주·경관조명 · 커뮤니티·공용부 조명 · 전기차 충전 인프라 · 입주 기념 점등식</span></div></div>
-</div>
-<div class="nt">주관사가 직접 구매·제공하고 사용 내역을 공개합니다 · 항목은 협약서로 확정 · 박람회 상품권(정회원 30만원)만 업체 계약 할인권이라 15만원 환산 제외 · 임대 {rental}세대는 운영기관 협의 후 박람회 참여</div></div>
-<div class="col">
-<div class="bx fl"><h3><i>SAFETY · 04 · 05장</i>보증보험 · 예치금 · 업체 하자보증</h3>
-<div class="sn">
-<div><div class="nm"><b>10<small>억</small></b><i>최대</i></div><div><strong>이행보증보험 2년</strong><span>업체 도산 시 동종업체로 이관하고 비용은 엣지컴퍼니가 부담 · 증권 실물 제출</span></div></div>
-<div><div class="nm"><b>1<small>억</small></b><i>최대</i></div><div><strong>하자 예치금</strong><span>엣지컴퍼니 자산으로 예치 · 하자 시 입주민 선보상 재원 · 사용 내역 공개</span></div></div>
-<div><div class="nm"><b>3<small>단계</small></b><i>패널티</i></div><div><strong>참여업체 하자보증</strong><span>하자보수이행각서 전원 징구 · 홍보정지 → 10% 배상 → 자격박탈·계약 이관</span></div></div>
-</div></div>
-<div class="bx"><h3><i>PRICE · 03장</i>공동구매 단가를 지키는 4가지 장치</h3>
-<div class="pc4">
-<div><b>공개</b><span>단가표 사전 공개<br>현장 가격 변경 없음</span></div>
-<div><b>10배</b><span>최저가 차액 보상<br>온라인·시공 품목 제외</span></div>
-<div><b>10%</b><span>계약금 상한<br>잔금은 시공·설치 후</span></div>
-<div><b>동일</b><span>현금·카드 동일가<br>결제 방식 무관</span></div>
-</div></div>
-</div></div>"""
-
-    cpl = "".join(f"<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>" for a, b, c in [
-        ("커튼 치수 불일치", "재실측 → 재제작 · 비용 업체 부담", "48시간 내 재실측"),
-        ("입주청소 미흡", "사진 접수 → 재청소 → 확인 서명", "48시간 내 재방문"),
-        ("참여업체 폐업", "보증·예치금으로 대체 업체 · A/S 승계", "주관사 책임"),
-        ("시공 전 취소", "취소 기한 확인 → 위약금 없이 환불", "3영업일 내"),
-    ])
-    p3 = f"""<div class="s5" style="grid-template-rows:auto auto 1fr">
-<div class="flw"><div class="fh"><i>업체 선정 · 03장</i><b>4단계 공개 심사</b></div>
-<div class="st"><i>사전</i><b>품목 수요조사</b></div><span class="ar">›</span>
-<div class="st"><i>STEP 1</i><b>공개 입찰공고</b></div><span class="ar">›</span>
-<div class="st"><i>STEP 2</i><b>1차 서류심사</b></div><span class="ar">›</span>
-<div class="st"><i>STEP 3</i><b>2차 세부심사</b></div><span class="ar">›</span>
-<div class="st hl"><i>STEP 4</i><b>입예협 최종 컨펌</b></div></div>
-<div class="fnt">시공 품목은 지역업체 우선 · 선정 업체의 하청 금지 · 최종 확정 시 물품공급계약서 · 청렴이행서약서 · 하자보수이행각서 징구</div>
-<div class="g3">
-<div class="bx"><h3><i>필수 01</i>A/S 및 사후관리</h3>
-<div class="bg"><b>48<small>시간</small></b><span>하자보수 원칙 · 24시간 내 회신</span></div>
-<ul class="ls">
-<li><b>주관 콜센터 한 창구</b> - 콜센터 · 카페 신문고 · 카카오채널 · 홈페이지</li>
-<li>업체가 미루면 <b>주관사가 먼저 보상</b>하고 업체와 정산</li>
-<li>보수 완료는 <b>해피콜</b>로 확인 후 종결</li>
-<li><b>무상 A/S 최소 2년</b>(업체·품목별 상이) · 최대 10년 장기관리</li>
-<li>입주 후 1년 운영 관리 · 결과 보고서 제출</li>
-</ul></div>
-<div class="bx"><h3><i>필수 02</i>품목별 계약 취소 · 환불</h3>
-<div class="bg"><b>3<small>영업일</small></b><span>안에 환불 · 카드는 승인 취소</span></div>
-<div class="rf">
-<div><b>시공일 7일 전</b><span>청소·줄눈 · 탄성코트 · 유리막코팅 · LED조명 등</span></div>
-<div><b>시공일 15일 전</b><span>미세방충망 · 인테리어 · 단열필름 · 시스템에어컨 · 포장이사</span></div>
-<div><b>출고 지시 전</b><span>커튼·블라인드 · 중문 등 맞춤 제작 · 업체 협의</span></div>
-<div class="x"><b>당일 취소</b><span>사전 해피콜 미이행 시 모든 품목</span></div>
-<div class="x"><b>업체 귀책</b><span>시공 지연·계약과 다른 제품은 기한과 관계없이 전액 환불</span></div>
-</div></div>
-<div class="bx"><h3><i>필수 03</i>컴플레인 예시 · 해결 우수 사례</h3>
-<table class="cpl"><tbody>{cpl}</tbody></table><div class="gc2"><b>해결 사례 · 타 단지</b><span>입주 전날 긴급 재청소 연결(단지 단톡방) · A/S·하자 즉시 처리 - 입주민 카페 감사 글(2024.10)</span></div></div>
-</div></div>"""
-
-    tl = "".join(f'<div class="{c}"><b>{a}</b><span>{b}</span></div>' for a, b, c in [
-        ("2026.10 ~ 11", "주관사 선정 · 협약 · 입예협 카페/공지채널 지원 시작", ""),
-        ("2026.12 ~ 2028.09", "정례 보고 · 입주민 건의 관리 · 광장·104동 주변 조경·조명 진단", ""),
-        ("2028.08 ~ 10", "품목 수요조사 · 타입별(49 · 84A·B·C · 122A·B) 실측 데이터 준비", ""),
-        ("2028.10 ~ 12", "공개 입찰공고 · 4단계 심사 · <em>입예협 최종 컨펌</em>", ""),
-        ("2029.01 ~ 02", "<em>입주박람회 금·토·일 3일</em> · 온라인 박람회 오픈 · 사전점검 지원", "k"),
-        ("2029.04 ~", "입주 지원 · 하자 접수 창구 · 입주 후 1년 관리 · 결과 보고", ""),
-    ])
-    p4 = f"""<div class="s5" style="grid-template-columns:1fr 1fr">
-<div class="col">
-<div class="st4">
-<div><b>{D.SITE['households']:,}<small>세대</small></b><span>분양 {D.SITE['sale']:,}<br>임대 {rental}</span></div>
-<div><b>985<small>세대</small></b><span>84㎡ A·B·C<br>분양의 72.7%</span></div>
-<div><b>{D.SITE['buildings']}<small>개동</small></b><span>지하 4층 ~<br>지상 39층</span></div>
-<div><b>2029.04</b><span>입주 예정<br>1호선 덕계역</span></div>
-</div>
-<div class="bx fl"><h3><i>CHECK · 07장</i>이 단지라서 먼저 챙길 것</h3>
-<ol class="ck">
-<li><b>유상옵션 중복 확인</b><span>시공사 유상옵션으로 이미 선택한 품목은 권하지 않습니다</span></li>
-<li><b>타입별 견적</b><span>49 · 84A·B·C · 122A·B는 창호·수납·설치 면적이 달라 타입별로 안내</span></li>
-<li><b>창호·발코니 확인</b><span>시공 하자와 공동구매 하자를 시공 전 체크리스트로 구분</span></li>
-<li><b>가격 공개표</b><span>모델·물량·부가세·설치비·추가금까지 같은 조건으로 비교</span></li>
-</ol></div>
-<div class="bx"><h3><i>SPECIAL · 07장</i>지웰 특화 제안</h3>
-<ul class="ls">
-<li><b>광장 · 104동 주변</b> 야간 보행·조경 조명 진단 - 전기공사업 등록 · 사내 조경 전문 인력</li>
-<li><b>입주민 건의 관리표</b> 창호·승강기 · 발코니 누수 · 세대별 창고 · 승강기 냉방 · 유상옵션 일정</li>
-<li><b>실물 없는 타입 미리 보기</b> 평면·실측 자료로 3D 홈스타일링 · 가구·커튼 배치</li>
-</ul></div>
-</div>
-<div class="col">
-<div class="bx"><h3><i>EXPO · 06장</i>입주박람회 운영 계획 (안)</h3>
-<div class="op6">
-<div><i>시기</i><b>2029.01 ~ 02 금·토·일</b><span>입주 2 ~ 3개월 전 3일 · 사전점검 일정과 연계</span></div>
-<div><i>장소</i><b>KINTEX · SETEC · 양주 인근</b><span>후보지를 입예협과 답사한 뒤 확정 · 총회장 함께 섭외</span></div>
-<div><i>편의</i><b>안내데스크 · 카페 · 놀이방</b><span>체크인·입예협 부스 · 카페테리아 · 어린이 놀이방</span></div>
-<div><i>안전</i><b>행사배상책임보험</b><span>보안 · 구급 · 119 연계 · 현장 21명 + 운영팀(규모별 변동)</span></div>
-<div><i>온라인</i><b>온라인 박람회</b><span>입주민 전용 폐쇄몰 · 박람회와 같은 공동구매가</span></div>
-<div><i>가격</i><b>사전 공개 단가</b><span>결제 방식(카드·현금)에 따른 단가 차이 없음</span></div>
-</div></div>
-<div class="bx fl"><h3><i>30 MONTHS · 07장</i>선정부터 입주까지 추진 일정 (안)</h3>
-<div class="tl">{tl}</div></div>
-</div></div>"""
-
-    _rec_n, _rec_h = len(D.RECORDS), sum(r[3] for r in D.RECORDS)
-    _r3n = sum(1 for r in D.RECORDS if r[0] >= "2023.10" and r[1] not in D.NO_DOC08)
-    sc = "".join(f'<tr><td class="n">{i:02d}</td><td class="k">{a}</td><td>{b}</td></tr>' for i, (a, b) in enumerate([
-        ("참여 업체 선정 · 사후관리", "4단계 공개 심사 · A/S 보장기간 명시 · 품목별 취소 기한 · 3영업일 환불"),
-        ("총회 · 박람회 대관 섭외 · 운영 총괄", "행사장·총회장 답사·대관 · 배치·안전·인력 운영 · 배상책임보험"),
-        ("입주박람회 기획 · 홍보", "결제 방식 무관 동일 단가 · 편의시설 · 카페 콘텐츠 · 온라인 박람회"),
-        ("사전점검 · 총회 · 세미나 행사 지원", "행사 인력·장비 · 공용부·전유부 하자점검 · 하자 대응 컨설팅"),
-        ("기타 입예협 요청 업무", "범위·일정을 협의해 협약서에 반영"),
-    ], 1))
-    ql = "".join(f'<tr><td class="n">{i:02d}</td><td class="k">{a}</td><td>{b}</td></tr>' for i, (a, b) in enumerate([
-        ("법인 1년 이상 · 대표자 본인 명의", "개업 2022.02.28 · 대표이사 고진식 본인 명의"),
-        ("업태·종목 - 행사대행 · 전시 등", "전시, 박람회 및 행사 대행업"),
-        ("자본금 1억원 이상", "자본금 <em>2억원</em>"),
-        ("4대보험 정직원 5명 이상", "4대보험 가입 정규직 <em>10명</em>"),
-        ("1,000세대 이상 5개 단지 수임", f"주관 <em>{_rec_n}개 단지</em> · 실적증명서 {_r3n}개 단지(제출서류 8)"),
-        ("계약 이행 · 하자담보 능력", "보증보험 최대 10억 · 예치금 최대 1억"),
-        ("국세 · 지방세 체납 없음", "완납증명서 제출"),
-    ], 1))
-    p5 = f"""<div class="s5" style="grid-template-columns:1.08fr 1fr;grid-template-rows:1fr auto">
-<div class="bx"><h3><i>공고 2항 · 07장</i>주요 업무 범위 5개 대응</h3><table class="mt"><tbody>{sc}</tbody></table></div>
-<div class="bx"><h3><i>공고 3항 · 07장</i>입찰 자격 7개 대응</h3><table class="mt"><tbody>{ql}</tbody></table></div>
-<div class="rec" style="grid-column:1/-1">
-<div><b>67<small>개 단지</small></b><span>누적 주관·수임<br>(전신 실적·입주 예정 포함)</span></div>
-<div><b>56,361<small>세대</small></b><span>누적 주관·수임 세대</span></div>
-<div><b>4,470<small>세대</small></b><span>단일 단지 최대<br>레이카운티</span></div>
-<div><b>3<small>종</small></b><span>ISO 9001·14001·45001<br>전기공사업 제 울산-00821호</span></div>
-<div class="ct5"><i>CONTACT</i><strong>010-7273-9901</strong><span>주관사업 총괄 본부장 · 본사 {D.TEL} · {D.EMAIL}</span></div>
-</div></div>"""
-
-    def std(title, lead, body, kp):
-        return ("std", dict(sec=sec, title=title, lead=lead, body=body, kp=kp))
-    return [
-        ("cover", {}),
-        std("세대당 15만원 상당 혜택, [[보증과 예치금]]으로 지킵니다",
-            "현금이 아닌 혜택 패키지로 드리고, 보증보험 · 예치금 · 가격 보호 장치로 입주민 돈을 먼저 지킵니다.", p2,
-            ("발전지원은 [[혜택으로]], 입주민 돈은 [[증권과 예치금으로]] 지킵니다.", "사용 내역 공개 · 협약서로 확정")),
-        std("공고 필수 3가지 - A/S · 취소·환불 · 컴플레인, [[기한으로]] 약속합니다",
-            "업체 선정부터 사후관리까지, 입주민은 업체가 아니라 주관사 한 곳에 연락하시면 됩니다.", p3,
-            ("접수 → 24시간 회신 → 48시간 처리 → [[선보상]] → 해피콜까지 주관사가 따라갑니다.", "제안서 03 · 04 · 05장")),
-        std("지웰 엘리움 양주 덕계역 [[맞춤 운영]]",
-            f"{D.SITE['households']:,}세대 · 84㎡ 중심 · 입주까지 약 30개월 - 단지에 맞춰 박람회와 입주 준비를 설계했습니다.", p4,
-            ("같은 84㎡라도 [[타입마다]] 다르게, 입주까지 [[30개월]]을 빈틈없이 준비합니다.", "일정·장소는 입예협과 협의해 확정")),
-        std("자격은 [[서류로]], 실적은 [[숫자로]] 확인받겠습니다",
-            "공고 업무 범위 5개와 입찰 자격 7개에 모두 대응하며, 입찰 제한 9개 항목에는 해당하지 않습니다.", p5,
-            ("제안서에 쓴 것은 전부 [[협약서와 증빙]]으로 남깁니다.", "상세는 입주박람회 제안서(제출서류 9)와 제출서류")),
-    ]
 
 
 def build():
     full = sys.argv[sys.argv.index("--full") + 1] if "--full" in sys.argv else None
     render_full_pages(full)
+    # 공고 7항 제출서류에 요약본 · 회사소개서가 없어 제안서(제출서류 2)만 만든다.
     emit(list(B.PAGES), B.OUT_HTML, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
-    if not os.environ.get("NO_NATIVE"):
-        # 요약본 [2-2] — 본 제안서 틀 그대로, 표지는 숫자(15만원·10억·1억)로
-        COVER.update(kind="impact", pill="제안 요약본")
-        _css = B.CSS
-        B.CSS += S5_CSS
-        sp = summary_pages()
-        assert len(sp) <= 5, len(sp)  # 공고 5항 10 - 제안 요약본 5페이지 이내
-        emit(sp, os.path.join(HERE, NAME22 + ".html"), f"엣지컴퍼니 {D.SITE['name']} 제안 요약본")
-        B.CSS = _css
-        # 제출서류 07 회사소개서 — 연혁 장 + 제안서 01장(조직도 포함)
-        COVER.update(kind="company")
-        B.CSS += HIST_CSS
-        emit(company_pages(), os.path.join(HERE, NAME07 + ".html"), "엣지컴퍼니 회사소개서")
-        COVER.update(kind="stats", pill="입주박람회 주관사 제안서")
 
 
 if __name__ == "__main__":
