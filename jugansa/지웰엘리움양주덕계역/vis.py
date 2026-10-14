@@ -132,13 +132,13 @@ CSS = r"""
 .ct2 .hb b{text-align:right;font-variant-numeric:tabular-nums}
 /* 대단지 타임라인 막대 */
 .tlb{flex:1;min-height:0;display:flex;flex-direction:column}
-.tlb .cols{flex:1;min-height:0;display:grid;grid-template-columns:repeat(9,1fr);gap:12px;align-items:end;border-bottom:1.5px solid rgba(200,168,106,.6);padding:0 6px}
+.tlb .cols{flex:1;min-height:0;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:12px;align-items:end;border-bottom:1.5px solid rgba(200,168,106,.6);padding:0 6px}
 .tlb .c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
 .tlb .c b{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:6px;font-variant-numeric:tabular-nums}
 .tlb .c i{display:block;width:70%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,rgba(235,203,143,.85),rgba(200,168,106,.35))}
 .tlb .c.mx i{background:linear-gradient(180deg,var(--gold),rgba(235,203,143,.5));box-shadow:0 0 14px rgba(235,203,143,.35)}
 .tlb .c.mx b{color:var(--gold);font-size:18px}
-.tlb .nm{display:grid;grid-template-columns:repeat(9,1fr);gap:12px;padding:8px 6px 0}
+.tlb .nm{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:12px;padding:8px 6px 0}
 .tlb .nm div{text-align:center;font-size:12.5px;line-height:1.3;font-weight:700}
 .tlb .nm div small{display:block;font-size:11.5px;color:var(--mute);font-weight:500;margin-top:2px}
 /* 카드 사진 */
