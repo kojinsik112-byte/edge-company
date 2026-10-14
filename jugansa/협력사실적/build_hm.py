@@ -22,6 +22,8 @@ PARTNER = "㈜더에이치엠컴퍼니"
 
 # (연월, 단지명, 세대수, [구분], 사진번호) — 협력사 실적표 원문 그대로. 세대수 None = 확인 필요
 RECORDS = [
+    # 엣지컴퍼니 직접 주관(본부장 현장 주관 · BEXCO 행사 일정 등록 event_seq=13507) — 협력사 실적과 구분 표기
+    ("2024.08", "e편한세상 송도 더퍼스트비치", 1302, ["입주박람회"], None, True),
     ("2027.06", "창원 푸르지오 파크베뉴", 570, ["입주박람회"], 1),
     ("2026.09", "창원 센트럴 아이파크", 1509, ["입주박람회 1·2차", "현장박람회"], 2),
     ("2026.08", "반포 래미안 트리니원", 2091, ["입주박람회 1·2차", "현장박람회"], 3),
@@ -41,7 +43,7 @@ RECORDS = [
     ("2018.11", "답십리파크자이", 802, ["유상옵션", "입주박람회", "현장박람회"], 17),
     ("2018.05", "서울숲리버뷰자이", 1034, ["입주박람회", "현장박람회"], 18),
     # 본부장 10-14 추가 — 연월·세대수·사진 받으면 채움
-    ("2028.06", "전주 더샵 라비온드(기자촌)", 2226, ["유상옵션"], None),
+    ("2028.06", "전주 더샵 라비온드 (기자촌)", 2226, ["유상옵션"], None),
     (None, "두산 우암1구역", None, ["조합 주관", "유상옵션"], None),
 ]
 
@@ -52,14 +54,15 @@ def t(s):
 
 
 def tile(r):
-    ym, nm, hh, tags, ph = r
+    ym, nm, hh, tags, ph = r[:5]
+    own = len(r) > 5 and r[5]
     img = (f'<div class="im" style="background-image:url(\'file://{IMG}/hm{ph:02d}.jpg\')"></div>' if ph
-           else '<div class="im ph">사진 확인 필요</div>')
+           else f'<div class="im ph">{"엣지컴퍼니 직접 주관" if own else "사진 확인 필요"}</div>')
     chips = "".join(f'<i class="{"op" if "옵션" in g else ""}">{t(g)}</i>' for g in ["조합"] + [g for g in tags if g != "조합 주관"]
                     if True)
     head = f'{ym} · ' if ym else '<span class="todo">연월 확인</span> · '
     hhs = f'{hh:,}세대' if hh else '<span class="todo">세대수 확인</span>'
-    return f'<div class="tl">{img}<div class="cp"><b>{t(nm)}</b><span class="d">{head}{hhs}</span><p>{chips}</p></div></div>'
+    return f'<div class="tl{" own" if own else ""}">{img}<div class="cp"><b>{t(nm)}</b><span class="d">{head}{hhs}</span><p>{chips}</p></div></div>'
 
 
 def build():
@@ -90,29 +93,31 @@ h1{{font-size:33px;font-weight:800;line-height:1.2}}
 .st b{{display:block;font-size:24px;font-weight:800;color:var(--gold);line-height:1.1}}
 .st span{{font-size:11.5px;color:var(--sub);letter-spacing:.04em}}
 .rule{{height:1.5px;margin:12px 0 12px;background:linear-gradient(90deg,var(--gold2),rgba(200,168,106,.35) 55%,rgba(200,168,106,0))}}
-.grid{{flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:1fr;gap:9px}}
+.grid{{flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:1fr;gap:9px}}
 .tl{{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:rgba(255,255,255,.04);min-height:0}}
 .im{{flex:1;min-height:0;background-size:cover;background-position:center}}
 .im.ph{{display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gold2);border-bottom:1px dashed var(--gold2);background:rgba(200,168,106,.06)}}
-.cp{{padding:5px 8px 6px;height:62px;flex:none}}
-.cp b{{display:block;font-size:13px;font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+.cp{{padding:5px 7px 6px;height:80px;flex:none}}
+.cp b{{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12.5px;font-weight:700;line-height:1.22;height:30px}}
 .cp .d{{display:block;font-size:11px;color:var(--sub);margin-top:1px;font-variant-numeric:tabular-nums}}
 .cp p{{display:flex;flex-wrap:nowrap;overflow:hidden;gap:3px;margin-top:4px}}
 .cp i{{font-style:normal;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid rgba(255,255,255,.22);color:var(--sub);white-space:nowrap}}
 .cp i:first-child{{border-color:var(--gold2);color:var(--gold)}}
 .cp i.op{{background:var(--gold2);border-color:var(--gold2);color:#0D1E33}}
+.tl.own{{border-color:var(--gold);background:rgba(235,203,143,.10)}}
+.tl.own .im.ph{{font-size:13px;font-weight:800;color:var(--gold)}}
 .todo{{background:#FDE68A;color:#0D1E33;padding:0 4px;border-radius:2px;font-weight:700}}
 .nt{{font-size:11.5px;color:var(--mute);margin-top:8px}}
 .ft{{height:36px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mute)}}
 """
     body = f"""<div class="page">
-<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">협력사 수행실적</span></div><span class="r">재개발·재건축 조합 · 유상옵션</span></div>
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">조합 수임실적</span></div><span class="r">재개발·재건축 조합 · 유상옵션</span></div>
 <div class="tw"><div><h1>{t("조합 · [[유상옵션]] 수행실적")}</h1>
-<div class="lead">협력사 {PARTNER} — 서울·수도권·창원 재개발·재건축 조합의 입주박람회와 유상옵션 현장을 맡아 왔습니다.</div></div>
+<div class="lead">엣지컴퍼니 직접 주관 조합 단지와, 협력사 {PARTNER}가 맡아 온 서울·수도권·창원·전주 재개발·재건축 조합의 입주박람회·유상옵션 현장입니다.</div></div>
 <div class="st"><div><b>{len(RECORDS)}</b><span>조합 현장</span></div><div><b>{opt}</b><span>유상옵션 현장</span></div><div><b>{big}</b><span>1,000세대 이상</span></div><div><b>{total:,}</b><span>세대(확인분)</span></div></div></div>
 <div class="rule"></div>
 <div class="grid">{''.join(tile(r) for r in RECORDS)}</div>
-<div class="nt">※ 협력사 {PARTNER} 수행 실적입니다(엣지컴퍼니 단독 실적 아님). 연월·구분은 협력사 실적표 기준이며, 2026년 이후 연월은 진행 예정 일정입니다.</div>
+<div class="nt">※ 금색 테두리 = 엣지컴퍼니 직접 주관(부산송도지역주택조합). 나머지는 협력사 {PARTNER} 수행 실적입니다(엣지컴퍼니 단독 실적 아님). 연월·구분은 협력사 실적표 기준이며, 2026년 이후 연월은 진행 예정 일정입니다.</div>
 <div class="ft"><span>주식회사 엣지컴퍼니 · 대표이사 고진식</span><span>EDGE COMPANY</span></div>
 </div>"""
     doc = f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>{NAME}</title><style>{css}</style></head><body>{body}</body></html>'
