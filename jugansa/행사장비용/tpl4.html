@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600;800&display=swap">
 <style>
 /* 손익계산기와 같은 네이비·골드 계열.
-   비용 색 3가지를 화면 전체에서 같은 뜻으로 쓴다: 대관료(대관일수) · 전기·냉난방(박람회일수) · 행사진행비 */
+   비용 색 3가지를 화면 전체에서 같은 뜻으로 쓴다: 대관료(대관일수) · 제사용료(전기·냉난방·폐기물) · 행사진행비 */
 :root{
   --bg:#F3F1EC; --panel:#FFFFFF; --ink:#16202E; --sub:#5A6474; --line:#DDD7CB; --line2:#ECE7DD;
   --navy:#0D1E33; --gold:#A8843F; --soft:#FBF6EA; --onnavy:#F3F1EC; --onutil:#1B1206; --gold-ink:#7E6128; --util-ink:#85560F;
@@ -194,6 +194,13 @@ dt.t,dd.t{font-weight:800;font-size:15px;color:var(--navy);border-bottom:0;paddi
 details{font-size:12.5px;color:var(--sub)}
 details summary{cursor:pointer;color:var(--ink);font-size:13px}
 details p{margin:6px 0 0;line-height:1.55}
+.cal .tw{overflow-x:auto}
+.cal table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums;margin-top:6px}
+.cal th,.cal td{padding:4px 6px;border-bottom:1px dashed var(--line);text-align:right;white-space:nowrap}
+.cal th:first-child,.cal td:first-child{text-align:left}
+.cal thead th{color:var(--sub);font-weight:600}
+.cal tbody th{text-align:left;color:var(--ink);padding-top:9px;border-bottom:1px solid var(--line);white-space:normal}
+.cal tr.s td{font-weight:700;color:var(--ink)}
 .foot{margin-top:18px;color:var(--sub);font-size:12.5px;line-height:1.65;max-width:84ch}
 .foot b{color:var(--ink)}
 
@@ -216,7 +223,7 @@ details p{margin:6px 0 0;line-height:1.55}
   <div>
     <p class="eyebrow">입주박람회 주관 · 운영비 산출</p>
     <h1>박람회 행사장 비용</h1>
-    <p>2026.10.13 확인 · <span id="nHall"></span>개 홀(<span id="nQuote"></span>곳은 견적 필요, 벡스코 제2전시장 포함). 대관일수와 박람회일수를 따로 넣어 대관료와 전기·냉난방을 나눠 계산합니다. 금액은 손익계산기와 같은 <b>부가세 별도</b>, 단위 만원.</p>
+    <p>2026.10.14 · <span id="nHall"></span>개 홀(<span id="nQuote"></span>곳은 견적 필요). <b>벡스코 정산서 2건(2025.12 · 2026.05)으로 전기·냉난방·폐기물 단가를 보정</b>했습니다. 대관일수와 박람회일수를 따로 넣어 대관료와 제사용료를 나눠 계산합니다. 금액은 손익계산기와 같은 <b>부가세 별도</b>, 단위 만원.</p>
   </div>
   <a href="https://claude.ai/artifact/XG3TwmscizNQJCj6mfZbfQ" target="_blank" rel="noopener">손익계산기 열기 ↗</a>
 </header>
@@ -247,7 +254,7 @@ details p{margin:6px 0 0;line-height:1.55}
         <div class="stp" role="group" aria-labelledby="lbShow"><button type="button" data-k="show" data-d="-1" aria-label="박람회일수 줄이기">−</button><output id="showV" aria-live="polite"></output><button type="button" data-k="show" data-d="1" aria-label="박람회일수 늘리기">+</button></div></div>
     </div>
     <div class="days" id="days" aria-hidden="true"></div>
-    <div class="leg"><span><i style="background:var(--rent)"></i>대관일수 → 대관료(임대료·관리비)</span><span><i style="background:var(--util)"></i>박람회일수 → 전기·냉난방</span></div>
+    <div class="leg"><span><i style="background:var(--rent)"></i>대관일수 → 대관료 · 전기(설치일도 조명)</span><span><i style="background:var(--util)"></i>박람회일수 → 냉난방 · 폐기물은 행사 1회</span></div>
     <div class="hvrow">
       <div class="step"><span class="sl" id="lbHrs">냉난방 하루 가동</span>
         <div class="stp" role="group" aria-labelledby="lbHrs"><button type="button" data-k="hrs" data-d="-1" aria-label="가동시간 줄이기">−</button><output id="hrsV" aria-live="polite"></output><button type="button" data-k="hrs" data-d="1" aria-label="가동시간 늘리기">+</button></div></div>
@@ -262,18 +269,21 @@ details p{margin:6px 0 0;line-height:1.55}
     <div class="chips" id="cnt"><button type="button" data-v="auto">자동</button><button type="button" data-v="1">대관 1곳</button><button type="button" data-v="2">대관 2곳</button></div>
     <p class="hint" id="cntHint"></p>
     <div id="mulBox"><label class="hint" for="mul">2곳일 때 두 배로 잡을 항목</label>
-      <select id="mul"><option value="rent">대관료만</option><option value="ru">대관료 + 전기·냉난방</option><option value="all">대관료 + 전기·냉난방 + 행사진행비</option></select></div>
+      <select id="mul"><option value="rent">대관료만</option><option value="ru">대관료 + 제사용료</option><option value="all">대관료 + 제사용료 + 행사진행비</option></select></div>
   </div>
 
   <div class="card">
-    <p class="lab"><label for="util">전기·냉난방 · 박람회 3일 합계</label></p>
+    <p class="lab" id="lbUtil">제사용료 · 전기 · 냉난방 · 폐기물</p>
+    <div class="sw" id="um" role="group" aria-label="제사용료 계산 방식"><span>계산</span><button type="button" data-v="calc">홀 단가 · 실측 보정</button><button type="button" data-v="slider">직접 입력</button></div>
     <div class="big2" id="utilV"></div>
-    <div class="slwrap"><span class="mark" id="mark" aria-hidden="true"></span>
-      <input id="util" type="range" min="500" max="2000" step="50" aria-describedby="utilHint"></div>
-    <div class="rng" aria-hidden="true"><span style="left:0">500</span><span style="left:calc(8px + 33.333% - 5.333px)">1,000</span><span style="left:calc(8px + 66.667% - 10.667px)">1,500</span><span style="left:100%">2,000</span></div>
+    <div id="slBox">
+      <div class="slwrap"><span class="mark" id="mark" aria-hidden="true"></span>
+        <input id="util" type="range" min="50" max="2000" step="10" aria-labelledby="lbUtil" aria-describedby="utilHint"></div>
+      <div class="rng" id="rng" aria-hidden="true"></div>
+    </div>
     <p class="hint" id="utilHint"></p>
     <div class="hvrow">
-      <div class="step"><span class="sl" id="lbElx">전기 배수 · 업체 사용분</span>
+      <div class="step"><span class="sl" id="lbElx">전기 여유 배수</span>
         <div class="stp" role="group" aria-labelledby="lbElx"><button type="button" data-k="elx" data-d="-0.5" aria-label="전기 배수 줄이기">−</button><output id="elxV" aria-live="polite"></output><button type="button" data-k="elx" data-d="0.5" aria-label="전기 배수 늘리기">+</button></div></div>
       <button type="button" class="btn ghost" id="applyCalc">고른 홀 계산값으로 맞추기</button>
     </div>
@@ -286,7 +296,7 @@ details p{margin:6px 0 0;line-height:1.55}
 
 <div class="grid">
   <div class="list">
-    <div class="lh" aria-hidden="true"><span>행사장 · 홀 · 대관 면적</span><span id="hRent">대관료</span><span id="hUtil">전기·냉난방</span><span id="hOps">운영비</span><span>기준 대비</span></div>
+    <div class="lh" aria-hidden="true"><span>행사장 · 홀 · 대관 면적</span><span id="hRent">대관료</span><span id="hUtil">제사용료</span><span id="hOps">운영비</span><span>기준 대비</span></div>
     <ol id="vl" aria-label="행사장별 운영비 (적은 순)"></ol>
   </div>
   <aside class="card res" id="res" aria-label="선택한 행사장 운영비"></aside>
@@ -294,12 +304,14 @@ details p{margin:6px 0 0;line-height:1.55}
 </div>
 
 <p class="foot">
-<b>계산식</b> 운영비 = 대관료 + 전기·냉난방 + 행사진행비 (모두 부가세 별도 — 손익계산기와 같은 기준). 대관료 = (임대료 + 기본관리비) × 대관일수. 전기·냉난방 = 슬라이더(박람회 3일 기준) × 박람회일수 ÷ 3. 냉난방 '사용안함'이면 그 홀·그 계절의 냉난방 계산액을 뺍니다(단가로 계산한 전기 아래로는 내리지 않음). 2곳이면 고른 항목만 두 배. 표시 금액은 만원 단위로 반올림한 뒤 더합니다.<br>
-<b>단가 계산</b> 냉난방 = ㎡ × 하루 가동시간 단가(홀별 요금 규정: 7시간 기본+추가시간 · 시간 비례 · ㎡·시간) × (박람회일 + 설치일 선택). 기본은 본부장 기준 행사일 평균 12시간·설치일 제외(엑셀 원본은 8시간). 예: 3일 행사 12시간 기준 BEXCO 2A 8월 약 700만(설치일 포함 4일이면 933만), 제2전시장 4홀 2칸 1월 358만·8월 525만(부가세 별도). 18시 이후 가산 등 시설별 할증은 빠져 있어 실제는 더 나올 수 있습니다. 전기 = (행사 kW × 8시간 × 박람회일수 + 설치 kW × (설치일 × 8시간 + 철거 2시간)) × kWh 단가 × 업체 사용 배수(본부장 기준 3배 — 참가업체가 부스에서 쓰는 전기), kW는 세대 규모별(800 미만 50/20 · 1,500 미만 80/30 · 2,500 미만 120/40 · 그 이상 180/60). 가동 8시간·설치일 끔·전기 배수 1이면 1월·8월 금액이 엑셀 '행사장 비용비교'(VAT 포함 소계 ÷ 1.1)와 같습니다.<br>
+<b>계산식</b> 운영비 = 대관료 + 제사용료 + 행사진행비 (모두 부가세 별도 — 손익계산기와 같은 기준). 대관료 = (임대료 + 기본관리비) × 대관일수. 제사용료(기본 '홀 단가 · 실측 보정') = 전기 + 냉난방 + 폐기물. 2곳이면 고른 항목만 두 배. 표시 금액은 만원 단위로 반올림한 뒤 더합니다.<br>
+<b>실측 보정 (벡스코 정산서 2건)</b> 2025.12 제2전시장 4B(1,824㎡·대관 3일·박람회 2일): 임대 853.6만, 전기 1,238kWh × 232원 = 28.7만, 냉난방 1,824㎡ × 26원 × 12.5시간 = 59.3만, 쓰레기 38.7만. 2026.05 4E+4F(3,216㎡·대관 4일): 임대 2,900.8만(월별 등차율 1.10), 전기 3,305kWh × 169원 = 55.9만, 냉난방 미가동, 쓰레기 58.1만. → <b>전기 = 대관 면적 × 0.24kWh/㎡·일 × 대관일수 × kWh 단가</b>(설치일도 조명을 켬, 실측 0.23~0.26), <b>폐기물 = 면적 × 195원</b>(행사 1회, 실측 181~212원), <b>냉난방 = 면적 × 홀별 요금 규정의 하루 가동시간 단가 × (박람회일 + 설치일 선택)</b>. 벡스코는 09~18시 운전이 기본이라 기본 가동 9시간·설치일 끔. 이 조건으로 두 정산서의 임대료·냉난방은 원 단위까지, 전기·폐기물은 ±8% 안에서 맞습니다. 부스 전기는 정산서에 따로 없어(전열 계량 336~810kWh뿐) 업체 사용분 3배 가정은 뺐습니다(여유를 두려면 '전기 여유 배수').<br>
+<b>단가가 없는 홀</b> 전기·냉난방 단가가 확인 안 된 홀(김대중·군산·춘천·수원메쎄·ICC 등)은 확인된 홀들의 중앙값(전기 1월 182원·8월 209원/kWh, 냉난방 1월 23원·8월 30원/㎡·시간)으로 추정하고 '추정' 표시. 폐기물 195원/㎡도 벡스코 실측이라 다른 행사장은 처리 단가 견적을 확인하세요.<br>
+<b>직접 입력</b> 제사용료를 슬라이더(박람회 3일 합계, 50~2,000만)로 넣으면 박람회일수에 비례합니다. 냉난방 '사용안함'이면 그 홀 냉난방 계산액을 뺍니다(전기+폐기물 아래로는 안 내림). 엑셀 원래 가정(세대 규모별 kW·8시간)은 검증 스크립트에만 남겨 두었습니다.<br>
 <b>봄·가을</b> 1·8월 할인이 빠진 정상 임대료에 시설이 밝힌 할증을 더한 보수적 금액입니다(SETEC 3~5·10~11월 +20%, aT 3~5·10~11월 +10%, 김대중 10·11월 +10%, UECO 1/4홀 +20%, DCC 3개 홀 이상 −5%). 할증이 없는 달(6·9월, 김대중 4·5월 등)은 실제가 더 낮습니다. 전기·냉난방 단가는 1월·8월 중 낮은 쪽.<br>
 <b>기준표</b> 손익계산기의 본부장 운영비 기준(경상 5,000/9,000 · 충청·전라 6,000/1억 · 수도권 8,000/1.2억, 1곳/2곳, 부가세 별도). 강원·제주는 기준 없음. 권장 면적은 엑셀 '규모별 예산'의 부스 1개당 30㎡. 견적 입력값과 조건은 이 브라우저에만 저장됩니다.<br>
-<b>벡스코 제2전시장</b> 1층 4홀 6칸(4A 1,584·4B 1,824·4C 1,488·4D 1,824·4E 1,488·4F 1,728㎡), 3층 5홀 5칸(5A 2,016·5B 1,776·5C 1,920·5D 2,160·5E 2,064㎡). 붙은 2칸은 1층 3,216~3,408㎡(973~1,031평), 3층 3,696~4,224㎡. 임대 단가는 공개 자료가 없어 제1전시장 2026 요율(2,050원/㎡·일)을 가정했습니다 — 실제 견적이나 사용 내역서로 바꿔 넣으세요. 벡스코는 전기·냉난방·원상복구·시간외 사용을 예치금(㎡×250원×임대일수)으로 받고 행사 후 실비정산합니다.<br>
-<b>전기공사</b> 이 도구의 전기는 사용량(kWh)만입니다. 간선·부스 배선 공사는 빠져 있습니다(참고: 벡스코 개최 전시회들이 참가업체에 받는 부스 전기는 kW당 4~5만원 수준).<br>
+<b>벡스코 제2전시장</b> 1층 4홀 6칸(4A 1,584·4B 1,824·4C 1,488·4D 1,824·4E 1,488·4F 1,728㎡), 3층 5홀 5칸(5A 2,016·5B 1,776·5C 1,920·5D 2,160·5E 2,064㎡). 4홀은 정산서대로 2025년 1,950원 → 2026년 2,050원/㎡·일, 장소별 등차율 1.00, 월별 등차율 1·2·7·8·12월 0.80 · 5월 1.10(다른 봄·가을 달도 1.10으로 가정). 3층 5홀은 본부장 기준 장소 등차율 0.9를 유지(정산서 없음). 예치금 ㎡×250원×임대일수를 먼저 내고 행사 후 정산서로 돌려받습니다(2건 모두 환불 발생).<br>
+<b>전기공사</b> 제사용료의 전기는 사용량(kWh)만입니다. 간선·부스 배선 공사는 빠져 있습니다(벡스코 지정 협력업체 시공).<br>
 <b>코엑스</b> 비용 비교용으로만 두고 제안서 행사장 후보에서는 뺍니다.
 </p>
 </div>
@@ -313,14 +325,18 @@ const SEA={jan:'난방',aug:'냉방',spr:'봄·가을'};
 const HR={'7+1':'7시간 기본+추가시간','7비례':'7시간 단가 비례','8h':'8시간 단가 비례','2h':'2시간 단가 비례','hour':'㎡·시간 단가'};
 const UNIT_TAG={'일부 견적':['일부 미확인','w'],'조건 가정':['가정 포함','w'],'계산 가정':['가정 포함','w'],'세금 가정':['세금 가정','w'],'임시 요금':['임시 요금','w']};
 const KEY='venue-cost:v3';
-const UMIN=500,UMAX=2000; /* 전기·냉난방 슬라이더 범위(만원, 3일 합계) */
-const CFGV=2;      /* 기본값 개정 번호: 2 = 냉난방 12시간·슬라이더 500~2,000 */
+const UMIN=50,UMAX=2000; /* 제사용료 직접 입력 슬라이더 범위(만원, 박람회 3일 합계) */
+const CFGV=3;      /* 기본값 개정 번호: 3 = 벡스코 정산서 보정(단가 계산 기본·냉난방 9시간·전기 1배) */
+/* 벡스코 정산서 2건(공급가, 원) — 실측 대조표 */
+const CAL=[
+  {t:'2025.12 · 4B 1,824㎡',id:'BEXCO|제2전시장 4홀 1칸(4B)',sea:'jan',rent:3,show:2,hrs:6.25,hvOn:true,E:1950,hrsTxt:'운전 9+3.5시간',a:{rent:8536320,el:287216,hv:592800,w:387011}},
+  {t:'2026.05 · 4E+4F 3,216㎡',id:'BEXCO|제2전시장 4홀 2칸(4E+4F)',sea:'spr',rent:4,show:3,hrs:9,hvOn:false,hrsTxt:'냉난방 미가동',a:{rent:29008320,el:558545,hv:0,w:580516}}];
 const PY=3.3058; /* 1평 = 3.3058㎡ */
 const BOOTH=30;  /* 부스 1개당 통로·상담 포함 30㎡ (엑셀 '규모별 예산') */
 const sizeTxt=(a,n=1)=>`<b>${f0(a)}㎡</b> · ${f0(a/PY)}평 · 부스 약 ${f0(Math.floor(a/BOOTH))}개${n===2?` (2곳 합 ${f0(a*2/PY)}평)`:''}`;
-const DEF={reg:'전체',sea:'jan',hvac:true,hrs:12,setupHv:false,elx:3,rent:4,show:3,hh:1000,cnt:'auto',util:1500,prog:1000,mul:'ru',sel:null,ovr:{}};
+const DEF={reg:'전체',sea:'jan',hvac:true,hrs:9,setupHv:false,elx:1,rent:4,show:3,hh:1000,cnt:'auto',um:'calc',util:300,prog:1000,mul:'ru',sel:null,ovr:{}};
 const S=Object.assign({},DEF,{ovr:{}});
-try{const o=JSON.parse(localStorage.getItem(KEY)||'null');if(o&&typeof o==='object'&&!Array.isArray(o)){Object.assign(S,o);if(o.cfgv!==CFGV)S.hrs=DEF.hrs}}catch(e){}
+try{const o=JSON.parse(localStorage.getItem(KEY)||'null');if(o&&typeof o==='object'&&!Array.isArray(o)){Object.assign(S,o);if(o.cfgv!==CFGV){S.hrs=DEF.hrs;S.elx=DEF.elx;S.util=DEF.util;S.um=DEF.um}}}catch(e){}
 S.cfgv=CFGV;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const num=(v,d)=>{const n=+v;return Number.isFinite(n)?n:d};
@@ -328,12 +344,13 @@ function sane(){
   if(!REGS.includes(S.reg))S.reg=DEF.reg;
   if(!Object.prototype.hasOwnProperty.call(SEA,S.sea))S.sea=DEF.sea;
   S.hvac=S.hvac!==false;S.setupHv=S.setupHv===true;
-  S.hrs=clamp(Math.round(num(S.hrs,12)),8,16);
-  S.elx=clamp(Math.round(num(S.elx,3)*2)/2,1,5);
+  S.hrs=clamp(Math.round(num(S.hrs,DEF.hrs)),4,16);
+  S.elx=clamp(Math.round(num(S.elx,DEF.elx)*2)/2,1,5);
+  if(!['calc','slider'].includes(S.um))S.um=DEF.um;
   S.rent=clamp(Math.round(num(S.rent,4)),1,10);S.show=clamp(Math.round(num(S.show,3)),1,7);
   if(S.show>S.rent)S.rent=S.show;
   S.hh=clamp(Math.round(num(S.hh,1000)),0,20000);
-  S.util=clamp(Math.round(num(S.util,1500)/50)*50,UMIN,UMAX);
+  S.util=clamp(Math.round(num(S.util,DEF.util)/10)*10,UMIN,UMAX);
   S.prog=clamp(Math.round(num(S.prog,1000)),0,100000);
   S.cnt=String(S.cnt);if(!['auto','1','2'].includes(S.cnt))S.cnt=DEF.cnt;
   if(!['rent','ru','all'].includes(S.mul))S.mul=DEF.mul;
@@ -349,24 +366,32 @@ const f0=x=>{const v=Math.round(x);return (v===0?0:v).toLocaleString('ko-KR')};
 const man=x=>x/1e4; /* 공급가(원) → 만원 */
 const count=()=>S.cnt==='auto'?(S.hh>=1400?2:1):+S.cnt;
 const need=()=>{const h=S.hh;return h<800?[1500,50]:h<1500?[2550,85]:h<2500?[3900,130]:[5400,180]};
-const P=(o={})=>Object.assign({rent:S.rent,show:S.show,hrs:S.hrs,setupHv:S.setupHv,elx:S.elx},bandKW(S.hh),o);
+const P=(o={})=>Object.assign({rent:S.rent,show:S.show,hrs:S.hrs,setupHv:S.setupHv,elx:S.elx,elm:'area'},bandKW(S.hh),o);
 const ovOf=x=>{const v=+S.ovr[x.id];return v>0?v:null};
-const utilBase=p=>S.util*p.show/3;  /* 슬라이더는 박람회 3일 기준 → 박람회일수에 비례 */
+const utilBase=p=>S.util*p.show/3;  /* 직접 입력 슬라이더는 박람회 3일 기준 → 박람회일수에 비례 */
+const f1=x=>(Math.round(x*10)/10).toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});
 
 function ev(x,o={}){
   const sea=o.sea||S.sea,p=P(o.p),n=o.n||count(),hvac=o.hvac??S.hvac;
-  const c=costOf(x,sea,p),ov=ovOf(x);
+  const c=costOf(x,sea,p,{fb:true}),ov=ovOf(x);
   const r={x,n,sea,p,c,ov,hvac,missing:[]};
   /* 대관료(만원, 정수): 견적 입력이 있으면 그 값 */
   r.rentV=ov!=null?Math.round(ov):c.rent==null?null:Math.round(man(c.rent+(c.mng||0)));
   if(ov==null&&c.rent!=null&&c.mng==null)r.missing.push('기본관리비');
-  r.calcEl=c.el==null?null:man(c.el);
-  r.calcHv=c.hv==null?null:man(c.hv);
-  r.base=utilBase(p);
-  r.cutFail=!hvac&&r.calcHv==null;
-  r.util=Math.round(hvac||r.cutFail?r.base:Math.max(r.calcEl||0,r.base-r.calcHv));
-  r.cut=Math.round(r.base)-r.util;   /* 실제로 뺀 금액 */
-  r.floor=!hvac&&!r.cutFail&&r.base-r.calcHv<(r.calcEl||0);
+  /* 제사용료(만원) — 항목별로 반올림한 뒤 더한다 */
+  r.calcEl=Math.round(man(c.el));r.calcHv=Math.round(man(c.hv));r.calcW=Math.round(man(c.waste));
+  r.est=c.estEl||c.estHv&&hvac;
+  r.cutFail=false;r.cut=0;r.floor=false;
+  if(S.um==='calc'){
+    r.base=null;
+    r.util=r.calcEl+(hvac?r.calcHv:0)+r.calcW;
+  }else{
+    r.base=utilBase(p);
+    const lo=r.calcEl+r.calcW;
+    r.util=Math.round(hvac?r.base:Math.max(lo,r.base-r.calcHv));
+    r.cut=Math.round(r.base)-r.util;   /* 실제로 뺀 금액 */
+    r.floor=!hvac&&r.base-r.calcHv<lo;
+  }
   const two=n===2;
   r.k={r:two?2:1,u:two&&S.mul!=='rent'?2:1,p:two&&S.mul==='all'?2:1};
   if(r.rentV!=null){
@@ -393,7 +418,7 @@ function tags(r){
     if(r.missing.length)t.push(`<span class="tg w">${r.missing.join('·')} 미산입</span>`);
     else if(UNIT_TAG[x.unit])t.push(`<span class="tg ${UNIT_TAG[x.unit][1]}">${UNIT_TAG[x.unit][0]}</span>`);
   }
-  if(r.cutFail&&!r.quote)t.push('<span class="tg w">냉난방 단가 없음</span>');
+  if(r.est&&!r.quote)t.push('<span class="tg w" title="전기·냉난방 단가 미확인 — 확인된 홀 중앙값으로 추정">제사용료 추정</span>');
   if(r.small)t.push('<span class="tg w">면적 부족 가능</span>');
   if(x.combo)t.push('<span class="tg">복수 홀</span>');
   if(x.noprop)t.push('<span class="tg x" title="비용 비교용. 제안서 행사장 후보에서는 제외">제안서 제외</span>');
@@ -420,36 +445,41 @@ function renderCtl(){
   document.querySelectorAll('#cnt button').forEach(b=>{const on=b.dataset.v===S.cnt;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
   document.querySelectorAll('#hvac button').forEach(b=>{const on=(b.dataset.v==='1')===S.hvac;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
   document.querySelectorAll('#setupHv button').forEach(b=>{const on=(b.dataset.v==='1')===S.setupHv;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  document.querySelectorAll('#um button').forEach(b=>{const on=b.dataset.v===S.um;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
   $('seaHint').textContent=(S.sea==='spr'?'봄·가을: 1·8월 할인이 빠진 정상가에 시설별 할증을 더한 보수적 대관료.'
     :S.sea==='jan'?'1월 요율: 동절기 할인이 적용된 대관료. 냉난방 단가는 난방 기준.':'8월 요율: 하절기 할인이 적용된 대관료. 냉난방 단가는 냉방 기준.')
-    +(S.hvac?' 냉난방 사용 → 슬라이더 금액 그대로.':' 냉난방 사용안함 → 홀마다 냉난방 계산액을 뺍니다.');
+    +(S.um==='calc'?(S.hvac?' 냉난방 사용 → 홀 단가로 계산.':' 냉난방 사용안함 → 냉난방 0원(벡스코 5월 정산서도 미가동).')
+      :(S.hvac?' 냉난방 사용 → 직접 입력 금액 그대로.':' 냉난방 사용안함 → 홀마다 냉난방 계산액을 뺍니다.'));
   $('rentV').textContent=S.rent+'일';$('showV').textContent=S.show+'일';$('hrsV').textContent=S.hrs+'시간';$('elxV').textContent='×'+S.elx;
   document.querySelectorAll('.stp button').forEach(b=>{
     const k=b.dataset.k,d=+b.dataset.d;
-    b.disabled=k==='rent'?(d<0?S.rent<=1:S.rent>=10):k==='hrs'?(d<0?S.hrs<=8:S.hrs>=16):k==='elx'?(d<0?S.elx<=1:S.elx>=5):(d<0?S.show<=1:S.show>=7);
+    b.disabled=k==='rent'?(d<0?S.rent<=1:S.rent>=10):k==='hrs'?(d<0?S.hrs<=4:S.hrs>=16):k==='elx'?(d<0?S.elx<=1:S.elx>=5):(d<0?S.show<=1:S.show>=7);
   });
   const setup=S.rent-S.show;
   $('days').innerHTML=Array.from({length:S.rent},(_,i)=>{
     const show=i>=setup;
-    return `<div class="day${show?' show':''}"><b>${S.rent>6?(show?'행':'설'):(show?'행사':'설치')}</b><i class="r"></i><i class="u${show||S.setupHv&&S.hvac?'':' thin'}"></i></div>`;
+    return `<div class="day${show?' show':''}"><b>${S.rent>6?(show?'행':'설'):(show?'행사':'설치')}</b><i class="r"></i><i class="u${show||S.setupHv&&S.hvac?'':' thin'}" title="${show?'냉난방·전기':'전기(조명)'}"></i></div>`;
   }).join('');
-  $('hvHint').textContent=`냉난방 계산 = 하루 ${S.hrs}시간 × ${hvDays(P())}일(행사 ${S.show}${S.setupHv&&setup>0?` + 설치 ${setup}`:''}). 본부장 기준은 행사일 평균 12시간·설치일 제외(엑셀 원본 8시간).`;
-  const n=count(),[na,nb]=need(),kw=bandKW(S.hh);
-  $('cntHint').innerHTML=`${S.cnt==='auto'?'1,400세대 이상이면 자동 2곳. ':''}지금 <b>${n}곳</b> · 권장 면적 ${f0(na)}㎡(${f0(na/PY)}평) 이상, 부스 ${nb}개${n===2?'(2곳 합산)':''} · 전력 계산 ${kw.kw}kW`;
+  $('hvHint').textContent=`냉난방 계산 = 하루 ${S.hrs}시간 × ${hvDays(P())}일(행사 ${S.show}${S.setupHv&&setup>0?` + 설치 ${setup}`:''}). 벡스코 정산서: 09~18시 운전(9시간)·설치일 0시간, 12월 마지막 날은 3.5시간만 켬.`;
+  const n=count(),[na,nb]=need();
+  $('cntHint').innerHTML=`${S.cnt==='auto'?'1,400세대 이상이면 자동 2곳. ':''}지금 <b>${n}곳</b> · 권장 면적 ${f0(na)}㎡(${f0(na/PY)}평) 이상, 부스 ${nb}개${n===2?'(2곳 합산)':''}`;
   $('mulBox').hidden=n!==2;
-  const base=utilBase(P());
+  const calc=S.um==='calc';
+  $('slBox').hidden=calc;$('applyCalc').hidden=calc;
   $('util').setAttribute('aria-valuetext',`${f0(S.util)}만원 (박람회 3일 기준)`);
-  $('utilV').innerHTML=`${f0(S.util)}<small>만원 (하루 평균 ${f0(S.util/3)}만 · 부가세 포함 ${f0(S.util*1.1)}만)${S.show!==3?` → 박람회 ${S.show}일 ${f0(base)}만`:''}</small>`;
-  $('utilHint').textContent=(S.hvac?'전기세+냉난방 예산(부가세 별도). 박람회일수에 비례합니다. 주황 표시는 고른 홀을 단가로 계산한 전기+냉난방(3일 환산).'
-    :'냉난방 사용안함 → 홀마다 냉난방 계산액을 뺀 금액이 들어갑니다. 주황 표시는 단가로 계산한 전기(3일 환산).')+(n===2?' 2곳이면 1곳 기준 금액.':'');
+  $('rng').innerHTML=[UMIN,500,1000,1500,UMAX].map((v,i,a)=>`<span style="left:${i===0?'0':i===a.length-1?'100%':`calc(8px + ${((v-UMIN)/(UMAX-UMIN)*100).toFixed(3)}% - ${((v-UMIN)/(UMAX-UMIN)*16).toFixed(3)}px)`}">${f0(v)}</span>`).join('');
+  $('utilHint').textContent=(calc
+    ?'홀마다 단가로 계산 — 전기(면적 × 0.24kWh × 대관일수) + 냉난방(하루 가동시간) + 폐기물(195원/㎡). 벡스코 정산서 2건으로 보정했습니다.'
+    :(S.hvac?'제사용료 예산(박람회 3일 합계, 부가세 별도). 박람회일수에 비례합니다. 주황 표시는 고른 홀 단가 계산(3일 환산).'
+      :'냉난방 사용안함 → 홀마다 냉난방 계산액을 뺀 금액이 들어갑니다(전기+폐기물 아래로는 안 내림).'))+(n===2?' 2곳이면 1곳 기준 금액.':'');
   $('hRent').innerHTML=`대관료 ${S.rent}일${n===2?'<span class="two">1곳</span>':''}`;
-  $('hUtil').innerHTML=`전기·냉난방${n===2?'<span class="two">1곳</span>':''}`;
+  $('hUtil').innerHTML=`제사용료${n===2?'<span class="two">1곳</span>':''}`;
   $('hOps').innerHTML=`운영비${n===2?'<span class="two">2곳 합계</span>':''}`;
 }
 function renderMark(r){
   const m=$('mark');
-  if(!r||(S.hvac?r.calcEl==null&&r.calcHv==null:r.calcEl==null)){m.hidden=true;return}
-  const pub=((r.calcEl||0)+(S.hvac?(r.calcHv||0):0))*3/S.show;
+  if(!r||S.um==='calc'||r.quote){m.hidden=true;return}
+  const pub=(r.calcEl+(S.hvac?r.calcHv:0)+r.calcW)*3/S.show;
   const pos=(clamp(pub,UMIN,UMAX)-UMIN)/(UMAX-UMIN)*100;
   m.hidden=false;m.style.left=pos+'%';
   m.className='mark'+(pos<8?' l':pos>92?' r':'');
@@ -476,12 +506,12 @@ function renderList(R){
   $('vl').innerHTML=R.map(r=>{
     const x=r.x,on=x.id===S.sel;
     const rent=r.rentV!=null?f0(r.rentV):'<span class="mut">–</span>';
-    const util=r.quote?'<span class="mut">–</span>':`${f0(r.util)}${r.cut>0?`<small>−${f0(r.cut)} 냉난방${r.floor?'(전기 하한)':''}</small>`:''}`;
+    const util=r.quote?'<span class="mut">–</span>':`${f0(r.util)}${r.cut>0?`<small>−${f0(r.cut)} 냉난방${r.floor?'(하한)':''}</small>`:r.est?'<small>추정</small>':''}`;
     const ops=r.ops!=null?`<span class="ops">${f0(r.ops)}</span>${bar(r,max,'bar')}`:'<span class="ops mut" style="font-weight:500;font-size:13.5px">견적 입력</span>';
     return `<li><button type="button" class="vr${on?' sel':''}${r.quote?' q':''}" data-id="${esc(x.id)}" aria-pressed="${on}">
       <span class="c-name"><span class="nm">${esc(x.v)} <em>${esc(x.h)}</em></span><span class="sz${r.small?' small':''}">${sizeTxt(x.a,count())}</span>${tags(r)}</span>
       <span class="n"><span class="k-m">대관료 ${S.rent}일${two?' (1곳)':''}</span>${rent}</span>
-      <span class="n"><span class="k-m">전기·냉난방${two?' (1곳)':''}</span>${util}</span>
+      <span class="n"><span class="k-m">제사용료${two?' (1곳)':''}</span>${util}</span>
       <span class="n c-ops"><span class="k-m">운영비 (만원${two?', 2곳 합계':''})</span>${ops}</span>
       <span class="n"><span class="k-m">기준 대비</span>${diff(r)}</span>
     </button></li>`;
@@ -499,8 +529,33 @@ function gNote(x,u){
   if(u.G>1)return `${Math.round((u.G-1)*100)}% 할증`;
   return '';
 }
+function renderUtilV(r){
+  const v=$('utilV');
+  if(S.um==='calc'){
+    if(!r||r.quote){v.innerHTML='–<small>고른 홀의 단가 계산값이 여기에 나옵니다</small>';return}
+    v.innerHTML=`${f0(r.util)}<small>만원 · ${esc(r.x.v)} ${esc(r.x.h)} · 박람회 ${S.show}일${r.n===2&&r.k.u===2?' (1곳)':''} · 부가세 포함 ${f0(r.util*1.1)}만</small>`;
+  }else{
+    const base=utilBase(P());
+    v.innerHTML=`${f0(S.util)}<small>만원 (박람회 3일 · 하루 평균 ${f0(S.util/3)}만 · 부가세 포함 ${f0(S.util*1.1)}만)${S.show!==3?` → 박람회 ${S.show}일 ${f0(base)}만`:''}</small>`;
+  }
+}
+function calTable(){
+  const rows=CAL.map(k=>{
+    let x=D.find(u=>u.id===k.id);if(!x)return '';
+    x=JSON.parse(JSON.stringify(x));if(k.E)x[k.sea==='spr'?'jan':k.sea].E=k.E;  /* 당시 단가 */
+    const c=costOf(x,k.sea,{rent:k.rent,show:k.show,hrs:k.hrs,elm:'area',elx:1,setupHv:false});
+    const m={rent:c.rent,el:c.el,hv:k.hvOn?c.hv:0,w:c.waste};
+    const cell=(a,b)=>`<td>${f1(man(a))}</td><td>${f1(man(b))}</td>`;
+    const sa=k.a.el+k.a.hv+k.a.w,sm=m.el+m.hv+m.w;
+    return `<tr><th colspan="3">${esc(k.t)} · 대관 ${k.rent}일 · ${esc(k.hrsTxt)}</th></tr>
+      <tr><td>임대료</td>${cell(k.a.rent,m.rent)}</tr><tr><td>전기</td>${cell(k.a.el,m.el)}</tr><tr><td>냉난방</td>${cell(k.a.hv,m.hv)}</tr><tr><td>폐기물</td>${cell(k.a.w,m.w)}</tr>
+      <tr class="s"><td>제사용료</td>${cell(sa,sm)}</tr>`;
+  }).join('');
+  return `<details class="cal"><summary>벡스코 정산서 대조 · 실측 vs 이 도구 (만원, 부가세 별도)</summary><div class="tw"><table><thead><tr><th>항목</th><th>실측</th><th>도구</th></tr></thead><tbody>${rows}</tbody></table></div><p>같은 조건(면적·일수·실제 가동시간·당시 단가)으로 넣으면 임대료·냉난방은 원 단위로 같고, 전기·폐기물은 ±8% 안입니다. 2025.12 임대료는 당시 단가 1,950원으로 계산(2026년은 2,050원).</p></details>`;
+}
 function renderCard(r){
   const el=$('res');
+  renderUtilV(r);
   if(!r){el.innerHTML='<p class="meta">행사장을 고르세요.</p>';renderMark(null);return}
   const x=r.x,n=r.n,c=r.c,p=r.p,u=unitOf(x,S.sea);
   let h=`<div><p class="lab">${esc(x.reg)} · ${SEA[S.sea]}${S.hvac?'':' · 냉난방 안 씀'} · 대관 ${S.rent}일 / 박람회 ${S.show}일</p><h2 tabindex="-1" id="resH">${esc(x.v)} ${esc(x.h)}</h2><p class="meta">대관 면적 ${sizeTxt(x.a,n)} · ${esc(x.st)}</p></div>`;
@@ -518,18 +573,24 @@ function renderCard(r){
       L.push(['',`기본관리비<small>${c.mng==null?'미확인 · 빠진 금액':u.H===0?'별도 공표 항목 없음':`${f0(u.H)}원/㎡·일 × ${f0(x.a)}㎡ × ${p.rent}일`}</small>`,mng]);
       L.push(['s','대관료',r.rentV]);
     }
-    L.push(['grp',`<i style="background:var(--util)"></i>전기·냉난방 · 박람회 ${S.show}일`,null]);
-    L.push(['',`슬라이더 금액<small>${f0(S.util)}만 × ${S.show}일 ÷ 3일</small>`,Math.round(r.base)]);
-    if(!S.hvac){
-      if(r.cutFail)L.push(['','냉난방 빼기<small>이 홀은 냉난방 단가가 없어 못 뺌</small>',null]);
-      else L.push(['',`냉난방 빼기 (사용안함)<small>${f0(x.a)}㎡ × ${f0(c.hvPer)}원(${S.hrs}시간) × ${c.hvDays}일 · ${SEA[S.sea]} 단가${r.floor?' · 단가로 계산한 전기 아래로는 안 내림':''}</small>`,-r.cut]);
-      L.push(['s','전기·냉난방',r.util]);
+    L.push(['grp',`<i style="background:var(--util)"></i>제사용료 · ${S.um==='calc'?'홀 단가 · 실측 보정':'직접 입력'}`,null]);
+    if(S.um==='calc'){
+      L.push(['',`전기<small>${f0(x.a)}㎡ × ${EL_AREA}kWh × ${p.rent}일 = ${f0(c.kwh)}kWh × ${f0(c.I)}원${S.elx!==1?` × ${S.elx}배`:''}${c.estEl?' · 단가 미확인 → 중앙값 추정':''}</small>`,r.calcEl]);
+      L.push(['',S.hvac?`냉난방<small>${f0(x.a)}㎡ × ${f0(c.hvPer)}원(${S.hrs}시간 · ${c.estHv?'중앙값 추정':HR[x.hr]||''}) × ${c.hvDays}일 · ${SEA[S.sea]} 단가</small>`:'냉난방<small>사용안함</small>',S.hvac?r.calcHv:0]);
+      L.push(['',`폐기물<small>${f0(x.a)}㎡ × ${WASTE}원 (산업폐기물·생활쓰레기, 행사 1회)</small>`,r.calcW]);
+      L.push(['s','제사용료',r.util]);
+    }else{
+      L.push(['',`직접 입력 금액<small>${f0(S.util)}만 × ${S.show}일 ÷ 3일</small>`,Math.round(r.base)]);
+      if(!S.hvac){
+        L.push(['',`냉난방 빼기 (사용안함)<small>${f0(x.a)}㎡ × ${f0(c.hvPer)}원(${S.hrs}시간) × ${c.hvDays}일 · ${SEA[S.sea]} 단가${r.floor?' · 전기+폐기물 아래로는 안 내림':''}</small>`,-r.cut]);
+        L.push(['s','제사용료',r.util]);
+      }
     }
     L.push(['grp',`<i style="background:var(--prog)"></i>행사진행비`,S.prog]);
     if(n===2){
       L.push(['grp','두 번째 곳',null]);
       L.push(['','대관료',r.rentV]);
-      if(r.k.u===2)L.push(['','전기·냉난방',r.util]);
+      if(r.k.u===2)L.push(['','제사용료',r.util]);
       if(r.k.p===2)L.push(['','행사진행비',S.prog]);
     }
     L.push(['t','운영비',r.ops]);
@@ -545,15 +606,17 @@ function renderCard(r){
     if(sens.length)h+=`<p class="box">운영비 변화 · ${sens.join(' · ')}${n===2?' (2곳 합계)':''}</p>`;
 
     /* 단가 계산 참고 */
-    const kw=bandKW(S.hh),pub=[];
-    pub.push(r.calcEl!=null?`전기 ${f0(c.kwh)}kWh × ${f0(u.I)}원 × ${S.elx}배(업체 사용분) = <b>${f0(r.calcEl)}만</b>`:'전기 단가 미확인');
-    if(r.calcHv!=null){
-      const plusHr=man(costOf(x,S.sea,P({hrs:S.hrs+1})).hv)-r.calcHv;
-      pub.push(`냉난방 ${f0(x.a)}㎡ × ${f0(c.hvPer)}원(${S.hrs}시간 · ${HR[x.hr]||''}) × ${c.hvDays}일 = <b>${f0(r.calcHv)}만</b>${S.hvac?'':' → 뺌'} · 1시간 더 +${f0(plusHr)}만`);
-    }else pub.push('냉난방 단가 미확인');
-    const sumPub=(r.calcEl||0)+(r.calcHv||0);
-    if(r.calcEl!=null||r.calcHv!=null)pub.push(`합계 <b>${f0(sumPub)}만</b>${S.show!==3?` (3일 환산 ${f0(sumPub*3/S.show)}만)`:''} · 부가세 포함 ${f0(sumPub*1.1)}만 — '고른 홀 계산값으로 맞추기'로 슬라이더에 넣을 수 있습니다`);
-    h+=`<p class="box">홀 단가로 계산한 전기·냉난방 (부가세 별도, 행사 ${kw.kw}kW·설치 ${kw.skw}kW 가정)<br>${pub.join('<br>')}<br><span class="mut">간선·부스 배선 전기공사는 빠져 있습니다(벡스코는 지정 협력업체 시공). 주관사 부담이면 따로 잡으세요.</span></p>`;
+    const plusHr=S.hvac?Math.round(man(costOf(x,S.sea,P({hrs:S.hrs+1}),{fb:true}).hv))-r.calcHv:null;
+    if(S.um==='calc'){
+      const tips=[];
+      if(plusHr!=null)tips.push(`냉난방 1시간 더 +${f0(plusHr)}만`);
+      tips.push(`부가세 포함 제사용료 ${f0(r.util*1.1)}만`);
+      h+=`<p class="box">${tips.join(' · ')}<br><span class="mut">간선·부스 배선 전기공사는 빠져 있습니다(벡스코는 지정 협력업체 시공). 주관사 부담이면 따로 잡으세요.</span></p>`;
+    }else{
+      const sumPub=r.calcEl+r.calcHv+r.calcW;
+      h+=`<p class="box">홀 단가로 계산하면 (부가세 별도)<br>전기 ${f0(c.kwh)}kWh × ${f0(c.I)}원${S.elx!==1?` × ${S.elx}배`:''} = <b>${f0(r.calcEl)}만</b><br>냉난방 ${f0(x.a)}㎡ × ${f0(c.hvPer)}원(${S.hrs}시간) × ${c.hvDays}일 = <b>${f0(r.calcHv)}만</b>${S.hvac?'':' → 뺌'}${plusHr!=null?` · 1시간 더 +${f0(plusHr)}만`:''}<br>폐기물 <b>${f0(r.calcW)}만</b> · 합계 <b>${f0(sumPub)}만</b>${S.show!==3?` (3일 환산 ${f0(sumPub*3/S.show)}만)`:''} — '고른 홀 계산값으로 맞추기'로 슬라이더에 넣을 수 있습니다</p>`;
+    }
+    if(x.v==='BEXCO')h+=calTable();
 
     /* 계절 비교 */
     const se=['jan','aug','spr'].map(s=>[s,ev(x,{sea:s})]);
@@ -567,7 +630,7 @@ function renderCard(r){
     h+=`<div class="bigv"><span class="na">견적 필요</span></div><p class="box">임대료 단가가 확인되지 않았습니다. 받은 견적(임대료+관리비, 부가세 별도)을 아래에 넣으면 운영비가 계산됩니다.</p>`;
   }
   if(r.missing.length)h+=`<p class="box w">${r.missing.join('·')}가 빠진 금액이라 실제 운영비는 더 높습니다.</p>`;
-  if(r.cutFail&&!r.quote)h+='<p class="box w">이 홀은 냉난방 단가가 없어 냉난방 사용안함이어도 슬라이더 금액을 그대로 썼습니다.</p>';
+  if(r.est&&!r.quote)h+='<p class="box w">이 홀은 전기·냉난방 단가가 확인되지 않아 다른 홀들의 중앙값으로 추정했습니다. 견적을 받으면 실제와 다를 수 있습니다.</p>';
   if(r.small)h+=`<p class="box w">권장 면적 ${f0(need()[0])}㎡(${f0(need()[0]/PY)}평, 부스 ${need()[1]}개)보다 작습니다 — ${n===2?'2곳 합 ':''}${f0(x.a*n)}㎡(${f0(x.a*n/PY)}평). 부스 수를 줄이거나 큰 홀을 보세요.</p>`;
   if(S.prog>=10000)h+='<p class="box w">행사진행비가 1억 이상입니다. 만원 단위로 넣었는지 확인하세요.</p>';
   if(r.ov!=null&&r.ov>=20000)h+='<p class="box w">견적 대관료가 2억 이상입니다. 만원 단위로 넣었는지 확인하세요.</p>';
@@ -577,10 +640,10 @@ function renderCard(r){
   if(x.note)h+=`<details><summary>단가 근거</summary><p>${esc(x.note)}</p></details>`;
   el.innerHTML=h;
   renderMark(r);
-  const ab=$('applyCalc'),full=r.calcEl==null&&r.calcHv==null?null:((r.calcEl||0)+(r.calcHv||0))*3/S.show;
+  const ab=$('applyCalc'),full=r.quote?null:(r.calcEl+(S.hvac?r.calcHv:0)+r.calcW)*3/S.show;
   ab.disabled=full==null;
-  ab.dataset.v=full==null?'':String(clamp(Math.round(full/50)*50,UMIN,UMAX));
-  ab.title=full==null?'이 홀은 전기·냉난방 단가가 없습니다':`${x.v} ${x.h}: 전기+냉난방 계산 ${f0(full)}만(3일 환산) → 슬라이더 ${f0(+ab.dataset.v)}만`;
+  ab.dataset.v=full==null?'':String(clamp(Math.round(full/10)*10,UMIN,UMAX));
+  ab.title=full==null?'대관료 견적이 필요한 홀입니다':`${x.v} ${x.h}: 제사용료 계산 ${f0(full)}만(3일 환산) → 슬라이더 ${f0(+ab.dataset.v)}만`;
   $('live').textContent=r.ops!=null?`${x.v} ${x.h} 운영비 ${f0(r.ops)}만원`:`${x.v} ${x.h} 견적 필요`;
   const cpb=$('cpb');
   if(cpb)cpb.onclick=()=>{
@@ -629,12 +692,13 @@ $('regs').onclick=e=>{const b=e.target.closest('button');if(b){S.reg=b.dataset.v
 $('sea').onclick=e=>{const b=e.target.closest('button');if(b){S.sea=b.dataset.v;S.hvac=S.sea!=='spr';render()}};
 $('hvac').onclick=e=>{const b=e.target.closest('button');if(b){S.hvac=b.dataset.v==='1';render()}};
 $('setupHv').onclick=e=>{const b=e.target.closest('button');if(b){S.setupHv=b.dataset.v==='1';render()}};
+$('um').onclick=e=>{const b=e.target.closest('button');if(b){S.um=b.dataset.v;render()}};
 $('cnt').onclick=e=>{const b=e.target.closest('button');if(b){S.cnt=b.dataset.v;render()}};
 document.querySelector('.ctl').addEventListener('click',e=>{
   const b=e.target.closest('.stp button[data-k]');if(!b||b.disabled)return;
   const k=b.dataset.k,d=+b.dataset.d;
   if(k==='rent'){S.rent=clamp(S.rent+d,1,10);if(S.show>S.rent)S.show=S.rent}
-  else if(k==='hrs')S.hrs=clamp(S.hrs+d,8,16);
+  else if(k==='hrs')S.hrs=clamp(S.hrs+d,4,16);
   else if(k==='elx')S.elx=clamp(S.elx+d,1,5);
   else{S.show=clamp(S.show+d,1,7);if(S.show>S.rent)S.rent=S.show}
   render();
