@@ -7,12 +7,14 @@
 - 01장(재배치 후 07장) = 분당 맞춤 제안: 공고 8항 필수 9항목 ↔ 쪽 대응표 · 단지 이해 · 신혼희망타운 품목 · 유상옵션 겹침 확인 ·
   시중가·온라인 최저가 검수 · 혜택·가격 비교 한 장 · 협의회 지원 · 정당계약일 부스 · 전담 PM · 업무 11 · 자격 10 · 제한 10 · 유의사항
 - 01 회사소개에 연혁 · 대표자·핵심 운영인력 장 추가(공고 8항 1 · 2)
-- 공고 7항에 요약본 · 회사소개서가 없어 제안서(02)만 출력한다.
+- 공고 7항 14 '기타 입예협이 필요하다고 인정하는 자료'로 요약제안서(summary_bd.py)를 함께 출력한다.
 - 사진·발췌 장은 동탄 폴더 assets_ins / assets_full 을 공유(심볼릭 링크, 깃 제외). 본부장 제공 예정 사진(bd_*)은 파일이 생기면 자동 반영.
 
-사용: python3 build_bd.py [--full] [--no-pdf] [--final] [--src <통합제안서 기본틀 PDF>]
-- 기본 = 압축본(약 109쪽, 본부장 10-14 '110쪽 내외') → NAME.html/.pdf · 압축 대상은 compact.py 한 곳에 모음
-- --full = 전체본(134쪽) → NAME_전체본.html/.pdf (원본 보관용)
+사용: python3 build_bd.py [--compact] [--no-summary] [--no-pdf] [--final] [--src <통합제안서 기본틀 PDF>]
+- 기본 = 전체본(134쪽, 본부장 10-14 저녁 '134쪽으로 되돌리고 본부장이 직접 줄임') → NAME.html/.pdf
+  + 14 요약제안서(공고 7항 14 '기타', summary_bd.py) → 엣지컴퍼니_분당퍼스트빌리지_14_요약제안서.html/.pdf
+- --compact = 압축본(약 109쪽) → NAME_압축본.html/.pdf · 압축 대상은 compact.py 한 곳에 모음
+- --no-summary = 요약제안서 생략
 - --src <pdf> = assets_full 발췌 JPEG가 없을 때만 렌더용(예전 '--full <pdf>')
 """
 import html as _h
@@ -27,10 +29,8 @@ sys.path[:0] = [BASE, HERE]
 import build as B  # noqa: E402  (기본틀 — import 시 PAGES가 채워짐)
 import data as D  # noqa: E402
 
-# 압축본 스위치(본부장 10-14: "압축본으로 보여주고 원본은 저장" · "110쪽 내외") — 기본 = 압축본, '--full' = 134쪽 전체본
-COMPACT = True
-if "--full" in sys.argv:
-    COMPACT = False
+# 압축본 스위치 — 본부장 10-14 저녁: 기본 = 134쪽 전체본(본부장이 직접 줄임), '--compact' 일 때만 compact.apply(약 109쪽)
+COMPACT = "--compact" in sys.argv
 FULL = not COMPACT
 
 NAME = "엣지컴퍼니_분당퍼스트빌리지_02_입주박람회_주관사_제안서"
@@ -597,7 +597,8 @@ new("std", sec=S0, title=T_PM,
           '<div class="pc"><h3><i>CONTACT</i>전담 연락 체계</h3>'
           + B.rows([
               ("총괄 책임", "주관사업 총괄 본부장 · [[" + D.MANAGER[2].replace("-", "\u2060-\u2060") + "]]"),
-              ("전담 PM", f"{ST['short']} 전담 1명 지정 · 협약 시 성명 · 연락처 제출 · " + TODO("PM 후보 · 팀장급 2 ~ 3명 경력 연수 · 주요 현장(실명 없이)")),
+              # 본부장 10-14 저녁: PM · 팀장 경력 노란 칸 대신 '협약 시 제출'(전체본 · 압축본 같은 문구 — 압축본 검증 10-14의 줄바꿈 맞춤)
+              ("전담 PM", "단지 전담 1명 지정 · 전담 PM 성명 · 연락처는 협약 시 제출"),
               ("한 창구 접수", f"주관 콜센터 {D.TEL}(평일 09:00 ~ 18:00) · 온라인 365일(카페 신문고 · 카카오채널 · 홈페이지)"),
               ("회신 · 처리", "[[24시간 안에 1차 회신]] · 48시간 하자보수 원칙 · 해피콜로 종결"),
           ], title_w=128) + '</div>'
@@ -845,7 +846,6 @@ new("std", sec=S0, title=T_HIST,
     kp=("2023년부터 [[해마다]] 1,000세대 이상 입주박람회를 맡아 왔습니다.",
         "출처: 법인등기부 · 전기공사업 등록증 · ISO 인증서 · NICE 기업신용평가보고서 연혁 · 세스코 협약"))
 
-_songdo = next(r for r in D.RECORDS if "송도" in r[1])
 _lead_n = getattr(D, "STAFF_LEAD", 2) + sum(c for _, c, _ in D.STAFF)
 PRO5 = [("전기", 3), ("도장", 2), ("타일", 1), ("조경", 1), ("간호사", 1)]
 new("std", sec=S0, title=T_PEOPLE,
@@ -858,7 +858,8 @@ new("std", sec=S0, title=T_PEOPLE,
           f'<li>{TODO("대표 개인 경력 · 주요 현장 - 확인 후 기재")}</li></ul></div>'
           '<div class="pp1"><i>주관사업 총괄 본부장 · 전담 총괄</i><h3>총괄 본부장</h3><ul>'
           f'<li>{ST["short"]} 총괄 책임 · 직통 <span style="white-space:nowrap">{D.MANAGER[2]}</span></li>'
-          f'<li>{_songdo[1]}({_songdo[0]} 입주 · {_songdo[3]:,}세대) <b>현장 직접 주관</b></li>'
+          # 본부장 10-14 저녁: 개인 현장(송도) 문구 대신 협의회 운영 경험 한 줄 · 단지명은 쓰지 않음(송도는 회사 실적 10개 단지로만)
+          '<li><b>입주예정자협의회 회장 3년 역임</b> - 입주민 입장에서 협의회 운영을 직접 겪어 봤습니다</li>'
           '<li>입예협 정례회의 · 박람회 · 사전점검 현장 참석 · 이슈 직접 관리</li></ul></div>'  # 경력 칸은 본부장 10-14 삭제
           '<div class="pp2"><i>핵심 운영인력</i><h3>임직원 ' + str(_lead_n) + '명</h3>'
           + "".join(f'<div><b>{c}<small>명</small></b><span>{n}</span><p>{t(r)}</p></div>' for n, c, r in D.STAFF)
@@ -1586,8 +1587,8 @@ def p_toc_bd(no):
 
 B.p_toc = p_toc_bd
 
-# 압축본(기본) — reorg.apply → vis.apply 가 끝난 최종 B.PAGES에서 뺀다(vis가 빠질 장 제목을 take()하므로 그 뒤에).
-# 뺄 장 · 합칠 장 · 문구 수정은 모두 compact.py 한 곳에 있다. 전체본(--full)은 이 단계를 건너뛴다.
+# 압축본(--compact) — reorg.apply → vis.apply 가 끝난 최종 B.PAGES에서 뺀다(vis가 빠질 장 제목을 take()하므로 그 뒤에).
+# 뺄 장 · 합칠 장 · 문구 수정은 모두 compact.py 한 곳에 있다. 기본(전체본 134쪽)은 이 단계를 건너뛴다.
 if COMPACT and not os.environ.get("NO_NATIVE"):
     import compact  # noqa: E402
     compact.apply(globals())
@@ -1721,11 +1722,14 @@ def emit(pages, out_html, title):
 def build():
     src = sys.argv[sys.argv.index("--src") + 1] if "--src" in sys.argv else None
     render_full_pages(src)
-    # 공고 7항 제출서류에 요약본 · 회사소개서가 없어 제안서(제출서류 2)만 만든다.
-    # 압축본(기본) = NAME.html/.pdf(메일용 mail_lite.py도 이 파일 기준) · 전체본(--full) = NAME_전체본.html/.pdf
-    out = B.OUT_HTML if COMPACT else os.path.join(HERE, NAME + "_전체본.html")
+    # 전체본(기본) = NAME.html/.pdf(메일용 mail_lite.py도 이 파일 기준) · 압축본(--compact) = NAME_압축본.html/.pdf
+    out = os.path.join(HERE, NAME + "_압축본.html") if COMPACT else B.OUT_HTML
     emit(list(B.PAGES), out, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
     print(f"{'압축본' if COMPACT else '전체본'} {len(B.PAGES)}쪽 → {out}")
+    # 공고 7항 14 '기타' — 요약제안서(정회원 투표 50점 대상, 8 ~ 12쪽). 숫자 · 문구는 위 제안서와 같은 D · ST 값.
+    if not os.environ.get("NO_NATIVE") and "--no-summary" not in sys.argv:
+        import summary_bd  # noqa: E402
+        summary_bd.emit_summary(globals())
 
 
 if __name__ == "__main__":
