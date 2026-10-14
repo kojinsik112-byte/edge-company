@@ -265,6 +265,11 @@ def PG(key):
     return f"⟪pg:{key}⟫"
 
 
+def PGS(keys):
+    """여러 쪽 — emit()에서 번호 오름차순으로 정렬해 'p.04 · 05 · 18' 꼴로 채운다."""
+    return "⟪pgs:" + ",".join(keys) + "⟫"
+
+
 ST = D.SITE
 _tp = dict(ST["types"])
 _sale, _rent = ST["sale"], ST["rental"]
@@ -310,40 +315,42 @@ new("divider", n="01", title=T_DIV,
 
 # ------------------------------------------------------------ 공고 8항 필수 9항목 ↔ 쪽 대응표(맞춤 장 첫머리)
 MUST9 = [  # (공고 8항 필수 포함 항목, 엣지컴퍼니 제안 핵심, [PGREF 키])
-    ("회사소개 및 주요 이력 현황", f"법인 2022.02 설립 · 자본금 2억 · 1,000세대 이상 주관 {_rec_n}개 단지 · {_rec_hh:,}세대", ["num", "hist", "succ", "big"]),
-    ("대표자 · 핵심 운영인력 수행경험 · 현장 운영 이력", "대표이사 · 총괄 본부장 · 4개 팀 · 자격·협회 등록 전문 인력", ["people", "org"]),
-    ("입주박람회 운영 계획", f"{ST['expo']} 금·토·일 3일(안) · 행사장 후보 3곳 · 배치 · 인원 · 안전 · 편의", ["expo", "venue", "floor", "comfort"]),
-    ("품목 구성 및 입점 예정 업체 관리 방안", "신혼희망타운 맞춤 품목 · 공식 옵션 겹침 확인 · 4단계 심사 · 계약~설치 관리", ["items", "opt", "vendors", "vmgt", "screen"]),
-    ("입주민 혜택 및 가격 투명성 확보 방안", f"세대당 {D.FUND}만원 상당 패키지 · 혜택·가격 비교 한 장 · 단가 4가지 장치", ["one", "fund", "sep", "guard4"]),
-    ("민원 · 하자 대응 체계 및 사후관리 방안", "3중 안전망 · 하자 책임 구분 · 선보상 · 컴플레인 처리 기준 · 취소·환불 규정", ["safe3", "defect", "cpl", "rule1"]),
-    ("협의회 지원 사항 및 계획", "시기별 지원 계획 · 정당계약일 부스 · 건의 관리표 · B 협의회 단지발전지원", ["support", "booth", "req", "pkb"]),
-    ("품목별 시중가 · 온라인 최저가 대비 검수 방안", "같은 조건 총액 비교 · 입예협 검수 · 사전 공개 · 최저가 차액 10배", ["check", "x10"]),
-    ("A/S 접수창구 또는 전담 연락체계 운영계획", "전담 PM · 주관 콜센터 한 창구 · 24시간 회신 · 48시간 처리", ["pm", "call", "crm"]),
+    ("회사소개 및 주요 이력 현황", f"자본금 2억 · 연혁 · 1,000세대 이상 주관 {_rec_n}개 단지", ["num", "hist", "succ", "big"]),
+    ("대표자 · 핵심 운영인력 수행경험 · 현장 운영 이력", "대표이사 · 총괄 본부장 · 4개 팀 · 전문 인력", ["people", "org"]),
+    ("입주박람회 운영 계획", f"{ST['expo']} 3일(안) · 후보 3곳 · 배치 · 인원", ["expo", "venue", "floor", "comfort"]),
+    ("품목 구성 및 입점 예정 업체 관리 방안", "맞춤 품목 · 옵션 겹침 확인 · 4단계 심사 · 일정 관리", ["opt", "items", "vendors", "vmgt", "screen"]),
+    ("입주민 혜택 및 가격 투명성 확보 방안", f"{D.FUND}만원 상당 패키지 · 비교 한 장 · 단가 장치", ["one", "fund", "sep", "guard4"]),
+    ("민원 · 하자 대응 체계 및 사후관리 방안", "3중 안전망 · 책임 구분 · 선보상 · 환불 규정", ["safe3", "defect", "cpl", "rule1"]),
+    ("협의회 지원 사항 및 계획", "시기별 지원 · 정당계약일 부스 · B 패키지", ["support", "booth", "req", "pkb"]),
+    ("품목별 시중가 · 온라인 최저가 대비 검수 방안", "같은 조건 총액 비교 · 입예협 검수 · 10배 보상", ["check", "x10"]),
+    ("A/S 접수창구 또는 전담 연락체계 운영계획", "전담 PM · 한 창구 · 24시간 회신 · 48시간 처리", ["pm", "call", "crm"]),
 ]
 new("std", sec=S0, title=T_MAP,
-    lead="공고 8항이 제안서에 꼭 넣으라고 한 9가지를 어느 쪽에서 설명하는지 정리했습니다. 쪽 번호는 각 장 우측 상단 번호입니다.",
+    lead="공고 8항이 꼭 넣으라고 한 9가지를 어느 쪽에서 설명하는지 정리했습니다(쪽 번호 = 각 장 우측 상단 번호).",
     body=table(["NO", "공고 8항 필수 포함 항목", "엣지컴퍼니 제안 핵심", "제안서 쪽"], "".join(
-        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td class="pg">{" · ".join(PG(k) for k in ks)}</td></tr>'
+        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td class="pg">{PGS(ks)}</td></tr>'
         for i, (a, b, ks) in enumerate(MUST9, 1)), "m9"),
-    kp=("필수 9항목 모두 [[숫자와 기한]]으로 답했습니다.", "공고 4항 자격 · 5항 업무 범위 · 9항 제한 · 10항 유의사항 대응은 이 장 뒤쪽"))
-B.CSS += (".tbl.m9 td{padding:8px 14px;font-size:15.5px;line-height:1.4}.tbl.m9 td.k{font-size:16px;width:33%}"
-          ".tbl.m9 td.pg{white-space:nowrap;color:var(--gold);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;width:17%}"
-          ".tbl.m9 tr:nth-child(odd) td{background:rgba(255,255,255,.025)}")
+    kp=("필수 9항목 모두 [[숫자와 기한]]으로 답했습니다.", "자격 · 업무 범위 · 제한 · 유의사항 대응은 이 장 뒤쪽"))
+B.CSS += (".tbl.m9 td{padding:9px 14px;font-size:15px;line-height:1.35}.tbl.m9 td.k{font-size:16px;width:37%}"
+          ".tbl.m9 td.pg{white-space:nowrap;color:var(--gold);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;width:22%}"
+          ".tbl.m9 tr:nth-child(odd) td{background:rgba(255,255,255,.025)}"
+          ".tbl.s11 td{padding:5px 12px;font-size:14px;line-height:1.32}.tbl.s11 td.k{font-size:14.5px;width:34%}"
+          ".tbl.s11 td.pg{white-space:nowrap;color:var(--gold);font-weight:800;font-size:14px;width:12%}.tbl.s11 td.n{width:36px}")
 
 # ------------------------------------------------------------ 단지 이해
 new("std", sec=S0, title=T_SITE,
     lead="입찰 공고문 단지 개요 · 입주자모집공고 기준 - 입주예정자협의회(이하 입예협)와 함께 설계합니다.",
     body=B.cards([
-        dict(lb="SCALE", big=f"{ST['households']:,}", unit="세대", nm=f"{ST['buildings']}개동 · {ST['floors']}",
-             ds=f"{SL}(신혼희망타운) {_sale:,} · {RL} {_rent}. 2026.07 본청약 신규 {_ap_n}가구에 {_ap_c:,}건 접수(평균 {_ap_r}:1)."),
-        dict(lb="TYPE", big="51~59", unit="㎡", nm="전 세대 전용 60㎡ 이하",
-             ds=f"{SL} {_types_txt}. 소형 타입이라 [[수납 · 커튼 · 조명]]을 타입별 실측으로 맞춥니다."),
+        dict(lb="SCALE", big=f"{ST['households']:,}", unit="세대", nm=f"{ST['buildings']}개동 · 최고 25층",
+             ds=f"{SL} {_sale:,} · {RL} {_rent} · 2026.07 본청약 평균 {_ap_r}:1"),
+        dict(lb="TYPE", big="51~59", unit="㎡", nm="전 세대 60㎡ 이하",
+             ds=f"{_types_txt} - [[수납 · 커튼 · 조명]]을 타입별 실측으로"),
         dict(lb="MOVE-IN", big="2029", unit=".02", nm="입주 예정",
-             ds=f"정당계약 {ST['contract']} · 입주까지 약 {ST['months']}개월. 사전점검 일정은 미정 - 확정되는 대로 박람회 일정을 맞춥니다."),
-        dict(lb="LOCATION", big="성남낙생", nm=f"시행 {ST['developer_short']} · 시공 {ST['builder']}", hl=True,
-             ds=f"{ST['project']} · 성남낙생지구 첫 분양. 판교·분당 업무지구 인접 · {ST['station']}."),
+             ds=f"정당계약 {ST['contract']} · 입주까지 약 {ST['months']}개월"),
+        dict(lb="LOCATION", big="성남낙생", nm=f"{ST['developer_short']} · {ST['builder']}", hl=True,
+             ds="A-1블록 · 지구 첫 분양 · 판교·분당 업무지구 인접 · 미금역 버스 약 10분"),
     ]),
-    kp=("신혼부부 · 영유아 가구가 실거주하는 [[소형 타입 단지]] - 공간 효율 · 가성비 · 안심이 기준입니다.", "모집공고 기준 사실만 적었습니다"))
+    kp=("신혼부부 · 영유아 가구가 실거주하는 [[소형 타입 단지]]입니다.", "입찰 공고 · 입주자모집공고 기준"))
 
 new("std", sec=S0, title=T_FIRST,
     lead=f"전 세대 전용 60㎡ 이하 · 공식 유상옵션이 많은 단지 - 공동구매 전에 확인할 것부터 정리했습니다.",
@@ -355,13 +362,13 @@ new("std", sec=S0, title=T_FIRST,
     ], title_w=210),
     kp="이미 고른 옵션은 권하지 않고, [[남은 수요]]만 같은 조건으로 비교해 드립니다.")
 
-B.CSS += (".tbl.op5 td{padding:10px 14px;font-size:15px;line-height:1.45}.tbl.op5 td.k{font-size:16px;width:16%}"
+B.CSS += (".tbl.op5 td{padding:15px 14px;font-size:15.5px;line-height:1.45}.tbl.op5 td.k{font-size:16.5px;width:16%}"
           ".tbl.op5 td:nth-child(2){width:36%}")
 new("std", sec=S0, title=T_OPT,
     lead="모집공고의 공식 유상옵션과 겹치는 품목은, 수요조사로 옵션 선택 여부를 확인한 뒤 남은 수요만 모집합니다.",
     body=table(["품목", "공식 유상옵션 (모집공고 기재가 · 부가세 포함)", "외부 업체 설치 시 확인할 조건"], "".join(
         f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>' for a, b, c in D.OPTIONS), "op5")
-         + '<div class="hflow"><span>수요조사 · 옵션 선택 여부 문항</span><i>›</i><span>겹치는 품목 걸러내기</span><i>›</i>'
+         + '<div class="hflow"><span>수요조사 · 옵션 문항</span><i>›</i><span>겹치는 품목 걸러내기</span><i>›</i>'
            '<span>남은 수요 품목만 모집</span><i>›</i><span>조건 차이까지 비교 안내</span><i>›</i><span>입예협 승인</span></div>'
          + '<div class="notex" style="margin-top:12px">※ 외부 설치가 공식 옵션과 같은 기능을 제공한다고 안내하지 않습니다(예: 시스템에어컨 월패드 연동). '
            '옵션 금액은 일부 타입·구성 예시이며, 옵션 계약 일정·조건은 사업주체 안내를 따릅니다.</div>',
@@ -393,9 +400,9 @@ B.CSS += (".itx{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;flex:1
           "background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 45%)}"
           ".itc i{font-style:normal;font-size:12px;letter-spacing:.14em;color:var(--gold2);font-weight:700}"
           ".itc h3{font-size:23px;font-weight:800;color:var(--gold);margin:2px 0 8px}"
-          ".itc ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;flex:1}"
-          ".itc li{font-size:15.5px;line-height:1.4;padding-left:14px;position:relative}.itc li:before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--gold2)}"
-          ".itc p{margin-top:10px;border-top:1px dashed rgba(200,168,106,.45);padding-top:8px;font-size:13.5px;color:var(--sub);line-height:1.45}"
+          ".itc ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:14px;flex:1}"
+          ".itc li{font-size:17px;line-height:1.45;padding-left:14px;position:relative}.itc li:before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--gold2)}"
+          ".itc p{margin-top:10px;border-top:1px dashed rgba(200,168,106,.45);padding-top:8px;font-size:14.5px;color:var(--gold);line-height:1.45}"
           ".itr{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center;border:1px dashed rgba(200,168,106,.55);border-radius:12px;padding:10px 16px}"
           ".itr b{font-size:16px;color:var(--gold)}.itr span{font-size:14px;color:var(--sub);line-height:1.5}"
           ".itr.g{border-style:solid;border-color:rgba(235,203,143,.55);background:rgba(235,203,143,.06)}")
@@ -579,7 +586,7 @@ new("std", sec=S0, title=T_PM,
     body=('<div class="nb"><div class="pmx">'
           '<div class="pc"><h3><i>CONTACT</i>전담 연락 체계</h3>'
           + B.rows([
-              ("총괄 책임", f"주관사업 총괄 본부장 · [[{D.MANAGER[2]}]]"),
+              ("총괄 책임", "주관사업 총괄 본부장 · [[" + D.MANAGER[2].replace("-", "\u2060-\u2060") + "]]"),
               ("전담 PM", f"{ST['short']} 전담 1명 지정 · 협약 시 성명 · 연락처 제출"),
               ("한 창구 접수", f"주관 콜센터 {D.TEL}(평일 09:00 ~ 18:00) · 온라인 365일(카페 신문고 · 카카오채널 · 홈페이지)"),
               ("회신 · 처리", "[[24시간 안에 1차 회신]] · 48시간 하자보수 원칙 · 해피콜로 종결"),
@@ -742,8 +749,8 @@ SCOPE11 = [  # 공고 5항 주요 업무 범위 1 ~ 11 — (업무, 수행 내�
 new("std", sec=S0, title=T_SCOPE,
     lead="공고 5항 주요 업무 범위 11개를 빠짐없이 맡고, 각 항목을 제안서의 어느 쪽에서 설명하는지 함께 적었습니다.",
     body=table(["NO", "공고 업무 범위", "엣지컴퍼니 수행 내용", "제안서 쪽"], "".join(
-        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td class="pg">{" · ".join(PG(k) for k in ks)}</td></tr>'
-        for i, (a, b, ks) in enumerate(SCOPE11, 1)), "q10 m9"),
+        f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td class="pg">{PGS(ks)}</td></tr>'
+        for i, (a, b, ks) in enumerate(SCOPE11, 1)), "s11"),
     kp="업무 범위가 바뀌어도 [[입예협과 협의해]] 협약서에 그대로 옮깁니다.")
 
 QUAL10 = [  # 공고 4항 입찰 참가자격 1 ~ 10 — (요건, 현황, 증빙)
@@ -796,9 +803,9 @@ NOTE7 = [  # 공고 6항 · 10항 · 서식 — (공고, 약속)
 new("std", sec=S0, title=T_NOTE,
     lead="공고 6항 · 10항 유의사항과 서식 1 ~ 5 서약을 제안서 내용에 그대로 반영했습니다.",
     body=table(["공고", "엣지컴퍼니 약속"], "".join(
-        f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td></tr>' for a, b in NOTE7), "q10 nt7"),
+        f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td></tr>' for a, b in NOTE7), "nt7"),
     kp=("제안서에 쓴 조건 그대로 [[PT에서도, 협약서에서도]] 같습니다.", "서식 1 ~ 5 서약서 제출"))
-B.CSS += ".tbl.nt7 td{padding:11px 14px;font-size:15.5px}.tbl.nt7 td.k{width:26%}.tbl.nt7 td:last-child{width:auto;white-space:normal}"
+B.CSS += ".tbl.nt7 td{padding:15px 14px;font-size:16px;line-height:1.5}.tbl.nt7 td.k{width:25%;font-size:16.5px;color:var(--ink);font-weight:700}"
 
 # ------------------------------------------------------------ 01장으로 보낼 장(공고 8항 1 · 2)
 B.CSS += r"""
@@ -835,12 +842,12 @@ new("std", sec=S0, title=T_PEOPLE,
     lead="공고 8항 2 · 4항 4 - 대표자와 핵심 운영인력이 직접 맡아 온 현장과, 분당 퍼스트빌리지에서 맡을 역할입니다.",
     body=('<div class="nb"><div class="ppx">'
           '<div class="pp1"><i>대표이사</i><h3>고진식</h3><ul>'
-          f'<li>법인 설립({D.FOUNDED[:7]})부터 대표 · 대표자 본인 명의 법인</li>'
-          f'<li>1,000세대 이상 입주박람회 주관 <b>{_rec_n}개 단지 · {_rec_hh:,}세대</b> 의사결정</li>'
+          '<li>대표이사 · 대표자 본인 명의 법인(공고 4항)</li>'
+          f'<li>엣지컴퍼니 1,000세대 이상 입주박람회 주관 <b>{_rec_n}개 단지 · {_rec_hh:,}세대</b> 총괄</li>'
           '<li>PT · 질의응답 직접 참석(공고 6항) · 협약 서명</li>'
           f'<li>{TODO("대표 개인 경력 · 주요 현장 - 확인 후 기재")}</li></ul></div>'
           '<div class="pp1"><i>주관사업 총괄 본부장 · 전담 총괄</i><h3>총괄 본부장</h3><ul>'
-          f'<li>{ST["short"]} 총괄 책임 · 직통 {D.MANAGER[2]}</li>'
+          f'<li>{ST["short"]} 총괄 책임 · 직통 <span style="white-space:nowrap">{D.MANAGER[2]}</span></li>'
           f'<li>{_songdo[1]}({_songdo[0]} 입주 · {_songdo[3]:,}세대) <b>현장 직접 주관</b></li>'
           '<li>입예협 정례회의 · 박람회 · 사전점검 현장 참석 · 이슈 직접 관리</li>'
           f'<li>{TODO("본부장 경력 연수 · 주요 현장 - 확인 후 기재")}</li></ul></div>'
@@ -1644,6 +1651,7 @@ def finish(path, title):
     assert not left, left  # 지웰·동탄·철산·탕정 문구가 남지 않게(분당은 입예협 — '조합' 없음)
     # 대응표 쪽 번호(⟪pg:키⟫) — emit()에서 재배치가 끝난 B.PAGES로 계산
     doc = re.sub(r"⟪pg:(\w+)⟫", lambda m: f"p.{PGNO[m.group(1)]:02d}", doc)
+    doc = re.sub(r"⟪pgs:([\w,]+)⟫", lambda m: "p." + " · ".join(f"{n:02d}" for n in sorted({PGNO[k] for k in m.group(1).split(",")})), doc)
     assert "⟪" not in doc
     # 본부장 제공 예정 사진(bd_*) — 파일이 없으면 남색 자리표시(파일을 assets_ins/에 넣으면 다음 빌드에 자동 반영)
     def _ph(m):
