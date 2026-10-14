@@ -10,7 +10,10 @@
 - 공고 7항에 요약본 · 회사소개서가 없어 제안서(02)만 출력한다.
 - 사진·발췌 장은 동탄 폴더 assets_ins / assets_full 을 공유(심볼릭 링크, 깃 제외). 본부장 제공 예정 사진(bd_*)은 파일이 생기면 자동 반영.
 
-사용: python3 build_bd.py [--no-pdf] [--final]
+사용: python3 build_bd.py [--full] [--no-pdf] [--final] [--src <통합제안서 기본틀 PDF>]
+- 기본 = 압축본(약 109쪽, 본부장 10-14 '110쪽 내외') → NAME.html/.pdf · 압축 대상은 compact.py 한 곳에 모음
+- --full = 전체본(134쪽) → NAME_전체본.html/.pdf (원본 보관용)
+- --src <pdf> = assets_full 발췌 JPEG가 없을 때만 렌더용(예전 '--full <pdf>')
 """
 import html as _h
 import json
@@ -23,6 +26,12 @@ BASE = os.path.normpath(os.path.join(HERE, "..", "요약제안서"))
 sys.path[:0] = [BASE, HERE]
 import build as B  # noqa: E402  (기본틀 — import 시 PAGES가 채워짐)
 import data as D  # noqa: E402
+
+# 압축본 스위치(본부장 10-14: "압축본으로 보여주고 원본은 저장" · "110쪽 내외") — 기본 = 압축본, '--full' = 134쪽 전체본
+COMPACT = True
+if "--full" in sys.argv:
+    COMPACT = False
+FULL = not COMPACT
 
 NAME = "엣지컴퍼니_분당퍼스트빌리지_02_입주박람회_주관사_제안서"
 FULL_DIR = os.path.join(HERE, "assets_full")  # 통합제안서 기본틀 발췌 페이지(JPEG, 깃 제외)
@@ -1396,7 +1405,7 @@ def render_full_pages(src_pdf):
     missing = [i for i in need if not os.path.exists(os.path.join(FULL_DIR, f"p{i:03d}.jpg"))]
     if not missing:
         return
-    assert src_pdf and os.path.exists(src_pdf), "통합제안서 기본틀 PDF 경로를 --full <pdf> 로 주세요 (발췌 장 렌더용)"
+    assert src_pdf and os.path.exists(src_pdf), "통합제안서 기본틀 PDF 경로를 --src <pdf> 로 주세요 (발췌 장 렌더용)"
     doc = fitz.open(src_pdf)
     for i in missing:
         doc[i].get_pixmap(dpi=FULL_DPI, clip=fitz.Rect(*FULL_CLIP_OVR.get(i, FULL_CLIP))).save(os.path.join(FULL_DIR, f"p{i:03d}.jpg"), jpg_quality=88)
@@ -1574,6 +1583,12 @@ def p_toc_bd(no):
 
 B.p_toc = p_toc_bd
 
+# 압축본(기본) — reorg.apply → vis.apply 가 끝난 최종 B.PAGES에서 뺀다(vis가 빠질 장 제목을 take()하므로 그 뒤에).
+# 뺄 장 · 합칠 장 · 문구 수정은 모두 compact.py 한 곳에 있다. 전체본(--full)은 이 단계를 건너뛴다.
+if COMPACT and not os.environ.get("NO_NATIVE"):
+    import compact  # noqa: E402
+    compact.apply(globals())
+
 CLOSING_DROP = []  # 요약본에서 뺄 약속 번호
 
 
@@ -1701,10 +1716,13 @@ def emit(pages, out_html, title):
 
 
 def build():
-    full = sys.argv[sys.argv.index("--full") + 1] if "--full" in sys.argv else None
-    render_full_pages(full)
+    src = sys.argv[sys.argv.index("--src") + 1] if "--src" in sys.argv else None
+    render_full_pages(src)
     # 공고 7항 제출서류에 요약본 · 회사소개서가 없어 제안서(제출서류 2)만 만든다.
-    emit(list(B.PAGES), B.OUT_HTML, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
+    # 압축본(기본) = NAME.html/.pdf(메일용 mail_lite.py도 이 파일 기준) · 전체본(--full) = NAME_전체본.html/.pdf
+    out = B.OUT_HTML if COMPACT else os.path.join(HERE, NAME + "_전체본.html")
+    emit(list(B.PAGES), out, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
+    print(f"{'압축본' if COMPACT else '전체본'} {len(B.PAGES)}쪽 → {out}")
 
 
 if __name__ == "__main__":

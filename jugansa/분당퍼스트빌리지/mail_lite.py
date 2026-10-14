@@ -5,6 +5,8 @@
 → 같은 HTML · 같은 쪽수로 사진 해상도만 낮춘 '_메일용.pdf'를 만든다(목표 20MB 이하). 원본 PDF는 보관함에 둔다. 탕정 메일용 경량본과 같은 방식.
 
 사용: python3 build_bd.py && python3 mail_lite.py [최대 픽셀(기본 1000)] [JPEG 품질(기본 72)]
+- 기본 = 압축본(build_bd.py 기본 출력 NAME.html) → NAME_메일용.pdf
+- 전체본: python3 build_bd.py --full && python3 mail_lite.py --full → NAME_전체본_메일용.pdf
 """
 import os
 import re
@@ -20,7 +22,7 @@ BASE = os.path.normpath(os.path.join(HERE, "..", "요약제안서"))
 sys.path[:0] = [BASE]
 import build as B  # noqa: E402  (기본틀 — build_pdf()만 쓴다)
 
-NAME = "엣지컴퍼니_분당퍼스트빌리지_02_입주박람회_주관사_제안서"
+NAME = "엣지컴퍼니_분당퍼스트빌리지_02_입주박람회_주관사_제안서" + ("_전체본" if "--full" in sys.argv else "")
 SRC_HTML = os.path.join(HERE, NAME + ".html")
 SRC_PDF = os.path.join(HERE, NAME + ".pdf")
 OUT_PDF = os.path.join(HERE, NAME + "_메일용.pdf")
@@ -38,8 +40,9 @@ def shrink(src, dst, px, q):
 
 
 def main():
-    px = int(sys.argv[1]) if len(sys.argv) > 1 else 1000
-    q = int(sys.argv[2]) if len(sys.argv) > 2 else 72
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    px = int(args[0]) if len(args) > 0 else 1000
+    q = int(args[1]) if len(args) > 1 else 72
     html = open(SRC_HTML, encoding="utf-8").read()
     tmp = tempfile.mkdtemp(prefix="bd_mail_")
     try:
@@ -50,7 +53,14 @@ def main():
             dst = os.path.normpath(os.path.join(work, ref))
             assert os.path.exists(src), ref
             shrink(src, dst, px, q)
-        fonts = os.path.join(BASE, "assets", "fonts")  # 글꼴은 원본 그대로
+        # SVG 도식(09장 경관조명 설계 · 생산 · 시공 · 야경)은 원본 그대로 복사 — 빠지면 메일용에서 그림이 비었다(10-14 확인)
+        for ref in sorted(set(re.findall(r"""(?:src=["']|url\(["']?)([^"')]+\.svg)""", html))):
+            src = os.path.normpath(os.path.join(HERE, ref))
+            dst = os.path.normpath(os.path.join(work, ref))
+            assert os.path.exists(src), ref
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copyfile(src, dst)
+        fonts =os.path.join(BASE, "assets", "fonts")  # 글꼴은 원본 그대로
         if os.path.isdir(fonts):
             shutil.copytree(fonts, os.path.join(tmp, "요약제안서", "assets", "fonts"), dirs_exist_ok=True)
         h = os.path.join(work, NAME + ".html")
