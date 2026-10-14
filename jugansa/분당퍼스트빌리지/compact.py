@@ -134,16 +134,19 @@ def apply(G):
            ("영도 센트럴 에일린의뜰", "1,216"), ("일광자이푸르지오 2단지", "1,059"), ("양산 이지더원 리버포레", "1,083"),
            ("양산 e편한세상 2차", "1,032"), ("주례 롯데캐슬 골드스마트", "998"), ("사하 코오롱하늘채 리버뷰", "969"),
            ("울산 KCC스위첸 웰츠타워", "635"), ("e편한세상 연산 더퍼스트(오피스텔 포함)", "551")]
-    k["body"] += ('<div class="p22"><b>2018 ~ 2022 주관 단지 · 전신 실적 포함</b><div>'
+    k["body"] = sub(k["body"], '<div class="cards" ', '<div class="cards c15" ') + (
+                  '<div class="p22"><b>2018 ~ 2022 주관 단지 · 전신 실적 포함</b><div>'
                   + "".join(f"<span>{a} <i>{n}</i></span>" for a, n in p22)
                   + '<span class="g">웨이브리즈(기장 신혼희망타운) <i>728</i></span></div></div>')
-    B.CSS += (".p22{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:10px 16px;background:rgba(255,255,255,.03)}"
+    B.CSS += (".cards.c15 .card{padding:12px 24px}.cards.c15 .big{font-size:40px;margin-top:4px}.cards.c15 .nm{font-size:20px;margin-top:4px}"
+              ".cards.c15 .ds{font-size:16px;margin-top:4px}"
+              ".p22{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:10px 16px;background:rgba(255,255,255,.03)}"
               ".p22>b{display:block;font-size:12.5px;letter-spacing:.12em;color:var(--gold2);margin-bottom:6px}"
               ".p22>div{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;color:var(--sub);line-height:1.45}"
               ".p22 i{font-style:normal;font-weight:700;color:#fff}.p22 .g,.p22 .g i{color:var(--gold);font-weight:700}")
     k = page("한 단지가 아니라 [[한 신도시]]를 맡습니다")[1]
     assert isinstance(k["kp"], str), k["kp"]
-    k["kp"] = (k["kp"], "신혼희망타운 주관 - 웨이브리즈(기장) 728세대 · 사송 LH 신혼희망타운 2차 479세대")
+    k["kp"] = (k["kp"], "신혼희망타운 주관 - 웨이브리즈(기장) 728 · 사송 LH 2차 479세대")
 
     # p23(뺌) '춘천 중해마루힐 포레스트 · 민간임대' 표기 → p17
     k = page("[[대단지]] 운영 경험")[1]
@@ -165,7 +168,7 @@ def apply(G):
                      ("<small>3단계</small>자격박탈 · 전 계약 이관</div>",
                       "<small>3단계</small>자격박탈 · 전 계약 이관<em>클레임 2회 이상 누적 · 지시 불이행 → 입예협 승인으로 대체업체 이관 · 피해보상 청구</em></div>")]:
         k["body"] = sub(k["body"], old, new)
-    B.CSS += (".wty .stp div em{display:block;font-style:normal;font-size:11.5px;font-weight:500;line-height:1.35;margin-top:4px;opacity:.85}"
+    B.CSS += (".wty .stp div em{display:block;font-style:normal;color:#0d1e33;font-size:11.5px;font-weight:500;line-height:1.35;margin-top:4px;opacity:.85}"
               ".wty .stp div:nth-child(1){height:55%}")
 
     # p80(뺌) 경관 진단 산출물 → p71 일정 03(자세한 연출 · 원칙은 C 패키지 쪽) · 시설 추가 조건 → 그 쪽 KEY POINT
@@ -179,14 +182,16 @@ def apply(G):
     # p121(뺌) 문주 조명 연출안 → '조명 구성' 첫 항목(제목의 '문주'와 맞춤)
     k["body"] = sub(k["body"], "<h5>조명 구성</h5>",
                     "<h5>조명 구성</h5><div><b>문주 · 진입부 조명</b><p>진입부 문주의 간접조명 · 사인 조명 연출안을 제안합니다.</p></div>")
+    k["body"] = sub(k["body"], '<div class="lxd">', '<div class="lxd lx9">')  # 한 항목 늘어난 만큼 간격만 좁힘(이 쪽만)
+    B.CSS += ".lxd.lx9{gap:4px}.lxd.lx9 h5{margin-top:2px}"
 
     # p117(뺌) 세미나 영상 운영 방식 · 공개 범위 단서 → B 패키지 표지(상세 쪽이 빠졌으므로 '하나씩' → '주요 항목')
     k = page("B 패키지 · [[협의회 단지발전지원]]")[1]
-    k["body"] = sub(k["body"], "<b>세미나 영상</b><span>사전점검 요령·홈스타일 강좌</span>",
-                    "<b>세미나 영상</b><span>사전점검 요령·홈스타일 강좌 · 유튜브 · 카페 링크</span>")
+    k["body"] = sub(k["body"], "입예협이 직접 하실 일을 줄입니다.</p>",
+                    "입예협이 직접 하실 일을 줄입니다.<br><br>세미나 영상은 유튜브로 다시 보고 카페 · 공지채널에 링크로 안내합니다. 공개 범위는 입예협과 협의합니다.</p>")
     a, b = k["kp"]
     assert a == "다음 장부터 [[B 항목]]을 하나씩 보여 드립니다.", a
-    k["kp"] = ("다음 장부터 [[주요 B 항목]]을 보여 드립니다.", b + " · 세미나 영상 공개 범위는 입예협과 협의")
+    k["kp"] = ("다음 장부터 [[주요 B 항목]]을 보여 드립니다.", b)
     k = page("사전점검 대행, [[이렇게 봅니다]]")[1]
     a, b = k["kp"]
     k["kp"] = (a, sub(b, "점검 요령 영상은 B 패키지 세미나 영상", "점검 요령 영상은 B 패키지 08 세미나 영상(⟪pg:pkb⟫)"))
