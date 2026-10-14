@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """대표이사 실적 확약서 (1,000세대 이상 입주박람회 주관 실적) + 붙임 입예협 카페 공지 캡처.
 
-실적은 증빙이 있는 것만 넣는다: NICE 연혁 7건 + 카페 공지(주관사 명의 게시)로 확인되는 2건.
-송도 더퍼스트비치는 카페에서 '협력업체'로만 확인돼 제외(본부장 10-09).
+실적은 증빙이 있는 것만 넣는다: NICE 연혁 7건 + 카페 공지(주관사 명의 게시)로 확인되는 2건
++ 송도 더퍼스트비치 = BEXCO 공식 행사일정 '주최/주관: 입주자협의회 / 주식회사 엣지컴퍼니'(본부장 10-14, 연락처는 당사 것이라 가리지 않음).
 캡처는 입주민 닉네임(동·호수)을 픽셀로 가린 뒤 넣는다. 캡처 원본·결과 PDF·HTML은 깃 제외.
 
 사용: python hwakyak.py <탕정|철산|지웰> <capture_dir> [YYYY.MM.DD]
-  capture_dir 안에: sasang_2.png(사상 게시판 2쪽 — 본부장 지정 10-09), daesung.png (원본 캡처)
+  capture_dir 안에: sasang_2.png(사상 게시판 2쪽 — 본부장 지정 10-09), daesung.png, bexco_songdo.png (원본 캡처)
 """
 import html
 import os
@@ -37,6 +37,7 @@ RECS = [
     ("2023.03", "힐스테이트 포항", "경북 포항", 1717, "NICE 연혁"),
     ("2023.11", "레이카운티", "부산", 4470, "NICE 연혁"),
     ("2024.06", "두산위브더제니스 센트럴사하", "부산", 1643, "NICE 연혁"),
+    ("2024.06.14 ~ 06.16", "e편한세상 송도 더퍼스트비치", "부산 서구", 1302, "BEXCO 행사 등록 (붙임 ③)"),
     ("2024.11 ~ 2025.12", "에코델타 대성베르힐", "부산 에코델타시티", 1120, "입예협 카페 공지 (붙임 ②)"),
     ("2024.12", "양정자이더샵SK VIEW 1·2단지", "부산", 2272, "NICE 연혁"),
     ("2025.07", "춘천 학곡지구 중해마루힐 포레스트", "강원 춘천", 1114, "NICE 연혁"),
@@ -54,6 +55,10 @@ CAPS = [
      "cafe.naver.com/f-e/cafes/30960655/menus/126",
      "작성자 '주관사 엣지컴퍼니' — 2024.11.08 주관사 인사 · 2024.12.07 주관사 선정 기념 이벤트 · 2025.11.26 입주박람회 개최 · 2025.12.02 박람회 성료 및 주관사 업무 안내",
      [(38, 252, 102, 270), (376, 290, 434, 312), (452, 0, 540, 22)]),
+    ("bexco_songdo.png", "③ BEXCO 공식 행사일정 · 이편한세상 송도 더퍼스트비치 입주박람회",
+     "www.bexco.co.kr/kor/CMS/EventScheduleMgr/view.do?mCode=MN214&event_seq=13507",
+     "2024.06.14 ~ 06.16 · BEXCO 제2전시장 4(B,C)홀 · 주최/주관: 이편한세상 송도 더퍼스트비치 입주자협의회 / 주식회사 엣지컴퍼니",
+     []),
 ]
 
 CSS = r"""
@@ -113,7 +118,7 @@ def main():
 <p class="body">당사는 「{e(notice)}」 {e(item)}에 따라, 1,000세대 이상 공동주택 단지의 입주박람회 주관 실적을 아래와 같이 제출하며 기재 내용이 사실임을 확약합니다.</p>
 <table class="t"><tr><th>연번</th><th>주관 시기</th><th>단지명</th><th>지역</th><th>세대수</th><th>근거</th></tr>{rows}
 <tr class="sum"><td colspan="4">합계 {len(RECS)}개 단지</td><td class="r">{tot:,}</td><td></td></tr></table>
-<div class="note">※ 근거: NICE 기업신용평가보고서(평가일 2026.06.19) '연혁' · 각 단지 입주예정자협의회 공식 카페의 주관사 명의 공지(붙임). 세대수는 NICE 연혁 기재값(카페 공지 근거 2개 단지는 단지 공식 총세대수).</div>
+<div class="note">※ 근거: NICE 기업신용평가보고서(평가일 2026.06.19) '연혁' · 각 단지 입주예정자협의회 공식 카페의 주관사 명의 공지 · BEXCO 공식 행사일정(붙임). 세대수는 NICE 연혁 기재값(카페 공지·BEXCO 근거 3개 단지는 단지 공식 총세대수).</div>
 <ol><li>위 실적은 당사가 입주박람회 주관사로서 직접 수행한 것입니다.</li>
 <li>귀 협의회가 요청하면 계약서, 실적 확인서, 정산 자료 등 증빙을 지체 없이 제출하겠습니다.</li>
 <li>기재 내용이 사실과 다른 것으로 밝혀지면 공고 {e(penalty)}에 따른 선정 무효·계약 해지 등 모든 조치를 이의 없이 받아들이겠습니다.</li></ol>
@@ -125,8 +130,8 @@ def main():
         src = os.path.join(cdir, f)
         dst = os.path.join(out_dir, "cafe_" + f)
         mask(src, boxes, dst)
-        caps += (f'<section class="pg"><h2>붙임. 입주예정자협의회 카페 주관사 공지 캡처</h2><div class="cap"><h3>{e(title)}</h3>'
-                 f'<div class="u">{e(url)} · 입주민 닉네임(동·호수)은 개인정보 보호를 위해 가림</div><div class="k">{e(what)}</div>'
+        caps += (f'<section class="pg"><h2>붙임. {"전시장 공식 행사일정 캡처" if f.startswith("bexco") else "입주예정자협의회 카페 주관사 공지 캡처"}</h2><div class="cap"><h3>{e(title)}</h3>'
+                 f'<div class="u">{e(url)}{" · 입주민 닉네임(동·호수)은 개인정보 보호를 위해 가림" if boxes else ""}</div><div class="k">{e(what)}</div>'
                  f'<img src="assets_ins/cafe_{f}"></div></section>')
     doc = f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>실적 확약서</title><style>{CSS}</style></head><body>{p1}{caps}</body></html>'
     hp = os.path.join(HERE, name + ".html")

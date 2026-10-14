@@ -249,7 +249,7 @@ CAFE_DAESUNG = ("2024.11 ~ 2025.12", "에코델타 대성베르힐", "부산 에
 
 
 def doc07():
-    recs = [(d, nm, reg, n, "NICE 연혁(별첨 1)") for d, nm, reg, n in D.RECENT3]
+    recs = sorted([(d, nm, reg, n, "NICE 연혁(별첨 1)") for d, nm, reg, n in D.RECENT3] + list(D.RECENT3_EXTRA))
     recs.append(CAFE_DAESUNG + ("입예협 카페 공지(별첨 2 붙임 ②)",))
     recs.sort(key=lambda r: r[0])
     rows = "".join(
@@ -261,18 +261,18 @@ def doc07():
 <p class="note" style="margin-top:8pt">제출: {D.COMPANY} (사업자등록번호 {D.BIZ_NO} · 대표이사 {D.CEO})</p>
 <h2>1. 최근 3년 1,000세대 이상 입주박람회 주관 실적</h2>
 <p class="note" style="margin:0 0 5pt">기준: 공고일({D.NOTICE_DATE}) 기준 최근 3년(2023.10.06 ~ 2026.10.06) · 1,000세대 이상 공동주택 입주박람회 주관(박람회 · 공동구매 · 사후관리 수행).
-시기·세대수는 NICE디앤비 CLIP 기업신용평가보고서(평가 {D.NICE_DATE}) ‘연혁’과 해당 단지 입주예정자협의회 공식 카페의 주관사 명의 공지 기준입니다.</p>
+시기·세대수는 NICE디앤비 CLIP 기업신용평가보고서(평가 {D.NICE_DATE}) ‘연혁’과 BEXCO 공식 행사일정(주최/주관 표기) 기준입니다.</p>
 <table class="t"><thead><tr><th style="width:5%">No</th><th style="width:13%">주관 시기</th><th>단지명</th><th style="width:12%">지역</th>
 <th style="width:10%">세대수</th><th style="width:24%">증빙</th></tr></thead>
 <tbody>{rows}
 <tr class="sum"><td colspan="4">합계 {len(recs)}개 단지</td><td class="r">{total:,}</td><td></td></tr></tbody></table>
 <div class="box"><b>공고 5항 17) 대비</b> &nbsp; 요건: 1,000세대 이상 공동주택 3개 단지 이상 입주컨설팅 · 입주박람회 수행 실적
 &nbsp;→&nbsp; 최근 3년만 <b>{len(recs)}개 단지 · {total:,}세대</b> &nbsp; <span class="ok">충족</span><br>
-3년 이전을 포함한 1,000세대 이상 주관 실적은 <b>9개 단지 · 18,261세대</b>입니다(별첨 2 실적 확약서).</div>
+3년 이전을 포함한 1,000세대 이상 주관 실적은 <b>10개 단지 · 19,563세대</b>입니다(별첨 2 실적 확약서).</div>
 <h2>2. 별첨 증빙</h2>
 <ol style="list-style:none;font-size:10pt;line-height:1.8">
 <li>별첨 1. NICE디앤비 CLIP 기업신용평가보고서 ‘연혁’ 발췌 — 1매 (보고서 전문은 제출서류 10)</li>
-<li>별첨 2. 대표이사 실적 확약서 — 1매 · 붙임: 입예협 공식 카페 주관사 공지 캡처 2매(입주민 닉네임 동·호수 가림)</li>
+<li>별첨 2. 대표이사 실적 확약서 — 1매 · 붙임: 입예협 공식 카페 주관사 공지 캡처 2매(입주민 닉네임 동·호수 가림) · BEXCO 공식 행사일정 캡처 1매</li>
 <li>입예협 요청 시 계약서 · 실적 확인서 · 정산 자료를 지체 없이 추가 제출합니다(공고 5항 13).</li></ol>
 <p class="body" style="font-size:10pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 6항 5) · 8항 4)에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign()}"""
     return doc("07 입주박람회 실적 및 공동구매 증빙자료", [body])
@@ -431,7 +431,7 @@ def doc12_cover():
     lst = " · ".join(f"{t}({i + 1}쪽)" for t, i in zip(CASE_PAGES, pages))
     body = f"""{head("제출서류 12", "입주박람회 성과 및 성공사례 자료")}
 <div class="box"><b>요약</b> &nbsp; 누적 주관·수임 <b>67개 단지 · 56,361세대</b>(전신 실적 포함, 2027년 입주 예정 단지까지) ·
-1,000세대 이상 주관 <b>9개 단지 · 18,261세대</b> · 최대 단일 단지 <b>레이카운티 4,470세대</b> · 사송 · 에코델타 신도시 연속 수임</div>
+1,000세대 이상 주관 <b>10개 단지 · 19,563세대</b> · 최대 단일 단지 <b>레이카운티 4,470세대</b> · 사송 · 에코델타 신도시 연속 수임</div>
 <h2>1. 입예협 카페 이벤트 · 공지 사례 (붙임 캡처)</h2>
 <table class="t"><thead><tr><th style="width:13%">날짜</th><th>글 제목 — 카페 화면 원문(작성자: 주관사 엣지컴퍼니)</th><th style="width:9%">댓글</th></tr></thead><tbody>{rows}</tbody></table>
 <p class="note">※ 단지별 입예협 공식 카페 화면 그대로입니다(붙임 1 · 2). 입주민 닉네임의 동 · 호수와 캡처 계정 닉네임은 개인정보 보호를 위해 가렸습니다.</p>
