@@ -123,6 +123,7 @@ CSS = r"""
 .ct2 .dn .v{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .ct2 .dn .v b{font-size:38px;font-weight:800;color:var(--gold);line-height:1}
 .ct2 .dn .v b small{font-size:18px}
+.ct2 .dn .v b.fr{font-size:31px}.ct2 .dn .v b.fr small{font-size:15px}
 .ct2 .dn .v span{font-size:12px;color:var(--sub);margin-top:4px}
 .ct2 h3{font-size:23px;font-weight:800;margin-bottom:4px}
 .ct2 .sb2{font-size:14.5px;color:var(--gold2);margin-bottom:16px}
@@ -332,9 +333,10 @@ def apply(B, D, take, sub):
     blocks = ""
     for nm, pct, cap, cx in city:
         r, cfr = 62, 2 * 3.14159 * 62
+        frc = ' class="fr"' if pct != int(pct) else ''
         donut = (f'<div class="dn"><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="{r}" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="14"/>'
                  f'<circle cx="75" cy="75" r="{r}" fill="none" stroke="#EBCB8F" stroke-width="14" stroke-linecap="round" '
-                 f'stroke-dasharray="{cfr * pct / 100:.1f} {cfr:.1f}"/></svg><div class="v"><b>{pct}<small>%</small></b><span>입주 세대</span></div></div>')
+                 f'stroke-dasharray="{cfr * pct / 100:.1f} {cfr:.1f}"/></svg><div class="v"><b{frc}>{pct}<small>%</small></b><span>입주 세대</span></div></div>')  # 소수점 값(89.6%)은 원 안에 들어가게 글자 축소(검증 10-14)
         bars = "".join(f'<div class="hb"><span>{_h.escape(a)}</span><div class="t"><i style="width:{100 * n / cmx:.1f}%"></i></div><b>{n:,}</b></div>' for a, n in cx)
         blocks += f'<div>{donut}<div><h3>{nm}</h3><div class="sb2">{cap}</div>{bars}</div></div>'
     k["body"] = f'<div class="nb"><div class="ct2">{blocks}</div></div>'
@@ -559,19 +561,20 @@ CSS2 = r"""
 .vnp .cp{font-size:11.5px;color:var(--mute)}
 /* 위임장 휴대폰 화면 */
 .phw{flex:1;min-height:0;border:1px solid rgba(200,168,106,.32);border-radius:12px;background:radial-gradient(circle at 50% 40%,#173356,#0b1a2d);position:relative;display:flex;align-items:center;justify-content:center}
-.phm{width:172px;border-radius:26px;border:2px solid var(--gold2);background:#0a1626;padding:20px 12px 12px;margin-bottom:14px;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.phw{flex-direction:column;gap:5px}
+.phm{width:172px;border-radius:26px;border:2px solid var(--gold2);background:#0a1626;padding:17px 12px 10px;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .phm:before{content:'';position:absolute;left:50%;top:8px;width:56px;height:6px;margin-left:-28px;border-radius:4px;background:rgba(255,255,255,.18)}
-.phm h6{font-size:12.5px;color:var(--gold);font-weight:800;text-align:center;margin-bottom:10px}
+.phm h6{font-size:12.5px;color:var(--gold);font-weight:800;text-align:center;margin-bottom:8px}
 .phm .f{border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--mute);margin-bottom:6px}
 .phm .ck{font-size:11px;color:var(--sub);margin:4px 0 8px}
 .phm .ck b{color:var(--gold)}
-.phm .sg{height:52px;border:1px dashed rgba(235,203,143,.6);border-radius:6px;position:relative}
+.phm .sg{height:38px;border:1px dashed rgba(235,203,143,.6);border-radius:6px;position:relative}
 .phm .sg svg{position:absolute;inset:6px 10px;width:calc(100% - 20px);height:calc(100% - 12px);fill:none;stroke:var(--gold);stroke-width:2;stroke-linecap:round}
-.phm .bt{margin-top:10px;border-radius:7px;background:var(--gold);color:#0d1e33;font-size:12px;font-weight:800;text-align:center;padding:6px 0}
+.phm .bt{margin-top:8px;border-radius:7px;background:var(--gold);color:#0d1e33;font-size:12px;font-weight:800;text-align:center;padding:6px 0}
 .phw .pg{position:absolute;right:14px;bottom:30px;width:150px;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:8px 10px;background:#0f2237;font-size:11px;color:var(--sub)}
 .phw .pg i{display:block;height:7px;border-radius:4px;background:rgba(255,255,255,.12);margin-top:6px;overflow:hidden}
 .phw .pg i:after{content:'';display:block;width:64%;height:100%;background:var(--gold2)}
-.phw .cap{position:absolute;left:12px;bottom:8px;font-size:11px;color:var(--mute)}
+.phw .cap{position:static;font-size:11px;color:var(--mute)}  /* 휴대폰 아래 흐름 배치 — 테두리와 겹침 방지(검증 10-14) */
 .flowx .st .cic{width:24px;height:24px;margin:0 0 6px}
 /* 타일 위 사진 */
 .tile .tim{margin:-16px -20px 10px;height:96px;overflow:hidden;border-radius:12px 12px 0 0;border-bottom:2px solid var(--gold2);position:relative}

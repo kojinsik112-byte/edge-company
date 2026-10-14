@@ -536,7 +536,7 @@ def apply(G):
     k = take("주요 클레임 품목과 [[보상 기준]]")[1]
     k["title"] = "주요 클레임 품목과 [[보상 기준]] (예시)"
     k["body"] = sub(k["body"], "건수: 과거 입주 시점 주요 클레임 접수 집계. 품목 구성은 단지 여건에 맞춰 조정합니다.",
-                    "예시 — 건수는 과거 단지 입주 시점 주요 클레임 접수 집계입니다. 품목·보상 기준은 단지 여건과 입예협 협의로 정합니다.")
+                    "예시 — 건수는 과거 단지 입주 시점 주요 클레임 접수 집계 · 보상 기준은 분당 퍼스트빌리지 적용 기준(안)으로 입예협 협의 후 확정합니다.")
 
     # A 입주민 특화서비스 — 상품권 사용 안내 · 정회원 혜택 상세
     def rc(tag, nm, v, items, hl=False):
@@ -674,9 +674,9 @@ def apply(G):
               + '</div><div class="fps">'
               + '<div class="tot"><i>현장 배치 인원 (안)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주 · 행사 규모에 따라 변동</span></div>'
               + '<ul>' + "".join(f'<li><span>{_h.escape(a)}</span><b>{n}명</b></li>' for a, n in staff) + '</ul>'
-              + '<div class="bdg"><span>행사(영업)배상책임보험 가입</span><span>119 연계 · 구급차 대비</span><span>전 인원 금색 명찰(직책·이름)</span><span>금·토·일 3일 운영</span></div>'
+              + '<div class="bdg"><span>배상책임보험 개최 전 가입(분당)</span><span>119 연계 · 구급차 대비</span><span>전 인원 금색 명찰(직책·이름)</span><span>금·토·일 3일 운영</span></div>'
               + '</div></div></div>'),
-        kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "인원은 행사 규모에 따라 변동 · 타 단지 운영 기준(안)")))
+        kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "인원 수만 타 단지 운영 기준(안) · 행사 규모에 따라 변동")))
     B.CSS += r"""
 .fpx{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;flex:1;min-height:0}
 .fp{display:grid;gap:8px;grid-template-columns:1fr 1.15fr 1.15fr 1fr;grid-template-rows:repeat(3,1fr) .82fr .62fr;

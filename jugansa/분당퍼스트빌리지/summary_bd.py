@@ -369,12 +369,12 @@ def emit_summary(G):
     p9 = f"""<div class="sx" style="grid-template-rows:1fr auto">
 <div class="sx" style="grid-template-columns:1.15fr 1fr;min-height:0">
 <div class="bx"><h3><i>RECORD</i>1,000세대 이상 주관 {rec_n}개 단지 · {rec_hh:,}세대<small>제안서 {pg('big')}</small></h3>
-<div class="hb">{hb}</div></div>
+<div class="hb">{hb}</div><div class="nt" style="margin-top:6px">날짜 = 입주 연월(제출서류 14 ⑤ 실적 확약서의 날짜는 주관 시기)</div></div>
 <div class="bx"><h3><i>PEOPLE</i>분당 퍼스트빌리지를 맡을 사람<small>제안서 {pg('people', 'org')}</small></h3>
 <div class="ppl">
 <div><i>대표이사</i><b>고진식</b><span>협약 최종 책임 · PT · 질의응답 참석(공고 6항) · 1,000세대 이상 주관 {rec_n}개 단지 총괄</span></div>
 <div><i>주관사업 총괄 본부장 · 전담 총괄</i><b>총괄 본부장</b><span><em>입주예정자협의회 회장 3년 역임</em> - 입주민 입장에서 협의회 운영을 직접 겪어 봤습니다 · 정례회의 · 박람회 · 사전점검 현장 참석</span></div>
-<div><i>핵심 운영인력</i><b>임직원 {G['_lead_n']}명</b><span>대표 · 본부장 + {stf}명 · 전담 PM 1명 지정(성명 · 연락처는 협약 시 제출)</span>
+<div><i>핵심 운영인력</i><b>임직원 {G['_lead_n']}명</b><span>대표 · 본부장 + {stf}명 - 이 중 단지 전담 PM 1명 지정(성명 · 연락처는 협약 시 제출)</span>
 <div class="pro">{pro}</div></div>
 </div></div>
 </div>
