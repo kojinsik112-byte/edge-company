@@ -1,0 +1,688 @@
+<title>박람회 행사장 비용</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600;800&display=swap">
+<style>
+/* 손익계산기와 같은 네이비·골드 계열.
+   비용 색 3가지를 화면 전체에서 같은 뜻으로 쓴다: 대관료(대관일수) · 전기·냉난방(박람회일수) · 행사진행비 */
+:root{
+  --bg:#F3F1EC; --panel:#FFFFFF; --ink:#16202E; --sub:#5A6474; --line:#DDD7CB; --line2:#ECE7DD;
+  --navy:#0D1E33; --gold:#A8843F; --soft:#FBF6EA; --onnavy:#F3F1EC; --onutil:#1B1206; --gold-ink:#7E6128; --util-ink:#85560F;
+  --rent:#2B4A73; --util:#C98A2B; --prog:#8A9A86;
+  --good:#1F7A4D; --good-bg:#E3F2E9; --warn:#946000; --warn-bg:#FBF0D9; --bad:#B23A2E; --bad-bg:#F8E3E0;
+  --grid:rgba(13,30,51,.05);
+  --f-display:'Noto Serif KR',Georgia,serif; --f-body:'IBM Plex Sans KR','Malgun Gothic',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1522; --panel:#122135; --ink:#E9EDF3; --sub:#9AA6B6; --line:#24364E; --line2:#1B2C42;
+  --navy:#E9EDF3; --gold:#D8B26A; --soft:#1A2A3F; --onnavy:#0B1522; --gold-ink:#D8B26A; --util-ink:#E3B04F;
+  --rent:#7FA6D6; --util:#E3B04F; --prog:#9DB09A;
+  --good:#5CC48E; --good-bg:#12301F; --warn:#E3B04F; --warn-bg:#33270F; --bad:#F08074; --bad-bg:#3A1A17;
+  --grid:rgba(216,178,106,.06); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1522; --panel:#122135; --ink:#E9EDF3; --sub:#9AA6B6; --line:#24364E; --line2:#1B2C42;
+  --navy:#E9EDF3; --gold:#D8B26A; --soft:#1A2A3F; --onnavy:#0B1522; --gold-ink:#D8B26A; --util-ink:#E3B04F;
+  --rent:#7FA6D6; --util:#E3B04F; --prog:#9DB09A;
+  --good:#5CC48E; --good-bg:#12301F; --warn:#E3B04F; --warn-bg:#33270F; --bad:#F08074; --bad-bg:#3A1A17;
+  --grid:rgba(216,178,106,.06); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0;padding-inline:16px;padding-block:0 48px}
+.wrap{max-width:1200px;margin:0 auto}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* 머리: 전시장 부스 격자를 옅게 깐다 */
+.hd{position:relative;padding-block:26px 16px;margin-bottom:18px;border-bottom:2px solid var(--gold);display:flex;flex-wrap:wrap;gap:12px 24px;align-items:end;justify-content:space-between}
+.hd::before{content:"";position:absolute;inset:0 -16px;z-index:-1;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:30px 30px;mask-image:linear-gradient(to bottom,#000,transparent)}
+.eyebrow{font-size:12px;letter-spacing:.18em;color:var(--gold-ink);font-weight:700}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,34px);line-height:1.2;margin:4px 0 6px;color:var(--navy);text-wrap:balance}
+.hd p{margin:0;color:var(--sub);font-size:14px;max-width:62ch}
+.hd a{color:var(--gold-ink);font-weight:600;font-size:14px;text-decoration:none;border:1px solid var(--gold);border-radius:999px;padding:8px 16px;white-space:nowrap;background:var(--panel)}
+.hd a:hover{background:var(--soft)}
+
+/* 조건 */
+.ctl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:1147px){.ctl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.ctl{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.lab{font-size:12px;letter-spacing:.14em;color:var(--gold-ink);font-weight:700;margin:0}
+.sublab{font-size:12.5px;color:var(--sub);margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;line-height:1.3}
+.chips button:hover{border-color:var(--gold)}
+.chips button.on{background:var(--navy);color:var(--onnavy);border-color:var(--navy);font-weight:600}
+.chips button small{opacity:.65;margin-left:3px;font-size:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;border-right:1px solid var(--line);background:var(--panel);padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.25}
+.seg button:last-child{border-right:0}
+.seg button b{font-size:14.5px;font-weight:600}
+.seg button span{font-size:11.5px;color:var(--sub)}
+.seg button.on{background:var(--navy);color:var(--onnavy)}
+.seg button.on span{color:var(--onnavy);opacity:.75}
+
+.hvrow{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;padding-top:8px;border-top:1px dashed var(--line)}
+.sw{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sw span{font-size:13.5px;font-weight:600;margin-right:4px}
+.sw button{font-size:13.5px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer}
+.sw button.on{background:var(--util);border-color:var(--util);color:var(--onutil);font-weight:600}
+.sw button.on[data-v="0"]{background:var(--navy);border-color:var(--navy);color:var(--onnavy)}
+
+/* 일정: 스테퍼 + 날짜 띠 */
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.step{display:flex;flex-direction:column;gap:4px}
+.step label{font-size:13.5px;font-weight:600}
+.step label i{font-style:normal;display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.stp{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden;width:max-content;max-width:100%}
+.stp button{flex:none;width:32px;height:36px;border:0;background:var(--soft);cursor:pointer;font-size:18px;line-height:1}
+.stp button:disabled{opacity:.35;cursor:default}
+.stp output{min-width:46px;padding:0 2px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.days{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;margin-top:2px}
+.day{border:1px solid var(--line2);border-radius:8px;padding:5px 4px 6px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.day b{font-size:11.5px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day.show{background:var(--soft);border-color:var(--util)}
+.day i{display:block;height:5px;border-radius:3px}
+.day .r{background:var(--rent)}
+.day .u{background:var(--util)}
+.day .u.thin{background:repeating-linear-gradient(90deg,var(--util) 0 3px,transparent 3px 6px);opacity:.7}
+.leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--sub)}
+.leg span{display:inline-flex;align-items:center;gap:5px}
+.leg i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+.row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.num{display:flex;align-items:center;gap:6px}
+.num input{width:118px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);text-align:right;font-variant-numeric:tabular-nums}
+.num span{color:var(--sub);font-size:13.5px}
+.hint{color:var(--sub);font-size:12.5px;line-height:1.45;margin:0}
+.big2{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--navy)}
+.big2 small{font-size:13px;font-weight:500;color:var(--sub);margin-left:3px}
+.slwrap{position:relative;padding-top:20px}
+.mark{position:absolute;top:0;transform:translateX(-50%);font-size:11px;color:var(--util-ink);font-weight:600;white-space:nowrap;pointer-events:none}
+.mark::after{content:"";position:absolute;left:50%;top:15px;width:2px;height:12px;background:var(--util);transform:translateX(-50%)}
+.mark.l{transform:none}.mark.l::after{left:0;transform:none}
+.mark.r{transform:translateX(-100%)}.mark.r::after{left:100%}
+input[type=range]{width:100%;accent-color:var(--util);margin:6px 0 0}
+.rng{position:relative;height:16px;font-size:11.5px;color:var(--sub);font-variant-numeric:tabular-nums}
+.rng span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.rng span:first-child{transform:none}.rng span:last-child{transform:translateX(-100%)}
+select{font-size:14px;padding:7px 8px;border:1px solid var(--line);border-radius:9px;background:var(--bg);max-width:100%}
+
+/* 요약 타일 */
+.ins{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin:16px 0}
+.tile{border-left:3px solid var(--gold);padding:4px 0 4px 12px;min-width:0}
+.tile .lab{letter-spacing:.1em}
+.tile .v{font-family:var(--f-display);font-size:22px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.3}
+.tile .v small{font-family:var(--f-body);font-size:13px;font-weight:500;color:var(--sub)}
+.tile p{margin:2px 0 0;font-size:13px;color:var(--sub)}
+
+/* 목록 + 결과 */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,370px);gap:16px;align-items:start}
+.list{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:0}
+.lh,.vr{display:grid;grid-template-columns:minmax(0,1.9fr) 80px 86px minmax(110px,1.1fr) 68px;gap:10px;align-items:start;padding:10px 14px}
+.lh{font-size:11.5px;letter-spacing:.06em;color:var(--sub);font-weight:600;border-bottom:1px solid var(--line);background:var(--panel)}
+.lh>span,.vr .n{text-align:right}
+.lh>span:first-child{text-align:left}
+ol{list-style:none;margin:0;padding:0}
+.vr{width:100%;border:0;border-bottom:1px solid var(--line2);background:transparent;text-align:left;cursor:pointer;font-variant-numeric:tabular-nums}
+li:last-child .vr{border-bottom:0}
+.vr:hover{background:var(--soft)}
+.vr.sel{background:var(--soft);box-shadow:inset 3px 0 0 var(--gold)}
+.vr .nm{font-weight:600;display:block}
+.vr .nm em{font-style:normal;font-weight:400;color:var(--sub)}
+.sz{display:block;font-size:12.5px;color:var(--sub);margin-top:1px;font-variant-numeric:tabular-nums}
+.sz b{color:var(--ink);font-weight:600}
+.sz.small b{color:var(--warn)}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.tg{font-size:11px;padding:1px 6px;border-radius:5px;border:1px solid var(--line);color:var(--sub);white-space:nowrap;line-height:1.5}
+.tg.w{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.tg.b{background:var(--bad-bg);color:var(--bad);border-color:transparent}
+.tg.g{background:var(--good-bg);color:var(--good);border-color:transparent}
+.tg.x{border-color:var(--gold);color:var(--gold-ink)}
+.vr .n small{display:block;font-size:11px;color:var(--sub)}
+.ops{font-weight:700;font-size:15.5px;display:block;text-align:right}
+.bar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--line2);margin-top:5px}
+.bar i{display:block;height:100%}
+.bar .r{background:var(--rent)}.bar .u{background:var(--util)}.bar .p{background:var(--prog)}
+.dn{color:var(--good);font-weight:600}.up{color:var(--bad);font-weight:600}.mut{color:var(--sub)}
+.empty{padding:18px;color:var(--sub)}
+.k-m{display:none}
+@media (max-width:720px){
+  .lh{display:none}
+  .vr{grid-template-columns:1fr 1fr 1fr;gap:4px 10px}
+  .vr .c-name{grid-column:1/-1}
+  .vr .c-ops{grid-column:1/-1;order:-1}
+  .vr .n{text-align:left}
+  .k-m{display:block;font-size:11px;color:var(--sub)}
+  .ops{text-align:left}
+}
+
+.res{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+@media (max-width:960px){.grid{grid-template-columns:minmax(0,1fr)}.res{order:-1;position:static}}
+.res h2{font-family:var(--f-display);font-size:21px;line-height:1.3;margin:0;color:var(--navy);text-wrap:balance}
+.meta{color:var(--sub);font-size:13px;margin:0}
+.bigv{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.bigv output{font-family:var(--f-display);font-size:44px;font-weight:800;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;min-width:0}
+.bigv span{color:var(--sub)}
+.bigv .na{font-family:var(--f-body);font-size:20px;color:var(--bad);font-weight:600}
+.cp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{font-size:14px;font-weight:600;padding:8px 16px;border-radius:9px;border:1px solid var(--navy);background:var(--navy);color:var(--onnavy);cursor:pointer}
+.btn.ghost{background:var(--panel);color:var(--ink);border-color:var(--line);font-weight:500;padding:7px 12px}
+.cp input{font-size:14px;width:96px;padding:6px 8px;border:1px solid var(--gold);border-radius:8px;background:var(--soft)}
+.cpmsg{font-size:12.5px;color:var(--good)}
+.cbar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--line2)}
+.cbar i{display:block;height:100%}
+.cbar .r{background:var(--rent)}.cbar .u{background:var(--util)}.cbar .p{background:var(--prog)}
+dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr) auto;font-size:13.5px;font-variant-numeric:tabular-nums}
+dt,dd{padding:5px 0;border-bottom:1px dashed var(--line);margin:0}
+dd{text-align:right;padding-left:10px;white-space:nowrap}
+dt small{display:block;font-size:11.5px;color:var(--sub);line-height:1.35}
+dt.grp,dd.grp{border-bottom:1px solid var(--line);padding-top:10px;font-weight:700}
+dt.grp i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:0}
+dt.s,dd.s{font-weight:600}
+dt.t,dd.t{font-weight:800;font-size:15px;color:var(--navy);border-bottom:0;padding-top:9px}
+.box{padding:9px 11px;border-radius:9px;font-size:13px;background:var(--bg);margin:0}
+.box.w{background:var(--warn-bg);color:var(--warn)}
+.seas{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seas div{border:1px solid var(--line);border-radius:9px;padding:6px 8px;font-size:12px;color:var(--sub);min-width:0}
+.seas div b{display:block;font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+.seas div.on{border-color:var(--gold);background:var(--soft)}
+.ovr{display:flex;flex-direction:column;gap:6px}
+.ovr label{font-size:13px}
+.ovr div{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ovr input{width:120px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);text-align:right;font-variant-numeric:tabular-nums}
+.info{font-size:13px;color:var(--sub);display:grid;gap:3px}
+.info b{color:var(--ink);font-weight:600;user-select:all}
+details{font-size:12.5px;color:var(--sub)}
+details summary{cursor:pointer;color:var(--ink);font-size:13px}
+details p{margin:6px 0 0;line-height:1.55}
+.foot{margin-top:18px;color:var(--sub);font-size:12.5px;line-height:1.65;max-width:84ch}
+.foot b{color:var(--ink)}
+
+/* 접근성·세부 */
+.seg button:focus-visible,.stp button:focus-visible,.vr:focus-visible{outline-offset:-3px}
+.vr.sel .bar{background:var(--line)}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+@media (min-width:961px){.res{max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain}}
+@media (max-width:720px){input,select{font-size:16px}.vr.q .n:not(.c-ops){display:none}}
+.step .sl{font-size:13.5px;font-weight:600}
+.step .sl i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.vat{font-size:13px;color:var(--sub);margin:0}
+.vat b{color:var(--ink);font-variant-numeric:tabular-nums}
+.lh .two{display:block;font-size:10.5px;letter-spacing:0;color:var(--gold-ink)}
+@media (min-width:721px){.k-m{display:block!important;position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+</style>
+
+<div class="wrap" lang="ko">
+<header class="hd">
+  <div>
+    <p class="eyebrow">입주박람회 주관 · 운영비 산출</p>
+    <h1>박람회 행사장 비용</h1>
+    <p>2026.10.13 확인 · <span id="nHall"></span>개 홀(<span id="nQuote"></span>곳은 견적 필요, 벡스코 제2전시장 포함). 대관일수와 박람회일수를 따로 넣어 대관료와 전기·냉난방을 나눠 계산합니다. 금액은 손익계산기와 같은 <b>부가세 별도</b>, 단위 만원.</p>
+  </div>
+  <a href="https://claude.ai/artifact/XG3TwmscizNQJCj6mfZbfQ" target="_blank" rel="noopener">손익계산기 열기 ↗</a>
+</header>
+
+<section class="ctl" aria-label="조건">
+  <div class="card">
+    <p class="lab">지역</p>
+    <div class="chips" id="regs"></div>
+    <p class="lab" style="margin-top:4px">계절 · 요율</p>
+    <div class="seg" id="sea">
+      <button type="button" data-v="jan"><b>난방</b><span>1월 요율</span></button>
+      <button type="button" data-v="aug"><b>냉방</b><span>8월 요율</span></button>
+      <button type="button" data-v="spr"><b>봄·가을</b><span>정상가·할증</span></button>
+    </div>
+    <div class="sw" id="hvac" role="group" aria-label="냉난방">
+      <span>냉난방</span>
+      <button type="button" data-v="1">사용</button><button type="button" data-v="0">사용안함</button>
+    </div>
+    <p class="hint" id="seaHint"></p>
+  </div>
+
+  <div class="card">
+    <p class="lab">일정</p>
+    <div class="steps">
+      <div class="step"><span class="sl" id="lbRent"><i style="background:var(--rent)"></i>대관일수</span>
+        <div class="stp" role="group" aria-labelledby="lbRent"><button type="button" data-k="rent" data-d="-1" aria-label="대관일수 줄이기">−</button><output id="rentV" aria-live="polite"></output><button type="button" data-k="rent" data-d="1" aria-label="대관일수 늘리기">+</button></div></div>
+      <div class="step"><span class="sl" id="lbShow"><i style="background:var(--util)"></i>박람회일수</span>
+        <div class="stp" role="group" aria-labelledby="lbShow"><button type="button" data-k="show" data-d="-1" aria-label="박람회일수 줄이기">−</button><output id="showV" aria-live="polite"></output><button type="button" data-k="show" data-d="1" aria-label="박람회일수 늘리기">+</button></div></div>
+    </div>
+    <div class="days" id="days" aria-hidden="true"></div>
+    <div class="leg"><span><i style="background:var(--rent)"></i>대관일수 → 대관료(임대료·관리비)</span><span><i style="background:var(--util)"></i>박람회일수 → 전기·냉난방</span></div>
+    <div class="hvrow">
+      <div class="step"><span class="sl" id="lbHrs">냉난방 하루 가동</span>
+        <div class="stp" role="group" aria-labelledby="lbHrs"><button type="button" data-k="hrs" data-d="-1" aria-label="가동시간 줄이기">−</button><output id="hrsV" aria-live="polite"></output><button type="button" data-k="hrs" data-d="1" aria-label="가동시간 늘리기">+</button></div></div>
+      <div class="sw" id="setupHv" role="group" aria-label="설치일 냉난방"><span>설치일 냉난방</span><button type="button" data-v="1">켬</button><button type="button" data-v="0">끔</button></div>
+    </div>
+    <p class="hint" id="hvHint"></p>
+  </div>
+
+  <div class="card">
+    <p class="lab"><label for="hh">세대수</label></p>
+    <div class="num"><input id="hh" type="number" min="0" max="20000" step="50" inputmode="numeric"><span>세대</span></div>
+    <div class="chips" id="cnt"><button type="button" data-v="auto">자동</button><button type="button" data-v="1">대관 1곳</button><button type="button" data-v="2">대관 2곳</button></div>
+    <p class="hint" id="cntHint"></p>
+    <div id="mulBox"><label class="hint" for="mul">2곳일 때 두 배로 잡을 항목</label>
+      <select id="mul"><option value="rent">대관료만</option><option value="ru">대관료 + 전기·냉난방</option><option value="all">대관료 + 전기·냉난방 + 행사진행비</option></select></div>
+  </div>
+
+  <div class="card">
+    <p class="lab"><label for="util">전기·냉난방 · 박람회 3일 합계</label></p>
+    <div class="big2" id="utilV"></div>
+    <div class="slwrap"><span class="mark" id="mark" aria-hidden="true"></span>
+      <input id="util" type="range" min="500" max="2000" step="50" aria-describedby="utilHint"></div>
+    <div class="rng" aria-hidden="true"><span style="left:0">500</span><span style="left:calc(8px + 33.333% - 5.333px)">1,000</span><span style="left:calc(8px + 66.667% - 10.667px)">1,500</span><span style="left:100%">2,000</span></div>
+    <p class="hint" id="utilHint"></p>
+    <div class="hvrow">
+      <div class="step"><span class="sl" id="lbElx">전기 배수 · 업체 사용분</span>
+        <div class="stp" role="group" aria-labelledby="lbElx"><button type="button" data-k="elx" data-d="-0.5" aria-label="전기 배수 줄이기">−</button><output id="elxV" aria-live="polite"></output><button type="button" data-k="elx" data-d="0.5" aria-label="전기 배수 늘리기">+</button></div></div>
+      <button type="button" class="btn ghost" id="applyCalc">고른 홀 계산값으로 맞추기</button>
+    </div>
+    <p class="lab" style="margin-top:2px"><label for="prog">행사진행비</label></p>
+    <div class="num"><input id="prog" type="number" min="0" max="100000" step="100" inputmode="numeric"><span>만원</span></div>
+  </div>
+</section>
+
+<section class="ins" id="ins" aria-label="요약"></section>
+
+<div class="grid">
+  <div class="list">
+    <div class="lh" aria-hidden="true"><span>행사장 · 홀 · 대관 면적</span><span id="hRent">대관료</span><span id="hUtil">전기·냉난방</span><span id="hOps">운영비</span><span>기준 대비</span></div>
+    <ol id="vl" aria-label="행사장별 운영비 (적은 순)"></ol>
+  </div>
+  <aside class="card res" id="res" aria-label="선택한 행사장 운영비"></aside>
+  <p class="sr" id="live" aria-live="polite"></p>
+</div>
+
+<p class="foot">
+<b>계산식</b> 운영비 = 대관료 + 전기·냉난방 + 행사진행비 (모두 부가세 별도 — 손익계산기와 같은 기준). 대관료 = (임대료 + 기본관리비) × 대관일수. 전기·냉난방 = 슬라이더(박람회 3일 기준) × 박람회일수 ÷ 3. 냉난방 '사용안함'이면 그 홀·그 계절의 냉난방 계산액을 뺍니다(단가로 계산한 전기 아래로는 내리지 않음). 2곳이면 고른 항목만 두 배. 표시 금액은 만원 단위로 반올림한 뒤 더합니다.<br>
+<b>단가 계산</b> 냉난방 = ㎡ × 하루 가동시간 단가(홀별 요금 규정: 7시간 기본+추가시간 · 시간 비례 · ㎡·시간) × (박람회일 + 설치일 선택). 기본은 본부장 기준 행사일 평균 12시간·설치일 제외(엑셀 원본은 8시간). 예: 3일 행사 12시간 기준 BEXCO 2A 8월 약 700만(설치일 포함 4일이면 933만), 제2전시장 4홀 2칸 1월 358만·8월 525만(부가세 별도). 18시 이후 가산 등 시설별 할증은 빠져 있어 실제는 더 나올 수 있습니다. 전기 = (행사 kW × 8시간 × 박람회일수 + 설치 kW × (설치일 × 8시간 + 철거 2시간)) × kWh 단가 × 업체 사용 배수(본부장 기준 3배 — 참가업체가 부스에서 쓰는 전기), kW는 세대 규모별(800 미만 50/20 · 1,500 미만 80/30 · 2,500 미만 120/40 · 그 이상 180/60). 가동 8시간·설치일 끔·전기 배수 1이면 1월·8월 금액이 엑셀 '행사장 비용비교'(VAT 포함 소계 ÷ 1.1)와 같습니다.<br>
+<b>봄·가을</b> 1·8월 할인이 빠진 정상 임대료에 시설이 밝힌 할증을 더한 보수적 금액입니다(SETEC 3~5·10~11월 +20%, aT 3~5·10~11월 +10%, 김대중 10·11월 +10%, UECO 1/4홀 +20%, DCC 3개 홀 이상 −5%). 할증이 없는 달(6·9월, 김대중 4·5월 등)은 실제가 더 낮습니다. 전기·냉난방 단가는 1월·8월 중 낮은 쪽.<br>
+<b>기준표</b> 손익계산기의 본부장 운영비 기준(경상 5,000/9,000 · 충청·전라 6,000/1억 · 수도권 8,000/1.2억, 1곳/2곳, 부가세 별도). 강원·제주는 기준 없음. 권장 면적은 엑셀 '규모별 예산'의 부스 1개당 30㎡. 견적 입력값과 조건은 이 브라우저에만 저장됩니다.<br>
+<b>벡스코 제2전시장</b> 1층 4홀 6칸(4A 1,584·4B 1,824·4C 1,488·4D 1,824·4E 1,488·4F 1,728㎡), 3층 5홀 5칸(5A 2,016·5B 1,776·5C 1,920·5D 2,160·5E 2,064㎡). 붙은 2칸은 1층 3,216~3,408㎡(973~1,031평), 3층 3,696~4,224㎡. 임대 단가는 공개 자료가 없어 제1전시장 2026 요율(2,050원/㎡·일)을 가정했습니다 — 실제 견적이나 사용 내역서로 바꿔 넣으세요. 벡스코는 전기·냉난방·원상복구·시간외 사용을 예치금(㎡×250원×임대일수)으로 받고 행사 후 실비정산합니다.<br>
+<b>전기공사</b> 이 도구의 전기는 사용량(kWh)만입니다. 간선·부스 배선 공사는 빠져 있습니다(참고: 벡스코 개최 전시회들이 참가업체에 받는 부스 전기는 kW당 4~5만원 수준).<br>
+<b>코엑스</b> 비용 비교용으로만 두고 제안서 행사장 후보에서는 뺍니다.
+</p>
+</div>
+
+<script>
+/* 홀별 원가 모델 — 엑셀 '행사장 비용비교' 수식과 같은 구조(공급가, 원).
+   임대료·기본관리비 = 대관일수 비례
+   전력 = (행사 kW × 8h × 박람회일수 + 설치 kW × (설치일 × 8h + 철거 2h)) × 업체 사용 배수(elx)   ← elx=1이면 엑셀과 동일
+   냉난방 = ㎡ × (하루 가동시간 h의 ㎡ 단가) × 냉난방 일수(박람회일 + 설치일 선택)   ← h=8, 설치일 제외면 엑셀과 동일
+   하루 h시간 ㎡ 단가는 홀별 요금 규정대로: 7+1(7시간 기본 + 추가 1시간 단가) · 7비례 · 8h비례 · 2h비례 · hour(㎡·시간)
+   sea: 'jan' 난방(1월 요율) · 'aug' 냉방(8월 요율) · 'spr' 봄·가을(1·8월 할인 없는 정상가 + 시설이 밝힌 할증, 전기·냉난방은 1월·8월 중 낮은 쪽) */
+const KW_BANDS=[[800,50,20],[1500,80,30],[2500,120,40],[Infinity,180,60]];
+function bandKW(hh){for(const [lim,kw,skw] of KW_BANDS)if(hh<lim)return {kw,skw};}
+function kwhOf(p){return p.kw*p.show*8+p.skw*(8*Math.max(0,p.rent-p.show)+2);}
+function hvPerSqm(rule,K,M,h){
+  if(K==null)return null;
+  return rule==='7+1'?K+M*Math.max(0,h-7):rule==='7비례'?K*h/7:rule==='8h'?K*h/8:rule==='2h'?K*h/2:rule==='hour'?K*h:null;
+}
+function unitOf(x,sea){
+  if(sea!=='spr')return x[sea];
+  const j=x.jan,a=x.aug,mn=(p,q)=>p==null||q==null?null:Math.min(p,q);
+  const hv=j.J==null||a.J==null?{J:null,K:null,M:0}:(j.J<=a.J?j:a);
+  return {E:j.E,G:x.goff,H:j.H,I:mn(j.I,a.I),J:hv.J,K:hv.K,M:hv.M};
+}
+function hvDays(p){return p.show+(p.setupHv?Math.max(0,p.rent-p.show):0);}
+function costOf(x,sea,p){
+  const u=unitOf(x,sea),A=x.a,h=p.hrs??8;
+  const rentDay=u.E==null||u.G==null?null:x.rt==='hall'?u.E*u.G:x.rt==='sqm'?A*u.E*u.G:u.E*u.G/4;
+  const per=hvPerSqm(x.hr,u.K,u.M,h);
+  return {
+    rent:rentDay==null?null:rentDay*p.rent,
+    mng:u.H==null?null:A*u.H*p.rent,
+    el:u.I==null?null:u.I*kwhOf(p)*(p.elx??1),  /* elx: 참가업체 사용분 배수(기본 1 = 엑셀과 동일) */
+    hv:per==null?null:A*per*hvDays(p),
+    kwh:kwhOf(p),hvPer:per,hvDays:hvDays(p)
+  };
+}
+if(typeof module!=='undefined')module.exports={bandKW,kwhOf,hvPerSqm,unitOf,hvDays,costOf};
+
+const D=[{"id":"COEX|B2","v":"COEX","h":"B2","a":3645,"reg":"수도권","rt":"hall","jan":{"E":11680000,"G":1,"H":0,"I":202,"J":365,"K":315,"M":50},"aug":{"E":11680000,"G":1,"H":0,"I":232,"J":461,"K":398,"M":63},"unit":"계산 가능","st":"2026 명시","tel":"02-6000-0114","dep":"B2 전시회 220만원 표기; 적용 일수·구분 계약 확인","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"B2 3,645㎡. 1일 08~20시. 냉난방은 7시간 기본요금에 1시간 추가. 전기는 월별 단가 적용. 관리비: https://business.coex.co.kr/exhibition-hall/rental-cost/administration-cost/","combo":false,"noprop":true,"goff":1,"goffNote":"계절 할인·할증 표기 없음","hr":"7+1"},{"id":"SETEC|2관","v":"SETEC","h":"2관","a":1684,"reg":"수도권","rt":"sqm","jan":{"E":1150,"G":1,"H":250,"I":138,"J":184,"K":161,"M":0},"aug":{"E":1150,"G":1,"H":250,"I":158,"J":243.42857142857142,"K":213,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"02-2187-4600","dep":"할인 전 기본 임대료의 55%","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"임대료 1,150원/㎡·일, 기본관리비 250원/㎡·일. 7월·12월 20% 할인, 3~5·10~11월 20% 할증. 8월은 할인 없음. 냉난방 7시간 기준을 8/7로 환산. 관리비 https://www.setec.or.kr/front/rent/rent03.do","combo":false,"noprop":false,"goff":1.2,"goffNote":"3~5·10~11월 20% 할증","hr":"7비례"},{"id":"SETEC|1관","v":"SETEC","h":"1관","a":3130,"reg":"수도권","rt":"sqm","jan":{"E":1150,"G":1,"H":250,"I":138,"J":184,"K":161,"M":0},"aug":{"E":1150,"G":1,"H":250,"I":158,"J":243.42857142857142,"K":213,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"02-2187-4600","dep":"할인 전 기본 임대료의 55%","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"임대료 1,150원/㎡·일, 기본관리비 250원/㎡·일. 7월·12월 20% 할인, 3~5·10~11월 20% 할증. 8월은 할인 없음. 냉난방 7시간 기준을 8/7로 환산. 관리비 https://www.setec.or.kr/front/rent/rent03.do","combo":false,"noprop":false,"goff":1.2,"goffNote":"3~5·10~11월 20% 할증","hr":"7비례"},{"id":"aT센터|제1전시장","v":"aT센터","h":"제1전시장","a":3793,"reg":"수도권","rt":"sqm","jan":{"E":2100,"G":0.9,"H":null,"I":134,"J":225,"K":225,"M":0},"aug":{"E":2100,"G":1,"H":null,"I":152,"J":275,"K":275,"M":0},"unit":"일부 견적","st":"현재 게시 요금 / 일부 미확인","tel":"02-6300-1402","dep":"기본 임대료 60% 기준 게시; VAT 기준 확인","miss":"기본관리비·공조료 미산입","note":"1전시장 3,793㎡, 2,100원/㎡·일. 1·2·7·12월 10% 할인. 3~5·10~11월 10% 할증. 기본관리비의 현재 단가와 공조료 283,176원/8시간의 냉난방 중복 여부 미확인. 2027 관리비 변경 공지 존재; 미래 행사 재견적 필요.","combo":false,"noprop":false,"goff":1.1,"goffNote":"3~5·10~11월 10% 할증","hr":"8h"},{"id":"KINTEX|최소 홀 예시","v":"KINTEX","h":"최소 홀 예시","a":5580,"reg":"수도권","rt":"sqm","jan":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"aug":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"unit":"최신 견적","st":"2025 요금만 확인","tel":"031-810-8114","dep":"2025 자료: 기본 임대료 15%, 동하절기 20%; 최신 확인","miss":"2025 단가를 2026 값으로 사용하지 않음","note":"공식 확보본은 2025년 2,190원/㎡·일(전시장), 6홀 2,360원. 2026 확정액으로 사용하지 않음. 홀별 면적·제1전시장 할증·계절 할증을 행사일 기준 재견적. · 2026 공지: 전시홀 임대료 2,250원/㎡(6홀 2,420원), 1전시장 1~5홀 10% 할증 — 관리비·전기·냉난방은 미확인이라 견적 필요로 둠.","combo":false,"noprop":false,"goff":null,"goffNote":null,"hr":"8h"},{"id":"수원컨벤션센터|1홀","v":"수원컨벤션센터","h":"1홀","a":2095,"reg":"수도권","rt":"sqm","jan":{"E":1550,"G":1,"H":0,"I":182,"J":152,"K":38,"M":0},"aug":{"E":1550,"G":1,"H":0,"I":209,"J":152,"K":38,"M":0},"unit":"조건 가정","st":"현재 게시 요금 / 단위 확인","tel":"031-303-6000","dep":"임대료의 10%","miss":"할인 미적용; 냉난방 ㎡ 단위·관리비 VAT 확인","note":"1홀 2,095㎡, A홀 4,177㎡, 1,550원/㎡·일. 비수기 20% 이내 할인은 자동 적용하지 않음. 전기 1월 182원, 8월 209원/kWh. 냉난방 38원/2시간은 ㎡당으로 가정하여 산정; 청구 단위 확인. 관리비 VAT 별도 가정.","combo":false,"noprop":false,"goff":1,"goffNote":"비수기 할인 미적용 기준","hr":"2h"},{"id":"수원컨벤션센터|A홀","v":"수원컨벤션센터","h":"A홀","a":4177,"reg":"수도권","rt":"sqm","jan":{"E":1550,"G":1,"H":0,"I":182,"J":152,"K":38,"M":0},"aug":{"E":1550,"G":1,"H":0,"I":209,"J":152,"K":38,"M":0},"unit":"조건 가정","st":"현재 게시 요금 / 단위 확인","tel":"031-303-6000","dep":"임대료의 10%","miss":"할인 미적용; 냉난방 ㎡ 단위·관리비 VAT 확인","note":"1홀 2,095㎡, A홀 4,177㎡, 1,550원/㎡·일. 비수기 20% 이내 할인은 자동 적용하지 않음. 전기 1월 182원, 8월 209원/kWh. 냉난방 38원/2시간은 ㎡당으로 가정하여 산정; 청구 단위 확인. 관리비 VAT 별도 가정.","combo":false,"noprop":false,"goff":1,"goffNote":"비수기 할인 미적용 기준","hr":"2h"},{"id":"수원메쎄|2홀","v":"수원메쎄","h":"2홀","a":4430,"reg":"수도권","rt":"sqm","jan":{"E":2000,"G":0.8,"H":0,"I":261,"J":null,"K":null,"M":0},"aug":{"E":2000,"G":0.9,"H":0,"I":261,"J":null,"K":null,"M":0},"unit":"일부 견적","st":"게시 가이드 / 냉난방 단위 충돌","tel":"031-304-9321","dep":"정상 임대료의 15%","miss":"냉난방 요금표 단위 충돌로 미산입","note":"2홀 4,430㎡, 2,000원/㎡·일. 1월 20%, 8월 10% 할인. 전기 261원/kWh. 냉난방 표에 7시간/일과 1월 45·8월 57원이 함께 표기되어 시간단가인지 확인 필요. 4,650㎡ 이하 1홀 경비는 설치·철거 4명, 행사 5명 기준 안내.","combo":false,"noprop":false,"goff":1,"goffNote":"1월 20%·8월 10% 할인이 빠진 정상가","hr":"8h"},{"id":"송도컨벤시아|1홀","v":"송도컨벤시아","h":"1홀","a":4208,"reg":"수도권","rt":"sqm","jan":{"E":null,"G":1,"H":0,"I":195,"J":240,"K":210,"M":0},"aug":{"E":null,"G":1,"H":0,"I":220,"J":352,"K":308,"M":0},"unit":"일부 견적","st":"공식 운영규정 / 임대료 미확인","tel":"032-210-1021~23","dep":"정상 임대료 15%, 1·2·7·8·12월 25% 이상","miss":"임대료 미산입; 냉난방 8/7 가정","note":"1홀 4,208㎡ 기준. 전기 1월 195·8월 220원/kWh. 냉난방 7시간 1월 210·8월 308원/㎡. 8시간은 8/7 비례 가정으로 표시; 추가시간 단가 확인 필요. 일부 임대라도 냉난방은 홀 전체 면적 부과.","combo":false,"noprop":false,"goff":null,"goffNote":null,"hr":"7비례"},{"id":"DCC 제2전시장|2홀","v":"DCC 제2전시장","h":"2홀","a":2524,"reg":"충청","rt":"sqm","jan":{"E":1350,"G":0.8,"H":0,"I":149,"J":143,"K":143,"M":0},"aug":{"E":1350,"G":0.8,"H":0,"I":171,"J":209,"K":209,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"042-250-1113","dep":"기본 임대료의 40% (관리20+보수10+기타10); 정산·반환 대상","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"2홀 2,524㎡, 1,350원/㎡·일. 1·2·7·8·12월 20% 할인. 3개 홀 이상 5% 할인과 계절 할인 중 큰 할인 적용. 냉난방 8시간 기준. 제1전시장 일부 임대 할증을 제2전시장에 적용하지 않음.","combo":false,"noprop":false,"goff":1,"goffNote":"1·2·7·8·12월 20% 할인이 빠진 정상가","hr":"8h"},{"id":"청주 OSCO|1개 홀","v":"청주 OSCO","h":"1개 홀","a":3344,"reg":"충청","rt":"sqm","jan":{"E":1350,"G":0.8,"H":0,"I":295,"J":162,"K":162,"M":0},"aug":{"E":1350,"G":0.8,"H":0,"I":299,"J":164,"K":164,"M":0},"unit":"세금 가정","st":"현재 게시 요금 / 세금 확인","tel":"043-230-4030","dep":"총 임대료의 30%","miss":"전기·냉난방 VAT 별도 가정","note":"1개 홀 3,344㎡, 1,350원/㎡·일. 1·2·7·8·12월 20% 할인. 전기 1월 295·8월 299원/kWh. 난방 162·냉방 164원/㎡·8시간. 관리비 VAT 별도 가정. 관리비 https://osco.or.kr/lease/cost/","combo":false,"noprop":false,"goff":1,"goffNote":"1·2·7·8·12월 20% 할인이 빠진 정상가","hr":"8h"},{"id":"정부세종컨벤션센터|기획전시장","v":"정부세종컨벤션센터","h":"기획전시장","a":2328,"reg":"충청","rt":"sqm","jan":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"aug":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"unit":"최신 견적","st":"현재 상세 요금 확보 불가","tel":"044-330-1473","dep":"견적 확인","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"기획전시장 2,328㎡는 종전 가이드 기준. 민간 입주박람회·판매행사 허용 여부, 주말 4일 연속 대관, 임대료·전기·냉난방 모두 담당 견적 필요.","combo":false,"noprop":false,"goff":null,"goffNote":null,"hr":"8h"},{"id":"천안 유관순체육관|주경기장","v":"천안 유관순체육관","h":"주경기장","a":1997,"reg":"충청","rt":"sqm","jan":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"aug":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"unit":"최신 견적","st":"시설 확인 / 요금 미확인","tel":"041-529-5000","dep":"견적 확인","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"주경기장 바닥 1,997㎡. 부대 배드민턴장 요금과 구분. 관람석 수를 부스 수용규모로 사용하지 않음. 상업행사 허가, 마루 보호, 전력 증설, 냉난방·주말 요율 확인.","combo":false,"noprop":false,"goff":null,"goffNote":null,"hr":"8h"},{"id":"춘천 호반체육관|주경기장","v":"춘천 호반체육관","h":"주경기장","a":1893,"reg":"강원","rt":"fixed4","jan":{"E":1480000,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"aug":{"E":1480000,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"unit":"일부 견적","st":"비체육 기본료 / 부대비 미확인","tel":"033-263-7304","dep":"시설별 보증·예치금 확인","miss":"목금토일 8시간 기본료만; VAT 10% 예산 가정","note":"비체육 주간 4시간 평일 15만원·토일공휴일 22만원. 목 설치+금토일 행사, 하루 8시간 가정 시 4일 148만원. 설치·철거 포함 시간 및 상업행사 추가료·VAT·전기·냉난방 확인. 1,893㎡, 월요일 휴관.","combo":false,"noprop":false,"goff":1,"goffNote":"4일 고정 기본료","hr":"8h"},{"id":"BEXCO|제1전시장 2A","v":"BEXCO","h":"제1전시장 2A","a":4418,"reg":"경상","rt":"sqm","jan":{"E":2050,"G":0.8,"H":0,"I":232,"J":240,"K":30,"M":0},"aug":{"E":2050,"G":0.8,"H":0,"I":259,"J":352,"K":44,"M":0},"unit":"계산 가능","st":"2026 명시","tel":"051-740-7300","dep":"㎡×250원×임대일수(벡스코 온라인 견적 안내) · 전기·냉난방·원상복구·시간외 사용은 행사 후 실비정산","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"2A 4,418㎡, 2,050원/㎡·일. 1·2·7·8·12월 20% 할인. 냉난방은 ㎡·시간당(1월30·8월44), 09~18시 요금. 18시 이후 별도 가산이므로 행사 10~18시 가정. 폐기물 별도. · 1·2·7·8·12월 20% 할인과 냉난방 시간 단가는 엑셀 출처(공개 자료로 재확인 못 함). 2026 임대 단가 2,050원은 2025 벡스코 임대 공고 역산과 일치.","combo":false,"noprop":false,"goff":1,"goffNote":"1·2·7·8·12월 20% 할인이 빠진 정상가","hr":"hour"},{"id":"BEXCO|제2전시장 4홀 2칸(4C+4D 등)","v":"BEXCO","h":"제2전시장 4홀 2칸(4C+4D 등)","a":3312,"reg":"경상","rt":"sqm","jan":{"E":2050,"G":0.8,"H":0,"I":232,"J":240,"K":30,"M":0},"aug":{"E":2050,"G":0.8,"H":0,"I":259,"J":352,"K":44,"M":0},"unit":"조건 가정","st":"면적 확인(시설 안내) / 장소 요율 0.9(본부장 확인)","tel":"051-740-7300","dep":"㎡×250원×임대일수(벡스코 온라인 견적 안내) · 전기·냉난방·원상복구·시간외 사용은 행사 후 실비정산","miss":"1·2·7·8·12월 20% 할인은 엑셀 출처(재확인 못 함) · 별도 현장 공사·경비·폐기물 견적 확인","note":"붙은 2칸 3,216~3,408㎡(973~1,031평) — 4C+4D 3,312㎡ 기준. 2026 밀키트전·K-핸드메이드(4C·4D), 더골프쇼(4A·4B) 사용. 제2전시장 1층 4홀 6칸: 4A 1,584 · 4B 1,824 · 4C 1,488 · 4D 1,824 · 4E 1,488 · 4F 1,728㎡(깊이 48m, 천장 12m). 3층 5홀 5칸: 5A 2,016 · 5B 1,776 · 5C 1,920 · 5D 2,160 · 5E 2,064㎡(천장 10m, 기둥 없음). 출처: BEXCO 영문 시설 안내 PDF(검색 확인, 층별 합 9,936㎡와 일치). 임대 단가 = 제1전시장 2026 요율 2,050원/㎡·일 × 제2전시장 장소 등차율 0.9(본부장 확인). 벡스코 규정상 등차율이 겹치면 낮은 것 1개만 적용 → 1·2·7·8·12월은 0.8, 그 외 0.9. 냉난방·전기 단가는 제1전시장과 같다고 가정.","combo":true,"noprop":false,"goff":0.9,"goffNote":"제2전시장 장소 등차율 0.9(1·2·7·8·12월은 20% 할인과 겹쳐 낮은 쪽 0.8만 적용)","hr":"hour"},{"id":"BEXCO|제2전시장 5A 1칸","v":"BEXCO","h":"제2전시장 5A 1칸","a":2016,"reg":"경상","rt":"sqm","jan":{"E":2050,"G":0.8,"H":0,"I":232,"J":240,"K":30,"M":0},"aug":{"E":2050,"G":0.8,"H":0,"I":259,"J":352,"K":44,"M":0},"unit":"조건 가정","st":"면적 확인(시설 안내) / 장소 요율 0.9(본부장 확인)","tel":"051-740-7300","dep":"㎡×250원×임대일수(벡스코 온라인 견적 안내) · 전기·냉난방·원상복구·시간외 사용은 행사 후 실비정산","miss":"1·2·7·8·12월 20% 할인은 엑셀 출처(재확인 못 함) · 별도 현장 공사·경비·폐기물 견적 확인","note":"2026.8.7~9 중흥S-클래스 에코델타시티(1,067가구) 입주박람회가 5A 1칸 사용. 제2전시장 1층 4홀 6칸: 4A 1,584 · 4B 1,824 · 4C 1,488 · 4D 1,824 · 4E 1,488 · 4F 1,728㎡(깊이 48m, 천장 12m). 3층 5홀 5칸: 5A 2,016 · 5B 1,776 · 5C 1,920 · 5D 2,160 · 5E 2,064㎡(천장 10m, 기둥 없음). 출처: BEXCO 영문 시설 안내 PDF(검색 확인, 층별 합 9,936㎡와 일치). 임대 단가 = 제1전시장 2026 요율 2,050원/㎡·일 × 제2전시장 장소 등차율 0.9(본부장 확인). 벡스코 규정상 등차율이 겹치면 낮은 것 1개만 적용 → 1·2·7·8·12월은 0.8, 그 외 0.9. 냉난방·전기 단가는 제1전시장과 같다고 가정.","combo":false,"noprop":false,"goff":0.9,"goffNote":"제2전시장 장소 등차율 0.9(1·2·7·8·12월은 20% 할인과 겹쳐 낮은 쪽 0.8만 적용)","hr":"hour"},{"id":"BEXCO|제2전시장 5홀 2칸(5A+5B)","v":"BEXCO","h":"제2전시장 5홀 2칸(5A+5B)","a":3792,"reg":"경상","rt":"sqm","jan":{"E":2050,"G":0.8,"H":0,"I":232,"J":240,"K":30,"M":0},"aug":{"E":2050,"G":0.8,"H":0,"I":259,"J":352,"K":44,"M":0},"unit":"조건 가정","st":"면적 확인(시설 안내) / 장소 요율 0.9(본부장 확인)","tel":"051-740-7300","dep":"㎡×250원×임대일수(벡스코 온라인 견적 안내) · 전기·냉난방·원상복구·시간외 사용은 행사 후 실비정산","miss":"1·2·7·8·12월 20% 할인은 엑셀 출처(재확인 못 함) · 별도 현장 공사·경비·폐기물 견적 확인","note":"3층 붙은 2칸 3,696~4,224㎡ — 5A+5B 3,792㎡ 기준. 제2전시장 1층 4홀 6칸: 4A 1,584 · 4B 1,824 · 4C 1,488 · 4D 1,824 · 4E 1,488 · 4F 1,728㎡(깊이 48m, 천장 12m). 3층 5홀 5칸: 5A 2,016 · 5B 1,776 · 5C 1,920 · 5D 2,160 · 5E 2,064㎡(천장 10m, 기둥 없음). 출처: BEXCO 영문 시설 안내 PDF(검색 확인, 층별 합 9,936㎡와 일치). 임대 단가 = 제1전시장 2026 요율 2,050원/㎡·일 × 제2전시장 장소 등차율 0.9(본부장 확인). 벡스코 규정상 등차율이 겹치면 낮은 것 1개만 적용 → 1·2·7·8·12월은 0.8, 그 외 0.9. 냉난방·전기 단가는 제1전시장과 같다고 가정.","combo":true,"noprop":false,"goff":0.9,"goffNote":"제2전시장 장소 등차율 0.9(1·2·7·8·12월은 20% 할인과 겹쳐 낮은 쪽 0.8만 적용)","hr":"hour"},{"id":"울산 UECO|A1 (1/4홀)","v":"울산 UECO","h":"A1 (1/4홀)","a":1944,"reg":"경상","rt":"sqm","jan":{"E":1500,"G":0.84,"H":0,"I":160,"J":165.71428571428572,"K":145,"M":0},"aug":{"E":1500,"G":0.84,"H":0,"I":200,"J":240,"K":210,"M":0},"unit":"계산 가정","st":"2026 매뉴얼","tel":"052-255-1864","dep":"할인·할증 전 임대료의 20%","miss":"분할할증×계절할인; 7시간 비례 연장","note":"A1 1,944㎡, A 3,888㎡, 전체 7,776㎡. 1,500원/㎡·일. A1 등 1/4홀 20% 할증; 1·2·3·7·8·12월 30% 할인. 둘 다 적용 시 1.2×0.7 가정. 냉난방 7시간을 8/7 비례 환산; 추가시간 정산 확인.","combo":false,"noprop":false,"goff":1.2,"goffNote":"1/4홀 20% 할증, 계절 할인(1·2·3·7·8·12월 30%) 빠짐","hr":"7비례"},{"id":"울산 UECO|A홀 (1/2)","v":"울산 UECO","h":"A홀 (1/2)","a":3888,"reg":"경상","rt":"sqm","jan":{"E":1500,"G":0.7,"H":0,"I":160,"J":165.71428571428572,"K":145,"M":0},"aug":{"E":1500,"G":0.7,"H":0,"I":200,"J":240,"K":210,"M":0},"unit":"계산 가정","st":"2026 매뉴얼","tel":"052-255-1864","dep":"할인·할증 전 임대료의 20%","miss":"7시간 비례 연장","note":"A1 1,944㎡, A 3,888㎡, 전체 7,776㎡. 1,500원/㎡·일. A1 등 1/4홀 20% 할증; 1·2·3·7·8·12월 30% 할인. 둘 다 적용 시 1.2×0.7 가정. 냉난방 7시간을 8/7 비례 환산; 추가시간 정산 확인.","combo":false,"noprop":false,"goff":1,"goffNote":"1·2·3·7·8·12월 30% 할인이 빠진 정상가","hr":"7비례"},{"id":"EXCO|4,400㎡ 후보","v":"EXCO","h":"4,400㎡ 후보","a":4400,"reg":"경상","rt":"sqm","jan":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"aug":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"unit":"최신 견적","st":"담당 확인 / 최신 요금 미확보","tel":"053-601-5032","dep":"견적 확인","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"종전 가이드 4,400~5,200㎡ 후보. 현재 자료실에서 확인한 운영규정은 2020.12.29 개정본으로 최신 2026 단가 확정에 사용하지 않음. 홀·행사 구분 포함 직접 견적 필요.","combo":false,"noprop":false,"goff":null,"goffNote":null,"hr":"8h"},{"id":"경주 HICO|1+2홀","v":"경주 HICO","h":"1+2홀","a":2273,"reg":"경상","rt":"hall","jan":{"E":3750450,"G":1,"H":0,"I":220,"J":173,"K":150,"M":23},"aug":{"E":3750450,"G":1,"H":0,"I":220,"J":253,"K":220,"M":33},"unit":"임시 요금","st":"공식 임시 페이지 / 재확인","tel":"054-702-1051","dep":"견적 확인","miss":"공식 임시 페이지; 적용 요금 재확인","note":"1+2홀 2,273㎡ 1일 3,750,450원, 3홀 2,296㎡. 전기 1·8월 220원/kWh. 냉난방 7시간 기본+1시간: 1월150+23, 8월220+33원/㎡. 홈페이지가 임시 안내임을 명시하므로 계약 전 서면 확인.","combo":false,"noprop":false,"goff":1,"goffNote":"임시 요금 · 계절 규정 미확인","hr":"7+1"},{"id":"구미 GUMICO|전체","v":"구미 GUMICO","h":"전체","a":3402,"reg":"경상","rt":"sqm","jan":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"aug":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"unit":"최신 견적","st":"시설 확인 / 요금 미확보","tel":"054-477-8203","dep":"견적 확인","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"전시장 3,402㎡는 종전 가이드 기준. 최신 임대료·전력·냉난방 요금, 일부 홀 대관과 관리비 부과 면적 견적 필요.","combo":false,"noprop":false,"goff":null,"goffNote":null,"hr":"8h"},{"id":"창원 CECO|3홀","v":"창원 CECO","h":"3홀","a":1656,"reg":"경상","rt":"sqm","jan":{"E":1650,"G":0.8,"H":0,"I":182,"J":202,"K":202,"M":0},"aug":{"E":1650,"G":0.8,"H":0,"I":210,"J":291,"K":291,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"055-212-1007","dep":"할인·할증 전 임대료의 15%","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"3홀 1,656㎡, 2홀 3,806㎡, 1홀 3,914㎡. 1,650원/㎡·일. 1·2·8월 및 7/16~31·12/16~31 20% 할인. 2+3홀 별도 복수홀 할인 없음. 냉난방 8시간. 관리비 https://www.ceco.co.kr/bbx/content.php?co_id=02_02_03_02","combo":false,"noprop":false,"goff":1,"goffNote":"1·2·8월 20% 할인이 빠진 정상가","hr":"8h"},{"id":"창원 CECO|2홀","v":"창원 CECO","h":"2홀","a":3806,"reg":"경상","rt":"sqm","jan":{"E":1650,"G":0.8,"H":0,"I":182,"J":202,"K":202,"M":0},"aug":{"E":1650,"G":0.8,"H":0,"I":210,"J":291,"K":291,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"055-212-1007","dep":"할인·할증 전 임대료의 15%","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"3홀 1,656㎡, 2홀 3,806㎡, 1홀 3,914㎡. 1,650원/㎡·일. 1·2·8월 및 7/16~31·12/16~31 20% 할인. 2+3홀 별도 복수홀 할인 없음. 냉난방 8시간. 관리비 https://www.ceco.co.kr/bbx/content.php?co_id=02_02_03_02","combo":false,"noprop":false,"goff":1,"goffNote":"1·2·8월 20% 할인이 빠진 정상가","hr":"8h"},{"id":"김대중컨벤션센터|A홀","v":"김대중컨벤션센터","h":"A홀","a":3024,"reg":"전라","rt":"sqm","jan":{"E":1600,"G":0.8,"H":0,"I":null,"J":null,"K":null,"M":0},"aug":{"E":1600,"G":0.8,"H":0,"I":null,"J":null,"K":null,"M":0},"unit":"일부 견적","st":"임대료 확인 / 공공요금 미확인","tel":"062-611-2223","dep":"기본 임대료의 20%","miss":"전기·냉난방 미산입 / 기본관리 포함","note":"A/B/C 각 3,024㎡, 1,600원/㎡·일, 기본관리비 포함. 1·2·7·8·12월 20% 할인, 10·11월 10% 할증. 전력·냉난방 별도 견적. 별도 오픈홀 1,000㎡ 1,550원/㎡·일은 관리비 포함 조건·용도 확인 후 검토.","combo":false,"noprop":false,"goff":1.1,"goffNote":"10·11월 10% 할증 적용(4·5월은 할증 없음)","hr":"8h"},{"id":"군산 GSCO|전체","v":"군산 GSCO","h":"전체","a":3000,"reg":"전라","rt":"sqm","jan":{"E":550,"G":0.7,"H":0,"I":163.63636363636363,"J":null,"K":null,"M":0},"aug":{"E":550,"G":0.7,"H":0,"I":181.8181818181818,"J":null,"K":null,"M":0},"unit":"일부 견적","st":"임대·전기 확인 / 가스 실비","tel":"063-468-1880","dep":"견적 확인","miss":"냉난방 LPG 별도 / VAT 포함 원단가 환산","note":"3,000㎡, 605원/㎡·일은 VAT 포함(공급가 550원). 1·2·7·8·12월 30% 할인. 전기 1월180·8월200원/kWh도 VAT 포함. 냉난방 LPG는 이용자가 공급자와 직접 실비 정산하므로 0원으로 계산하지 않음.","combo":false,"noprop":false,"goff":1,"goffNote":"1·2·7·8·12월 30% 할인이 빠진 정상가","hr":"8h"},{"id":"여수세계박람회장|D1","v":"여수세계박람회장","h":"D1","a":1064,"reg":"전라","rt":"sqm","jan":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"aug":{"E":null,"G":1,"H":null,"I":null,"J":null,"K":null,"M":0},"unit":"최신 견적","st":"종전 금액만 존재 / 최신 미확인","tel":"061-659-2093~5","dep":"견적 확인","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"D1 1,064㎡ 1일 103만원, D2 1,240㎡ 120만원은 종전 제공자료의 숫자. 이번 비교에서는 2026 확인요금으로 산입하지 않음. 운영 주체·요금표·전기·냉난방·행사 허용 확인.","combo":false,"noprop":false,"goff":null,"goffNote":null,"hr":"8h"},{"id":"ICC JEJU|이벤트홀 전체","v":"ICC JEJU","h":"이벤트홀 전체","a":2503,"reg":"제주","rt":"hall","jan":{"E":6984000,"G":1,"H":0,"I":null,"J":null,"K":null,"M":0},"aug":{"E":6984000,"G":1,"H":0,"I":null,"J":null,"K":null,"M":0},"unit":"일부 견적","st":"2026 임대료 / 공공요금 미확인","tel":"064-735-1000","dep":"기본 임대료의 20%","miss":"전기·냉난방 미산입 / 기본관리 포함","note":"이벤트홀 전체 2,503㎡ 1일 6,984,000원, 기본관리비 포함, VAT 별도. 전기·냉난방 별도. 부분홀 면적 합계와 전체 표기 1㎡ 차이는 공식 전체값 사용. 제2센터와 혼동 금지.","combo":false,"noprop":false,"goff":1,"goffNote":"계절 할인·할증 표기 없음","hr":"8h"},{"id":"SETEC|1+2관","v":"SETEC","h":"1+2관","a":4814,"reg":"수도권","rt":"sqm","jan":{"E":1150,"G":1,"H":250,"I":138,"J":184,"K":161,"M":0},"aug":{"E":1150,"G":1,"H":250,"I":158,"J":243.42857142857142,"K":213,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"02-2187-4600","dep":"할인 전 기본 임대료의 55%","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"임대료 1,150원/㎡·일, 기본관리비 250원/㎡·일. 7월·12월 20% 할인, 3~5·10~11월 20% 할증. 8월은 할인 없음. 냉난방 7시간 기준을 8/7로 환산. 관리비 https://www.setec.or.kr/front/rent/rent03.do","combo":true,"noprop":false,"goff":1.2,"goffNote":"3~5·10~11월 20% 할증","hr":"7비례"},{"id":"SETEC|1+3관","v":"SETEC","h":"1+3관","a":6264,"reg":"수도권","rt":"sqm","jan":{"E":1150,"G":1,"H":250,"I":138,"J":184,"K":161,"M":0},"aug":{"E":1150,"G":1,"H":250,"I":158,"J":243.42857142857142,"K":213,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"02-2187-4600","dep":"할인 전 기본 임대료의 55%","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"임대료 1,150원/㎡·일, 기본관리비 250원/㎡·일. 7월·12월 20% 할인, 3~5·10~11월 20% 할증. 8월은 할인 없음. 냉난방 7시간 기준을 8/7로 환산. 관리비 https://www.setec.or.kr/front/rent/rent03.do","combo":true,"noprop":false,"goff":1.2,"goffNote":"3~5·10~11월 20% 할증","hr":"7비례"},{"id":"DCC 제2전시장|2+3홀","v":"DCC 제2전시장","h":"2+3홀","a":5052,"reg":"충청","rt":"sqm","jan":{"E":1350,"G":0.8,"H":0,"I":149,"J":143,"K":143,"M":0},"aug":{"E":1350,"G":0.8,"H":0,"I":171,"J":209,"K":209,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"042-250-1113","dep":"기본 임대료의 40% (관리20+보수10+기타10); 정산·반환 대상","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"2홀 2,524㎡, 1,350원/㎡·일. 1·2·7·8·12월 20% 할인. 3개 홀 이상 5% 할인과 계절 할인 중 큰 할인 적용. 냉난방 8시간 기준. 제1전시장 일부 임대 할증을 제2전시장에 적용하지 않음.","combo":true,"noprop":false,"goff":1,"goffNote":"1·2·7·8·12월 20% 할인이 빠진 정상가","hr":"8h"},{"id":"DCC 제2전시장|2+3+4홀","v":"DCC 제2전시장","h":"2+3+4홀","a":7576,"reg":"충청","rt":"sqm","jan":{"E":1350,"G":0.8,"H":0,"I":149,"J":143,"K":143,"M":0},"aug":{"E":1350,"G":0.8,"H":0,"I":171,"J":209,"K":209,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"042-250-1113","dep":"기본 임대료의 40% (관리20+보수10+기타10); 정산·반환 대상","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"2홀 2,524㎡, 1,350원/㎡·일. 1·2·7·8·12월 20% 할인. 3개 홀 이상 5% 할인과 계절 할인 중 큰 할인 적용. 냉난방 8시간 기준. 제1전시장 일부 임대 할증을 제2전시장에 적용하지 않음.","combo":true,"noprop":false,"goff":0.95,"goffNote":"3개 홀 이상 5% 할인(계절 할인이 없는 달)","hr":"8h"},{"id":"울산 UECO|전체","v":"울산 UECO","h":"전체","a":7776,"reg":"경상","rt":"sqm","jan":{"E":1500,"G":0.7,"H":0,"I":160,"J":165.71428571428572,"K":145,"M":0},"aug":{"E":1500,"G":0.7,"H":0,"I":200,"J":240,"K":210,"M":0},"unit":"계산 가정","st":"2026 매뉴얼","tel":"052-255-1864","dep":"할인·할증 전 임대료의 20%","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"A1 1,944㎡, A 3,888㎡, 전체 7,776㎡. 1,500원/㎡·일. A1 등 1/4홀 20% 할증; 1·2·3·7·8·12월 30% 할인. 둘 다 적용 시 1.2×0.7 가정. 냉난방 7시간을 8/7 비례 환산; 추가시간 정산 확인.","combo":true,"noprop":false,"goff":1,"goffNote":"1·2·3·7·8·12월 30% 할인이 빠진 정상가","hr":"7비례"},{"id":"창원 CECO|1홀","v":"창원 CECO","h":"1홀","a":3914,"reg":"경상","rt":"sqm","jan":{"E":1650,"G":0.8,"H":0,"I":182,"J":202,"K":202,"M":0},"aug":{"E":1650,"G":0.8,"H":0,"I":210,"J":291,"K":291,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"055-212-1007","dep":"할인·할증 전 임대료의 15%","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"3홀 1,656㎡, 2홀 3,806㎡, 1홀 3,914㎡. 1,650원/㎡·일. 1·2·8월 및 7/16~31·12/16~31 20% 할인. 2+3홀 별도 복수홀 할인 없음. 냉난방 8시간. 관리비 https://www.ceco.co.kr/bbx/content.php?co_id=02_02_03_02","combo":false,"noprop":false,"goff":1,"goffNote":"1·2·8월 20% 할인이 빠진 정상가","hr":"8h"},{"id":"창원 CECO|2+3홀","v":"창원 CECO","h":"2+3홀","a":5462,"reg":"경상","rt":"sqm","jan":{"E":1650,"G":0.8,"H":0,"I":182,"J":202,"K":202,"M":0},"aug":{"E":1650,"G":0.8,"H":0,"I":210,"J":291,"K":291,"M":0},"unit":"계산 가능","st":"현재 게시 요금","tel":"055-212-1007","dep":"할인·할증 전 임대료의 15%","miss":"별도 현장 공사·경비·폐기물 견적 확인","note":"3홀 1,656㎡, 2홀 3,806㎡, 1홀 3,914㎡. 1,650원/㎡·일. 1·2·8월 및 7/16~31·12/16~31 20% 할인. 2+3홀 별도 복수홀 할인 없음. 냉난방 8시간. 관리비 https://www.ceco.co.kr/bbx/content.php?co_id=02_02_03_02 · 복수홀 할인(2개 이상 10% 등) 여부는 자료가 엇갈려 담당자 확인 필요.","combo":true,"noprop":false,"goff":1,"goffNote":"1·2·8월 20% 할인이 빠진 정상가","hr":"8h"}];
+const STD={'수도권':[8000,12000],'충청':[6000,10000],'전라':[6000,10000],'경상':[5000,9000]};
+const REGS=['전체','수도권','충청','강원','경상','전라','제주'];
+const SEA={jan:'난방',aug:'냉방',spr:'봄·가을'};
+const HR={'7+1':'7시간 기본+추가시간','7비례':'7시간 단가 비례','8h':'8시간 단가 비례','2h':'2시간 단가 비례','hour':'㎡·시간 단가'};
+const UNIT_TAG={'일부 견적':['일부 미확인','w'],'조건 가정':['가정 포함','w'],'계산 가정':['가정 포함','w'],'세금 가정':['세금 가정','w'],'임시 요금':['임시 요금','w']};
+const KEY='venue-cost:v3';
+const UMIN=500,UMAX=2000; /* 전기·냉난방 슬라이더 범위(만원, 3일 합계) */
+const CFGV=2;      /* 기본값 개정 번호: 2 = 냉난방 12시간·슬라이더 500~2,000 */
+const PY=3.3058; /* 1평 = 3.3058㎡ */
+const BOOTH=30;  /* 부스 1개당 통로·상담 포함 30㎡ (엑셀 '규모별 예산') */
+const sizeTxt=(a,n=1)=>`<b>${f0(a)}㎡</b> · ${f0(a/PY)}평 · 부스 약 ${f0(Math.floor(a/BOOTH))}개${n===2?` (2곳 합 ${f0(a*2/PY)}평)`:''}`;
+const DEF={reg:'전체',sea:'jan',hvac:true,hrs:12,setupHv:false,elx:3,rent:4,show:3,hh:1000,cnt:'auto',util:1500,prog:1000,mul:'ru',sel:null,ovr:{}};
+const S=Object.assign({},DEF,{ovr:{}});
+try{const o=JSON.parse(localStorage.getItem(KEY)||'null');if(o&&typeof o==='object'&&!Array.isArray(o)){Object.assign(S,o);if(o.cfgv!==CFGV)S.hrs=DEF.hrs}}catch(e){}
+S.cfgv=CFGV;
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const num=(v,d)=>{const n=+v;return Number.isFinite(n)?n:d};
+function sane(){
+  if(!REGS.includes(S.reg))S.reg=DEF.reg;
+  if(!Object.prototype.hasOwnProperty.call(SEA,S.sea))S.sea=DEF.sea;
+  S.hvac=S.hvac!==false;S.setupHv=S.setupHv===true;
+  S.hrs=clamp(Math.round(num(S.hrs,12)),8,16);
+  S.elx=clamp(Math.round(num(S.elx,3)*2)/2,1,5);
+  S.rent=clamp(Math.round(num(S.rent,4)),1,10);S.show=clamp(Math.round(num(S.show,3)),1,7);
+  if(S.show>S.rent)S.rent=S.show;
+  S.hh=clamp(Math.round(num(S.hh,1000)),0,20000);
+  S.util=clamp(Math.round(num(S.util,1500)/50)*50,UMIN,UMAX);
+  S.prog=clamp(Math.round(num(S.prog,1000)),0,100000);
+  S.cnt=String(S.cnt);if(!['auto','1','2'].includes(S.cnt))S.cnt=DEF.cnt;
+  if(!['rent','ru','all'].includes(S.mul))S.mul=DEF.mul;
+  if(!S.ovr||typeof S.ovr!=='object'||Array.isArray(S.ovr))S.ovr={};
+  for(const k in S.ovr){const v=+S.ovr[k];if(!(v>0&&v<1e6)||!D.some(x=>x.id===k))delete S.ovr[k]}
+  if(typeof S.sel!=='string')S.sel=null;
+}
+sane();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const f0=x=>{const v=Math.round(x);return (v===0?0:v).toLocaleString('ko-KR')};
+const man=x=>x/1e4; /* 공급가(원) → 만원 */
+const count=()=>S.cnt==='auto'?(S.hh>=1400?2:1):+S.cnt;
+const need=()=>{const h=S.hh;return h<800?[1500,50]:h<1500?[2550,85]:h<2500?[3900,130]:[5400,180]};
+const P=(o={})=>Object.assign({rent:S.rent,show:S.show,hrs:S.hrs,setupHv:S.setupHv,elx:S.elx},bandKW(S.hh),o);
+const ovOf=x=>{const v=+S.ovr[x.id];return v>0?v:null};
+const utilBase=p=>S.util*p.show/3;  /* 슬라이더는 박람회 3일 기준 → 박람회일수에 비례 */
+
+function ev(x,o={}){
+  const sea=o.sea||S.sea,p=P(o.p),n=o.n||count(),hvac=o.hvac??S.hvac;
+  const c=costOf(x,sea,p),ov=ovOf(x);
+  const r={x,n,sea,p,c,ov,hvac,missing:[]};
+  /* 대관료(만원, 정수): 견적 입력이 있으면 그 값 */
+  r.rentV=ov!=null?Math.round(ov):c.rent==null?null:Math.round(man(c.rent+(c.mng||0)));
+  if(ov==null&&c.rent!=null&&c.mng==null)r.missing.push('기본관리비');
+  r.calcEl=c.el==null?null:man(c.el);
+  r.calcHv=c.hv==null?null:man(c.hv);
+  r.base=utilBase(p);
+  r.cutFail=!hvac&&r.calcHv==null;
+  r.util=Math.round(hvac||r.cutFail?r.base:Math.max(r.calcEl||0,r.base-r.calcHv));
+  r.cut=Math.round(r.base)-r.util;   /* 실제로 뺀 금액 */
+  r.floor=!hvac&&!r.cutFail&&r.base-r.calcHv<(r.calcEl||0);
+  const two=n===2;
+  r.k={r:two?2:1,u:two&&S.mul!=='rent'?2:1,p:two&&S.mul==='all'?2:1};
+  if(r.rentV!=null){
+    r.parts=[r.rentV*r.k.r,r.util*r.k.u,S.prog*r.k.p];
+    r.ops=r.parts[0]+r.parts[1]+r.parts[2];
+  }
+  const st=STD[x.reg];r.std=st?st[n-1]:null;
+  r.small=x.a*n<need()[0];
+  r.quote=r.rentV==null;
+  r.ok=!r.quote&&!r.missing.length&&!r.small;
+  r.sure=r.ok&&(r.ov!=null||!UNIT_TAG[x.unit]);
+  return r;
+}
+function rows(){
+  return D.filter(x=>S.reg==='전체'||x.reg===S.reg).map(x=>ev(x))
+    .sort((a,b)=>(a.ops==null)-(b.ops==null)||(a.ops??0)-(b.ops??0)||b.x.a-a.x.a);
+}
+function tags(r){
+  const t=[],x=r.x;
+  if(S.reg==='전체')t.push(`<span class="tg">${esc(x.reg)}</span>`);
+  if(r.ov!=null)t.push('<span class="tg g">견적 입력</span>');
+  else if(r.quote)t.push('<span class="tg b">견적 필요</span>');
+  else{
+    if(r.missing.length)t.push(`<span class="tg w">${r.missing.join('·')} 미산입</span>`);
+    else if(UNIT_TAG[x.unit])t.push(`<span class="tg ${UNIT_TAG[x.unit][1]}">${UNIT_TAG[x.unit][0]}</span>`);
+  }
+  if(r.cutFail&&!r.quote)t.push('<span class="tg w">냉난방 단가 없음</span>');
+  if(r.small)t.push('<span class="tg w">면적 부족 가능</span>');
+  if(x.combo)t.push('<span class="tg">복수 홀</span>');
+  if(x.noprop)t.push('<span class="tg x" title="비용 비교용. 제안서 행사장 후보에서는 제외">제안서 제외</span>');
+  return `<span class="tags">${t.join('')}</span>`;
+}
+function diffTxt(d,long){
+  if(d===0)return long?'<span class="dn">기준과 같음</span>':'<span class="dn">±0</span>';
+  return d>0?`<span class="up">${long?f0(d)+'만 많음':'+'+f0(d)}</span>`:`<span class="dn">${long?f0(-d)+'만 적음':'−'+f0(-d)}</span>`;
+}
+const diff=r=>r.ops==null||r.std==null?'<span class="mut">–</span>':diffTxt(r.ops-r.std,false);
+function bar(r,max,cls){
+  if(r.ops==null)return '';
+  const w=v=>(v/max*100).toFixed(2)+'%';
+  return `<span class="${cls}" aria-hidden="true"><i class="r" style="width:${w(r.parts[0])}"></i><i class="u" style="width:${w(r.parts[1])}"></i><i class="p" style="width:${w(r.parts[2])}"></i></span>`;
+}
+function statusTxt(r){
+  if(r.ov!=null)return '견적 입력 · 면적 충족';
+  return UNIT_TAG[r.x.unit]?`${UNIT_TAG[r.x.unit][0]} · 면적 충족`:'단가 확정 · 면적 충족';
+}
+
+function renderCtl(){
+  document.querySelectorAll('#regs button').forEach(b=>{const on=b.dataset.v===S.reg;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  document.querySelectorAll('#sea button').forEach(b=>{const on=b.dataset.v===S.sea;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  document.querySelectorAll('#cnt button').forEach(b=>{const on=b.dataset.v===S.cnt;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  document.querySelectorAll('#hvac button').forEach(b=>{const on=(b.dataset.v==='1')===S.hvac;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  document.querySelectorAll('#setupHv button').forEach(b=>{const on=(b.dataset.v==='1')===S.setupHv;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  $('seaHint').textContent=(S.sea==='spr'?'봄·가을: 1·8월 할인이 빠진 정상가에 시설별 할증을 더한 보수적 대관료.'
+    :S.sea==='jan'?'1월 요율: 동절기 할인이 적용된 대관료. 냉난방 단가는 난방 기준.':'8월 요율: 하절기 할인이 적용된 대관료. 냉난방 단가는 냉방 기준.')
+    +(S.hvac?' 냉난방 사용 → 슬라이더 금액 그대로.':' 냉난방 사용안함 → 홀마다 냉난방 계산액을 뺍니다.');
+  $('rentV').textContent=S.rent+'일';$('showV').textContent=S.show+'일';$('hrsV').textContent=S.hrs+'시간';$('elxV').textContent='×'+S.elx;
+  document.querySelectorAll('.stp button').forEach(b=>{
+    const k=b.dataset.k,d=+b.dataset.d;
+    b.disabled=k==='rent'?(d<0?S.rent<=1:S.rent>=10):k==='hrs'?(d<0?S.hrs<=8:S.hrs>=16):k==='elx'?(d<0?S.elx<=1:S.elx>=5):(d<0?S.show<=1:S.show>=7);
+  });
+  const setup=S.rent-S.show;
+  $('days').innerHTML=Array.from({length:S.rent},(_,i)=>{
+    const show=i>=setup;
+    return `<div class="day${show?' show':''}"><b>${S.rent>6?(show?'행':'설'):(show?'행사':'설치')}</b><i class="r"></i><i class="u${show||S.setupHv&&S.hvac?'':' thin'}"></i></div>`;
+  }).join('');
+  $('hvHint').textContent=`냉난방 계산 = 하루 ${S.hrs}시간 × ${hvDays(P())}일(행사 ${S.show}${S.setupHv&&setup>0?` + 설치 ${setup}`:''}). 본부장 기준은 행사일 평균 12시간·설치일 제외(엑셀 원본 8시간).`;
+  const n=count(),[na,nb]=need(),kw=bandKW(S.hh);
+  $('cntHint').innerHTML=`${S.cnt==='auto'?'1,400세대 이상이면 자동 2곳. ':''}지금 <b>${n}곳</b> · 권장 면적 ${f0(na)}㎡(${f0(na/PY)}평) 이상, 부스 ${nb}개${n===2?'(2곳 합산)':''} · 전력 계산 ${kw.kw}kW`;
+  $('mulBox').hidden=n!==2;
+  const base=utilBase(P());
+  $('util').setAttribute('aria-valuetext',`${f0(S.util)}만원 (박람회 3일 기준)`);
+  $('utilV').innerHTML=`${f0(S.util)}<small>만원 (하루 평균 ${f0(S.util/3)}만 · 부가세 포함 ${f0(S.util*1.1)}만)${S.show!==3?` → 박람회 ${S.show}일 ${f0(base)}만`:''}</small>`;
+  $('utilHint').textContent=(S.hvac?'전기세+냉난방 예산(부가세 별도). 박람회일수에 비례합니다. 주황 표시는 고른 홀을 단가로 계산한 전기+냉난방(3일 환산).'
+    :'냉난방 사용안함 → 홀마다 냉난방 계산액을 뺀 금액이 들어갑니다. 주황 표시는 단가로 계산한 전기(3일 환산).')+(n===2?' 2곳이면 1곳 기준 금액.':'');
+  $('hRent').innerHTML=`대관료 ${S.rent}일${n===2?'<span class="two">1곳</span>':''}`;
+  $('hUtil').innerHTML=`전기·냉난방${n===2?'<span class="two">1곳</span>':''}`;
+  $('hOps').innerHTML=`운영비${n===2?'<span class="two">2곳 합계</span>':''}`;
+}
+function renderMark(r){
+  const m=$('mark');
+  if(!r||(S.hvac?r.calcEl==null&&r.calcHv==null:r.calcEl==null)){m.hidden=true;return}
+  const pub=((r.calcEl||0)+(S.hvac?(r.calcHv||0):0))*3/S.show;
+  const pos=(clamp(pub,UMIN,UMAX)-UMIN)/(UMAX-UMIN)*100;
+  m.hidden=false;m.style.left=pos+'%';
+  m.className='mark'+(pos<8?' l':pos>92?' r':'');
+  m.textContent=`단가 계산 ${f0(pub)}만${pub<UMIN?' ◂':pub>UMAX?' ▸':''}`;
+}
+function renderIns(R){
+  const n=count(),ok=R.filter(r=>r.ok),reg=S.reg==='전체'?'전국':S.reg,T=[];
+  if(ok.length){
+    const b=ok[0];
+    T.push(`<div class="tile"><p class="lab">최저 운영비 · ${esc(reg)}</p><div class="v">${f0(b.ops)}<small> 만원</small></div><p>${esc(b.x.v)} ${esc(b.x.h)} · ${statusTxt(b)}</p></div>`);
+    const s=ok.filter(r=>r.std!=null);
+    if(s.length)T.push(`<div class="tile"><p class="lab">기준표 이하</p><div class="v">${s.filter(r=>r.ops<=r.std).length}<small> / ${s.length}곳</small></div><p>${S.reg==='전체'?'지역별 기준표':esc(S.reg)+' 기준 '+f0(s[0].std)+'만'} · ${n}곳 대관</p></div>`);
+    if(n===2){
+      const one=D.filter(x=>S.reg==='전체'||x.reg===S.reg).map(x=>ev(x,{n:1})).filter(r=>r.ops!=null&&!r.missing.length&&r.x.a>=need()[0]).sort((a,b)=>a.ops-b.ops)[0];
+      if(one&&one.ops<b.ops)T.push(`<div class="tile"><p class="lab">큰 홀 1곳으로 하면</p><div class="v">${f0(one.ops)}<small> 만원</small></div><p>${esc(one.x.v)} ${esc(one.x.h)} ${f0(one.x.a)}㎡ · 2곳 최저보다 ${f0(b.ops-one.ops)}만 적음</p></div>`);
+    }
+  }else T.push(`<div class="tile"><p class="lab">최저 운영비 · ${esc(reg)}</p><div class="v">–</div><p>대관료 단가가 있고 면적이 맞는 홀이 없습니다 · 견적을 넣거나 지역을 바꾸세요</p></div>`);
+  const q=R.filter(r=>r.quote).length;
+  if(q)T.push(`<div class="tile"><p class="lab">견적 필요</p><div class="v">${q}<small> 곳</small></div><p>단가 미확보 · 행사장을 고르면 카드에서 견적 입력</p></div>`);
+  $('ins').innerHTML=T.join('');
+}
+function renderList(R){
+  const max=Math.max(1,...R.filter(r=>r.ops!=null).map(r=>r.ops)),two=count()===2;
+  $('vl').innerHTML=R.map(r=>{
+    const x=r.x,on=x.id===S.sel;
+    const rent=r.rentV!=null?f0(r.rentV):'<span class="mut">–</span>';
+    const util=r.quote?'<span class="mut">–</span>':`${f0(r.util)}${r.cut>0?`<small>−${f0(r.cut)} 냉난방${r.floor?'(전기 하한)':''}</small>`:''}`;
+    const ops=r.ops!=null?`<span class="ops">${f0(r.ops)}</span>${bar(r,max,'bar')}`:'<span class="ops mut" style="font-weight:500;font-size:13.5px">견적 입력</span>';
+    return `<li><button type="button" class="vr${on?' sel':''}${r.quote?' q':''}" data-id="${esc(x.id)}" aria-pressed="${on}">
+      <span class="c-name"><span class="nm">${esc(x.v)} <em>${esc(x.h)}</em></span><span class="sz${r.small?' small':''}">${sizeTxt(x.a,count())}</span>${tags(r)}</span>
+      <span class="n"><span class="k-m">대관료 ${S.rent}일${two?' (1곳)':''}</span>${rent}</span>
+      <span class="n"><span class="k-m">전기·냉난방${two?' (1곳)':''}</span>${util}</span>
+      <span class="n c-ops"><span class="k-m">운영비 (만원${two?', 2곳 합계':''})</span>${ops}</span>
+      <span class="n"><span class="k-m">기준 대비</span>${diff(r)}</span>
+    </button></li>`;
+  }).join('')||'<li class="empty">해당 지역 행사장이 없습니다.</li>';
+}
+function rentFormula(x,u,p){
+  if(x.rt==='sqm')return `${f0(u.E)}원/㎡·일 × ${f0(x.a)}㎡ × ${p.rent}일${u.G!==1?` × ${u.G}`:''}`;
+  if(x.rt==='hall')return `${f0(u.E/1e4)}만원/일 × ${p.rent}일${u.G!==1?` × ${u.G}`:''}`;
+  return `4일 ${f0(u.E/1e4)}만원 ÷ 4 × ${p.rent}일`;
+}
+function gNote(x,u){
+  if(S.sea==='spr')return x.goffNote||'';
+  if(x.v==='울산 UECO'&&/1\/4/.test(x.h)&&u.G<1)return `1/4홀 +20% × ${S.sea==='jan'?'동절기':'하절기'} −30%`;
+  if(u.G<1)return `${Math.round((1-u.G)*100)}% ${S.sea==='jan'?'동절기':'하절기'} 할인`;
+  if(u.G>1)return `${Math.round((u.G-1)*100)}% 할증`;
+  return '';
+}
+function renderCard(r){
+  const el=$('res');
+  if(!r){el.innerHTML='<p class="meta">행사장을 고르세요.</p>';renderMark(null);return}
+  const x=r.x,n=r.n,c=r.c,p=r.p,u=unitOf(x,S.sea);
+  let h=`<div><p class="lab">${esc(x.reg)} · ${SEA[S.sea]}${S.hvac?'':' · 냉난방 안 씀'} · 대관 ${S.rent}일 / 박람회 ${S.show}일</p><h2 tabindex="-1" id="resH">${esc(x.v)} ${esc(x.h)}</h2><p class="meta">대관 면적 ${sizeTxt(x.a,n)} · ${esc(x.st)}</p></div>`;
+  if(r.ops!=null){
+    h+=`<div class="bigv"><output>${f0(r.ops)}</output><span>만원 운영비 · 부가세 별도</span></div>
+    <p class="vat">부가세 포함 <b>${f0(r.ops*1.1)}만</b></p>
+    <div class="cp"><button type="button" class="btn" id="cpb">운영비 복사</button><input id="cpf" readonly hidden value="${Math.round(r.ops)}" aria-label="복사할 운영비"><span class="cpmsg" id="cpm" role="status"></span></div>
+    ${bar(r,r.ops,'cbar')}`;
+    const L=[];
+    L.push(['grp',`<i style="background:var(--rent)"></i>대관료 · 대관 ${S.rent}일`,null]);
+    if(r.ov!=null)L.push(['s','견적 금액 (부가세 별도)',r.ov]);
+    else{
+      const gn=gNote(x,u),mng=c.mng==null?null:Math.round(man(c.mng));
+      L.push(['',`임대료<small>${esc(rentFormula(x,u,p))}${gn?' · '+esc(gn):''}</small>`,r.rentV-(mng||0)]);
+      L.push(['',`기본관리비<small>${c.mng==null?'미확인 · 빠진 금액':u.H===0?'별도 공표 항목 없음':`${f0(u.H)}원/㎡·일 × ${f0(x.a)}㎡ × ${p.rent}일`}</small>`,mng]);
+      L.push(['s','대관료',r.rentV]);
+    }
+    L.push(['grp',`<i style="background:var(--util)"></i>전기·냉난방 · 박람회 ${S.show}일`,null]);
+    L.push(['',`슬라이더 금액<small>${f0(S.util)}만 × ${S.show}일 ÷ 3일</small>`,Math.round(r.base)]);
+    if(!S.hvac){
+      if(r.cutFail)L.push(['','냉난방 빼기<small>이 홀은 냉난방 단가가 없어 못 뺌</small>',null]);
+      else L.push(['',`냉난방 빼기 (사용안함)<small>${f0(x.a)}㎡ × ${f0(c.hvPer)}원(${S.hrs}시간) × ${c.hvDays}일 · ${SEA[S.sea]} 단가${r.floor?' · 단가로 계산한 전기 아래로는 안 내림':''}</small>`,-r.cut]);
+      L.push(['s','전기·냉난방',r.util]);
+    }
+    L.push(['grp',`<i style="background:var(--prog)"></i>행사진행비`,S.prog]);
+    if(n===2){
+      L.push(['grp','두 번째 곳',null]);
+      L.push(['','대관료',r.rentV]);
+      if(r.k.u===2)L.push(['','전기·냉난방',r.util]);
+      if(r.k.p===2)L.push(['','행사진행비',S.prog]);
+    }
+    L.push(['t','운영비',r.ops]);
+    h+='<dl>'+L.map(([cl,a,b])=>`<dt class="${cl}">${a}</dt><dd class="${cl}">${b==null?(cl==='grp'?'':'<span class="mut">–</span>'):(b<0?'−'+f0(-b):f0(b))}</dd>`).join('')+'</dl>';
+
+    /* 하루 더 → 실제 운영비 변화 */
+    const dR=r.ov!=null||S.rent>=10?null:ev(x,{p:{rent:S.rent+1}}).ops-r.ops;
+    const nxp={show:S.show+1,rent:Math.max(S.rent,S.show+1)};
+    const dS=S.show>=7||r.ov!=null&&nxp.rent>S.rent?null:ev(x,{p:nxp}).ops-r.ops;
+    const sens=[];
+    if(dR!=null)sens.push(`대관 하루 더 <b>${dR>=0?'+':'−'}${f0(Math.abs(dR))}만</b>`);
+    if(dS!=null)sens.push(`박람회 하루 더 <b>${dS>=0?'+':'−'}${f0(Math.abs(dS))}만</b>${nxp.rent>S.rent?'(대관도 +1일)':''}`);
+    if(sens.length)h+=`<p class="box">운영비 변화 · ${sens.join(' · ')}${n===2?' (2곳 합계)':''}</p>`;
+
+    /* 단가 계산 참고 */
+    const kw=bandKW(S.hh),pub=[];
+    pub.push(r.calcEl!=null?`전기 ${f0(c.kwh)}kWh × ${f0(u.I)}원 × ${S.elx}배(업체 사용분) = <b>${f0(r.calcEl)}만</b>`:'전기 단가 미확인');
+    if(r.calcHv!=null){
+      const plusHr=man(costOf(x,S.sea,P({hrs:S.hrs+1})).hv)-r.calcHv;
+      pub.push(`냉난방 ${f0(x.a)}㎡ × ${f0(c.hvPer)}원(${S.hrs}시간 · ${HR[x.hr]||''}) × ${c.hvDays}일 = <b>${f0(r.calcHv)}만</b>${S.hvac?'':' → 뺌'} · 1시간 더 +${f0(plusHr)}만`);
+    }else pub.push('냉난방 단가 미확인');
+    const sumPub=(r.calcEl||0)+(r.calcHv||0);
+    if(r.calcEl!=null||r.calcHv!=null)pub.push(`합계 <b>${f0(sumPub)}만</b>${S.show!==3?` (3일 환산 ${f0(sumPub*3/S.show)}만)`:''} · 부가세 포함 ${f0(sumPub*1.1)}만 — '고른 홀 계산값으로 맞추기'로 슬라이더에 넣을 수 있습니다`);
+    h+=`<p class="box">홀 단가로 계산한 전기·냉난방 (부가세 별도, 행사 ${kw.kw}kW·설치 ${kw.skw}kW 가정)<br>${pub.join('<br>')}<br><span class="mut">간선·부스 배선 전기공사는 빠져 있습니다(벡스코는 지정 협력업체 시공). 주관사 부담이면 따로 잡으세요.</span></p>`;
+
+    /* 계절 비교 */
+    const se=['jan','aug','spr'].map(s=>[s,ev(x,{sea:s})]);
+    h+=`<div><p class="lab" style="margin-bottom:6px">계절별 운영비 · 냉난방 ${S.hvac?'사용':'사용안함'}</p><div class="seas">${se.map(([s,q])=>`<div class="${s===S.sea?'on':''}">${SEA[s]}<b>${q.ops==null?'–':f0(q.ops)}</b></div>`).join('')}</div></div>`;
+    const spr=se[2][1],low=se.slice(0,2).map(q=>q[1]).filter(q=>q.ops!=null).sort((a,b)=>a.ops-b.ops)[0];
+    if(spr.ops!=null&&low&&spr.ops>low.ops&&r.ov==null)h+=`<p class="box w">봄·가을은 ${SEA[low.sea]}(${low.sea==='jan'?'1월':'8월'})보다 ${f0(spr.ops-low.ops)}만 많습니다. 대관료 ${esc(x.goffNote||'정상가')}.</p>`;
+
+    if(r.std!=null)h+=`<p class="box">${esc(x.reg)} 기준표 ${n}곳 <b>${f0(r.std)}만</b> 대비 ${diffTxt(r.ops-r.std,true)}</p>`;
+    else h+=`<p class="box">${esc(x.reg)}은 손익계산기 기준표가 없습니다. 이 값을 그대로 쓰세요.</p>`;
+  }else{
+    h+=`<div class="bigv"><span class="na">견적 필요</span></div><p class="box">임대료 단가가 확인되지 않았습니다. 받은 견적(임대료+관리비, 부가세 별도)을 아래에 넣으면 운영비가 계산됩니다.</p>`;
+  }
+  if(r.missing.length)h+=`<p class="box w">${r.missing.join('·')}가 빠진 금액이라 실제 운영비는 더 높습니다.</p>`;
+  if(r.cutFail&&!r.quote)h+='<p class="box w">이 홀은 냉난방 단가가 없어 냉난방 사용안함이어도 슬라이더 금액을 그대로 썼습니다.</p>';
+  if(r.small)h+=`<p class="box w">권장 면적 ${f0(need()[0])}㎡(${f0(need()[0]/PY)}평, 부스 ${need()[1]}개)보다 작습니다 — ${n===2?'2곳 합 ':''}${f0(x.a*n)}㎡(${f0(x.a*n/PY)}평). 부스 수를 줄이거나 큰 홀을 보세요.</p>`;
+  if(S.prog>=10000)h+='<p class="box w">행사진행비가 1억 이상입니다. 만원 단위로 넣었는지 확인하세요.</p>';
+  if(r.ov!=null&&r.ov>=20000)h+='<p class="box w">견적 대관료가 2억 이상입니다. 만원 단위로 넣었는지 확인하세요.</p>';
+  if(x.rt==='fixed4'&&S.rent!==4&&r.ov==null)h+='<p class="box w">춘천은 4일 148만원(평일 30만·주말 44만) 고정 요금을 하루 평균으로 나눠 계산했습니다. 요일별 실제 금액은 견적 확인.</p>';
+  h+=`<div class="ovr"><label for="ovr">견적 받은 대관료로 바꾸기 (임대료+관리비, 부가세 별도, 만원)</label><div><input id="ovr" type="text" inputmode="numeric" autocomplete="off" maxlength="9" value="${r.ov!=null?esc(r.ov):''}" placeholder="${r.ov==null&&r.rentV!=null?r.rentV:'예: 2500'}"><button type="button" class="btn ghost" id="ovrClr">엑셀 단가로</button></div></div>`;
+  h+=`<div class="info"><span>문의 <b>${esc(x.tel||'–')}</b></span><span>계약금·예치금 ${esc(x.dep||'–')}</span><span>빠진 비용 ${esc(x.miss)}</span>${x.noprop?'<span>코엑스: 비용 비교용 · <b>제안서 후보 제외</b></span>':''}</div>`;
+  if(x.note)h+=`<details><summary>단가 근거</summary><p>${esc(x.note)}</p></details>`;
+  el.innerHTML=h;
+  renderMark(r);
+  const ab=$('applyCalc'),full=r.calcEl==null&&r.calcHv==null?null:((r.calcEl||0)+(r.calcHv||0))*3/S.show;
+  ab.disabled=full==null;
+  ab.dataset.v=full==null?'':String(clamp(Math.round(full/50)*50,UMIN,UMAX));
+  ab.title=full==null?'이 홀은 전기·냉난방 단가가 없습니다':`${x.v} ${x.h}: 전기+냉난방 계산 ${f0(full)}만(3일 환산) → 슬라이더 ${f0(+ab.dataset.v)}만`;
+  $('live').textContent=r.ops!=null?`${x.v} ${x.h} 운영비 ${f0(r.ops)}만원`:`${x.v} ${x.h} 견적 필요`;
+  const cpb=$('cpb');
+  if(cpb)cpb.onclick=()=>{
+    const v=$('cpf').value,m=$('cpm');
+    const done=()=>{m.textContent=`${f0(+v)} 복사됨 — 손익계산기에서 지역·세대수를 먼저 정한 뒤 운영비 칸에 붙여넣기`};
+    let settled=false;
+    const fb=()=>{if(settled)return;settled=true;const i=$('cpf');i.hidden=false;i.focus();i.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}
+      if(ok){i.hidden=true;done()}else m.textContent='숫자를 선택해 두었습니다 — 길게 누르거나 Ctrl+C로 복사한 뒤 손익계산기 운영비 칸에 붙여넣기'};
+    const t=setTimeout(fb,1500);
+    try{navigator.clipboard.writeText(v).then(()=>{if(!settled){settled=true;clearTimeout(t);done()}},()=>{clearTimeout(t);fb()})}catch(e){clearTimeout(t);fb()}
+  };
+  $('ovr').oninput=e=>{const v=parseInt(e.target.value.replace(/[,\s]/g,''),10);if(!(v>0&&v<1e6))delete S.ovr[x.id];else S.ovr[x.id]=v;render()};
+  $('ovrClr').onclick=()=>{delete S.ovr[x.id];render()};
+}
+function focusKey(){
+  const a=document.activeElement;
+  if(!a||a===document.body)return null;
+  if(a.id)return {id:a.id,end:a.selectionEnd??null};
+  if(a.dataset.id)return {q:`#vl button[data-id="${CSS.escape(a.dataset.id)}"]`};
+  if(a.dataset.k)return {q:`.stp button[data-k="${a.dataset.k}"][data-d="${a.dataset.d}"]`,alt:`.stp button[data-k="${a.dataset.k}"][data-d="${-a.dataset.d}"]`};
+  return null;
+}
+function refocus(k){
+  if(!k)return;
+  let el=k.id?$(k.id):document.querySelector(k.q);
+  if(el&&el.disabled&&k.alt)el=document.querySelector(k.alt);
+  if(!el||el===document.activeElement)return;
+  el.focus({preventScroll:true});
+  if(k.id==='ovr'&&el.setSelectionRange){const n=el.value.length;el.setSelectionRange(n,n)}
+}
+function render(){
+  const fk=focusKey();
+  sane();renderCtl();
+  const R=rows();
+  if(!R.some(r=>r.x.id===S.sel))S.sel=(R.find(r=>r.sure)||R.find(r=>r.ok)||R.find(r=>r.ops!=null)||R[0]||{x:{}}).x.id||null;
+  renderIns(R);renderList(R);renderCard(R.find(r=>r.x.id===S.sel));save();
+  if(document.activeElement!==$('hh'))$('hh').value=S.hh;
+  if(document.activeElement!==$('prog'))$('prog').value=S.prog;
+  $('util').value=S.util;$('mul').value=S.mul;
+  refocus(fk);
+}
+
+$('nHall').textContent=D.length;$('nQuote').textContent=D.filter(x=>x.jan.E==null).length;
+$('regs').innerHTML=REGS.map(g=>`<button type="button" data-v="${g}">${g}<small>${g==='전체'?D.length:D.filter(x=>x.reg===g).length}</small></button>`).join('');
+$('regs').onclick=e=>{const b=e.target.closest('button');if(b){S.reg=b.dataset.v;render()}};
+$('sea').onclick=e=>{const b=e.target.closest('button');if(b){S.sea=b.dataset.v;S.hvac=S.sea!=='spr';render()}};
+$('hvac').onclick=e=>{const b=e.target.closest('button');if(b){S.hvac=b.dataset.v==='1';render()}};
+$('setupHv').onclick=e=>{const b=e.target.closest('button');if(b){S.setupHv=b.dataset.v==='1';render()}};
+$('cnt').onclick=e=>{const b=e.target.closest('button');if(b){S.cnt=b.dataset.v;render()}};
+document.querySelector('.ctl').addEventListener('click',e=>{
+  const b=e.target.closest('.stp button[data-k]');if(!b||b.disabled)return;
+  const k=b.dataset.k,d=+b.dataset.d;
+  if(k==='rent'){S.rent=clamp(S.rent+d,1,10);if(S.show>S.rent)S.show=S.rent}
+  else if(k==='hrs')S.hrs=clamp(S.hrs+d,8,16);
+  else if(k==='elx')S.elx=clamp(S.elx+d,1,5);
+  else{S.show=clamp(S.show+d,1,7);if(S.show>S.rent)S.rent=S.show}
+  render();
+});
+$('hh').oninput=e=>{S.hh=num(e.target.value,0);render()};
+$('hh').onchange=()=>{$('hh').value=S.hh};
+$('util').oninput=e=>{S.util=+e.target.value;render()};
+$('prog').oninput=e=>{S.prog=num(e.target.value,0);render()};
+$('prog').onchange=()=>{$('prog').value=S.prog};
+$('mul').onchange=e=>{S.mul=e.target.value;render()};
+$('applyCalc').onclick=e=>{const v=+e.currentTarget.dataset.v;if(v){S.util=v;render()}};
+$('vl').onclick=e=>{
+  const b=e.target.closest('button[data-id]');if(!b)return;
+  S.sel=b.dataset.id;render();
+  if(matchMedia('(max-width:960px)').matches){$('res').scrollIntoView({behavior:'smooth',block:'start'});const t=$('resH');t&&t.focus({preventScroll:true})}
+};
+render();
+</script>
