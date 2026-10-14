@@ -264,7 +264,7 @@ def doc08():
 <tbody>{rows}<tr class="sum"><td colspan="4">합계 {len(GW_RECS)}개 단지</td><td class="r">{tot:,}</td><td></td></tr></tbody></table>
 <p class="note">※ 연혁 기재 시기는 NICE 보고서·카페 공지 기준이며, 실제 박람회 일정·장소는 [별지 제2호]에 단지별로 적었습니다(레이카운티 · 센트럴사하는 1·2차 2회 개최).</p>
 <div class="box"><b>공고 3항 수임 실적</b> &nbsp; 요건: 입찰공고일 이전 1,000세대 이상 단지 5개 이상 수임 &nbsp;→&nbsp; 최근 3년만 <b>{len(GW_RECS)}개 단지 · {tot:,}세대</b> &nbsp; <span class="ok">충족</span><br>
-3년 이전을 포함한 1,000세대 이상 주관 실적은 <b>9개 단지 · 18,261세대</b>입니다(붙임 실적 확약서).</div>
+3년 이전 실적(2023년 상반기 포항 · 사상)은 붙임 실적 확약서에 함께 적었습니다.</div>
 <h2>2. 붙임</h2>
 <ol style="list-style:none;font-size:10pt;line-height:1.8">
 <li>① [별지 제2호] 최근 3년간 실적증명서</li>

@@ -12,7 +12,7 @@
 const KW_BANDS=[[800,50,20],[1500,80,30],[2500,120,40],[Infinity,180,60]];
 const EL_AREA=0.24;   /* kWh/㎡·대관일 — BEXCO 2025.12 4B 0.226 · 2026.05 4E+4F 0.257 평균 */
 const WASTE=195;      /* 원/㎡·행사 — BEXCO 2025.12 212 · 2026.05 181 평균 */
-const FB={jan:{I:182,Kh:23},aug:{I:209,Kh:30.4}};  /* 단가 확인된 홀들의 중앙값(전기 원/kWh · 냉난방 원/㎡·시간) */
+const FB={jan:{I:182,Kh:23},aug:{I:209.5,Kh:30.9}};  /* 단가 확인된 홀 항목들의 중앙값(전기 원/kWh · 냉난방 원/㎡·시간, v7 데이터) */
 function bandKW(hh){for(const [lim,kw,skw] of KW_BANDS)if(hh<lim)return {kw,skw};}
 function kwhOf(p,A){
   if(p.elm==='area')return EL_AREA*A*p.rent;
