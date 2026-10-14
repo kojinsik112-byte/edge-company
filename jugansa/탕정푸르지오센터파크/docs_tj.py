@@ -250,7 +250,7 @@ CAFE_DAESUNG = ("2024.11 ~ 2025.12", "에코델타 대성베르힐", "부산 에
 
 def doc07():
     recs = sorted([(d, nm, reg, n, "NICE 연혁(별첨 1)") for d, nm, reg, n in D.RECENT3] + list(D.RECENT3_EXTRA))
-    recs.append(CAFE_DAESUNG + ("입예협 카페 공지(별첨 2 붙임 ②)",))
+    recs.append(CAFE_DAESUNG + ("입예협 카페 공지(별첨 2 확약서 붙임 2)",))
     recs.sort(key=lambda r: r[0])
     rows = "".join(
         f'<tr><td>{i}</td><td style="white-space:nowrap">{d}</td><td class="l">{e(nm)}</td><td>{e(reg)}</td><td class="r">{n:,}</td>'
