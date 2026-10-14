@@ -206,7 +206,7 @@ def submit_rows():
         ("4", "법인등기부등본 (최근 1개월 이내 발급)", issued("reg", "등기부등본"), "1부"),
         ("5", "인감증명서 및 사용인감계 (최근 1개월 이내 발급)", f"인감증명서 {D.INGAM_DATE} 발급 · 사용인감계", "1부"),
         ("6", "국세 및 지방세 완납증명서 (유효기한 내)", f"국세 {issued('tax', '국세')} · 지방세 {issued('ltax', '지방세')}", "각 1부"),
-        ("7", "4대 보험 가입자 명부 및 4대 보험 완납증명서 (유효기한 내)", f"가입자 명부 {D.ROSTER_DATE} 발급 · 4대보험 완납증명서", "1부"),
+        ("7", "4대 보험 가입자 명부 및 4대 보험 완납증명서 (유효기한 내)", f"가입자 명부 {D.ROSTER_DATE} 발급 · 4대 사회보험료 완납증명서 {D.WANNAP_DATE} 발급", "1부"),
         ("8", "최근 3년간 주관사 실적 증빙서류", f"[별지 제2호] 실적증명서 {len(GW_RECS)}건 · NICE 연혁 발췌 · 실적 확약서", "1부"),
         ("9", "입주박람회 제안서", f"{n09}쪽 · A/S 및 사후관리 · 품목별 취소·환불 규정 · 컴플레인 예시 및 해결 우수 사례 포함", "1부"),
         ("10", "제안 요약본 (5페이지 이내)", "5쪽", "1부"),
@@ -463,12 +463,13 @@ def main():
     pg.show_pdf_page(fitz.Rect((595.28 - w) / 2, 90, (595.28 + w) / 2, 90 + h), bank, 0)
     res["03"] = merge("03_법인통장_사본", [b3], "3 법인사업자 통장 사본")
     res["04"] = merge("04_법인등기부등본", [f"{EV}/법인등기부등본.pdf"], "4 법인등기부등본")
-    gam = stamped(render("05_사용인감계", doc05()))
+    render("05_사용인감계", doc05())  # 양식(HTML) — 제출본은 법인인감 실물 날인 스캔(10.15)
+    gam = "/tmp/claude-0/-home-user-edge-company/a96d9eb6-5244-5d3f-9f1b-6f379ac2a82c/scratchpad/seal_scan/지웰_사용인감계_날인.pdf"
     res["05"] = merge("05_인감증명서_사용인감계", ["/tmp/claude-0/-home-user-edge-company/a96d9eb6-5244-5d3f-9f1b-6f379ac2a82c/scratchpad/v3/ingam_1008_masked.pdf", gam],
                       "5 인감증명서 및 사용인감계")
     res["06"] = merge("06_국세_지방세_완납증명서", [f"{EV}/국세_납세증명서.pdf", f"{EV}/지방세_납세증명서.pdf"], "6 국세 및 지방세 완납증명서")
-    res["07"] = merge("07_4대보험_가입자명부", ["/tmp/claude-0/-home-user-edge-company/a96d9eb6-5244-5d3f-9f1b-6f379ac2a82c/scratchpad/cs_sub/엣지컴퍼니_철산역자이_06_4대보험_사업장가입자명부.pdf"],
-                      "7 4대 보험 가입자 명부 (완납증명서 별도)")
+    res["07"] = merge("07_4대보험_가입자명부", ["/tmp/claude-0/-home-user-edge-company/a96d9eb6-5244-5d3f-9f1b-6f379ac2a82c/scratchpad/cs_sub/엣지컴퍼니_철산역자이_06_4대보험_사업장가입자명부.pdf", f"{EV}/4대보험_완납증명서.pdf"],
+                      "7 4대 보험 가입자 명부 및 4대 보험 완납증명서")
     p08 = stamped(render("08_실적증빙", doc08()))
     ann = os.path.join(HERE, PFX + "08_붙임_NICE연혁발췌.pdf")
     annex07(nice, ann)

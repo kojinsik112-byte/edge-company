@@ -33,7 +33,7 @@ ELEC_LICENSE = "전기공사업 등록 제 울산-00821호"
 NEW_LOGO = True                   # 새 로고(본부장 10-09) — assets_ins/logo_*_rev.png 필요(깃 제외)
 
 # 제출서류 발급일(공고 7항 15) '공고일 이후 발급분' — 재발급본을 받으면 여기에 날짜를 넣는다. None = 재발급 전(목록에 '확인 필요' 표시)
-ISSUE = dict(biz=None, reg=None, tax=None, ltax=None)
+ISSUE = dict(biz="2026.10.14", reg="2026.10.14", tax="2026.10.14", ltax="2026.10.14")  # 서무 재발급본(국세·지방세 유효 ~2026.11.13)
 NICE_DATE = "2026.06.19"          # NICE 기업신용평가 평가일(유효 ~2027.06.18) — 공고일 이전 평가분이라 입예협 인정 여부 문의 필요
 CEO_BIRTH = None                  # 별지 1·2호 '대표자 생년월일' — 개인정보라 저장소에 두지 않음(본부장 확인 후 org_private.json 'ceo_birth')
 AGENT = None                      # 별지 1호 대리인 (직위, 성명) — 본부장 결정 전 빈칸
