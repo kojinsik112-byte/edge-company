@@ -749,8 +749,8 @@ def apply2(B, D, take, sub):
     for n_, name in enumerate(["streetlight", "pin", "search", "report"], 1):
         rows = sub(rows, f'<div class="no">{n_:02d}</div>', f'<div class="no">{n_:02d}</div>{ic(name)}')
     gal = ('<div class="gal lx2">'
-           '<figure><img src="assets_ins/bd_plaza_night.jpg" alt="" style="object-position:50% 55%"><figcaption>조경 공간 경관조명<small>보행등 · 수목 업라이트 · 연출 이미지</small></figcaption></figure>'
-           '<figure><img src="assets_ins/bd_aerial_night.jpg" alt="" style="object-position:50% 60%"><figcaption>단지 조경 동선<small>동선을 따라 이어지는 야간 경관 · 연출 이미지</small></figcaption></figure></div>')
+           '<figure><img src="assets_ins/bd_garden_night.jpg" alt="" style="object-position:50% 60%"><figcaption>조경 산책로 경관조명<small>보행등 · 수목 업라이트 · 연출 이미지</small></figcaption></figure>'
+           '<figure><img src="assets_ins/bd_plaza_night.jpg" alt="" style="object-position:50% 60%"><figcaption>커뮤니티 · 수경 공간<small>간접광 · 수경 조명 · 연출 이미지</small></figcaption></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
     B.CSS += ".r2 .gal.lx2{grid-template-columns:1fr;grid-template-rows:1fr 1fr}"
 

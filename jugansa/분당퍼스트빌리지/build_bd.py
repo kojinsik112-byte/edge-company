@@ -331,10 +331,10 @@ new("std", sec=S0, title=T_MAP,
         f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td class="pg">{PGS(ks)}</td></tr>'
         for i, (a, b, ks) in enumerate(MUST9, 1)), "m9"),
     kp=("필수 9항목 모두 [[숫자와 기한]]으로 답했습니다.", "자격 · 업무 범위 · 제한 · 유의사항 대응은 이 장 뒤쪽"))
-B.CSS += (".tbl.m9 td{padding:9px 14px;font-size:15px;line-height:1.35}.tbl.m9 td.k{font-size:16px;width:37%}"
+B.CSS += (".tbl.m9 td{padding:12.5px 14px;font-size:15.5px;line-height:1.35}.tbl.m9 td.k{font-size:16.5px;width:37%}"
           ".tbl.m9 td.pg{white-space:nowrap;color:var(--gold);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;width:22%}"
           ".tbl.m9 tr:nth-child(odd) td{background:rgba(255,255,255,.025)}"
-          ".tbl.s11 td{padding:5px 12px;font-size:14px;line-height:1.32}.tbl.s11 td.k{font-size:14.5px;width:34%}"
+          ".tbl.s11 td{padding:8.5px 12px;font-size:14.5px;line-height:1.32}.tbl.s11 td.k{font-size:15px;width:34%}"
           ".tbl.s11 td.pg{white-space:nowrap;color:var(--gold);font-weight:800;font-size:14px;width:12%}.tbl.s11 td.n{width:36px}")
 
 # ------------------------------------------------------------ 단지 이해
@@ -1676,7 +1676,7 @@ def finish(path, title):
 
 
 PH_LABEL = {"bd_cover": "조감도 자리", "bd_gate_night": "문주 경관조명 사진 자리", "bd_aerial_night": "단지 야간 경관 사진 자리",
-            "bd_facade_night": "외벽 경관조명 사진 자리", "bd_plaza_night": "단지 조경 경관 사진 자리"}
+            "bd_facade_night": "외벽 경관조명 사진 자리", "bd_plaza_night": "단지 조경 경관 사진 자리", "bd_garden_night": "조경 산책로 사진 자리"}
 PH_MISSING = set()
 
 
