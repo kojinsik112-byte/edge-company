@@ -458,8 +458,8 @@ CSS2 = r"""
 .fl5 .n.g b{color:var(--gold)}
 .fl5 em{display:flex;align-items:center;justify-content:center;width:26px;flex:none;color:var(--gold);font-style:normal;font-size:20px;font-weight:800}
 /* 자금 흐름 띠 */
-.mny{position:relative;border:1px solid var(--line);border-radius:14px;padding:14px 26px 12px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01))}
-.mny .rl{position:relative;height:86px}
+.mny{position:relative;border:1px solid var(--line);border-radius:14px;padding:10px 26px 4px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01))}
+.mny .rl{position:relative;height:78px}
 .mny .ln{position:absolute;left:0;right:0;top:30px;height:2px;background:rgba(255,255,255,.25)}
 .mny .zone{position:absolute;top:18px;height:26px;border-radius:6px;background:rgba(235,203,143,.2);border:1px dashed rgba(235,203,143,.7)}
 .mny .zone b{position:absolute;left:50%;top:-19px;transform:translateX(-50%);font-size:13.5px;color:var(--gold);white-space:nowrap}
@@ -489,6 +489,7 @@ CSS2 = r"""
 .gnt .ar{position:relative;height:96px;margin:0 6px}
 .gnt .yl{position:absolute;top:16px;bottom:16px;border-left:1px dashed rgba(255,255,255,.22)}
 .gnt .yl span{position:absolute;bottom:-17px;left:4px;font-size:11px;color:var(--mute)}
+.gnt .yl span.lt{left:auto;right:4px}
 .gnt .bk{position:absolute;top:0;height:12px;border:1.5px solid var(--gold2);border-bottom:0;border-radius:4px 4px 0 0}
 .gnt .bk b{position:absolute;left:50%;top:-3px;transform:translate(-50%,-50%);background:#12263d;padding:0 8px;font-size:12px;color:var(--gold);white-space:nowrap}
 .gnt .br{position:absolute;height:20px;border-radius:5px;display:flex;align-items:center;font-size:11px;font-weight:800;color:#0d1e33;padding-left:6px;white-space:nowrap;overflow:visible}
@@ -593,7 +594,7 @@ CSS2 = r"""
 .cvhq:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,18,32,.85) 0%,rgba(8,18,32,0) 22%)}
 .cvhq span{position:absolute;z-index:1;left:16px;bottom:12px;font-size:12.5px;font-weight:700;color:#fff}
 /* 사전점검 가격 카드 */
-.tiles.tp .tim{height:70px}
+.tiles.tp .tim{height:66px}
 .tiles.tp .tile .ds{font-size:14.5px;line-height:1.45}
 .tiles.tp .tile .nm{font-size:18px;margin-top:4px}
 .pv{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
@@ -612,13 +613,16 @@ def apply2(B, D, take, sub):
 
     # 3중 안전망 — 보호 기간 띠(카드 숫자 그대로 · 눈금은 비례 아님)
     k = take("입주민을 지키는 [[3중 안전망]]")[1]
-    band = ('<div class="pt3"><h5>보호 기간 한눈에<small>눈금은 기간에 비례하지 않습니다 · 무상 A/S 기간은 업체·품목별로 다를 수 있음</small></h5>'
-            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:42%">이행보증보험 2년 · 최대 10억</i></div></div>'
-            '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:15%">48시간 처리</i></div></div>'
-            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:42%">무상 A/S 최소 2년</i><i class="c" style="left:42%;width:58%">장기 관리 최대 10년</i></div></div>'
-            '<div class="tk"><span style="left:0">입주</span><span style="left:15%">48시간</span><span style="left:42%">2년</span><span style="left:100%">10년</span></div></div>')
-    k["body"] = '<div class="nb">' + band + sub(k["body"], "최소 2년 무상 A/S, 최대 10년 장기 관리.",
-                                                "최소 2년 무상 A/S(업체·품목에 따라 기간이 다를 수 있음), 최대 10년 장기 관리.") + '</div>'
+    band = ('<div class="pt3"><h5>보호 기간 한눈에<small>48시간 눈금은 비례하지 않습니다 · 무상 A/S 기간은 업체·품목별로 다를 수 있음</small></h5>'
+            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:100%">이행보증보험 2년 · 최대 10억</i></div></div>'
+            '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:17%">48시간 처리</i></div></div>'
+            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:50%">입주 후 1년 · 주관 창구 운영</i><i class="c" style="left:50%;width:50%">~ 2년 · 무상 A/S(업체별) · 보증 유지</i></div></div>'
+            '<div class="tk"><span style="left:0">입주</span><span style="left:17%">48시간</span><span style="left:50%">1년</span><span style="left:100%">2년</span></div></div>')
+    b3 = sub(k["body"], '<div class="big">10<small>년</small></div><div class="nm">장기 사후관리</div>',
+             '<div class="big">2<small>년</small></div><div class="nm">무상 A/S · 사후관리</div>')
+    b3 = sub(b3, "최소 2년 무상 A/S, 최대 10년 장기 관리.",
+             "업체·품목별 상이. 입주 후 1년은 주관 창구 운영, 이후에도 규정 효력 유지(제10조).")
+    k["body"] = '<div class="nb">' + band + b3 + '</div>'
 
     # 선보상 재원 — 돈의 흐름
     k = take("선보상 재원 · 하자 예치금 [[최대 1억원]]")[1]
@@ -651,7 +655,7 @@ def apply2(B, D, take, sub):
     bars = [("01", 0, 2, "l1", "w", "선정·협약"), ("02", 2, 15, "l2", "w in", "옵션 설문 · 정례 보고 · 건의 관리"), ("03", 15, 20, "l1", "w up", "경관 진단 · 답사"),
             ("04", 20, 25, "l2", "s in", "수요조사 · 심사"), ("05", 25, 27, "l1", "s up", "박람회"), ("06", 28, 40, "l2", "o", "입주 후 1년 관리")]
     g = '<div class="gnt"><div class="ar">'
-    g += "".join(f'<div class="yl" style="left:{X(m)}"><span>{y}</span></div>' for y, m in [("2027", 3), ("2028", 15), ("2029", 27), ("2030", 39)])
+    g += "".join(f'<div class="yl" style="left:{X(m)}"><span{" class=lt" if y == "2029" else ""}>{y}</span></div>' for y, m in [("2027", 3), ("2028", 15), ("2029", 27), ("2030", 39)])
     g += f'<div class="bk" style="left:0;width:{W(0, 28)}"><b>공고에서 입주까지 약 {D.SITE["months"]}개월</b></div>'
     g += "".join(f'<div class="br {ln} {c}" style="left:{X(a)};width:{W(a, b)}">{no}{f"<small>{tx}</small>" if tx else ""}</div>'
                  for no, a, b, ln, c, tx in bars)
@@ -731,11 +735,11 @@ def apply2(B, D, take, sub):
             '<text x="250" y="74" text-anchor="middle" font-size="12.5" font-weight="700" fill="#EBCB8F">공동구매</text>'
             '<text x="250" y="91" text-anchor="middle" font-size="10.5" fill="#A9B4C2">가격 공개표로</text>'
             '<text x="250" y="105" text-anchor="middle" font-size="10.5" fill="#A9B4C2">비교 안내</text></svg>')
-    hts = ('<div class="gwq">' + "".join(f'<span>{x}</span>' for x in [
+    hts = ('<div class="bdq">' + "".join(f'<span>{x}</span>' for x in [
            "신혼부부 · 예비신혼", "영유아 가구", "실거주", "전용 51 ~ 59㎡", "판교 · 분당 업무지구 인접", "국공립어린이집 · 다함께돌봄센터 계획"]) + '</div>')
     pan = (f'<div class="vnp"><h5>공식 유상옵션 겹침 확인</h5>{venn}<h5>입주민 특성</h5>{hts}'
            '<div class="cp">신혼희망타운 공급 대상 · 단지 개요 기준</div></div>')
-    B.CSS += (".gwq{display:flex;flex-wrap:wrap;gap:6px}.gwq span{font-size:12px;font-weight:700;border:1px solid rgba(200,168,106,.55);"
+    B.CSS += (".bdq{display:flex;flex-wrap:wrap;gap:6px}.bdq span{font-size:12px;font-weight:700;border:1px solid rgba(200,168,106,.55);"
               "border-radius:99px;padding:4px 10px;color:var(--gold);background:rgba(235,203,143,.06)}")
     k["body"] = f'<div class="nb"><div class="vn">{rows}{pan}</div></div>'
     B.CSS += (".hts{display:flex;flex-direction:column;gap:7px}.hts .h{display:grid;grid-template-columns:62px 1fr;align-items:center;gap:8px;font-size:12px}"
@@ -802,23 +806,25 @@ def apply2(B, D, take, sub):
 
     # 사전점검 당일 현장 지원 — 위: 현수막·X배너 시안(HTML로 그린 예시) / 아래: 사진 카드 5칸
     k = take("사전점검 당일 [[현장 지원]]")[1]
-    banner = ('<div class="bnx"><div class="bl"><i>01</i><b>행사 물품</b>'
+    banner = ('<div class="bnx"><div class="bl"><i>01 · 기본 지원</i><b>행사 물품</b>'
               '<p>부스용 현수막·X배너·서면 자료 제작</p><small>시안 · 협의 후 확정</small></div>'
               f'<div class="hbw"><div class="hbn"><span class="t1">{D.SITE["name"]} 입주예정자협의회</span>'
               f'<b>{D.SITE["short"]} 입주민 여러분, <em>사전점검을 환영합니다</em></b>'
               '<span class="t2">입예협 안내 부스 · 라돈 측정 · 하자 체크리스트 배포</span></div><span class="cp">현수막 시안</span></div>'
               f'<div class="xbw"><div class="xbn"><div class="xh"><span>{D.SITE["short"]}</span><b>사전점검<br>안내</b></div>'
-              '<ol><li>입예협 부스 방문 · 정회원 가입</li><li>라돈 측정 지원</li><li>하자 체크리스트 · 점검 요령</li><li>박람회 2028.11 ~ 12</li></ol>'
+              '<ol><li>입예협 부스 방문 · 정회원 가입</li><li>라돈 측정 지원</li><li>하자 체크리스트 배포</li></ol>'
               f'<div class="xf">{D.SITE["short"]}<br>입주예정자협의회</div></div><span class="cp">X배너 시안</span></div></div>')
-    items = [("02", "입예협 도우미", "부스 운영 인력 별도 지원", ("g09_helper_ai", "50% 30%")),
-             ("03", "라돈측정기 10대", "입주민이 내 집 라돈을 직접 측정", ("g09_radon_u", "50% 50%")),
-             ("04", "냉·난방용품", "점검 시기에 맞춰 부스용 준비", ("g09_heater_ai", "50% 50%")),
-             ("05", "커피차 지원", "점검 당일 입예협 부스에 커피차 지원", ("g09_coffee_u2", "50% 50%")),
-             ("06", "하자진단 보고서", "공용부·조경 점검 결과를 사진·도면으로", ("n11_report", "50% 40%"))]
+    items = [("02 · 기본 지원", "입예협 도우미", "부스 운영 인력 지원(주관사 부담)", ("g09_helper_ai", "50% 30%")),
+             ("03 · B 패키지", "라돈측정기 10대", "입주민이 내 집 라돈을 직접 측정", ("g09_radon_u", "50% 50%")),
+             ("04 · B 패키지", "냉·난방용품", "점검 시기에 맞춰 부스용 준비", ("g09_heater_ai", "50% 50%")),
+             ("05 · B 패키지", "커피차 지원", "점검 당일 입예협 부스에 커피차 지원", ("g09_coffee_u2", "50% 50%")),
+             ("06 · B 패키지", "하자진단 보고서", "공용부·조경 점검 결과를 사진·도면으로", ("n11_report", "50% 40%"))]
     tile = lambda no, nm, ds, ph_: (f'<div class="tile"><div class="tim"><img src="assets_ins/{ph_[0]}.jpg" style="object-position:{ph_[1]}" alt=""></div>'
                                     f'<div class="lb">{no}</div><div class="nm">{nm}</div><div class="ds">{ds}</div></div>')
     k["body"] = (f'<div class="nb"><div class="r91">{banner}{tile(*items[0])}</div>'
                  f'<div class="tiles t5" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr">{"".join(tile(*x) for x in items[1:])}</div></div>')
+    k["lead"] = "행사 물품·도우미는 기본 지원(주관사 부담), 라돈측정기·냉난방용품·커피차·하자진단 보고서는 B 패키지로 더합니다."
+    k["kp"] = ("입예협은 [[입주민 응대에만]] 집중하시면 됩니다.", "01 · 02 = 공고 5항 5 기본 지원(15만원과 별도) · 03 ~ 06 = B 패키지 선택 항목")
     B.CSS += r"""
 .tile .tim+.lb{margin-top:0}
 .t5 .tile,.r91 .tile{justify-content:flex-start}.t5 .tile .nm{font-size:17px}.t5 .tile .ds{font-size:13.5px;line-height:1.45}.t5 .tim{height:136px}
@@ -841,7 +847,7 @@ def apply2(B, D, take, sub):
 .hbn b em{color:#b0812f;font-style:normal}
 .hbn .t2{font-size:9.5px;color:#334;font-weight:600}
 .xbw{position:relative;display:flex;flex-direction:column;align-items:center}
-.xbn{width:70px;height:112px;border-radius:3px;background:#fdfaf2;box-shadow:0 8px 22px rgba(0,0,0,.45);overflow:hidden;display:flex;flex-direction:column}
+.xbn{width:70px;height:120px;border-radius:3px;background:#fdfaf2;box-shadow:0 8px 22px rgba(0,0,0,.45);overflow:hidden;display:flex;flex-direction:column}
 .xbn .xh{background:#0d1e33;color:#fff;text-align:center;padding:5px 3px 4px;border-bottom:3px solid #c8a86a}
 .xbn .xh span{display:block;font-size:6.5px;color:#ebcb8f;font-weight:700}
 .xbn .xh b{display:block;font-size:10.5px;font-weight:900;line-height:1.15;margin-top:2px}
