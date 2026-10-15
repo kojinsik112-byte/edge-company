@@ -47,8 +47,16 @@ DROP = [
 ]
 PAGES_MIN, PAGES_MAX = 105, 112  # 본부장 '110쪽 내외'
 
+# 기본본(본부장 10-15 '120쪽 전후 · 115 ~ 125') — DROP 중 사진 나열 · 슬로건 · 같은 말 반복 13장만 뺀다
+MID = {"해마다 쌓이는 [[누적 주관 단지]]", "전국 지사망 · [[직영 4곳 + 협력 8곳]]", "체계적 행사 운영으로 [[고객 만족]]을 최우선합니다",
+       "사진으로 보는 주관 단지 [[2018–2022]]", "사진으로 보는 주관 단지 [[2023–2026]]", "지역과 함께하는 [[나눔 활동]]",
+       "참여업체 [[서비스 교육]]", "신혼희망타운이라서 [[먼저 챙길 것]]", "분당 퍼스트빌리지 [[특화 제안]]",
+       "이렇게 [[패키지로]] 받으실 수 있습니다 (예시)", "사진으로 보는 [[정회원 혜택]]", "입주 전부터 [[끝까지]] 붙어 있습니다",
+       "사전점검 세미나, [[영상으로]] 다시 봅니다"}
+MID_MIN, MID_MAX = 115, 125
 
-def apply(G):
+
+def apply(G, mode="compact"):
     B, sub = G["B"], G["sub"]
     P = B.PAGES
 
@@ -60,9 +68,14 @@ def apply(G):
     n0 = len(P)
     # PGREF(대응표 쪽 번호) 대상은 빼지 않는다 — 빼야 하면 PGREF[key]를 살아 있는 쪽 제목으로 바꾼 뒤 뺄 것
     keep = set(G["PGREF"].values())
-    for title, _why in DROP:
+    drop = [(t, w) for t, w in DROP if mode == "compact" or t in MID]
+    assert mode == "compact" or len(drop) == len(MID), ("MID 제목이 DROP에 없음", MID - {t for t, _ in drop})
+    gone = {t for t, _ in drop}
+    for title, _why in drop:
         assert title not in keep, ("대응표가 가리키는 쪽은 뺄 수 없음", title)
         P.remove(page(title))
+    if mode == "mid":
+        return _mid_edits(G, B, sub, P, page, n0, gone)
 
     # ---------------------------------------------------- 합치기 · 문구 다듬기(숫자 · 사실은 그대로)
     # 목차 01: 나눔 활동 장을 뺐으므로
@@ -192,6 +205,54 @@ def apply(G):
     k["kp"] = (a, sub(b, "점검 요령 영상은 B 패키지 세미나 영상", "점검 요령 영상은 B 패키지 08 세미나 영상(⟪pg:pkb⟫)"))
 
     n = len(P)
-    assert n0 - n == len(DROP), (n0, n, len(DROP))
+    assert n0 - n == len(drop), (n0, n, len(drop))
     assert PAGES_MIN <= n <= PAGES_MAX, ("압축본 쪽수가 목표 범위 밖", n)
     print(f"압축본: {n0}쪽 → {n}쪽 (뺀 장 {len(DROP)} · compact.py)")
+
+
+def _mid_edits(G, B, sub, P, page, n0, gone):
+    """기본본(약 120쪽) — 뺀 13장에만 있던 사실을 남은 쪽으로(압축본과 같은 문구 · 숫자는 전체본 그대로)."""
+    # p28 나눔 활동(뺌) → 목차 01
+    toc01 = G["TOC4"][0][0]
+    assert toc01[0] == "01" and toc01[2][4] == "추천 · 감사 · 나눔", toc01
+    toc01[2][4] = "추천 · 감사 · 현장 지원"
+    # p22(뺌) 2018 ~ 2022 주관 단지 → p15 아래 띠
+    k = page("주관 [[성공사례]] · 수임실적")[1]
+    p22 = [("양산 이지더원 2차 그랜드파크", "1,768"), ("사송 데시앙 1차", "1,712"), ("양산 두산위브 1차", "1,337"),
+           ("영도 센트럴 에일린의뜰", "1,216"), ("일광자이푸르지오 2단지", "1,059"), ("양산 이지더원 리버포레", "1,083"),
+           ("양산 e편한세상 2차", "1,032"), ("주례 롯데캐슬 골드스마트", "998"), ("사하 코오롱하늘채 리버뷰", "969"),
+           ("울산 KCC스위첸 웰츠타워", "635"), ("e편한세상 연산 더퍼스트(오피스텔 포함)", "551")]
+    k["body"] = sub(k["body"], '<div class="cards" ', '<div class="cards c15" ') + (
+                  '<div class="p22"><b>2018 ~ 2022 주관 단지 · 전신 실적 포함</b><div>'
+                  + "".join(f"<span>{a} <i>{n}</i></span>" for a, n in p22)
+                  + '<span class="g">웨이브리즈(기장 신혼희망타운) <i>728</i></span></div></div>')
+    B.CSS += (".cards.c15 .card{padding:12px 24px}.cards.c15 .big{font-size:40px;margin-top:4px}.cards.c15 .nm{font-size:20px;margin-top:4px}"
+              ".cards.c15 .ds{font-size:16px;margin-top:4px}"
+              ".p22{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:10px 16px;background:rgba(255,255,255,.03)}"
+              ".p22>b{display:block;font-size:12.5px;letter-spacing:.12em;color:var(--gold2);margin-bottom:6px}"
+              ".p22>div{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;color:var(--sub);line-height:1.45}"
+              ".p22 i{font-style:normal;font-weight:700;color:#fff}.p22 .g,.p22 .g i{color:var(--gold);font-weight:700}")
+    k = page(G["T_CITY"])[1]
+    k["kp"] = (k["kp"][0], k["kp"][1] + " · 신혼희망타운 주관 - 웨이브리즈(기장) 728 · 사송 LH 2차 479세대")
+    # p23(뺌) 춘천 민간임대 표기 → p17
+    k = page("[[대단지]] 운영 경험")[1]
+    k["body"] = sub(k["body"], "춘천 중해마루힐<small>2025.09 입주</small>", "춘천 중해마루힐<small>2025.09 입주 · 민간임대</small>")
+    # p36(뺌) 서비스 교육 → p27 KEY POINT
+    k = page("[[4단계]] 공개 심사 프로세스")[1]
+    assert isinstance(k["kp"], str), k["kp"]
+    k["kp"] = (k["kp"], "최종 참여업체 고객응대 · 서비스 교육 - 전문 강사 · 응대 표준화 · 실습 · 정기 교육과 피드백")
+    # p76(뺌) 05 폐쇄몰 · 카카오채널 → '못 오셔도 괜찮습니다'
+    k = page("못 오셔도 [[괜찮습니다]]")[1]
+    assert isinstance(k["kp"], str), k["kp"]
+    k["kp"] = (k["kp"], "폐쇄몰 · 카카오채널 상담도 같은 공동구매가")
+    # p117(뺌) 세미나 영상 → B 패키지 표지 · 사전점검 대행 쪽
+    k = page("B 패키지 · [[협의회 단지발전지원]]")[1]
+    k["body"] = sub(k["body"], "입예협이 직접 하실 일을 줄입니다.</p>",
+                    "입예협이 직접 하실 일을 줄입니다.<br><br>세미나 영상은 유튜브로 다시 보고 카페 · 공지채널에 링크로 안내합니다. 공개 범위는 입예협과 협의합니다.</p>")
+    k = page("사전점검 대행, [[이렇게 봅니다]]")[1]
+    a, b = k["kp"]
+    k["kp"] = (a, sub(b, "점검 요령 영상은 B 패키지 세미나 영상", "점검 요령 영상은 B 패키지 08 세미나 영상(⟪pg:pkb⟫)"))
+    n = len(P)
+    assert n0 - n == len(gone), (n0, n, len(gone))
+    assert MID_MIN <= n <= MID_MAX, ("기본본 쪽수가 목표 범위 밖", n)
+    print(f"기본본: {n0}쪽 → {n}쪽 (뺀 장 {len(gone)} · compact.MID)")

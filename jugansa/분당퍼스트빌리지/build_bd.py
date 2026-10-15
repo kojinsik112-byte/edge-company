@@ -30,8 +30,10 @@ import build as B  # noqa: E402  (기본틀 — import 시 PAGES가 채워짐)
 import data as D  # noqa: E402
 
 # 압축본 스위치 — 본부장 10-14 저녁: 기본 = 134쪽 전체본(본부장이 직접 줄임), '--compact' 일 때만 compact.apply(약 109쪽)
+# 본부장 10-15: 기본 출력 = 약 120쪽(115 ~ 125, compact.MID) · '--full' = 전체본 133쪽 · '--compact' = 압축본 약 109쪽
 COMPACT = "--compact" in sys.argv
-FULL = not COMPACT
+FULL = "--full" in sys.argv and not COMPACT
+MID = not COMPACT and not FULL
 
 NAME = "엣지컴퍼니_분당퍼스트빌리지_02_입주박람회_주관사_제안서"
 FULL_DIR = os.path.join(HERE, "assets_full")  # 통합제안서 기본틀 발췌 페이지(JPEG, 깃 제외)
@@ -1636,9 +1638,9 @@ B.p_toc = p_toc_bd
 
 # 압축본(--compact) — reorg.apply → vis.apply 가 끝난 최종 B.PAGES에서 뺀다(vis가 빠질 장 제목을 take()하므로 그 뒤에).
 # 뺄 장 · 합칠 장 · 문구 수정은 모두 compact.py 한 곳에 있다. 기본(전체본 134쪽)은 이 단계를 건너뛴다.
-if COMPACT and not os.environ.get("NO_NATIVE"):
+if (COMPACT or MID) and not os.environ.get("NO_NATIVE"):
     import compact  # noqa: E402
-    compact.apply(globals())
+    compact.apply(globals(), mode="compact" if COMPACT else "mid")
 
 # ============================================================ 재검증 2차(10-14 밤) — 제목 · 띠 표현
 # reorg · vis · compact가 제목으로 장을 찾으므로 그 뒤(최종 B.PAGES)에서 바꾼다.
@@ -1795,9 +1797,10 @@ def build():
     src = sys.argv[sys.argv.index("--src") + 1] if "--src" in sys.argv else None
     render_full_pages(src)
     # 전체본(기본) = NAME.html/.pdf(메일용 mail_lite.py도 이 파일 기준) · 압축본(--compact) = NAME_압축본.html/.pdf
-    out = os.path.join(HERE, NAME + "_압축본.html") if COMPACT else B.OUT_HTML
+    # 기본(약 120쪽) = NAME.html/.pdf(메일용 · 제출서류 기준) · --full = NAME_전체본 · --compact = NAME_압축본
+    out = (os.path.join(HERE, NAME + "_압축본.html") if COMPACT else os.path.join(HERE, NAME + "_전체본.html") if FULL else B.OUT_HTML)
     emit(list(B.PAGES), out, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
-    print(f"{'압축본' if COMPACT else '전체본'} {len(B.PAGES)}쪽 → {out}")
+    print(f"{'압축본' if COMPACT else '전체본' if FULL else '기본(120쪽 안팎)'} {len(B.PAGES)}쪽 → {out}")
     # 공고 7항 14 '기타' — 요약제안서(정회원 투표 50점 대상, 8 ~ 12쪽). 숫자 · 문구는 위 제안서와 같은 D · ST 값.
     if not os.environ.get("NO_NATIVE") and "--no-summary" not in sys.argv:
         import summary_bd  # noqa: E402

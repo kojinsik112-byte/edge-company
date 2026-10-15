@@ -77,7 +77,15 @@ def fill(page, rect, color):
                    overlay=True)
 
 
-def bg_fill(page, rect, ring=2.5, z=2.0):
+def _smooth(v, k):
+    if k <= 1 or len(v) <= k:
+        return v
+    pad = np.pad(v, ((k // 2, k - 1 - k // 2), (0, 0)), mode="edge")
+    ker = np.ones(k) / k
+    return np.stack([np.convolve(pad[:, c], ker, mode="valid") for c in range(3)], 1)
+
+
+def bg_fill(page, rect, ring=2.5, z=2.0, smooth=0):
     """rect 둘레 색으로 안쪽을 매끈하게 메움(가장자리 4변 보간 = 이음새 없음). 그림 1장으로 굳힘."""
     rect = fitz.Rect(rect)
     clip = fitz.Rect(rect.x0 - ring, rect.y0 - ring, rect.x1 + ring, rect.y1 + ring) & page.rect
@@ -86,6 +94,9 @@ def bg_fill(page, rect, ring=2.5, z=2.0):
     r = max(2, int(ring * z))
     top, bot = np.median(a[:r], 0), np.median(a[-r:], 0)
     lef, rig = np.median(a[:, :r], 1), np.median(a[:, -r:], 1)
+    if smooth:
+        k = int(smooth * z)
+        top, bot, lef, rig = (_smooth(v, k) for v in (top, bot, lef, rig))
     H, W = a.shape[:2]
     s = np.linspace(0, 1, W)[None, :, None]
     t = np.linspace(0, 1, H)[:, None, None]
@@ -272,7 +283,7 @@ def p6(d):
     tw = fitz.TextWriter(p.rect)
     tw.append((304.6, 207), "엣지컴퍼니 본사 · 쇼룸", font=R, fontsize=12)
     tw.write_text(p, render_mode=3)
-    bg_fill(p, (413, 163, 849, 483))
+    bg_fill(p, (413, 170, 849, 483), smooth=30)
     bg_fill(p, (205, 208, 415, 483))
     photo(p, (232, 214, 458, 474), "hq_tower.jpg")
     photo(p, (468, 214, 838, 362), "hq_sign.jpg")
@@ -384,12 +395,12 @@ def p12(d):
 def p14(d):
     p = d[13]
     clear_text(p, (200, 60, 849, 600))
-    bg_fill(p, (250, 70, 800, 138))
+    bg_fill(p, (250, 56, 800, 138), smooth=30)
     runs(p, 524, 104, [("외주가 아닌 ", 40, 0x0B1E3F, B), ("전기공사업", 40, 0xB0874A, B), (" 직접 등록", 40, 0x0B1E3F, B)],
          align="center")
-    bg_fill(p, (340, 143, 712, 170))
+    bg_fill(p, (340, 143, 712, 170), smooth=20)
     W(p, 526, 156, "제 울산-00821호 · 2022.05.04 등록 · 2026.07.15 재교부", 13, 0x3A3F4A, R, align="center")
-    bg_fill(p, (205, 196, 849, 600))
+    bg_fill(p, (205, 196, 849, 566), smooth=40)
     # 액자(금색 이중 테두리) + 실물 등록증
     fr = fitz.Rect(250, 205, 470, 515)
     p.draw_rect(fr + (3, 3, 3, 3), color=None, fill=(0.80, 0.78, 0.74), overlay=True)  # 그림자
@@ -462,8 +473,9 @@ def doc_png_img(path):
 def p17(d):
     p = d[16]
     rt(p, (258, 72, 520, 106), "협력사 연계 종합 건물관리 지원", 24, color=0x3A3F4A, font=R, x=260)
-    rt(p, (476, 318, 566, 404), ["협력사", "연계", "관리 지원"], 15, color=0xF3E2BE, font=B, align="center",
-       x=521, gap=20, smooth=True)
+    clear_text(p, (476, 318, 566, 404))
+    bg_fill(p, (485, 322, 557, 402), smooth=12)
+    lines(p, 521, 362, ["협력사", "연계", "관리 지원"], 15, 0xF3E2BE, B, gap=20, align="center")
     rt(p, (598, 293, 662, 316), "시설관리", 15, color=0x1E2433, font=B, align="center", x=630)
     log(17, "'종합건물관리 전문업체'·중앙 '관리통합전문 주식회사 BCS'(타사, 제휴 근거 없음) → '협력사 연계 종합 건물관리 지원'·'협력사 연계 관리 지원' / "
             "'위탁관리'(주택관리업 오인) → '시설관리'")
@@ -475,7 +487,7 @@ def p18(d):
              ((510, 601), 478, "3명", "이벤트·홍보 진행"), ((644, 737), 502, "4명", "협력사·민원 지원")]
     burn(p, [(x0 + 2, 401, x1 - 2, yb - 2) for (x0, x1), yb, n, duty in teams])
     for (x0, x1), yb, n, duty in teams:
-        bg_fill(p, (x0, 398, x1, yb))
+        bg_fill(p, (x0, 398, x1, yb), smooth=25)
         cx = (x0 + x1) / 2
         W(p, cx, 422, n, 22, 0xE3C48C, B, align="center")
         W(p, cx, 446, duty, 9.5, 0xD8DEE8, R, align="center", max_w=x1 - x0 - 6)
@@ -488,10 +500,10 @@ def p19(d):
     p = d[18]
     lab_c = 0x1F2A44
     # 슬라이드 번호 15 → 16(번호 중복)
-    rt(p, (768, 11.5, 790, 26.5), "16", 11.5, color=F.ink(p, fitz.Rect(768, 11.5, 790, 26.5)), font=B, align="center",
-       x=779, fill_color=F.sample_bg(p, fitz.Rect(768, 11.5, 790, 26.5), ring=0.8))
+    rt(p, (771, 13.5, 788, 24.5), "16", 11, color=0xF2F2F2, font=B, align="center",
+       x=779.5, fill_color=F.sample_bg(p, fitz.Rect(700, 13, 740, 25), ring=0.5))
     # 지사 라벨: 직영 4(금색) + 협력 8
-    bg_fill(p, (213, 252, 362, 272))  # 아산(대전 지사가 충청권 커버) 라벨·선 삭제
+    bg_fill(p, (213, 252, 362, 272), smooth=20)  # 아산(대전 지사가 충청권 커버) 라벨·선 삭제
     rt(p, (214, 289, 266, 305.5), "청주 지사", 12.5, color=0xA9802F, font=B, x=216.4)
     rt(p, (214, 307, 266, 322.5), "대전 지사", 12.5, color=0xA9802F, font=B, x=216.4)
     rt(p, (549, 346, 600, 361.5), "울산 본사", 12.5, color=0xA9802F, font=B, x=551)
@@ -503,7 +515,7 @@ def p19(d):
     p.draw_rect(c, color=rgb(0xC3A37D), fill=rgb(0x0B1E3F), width=0.8, radius=0.05, overlay=True)
     W(p, 670, 166, "직영 4곳", 15, 0xE3C48C, B)
     items = [("울산 본사 · 쇼룸", "울주군 청량읍 온산로 615-1, 2·3층"), ("부산 지사", "해운대구 아르피나 B1"),
-             ("청주 지사", "흥덕구 직지대로 642"), ("대전 지사", "충청권 거점")]
+             ("청주 지사", "흥덕구 직지대로 642"), ("대전 지사", "디펠리체 204호 · 충청권 거점")]
     y = 198
     for a, b in items:
         W(p, 670, y, a, 11, 0xF2F2F2, B)
@@ -733,7 +745,7 @@ def p28(d):
 def p29(d):
     p = d[28]
     clear_all_text(p)
-    bg_fill(p, (252, 111, 574, 162))
+    fill(p, (252, 108, 569, 160), F.sample_bg(p, fitz.Rect(300, 105, 520, 108), ring=1.0))
     W(p, 254, 136.5, "5개 단지 연속 수임", 32, 0xC6A675, B)
     rows = [212.9, 264.0, 316.0, 367.4, 419.2, 470.4, 521.8]
     C = 0xC4C9D0
@@ -775,7 +787,7 @@ def p32(d):
     burn(p, [r for r, n in slots])
     for r, n in slots:
         photo(p, r, n)
-    rt(p, (445, 542, 483, 560), "최선의", 14, color=0xF2F2F2, font=B, x=446)
+    rt(p, (442, 541, 477, 559), "최선의", 13.2, color=0xE8E8E8, font=R, x=443)
     log(32, "행사리스트 표 9칸 SPEC·NICE 정정(오션시티 2205→2813 등) · 중산 한양립스(2022 행사)→연산포레 서희스타힐스 612 / "
             "AI 재생성 사진 6장(깨진 간판·아동 얼굴) → 실사진 6장 / '최고의 가치'→'최선의 가치'")
 
@@ -789,13 +801,16 @@ def p36(d):
 # ------------------------------------------------------------------ 2·3파트(사실 관계만, 과장표현은 유지)
 def p54(d):
     p = d[53]
-    rt(p, (217, 145, 545, 170), " ", 11, color=0x6B6B6B, font=R)
-    runs(p, 220, 157.5, [("협약 시 ", 11.5, 0x6B6B6B, R), ("이행(지급)보증증권 제출", 11.5, 0xA9802F, B),
-                         (" · 최대 10억 범위, 금액은 협약 때 확정", 11.5, 0x6B6B6B, R)])
-    rt(p, (258, 276, 448, 326), "최대 10억원", 36, color=0x0B1E3F, font=B, align="center", x=352)
+    clear_text(p, (200, 140, 470, 165))
+    bg_fill(p, (203, 142, 470, 162), smooth=20)
+    runs(p, 206, 152, [("협약 시 ", 11.5, 0x6B6B6B, R), ("이행(지급)보증증권 제출", 11.5, 0xA9802F, B),
+                       (" · 최대 10억 범위, 금액은 협약 때 확정", 11.5, 0x6B6B6B, R)])
+    clear_text(p, (250, 268, 430, 312))
+    bg_fill(p, (250, 270, 428, 310), smooth=20)
+    W(p, 339, 289.5, "최대 10억원", 34, 0x0B1E3F, B, align="center")
     sgi = doc_png(EV["sgi"], 0, masks=[(186, 149, 262, 164), (150, 710, 292, 722), (165, 724, 280, 737)])
-    place(p, (566, 190, 837, 574), sgi, pad=4)
-    W(p, 701.5, 593, "보증증권 발급 이력 · SGI서울보증 계약보증보험증권(2026.09, 타 용역, 가입금액 7억 400만원)", 7.2,
+    place(p, (543, 183, 802, 552), sgi, pad=3)
+    W(p, 672.5, 566, "보증증권 발급 이력 · SGI서울보증 계약보증보험증권(2026.09 · 타 용역 · 가입금액 7억 400만원)", 7,
       0x4A4F5A, R, align="center", max_w=300)
     log(54, "'이행 보증보험 가입!'(가입 이력 없음) → '협약 시 이행(지급)보증증권 제출 · 최대 10억 범위, 금액은 협약 때 확정' / '2년 10억원' → '최대 10억원' / "
             "견본 SGI 이행보증증권(2021.03, 법인 설립 전 날짜) → 실제 SGI 계약보증보험증권(증권번호 뒷자리·모집인 정보 가림) + '발급 이력' 캡션")
@@ -804,7 +819,7 @@ def p54(d):
 def p65(d):
     p = d[64]
     pill(p, (380, 243, 448, 258), "양식 예시", 8.5, fg=0xFFFFFF, bg=0x6B7280)
-    bg_fill(p, (489, 372, 631, 564))
+    fill(p, (482, 364, 645, 600), F.sample_bg(p, fitz.Rect(470, 380, 480, 560), ring=1.0))
     W(p, 560, 452, "하자 예치금은", 11, 0x0B1E3F, B, align="center")
     W(p, 560, 468, "협약 시 금액을 정해", 11, 0x0B1E3F, B, align="center")
     W(p, 560, 484, "예치합니다.", 11, 0x0B1E3F, B, align="center")
@@ -819,7 +834,7 @@ def p65(d):
 def p71(d):
     p = d[70]
     rt(p, (328, 240, 522, 288), ["행사 기간 사고·화재·상해에 대비해 영업(주최자)배상",
-                                 "책임보험에 가입할 예정이며, 협약 시 증권 사본을", "제출합니다."], 8.6, font=R, x=331, gap=14)
+                                 "책임보험에 가입할 예정이며, 협약 시 증권 사본을", "제출합니다."], 8.6, color=0x3A3F4A, font=R, x=331, gap=14)
     log(71, "'영업배상 책임보험으로 안전사고에 대비합니다'(가입 이력 없음, 현재형) → '가입할 예정 · 협약 시 증권 사본 제출'")
 
 
@@ -833,7 +848,7 @@ def p97(d):
     p = d[96]
     for s in [s for b in p.get_text("dict")["blocks"] for l in b.get("lines", []) for s in l["spans"] if "건설면허" in s["text"]]:
         clear_text(p, fitz.Rect(s["bbox"]))
-    rt(p, (372, 287, 432, 310), ["건축 분야", "특급기술자 지원"], 7.2, color=0x2B2F38, font=B, align="center", x=402, gap=10.5)
+    rt(p, (357, 287, 437, 311), ["건축 분야", "특급기술자 지원"], 7.2, color=0x2B2F38, font=B, align="center", x=397, gap=10.5)
     log(97, "'건설업체(텍스트층 건설면허) 특급기술 인력지원' → '건축 분야 특급기술자 지원'(건설업 등록 없음)")
 
 
@@ -877,25 +892,25 @@ def p147(d):
 
 def p149(d):
     p = d[148]
-    rt(p, (100, 278, 188, 291), "총회 및 협의회 활동지원", 6.9, font=B, align="center", x=144)
-    rt(p, (212, 278, 400, 291), "법무 검토 후 장소대관 · 현수막 · 도우미 지원", 6.9, font=R, align="center", x=306)
+    rt(p, (100, 278, 188, 291), "총회 및 협의회 활동지원", 6.9, color=0x222222, font=B, align="center", x=144)
+    rt(p, (212, 278, 400, 291), "법무 검토 후 장소대관 · 현수막 · 도우미 지원", 6.9, color=0x444444, font=R, align="center", x=306)
     log(149, "05 '승진(총회) 및 편의회 활동지원 — … 상품권 등 제공'(금품 오해) → '총회 및 협의회 활동지원 — 법무 검토 후 장소대관·현수막·도우미 지원'")
 
 
 def p150(d):
     p = d[149]
-    rt(p, (78, 230, 172, 243), "총회 및 협의회 활동지원", 6.9, font=B, align="center", x=125)
-    rt(p, (208, 230, 382, 243), "법무 검토 후 장소대관 · 현수막 · 도우미 지원", 6.9, font=R, align="center", x=295)
-    rt(p, (505, 77, 562, 91), "법률 자문 연계", 7.2, font=B, align="center", x=533.5)
-    rt(p, (640, 77, 766, 91), "하자 소송 시 법률 자문 연계 지원", 7.2, font=R, align="center", x=703)
+    rt(p, (78, 230, 172, 243), "총회 및 협의회 활동지원", 6.9, color=0x222222, font=B, align="center", x=125)
+    rt(p, (208, 230, 382, 243), "법무 검토 후 장소대관 · 현수막 · 도우미 지원", 6.9, color=0x444444, font=R, align="center", x=295)
+    rt(p, (505, 77, 562, 91), "법률 자문 연계", 7.2, color=0x222222, font=B, align="center", x=533.5)
+    rt(p, (640, 77, 766, 91), "하자 소송 시 법률 자문 연계 지원", 7.2, color=0x444444, font=R, align="center", x=703)
     log(150, "05 상품권 제공 삭제(149쪽과 동일) / 08 '법무법인 협업 — 하자 소송 전문 대형 로펌 협업진행'(계약 근거 없음) → '법률 자문 연계 — 하자 소송 시 법률 자문 연계 지원'")
 
 
 def p152(d):
     p = d[151]
-    cols = [((205, 527, 350, 569), 209, "울산 본사 · 쇼룸", "울산 울주군 청량읍 온산로 615-1, 2·3층"),
+    cols = [((205, 527, 345, 569), 209, "울산 본사 · 쇼룸", "울산 울주군 청량읍 온산로 615-1, 2·3층"),
             ((415, 527, 582, 569), 419, "부산 지사", "부산 해운대구 아르피나 B1"),
-            ((640, 527, 822, 569), 643, "대전 지사", "충청권 거점")]
+            ((640, 527, 822, 569), 643, "대전 지사", "디펠리체 204호 · 충청권 거점")]
     for r, x, a, b in cols:
         clear_text(p, r)
         fill(p, r, F.sample_bg(p, fitz.Rect(r), ring=1.0))
@@ -903,7 +918,7 @@ def p152(d):
         W(p, x, 557, b, 9.5, 0xD5DAE3, R, max_w=fitz.Rect(r).x1 - x - 3)
     runs(p, 573, 462, [("주관사업 총괄 본부장 윤현욱", 11, 0x0B1E3F, B), ("   010-7273-9901 · edgecompany1@naver.com", 11, 0x3A3F4A, R)],
          align="center")
-    log(152, "주소 띠 '부산본사 / 울산지사 상남1길 28(구 주소) / 대전지사 롯데시네마 226호' → '울산 본사 · 쇼룸 온산로 615-1 2·3층 / 부산 지사 / 대전 지사 · 충청권 거점' + 대표 연락처")
+    log(152, "주소 띠 '부산본사 / 울산지사 상남1길 28(구 주소) / 대전지사 롯데시네마 226호' → '울산 본사 · 쇼룸 온산로 615-1 2·3층 / 부산 지사 / 대전 지사 디펠리체 204호 · 충청권 거점'(본부장 10-15 정정: 디펠리체 204호 유지) + 대표 연락처")
 
 
 FIXES = [p3, p5, p6, p8, p9, p11, p12, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p28, p29,
