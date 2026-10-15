@@ -80,39 +80,57 @@ export default function Popup() {
   );
 }
 
-// 팝업 카드 1장 — A4 세로 절반(≈A5) 크기. 이미지는 A4 세로 비율(840×1188px) 권장.
+// 팝업 카드 1장 — A4 세로 절반(≈A5) 크기.
+// 이미지 팝업은 이미지 비율이 제각각이어도 카드가 전부 '같은 사이즈'로 뜨도록
+// 이미지 영역을 A4 세로 비율(210:297)로 고정하고 넘치는 부분은 크롭(object-cover)한다.
 function PopupCard({ popup, onClose }: { popup: PopupRow; onClose: (id: string, dont: boolean) => void }) {
   const [dont, setDont] = useState(false);
   const close = () => onClose(popup.id, dont);
 
+  const img = popup.image && (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={popup.image} alt={popup.title} className="h-full w-full object-cover" />
+  );
+
   return (
-    <div className="flex max-h-[86vh] w-[min(88vw,400px)] shrink-0 flex-col overflow-hidden rounded-2xl bg-surface shadow-2xl">
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        {popup.image &&
-          (popup.link ? (
-            <Link href={popup.link} onClick={close}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={popup.image} alt={popup.title} className="w-full" />
-            </Link>
-          ) : (
-            // 링크 없는 이미지 팝업: 클릭하면 그냥 닫힘 (깨진 # 이동 방지)
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={popup.image} alt={popup.title} className="w-full cursor-pointer" onClick={close} />
-          ))}
-        {(popup.title || popup.content || popup.link) && (
-          <div className="p-5">
-            {popup.title && <p className="text-[16px] font-bold text-ink">{popup.title}</p>}
-            {popup.content && (
-              <p className={`${popup.title ? "mt-2" : ""} whitespace-pre-wrap text-[13.5px] leading-relaxed text-ink/80`}>{popup.content}</p>
-            )}
-            {popup.link && (
-              <Link href={popup.link} onClick={close} className="mt-4 block rounded-lg bg-ink py-2.5 text-center text-[13.5px] font-semibold text-white">
-                자세히 보기
-              </Link>
+    <div className="flex max-h-[88vh] w-[min(88vw,400px)] shrink-0 flex-col overflow-hidden rounded-2xl bg-surface shadow-2xl">
+      {popup.image ? (
+        <>
+          {/* 이미지 영역: A4 세로 비율 고정 → 모든 카드 동일 사이즈 */}
+          <div className="relative aspect-[210/297] w-full shrink overflow-hidden bg-bg">
+            {popup.link ? (
+              <Link href={popup.link} onClick={close} className="block h-full w-full">{img}</Link>
+            ) : (
+              // 링크 없는 이미지 팝업: 클릭하면 그냥 닫힘 (깨진 # 이동 방지)
+              <div className="h-full w-full cursor-pointer" onClick={close}>{img}</div>
             )}
           </div>
-        )}
-      </div>
+          {/* 제목 줄: 링크 유무와 관계없이 같은 높이 (사이즈 통일) */}
+          {(popup.title || popup.link) && (
+            <div className="flex h-12 shrink-0 items-center justify-between gap-3 px-4">
+              <p className="truncate text-[14.5px] font-bold text-ink">{popup.title}</p>
+              {popup.link && (
+                <Link href={popup.link} onClick={close} className="shrink-0 rounded-md bg-ink px-3 py-1.5 text-[12.5px] font-semibold text-white">
+                  자세히 보기
+                </Link>
+              )}
+            </div>
+          )}
+        </>
+      ) : (
+        /* 텍스트(공지형) 팝업: 내용 길이에 맞게 표시 */
+        <div className="min-h-0 flex-1 overflow-y-auto p-5">
+          {popup.title && <p className="text-[16px] font-bold text-ink">{popup.title}</p>}
+          {popup.content && (
+            <p className={`${popup.title ? "mt-2" : ""} whitespace-pre-wrap text-[13.5px] leading-relaxed text-ink/80`}>{popup.content}</p>
+          )}
+          {popup.link && (
+            <Link href={popup.link} onClick={close} className="mt-4 block rounded-lg bg-ink py-2.5 text-center text-[13.5px] font-semibold text-white">
+              자세히 보기
+            </Link>
+          )}
+        </div>
+      )}
       <div className="flex shrink-0 items-center justify-between border-t border-line px-4 py-2.5">
         <label className="flex cursor-pointer items-center gap-2 text-[12.5px] text-muted">
           <input type="checkbox" checked={dont} onChange={(e) => setDont(e.target.checked)} className="h-4 w-4" />
