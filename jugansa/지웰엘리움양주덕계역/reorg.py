@@ -649,7 +649,8 @@ def apply(G):
     def zn(area, name, desc, staff="", cls=""):
         st = f'<b class="st">{staff}</b>' if staff else ""
         return f'<div class="z {cls}" style="grid-area:{area}"><h4>{name}{st}</h4><p>{desc}</p></div>'
-    staff = [("주차 안내요원", 5), ("안내데스크 · 체크인 도우미", 3), ("보안요원", 2), ("구급요원", 1),
+    staff = [("주차 안내요원", 3), ("안내데스크 · 체크인 도우미", 5),  # 본부장 10-15: 분당과 같게(합계 21 그대로)
+             ("보안요원", 2), ("구급요원", 1),
              ("카페테리아", 3), ("어린이 놀이방", 4), ("이벤트(네일·타로·캐리커처)", 3)]
     tot = sum(n for _, n in staff)
     p_floor = ("std", dict(sec="06. 입주박람회", title="박람회장 배치와 [[인원 운영]] (안)",
@@ -663,9 +664,9 @@ def apply(G):
               + zn("sign", "상담·계약 데스크", "공개 단가표 그대로 계약")
               + zn("build", "휴게 · 수유실", "가족 휴게 · 유모차 대여")
               + zn("event", "이벤트 · 경품존", "네일 · 타로 · 캐리커처", "3명")
-              + zn("entry", "안내데스크 · 체크인 · 입예협 부스", "정회원 등록 · 가입 안내 · 방문 선물 · 주관사 운영팀", "도우미 3명", "ent")
+              + zn("entry", "안내데스크 · 체크인 · 입예협 부스", "정회원 등록 · 가입 안내 · 방문 선물 · 주관사 운영팀", "도우미 5명", "ent")
               + zn("safe", "안전 · 구급", "보안 2 · 구급 1 · 119 연계", "3명", "sf")
-              + zn("park", "주차장 · 외부 동선", "차량 유도 · 하역 구역 분리", "5명", "pk")
+              + zn("park", "주차장 · 외부 동선", "차량 유도 · 하역 구역 분리", "3명", "pk")
               + '</div><div class="fps">'
               + '<div class="tot"><i>현장 배치 인원 (안)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주 · 행사 규모에 따라 변동</span></div>'
               + '<ul>' + "".join(f'<li><span>{_h.escape(a)}</span><b>{n}명</b></li>' for a, n in staff) + '</ul>'
