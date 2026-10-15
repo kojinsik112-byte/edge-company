@@ -860,8 +860,8 @@ new("std", sec=S0, title=T_HIST,
 _lead_n = getattr(D, "STAFF_LEAD", 2) + sum(c for _, c, _ in D.STAFF)
 PRO5 = [("전기", 3), ("도장", 2), ("타일", 1), ("조경", 1), ("간호사", 1)]
 new("std", sec=S0, title=T_PEOPLE,
-    lead="공고 8항 2 · 4항 4 - 대표자와 핵심 운영인력이 맡아 온 실적과, 분당 퍼스트빌리지에서 맡을 역할입니다.",
-    # 대표 개인 경력(본부장 10-15) — NICE 기업신용평가보고서(제출서류 14 ④) 13쪽 '대표자1' 약력 · 전기공사업 등록증 · ISO 인증서(3종 모두 최초 2025.08.12)로
+    lead=f"공고 8항 2 · 4항 4 - 대표자와 핵심 운영인력이 맡아 온 실적과, {ST['name']}에서 맡을 역할입니다.",  # 본부장 10-15 밤: 이 쪽 단지 표기 = 정식 명칭
+    # 대표 개인 경력(본부장 10-15) — NICE 기업신용평가보고서(제출서류 14 ③ 발췌) 13쪽 '대표자1' 약력 · 전기공사업 등록증 · ISO 인증서(3종 모두 최초 2025.08.12)로
     # 확인되는 사실만. 현장 총괄 문구는 본부장 10-15 확인. 경영경력 8년 8개월 = NICE 평가 당시(2026.05) 기재값.
     body=('<div class="nb"><div class="ppx">'
           '<div class="pp1 ceo"><i>대표이사</i><h3>고진식</h3><ul>'
@@ -869,10 +869,10 @@ new("std", sec=S0, title=T_PEOPLE,
           '<li>대한유화 2011 ~ 2018(최종 대리) → 엣지조명 대표 2019 ~ 2021 → <b>㈜엣지컴퍼니 창업 2022.02</b> · 대표 경영경력 8년 8개월(NICE 2026.05 기준)</li>'
           f'<li>전기공사업 등록(제 울산-00821호) 대표자</li>'
           '<li>ISO 9001 · 14001 · 45001 인증 취득 총괄 - 최초 인증 2025.08.12 · 박람회 · 전시회 기획 · 대행 / 전기공사 / 조명공사</li>'
-          '<li><b>주관 박람회 전 과정 현장 점검 · 진두지휘</b>(참여업체 검수 · 부스 배치 · 당일 운영)</li>'
+          '<li><b>주관 박람회 전 과정 현장 점검</b>(참여업체 검수 · 부스 배치 · 당일 운영)</li>'  # 본부장 10-15 밤: '진두지휘' 삭제
           '<li>법인 대표이사 · 협약 최종 책임 · PT 참석(공고 6항)</li></ul></div>'
           '<div class="pp1"><i>주관사업 총괄 본부장 · 전담 총괄</i><h3>총괄 본부장</h3><ul>'
-          f'<li>{ST["short"]} 총괄 책임 · 직통 <span style="white-space:nowrap">{D.MANAGER[2]}</span></li>'
+          f'<li>{ST["name"]} 총괄 책임 · 직통 <span style="white-space:nowrap">{D.MANAGER[2]}</span></li>'
           # 본부장 10-14 저녁: 개인 현장(송도) 문구 대신 협의회 운영 경험 한 줄 · 단지명은 쓰지 않음(송도는 회사 실적 10개 단지로만)
           '<li><b>입주예정자협의회 회장 3년 역임</b> - 입주민 입장에서 협의회 운영을 직접 겪어 봤습니다</li>'
           '<li>입예협 정례회의 · 박람회 · 사전점검 현장 참석 · 이슈 직접 관리</li></ul></div>'  # 경력 칸은 본부장 10-14 삭제
@@ -885,8 +885,9 @@ new("std", sec=S0, title=T_PEOPLE,
           '<div><b>4,470<small>세대</small></b><span>단일 단지 최대<br>레이카운티</span></div>'
           '<div><b>67<small>개 단지</small></b><span>누적 수임 56,361세대<br>(전신 실적 · 입주 예정 포함)</span></div>'
           '</div></div>'),
-    kp=("전기 전공 · 조명 사업 출신 대표가 박람회 전 과정을 [[현장에서 직접]] 챙깁니다.",
-        "대표 약력은 NICE 보고서(제출서류 14 ④) 13쪽 · 팀별 담당은 협약 시 명단 제출 · 실적 증빙은 제출서류 14(NICE 연혁 · 카페 공지 · BEXCO 행사일정)"))
+    # 본부장 10-15 밤: '전기 전공 · 조명 사업 출신 대표가 …' 대신 책임 구조(대표 · 본부장 · 4개 팀 = 이 쪽 카드 그대로 · 입주 후 1년 = 주관 창구 기간)
+    kp=("대표 · 총괄 본부장 · 4개 팀이 협약부터 입주 후까지 [[한 창구로]] 책임집니다.",
+        "대표 약력은 NICE 보고서 13쪽(제출서류 14 ③ 발췌) · 팀별 담당은 협약 시 명단 제출 · 실적 증빙은 제출서류 14(NICE 연혁 · 카페 공지 · BEXCO 행사일정)"))
 B.CSS += (".ppx{display:grid;grid-template-columns:1.22fr .82fr 1.3fr;gap:16px;flex:1;min-height:0}"
           ".ppx>div{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;min-height:0;"
           "background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 45%)}"
@@ -1126,7 +1127,7 @@ for k, kw in B.PAGES:
 
 # 16p 본사 사옥: 본사 사옥 → 자본금 → 현금흐름 → ISO 순
 i = find("[[본사 사옥]] 운영 · 자본금 2억")
-# 재검증 10-14: '사옥'은 자가 건물로 읽힘 — NICE 사업장 현황(14 ④)은 2 · 3층 모두 임차 → '본사 · 쇼룸'(제목은 아래 '재검증 2차' 블록에서 바꿈)
+# 재검증 10-14: '사옥'은 자가 건물로 읽힘 — NICE 사업장 현황(14 ③ 원본 기준)은 2 · 3층 모두 임차 → '본사 · 쇼룸'(제목은 아래 '재검증 2차' 블록에서 바꿈)
 B.PAGES[i][1]["body"] = B.media("assets/사옥.jpg", "엣지컴퍼니 울산 본사 · 쇼룸", [
     ("본사 · 쇼룸 운영", "울산 온산로 615-1(2 · 3층)에서 본사·쇼룸·시공팀을 직접 운영합니다."),
     ("자본금 2억원", "하자 예치금·이행보증의 재원이 되는 실체입니다."),
@@ -1718,6 +1719,10 @@ def finish(path, title):
         doc = f.read()
     doc = term(doc)
     doc = doc.replace("<span>주식회사 엣지컴퍼니 · 대표이사 고진식</span>", "<span>주식회사 엣지컴퍼니</span>")
+    # 본부장 10-15 밤: 조직 구성 쪽 KEY POINT — '박람회 현장 운영 인력 약 21명 …'은 줄을 바꿔 다음 문단으로(문구 그대로)
+    assert doc.count("<small>박람회 현장 운영 인력 약 21명") == 1, "조직 구성 쪽 KEY POINT 소문구를 찾지 못함"
+    doc = doc.replace("<small>박람회 현장 운영 인력 약 21명", '<small class="kpbr">박람회 현장 운영 인력 약 21명')
+    doc = doc.replace("</style>", ".kp small.kpbr{display:block;margin-left:0;margin-top:3px}</style>", 1)
     doc = doc.replace("지역업체", "인근 지역업체").replace("인근 인근", "인근")  # 본부장님 지시: '인근 지역업체'
     if getattr(D, "NEW_LOGO", False):  # 새 로고(본부장 10-09) — 남색 배경용 반전본(남색 → 아이보리), 깃 제외 자산
         doc = doc.replace('<div class="logo">EG</div><div class="en">EDGE COMPANY</div>',
