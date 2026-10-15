@@ -25,10 +25,6 @@ if not exist "%VPY%" (
 set "CFG="
 if exist "config.yaml" set "CFG=-c config.yaml"
 
-REM 두 번째 인자 repurpose = 이미 편집된 영상(유튜브 다운로드) 재가공 모드
-set "MODE="
-if /i "%~2"=="repurpose" set "MODE=--repurpose"
-
 set "DESKTOP="
 for /f "usebackq tokens=2,*" %%A in (`reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" /v Desktop`) do set "DESKTOP=%%B"
 if not defined DESKTOP set "DESKTOP=%USERPROFILE%\Desktop"
@@ -37,12 +33,11 @@ if not exist "%DESKTOP%" set "DESKTOP=%USERPROFILE%\Desktop"
 set "OUT=%DESKTOP%\캡컷_완성본\%~n1"
 if not exist "%OUT%" mkdir "%OUT%"
 
-echo 편집 시작: "%~nx1"
-if defined MODE echo 모드: 재가공 - 컷 없이 자막·숏츠·썸네일·업로드정보만
-echo 결과 저장 위치: "%OUT%"
+echo 편집 시작: %~1
+echo 결과 저장 위치: %OUT%
 echo (영상 길이에 따라 시간이 걸립니다. 진행률이 움직이면 정상입니다. 창을 닫지 마세요.)
 echo.
-"%VPY%" -m autoedit.cli edit "%~1" -o "%OUT%" %CFG% %MODE% -v
+"%VPY%" -m autoedit.cli edit "%~1" -o "%OUT%" %CFG% -v
 if errorlevel 1 (
   echo.
   echo [오류] 편집 중 문제가 발생했습니다. 위 메시지를 확인하세요.
