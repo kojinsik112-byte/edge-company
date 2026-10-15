@@ -269,7 +269,7 @@ def apply(B, D, take, sub):
     # 공인된 자격과 신뢰 — 카드 아래 자격·협회 등록 전문 인력 띠(본부장 10-12 제공 인원 · 증빙 제출 문구 없음).
     # 역할은 제안서에 이미 있는 업무만(조경 = 단지 조경 · 야간 경관 진단).
     k = take("공인된 [[자격과 신뢰]]")[1]
-    pro = [("전기", 3, "공용부·경관 조명 점검 · 전기 하자 확인"), ("도장", 2, "사전점검 도장 하자 확인"),
+    pro = [("전기", 3, "경관·공용부 조명 점검 · 전기 하자 확인"), ("도장", 2, "사전점검 도장 하자 확인"),
            ("타일", 1, "타일 들뜸·줄눈 하자 확인"), ("조경", 1, "임원 직접 · 단지 조경 · 야간 경관 점검·자문"),
            ("간호사", 1, "대한간호사협회 · 박람회 현장 응급 대응 지원")]
     k["body"] = ('<div class="nb">' + k["body"] + '<div class="pro"><div class="h"><i>PROFESSIONALS</i>'
@@ -617,9 +617,9 @@ def apply2(B, D, take, sub):
     # 3중 안전망 — 보호 기간 띠(카드 숫자 그대로 · 눈금은 비례 아님)
     k = take("입주민을 지키는 [[3중 안전망]]")[1]
     band = ('<div class="pt3"><h5>보호 기간 한눈에<small>48시간 눈금은 비례하지 않습니다 · 무상 A/S 기간은 업체·품목별로 다를 수 있음</small></h5>'
-            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:100%">이행보증보험 2년 · 최대 10억</i></div></div>'
+            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:100%">이행보증 · 협약으로 정한 기간(보증보험 또는 예치금 택1 · 협약 때 협의)</i></div></div>'
             '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:17%">48시간 처리</i></div></div>'
-            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:50%">입주 후 1년 · 주관 창구 운영</i><i class="c" style="left:50%;width:50%">~ 2년 · 무상 A/S(업체별) · 보증 유지</i></div></div>'
+            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:50%">입주 후 1년 · 주관 창구 운영</i><i class="c" style="left:50%;width:50%">~ 2년 · 무상 A/S(업체별)</i></div></div>'
             '<div class="tk"><span style="left:0">입주</span><span style="left:17%">48시간</span><span style="left:50%">1년</span><span style="left:100%">2년</span></div></div>')
     b3 = sub(k["body"], '<div class="big">10<small>년</small></div><div class="nm">장기 사후관리</div>',
              '<div class="big">2<small>년</small></div><div class="nm">무상 A/S · 사후관리</div>')
@@ -631,7 +631,7 @@ def apply2(B, D, take, sub):
     k = take("선보상 재원 · 하자 예치금 [[최대 1억원]]")[1]
     fl = ('<div class="fl5">'
           f'<div class="n">{ic("vault")}<b>엣지컴퍼니 자산</b><span>참여 업체 돈이 아님</span></div><em>›</em>'
-          f'<div class="n">{ic("coins")}<b>예치금 최대 1억원</b><span>단지 규모·협의로 결정</span></div><em>›</em>'
+          f'<div class="n">{ic("coins")}<b>예치 금액 협의</b><span>협약 때 입예협과 결정</span></div><em>›</em>'
           f'<div class="n">{ic("headset")}<b>하자 접수</b><span>주관 콜센터</span></div><em>›</em>'
           f'<div class="n g">{ic("house_shield")}<b>입주민 먼저 선보상</b><span>업체 사고·도산 시에도</span></div><em>›</em>'
           f'<div class="n">{ic("report")}<b>사용 내역 공개</b><span>업체와는 나중에 정산</span></div></div>')
@@ -682,7 +682,7 @@ def apply2(B, D, take, sub):
 
     # C 패키지 — 항목 썸네일
     k = take("C 패키지 · [[단지지원 컨설팅]]")[1]
-    th = [("n13_fit", "커뮤니티 조명"), ("bd_gate_night", "문주·경관조명"), ("n13_kidsplay", "피트니스·키즈"),
+    th = [("bd_gate_night", "문주·경관조명"), ("n13_fit", "커뮤니티 조명"), ("n13_kidsplay", "피트니스·키즈"),  # 외부 경관 먼저(본부장 10-15 밤)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
@@ -699,7 +699,7 @@ def apply2(B, D, take, sub):
            '<figure><img src="assets_ins/n13_gx.jpg" alt=""><figcaption>커뮤니티 공간<small>예시 이미지</small></figcaption></figure>'
            '<figure><img src="assets_ins/n03_light.jpg" alt=""><figcaption>등기구 설치 현장<small>엣지컴퍼니 시공팀</small></figcaption></figure>'
            '<figure><img src="assets_ins/g14_light1c.jpg" alt=""><figcaption>입주 기념 점등식<small>타 단지 현장</small></figcaption></figure>'
-           f'<figure class="ipn">{ic("streetlight")}<p><b>사인·문주 조명</b>다음 장 · 문주·경관조명 컨설팅</p></figure></div>')
+           f'<figure class="ipn">{ic("streetlight")}<p><b>사인·문주 조명</b>문주·경관조명 컨설팅 · ⟪pg:gate⟫</p></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
     # 실적 비례 추가할인 — 표 → 계단 막대(표 값 그대로)
