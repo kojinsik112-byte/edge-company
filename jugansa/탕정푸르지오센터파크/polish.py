@@ -64,8 +64,8 @@ def apply(G):
     _nd, _nh = _c[-1][3], _c[-1][4]
     k = kw("숫자로 보는 [[엣지컴퍼니]]")
     k["body"] = B.cards([
-        dict(lb="PROJECTS", big=str(_nd), unit="개 단지", nm="누적 주관·수임 단지", ds="2018년 첫 단지(전신 실적 포함)부터 2027년 입주 예정 단지까지."),
-        dict(lb="HOUSEHOLDS", big=f"{_nh:,}", unit="세대", nm="누적 주관·수임 세대",
+        dict(lb="PROJECTS", big=str(_nd), unit="개 단지", nm="누적 수임 단지", ds="2018년 첫 단지(전신 실적 포함)부터 2027년 입주 예정 단지까지."),
+        dict(lb="HOUSEHOLDS", big=f"{_nh:,}", unit="세대", nm="누적 수임 세대",
              ds=f"2023년 이후 1,000세대 이상 {sum(1 for r in D.SUIM if r[1] >= 1000)}곳(입주 예정 포함)."),
         dict(lb="LARGEST", big="4,470", unit="세대", nm="최대 단지 규모", ds="레이카운티 단일 단지 주관."),
         dict(lb="GROWTH", big=f"×{_nd / _c[0][3]:.1f}", unit="", nm="누적 단지 증가", ds=f"2021년 {_c[0][3]}곳 → 2027년 {_nd}곳(입주 예정 포함)."),
@@ -146,8 +146,10 @@ def apply(G):
     body_sub("입주민 [[자금]]을 먼저 지킵니다",
              '<div class="big">5<small>%</small></div>', f'<div class="big">{D.DEPOSIT_MAX}<small>%</small></div>',
              "계약금은 총액의 5% 이하. 잔금은 시공·설치 후 납부.", f"계약금은 총액의 {D.DEPOSIT_MAX}% 이하. 잔금은 시공·설치 후 납부.",
-             "제작·시공 전에는 100% 해약 가능.", "품목별 취소 기한(시공일 7일·15일 전) 안에는 100% 해약 가능. 맞춤 제작 품목은 출고 지시 전 업체와 협의.",
-             '<div class="nm">시공 전 환불</div>', '<div class="nm">기한 내 전액 환불</div>',
+             # 본부장 10-15: '100%' → '전액'(지웰 · 분당과 같게, 의미 그대로)
+             "제작·시공 전에는 100% 해약 가능.", "품목별 취소 기한(시공일 7일·15일 전) 안에 취소하면 전액 환불. 맞춤 제작 품목은 출고 지시 전 업체와 협의.",
+             '<div class="big">100<small>%</small></div>', '<div class="big">전액</div>',
+             '<div class="nm">시공 전 환불</div>', '<div class="nm">기한 내 취소 시 환불</div>',
              "품목별 시공일 기준 7일·15일 전 취소 가능.", "청소·줄눈·탄성코트 등은 시공일 7일 전, 미세방충망·인테리어 등은 15일 전까지. 맞춤 제작 품목은 출고 지시 전 업체 협의 후 취소.",
              '<div class="big">7/15</div>', '<div class="big">7·15<small>일 전</small></div>')
 

@@ -268,7 +268,7 @@ def apply(B, D, take, sub):
     # 공인된 자격과 신뢰 — 카드 아래 자격·협회 등록 전문 인력 띠(본부장 10-12 제공 인원 · 증빙 제출 문구 없음).
     # 역할은 제안서에 이미 있는 업무만(조경 = 입주민 건의 1순위 중앙광장·물의정원).
     k = take("공인된 [[자격과 신뢰]]")[1]
-    pro = [("전기", 3, "공용부·경관 조명 점검 · 전기 하자 확인"), ("도장", 2, "사전점검 도장 하자 확인"),
+    pro = [("전기", 3, "경관·공용부 조명 점검 · 전기 하자 확인"), ("도장", 2, "사전점검 도장 하자 확인"),
            ("타일", 1, "타일 들뜸·줄눈 하자 확인"), ("조경", 1, "임원 직접 · 중앙광장·물의정원 조경 점검·자문"),
            ("간호사", 1, "대한간호사협회 · 박람회 현장 응급 대응 지원")]
     k["body"] = ('<div class="nb">' + k["body"] + '<div class="pro"><div class="h"><i>PROFESSIONALS</i>'
@@ -672,7 +672,7 @@ def apply2(B, D, take, sub):
 
     # C 패키지 — 항목 썸네일
     k = take("C 패키지 · [[단지지원 컨설팅]]")[1]
-    th = [("n13_fit", "커뮤니티 조명"), ("tj_gate_night", "문주·경관조명"), ("n13_kidsplay", "피트니스·키즈"),
+    th = [("tj_gate_night", "문주·경관조명"), ("n13_fit", "커뮤니티 조명"), ("n13_kidsplay", "피트니스·키즈"),  # 외부 경관 먼저(본부장 10-15)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
@@ -689,7 +689,7 @@ def apply2(B, D, take, sub):
            '<figure><img src="assets_ins/n13_gx.jpg" alt=""><figcaption>커뮤니티 공간<small>예시 이미지</small></figcaption></figure>'
            '<figure><img src="assets_ins/n03_light.jpg" alt=""><figcaption>등기구 설치 현장<small>엣지컴퍼니 시공팀</small></figcaption></figure>'
            '<figure><img src="assets_ins/g14_light1c.jpg" alt=""><figcaption>입주 기념 점등식<small>타 단지 현장</small></figcaption></figure>'
-           f'<figure class="ipn">{ic("streetlight")}<p><b>사인·문주 조명</b>다음 장 · 문주·경관조명 컨설팅</p></figure></div>')
+           f'<figure class="ipn">{ic("streetlight")}<p><b>사인·문주 조명</b>문주·경관조명 컨설팅 · ⟪pg:gate⟫</p></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
     # 실적 비례 추가할인 — 표 → 계단 막대(표 값 그대로)

@@ -430,7 +430,7 @@ def doc12_cover():
     pages = find_pages(CASE_PAGES) if PROP else []
     lst = " · ".join(f"{t}({i + 1}쪽)" for t, i in zip(CASE_PAGES, pages))
     body = f"""{head("제출서류 12", "입주박람회 성과 및 성공사례 자료")}
-<div class="box"><b>요약</b> &nbsp; 누적 주관·수임 <b>67개 단지 · 56,361세대</b>(전신 실적 포함, 2027년 입주 예정 단지까지) ·
+<div class="box"><b>요약</b> &nbsp; 누적 수임 <b>67개 단지 · 56,361세대</b>(전신 실적 포함, 2027년 입주 예정 단지까지) ·
 1,000세대 이상 주관 <b>10개 단지 · 19,563세대</b> · 최대 단일 단지 <b>레이카운티 4,470세대</b> · 사송 · 에코델타 신도시 연속 수임</div>
 <h2>1. 입예협 카페 이벤트 · 공지 사례 (붙임 캡처)</h2>
 <table class="t"><thead><tr><th style="width:13%">날짜</th><th>글 제목 — 카페 화면 원문(작성자: 주관사 엣지컴퍼니)</th><th style="width:9%">댓글</th></tr></thead><tbody>{rows}</tbody></table>
