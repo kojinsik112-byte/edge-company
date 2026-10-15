@@ -256,7 +256,7 @@ def ink_cols(page, rect, bg, thr=110, z=8):
 
 
 def img_bytes(path, target_ar=None, maxw=1600, q=86, crop_box=None):
-    im = Image.open(path).convert("RGB")
+    im = path.convert("RGB") if isinstance(path, Image.Image) else Image.open(path).convert("RGB")
     if crop_box:
         im = im.crop(crop_box)
     if target_ar:
@@ -348,38 +348,103 @@ def p5(d):
     log(5, "POINT 3 '10년 안심보장' → '최대 10년 사후관리'(보장 범위 미확정)")
 
 
+def hq_tower_clean():
+    """본사 이미지(본부장 10-15: 실제 본사를 이미지화한 것) — 간판의 깨진 작은 글자만 정리, 건물은 그대로.
+    원본 = assets_ins/_orig/hq_tower.jpg(577×663, 업스케일본의 대각선 번짐 없음). 4배 키워 작업.
+    ① 우측 세로 간판 '입주주관사/엣지 AI/시스템즈'·'엣지컴퍼니/공식채널' = 같은 글자를 Pretendard로 또렷하게 다시 씀
+    ② '입주인주신재/전시·전설팀/교육·시공관리'(판독 불가) = 간판 바탕색으로 비움
+    ③ 1층 로비 벽 글자·출입구 옆 명판 글자(깨짐) = 글자 픽셀만 주변 결로 메움(inpaint)"""
+    import cv2
+    from PIL import ImageDraw, ImageFont
+    src = os.path.join(ASSET, "_orig", "hq_tower.jpg")
+    if not os.path.exists(src):
+        src = os.path.join(ASSET, "hq_tower.jpg")
+    K = 4
+    im = Image.open(src).convert("RGB")
+    im = im.resize((im.width * K, im.height * K), Image.LANCZOS)
+    a = np.asarray(im).astype(float)
+
+    def sm(v, k=6 * K):
+        pad = np.pad(v, ((k // 2, k - 1 - k // 2), (0, 0)), mode="edge")
+        return np.stack([np.convolve(pad[:, c], np.ones(k) / k, mode="valid") for c in range(3)], 1)
+
+    def blank(x0, y0, x1, y1, ring=2):
+        x0, y0, x1, y1 = (int(v * K) for v in (x0, y0, x1, y1))
+        r = ring * K
+        top, bot = sm(np.median(a[y0 - r:y0], 0)[x0:x1]), sm(np.median(a[y1:y1 + r], 0)[x0:x1])
+        lef, rig = sm(np.median(a[y0:y1, x0 - r:x0], 1)), sm(np.median(a[y0:y1, x1:x1 + r], 1))
+        t = np.linspace(0, 1, y1 - y0)[:, None, None]
+        s_ = np.linspace(0, 1, x1 - x0)[None, :, None]
+        A = (1 - t) * top[None] + t * bot[None]
+        Bm = (1 - s_) * lef[:, None] + s_ * rig[:, None]
+        C = (1 - s_) * (1 - t) * top[0] + s_ * (1 - t) * top[-1] + (1 - s_) * t * bot[0] + s_ * t * bot[-1]
+        v = A + Bm - C + np.random.default_rng(0).normal(0, 2.0, A.shape[:2] + (3,))
+        a[y0:y1, x0:x1] = np.clip(v, 0, 255)
+
+    def inpaint(x0, y0, x1, y1, thr=14):
+        x0, y0, x1, y1 = (int(v * K) for v in (x0, y0, x1, y1))
+        reg = a[y0:y1, x0:x1].astype(np.uint8)
+        g = cv2.cvtColor(reg, cv2.COLOR_RGB2GRAY)
+        bg = cv2.medianBlur(g, 31).astype(float)
+        m = (np.abs(g.astype(float) - bg) > thr).astype(np.uint8) * 255
+        full = np.zeros(a.shape[:2], np.uint8)
+        full[y0:y1, x0:x1] = cv2.dilate(m, np.ones((7, 7), np.uint8))
+        a[y0:y1, x0:x1] = cv2.inpaint(a.astype(np.uint8), full, 9, cv2.INPAINT_TELEA)[y0:y1, x0:x1]
+
+    blank(424, 147, 488, 190)
+    blank(426, 252, 492, 302)
+    blank(428, 340, 502, 389)
+    inpaint(176, 596, 220, 613)
+    inpaint(381, 577, 404, 595, thr=18)
+    out = Image.fromarray(a.astype(np.uint8))
+    dr = ImageDraw.Draw(out)
+    fr = ImageFont.truetype(os.path.join(HERE, "fonts", "Pretendard-Regular.ttf"), int(8.2 * K))
+    fb = ImageFont.truetype(os.path.join(HERE, "fonts", "Pretendard-Bold.ttf"), int(9 * K))
+    c = (232, 228, 220)
+    for cx, cy, t, f in [(456, 156, "입주주관사", fr), (456, 168.5, "엣지 AI", fb), (456, 181, "시스템즈", fr),
+                         (465, 352, "엣지컴퍼니", fb), (465, 366, "공식채널", fr)]:
+        dr.text((cx * K, cy * K), t, font=f, fill=c, anchor="mm")
+    return out.crop((8 * K, 8 * K, out.width, out.height))  # 왼쪽 위 둥근 모서리 흰 여백 제거
+
+
 def p6(d):
     p = d[5]
     clear_text(p, (300, 190, 400, 232))  # 숨은 '엣지컴퍼니 사옥'
     tw = fitz.TextWriter(p.rect)
     tw.append((304.6, 207), "엣지컴퍼니 본사 · 쇼룸", font=R, fontsize=12)
     tw.write_text(p, render_mode=3)
-    # AI 빌딩 자리 → 패널 바탕색 세로 그라데이션(원본 위·아래 크림색 띠 샘플) + 회사 개요 카드.
-    # 본사 외관 사진(hq_tower)은 간판 미세 글자가 깨져 AI 합성으로 보여 쓰지 않음(본부장 확인 전).
+    # AI 빌딩(DEFELICE·스타벅스·신세계 외벽) 자리 → 패널 바탕색 세로 그라데이션(원본 위·아래 크림색 띠 샘플)
     top_s, bot_s = (470, 152, 780, 158), (215, 489, 840, 494)
     vgrad(p, (204, 206, 850, 489), top_s, bot_s, feather={"t": 3, "b": 5, "l": 2}, span=(155, 489))
     vgrad(p, (408, 165, 850, 210), top_s, bot_s, feather={"t": 8, "l": 8}, span=(155, 489))
-    c = fitz.Rect(230, 222, 828, 470)
+    # 본사 이미지(본부장 10-15: 실제 본사를 이미지화 — 간판 깨진 글자만 정리) + '· 이미지' 표기 캡션
+    ph = fitz.Rect(232, 214, 458, 474)
+    p.insert_image(ph, stream=img_bytes(hq_tower_clean(), ph.width / ph.height), overlay=True)
+    cap = fitz.Rect(ph.x0, ph.y1 - 17, ph.x1, ph.y1)
+    p.draw_rect(cap, color=None, fill=rgb(0x0B1E3F), fill_opacity=0.82, overlay=True)
+    runs(p, (cap.x0 + cap.x1) / 2, (cap.y0 + cap.y1) / 2,
+         [("울산 본사(온산로 615-1)", 8.6, 0xE3C48C, B), (" · 이미지", 7.6, 0xC9D2DE, R)], align="center")
+    p.draw_rect(ph, color=rgb(0xC3A37D), width=0.8, overlay=True)
+    # 회사 요약 카드(사진 오른쪽, 겹치지 않게 축소 배치)
+    c = fitz.Rect(472, 214, 828, 474)
     p.draw_rect(c, color=rgb(0xC3A37D), fill=rgb(NAVY), width=1, radius=0.05, overlay=True)
     logo = os.path.join(ASSET, "logo_lockup_rev.png")
     if os.path.exists(logo):
-        p.insert_image(fitz.Rect(254, 250, 254 + 196, 250 + 52), filename=logo, keep_proportion=True, overlay=True)
-    W(p, 256, 330, "울산 본사 · 쇼룸", 19, 0xE3C48C, B)
-    W(p, 256, 356, "울산광역시 울주군 청량읍 온산로 615-1, 2·3층", 10.5, 0xDDE3EC, R, max_w=228)
-    W(p, 256, 376, "대표이사 고진식", 10, 0xA8B8CA, R)
-    W(p, 256, 394, "주관사업 총괄 본부장 윤현욱 · 010-7273-9901", 10, 0xA8B8CA, R, max_w=228)
-    W(p, 256, 440, "ISO 9001 · 14001 · 45001 인증 (2025.08)", 10, 0xC9A96A, B, max_w=228)
-    p.draw_line((498, 246), (498, 446), color=rgb(0x2C3E5C), width=0.8, overlay=True)
+        p.insert_image(fitz.Rect(490, 228, 490 + 170, 228 + 44), filename=logo, keep_proportion=True, overlay=True)
+    W(p, 492, 292, "울산 본사 · 쇼룸", 16, 0xE3C48C, B)
+    W(p, 492, 311, "울산광역시 울주군 청량읍 온산로 615-1, 2·3층", 9.5, 0xDDE3EC, R, max_w=320)
+    W(p, 492, 327, "대표이사 고진식 · 주관사업 총괄 본부장 윤현욱 · 010-7273-9901", 8.8, 0xA8B8CA, R, max_w=320)
     tiles = [("2022.02", "법인 설립"), ("제 울산-00821호", "전기공사업 등록"),
              ("임직원 14명", "정규직 10 + 인턴 4 (2026.10)"), ("직영 4 · 협력 8", "전국 12개 거점")]
     for i, (big, sub) in enumerate(tiles):
-        x0, y0 = 518 + (i % 2) * 152, 244 + (i // 2) * 104
-        tr = fitz.Rect(x0, y0, x0 + 142, y0 + 92)
-        p.draw_rect(tr, color=rgb(0x2C3E5C), fill=rgb(0x10284F), width=0.8, radius=0.08, overlay=True)
-        W(p, tr.x0 + 71, y0 + 38, big, 16, 0xE3C48C, B, align="center", max_w=130)
-        W(p, tr.x0 + 71, y0 + 64, sub, 9.5, 0xDDE3EC, R, align="center", max_w=130)
-    log(6, "AI 빌딩(외벽 DEFELICE·스타벅스·신세계 간판, '사옥') → 패널 바탕 + 회사 개요 카드(울산 본사·쇼룸 주소 · 2022.02 설립 · "
-           "전기공사업 제 울산-00821호 · 임직원 14명 · 직영 4·협력 8 · ISO 3종). 본사 외관 사진은 AI 합성 의심으로 미사용")
+        x0, y0 = 490 + (i % 2) * 164, 342 + (i // 2) * 52
+        tr = fitz.Rect(x0, y0, x0 + 156, y0 + 45)
+        p.draw_rect(tr, color=rgb(0x2C3E5C), fill=rgb(0x10284F), width=0.8, radius=0.12, overlay=True)
+        W(p, tr.x0 + 78, y0 + 17, big, 13, 0xE3C48C, B, align="center", max_w=146)
+        W(p, tr.x0 + 78, y0 + 33.5, sub, 8.3, 0xDDE3EC, R, align="center", max_w=146)
+    W(p, 650, 459, "ISO 9001 · 14001 · 45001 인증 (2025.08)", 9, 0xC9A96A, B, align="center", max_w=320)
+    log(6, "AI 빌딩(외벽 DEFELICE·스타벅스·신세계 간판, '사옥') → 본사 이미지(hq_tower, 본부장 10-15 '실제 본사를 이미지화' — "
+           "간판의 깨진 작은 글자만 정리, 건물 유지) + 캡션 '울산 본사(온산로 615-1) · 이미지' + 회사 요약 카드(주소·설립·전기공사업·임직원·거점·ISO)")
 
 
 def p8(d):
@@ -639,7 +704,12 @@ def p19(d):
 def p20(d):
     p = d[19]
     rt(p, (262, 561, 350, 575), "직영 4 · 협력 8 거점", 8.2, color=0x333333, font=R, x=264.5)
-    log(20, "띠 '전국 주요 거점지사 운영' → '직영 4 · 협력 8 거점'(옆 칸과 같은 색·굵기). 건물 사진은 기본틀 그대로(실사 여부 본부장 확인 필요)")
+    # 본부장 10-15: 본사 이미지가 맞음 → 사진 라벨 복구(6쪽과 같이 '· 이미지' 표기)
+    r = fitz.Rect(214, 506, 334, 525)
+    p.draw_rect(r, color=None, fill=rgb(0x0B1E3F), fill_opacity=0.85, overlay=True)
+    runs(p, (r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2, [("울산 본사 · 쇼룸", 10, 0xE3C48C, B), (" · 이미지", 7.6, 0xC9D2DE, R)],
+         align="center")
+    log(20, "띠 '전국 주요 거점지사 운영' → '직영 4 · 협력 8 거점'(옆 칸과 같은 색·굵기) / 본사 이미지에 '울산 본사 · 쇼룸 · 이미지' 라벨")
 
 
 def p21(d):
@@ -784,20 +854,37 @@ def p25(d):
     num((700, 420.5, 735, 439), 732.2, 437, "479", 0x011A36)
     name2((196, 536, 300, 555.5), 199.5, "온양발리 한양립스", "더 퍼스트", 0x051C33)
     num((300, 536.5, 338, 555.5), 333.5, 553.2, "442", 0x051C33)
-    # 11·12번 = SPEC(본부장 10-05 확정) 그대로: 사진도 원래 이 두 단지(중산 한양립스 = 오토밸리 · 엘쿠르 = 엘크루)
+    # 11·12번(본부장 10-15): SPEC안 '오토밸리 한양립스 포레스트 376'(2022 장과 중복)·'기장역 엘크루 더퍼스트 219'(2025 장과 중복)
+    # → '힐스테이트 대연 센트럴 449'·'연산포레 서희스타힐스 612'. 원래 사진(중산 한양립스·엘쿠르)은 이름과 안 맞고 두 단지 사진이
+    # 없음 → 사진 칸을 패널색 + 단지명 카드로(다른 단지 사진 쓰지 않음)
     bg11 = F.sample_bg(BASE[24], fitz.Rect(411, 536, 504, 555.5), ring=0.8)
     bg12 = F.sample_bg(BASE[24], fitz.Rect(611, 536, 700, 555.5), ring=0.8)
     to_hex = lambda c: (int(c[0] * 255) << 16) | (int(c[1] * 255) << 8) | int(c[2] * 255)
-    name2((411, 536, 504, 555.5), 416, "오토밸리 한양립스", "포레스트", to_hex(bg11))
-    num((505, 536.5, 540, 555.5), 537.5, 553, "376", to_hex(bg11))
-    name2((611, 536, 700, 555.5), 615, "기장역 엘크루", "더퍼스트", to_hex(bg12))  # 세대수 219는 원본 숫자 그대로
+    for (x0, x1, gx), bg, nm, sub in [((377, 564.8, 408.2), bg11, "힐스테이트 대연 센트럴", "부산 남구 · 2023–2024 수임"),
+                                      ((577, 769.6, 607.8), bg12, "연산포레 서희스타힐스", "부산 연제구 · 2023–2024 수임")]:
+        # 사진 픽셀 삭제(burn)는 쪽 전체 그림을 무압축으로 다시 써 7MB 늘어 생략 — 불투명 패널로 덮음(글자층 없음)
+        top = fitz.Rect(x0, 456.75, x1, 531.3)
+        p.draw_rect(top, color=None, fill=rgb(to_hex(bg)), radius=0.07, overlay=True)  # 위 둥근 모서리
+        p.draw_rect((x0, 470, x1, 531.3), color=None, fill=rgb(to_hex(bg)), overlay=True)  # 아래는 이름 띠와 이어짐
+        p.draw_rect((gx, 531, x1 - 0.3, 536.6), color=None, fill=rgb(to_hex(bg)), overlay=True)  # 띠 윗부분 사진 잔상
+        inner = fitz.Rect(x0 + 10, 465, x1 - 10, 523)
+        p.draw_rect(inner, color=rgb(0x8C7350), width=0.6, radius=0.08, overlay=True)
+        cx = (x0 + x1) / 2
+        W(p, cx, 485, nm, 13, 0xE3C48C, B, align="center", max_w=inner.width - 14)
+        p.draw_line((cx - 18, 497), (cx + 18, 497), color=rgb(0x8C7350), width=0.6, overlay=True)
+        W(p, cx, 509, sub, 9, 0xC8D0DC, R, align="center")
+    name2((411, 536, 504, 555.5), 416, "힐스테이트", "대연 센트럴", to_hex(bg11))
+    num((505, 536.5, 540, 555.5), 537.5, 553, "449", to_hex(bg11))
+    name2((611, 536, 700, 555.5), 615, "연산포레", "서희스타힐스", to_hex(bg12))
+    num((700, 536.5, 735, 555.5), 732.2, 553.2, "612", to_hex(bg12))
     fill(p, (255, 567, 737.5, 598), 0xF8F7F7)
     runs(p, 492.6, 582.4, [("2023~2024년 ", 13, DARK, R), ("12개 단지", 17, GOLD, B),
-                           (", 총 10,975세대의 성공적인 사업 수행", 13, DARK, R)], align="center")
+                           (", 총 11,441세대의 성공적인 사업 수행", 13, DARK, R)], align="center")
     log(25, "송도 1312→'e편한세상 송도 더퍼스트비치' 1,302 / 사송 우미린 780→'사송역 우미린 포레스트' 688 / '서송'→'사송' / "
             "부산역→'해운대역 푸르지오 더원' 351 / 제일풍경채 430→452 / 신혼희망타운 420→'2차' 479 / 온양발리 400→'더 퍼스트' 442 / "
-            "11번 '중산 한양립스 382'→'오토밸리 한양립스 포레스트 376' / 12번 '엘쿠르'→'기장역 엘크루 더퍼스트' 219 (SPEC 그대로) / "
-            "캡션 10,189 → 10,975세대")
+            "11번 '중산 한양립스 382'→'힐스테이트 대연 센트럴 449' / 12번 '엘쿠르 더퍼스트 219'→'연산포레 서희스타힐스 612' "
+            "(본부장 10-15 중복 해소: 오토밸리 376 = 2022 장, 엘크루 219 = 2025 장) · 두 칸 사진은 이름과 안 맞아 패널색 + 단지명 카드 / "
+            "캡션 10,189 → 11,441세대")
 
 
 def p26(d):
@@ -886,7 +973,7 @@ def p32(d):
     drop_spans(p, (240, 478, 800, 575))  # 숨은 텍스트층의 옛 행사 목록(사송 우미 780세대 등) 삭제
     lst = [["온양발리 한양립스 더 퍼스트 442세대", "남천자이 913세대", "힐스테이트 포항 1717세대", "사상중흥S클래스 1572세대", "레이카운티 4470세대"],
            ["사송 LH 신혼희망타운 2차 479세대", "사송 더샵 3차 533세대", "사송 제일풍경채 452세대", "부산 드파인 센텀 750세대", "사송역 우미린 포레스트 688세대"],
-           ["두산위브더제니스 오션시티 2813세대", "해운대역 푸르지오 더원 351세대", "오토밸리 한양립스 포레스트 376세대", "힐스테이트 대연 센트럴 449세대", None]]
+           ["두산위브더제니스 오션시티 2813세대", "해운대역 푸르지오 더원 351세대", "연산포레 서희스타힐스 612세대", "힐스테이트 대연 센트럴 449세대", None]]
     lcol = [(226, 372), (436, 582), (652, 792)]
     lrow = [398, 418, 438, 457, 476]
     for c, items in enumerate(lst):
@@ -905,7 +992,7 @@ def p32(d):
     for r, n in slots:
         photo(p, r, n)
     rt(p, (442, 541, 477, 559), "최선의", 13.2, color=0xE8E8E8, font=R, x=443)
-    log(32, "행사리스트 표 9칸 SPEC·NICE 정정(오션시티 2205→2813 · 중산 한양립스→오토밸리 한양립스 포레스트 376 등) · 숨은 옛 목록 삭제 / "
+    log(32, "행사리스트 표 9칸 SPEC·NICE 정정(오션시티 2205→2813 · 중산 한양립스(2022 행사)→연산포레 서희스타힐스 612 — 23쪽 2023–2024 장과 일치, 본부장 10-15) · 숨은 옛 목록 삭제 / "
             "AI 재생성 사진 6장(깨진 간판·아동 얼굴) → 실사진 6장 / '최고의 가치'→'최선의 가치'")
 
 
