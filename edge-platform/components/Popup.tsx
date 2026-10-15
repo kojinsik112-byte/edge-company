@@ -69,14 +69,13 @@ export default function Popup() {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex flex-wrap items-center justify-center gap-5 overflow-y-auto bg-black/55 px-5 py-10"
-      role="dialog"
-      aria-modal="true"
-    >
-      {popups.map((p) => (
-        <PopupCard key={p.id} popup={p} onClose={closeOne} />
-      ))}
+    // 바깥=스크롤, 안쪽=min-h-full 센터링 → 팝업이 여러 장이라 화면보다 커져도 위가 잘리지 않고 스크롤됨
+    <div className="fixed inset-0 z-[100] overflow-y-auto bg-black/55" role="dialog" aria-modal="true">
+      <div className="flex min-h-full flex-wrap items-center justify-center gap-5 px-5 py-10">
+        {popups.map((p) => (
+          <PopupCard key={p.id} popup={p} onClose={closeOne} />
+        ))}
+      </div>
     </div>
   );
 }
