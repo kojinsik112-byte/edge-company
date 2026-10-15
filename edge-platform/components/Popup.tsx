@@ -87,9 +87,11 @@ function PopupCard({ popup, onClose }: { popup: PopupRow; onClose: (id: string, 
   const [dont, setDont] = useState(false);
   const close = () => onClose(popup.id, dont);
 
+  // object-contain: 비율이 달라도 글자가 잘리지 않게 전체 표시 (남는 부분은 흰 여백).
+  // 여백 없이 꽉 채우려면 이미지를 840×1188px(A4 세로 비율)로 제작하면 된다.
   const img = popup.image && (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={popup.image} alt={popup.title} className="h-full w-full object-cover" />
+    <img src={popup.image} alt={popup.title} className="h-full w-full object-contain" />
   );
 
   return (
@@ -97,7 +99,7 @@ function PopupCard({ popup, onClose }: { popup: PopupRow; onClose: (id: string, 
       {popup.image ? (
         <>
           {/* 이미지 영역: A4 세로 비율 고정 → 모든 카드 동일 사이즈 */}
-          <div className="relative aspect-[210/297] w-full shrink overflow-hidden bg-bg">
+          <div className="relative aspect-[210/297] w-full shrink overflow-hidden bg-white">
             {popup.link ? (
               <Link href={popup.link} onClick={close} className="block h-full w-full">{img}</Link>
             ) : (
