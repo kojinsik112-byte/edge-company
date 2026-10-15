@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""e편한세상 분당 퍼스트빌리지 제안서 — 쪽별 시각화(지웰 vis 사본)(본부장 10-08: '이미지 넣을 것·이미지화할 것 확인해서 넣어줘').
+"""오산세교아테라 제안서(분당 vis 사본) — 쪽별 시각화(지웰 vis 사본)(본부장 10-08: '이미지 넣을 것·이미지화할 것 확인해서 넣어줘').
 
 글자만 있던 장에 금색 선 아이콘 · 도식 · 기존 사진을 더한다. 숫자는 각 장에 이미 있는 값만 쓴다(새 수치 없음).
 reorg.apply() 안에서 재배치 전에 apply(...)로 부른다.
@@ -260,7 +260,6 @@ def apply(B, D, take, sub):
         ("입주민을 지키는 [[3중 안전망]]", ["shield", "clock", "calendar"]),
         ("선보상 재원 · 하자 예치금 [[최대 1억원]]", ["vault", "building", "house_shield"]),
         ("검증된 [[인근 지역업체]] 선정 원칙", ["pin", "report", "nosub"]),
-        ("참여업체 [[패널티 3단계]]", ["megaphone", "coin_pct", "ban"]),
         ("입주박람회 [[운영 계획]]", ["calendar", "pin", "shield", "idcard", "monitor", "megaphone"]),
     ]:
         k = take(title)[1]
@@ -295,23 +294,23 @@ def apply(B, D, take, sub):
     k = take(f"{D.SITE['short']} [[특화 제안]]")[1]
     k["body"] = inject(k["body"], ["checklist", "tape", "lockdoc", "users", "monitor", "streetlight"], "tile")
 
-    # 분당 퍼스트빌리지, 이런 단지입니다 — 야간 조감 배너(bd_aerial_night · 없으면 자리표시) + 공급 구성 막대(공공분양 타입 + 행복주택)
+    # 오산세교아테라, 이런 단지입니다 — 위 띠 = 단지 이미지 슬롯(data.IMG['site']) + 타입 구성 막대(59A ~ 59D)
     k = take(f"{D.SITE['name']}, [[이런 단지]]입니다")[1]
     hh, tp = D.SITE["households"], D.SITE["types"]
-    grp = [(a, n) for a, n in tp] + [(D.SITE["rental_label"], D.SITE["rental"])]
-    # 막대 길이는 세대수 비례(min-width:0) · 글자는 넓은 칸만, 나머지는 아래 범례로
-    tb = "".join(f'<i style="flex:{n} 1 0">{nm} {n:,}</i>' if n >= 340 else f'<i style="flex:{n} 1 0" class="sm"></i>' for nm, n in grp)
-    tb += '</div><div class="sblg">' + " · ".join(f"{nm} {n:,}" for nm, n in grp if n < 340)
+    tb = "".join(f'<i style="flex:{n} 1 0">{nm} {n}</i>' for nm, n in tp)
     cards = k["body"].replace(
         f'<div class="big">{hh:,}<small>세대</small></div>',
         f'<div class="big">{hh:,}<small>세대</small></div><div class="sbar t4">{tb}</div>', 1)
     assert cards != k["body"]
-    k["body"] = ('<div class="nb"><div class="bnr" style="flex-basis:25%"><img src="assets_ins/bd_aerial_night.jpg" alt="" style="object-position:50% 60%">'
-                 f'<b>{D.SITE["official"]} · {hh:,}세대 · {D.SITE["buildings"]}개동</b><span>단지 야간 경관 · 연출 이미지(실제와 다를 수 있습니다)</span></div>'
-                 + cards + '</div>')
-    B.CSS += (".sbar.t4 i{background:rgba(255,255,255,.14)!important;color:var(--ink)!important;border-right:1px solid #0d1e33;padding-left:5px;font-size:10px}"
-              ".sbar.t4 i:nth-child(-n+5){background:var(--gold)!important;color:#0d1e33!important}.sbar.t4 i:nth-child(2),.sbar.t4 i:nth-child(4){background:rgba(235,203,143,.7)!important}.sbar.t4 i.sm{padding:0}.sbar.t4 i{min-width:0;overflow:hidden;white-space:nowrap}"
-              ".sblg{font-size:10.5px;color:var(--mute);margin:-1px 0 4px;white-space:nowrap}")
+    import os as _os
+    _own, _alt, _ = D.IMG["site"]
+    _here = _os.path.dirname(_os.path.abspath(__file__))
+    _im = next((x for x in (_own, _alt) if x and _os.path.exists(_os.path.join(_here, "assets_ins", x + ".jpg"))), None)
+    bnr = ('<div class="bnr" style="flex-basis:25%"><img src="assets_ins/' + _im + '.jpg" alt="" style="object-position:50% 42%">'
+           f'<b>{D.SITE["official"]} · {hh:,}세대 · {D.SITE["buildings"]}개 동</b><span>{D.LX_CAP}</span></div>') if _im else ""
+    k["body"] = '<div class="nb">' + bnr + cards + '</div>'
+    B.CSS += (".sbar.t4 i{background:var(--gold)!important;color:#0d1e33!important;border-right:1px solid #0d1e33;padding-left:5px;font-size:10px}"
+              ".sbar.t4 i:nth-child(2),.sbar.t4 i:nth-child(4){background:rgba(235,203,143,.7)!important}.sbar.t4 i{min-width:0;overflow:hidden;white-space:nowrap}")
 
     # 최저가 차액 10배 — 막대 비교
     k = take("[[최저가 차액 10배]] 보상")[1]
@@ -364,16 +363,6 @@ def apply(B, D, take, sub):
         for im, c, s in [("g12_aerial_u", "항공 VR 촬영", "타 단지 제작 예시"), ("g12_room_a", "3D 홈스타일링", "타 단지 제작 예시"),
                          ("g12_plan_a_c", "타입별 평면·실측", "타 단지 제작 예시"), ("n01_yt1", "영상 콘텐츠", "타 단지 유튜브 화면")]) + '</div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
-
-    # 입주까지 28개월 — 타임라인 띠
-    k = take(f"입주까지 {D.SITE['months']}개월, [[빈틈없이]] 관리합니다")[1]
-    tl = ('<div class="tl31"><div class="ln"></div><div class="ext"></div>'
-          + "".join(f'<div class="q" style="left:{x}%"></div>' for x in (14, 24, 34, 44, 54))
-          + '<div class="m" style="left:2%"><b>2026.10</b><span>주관사 공고</span></div>'
-          + '<div class="m" style="left:68%"><b>2028.11 ~ 12</b><span>입주박람회</span></div>'
-          + '<div class="m" style="left:86%"><b>2029.02</b><span>입주</span></div>'
-          + '<div class="qa">● 정례회의마다 진행 보고</div><div class="ex">지연 시 일정 재조정</div></div>')
-    k["body"] = '<div class="nb">' + tl + k["body"] + '</div>'
 
     # 4단계 공개 심사 — 깔때기
     k = take("[[4단계]] 공개 심사 프로세스")[1]
@@ -617,7 +606,7 @@ def apply2(B, D, take, sub):
     # 3중 안전망 — 보호 기간 띠(카드 숫자 그대로 · 눈금은 비례 아님)
     k = take("입주민을 지키는 [[3중 안전망]]")[1]
     band = ('<div class="pt3"><h5>보호 기간 한눈에<small>48시간 눈금은 비례하지 않습니다 · 무상 A/S 기간은 업체·품목별로 다를 수 있음</small></h5>'
-            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:100%">이행보증보험 2년 · 최대 10억</i></div></div>'
+            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:50%">하자 예치금 · 선보상 재원</i></div></div>'
             '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:17%">48시간 처리</i></div></div>'
             '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:50%">입주 후 1년 · 주관 창구 운영</i><i class="c" style="left:50%;width:50%">~ 2년 · 무상 A/S(업체별) · 보증 유지</i></div></div>'
             '<div class="tk"><span style="left:0">입주</span><span style="left:17%">48시간</span><span style="left:50%">1년</span><span style="left:100%">2년</span></div></div>')
@@ -651,42 +640,13 @@ def apply2(B, D, take, sub):
               ".q22 td.k{font-size:14.5px !important}.q22 th{padding-bottom:6px !important}"
               ".q22 th:nth-child(1){width:5%}.q22 th:nth-child(2){width:27%}.q22 th:nth-child(3){width:46%}.q22 th:nth-child(4){width:22%}")
 
-    # 선정부터 입주까지 추진 일정 — 간트(개월 m: 2026.10=0 … 2029.02 입주=28 … 2030.02=40)
-    k = take("선정부터 입주까지 [[추진 일정]] (안)")[1]
-    X = lambda m: f"{100 * m / 40:.2f}%"
-    W = lambda a, b: f"{100 * (b - a) / 40:.2f}%"
-    bars = [("01", 0, 2, "l1", "w", "선정·협약"), ("02", 2, 15, "l2", "w in", "옵션 설문 · 정례 보고 · 건의 관리"), ("03", 15, 20, "l1", "w up", "경관 진단 · 답사"),
-            ("04", 20, 25, "l2", "s in", "수요조사 · 심사"), ("05", 25, 27, "l1", "s up", "박람회"), ("06", 28, 40, "l2", "o", "입주 후 1년 관리")]
-    g = '<div class="gnt"><div class="ar">'
-    g += "".join(f'<div class="yl" style="left:{X(m)}"><span{" class=lt" if y == "2029" else ""}>{y}</span></div>' for y, m in [("2027", 3), ("2028", 15), ("2029", 27), ("2030", 39)])
-    g += f'<div class="bk" style="left:0;width:{W(0, 28)}"><b>공고에서 입주까지 약 {D.SITE["months"]}개월</b></div>'
-    g += "".join(f'<div class="br {ln} {c}" style="left:{X(a)};width:{W(a, b)}">{no}{f"<small>{tx}</small>" if tx else ""}</div>'
-                 for no, a, b, ln, c, tx in bars)
-    g += f'<div class="pn" style="left:{X(28)}"><span>2029.02 입주</span></div>'
-    g += '</div></div>'
-    k["body"] = '<div class="nb" style="gap:10px">' + g + k["body"].replace('<div class="rows">', '<div class="rows cmp">', 1) + '</div>'
-
-    # 패키지 예시 — 열 하단 대표 사진
-    k = take("이렇게 [[패키지로]] 받으실 수 있습니다 (예시)")[1]
-    _hh, _f = D.FUND_HH, D.FUND
-    _tot = f"{_hh * _f // 10000}억 {_hh * _f % 10000:,}만원" if _hh * _f % 10000 else f"{_hh * _f // 10000}억원"
-    tails = [(f'<div class="exi cs">{ic("vault")}<b>{_tot}</b><small>입예협 공식 통장</small></div>' if getattr(D, "FUND_CASH", False) else
-              f'<div class="exi cs">{ic("checklist")}<b>{_tot} 상당</b><small>주관사가 직접 구매·제공 · 사용 내역 공개</small></div>'),
-             '<div class="exi"><img src="assets_ins/g08_thermal.jpg" alt=""><span>열화상 점검 화면 · 타 단지</span></div>',
-             '<div class="exi"><img src="assets_ins/g12_style_after.jpg" alt=""><span>3D 홈스타일링 · 제작 예시</span></div>',
-             '<div class="exi"><img src="assets_ins/bd_gate_night.jpg" alt=""><span>문주·경관조명 · 연출 이미지</span></div>']
-    it = iter(tails)
-    b, n = re.subn(r"</ul></div>", lambda m: "</ul>" + next(it) + "</div>", k["body"])
-    assert n == 4, n
-    k["body"] = b
-
     # C 패키지 — 항목 썸네일
     k = take("C 패키지 · [[단지지원 컨설팅]]")[1]
-    th = [("bd_gate_night", "문주·경관조명"), ("n13_fit", "커뮤니티 조명"), ("n13_kidsplay", "피트니스·키즈"),  # 외부 경관 먼저(본부장 10-15 밤)
+    th = [("os_lx_front1", "동 파사드 · 문주"), ("os_lx_play", "놀이터 · 산책로"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
-           + '</div><div class="thc">사진은 타 단지 현장·예시 · 문주 이미지는 연출 예시</div>')
+           + '</div><div class="thc">01 · 02 = 오산세교아테라 경관조명 제안 시뮬레이션 이미지(실제와 다를 수 있음) · 03 ~ 05 = 타 단지 현장 · 예시</div>')
     k["body"] = sub(k["body"], "</li></ul></div></div></div>", "</li></ul>" + thm + "</div></div></div>")
 
     # 커뮤니티·공용부 조명 개선 — 목록 + 2×2
@@ -699,20 +659,8 @@ def apply2(B, D, take, sub):
            '<figure><img src="assets_ins/n13_gx.jpg" alt=""><figcaption>커뮤니티 공간<small>예시 이미지</small></figcaption></figure>'
            '<figure><img src="assets_ins/n03_light.jpg" alt=""><figcaption>등기구 설치 현장<small>엣지컴퍼니 시공팀</small></figcaption></figure>'
            '<figure><img src="assets_ins/g14_light1c.jpg" alt=""><figcaption>입주 기념 점등식<small>타 단지 현장</small></figcaption></figure>'
-           f'<figure class="ipn">{ic("streetlight")}<p><b>사인·문주 조명</b>문주·경관조명 컨설팅 · ⟪pg:gate⟫</p></figure></div>')
+           f'<figure class="ipn">{ic("streetlight")}<p><b>동 파사드 · 문주 조명</b>외부 경관 진단 · ⟪pg:lx⟫</p></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
-
-    # 실적 비례 추가할인 — 표 → 계단 막대(표 값 그대로)
-    k = take("실적 비례 [[추가할인]] 구조")[1]
-    b = re.sub(r'<table class="tbl xs">.*?</table>',
-               '<div class="stc"><div><b>1% · 1만원</b><i style="height:33%"></i></div><div><b>2% · 2만원</b><i style="height:66%"></i></div>'
-               '<div><b>3% · 3만원</b><i style="height:100%"></i></div></div>'
-               '<div class="stx"><div>50세대<br><span>99만원</span></div><div>100세대<br><span>98만원</span></div><div>150세대<br><span>97만원</span></div></div>'
-               '<div class="stx" style="padding-top:0"><small>계약 세대 수 · 막대 = 추가할인 · 칩 = 최종 결제</small><small></small><small></small></div>', k["body"], flags=re.S)
-    assert b != k["body"]
-    k["body"] = b.replace('<div class="splitx" style="grid-template-columns:1.15fr 1fr">', '<div class="splitx adx" style="grid-template-columns:1.35fr 1fr">', 1)
-    B.CSS += (".adx .bulx{gap:22px}.adx .bulx b{font-size:23px}.adx .bulx p{font-size:18px}"
-              ".adx .stc{height:150px;padding-top:22px}.adx .stc b{font-size:13px}.adx .exbox h4{font-size:13px}")
 
     # 조명 수직계열화 — 아이콘 체인
     k = take("[[조명 수직계열화]] · 유통 단계 없는 공급")[1]
@@ -722,15 +670,15 @@ def apply2(B, D, take, sub):
     k["body"] = b
 
     # 신혼희망타운이라서 먼저 챙길 것 — 벤(공식 유상옵션 × 공동구매) + 입주민 특성(모집공고 · 단지 개요 기준)
-    k = take("신혼희망타운이라서 [[먼저 챙길 것]]")[1]
+    k = take("433세대 · 59㎡ 단일 면적이라 [[먼저 챙길 것]]")[1]
     rows = k["body"]
-    for n_, name in enumerate(["checklist", "tape", "house_shield", "lockdoc"], 1):
+    for n_, name in enumerate(["users", "tape", "checklist", "lockdoc"], 1):
         rows = sub(rows, f'<div class="no">{n_:02d}</div>', f'<div class="no">{n_:02d}</div>{ic(name)}')
     venn = ('<svg viewBox="0 0 340 176"><defs><clipPath id="vA"><circle cx="130" cy="88" r="78"/></clipPath></defs>'
             '<circle cx="130" cy="88" r="78" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>'
             '<circle cx="210" cy="88" r="78" fill="rgba(235,203,143,.06)" stroke="#C8A86A" stroke-width="1.5"/>'
             '<circle cx="210" cy="88" r="78" fill="rgba(235,203,143,.38)" clip-path="url(#vA)"/>'
-            '<text x="90" y="74" text-anchor="middle" font-size="12.5" font-weight="700" fill="#DCE3EC">공식 유상옵션</text>'
+            '<text x="90" y="74" text-anchor="middle" font-size="12.5" font-weight="700" fill="#DCE3EC">유상옵션</text>'
             '<text x="90" y="91" text-anchor="middle" font-size="10.5" fill="#A9B4C2">모집공고 옵션 ·</text>'
             '<text x="90" y="105" text-anchor="middle" font-size="10.5" fill="#A9B4C2">기본 제공</text>'
             '<text x="170" y="84" text-anchor="middle" font-size="11.5" font-weight="800" fill="#0D1E33">겹치면</text>'
@@ -739,9 +687,9 @@ def apply2(B, D, take, sub):
             '<text x="250" y="91" text-anchor="middle" font-size="10.5" fill="#A9B4C2">가격 공개표로</text>'
             '<text x="250" y="105" text-anchor="middle" font-size="10.5" fill="#A9B4C2">비교 안내</text></svg>')
     hts = ('<div class="bdq">' + "".join(f'<span>{x}</span>' for x in [
-           "신혼부부 · 예비신혼", "영유아 가구", "실거주", "전용 51 ~ 59㎡", "판교 · 분당 업무지구 인접", "국공립어린이집 · 다함께돌봄센터 계획"]) + '</div>')
-    pan = (f'<div class="vnp"><h5>공식 유상옵션 겹침 확인</h5>{venn}<h5>입주민 특성</h5>{hts}'
-           '<div class="cp">신혼희망타운 공급 대상 · 단지 개요 기준</div></div>')
+           "433세대 중소 단지", "전 세대 전용 59㎡", "59A · 59B · 59C · 59D", "민간참여 공공분양", "2027.11 입주", "1호선 오산역 생활권"]) + '</div>')
+    pan = (f'<div class="vnp"><h5>유상옵션 겹침 확인</h5>{venn}<h5>입주민 특성</h5>{hts}'
+           '<div class="cp">공고 단지개요 · 분양 당시 보도 기준</div></div>')
     B.CSS += (".bdq{display:flex;flex-wrap:wrap;gap:6px}.bdq span{font-size:12px;font-weight:700;border:1px solid rgba(200,168,106,.55);"
               "border-radius:99px;padding:4px 10px;color:var(--gold);background:rgba(235,203,143,.06)}")
     k["body"] = f'<div class="nb"><div class="vn">{rows}{pan}</div></div>'
@@ -749,17 +697,6 @@ def apply2(B, D, take, sub):
               ".hts .h b{font-weight:700;color:var(--ink)}.hts .t{height:20px;border-radius:4px;background:rgba(255,255,255,.05);position:relative}"
               ".hts .t i{position:absolute;left:0;top:2px;bottom:2px;border-radius:3px;background:var(--gold);color:#0d1e33;font-style:normal;font-size:11px;font-weight:800;display:flex;align-items:center;padding-left:8px;white-space:nowrap}"
               ".hts .h:nth-child(2) .t i{background:rgba(235,203,143,.65)}.hts .h.x .t i{position:static;display:flex;height:100%;background:transparent;border:1.5px dashed rgba(255,255,255,.45);color:var(--sub)}")
-
-    # 단지 야간 경관 · 조경 조명 — 단계 목록 + 경관조명 연출 사진 2장(bd_* · 없으면 자리표시)
-    k = take("단지 야간 경관 · 조경 조명, [[입주 전에]] 진단합니다")[1]
-    rows = k["body"]
-    for n_, name in enumerate(["streetlight", "pin", "search", "report"], 1):
-        rows = sub(rows, f'<div class="no">{n_:02d}</div>', f'<div class="no">{n_:02d}</div>{ic(name)}')
-    gal = ('<div class="gal lx2">'
-           '<figure><img src="assets_ins/bd_garden_night.jpg" alt="" style="object-position:50% 60%"><figcaption>조경 산책로 경관조명<small>보행등 · 수목 업라이트 · 연출 이미지</small></figcaption></figure>'
-           '<figure><img src="assets_ins/bd_plaza_night.jpg" alt="" style="object-position:50% 60%"><figcaption>커뮤니티 · 수경 공간<small>간접광 · 수경 조명 · 연출 이미지</small></figcaption></figure></div>')
-    k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
-    B.CSS += ".r2 .gal.lx2{grid-template-columns:1fr;grid-template-rows:1fr 1fr}"
 
     # 개인정보 — 아이콘 목록
     k = take("입주민 개인정보는 [[행사 운영에만]] 씁니다")[1]
@@ -794,19 +731,6 @@ def apply2(B, D, take, sub):
            '</div></div>')
     k["body"] = '<div class="nb">' + mny + k["body"] + '</div>'
 
-    # 현장 안전 · 공용부 위생 — 타일 위 사진
-    k = take("현장 안전 · 공용부 위생까지 [[함께 챙깁니다]]")[1]
-    pics = {"02 · SAFETY": ("g08_safety", "50% 22%", "현장 점검 예시"), "04 · VOICE": ("n12_meeting", "50% 40%", "타 단지 협의회 미팅"),
-            "05 · ANALYSIS": ("g08_crack", "50% 50%", "균열 점검 예시"), "13 · COATING": ("g10_doorlock", "50% 45%", "항균 코팅 작업 예시"),
-            "15 · AIR": ("g10_phyton", "50% 45%", "분사 작업 예시")}
-    b = k["body"]
-    for lb, (im, pos, cp) in pics.items():
-        b = sub(b, f'<div class="tile"><div class="lb">{lb}</div>',
-                f'<div class="tile"><div class="tim"><img src="assets_ins/{im}.jpg" style="object-position:{pos}" alt=""><span>{cp}</span></div><div class="lb">{lb}</div>')
-    b = sub(b, '<div class="tile"><div class="lb">14 · CESCO</div>',
-            '<div class="tile"><div class="tim"><img src="assets_ins/n94_cesco.jpg" style="object-position:50% 50%" alt=""><span>세스코 · 2025.11 MOU</span></div><div class="lb">14 · CESCO</div>')
-    k["body"] = b.replace('<div class="tiles"', '<div class="tiles tp"', 1)
-
     # 사전점검 당일 현장 지원 — 위: 현수막·X배너 시안(HTML로 그린 예시) / 아래: 사진 카드 5칸
     k = take("사전점검 당일 [[현장 지원]]")[1]
     banner = ('<div class="bnx"><div class="bl"><i>01 · 기본 지원</i><b>행사 물품</b>'
@@ -827,7 +751,7 @@ def apply2(B, D, take, sub):
     k["body"] = (f'<div class="nb"><div class="r91">{banner}{tile(*items[0])}</div>'
                  f'<div class="tiles t5" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr">{"".join(tile(*x) for x in items[1:])}</div></div>')
     k["lead"] = "행사 물품·도우미는 기본 지원(주관사 부담), 라돈측정기·냉난방용품·커피차·하자진단 보고서는 B 패키지로 더합니다."
-    k["kp"] = ("입예협은 [[입주민 응대에만]] 집중하시면 됩니다.", "01 · 02 = 공고 5항 5 기본 지원(15만원과 별도) · 03 ~ 06 = B 패키지 선택 항목")
+    k["kp"] = ("입예협은 [[입주민 응대에만]] 집중하시면 됩니다.", "01 · 02 = 기본 지원(주관사 부담 · 세대 혜택 패키지와 별도) · 03 ~ 06 = B 패키지 선택 항목")
     B.CSS += r"""
 .tile .tim+.lb{margin-top:0}
 .t5 .tile,.r91 .tile{justify-content:flex-start}.t5 .tile .nm{font-size:17px}.t5 .tile .ds{font-size:13.5px;line-height:1.45}.t5 .tim{height:136px}
@@ -863,32 +787,8 @@ def apply2(B, D, take, sub):
 .xbw .leg:before{left:30px;transform:rotate(25deg)}.xbw .leg:after{right:30px;transform:rotate(-25deg)}
 """
 
-    # 15만원 선택 — 카드 아래: 현금 흐름 / A·B·C 구성
-    k = take(B.FUND_CHOICE_TITLE)[1]
-    opf = ('<div class="opf">'
-           f'<div>{ic("vault")}주관사 지급</div><em>›</em><div>{ic("coins")}입예협 공식 통장</div><em>›</em><div>{ic("checklist")}쓰임새는 입예협 결정</div></div>')
-    if not getattr(D, "FUND_CASH", False):
-        opf = ('<div class="opf">'
-               f'<div>{ic("checklist")}입예협 항목 지정</div><em>›</em><div>{ic("truck")}주관사 직접 구매·제공</div><em>›</em><div>{ic("report")}검수 · 사용 내역 공개</div></div>')
-        opk_first = True
-    else:
-        opk_first = False
-    opk = ('<div class="opk"><div><b>A</b>입주민<br>특화서비스</div><div><b>B</b>협의회<br>단지발전지원</div><div><b>C</b>단지지원<br>컨설팅</div></div>')
-    if opk_first:  # 패키지안: 왼쪽 = A·B·C, 오른쪽 = 지정 흐름
-        b = sub(k["body"], '</li></ul></div><div class="or">', '</li></ul>' + opk + '</div><div class="or">')
-        k["body"] = sub(b, '</li></ul></div></div><div class="basex">', '</li></ul>' + opf + '</div></div><div class="basex">')
-    else:
-        b = sub(k["body"], '</li></ul></div><div class="or">', '</li></ul>' + opf + '</div><div class="or">')
-        k["body"] = sub(b, '</li></ul></div></div><div class="basex">', '</li></ul>' + opk + '</div></div><div class="basex">')
-    B.CSS += (".opf{margin-top:auto;display:flex;align-items:stretch;gap:4px}"
-              ".opf div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:12px 6px;background:#0f2237;font-size:14px;text-align:center;line-height:1.3}"
-              ".opf .cic{margin:0;width:30px;height:30px}.opf em{display:flex;align-items:center;color:var(--gold);font-style:normal;font-weight:800;font-size:18px}"
-              ".opk{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}"
-              ".opk div{border:1px solid rgba(235,203,143,.5);border-radius:12px;padding:12px 8px;background:rgba(13,30,51,.55);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:14px;line-height:1.3}"
-              ".opk b{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#0d1e33;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:center}")
-
     # 핵심 혜택 6가지 — 앞 장들과 같은 아이콘을 오른쪽 위에(높이 영향 없음)
-    k = take(f"{D.SITE['short']}에 드리는 [[핵심 혜택 6가지]]")[1]
-    k["body"] = inject(k["body"], ["coins", "shield", "coin10", "lockdoc", "clock", "vault"], "tile").replace('class="tiles lg"', 'class="tiles lg c6"', 1)
+    k = take(f"{D.SITE['short']}에 드리는 [[핵심 약속 6가지]]")[1]
+    k["body"] = inject(k["body"], ["coin10", "clock", "calendar", "lockdoc", "vault", "coins"], "tile").replace('class="tiles lg"', 'class="tiles lg c6"', 1)
     B.CSS += (".c6 .tile{position:relative}.c6 .tile>.cic{position:absolute;right:18px;top:16px;width:44px;height:44px;padding:10px;border-radius:12px;"
               "background:rgba(235,203,143,.09);border:1px solid rgba(235,203,143,.38);margin:0}")

@@ -210,9 +210,13 @@ STAFF_LEAD = 2  # 대표이사 · 주관사업 총괄 본부장
 # 키: (단지 이미지 파일명(.jpg, assets_ins/), 없을 때 대체 이미지 또는 None = 중립 디자인, 권장 비율 · 쓰는 쪽)
 # 대체 이미지는 타 단지 '연출 예시'라 캡션이 '예시'로 바뀐다. 지면에 '자리표시' 글자는 넣지 않는다(본부장 지시).
 IMG = {
-    "cover": ("os_cover_aerial", None, "표지 오른쪽 · 가로 4:3 이상 · 가로 1,600px 이상 권장(지금 777×559)"),
-    "site": ("os_site", "os_cover_aerial", "07장 '이런 단지입니다' 위 띠 · 가로 5:1 띠로 잘림 · 가로 1,600px 이상"),
-    "div07": ("os_divider", None, "07장 간지 오른쪽 배경 · 세로 3:4 ~ 정사각 · 없으면 단색 간지"),
-    "lx_gate": ("os_lx_gate", "g04_gate", "문주 · 진입부 야간 경관 · 가로 3:2"),
-    "lx_facade": ("os_lx_facade", "g04_facade", "동 외벽 야간 경관 · 가로 3:2 또는 세로"),
+    "cover": ("os_lx_front1", "os_cover_aerial", "표지 오른쪽 · 가로 16:9 · 지금 1672×941(본부장 10-15 제공 · 야간 경관 시뮬레이션)"),
+    "site": ("os_site", "os_lx_front2", "07장 '이런 단지입니다' 위 띠 · 가로 5:1로 잘림 · 지금 os_lx_front2 대체"),
+    "div07": ("os_lx_gate", None, "07장 간지 오른쪽 배경 · 4:3 · 지금 정문 문주 야간"),
+    "lx_front1": ("os_lx_front1", None, "외부 경관 ① 동 파사드 · 16:9"),
+    "lx_front2": ("os_lx_front2", None, "외부 경관 ② 1202 ~ 1204동 측면 · 16:9"),
+    "lx_gate": ("os_lx_gate", None, "외부 경관 ③ 정문 문주 · 4:3"),
+    "lx_play": ("os_lx_play", None, "단지 내 ① 어린이놀이터 · 4:3"),
+    "lx_court": ("os_lx_court", None, "단지 내 ② 배드민턴장 · 산책로 · 4:3"),
 }
+LX_CAP = "경관조명 제안 시뮬레이션 이미지 · 실제와 다를 수 있음"
