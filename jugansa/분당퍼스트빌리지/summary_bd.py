@@ -6,7 +6,7 @@ build_bd.py build() 가 제안서(02)를 만든 뒤 emit_summary(globals()) 로 
 원칙
 - 숫자 · 문구는 제안서와 같은 값(D · ST · ONE_L · CHECK5 · SUPPORT · MUST9 · _C7 등)을 그대로 불러 쓴다 - 여기서 새 숫자를 만들지 않는다.
 - 제안서 쪽 번호는 방금 만든 제안서의 PGNO(대응표와 같은 계산)로 적는다 → 압축본(--compact)으로 만들면 압축본 쪽 번호.
-- 노란 칸(TODO) 없음 · 확정 안 된 혜택은 '(안)' · 과거 이행보증 가입 실적 표현 없음(보증 방식은 협약 때 협의 · 필요 시 보증보험 또는 예치금 택1 — 본부장 10-15 밤).
+- 노란 칸(TODO) 없음 · 확정 안 된 혜택은 '(안)' · 과거 이행보증 가입 실적 표현 없음(보증은 협약 시 제출 약속).
 - 표지 = bd_cover(조감도) · 사진 = bd_garden_night(연출 이미지) · 마지막 = 연락처.
 쪽수: 표지 + 본문 9 + 연락처 = 11쪽(8 ~ 12쪽 범위, 빌드에서 assert).
 """
@@ -317,10 +317,10 @@ def emit_summary(G):
     p6 = f"""<div class="sx" style="grid-template-rows:auto 1fr auto">
 <div class="as5">{as5}</div>
 <div class="sn3">
-<div class="bx hl"><b class="n"><i>필요 시</i>택1</b><strong>이행보증 · 하자 예치금 - 협약 때 협의</strong>
-<ul class="xl"><li>보증 방식은 협약 때 입예협과 협의해 정합니다</li><li>이행(하자)보증보험 또는 하자 예치금(엣지컴퍼니 자산) 중 택1</li><li>방식 · 금액 · 기간은 협약서에 반영 · 보증보험은 증권 실물 전달</li></ul></div>
-<div class="bx"><b class="n">전액</b><strong>업체 도산 시 · 주관사 부담</strong>
-<ul class="xl"><li>동종업체로 하자보수 · 사후관리 이관</li><li>그 A/S 비용은 엣지컴퍼니가 전액 부담</li><li>업체가 미루면 사실 확인 후 주관사가 먼저 보상</li></ul></div>
+<div class="bx hl"><b class="n"><i>최대</i>10<small>억원</small></b><strong>이행보증보험 2년</strong>
+<ul class="xl"><li>계약이행 · 하자보수 이행 보증 - 금액은 협약으로 확정</li><li>협약 시 증권 실물을 입예협에 전달</li><li>업체 도산 시 동종업체로 이관 · 비용은 엣지컴퍼니 부담</li></ul></div>
+<div class="bx"><b class="n"><i>최대</i>1<small>억원</small></b><strong>하자 예치금 · 선보상 재원</strong>
+<ul class="xl"><li>엣지컴퍼니 자산으로 예치 - 참여업체에게 걷은 돈이 아닙니다</li><li>업체 사고 · 도산 시에도 입주민 먼저 보상</li><li>사용 내역 공개</li></ul></div>
 <div class="bx"><b class="n">2<small>년 이상</small></b><strong>무상 A/S · 참여업체 하자보증</strong>
 <ul class="xl"><li>무상 A/S 최소 2년(업체 · 품목별 상이) · 주관 창구 입주 후 1년</li><li>하자보수 이행각서 · 특약이행각서 전원 징구</li><li>패널티 3단계: 홍보정지 → 총액 10% 배상 → 자격박탈 · 계약 이관</li></ul></div>
 </div>
@@ -394,7 +394,7 @@ def emit_summary(G):
 <div class="bx"><h3><i>공고 8항</i>제안서 필수 포함 9항목 → 제안서 쪽<small>쪽 번호 = 제안서 우측 상단 번호</small></h3>
 <table class="mt"><thead><tr><th>NO</th><th>필수 포함 항목</th><th>엣지컴퍼니 제안 핵심</th><th>제안서 쪽</th></tr></thead><tbody>{mt}</tbody></table></div>
 <div class="q4">
-<div><i>공고 4항</i><b>입찰 참가자격 10개<em>{pg('qual')}</em></b><span>자본금 2억 · 업종 ‘전시, 박람회 및 행사 대행업’ · 체납 없음 · 보증증권 발행 가능(보증 방식은 협약 시 협의)</span></div>
+<div><i>공고 4항</i><b>입찰 참가자격 10개<em>{pg('qual')}</em></b><span>자본금 2억 · 업종 ‘전시, 박람회 및 행사 대행업’ · 체납 없음 · 보증증권 발행 가능(협약 시 증권 제출)</span></div>
 <div><i>공고 5항</i><b>주요 업무 범위 11개<em>{pg('scope')}</em></b><span>박람회 운영 · 품목 · 업체 · 가격 검수 · 일정 · A/S · 행사 지원 · 수요조사 · 정당계약일 부스까지 모두 수행</span></div>
 <div><i>공고 9항</i><b>참가 제한 · 무효 10개<em>{pg('ban')}</em></b><span>모두 해당 없음 - 대표자 · 배우자 · 직계존비속 당첨자 아님(대표 확인)</span></div>
 <div><i>공고 6 · 10항</i><b>유의사항 · 서식 1 ~ 5<em>{pg('note')}</em></b><span>제출 조건 그대로 PT · 협약 - 추가 혜택을 얹지 않음 · 확정 전 혜택은 ‘(안)’ · 담합 · 재위탁 없음</span></div>

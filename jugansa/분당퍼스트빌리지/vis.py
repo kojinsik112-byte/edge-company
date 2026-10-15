@@ -617,9 +617,9 @@ def apply2(B, D, take, sub):
     # 3중 안전망 — 보호 기간 띠(카드 숫자 그대로 · 눈금은 비례 아님)
     k = take("입주민을 지키는 [[3중 안전망]]")[1]
     band = ('<div class="pt3"><h5>보호 기간 한눈에<small>48시간 눈금은 비례하지 않습니다 · 무상 A/S 기간은 업체·품목별로 다를 수 있음</small></h5>'
-            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:100%">이행보증 · 협약으로 정한 기간(보증보험 또는 예치금 택1 · 협약 때 협의)</i></div></div>'
+            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:100%">이행보증보험 2년 · 최대 10억</i></div></div>'
             '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:17%">48시간 처리</i></div></div>'
-            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:50%">입주 후 1년 · 주관 창구 운영</i><i class="c" style="left:50%;width:50%">~ 2년 · 무상 A/S(업체별)</i></div></div>'
+            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:50%">입주 후 1년 · 주관 창구 운영</i><i class="c" style="left:50%;width:50%">~ 2년 · 무상 A/S(업체별) · 보증 유지</i></div></div>'
             '<div class="tk"><span style="left:0">입주</span><span style="left:17%">48시간</span><span style="left:50%">1년</span><span style="left:100%">2년</span></div></div>')
     b3 = sub(k["body"], '<div class="big">10<small>년</small></div><div class="nm">장기 사후관리</div>',
              '<div class="big">2<small>년</small></div><div class="nm">무상 A/S · 사후관리</div>')
@@ -631,7 +631,7 @@ def apply2(B, D, take, sub):
     k = take("선보상 재원 · 하자 예치금 [[최대 1억원]]")[1]
     fl = ('<div class="fl5">'
           f'<div class="n">{ic("vault")}<b>엣지컴퍼니 자산</b><span>참여 업체 돈이 아님</span></div><em>›</em>'
-          f'<div class="n">{ic("coins")}<b>예치 금액 협의</b><span>협약 때 입예협과 결정</span></div><em>›</em>'
+          f'<div class="n">{ic("coins")}<b>예치금 최대 1억원</b><span>단지 규모·협의로 결정</span></div><em>›</em>'
           f'<div class="n">{ic("headset")}<b>하자 접수</b><span>주관 콜센터</span></div><em>›</em>'
           f'<div class="n g">{ic("house_shield")}<b>입주민 먼저 선보상</b><span>업체 사고·도산 시에도</span></div><em>›</em>'
           f'<div class="n">{ic("report")}<b>사용 내역 공개</b><span>업체와는 나중에 정산</span></div></div>')
