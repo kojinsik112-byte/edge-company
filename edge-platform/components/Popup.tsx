@@ -14,11 +14,24 @@ interface PopupRow {
   end_at: string | null;
 }
 
+// "24시간 보지 않기" — 체크하고 닫으면 지금부터 24시간 동안 해당 팝업 숨김
+const HIDE_MS = 24 * 60 * 60 * 1000;
+const hideKey = (id: string) => `popup_${id}_hide_until_ts`;
+
+const isHidden = (id: string) => {
+  try {
+    const ts = Number(localStorage.getItem(hideKey(id)) || 0);
+    return ts > Date.now();
+  } catch {
+    return false;
+  }
+};
+
 const today = () => new Date().toISOString().slice(0, 10);
 
 export default function Popup() {
-  const [popup, setPopup] = useState<PopupRow | null>(null);
-  const [dontToday, setDontToday] = useState(false);
+  // 등록된 활성 팝업 전부 노출 (갯수 제한 없음 — 관리자에서 등록한 만큼)
+  const [popups, setPopups] = useState<PopupRow[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -30,31 +43,54 @@ export default function Popup() {
           .eq("enabled", true)
           .order("sort", { ascending: true });
         const t = today();
-        const active = (data ?? []).find((p: PopupRow) => {
+        const active = (data ?? []).filter((p: PopupRow) => {
           const okStart = !p.start_at || p.start_at <= t;
           const okEnd = !p.end_at || p.end_at >= t;
-          const hidden = localStorage.getItem(`popup_${p.id}_until`) === t;
-          return okStart && okEnd && !hidden;
+          return okStart && okEnd && !isHidden(p.id);
         });
-        if (active) setPopup(active as PopupRow);
+        setPopups(active as PopupRow[]);
       } catch {
         /* 무시 */
       }
     })();
   }, []);
 
-  if (!popup) return null;
+  if (popups.length === 0) return null;
 
-  const close = () => {
-    if (dontToday) localStorage.setItem(`popup_${popup.id}_until`, today());
-    setPopup(null);
+  const closeOne = (id: string, dontShow24h: boolean) => {
+    if (dontShow24h) {
+      try {
+        localStorage.setItem(hideKey(id), String(Date.now() + HIDE_MS));
+      } catch {
+        /* 무시 */
+      }
+    }
+    setPopups((list) => list.filter((p) => p.id !== id));
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-5" role="dialog" aria-modal="true">
-      <div className="max-h-[88vh] w-full max-w-md overflow-y-auto overflow-hidden rounded-2xl bg-surface shadow-2xl">
-        {popup.image && (
-          popup.link ? (
+    <div
+      className="fixed inset-0 z-[100] flex flex-wrap items-center justify-center gap-5 overflow-y-auto bg-black/55 px-5 py-10"
+      role="dialog"
+      aria-modal="true"
+    >
+      {popups.map((p) => (
+        <PopupCard key={p.id} popup={p} onClose={closeOne} />
+      ))}
+    </div>
+  );
+}
+
+// 팝업 카드 1장 — A4 세로 절반(≈A5) 크기. 이미지는 A4 세로 비율(840×1188px) 권장.
+function PopupCard({ popup, onClose }: { popup: PopupRow; onClose: (id: string, dont: boolean) => void }) {
+  const [dont, setDont] = useState(false);
+  const close = () => onClose(popup.id, dont);
+
+  return (
+    <div className="flex max-h-[86vh] w-[min(88vw,400px)] shrink-0 flex-col overflow-hidden rounded-2xl bg-surface shadow-2xl">
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {popup.image &&
+          (popup.link ? (
             <Link href={popup.link} onClick={close}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={popup.image} alt={popup.title} className="w-full" />
@@ -63,26 +99,27 @@ export default function Popup() {
             // 링크 없는 이미지 팝업: 클릭하면 그냥 닫힘 (깨진 # 이동 방지)
             // eslint-disable-next-line @next/next/no-img-element
             <img src={popup.image} alt={popup.title} className="w-full cursor-pointer" onClick={close} />
-          )
-        )}
+          ))}
         {(popup.title || popup.content || popup.link) && (
-          <div className="p-6">
-            {popup.title && <p className="text-[17px] font-bold text-ink">{popup.title}</p>}
-            {popup.content && <p className={`${popup.title ? "mt-2" : ""} whitespace-pre-wrap text-[14px] leading-relaxed text-ink/80`}>{popup.content}</p>}
+          <div className="p-5">
+            {popup.title && <p className="text-[16px] font-bold text-ink">{popup.title}</p>}
+            {popup.content && (
+              <p className={`${popup.title ? "mt-2" : ""} whitespace-pre-wrap text-[13.5px] leading-relaxed text-ink/80`}>{popup.content}</p>
+            )}
             {popup.link && (
-              <Link href={popup.link} onClick={close} className="mt-4 block rounded-lg bg-ink py-3 text-center text-[14px] font-semibold text-white">
+              <Link href={popup.link} onClick={close} className="mt-4 block rounded-lg bg-ink py-2.5 text-center text-[13.5px] font-semibold text-white">
                 자세히 보기
               </Link>
             )}
           </div>
         )}
-        <div className="flex items-center justify-between border-t border-line px-6 py-3">
-          <label className="flex cursor-pointer items-center gap-2 text-[13px] text-muted">
-            <input type="checkbox" checked={dontToday} onChange={(e) => setDontToday(e.target.checked)} className="h-4 w-4" />
-            오늘 하루 보지 않기
-          </label>
-          <button onClick={close} className="text-[13px] font-semibold text-ink">닫기 ✕</button>
-        </div>
+      </div>
+      <div className="flex shrink-0 items-center justify-between border-t border-line px-4 py-2.5">
+        <label className="flex cursor-pointer items-center gap-2 text-[12.5px] text-muted">
+          <input type="checkbox" checked={dont} onChange={(e) => setDont(e.target.checked)} className="h-4 w-4" />
+          24시간 동안 보지 않기
+        </label>
+        <button onClick={close} className="text-[13px] font-semibold text-ink">닫기 ✕</button>
       </div>
     </div>
   );
