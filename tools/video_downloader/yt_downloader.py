@@ -2,7 +2,7 @@
 
 사용법
   GUI : python yt_downloader.py
-  CLI : python yt_downloader.py <유튜브주소> [--quality 1080|720|480|mp3] [--out 폴더]
+  CLI : python yt_downloader.py <유튜브주소> [--quality 1080|720|480|mp3] [--out 폴더] [--edit]
         python yt_downloader.py <유튜브주소> --list      (화질 목록만 보기)
 """
 from __future__ import annotations
@@ -14,6 +14,7 @@ import subprocess
 import sys
 import threading
 
+import capcut_bridge
 import yt_core
 
 DEFAULT_OUT = os.path.join(os.path.expanduser("~"), "Downloads", "유튜브추출")
@@ -58,6 +59,14 @@ def run_cli(args) -> int:
     fmt = next(o.fmt for o in opts if o.key == key)
     path = yt_core.download(args.url, key, args.out, not args.any_codec, hook, fmt=fmt)
     print(f"\n완료: {path}")
+    if args.edit or args.full_edit:
+        mode = "full" if args.full_edit else "repurpose"
+        print(f"\n캡컷 AI 편집기로 전송: {capcut_bridge.MODES[mode]}")
+        try:
+            capcut_bridge.send_to_capcut(path, mode, wait=os.name != "nt")
+        except (capcut_bridge.CapcutNotReady, FileNotFoundError) as e:
+            print(f"[캡컷 연결 실패] {e}")
+            return 1
     return 0
 
 
@@ -68,8 +77,8 @@ def run_gui() -> None:
 
     root = tk.Tk()
     root.title("엣지컴퍼니 유튜브 영상 추출기")
-    root.geometry("640x520")
-    root.minsize(560, 480)
+    root.geometry("660x660")
+    root.minsize(580, 620)
 
     events: queue.Queue = queue.Queue()
     state = {"info": None, "options": [], "busy": False, "last_file": None}
@@ -129,13 +138,30 @@ def run_gui() -> None:
             out_var.set(d)
     ttk.Button(f_out, text="변경", command=choose_dir).pack(side="right", padx=8)
 
-    # 4) 실행·진행
+    # 4) 캡컷 AI 편집기 연결
+    f_cc = ttk.LabelFrame(root, text=" ④ 캡컷 AI 편집 연결 ")
+    f_cc.pack(fill="x", **pad)
+    auto_edit_var = tk.BooleanVar(value=False)
+    ttk.Checkbutton(f_cc, variable=auto_edit_var,
+                    text="다운로드 끝나면 캡컷 AI 편집기로 바로 보내기").pack(
+        anchor="w", padx=8, pady=(6, 2))
+    mode_var = tk.StringVar(value="repurpose")
+    for k, label in capcut_bridge.MODES.items():
+        ttk.Radiobutton(f_cc, text=label, value=k, variable=mode_var).pack(
+            anchor="w", padx=28)
+    ttk.Label(f_cc, foreground="#666",
+              text="결과: 바탕화면\\캡컷_완성본\\(영상제목)\\  숏츠·자막·썸네일·업로드정보").pack(
+        anchor="w", padx=8, pady=(2, 6))
+
+    # 5) 실행·진행
     f_run = ttk.Frame(root)
     f_run.pack(fill="x", **pad)
     btn_dl = ttk.Button(f_run, text="⬇  다운로드", style="Big.TButton", state="disabled")
     btn_dl.pack(side="left")
     btn_open = ttk.Button(f_run, text="폴더 열기", state="disabled")
     btn_open.pack(side="left", padx=8)
+    btn_cc = ttk.Button(f_run, text="🎬 캡컷 편집 보내기", state="disabled")
+    btn_cc.pack(side="left")
     progress = ttk.Progressbar(root, maximum=100)
     progress.pack(fill="x", padx=12)
     status_var = tk.StringVar(value="대기 중")
@@ -220,6 +246,16 @@ def run_gui() -> None:
             daemon=True,
         ).start()
 
+    def send_capcut():
+        target = state["last_file"]
+        if not target:
+            return
+        try:
+            capcut_bridge.send_to_capcut(target, mode_var.get())
+            status_var.set("🎬 캡컷 AI 편집기 실행됨 — 새로 뜬 검은 창에서 진행 (닫지 마세요)")
+        except (capcut_bridge.CapcutNotReady, FileNotFoundError) as e:
+            messagebox.showwarning("캡컷 연결", str(e))
+
     def open_folder():
         target = state["last_file"]
         folder = out_var.get()
@@ -262,7 +298,11 @@ def run_gui() -> None:
                     state["last_file"] = data
                     status_var.set(f"✅ 완료: {os.path.basename(data or '')}")
                     btn_open.config(state="normal")
+                    is_video = not str(data or "").lower().endswith((".mp3", ".m4a"))
+                    btn_cc.config(state="normal" if is_video else "disabled")
                     set_busy(False)
+                    if auto_edit_var.get() and is_video:
+                        send_capcut()
                 elif kind == "error":
                     progress.stop()
                     progress.config(mode="determinate", value=0)
@@ -276,6 +316,7 @@ def run_gui() -> None:
     btn_fetch.config(command=on_fetch)
     btn_dl.config(command=on_download)
     btn_open.config(command=open_folder)
+    btn_cc.config(command=send_capcut)
     url_entry.bind("<Return>", on_fetch)
     q_list.bind("<Double-Button-1>", lambda _e: on_download() if not state["busy"] else None)
     url_entry.focus_set()
@@ -291,6 +332,10 @@ def main() -> int:
     p.add_argument("--list", action="store_true", help="화질 목록만 출력")
     p.add_argument("--any-codec", action="store_true",
                    help="H.264 우선 끄기 (VP9/AV1 허용, 1440p·4K는 자동 허용)")
+    p.add_argument("--edit", action="store_true",
+                   help="받은 뒤 캡컷 AI 편집기로 재가공 (숏츠·자막·썸네일·업로드정보)")
+    p.add_argument("--full-edit", action="store_true",
+                   help="--edit 와 함께: 무음·추임새 컷까지 하는 풀 편집 (촬영 원본용)")
     args = p.parse_args()
     if args.url:
         return run_cli(args)

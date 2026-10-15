@@ -10,6 +10,7 @@ import os
 from dataclasses import dataclass
 
 import yt_dlp
+from yt_dlp.postprocessor.metadataparser import MetadataParserPP
 
 AUDIO_MP3 = "audio_mp3"
 
@@ -171,10 +172,15 @@ def build_opts(key: str, out_dir: str, prefer_h264: bool = True,
         "retries": 10,
         "fragment_retries": 10,
     })
+    # 파일명에 & % ^ ! 가 있으면 윈도우 .bat(캡컷 편집기 연결)이 깨진다 → 안전 문자로
+    opts["postprocessors"] = [{
+        "key": "MetadataParser", "when": "pre_process",
+        "actions": [(MetadataParserPP.Actions.REPLACE, "title", r"[&%^!]", "_")],
+    }]
     if key == AUDIO_MP3:
-        opts["postprocessors"] = [{
+        opts["postprocessors"].append({
             "key": "FFmpegExtractAudio", "preferredcodec": "mp3", "preferredquality": "192",
-        }]
+        })
     else:
         opts["merge_output_format"] = "mp4"
     if progress_hook:

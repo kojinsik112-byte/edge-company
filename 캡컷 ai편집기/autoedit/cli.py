@@ -105,6 +105,10 @@ def _build_parser() -> argparse.ArgumentParser:
     p_edit.add_argument("--no-fillers", action="store_true", help="추임새 제거 비활성화")
     p_edit.add_argument("--shorts-count", type=int, default=None, help="숏츠 개수")
     p_edit.add_argument("--whisper-model", type=str, default=None, help="Whisper 모델 크기")
+    p_edit.add_argument(
+        "--repurpose", action="store_true",
+        help="이미 편집된 영상(유튜브 다운로드 등) 재가공: 컷·음질보정·브랜딩 없이 자막/숏츠/썸네일/업로드정보만",
+    )
     p_edit.add_argument("--keep-temp", action="store_true", help="임시 작업 파일 보존")
     p_edit.add_argument("-v", "--verbose", action="store_true", help="상세 로그")
 
@@ -142,6 +146,13 @@ def _apply_overrides(cfg: Config, args: argparse.Namespace) -> Config:
         cfg.shorts.count = args.shorts_count
     if args.whisper_model:
         cfg.subtitle.model = args.whisper_model
+    if getattr(args, "repurpose", False):
+        # 완성본은 이미 편집돼 있다: 말 없는 제품컷·BGM 구간을 자르면 영상이 망가진다
+        cfg.audio.enabled = False
+        cfg.silence.enabled = False
+        cfg.subtitle.remove_fillers = False
+        cfg.smart_edit.enabled = False
+        cfg.branding.enabled = False
     return cfg
 
 
@@ -161,6 +172,11 @@ def cmd_edit(args: argparse.Namespace) -> int:
     except (FFmpegError, FileNotFoundError) as exc:
         logger.error("%s", exc)
         return 1
+
+    if args.repurpose and result.final_video and result.final_video.exists():
+        # 재가공 모드의 _edited.mp4는 원본과 동일한 복사본이라 지운다 (_clean.mp4는 자막수정용으로 유지)
+        result.final_video.unlink()
+        result.final_video = None
 
     print("\n✅ 편집 완료")
     print(f"   단계: {' → '.join(result.steps) if result.steps else '(없음)'}")
