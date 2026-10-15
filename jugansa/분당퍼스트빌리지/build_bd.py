@@ -1703,6 +1703,8 @@ def finish(path, title):
     body = re.sub(r">([^<]+)<", lambda m: ">" + re.sub(r"(?<=[^\s>])·(?=[^\s<])", "\u2060·\u2060", m.group(1).replace(" · ", "\u00a0· ")) + "<", body)  # 줄 첫머리 가운뎃점 방지
     doc = doc[:i] + body
     doc = sub(doc, "<title>엣지컴퍼니 요약제안서</title>", f"<title>{title}</title>")
+    # 재검증 10-14: p90 9행을 정한 CRIME_SUBST 값을 남긴다 — docs_bd.py가 지금 data.py 값과 다르면 02를 제출본에 넣지 않음(다시 빌드 안내)
+    doc = doc.replace("</title>", f'</title><meta name="bd-crime-subst" content="{_h.escape(_CRIME or "")}">', 1)
     doc = sub(doc, "</body>", ALIGN_JS + "</body>")
     left = re.findall(r".{0,12}(?:지웰|양주|덕계|1,595|1,355|대방산업|대방 |대방건설|신영|gwell|gw_|KINTEX|104동|덕정|회천|의정부|경기 북부|30개월|동탄|임예협|임차|임대사업자|철산|광명|조합|1,395|GS건설|탕정|센터파크|아산|천안|세종|OSCO|DCC|유관순|물의정원|중앙광장|1,416|17개월|22개 항목|prugiocenterpark|tj_|대우건설|사전청약|632세대|301세대|1,741|총회장).{0,6}", re.sub(r"<style.*?</style>", "", doc, flags=re.S))
     assert not left, left  # 지웰·동탄·철산·탕정 문구가 남지 않게(분당은 입예협 — '조합' 없음)

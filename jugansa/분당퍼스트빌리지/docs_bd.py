@@ -16,14 +16,20 @@
 
 조치 필요(제출 전 실물 서류 · 스캔) — 없으면 [확인 필요]로 집계하고 그 서류는 제출본/에 넣지 않는다(--final이면 파일을 쓰기 전에 멈춤)
   4 법인인감증명서: 보유본 2026.10.08 = 공고일(10.12) 이전 → 재발급본(개인정보 가림)을 EV/법인인감증명서.pdf + data.py INGAM_DATE
-  4 사용인감계: 작업/04_3_사용인감계_출력용.pdf에 법인인감 실물 날인 → 스캔을 SP/seal_scan/분당_사용인감계_날인.pdf
+  4 사용인감계: 작업/04_3_사용인감계_출력용.pdf(사용인감 칸에 디지털 직인이 이미 찍힌 판 — 이 파일만 출력)의 법인인감 칸 · 대표자 (인)에
+       법인인감 실물 날인 → 1쪽 스캔(300dpi 이하 · 그레이)을 SP/seal_scan/분당_사용인감계_날인.pdf
+       (04_3_사용인감계_직인전.pdf는 사용인감 칸이 빈 중간 파일 — 출력 금지)
   7 범죄사실확인서: 대표 본인 발급본(주민번호 뒷자리만 가림)을 EV/대표자_범죄경력회보서.pdf, 또는 협의회 서면 승인 시 data.py CRIME_SUBST
+       (CRIME_SUBST를 바꾸면 제안서 p90 9행이 바뀜 → build_bd.py · mail_lite.py · docs_bd.py 순서로 모두 다시)
   14 ① 결격사유 서약서: 대표 ①~⑥ 사실 확인(data.py CEO_CONFIRMED) + 작업/14_1_…_출력용.pdf에 자필 서명 · 법인인감 →
-       스캔을 SP/seal_scan/분당_결격사유서약서_서명날인.pdf
+       1쪽 스캔(300dpi 이하 · 그레이)을 SP/seal_scan/분당_결격사유서약서_서명날인.pdf
+  02 제안서: 07 처리 방식(회보서 · 갈음)과 14(①)가 확정된 뒤에만 제출본/에 넣는다 — 제안서 p90 9 · 10행 · p12 · 요약 p9가
+       그 서류를 '제출'로 적으므로 먼저 보내면 실제 제출물과 다른 말이 됨(재검증 10-14)
 
-출력: 작업/ = 중간 파일(HTML · 직인 전 PDF · 조각 · 출력용 · 지금 상태 그대로 합친 01 ~ 14)
-      제출본/ = 조치가 끝난 서류만 공고 순서 이름('엣지컴퍼니_분당퍼스트빌리지_번호_서류명.pdf', '_직인' 없음) + 메일발송_계획.txt
-      02 제안서는 메일용(mail_lite.py)을 쓴다 — 메일마다 일반 첨부 10MB 이하로 나눔(ZIP 금지 · 제목은 공고 양식 그대로).
+출력: 작업/ = 중간 파일(HTML · 직인 전 PDF · 조각 · 출력용 · 지금 상태 그대로 합친 01 ~ 14) + 메일발송_계획.txt(내부 안내 — 첨부 금지)
+      제출본/ = 조치가 끝난 서류 중 실제로 첨부할 파일만 공고 순서 이름('엣지컴퍼니_분당퍼스트빌리지_번호_서류명.pdf', '_직인' 없음)
+      02 제안서는 메일용(mail_lite.py)을 쓴다 — 일반 첨부 10MB를 넘으면 쪽 단위 분할본만 제출본/메일분할_02/에 둔다(단일 파일은 폴더 맨 위
+      '_메일용.pdf' · 제출본에 넣지 않음). 메일마다 첨부 10MB 이하(ZIP 금지 · 제목은 공고 양식 그대로).
 
 사용: python docs_bd.py <NICE.pdf> <직인.png> [--final]
   결과 PDF · HTML은 깃 제외(.gitignore: *.pdf, 엣지컴퍼니_*.html, 작업/, 제출본/).
@@ -287,29 +293,57 @@ FORMS = [  # (제출 번호, 파일 이름, 서식 번호, 제목, [본문 문�
 N14 = "14_기타_결격사유서약서_요약제안서_보증증권_신용평가_실적확약서"
 
 
+SCAN_TIP = "1쪽 · 300dpi 이하 · 그레이(흑백)로 스캔하고, 인영이 칸 안에 또렷한지 눈으로 확인"
+
+
+def _scan_ok(path):
+    """실물 날인 스캔 — 있고, 1쪽이어야 한다(여러 쪽 · 빈 파일이면 다시 스캔)."""
+    return os.path.exists(path) and len(fitz.open(path)) == 1
+
+
+def _p02_crime():
+    """build_bd.py가 제안서 HTML에 남긴 CRIME_SUBST 값(p90 9행 문구의 근거). 지금 data.py 값과 다르면 제안서를 다시 빌드해야 한다."""
+    if not os.path.exists(P02_HTML):
+        return None
+    m = re.search(r'<meta name="bd-crime-subst" content="([^"]*)">', pathlib.Path(P02_HTML).read_text(encoding="utf-8"))
+    return html.unescape(m.group(1)) if m else None
+
+
 def readiness():
     """서류별 조치 상태 — 파일을 쓰기 전에 계산한다(--final 사전 점검 · 제출본 복사 기준)."""
-    r = dict(ingam=bool(D.INGAM_DATE and os.path.exists(INGAM_PDF)), gam=os.path.exists(GAM_SCAN),
+    r = dict(ingam=bool(D.INGAM_DATE and os.path.exists(INGAM_PDF)), gam=_scan_ok(GAM_SCAN),
              crime=bool(os.path.exists(CRIME_PDF) or CRIME_SUBST),
-             s1=bool(getattr(D, "CEO_CONFIRMED", False) and os.path.exists(S1_SCAN)))
+             s1=bool(getattr(D, "CEO_CONFIRMED", False) and _scan_ok(S1_SCAN)))
     miss = []
     if not r["ingam"]:
         miss.append("4 법인인감증명서 — 공고일(10.12) 이후 발급본(보유본 10.08) · 증빙 폴더 법인인감증명서.pdf + data.py INGAM_DATE")
     if not r["gam"]:
-        miss.append("4 사용인감계 — 출력용(작업/04_3)에 법인인감 실물 날인 후 스캔(seal_scan/분당_사용인감계_날인.pdf)")
+        miss.append("4 사용인감계 — 작업/04_3_사용인감계_출력용.pdf(사용인감 칸에 직인이 찍힌 판)를 출력해 법인인감 칸 · 대표자 (인)에 법인인감 실물 날인 → "
+                    + SCAN_TIP + "(사용인감 칸 인영 포함) → seal_scan/분당_사용인감계_날인.pdf")
     if not r["crime"]:
-        miss.append("7 대표자 범죄사실확인서 — 대표 본인 발급 회보서(증빙 폴더 대표자_범죄경력회보서.pdf) 또는 협의회 서면 승인(data.py CRIME_SUBST)")
+        miss.append("7 대표자 범죄사실확인서 — 대표 본인 발급 회보서(증빙 폴더 대표자_범죄경력회보서.pdf) 또는 협의회 서면 승인(data.py CRIME_SUBST"
+                    " → 제안서 p90이 바뀌므로 build_bd.py · mail_lite.py · docs_bd.py 순서로 모두 다시)")
     if not getattr(D, "CEO_CONFIRMED", False):
         miss.append("14 ① 결격사유 서약서 — 대표 ①~⑥ 사실 확인(현재 ⑤만 확인) 후 data.py CEO_CONFIRMED = True")
-    if not os.path.exists(S1_SCAN):
-        miss.append("14 ① 결격사유 서약서 — 출력용(작업/14_1)에 대표 자필 서명 · 법인인감 실물 후 스캔(seal_scan/분당_결격사유서약서_서명날인.pdf)")
+    if not _scan_ok(S1_SCAN):
+        miss.append("14 ① 결격사유 서약서 — 출력용(작업/14_1)에 대표 자필 서명 · 법인인감 실물 → " + SCAN_TIP
+                    + " → seal_scan/분당_결격사유서약서_서명날인.pdf")
     for label, h in (("02 제안서", P02_HTML), ("14 ② 요약제안서", P14_SUM_HTML)):
         n = len(re.findall(r'<mark class="todo">', pathlib.Path(h).read_text(encoding="utf-8"))) if os.path.exists(h) else 0
         r["todo_" + label[:2]] = n
         if n:
             miss.append(f"{label} — 노란 칸 {n}개(build_bd.py)")
-    ok = {"01": r["ingam"] and r["crime"], "02": not r["todo_02"], "04": r["ingam"] and r["gam"], "07": r["crime"],
+    # 재검증 10-14: 제안서 p90 9행(7 회보서 제출 / 서약서 갈음)은 빌드 때의 CRIME_SUBST로 정해진다 — 값이 바뀌었으면 다시 빌드
+    r["p02_sync"] = _p02_crime() == (CRIME_SUBST or "")
+    if not r["p02_sync"]:
+        miss.append("02 제안서 — data.py CRIME_SUBST가 바뀐 뒤 다시 빌드되지 않음(p90 9행) → build_bd.py · mail_lite.py · docs_bd.py 순서로 다시")
+    ok = {"01": r["ingam"] and r["crime"], "04": r["ingam"] and r["gam"], "07": r["crime"],
           "14": r["s1"] and not r["todo_14"]}
+    # 재검증 10-14: 제안서는 p90 9 · 10행 · p12 · 요약 p9에서 7 · 14 ①(⑤)을 '제출'로 적는다 → 7 · 14가 확정된 뒤에만 보낸다(분할본 포함)
+    ok["02"] = not r["todo_02"] and r["p02_sync"] and ok["07"] and ok["14"]
+    if r["p02_sync"] and not r["todo_02"] and not ok["02"]:
+        miss.append("02 제안서(분할본 포함) — 7 처리 방식(회보서 · 갈음)과 14 ①이 확정된 뒤 보냄"
+                    "(제안서 p90 9 · 10행 · p12 · 요약 p9가 그 서류를 '제출'로 적음 — 먼저 보내면 실제 제출물과 다른 말이 됨)")
     return ok, miss
 
 
@@ -334,12 +368,18 @@ def submit_rows(n08):
     else:
         crime = todo("대표자 범죄사실확인서 — 대표 본인 발급본 또는 협의회 승인 시 결격사유 서약서(14 ①)로 갈음")
     n14 = ["① 대표자 결격사유 부존재 서약서(공고 9항)", f"② 요약제안서 {p14_sum_pages() or ''}쪽",
-           "③ 서울보증 계약보증보험증권 사본(보증증권 발급 이력 · 공고 4항 8)", f"④ NICE디앤비 기업신용평가보고서(평가 {D.NICE_DATE} · 종업원 수는 평가 당시 기준)"]
+           "③ 서울보증 계약보증보험증권 사본(보증증권 발급 이력 · 공고 4항 8)",
+           f"④ NICE디앤비 기업신용평가보고서(평가 {D.NICE_DATE} · 종업원 수 · 경영진 현황은 평가 당시 기준 · 대표 외 임직원 생년월일 가림)"]
+    # 재검증 10-14: 02는 메일 용량 때문에 쪽 단위 분할본으로 보냄 → 목록 · 파일명 주석에 그대로 적는다(공고 9항 2 파일명 기준 시비 방지)
+    parts = split_parts(P02_MAIL) if os.path.exists(P02_MAIL) else []
+    k = len(parts)
+    mail02 = (f" · 메일 용량 때문에 {k}개 파일(" + " · ".join(f"{a} ~ {b}쪽" for a, b, _ in parts)
+              + ", 파일 이름 끝 " + " · ".join(f"_{i}of{k}" for i in range(1, k + 1)) + ")로 나눠 첨부") if parts else ""
     if HW_IN_14:
         n14.append("⑤ 실적 확약서(1,000세대 이상 주관 10개 단지 · 붙임 카페 공지 · BEXCO 행사일정)")
     return [
         ("1", "입찰참가 신청서", "자유양식 · 본 서류(제출서류 목록 포함)", "1부"),
-        ("2", "입주박람회 주관사 제안서", (f"{n02}쪽 · " if n02 else "") + "공고 8항 필수 포함 9항목 대응표 수록", "1부"),
+        ("2", "입주박람회 주관사 제안서", (f"{n02}쪽" if n02 else "제안서") + mail02 + " · 공고 8항 필수 포함 9항목 대응표 수록", "1부"),
         ("3", "사업자등록증 사본", f"{issued('biz', '사업자등록증')}(공고일 이후)", "1부"),
         ("4", "법인등기부등본 · 법인인감증명서", f"등기사항전부증명서(현재 유효사항) {issued('reg', '등기부등본')} · {ingam} · 사용인감계(서류 날인 인감 신고)", "각 1부"),
         ("5", "국세 및 지방세 완납증명서", f"국세 {issued('tax', '국세 납세증명서')} · 지방세 {issued('ltax', '지방세 납세증명서')}(유효 ~2026.11.13)", "각 1부"),
@@ -377,12 +417,15 @@ def doc01(n08):
 <tr><td>대 표 자 :</td><td><b>대표이사 {D.CEO}</b><span style="margin-left:34pt;position:relative;top:4pt">(인)</span></td></tr></table>
 <div class="to2">{SITE} 입주예정자협의회 귀중</div></div>"""
     rows = "".join(f'<tr><td>{n}</td><td class="l">{e(t)}</td><td class="l">{r}</td><td>{q}</td></tr>' for n, t, r, q in submit_rows(n08))
+    parts = split_parts(P02_MAIL) if os.path.exists(P02_MAIL) else []
+    split_note = ("(2 제안서는 쪽 단위 분할본 " + f"{len(parts)}개 — 이름 끝 " + " · ".join(f"‘_{i}of{len(parts)}_p{a:03d}-{b:03d}’" for i, (a, b, _) in enumerate(parts, 1))
+                  + ")") if parts else ""
     p2 = f"""{head("입찰참가 신청서 붙임", "제출서류 목록")}
 <h2>공고 7항 제출서류 (공고 순서 · 번호 그대로)</h2>
 <table class="t"><thead><tr><th style="width:6%">No</th><th style="width:31%">서류 (공고 7항)</th><th>제출 내용 · 발급일</th><th style="width:7%">부수</th></tr></thead><tbody>{rows}</tbody></table>
-<p class="note">※ 3 · 4 · 6은 공고일({D.NOTICE_DATE}) 이후 발급본, 5는 유효기간 이내 발급본입니다. 파일 이름은 ‘엣지컴퍼니_분당퍼스트빌리지_번호_서류명.pdf’로 공고 순서와 같습니다.</p>
+<p class="note">※ 3 · 4 · 6은 공고일({D.NOTICE_DATE}) 이후 발급본, 5는 유효기간 이내 발급본입니다. 파일 이름은 ‘엣지컴퍼니_분당퍼스트빌리지_번호_서류명.pdf’로 공고 순서와 같습니다{split_note}.</p>
 <p class="note">※ 신청서 · 방안서 · 서식 1 ~ 5 · 실적 확약서의 날인은 사용인감입니다(제출서류 4 사용인감계에 법인인감과 함께 신고).</p>
-<p class="note">※ 14 ④ 기업신용평가보고서(평가 {D.NICE_DATE} · 유효 ~2027.06.18)의 본사 주소는 본점 이전(2026.07.02 등기) 전 주소이고, 종업원 수(5명)는 평가 당시(2026.05) 기준입니다. 현재 본점은 위 신청서의 소재지와 같고(제출서류 3 · 4), 현재 임직원은 14명(정규직 10 · 인턴 4, 2026.10)입니다.</p>
+<p class="note">※ 14 ④ 기업신용평가보고서(평가 {D.NICE_DATE} · 유효 ~2027.06.18)의 본사 주소는 본점 이전(2026.07.02 등기) 전 주소이고, 종업원 수(5명)와 경영진 현황(13쪽)은 평가 당시(2026.05) 기준입니다. 현재 본점은 위 신청서의 소재지와 같고(제출서류 3 · 4), 현재 임직원은 14명(정규직 10 · 인턴 4, 2026.10)입니다. 13쪽 대표 외 임직원의 생년월일은 개인정보 보호를 위해 가렸습니다.</p>
 <p class="note">※ 접수: {D.SUBMIT_TO} (PDF) · 메일 제목 「{D.MAIL_TITLE}」 · 마감 {D.DEADLINE}</p>"""
     return doc("1 입찰참가 신청서", [p1, p2])
 
@@ -422,8 +465,9 @@ def doc04_seal():
 <table class="info" style="margin-top:14pt"><tr><th>상호</th><td>{D.COMPANY}</td><th>대표자</th><td>대표이사 {D.CEO}</td></tr>
 <tr><th>사업자등록번호</th><td>{D.BIZ_NO}</td><th>법인등록번호</th><td>{D.CORP_NO}</td></tr>
 <tr><th>본사 소재지</th><td colspan="3">{D.ADDRESS}</td></tr>
-<tr><th>담당자</th><td colspan="3">{m[1]} {m[0]} · {m[2]} · {D.EMAIL}</td></tr></table>
-<p class="body">위 법인은 아래 사용인감을 「{e(D.NOTICE)}」 입찰 참가 및 이에 따른 협약 체결에 관한 일체의 서류(입찰참가 신청서 · 방안서 · [서식 1 ~ 5] · 실적 확약서 등)에 사용하고자 신고합니다.
+<tr><th>담당자</th><td colspan="3">{m[1]} {m[0]} · {m[2]} · {D.EMAIL}</td></tr>
+<tr><th>용도</th><td colspan="3">{SITE} 입주박람회 주관사 선정 입찰 참가 및 협약 체결 일체(입예협 공고 제2026-1호)</td></tr></table>
+<p class="body">위 법인은 아래 인감을 사용인감으로 신고하며, 위 용도의 서류(입찰참가 신청서 · 방안서 · [서식 1 ~ 5] · 실적 확약서 등)에 사용합니다.
 이 인감의 사용으로 생기는 모든 책임은 당사가 집니다.</p>
 <div class="seals">
 <div><b>사용인감</b><span class="mk">(인감날인)</span><small>입찰 · 협약 서류에 사용</small></div>
@@ -519,7 +563,7 @@ def doc08():
 <tr><td class="k">하자 예치금</td><td class="l">최대 1억원 — 엣지컴퍼니 자산으로 예치(참여업체에게 걷은 돈이 아님) · 선보상 재원 · 사용 내역 공개. 예치 금액은 단지 규모와 입예협 협의로 정합니다.</td></tr>
 <tr><td class="k">이행보증보험</td><td class="l">2년 · 최대 10억원 — 증권 금액은 협약 때 단지 규모에 맞춰 확정하고 증권 실물을 입예협에 제출합니다(공고 4항 8). 보증증권 발급 이력: 서울보증 계약보증보험증권 사본(제출서류 14 ③).</td></tr>
 <tr><td class="k">업체 패널티</td><td class="l">1단계 홍보정지 → 2단계 총액 10% 배상 → 3단계 자격박탈 · 입예협 승인을 받아 전 계약을 대체업체로 이관.</td></tr>
-<tr><td class="k">가격 보호</td><td class="l">최저가 차액 10배 보상(규정 제8조 — 대상: 동일 브랜드 · 모델 새 제품, 계약 후 7일 이내 인근 오프라인 매장 판매가 / 제외: 온라인 판매 · 시공 품목 등).</td></tr>
+<tr><td class="k">가격 보호</td><td class="l">최저가 차액 10배 보상(규정 제8조 — 대상: 동일 브랜드 · 모델 새 제품, 계약 후 7일 이내 인근({ST['local']}) 오프라인 매장 정상 판매가 / 제외: 온라인 · 홈쇼핑 판매 · 시공 품목 · 행사가 등).</td></tr>
 </tbody></table>
 
 <h2>5. 보고 · 공개</h2>
@@ -586,7 +630,7 @@ def doc14_3():
 </table>
 <div class="box" style="margin-top:14pt"><b>공고 4항 8) 보증증권 발행 가능 근거</b><br>
 · 위 증권은 당사가 보증보험사의 심사를 거쳐 계약보증보험증권을 발급받은 이력을 보여 드리는 자료입니다(본 입찰과 별개의 용역 계약).<br>
-· 입주박람회 협약 이행보증은 <b>협약 시 단지 규모에 맞춰 금액을 확정하여 발급</b>하고, 증권 실물을 입예협에 제출합니다(제안서 기준: 이행보증보험 2년 · 최대 10억원).<br>
+· 입주박람회 협약 이행보증은 <b>협약 시 단지 규모에 맞춰 금액을 확정하여 발급</b>하고, 증권 실물을 입예협에 제출합니다(제안서 기준: 이행보증보험 2년 · 최대 10억원 범위에서 협약 때 확정).<br>
 · 위 증권의 피보험자 · 주계약 정보는 보증 이력 확인 목적으로만 첨부합니다.</div>
 <p class="note">※ 첨부: 계약보증보험증권 사본 2쪽(증권 1쪽 · 보험약관 주요 내용 1쪽)</p>"""
     return doc("14 ③ 보증보험증권 사본", [body])
@@ -617,10 +661,14 @@ def doc14_5():
         dst = os.path.join(HERE, "assets_ins", "cafe_" + f)
         if not os.path.exists(dst):
             hw.mask(os.path.join(CAP_DIR, f), boxes, dst)
+    # 재검증 10-14: 사상 붙임은 '입주민 소통 카페'의 주관사 게시판(입예협 공식 카페 아님) — 탕정 hwakyak.py는 읽기만 하고 분당에서 표기만 바꾼다
+    src_fix = {"입예협 카페 공지 (붙임 1)": "입주민 카페 주관사 게시판 (붙임 1)", "입예협 카페 공지 (붙임 2)": "입주자 모임 카페 주관사 공지 (붙임 2)"}
+    recs = [(a, b, c, n, src_fix.get(s, s)) for a, b, c, n, s in hw.RECS]
+    assert any("입주민 카페" in r[4] for r in recs), "사상 근거 표기 — 탕정 hwakyak.py RECS 문구가 바뀜"
     rows = "".join(f'<tr><td>{i}</td><td>{e(a)}</td><td class="l">{e(b)}</td><td>{e(c)}</td><td class="r">{n:,}</td><td class="l">{e(s)}</td></tr>'
-                   for i, (a, b, c, n, s) in enumerate(hw.RECS, 1))
-    tot = sum(r[3] for r in hw.RECS)
-    assert (len(hw.RECS), tot) == (10, 19563), "실적 확약서 합계가 제안서(10개 단지 · 19,563세대)와 다름"
+                   for i, (a, b, c, n, s) in enumerate(recs, 1))
+    tot = sum(r[3] for r in recs)
+    assert (len(recs), tot) == (10, 19563), "실적 확약서 합계가 제안서(10개 단지 · 19,563세대)와 다름"
     p1 = f"""<section class="pg">
 <h1>실 적 확 약 서</h1><div class="sub">1,000세대 이상 공동주택 입주박람회 주관 실적</div>
 <table class="info"><tr><th>상호</th><td>{D.COMPANY}</td><th>대표이사</th><td>{D.CEO}</td></tr>
@@ -628,8 +676,8 @@ def doc14_5():
 <tr><th>제출처</th><td colspan="3">{e(D.CLIENT)}</td></tr></table>
 <p class="body">당사는 「{e(D.NOTICE)}」 4항 4) · 8항 1) · 2)와 관련하여, 1,000세대 이상 공동주택 단지의 입주박람회 주관 실적을 아래와 같이 제출하며 기재 내용이 사실임을 확약합니다.</p>
 <table class="t"><tr><th>연번</th><th>주관 시기</th><th>단지명</th><th>지역</th><th>세대수</th><th>근거</th></tr>{rows}
-<tr class="sum"><td colspan="4">합계 {len(hw.RECS)}개 단지</td><td class="r">{tot:,}</td><td></td></tr></table>
-<div class="note">※ 근거: NICE 기업신용평가보고서(평가일 {D.NICE_DATE}) '연혁'(제출서류 14 ④ 9쪽) · 각 단지 입주예정자협의회 공식 카페의 주관사 명의 공지 · BEXCO 공식 행사일정(붙임). 세대수는 NICE 연혁 기재값(카페 공지 · BEXCO 근거 3개 단지는 단지 공식 총세대수).</div>
+<tr class="sum"><td colspan="4">합계 {len(recs)}개 단지</td><td class="r">{tot:,}</td><td></td></tr></table>
+<div class="note">※ 근거: NICE 기업신용평가보고서(평가일 {D.NICE_DATE}) '연혁'(제출서류 14 ④ 9쪽) · 단지 카페(입주민 · 입주자 모임 카페)의 주관사 명의 공지 · BEXCO 공식 행사일정(붙임). 세대수는 NICE 연혁 기재값(카페 공지 · BEXCO 근거 3개 단지는 단지 공식 총세대수).</div>
 <ol><li>위 실적은 당사가 입주박람회 주관사로서 직접 수행한 것입니다.</li>
 <li>귀 협의회가 요청하면 계약서, 실적 확인서, 정산 자료 등 증빙을 지체 없이 제출하겠습니다.</li>
 <li>기재 내용이 사실과 다른 것으로 밝혀지면 공고 9항 3) · 11) · 10항 10)에 따른 선정 무효 · 협약 취소 등 모든 조치를 이의 없이 받아들이겠습니다.</li></ol>
@@ -638,7 +686,8 @@ def doc14_5():
 <div class="to">{e(D.CLIENT)} 귀중</div></section>"""
     caps = ""
     for f, title, url, what, boxes in hw.CAPS:
-        kind = "전시장 공식 행사일정 캡처" if f.startswith("bexco") else "입주예정자협의회 카페 주관사 공지 캡처"
+        kind = ("전시장 공식 행사일정 캡처" if f.startswith("bexco") else
+                "입주민 소통 카페 주관사 게시판 캡처" if f.startswith("sasang") else "입주자 모임 카페 주관사 공지 캡처")
         caps += (f'<section class="pg"><h2>실적 확약서 붙임 · {kind}</h2><div class="cap"><h3>{e(title)}</h3>'
                  f'<div class="u">{e(url)}{" · 입주민 닉네임(동·호수)은 개인정보 보호를 위해 가림" if boxes else ""}</div><div class="k">{e(what)}</div>'
                  f'<img src="../assets_ins/cafe_{f}"></div></section>')  # HTML은 작업/ 아래
@@ -753,67 +802,93 @@ def mail_plan(files, limit=MAIL_LIMIT_MB):
     return mails
 
 
-def split_for_mail(path, limit=MAIL_LIMIT_MB):
-    """한 파일이 메일 일반 첨부 한도를 넘으면 쪽 단위로 고르게 나눈다(각 조각 ≤ limit · 글자 대조). 제출본/메일분할_<번호>/에 쓴다."""
-    src = fitz.open(path)
-    n, base = len(src), os.path.splitext(os.path.basename(path))[0]
-    texts = page_texts(src)
-    for k in range(2, 9):
-        cuts = [round(n * i / k) for i in range(k + 1)]
-        parts = []
-        for i in range(k):
-            o = fitz.open()
-            o.insert_pdf(src, from_page=cuts[i], to_page=cuts[i + 1] - 1)
-            o.set_metadata({"title": f"{src.metadata.get('title') or base} ({i + 1}/{k})", "author": D.COMPANY})
-            parts.append((cuts[i] + 1, cuts[i + 1], o.tobytes(garbage=GARBAGE, deflate=True)))
-        if all(len(b) / 1e6 <= limit for *_, b in parts):
-            break
-    else:
-        raise SystemExit(f"분할해도 {limit}MB 이하가 안 됨: {path}")
-    d = os.path.join(SUBMIT, "메일분할_" + base.split("_")[2])
-    os.makedirs(d, exist_ok=True)
+_SPLITS = {}
+
+
+def split_parts(path, limit=MAIL_LIMIT_MB):
+    """한 파일이 메일 일반 첨부 한도를 넘으면 쪽 단위로 고르게 나눈 조각 [(첫 쪽, 끝 쪽, bytes)] — 한도 안이면 [](나누지 않음).
+    01 목록(2행 · 파일명 주석)과 실제 분할본이 같은 값을 쓰도록 한 번 계산해 둔다."""
+    if os.path.getsize(path) / 1e6 <= limit:
+        return []
+    key = (path, os.path.getmtime(path), limit)
+    if key not in _SPLITS:
+        src = fitz.open(path)
+        n, base = len(src), os.path.splitext(os.path.basename(path))[0]
+        for k in range(2, 9):
+            cuts = [round(n * i / k) for i in range(k + 1)]
+            parts = []
+            for i in range(k):
+                o = fitz.open()
+                o.insert_pdf(src, from_page=cuts[i], to_page=cuts[i + 1] - 1)
+                o.set_metadata({"title": f"{src.metadata.get('title') or base} ({i + 1}/{k})", "author": D.COMPANY})
+                parts.append((cuts[i] + 1, cuts[i + 1], o.tobytes(garbage=GARBAGE, deflate=True)))
+            if all(len(b) / 1e6 <= limit for *_, b in parts):
+                break
+        else:
+            raise SystemExit(f"분할해도 {limit}MB 이하가 안 됨: {path}")
+        _SPLITS[key] = parts
+    return _SPLITS[key]
+
+
+def split_for_mail(path, name, root):
+    """split_parts() 조각을 <root>/메일분할_<번호>/<name>_<i>of<k>_p<첫>-<끝>.pdf로 쓴다(글자 대조).
+    root = 제출본(02가 보낼 수 있는 상태) 또는 작업(7 · 14 확정 전 — 미리 보기만)."""
+    parts = split_parts(path)
+    texts = page_texts(path)
+    d = os.path.join(root, "메일분할_" + name.split("_")[0])
+    shutil.rmtree(d, ignore_errors=True)
+    os.makedirs(d)
     out_ = []
     for i, (a, b, data) in enumerate(parts, 1):
-        q = os.path.join(d, f"{base}_{i}of{k}_p{a:03d}-{b:03d}.pdf")
+        q = os.path.join(d, f"{PFX}{name}_{i}of{len(parts)}_p{a:03d}-{b:03d}.pdf")
         pathlib.Path(q).write_bytes(data)
         assert page_texts(q) == texts[a - 1:b], f"분할 뒤 글자가 달라짐: {q}"
         out_.append(q)
     return out_
 
 
-def write_plan(ok, miss, ready_files):
-    lines = [f"[메일 발송 계획] {D.SITE['name']} 입주박람회 주관사 입찰 — 접수 {D.SUBMIT_TO} · 마감 {D.DEADLINE}",
+PLAN = os.path.join(WORK, "메일발송_계획.txt")  # 내부 안내(파일 · 변수 이름 포함) — 제출본/에 두지 않는다(첨부 · 보관함 게시 사고 방지)
+
+
+def write_plan(miss, attach, notes):
+    """attach = [(번호, 경로)] 공고 순서 — 제출본/에 실제로 들어간 첨부 파일만."""
+    lines = [f"[메일 발송 계획 · 내부용 — 이 파일은 첨부 · 게시하지 않음] {D.SITE['name']} 입주박람회 주관사 입찰 — 접수 {D.SUBMIT_TO} · 마감 {D.DEADLINE}",
              f"메일 제목(모든 메일 같게, 공고 3항 양식 그대로): {D.MAIL_TITLE}",
              "규칙: PDF 그대로 첨부(ZIP 금지) · 메일 한 통 첨부 합계 10MB 이하(대용량 첨부 링크 = 30일 보관 · 만료 위험 → 쓰지 않음)",
-             "      본문 첫 줄에 '(n/N)'과 그 메일의 첨부 목록 · 전체 14종 목록을 적고, 발송 직후 받은편지함(보낸편지함)에서 첨부가 열리는지 확인", ""]
+             "      본문 첫 줄에 '(n/N)'과 그 메일의 첨부 목록 · 전체 14종 목록을 적고, 발송 직후 받은편지함(보낸편지함)에서 첨부가 열리는지 확인",
+             "      첨부는 제출본/ 안의 파일만(폴더째 끌어다 놓지 말고 아래 묶음대로) · 02는 단일 파일(17MB)을 쓰지 않고 분할본만 보냄", ""]
     if miss:
         lines += ["※ 아직 제출본에 없는 서류(조치 후 docs_bd.py 다시 실행):"] + [f"  - {m}" for m in miss] + [""]
-    all_keys = [k for k in SUBMIT_NAMES]
-    plan_files, big = [], []
-    for k in all_keys:
-        if k not in ready_files:
-            continue
-        if os.path.getsize(ready_files[k]) / 1e6 > MAIL_LIMIT_MB:  # 02 제안서(메일용) 등 — 쪽 단위 분할본으로 보냄
-            parts = split_for_mail(ready_files[k])
-            big.append((k, ready_files[k], parts))
-            plan_files += [(k, q) for q in parts]
-        else:
-            plan_files.append((k, ready_files[k]))
-    for k, f, parts in big:
-        lines += [f"※ {k} {os.path.basename(f)}({os.path.getsize(f) / 1e6:.1f}MB)는 일반 첨부 한도를 넘어 쪽 단위 분할본 {len(parts)}개로 보냅니다"
-                  f"(제출본/{os.path.basename(os.path.dirname(parts[0]))}/ · 내용 · 쪽 번호 그대로).",
-                  "   25MB까지 일반 첨부가 되는 메일 계정으로 보낼 때는 분할본 대신 단일 파일을 첨부합니다.", ""]
-    mails = mail_plan(plan_files)
-    n = len(mails) + (1 if miss else 0)
+    lines += notes
+    mails = mail_plan(attach)
+    wait = [k for k in SUBMIT_NAMES if k not in {k_ for k_, _ in attach}]
+    n = len(mails) + (1 if wait else 0)
     for i, m in enumerate(mails, 1):
-        lines.append(f"({i}/{'N' if miss else n}) 첨부 {len(m)}개 · {sum(x[2] for x in m):.1f}MB")
-        lines += [f"    {os.path.basename(path)}  {mb:.2f}MB" for _, path, mb in m]
-    wait = [k for k in all_keys if k not in ready_files]
+        lines.append(f"({i}/{'N' if wait else n}) 첨부 {len(m)}개 · {sum(x[2] for x in m):.1f}MB")
+        lines += [f"    {os.path.relpath(path, SUBMIT)}  {mb:.2f}MB" for _, path, mb in m]
     if wait:
-        lines.append(f"(대기) 조치 후 추가: " + " · ".join(wait) + " — 다시 실행하면 메일 묶음이 새로 계산됩니다.")
+        lines.append("(대기) 조치 후 추가: " + " · ".join(wait) + " — 다시 실행하면 메일 묶음이 새로 계산됩니다.")
     text = "\n".join(lines) + "\n"
-    pathlib.Path(SUBMIT, "메일발송_계획.txt").write_text(text, encoding="utf-8")
+    pathlib.Path(PLAN).write_text(text, encoding="utf-8")
     return text
+
+
+NICE_MASK = {12: [(170, 148.5, 228, 163.5), (170, 166.5, 228, 181.5)]}  # 13쪽 '주요 경영진' 생년월일 칸 — 본부장 · 팀장(대표 외 임직원)
+
+
+def nice_masked(nice):
+    """14 ④ NICE 보고서 — 대표 외 임직원 생년월일을 픽셀째 가린 사본(06에서 명부를 뺀 것과 같은 기준 · 재검증 10-14)."""
+    d = fitz.open(nice)
+    assert len(d) == 24, f"NICE 보고서 {len(d)}쪽 — 가림 좌표(13쪽) 다시 확인"
+    for i, rects in NICE_MASK.items():
+        pg = d[i]
+        assert any(x["width"] == 2477 and x["height"] == 3502 for x in pg.get_image_info()), "NICE 13쪽 이미지가 다름 — 가림 좌표 다시 확인"
+        for r in rects:
+            pg.add_redact_annot(fitz.Rect(*r), fill=(0.82, 0.82, 0.82))
+        pg.apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
+    p = out("14_4_NICE_기업신용평가_가림.pdf")
+    d.save(p, garbage=GARBAGE, deflate=True)
+    return p
 
 
 def main():
@@ -866,8 +941,14 @@ def main():
     res["03"] = merge(N03, [biz], "3 사업자등록증 사본")
     # 4 = 등기부 + 인감증명서 + 사용인감계(출력용: 사용인감 칸만 디지털 직인 → 법인인감 실물 날인 스캔)
     ingam = INGAM_PDF if (D.INGAM_DATE and os.path.exists(INGAM_PDF)) else fit(render("04_2_법인인감증명서_조치필요", doc04_action()), 1)
-    gam_print = stamped(fit(render("04_3_사용인감계_출력용", doc04_seal()), 1))
-    if os.path.exists(GAM_SCAN):
+    # 재검증 10-14: 출력할 파일은 하나 — 사용인감(디지털 직인)이 찍힌 판을 '_출력용'으로, 직인 전 중간 파일은 '_직인전'(출력 금지)
+    gam_raw = fit(render("04_3_사용인감계_직인전", doc04_seal()), 1)
+    gam_print = out("04_3_사용인감계_출력용.pdf")
+    os.replace(stamped(gam_raw), gam_print)
+    for old in ("04_3_사용인감계_출력용_직인.pdf", "04_3_사용인감계_출력용.html"):  # 지난 실행의 이름(직인 없는 판과 헷갈림)
+        if os.path.exists(out(old)):
+            os.remove(out(old))
+    if _scan_ok(GAM_SCAN):
         gam = GAM_SCAN
     else:
         todo("사용인감계 — 법인인감 실물 날인 스캔")
@@ -886,15 +967,16 @@ def main():
         res[no] = stamped(fit(render(name, form_doc(fno, title, paras, items)), 1))
     # 14 기타 = ① 결격사유 서약서(대표 자필 서명 + 법인인감 스캔) ② 요약제안서(메일용) ③ 보증증권(표지 + 사본) ④ NICE ⑤ 실적 확약서
     s1_print = fit(render("14_1_결격사유부존재서약서_출력용", doc14_1()), 1)
-    if getattr(D, "CEO_CONFIRMED", False) and os.path.exists(S1_SCAN):
+    if getattr(D, "CEO_CONFIRMED", False) and _scan_ok(S1_SCAN):
         s1 = S1_SCAN
     else:
         if not getattr(D, "CEO_CONFIRMED", False):
             todo("14 ① 결격사유 서약서 — 대표 ①~⑥ 사실 확인")
-        if not os.path.exists(S1_SCAN):
+        if not _scan_ok(S1_SCAN):
             todo("14 ① 결격사유 서약서 — 대표 자필 서명 · 법인인감 스캔")
         s1 = s1_print
     s3 = fit(render("14_3_보증증권_표지", doc14_3()), 1)
+    nice = nice_masked(nice)  # ④ 대표 외 임직원 생년월일 가림본
     parts = [s1, sum14, s3, SGI, nice]
     names = ["① 대표자 결격사유 부존재 서약서", "② 요약제안서", "③ 서울보증 계약보증보험증권 사본", "④ NICE디앤비 기업신용평가보고서"]
     if HW_IN_14:
@@ -907,24 +989,37 @@ def main():
     res["14"] = merge(N14, parts, "14 기타 입예협이 필요하다고 인정하는 자료", toc)
     proposal_todos()
 
-    # ---- 제출본/: 조치가 끝난 서류만, 01 주석의 이름 규칙 그대로(지난 실행의 파일은 지우고 다시 씀)
+    # ---- 제출본/: 조치가 끝난 서류 중 실제로 첨부할 파일만, 01 주석의 이름 규칙 그대로(지난 실행의 파일은 지우고 다시 씀)
+    # 재검증 10-14: 02 단일 파일(메일 한도 초과)은 넣지 않고 분할본만 · 메일발송_계획.txt는 작업/(내부 안내 — 첨부 · 게시 사고 방지)
+    big = [k for k in res if k != "02" and ok.get(k, True) and os.path.getsize(res[k]) / 1e6 > MAIL_LIMIT_MB]
+    if big:  # 쪽 단위로 나누면 책갈피 · 파일명이 01 목록과 달라짐(14 ①~⑤) → 나누지 않고 멈춤
+        sys.exit(f"메일 한도 {MAIL_LIMIT_MB}MB를 넘는 서류 {big} — 스캔을 1쪽 · 300dpi 이하 · 그레이로 다시 만든 뒤 실행")
     for f in os.listdir(SUBMIT):
         q = os.path.join(SUBMIT, f)
         if os.path.isdir(q) and f.startswith("메일분할_"):
             shutil.rmtree(q)
         elif f.endswith(".pdf") or f.endswith(".txt"):
             os.remove(q)
-    ready = {}
+    attach, notes = [], []
     print("\n[작업본 — 공고 7항 순서 · 지금 상태 그대로]")
     for k in sorted(res, key=int):
         v = res[k]
         good = ok.get(k, True)
         print(f"{k:>2} {'제출 가능' if good else '조치 필요'}  {os.path.basename(v)}  {len(fitz.open(v))}p  {os.path.getsize(v) / 1e6:.2f}MB")
+        if k == "02" and split_parts(v):
+            qs = split_for_mail(v, SUBMIT_NAMES[k], SUBMIT if good else WORK)
+            if good:
+                attach += [(k, q) for q in qs]
+            notes += [f"※ 02 제안서(메일용 {os.path.getsize(v) / 1e6:.1f}MB)는 일반 첨부 한도를 넘어 쪽 단위 분할본 {len(qs)}개로만 보냅니다"
+                      f"({'제출본' if good else '작업'}/{os.path.basename(os.path.dirname(qs[0]))}/ · 내용 · 쪽 번호 그대로 · 01 목록 2행에 적은 구성)."
+                      + ("" if good else " 지금은 7 · 14 확정 전이라 작업/에 미리 보기로만 둡니다."), ""]
+            continue
         if good:
             dst = os.path.join(SUBMIT, PFX + SUBMIT_NAMES[k] + ".pdf")
             shutil.copyfile(v, dst)
-            ready[k] = dst
-    print("\n" + write_plan(ok, miss, ready))
+            attach.append((k, dst))
+    print("\n" + write_plan(miss, attach, notes))
+    print(f"(계획 파일: {PLAN})")
     if TODOS:
         u = list(dict.fromkeys(TODOS))
         print(f"[노란 칸 · 자리표시 {len(u)}개]", " / ".join(u))

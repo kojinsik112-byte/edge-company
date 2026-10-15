@@ -86,7 +86,7 @@ def main():
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     mb = os.path.getsize(OUT_PDF) / 1e6
-    print(f"{OUT_PDF} · {len(pymupdf.open(OUT_PDF))}쪽 · {mb:.1f}MB" + ("" if mb <= LIMIT_MB else f"  ※ 메일 일반 첨부 {LIMIT_MB}MB 초과 — docs_bd.py가 쪽 단위 분할본(제출본/메일분할_02)을 함께 만든다"))
+    print(f"{OUT_PDF} · {len(pymupdf.open(OUT_PDF))}쪽 · {mb:.1f}MB" + ("" if mb <= LIMIT_MB else f"  ※ 메일 일반 첨부 {LIMIT_MB}MB 초과 — docs_bd.py가 쪽 단위 분할본(7 · 14 확정 후 제출본/메일분할_02, 그 전엔 작업/메일분할_02)을 만든다 · 단일 파일은 보내지 않음"))
 
 
 if __name__ == "__main__":
