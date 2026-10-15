@@ -85,8 +85,10 @@ def _smooth(v, k):
     return np.stack([np.convolve(pad[:, c], ker, mode="valid") for c in range(3)], 1)
 
 
-def bg_fill(page, rect, ring=2.5, z=2.0, smooth=0):
-    """rect 둘레 색으로 안쪽을 매끈하게 메움(가장자리 4변 보간 = 이음새 없음). 그림 1장으로 굳힘."""
+def bg_fill(page, rect, ring=2.5, z=2.0, smooth=0, mode="all", feather=None):
+    """rect 둘레 색으로 안쪽을 매끈하게 메움(가장자리 4변 보간 = 이음새 없음). 그림 1장으로 굳힘.
+    mode='tb' = 위·아래 변만 보간(카드 안처럼 좌우 테두리를 끌어오면 안 될 때).
+    feather = {'t':pt,'b':pt,'l':pt,'r':pt} — 그 변을 원본 쪽으로 서서히 투명하게(경계선 없앰)."""
     rect = fitz.Rect(rect)
     clip = fitz.Rect(rect.x0 - ring, rect.y0 - ring, rect.x1 + ring, rect.y1 + ring) & page.rect
     pix = page.get_pixmap(matrix=fitz.Matrix(z, z), clip=clip, alpha=False)
@@ -101,14 +103,69 @@ def bg_fill(page, rect, ring=2.5, z=2.0, smooth=0):
     s = np.linspace(0, 1, W)[None, :, None]
     t = np.linspace(0, 1, H)[:, None, None]
     A = (1 - t) * top[None] + t * bot[None]
-    Bm = (1 - s) * lef[:, None] + s * rig[:, None]
-    c00, c10, c01, c11 = top[0], top[-1], bot[0], bot[-1]
-    C = (1 - s) * (1 - t) * c00 + s * (1 - t) * c10 + (1 - s) * t * c01 + s * t * c11
-    out = np.clip(A + Bm - C, 0, 255).astype(np.uint8)
-    im = Image.fromarray(out)
+    if mode == "tb":
+        out = np.clip(A, 0, 255).astype(np.uint8)
+    else:
+        Bm = (1 - s) * lef[:, None] + s * rig[:, None]
+        c00, c10, c01, c11 = top[0], top[-1], bot[0], bot[-1]
+        C = (1 - s) * (1 - t) * c00 + s * (1 - t) * c10 + (1 - s) * t * c01 + s * t * c11
+        out = np.clip(A + Bm - C, 0, 255).astype(np.uint8)
+    if feather:
+        al = np.ones((H, W))
+        yy = np.arange(H)[:, None] * np.ones((1, W))
+        xx = np.ones((H, 1)) * np.arange(W)[None, :]
+        for side, d in feather.items():
+            n = max(1.0, d * z)
+            dist = {"t": yy, "b": H - 1 - yy, "l": xx, "r": W - 1 - xx}[side]
+            al = np.minimum(al, np.clip(dist / n, 0, 1))
+        al = al * al * (3 - 2 * al)  # smoothstep
+        im = Image.fromarray(np.dstack([out, (al * 255).astype(np.uint8)]), "RGBA")
+    else:
+        im = Image.fromarray(out)
     buf = io.BytesIO()
     im.save(buf, "PNG")
     page.insert_image(clip, stream=buf.getvalue(), overlay=True)
+
+
+def vgrad(page, rect, top_rect, bot_rect, feather=None, z=2.0, span=None, colors=None):
+    """rect를 원본 두 띠(top_rect·bot_rect)의 중앙값 색 사이 세로 그라데이션으로 메움(가로 줄무늬 없음).
+    span=(y0,y1) = 색 보간 기준 세로 구간(여러 rect가 같은 그라데이션을 공유)."""
+    def med(r):
+        pix = page.get_pixmap(matrix=fitz.Matrix(z, z), clip=fitz.Rect(r), alpha=False)
+        return np.median(np.frombuffer(pix.samples, np.uint8).reshape(-1, 3), 0)
+    c0, c1 = colors if colors else (med(top_rect), med(bot_rect))
+    rect = fitz.Rect(rect)
+    H, W = int(rect.height * z), int(rect.width * z)
+    y0, y1 = span or (rect.y0, rect.y1)
+    t = np.clip((np.linspace(rect.y0, rect.y1, H) - y0) / (y1 - y0), 0, 1)[:, None, None]
+    out = np.clip((1 - t) * c0 + t * c1, 0, 255) * np.ones((1, W, 1))
+    out = out.astype(np.uint8)
+    if feather:
+        al = np.ones((H, W))
+        yy = np.arange(H)[:, None] * np.ones((1, W))
+        xx = np.ones((H, 1)) * np.arange(W)[None, :]
+        for side, d in feather.items():
+            dist = {"t": yy, "b": H - 1 - yy, "l": xx, "r": W - 1 - xx}[side]
+            al = np.minimum(al, np.clip(dist / max(1.0, d * z), 0, 1))
+        al = al * al * (3 - 2 * al)
+        im = Image.fromarray(np.dstack([out, (al * 255).astype(np.uint8)]), "RGBA")
+    else:
+        im = Image.fromarray(out)
+    buf = io.BytesIO()
+    im.save(buf, "PNG")
+    page.insert_image(rect, stream=buf.getvalue(), overlay=True)
+
+
+def drop_spans(page, rect, fonts=("MalgunGothic",)):
+    """rect 안 숨은 원본 텍스트층(맑은고딕 OCR 층)만 지움 — 새로 쓴 Pretendard 글자는 남김."""
+    hits = [s for b in page.get_text("dict", clip=fitz.Rect(rect))["blocks"] for l in b.get("lines", [])
+            for s in l["spans"] if s["font"].startswith(fonts) and s["text"].strip()]
+    for s in hits:
+        page.add_redact_annot(fitz.Rect(s["bbox"]))
+    if hits:
+        page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE, graphics=fitz.PDF_REDACT_LINE_ART_NONE,
+                              text=fitz.PDF_REDACT_TEXT_REMOVE)
+    return len(hits)
 
 
 def wb(page, x, base, text, size, color, font=None, align="left", max_w=None, hidden=False):
@@ -266,14 +323,18 @@ def elec():
 def p3(d):
     p = d[2]
     hidden_replace(p, "임예협 업무지원", "입예협 업무지원")
-    rt(p, (636, 183, 716, 201), "입예협 업무지원", 12.2, font=B, x=638.5)
+    sib = F.ink(BASE[2], fitz.Rect(656, 230, 726, 245))  # 형제 항목 '6. 하자체크 지원' 글자색
+    rt(p, (636, 183, 716, 201), "입예협 업무지원", 12.2, color=sib, font=B, x=638.5)
     log(3, "목차 09-3 '업체별 업무지원'(텍스트층 '임예협') → '입예협 업무지원'")
 
 
 def p5(d):
     p = d[4]
-    rt(p, (95, 488, 250, 528), "최대 10년 사후관리", 19, color=0xE2C27F, font=B, x=172, align="center",
-       smooth=True)
+    # POINT 1·2와 같은 2줄(흰색 + 금색) · 같은 크기(21pt)
+    clear_text(p, (95, 482, 250, 534))
+    bg_fill(p, (95, 482, 246, 534))
+    W(p, 165, 496.5, "최대 10년", 21, 0xF4F1EA, B, align="center")
+    W(p, 165, 519.5, "사후관리", 21, 0xE2C27F, B, align="center")
     log(5, "POINT 3 '10년 안심보장' → '최대 10년 사후관리'(보장 범위 미확정)")
 
 
@@ -283,18 +344,32 @@ def p6(d):
     tw = fitz.TextWriter(p.rect)
     tw.append((304.6, 207), "엣지컴퍼니 본사 · 쇼룸", font=R, fontsize=12)
     tw.write_text(p, render_mode=3)
-    bg_fill(p, (413, 170, 849, 483), smooth=30)
-    bg_fill(p, (205, 208, 415, 483))
-    photo(p, (232, 214, 458, 474), "hq_tower.jpg")
-    photo(p, (468, 214, 838, 362), "hq_sign.jpg")
-    photo(p, (468, 370, 652, 474), "hq_interior.jpg")
-    box = fitz.Rect(660, 370, 838, 474)
-    p.draw_rect(box, color=rgb(GOLD), fill=rgb(NAVY), width=0.8, overlay=True)
-    W(p, 670, 392, "울산 본사 · 쇼룸", 13, 0xE3C48C, B)
-    W(p, 670, 414, "울산광역시 울주군 청량읍", 9, 0xDDE3EC, R)
-    W(p, 670, 427, "온산로 615-1, 2·3층", 9, 0xDDE3EC, R)
-    W(p, 670, 452, "3층 쇼룸 · 본사 사무실 운영", 8.5, 0xA8B8CA, R)
-    log(6, "AI 빌딩(외벽 DEFELICE·스타벅스·신세계 간판, '사옥') → 실제 본사 외관·간판·쇼룸 사진 + '울산 본사 · 쇼룸' 주소 카드")
+    # AI 빌딩 자리 → 패널 바탕색 세로 그라데이션(원본 위·아래 크림색 띠 샘플) + 회사 개요 카드.
+    # 본사 외관 사진(hq_tower)은 간판 미세 글자가 깨져 AI 합성으로 보여 쓰지 않음(본부장 확인 전).
+    top_s, bot_s = (470, 158, 780, 165), (215, 488, 840, 493)
+    vgrad(p, (213, 206, 843, 487), top_s, bot_s, feather={"t": 3, "b": 4, "l": 5}, span=(166, 487))
+    vgrad(p, (408, 166, 843, 210), top_s, bot_s, feather={"t": 4, "l": 6}, span=(166, 487))
+    c = fitz.Rect(230, 222, 828, 470)
+    p.draw_rect(c, color=rgb(0xC3A37D), fill=rgb(NAVY), width=1, radius=0.05, overlay=True)
+    logo = os.path.join(ASSET, "logo_lockup_rev.png")
+    if os.path.exists(logo):
+        p.insert_image(fitz.Rect(254, 250, 254 + 196, 250 + 52), filename=logo, keep_proportion=True, overlay=True)
+    W(p, 256, 330, "울산 본사 · 쇼룸", 19, 0xE3C48C, B)
+    W(p, 256, 356, "울산광역시 울주군 청량읍 온산로 615-1, 2·3층", 10.5, 0xDDE3EC, R, max_w=228)
+    W(p, 256, 376, "대표이사 고진식", 10, 0xA8B8CA, R)
+    W(p, 256, 394, "주관사업 총괄 본부장 윤현욱 · 010-7273-9901", 10, 0xA8B8CA, R, max_w=228)
+    W(p, 256, 440, "ISO 9001 · 14001 · 45001 인증 (2025.08)", 10, 0xC9A96A, B, max_w=228)
+    p.draw_line((498, 246), (498, 446), color=rgb(0x2C3E5C), width=0.8, overlay=True)
+    tiles = [("2022.02", "법인 설립"), ("제 울산-00821호", "전기공사업 등록"),
+             ("임직원 14명", "정규직 10 + 인턴 4 (2026.10)"), ("직영 4 · 협력 8", "전국 12개 거점")]
+    for i, (big, sub) in enumerate(tiles):
+        x0, y0 = 518 + (i % 2) * 152, 244 + (i // 2) * 104
+        tr = fitz.Rect(x0, y0, x0 + 142, y0 + 92)
+        p.draw_rect(tr, color=rgb(0x2C3E5C), fill=rgb(0x10284F), width=0.8, radius=0.08, overlay=True)
+        W(p, tr.x0 + 71, y0 + 38, big, 16, 0xE3C48C, B, align="center", max_w=130)
+        W(p, tr.x0 + 71, y0 + 64, sub, 9.5, 0xDDE3EC, R, align="center", max_w=130)
+    log(6, "AI 빌딩(외벽 DEFELICE·스타벅스·신세계 간판, '사옥') → 패널 바탕 + 회사 개요 카드(울산 본사·쇼룸 주소 · 2022.02 설립 · "
+           "전기공사업 제 울산-00821호 · 임직원 14명 · 직영 4·협력 8 · ISO 3종). 본사 외관 사진은 AI 합성 의심으로 미사용")
 
 
 def p8(d):
@@ -324,6 +399,9 @@ def p8(d):
 
 def p9(d):
     p = d[8]
+    # 숨은 텍스트층에 남은 다른 장 문구('직접 면허 보유!'·'한국 면허등록 업체 자문'·'건설업') 삭제(화면 변화 없음)
+    drop_spans(p, (280, 90, 810, 200))
+    drop_spans(p, (280, 488, 670, 518))
     c = F.sample_bg(p, fitz.Rect(402.5, 488.3, 439.2, 492.8), ring=0.6)
     burn(p, [(210.2, 317.4, 267.4, 379.5), (402.4, 488.2, 439.3, 498.5)])
     # 4대보험 명부: 주민번호 열·성명 열 전체 가림(10행)
@@ -372,8 +450,10 @@ def p11(d):
 
     put(T["본사\xa0사옥"], [("본사 · 쇼룸", 28, 0xE3C48C, B), (" 운영", 28, 0xFFFFFF, B)])
     put(T["엣지컴퍼니\xa0본사\xa0사옥"], [("엣지컴퍼니 울산 본사", 11.5, 0xF0E2C4, B)])
-    put(T["사옥"], [("· 쇼룸", 12, 0xC2AB85, B)])
-    put(T["사옥에서 본사·쇼룸을 직접 운영합니다."], [("울산 온산로 615-1 2·3층에서 직접 운영합니다.", 9, 0x9DADBE, R)])
+    tw = fitz.TextWriter(p.rect)  # '본사'(27pt) 바로 뒤에 붙임(원본 '사옥' 자리는 간격이 넓음)
+    tw.append((652.4 + 4, T["사옥"]["origin"][1]), "· 쇼룸", font=B, fontsize=12)
+    tw.write_text(p, color=rgb(0xC2AB85))
+    put(T["사옥에서 본사·쇼룸을 직접 운영합니다."], [("울산 온산로 615-1, 2·3층에서 직접 운영합니다.", 9, 0x9DADBE, R)])
     put(T["하자 예치금·이행보증의 재원이 되는 실체입니"], [("협약 시 하자 예치금·보증증권 제출의 재원입니다.", 9, 0x9DADBE, R)])
     put(T["삼성전자 MOU"], [("삼성 측 업무제휴", 8.1, 0xE3C48C, B)])
     log(11, "'본사 사옥'→'본사 · 쇼룸'(NICE상 임차) · OFFICE 카드·사진 캡션 정리 · CAPITAL 설명 '이행보증의 재원'→'협약 시 … 제출의 재원' · "
