@@ -28,11 +28,12 @@ class CapcutNotReady(Exception):
 
 
 def find_capcut_dir() -> Path | None:
-    """EDGE_CAPCUT_DIR 환경변수 → 저장소 내 기본 위치 순으로 찾는다."""
+    """EDGE_CAPCUT_DIR 환경변수 → 저장소 내 위치 → 배포 ZIP 내 위치 순으로 찾는다."""
     candidates = []
     if os.environ.get("EDGE_CAPCUT_DIR"):
         candidates.append(Path(os.environ["EDGE_CAPCUT_DIR"]))
     candidates.append(HERE.parent.parent / CAPCUT_DIR_NAME)  # edge-company/캡컷 ai편집기
+    candidates.append(HERE.parent / CAPCUT_DIR_NAME)  # 배포 ZIP: 엣지_영상도구/캡컷 ai편집기
     for c in candidates:
         if (c / "autoedit" / "cli.py").exists():
             return c.resolve()
