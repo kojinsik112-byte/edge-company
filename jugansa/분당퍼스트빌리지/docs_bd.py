@@ -12,7 +12,9 @@
 그대로 읽어 쓴다(같은 기준 — 제안서 문구를 고치면 다음 빌드에 자동 반영).
 직인(배경 투명 PNG) = 사용인감 — 신청서 · 방안서 · 서식 1 ~ 5 · 실적 확약서의 '(인)' 자리에 찍는다(../동탄파라곤3차/stamp.py와 같은 자리).
 사용인감계(04에 인감증명서와 함께)로 '직인 = 사용인감'을 법인인감과 함께 신고한다(철산 · 탕정 · 지웰 방식).
-법인인감은 디지털로 만들지 않는다(실물만): 사용인감계의 법인인감 칸 · 결격사유 서약서(대표 자필 서명 + 법인인감)는 출력용을 찍어 스캔한다.
+법인인감은 디지털로 만들지 않는다(실물만): 사용인감계의 법인인감 칸은 출력용을 찍어 스캔한다.
+결격사유 서약서(14 ①)는 공고 필수 양식이 아닌 자체 보강 서류 — 본부장 10-15: 다른 서식처럼 사용인감(직인)으로 날인(사용인감계로 신고),
+대표 자필 서명은 필수 아님. data.py S1_HANDSIGN = True일 때만 출력용(자필 서명 · 법인인감 실물) 스캔을 쓴다.
 
 조치 필요(제출 전 실물 서류 · 스캔) — 없으면 [확인 필요]로 집계하고 그 서류는 제출본/에 넣지 않는다(--final이면 파일을 쓰기 전에 멈춤)
   4 법인인감증명서: 보유본 2026.10.08 = 공고일(10.12) 이전 → 재발급본(개인정보 가림)을 EV/법인인감증명서.pdf + data.py INGAM_DATE
@@ -21,8 +23,8 @@
        (04_3_사용인감계_직인전.pdf는 사용인감 칸이 빈 중간 파일 — 출력 금지)
   7 범죄사실확인서: 대표 본인 발급본(주민번호 뒷자리만 가림)을 EV/대표자_범죄경력회보서.pdf, 또는 협의회 서면 승인 시 data.py CRIME_SUBST
        (CRIME_SUBST를 바꾸면 제안서 p90 9행이 바뀜 → build_bd.py · mail_lite.py · docs_bd.py 순서로 모두 다시)
-  14 ① 결격사유 서약서: 대표 ①~⑥ 사실 확인(data.py CEO_CONFIRMED) + 작업/14_1_…_출력용.pdf에 자필 서명 · 법인인감 →
-       1쪽 스캔(300dpi 이하 · 그레이)을 SP/seal_scan/분당_결격사유서약서_서명날인.pdf
+  14 ① 결격사유 서약서: 대표 ①~⑥ 사실 확인(data.py CEO_CONFIRMED)만 필요 — 날인은 사용인감(직인)
+       (선택 · S1_HANDSIGN = True) 작업/14_1_…_출력용.pdf에 자필 서명 · 법인인감 → 1쪽 스캔을 SP/seal_scan/분당_결격사유서약서_서명날인.pdf
   02 제안서: 07 처리 방식(회보서 · 갈음)과 14(①)가 확정된 뒤에만 제출본/에 넣는다 — 제안서 p90 9 · 10행 · p12 · 요약 p9가
        그 서류를 '제출'로 적으므로 먼저 보내면 실제 제출물과 다른 말이 됨(재검증 10-14)
 
@@ -66,7 +68,8 @@ INGAM_PDF = f"{EV}/법인인감증명서.pdf"          # 공고일(10.12) 이후
 CRIME_PDF = f"{EV}/대표자_범죄경력회보서.pdf"    # 대표 본인 발급본(주민번호 뒷자리 가림 후)을 이 이름으로 두면 07에 자동으로 들어간다
 CRIME_SUBST = getattr(D, "CRIME_SUBST", None)  # data.py — 협의회 서면 승인 시에만(제안서 p90도 같은 값)
 GAM_SCAN = f"{SP}/seal_scan/분당_사용인감계_날인.pdf"            # 사용인감계 출력용에 법인인감 실물 날인 → 스캔
-S1_SCAN = f"{SP}/seal_scan/분당_결격사유서약서_서명날인.pdf"      # 14 ① 출력용에 대표 자필 서명 + 법인인감 실물 → 스캔
+S1_SCAN = f"{SP}/seal_scan/분당_결격사유서약서_서명날인.pdf"      # (선택) 14 ① 출력용에 대표 자필 서명 + 법인인감 실물 → 스캔
+HANDSIGN = bool(getattr(D, "S1_HANDSIGN", False))                # 기본 False = 사용인감(직인) 날인(본부장 10-15)
 WORK = os.path.join(HERE, "작업")       # 중간 파일
 SUBMIT = os.path.join(HERE, "제출본")   # 조치가 끝난 제출 파일만
 MAIL_LIMIT_MB = 9.5  # 네이버 메일 일반 첨부 한도(약 10MB) 안 — 넘으면 대용량 첨부(30일 보관)로 바뀜
@@ -225,12 +228,14 @@ def sign(prefix=""):
             f'<div class="to">{e(D.CLIENT)} 귀중</div>')
 
 
-def sign_ceo():
-    """대표 개인 서약 — 대표 자필 서명 + 법인인감 실물(출력 후 날인 · 스캔). 디지털 직인을 찍지 않는다(회사 메모 · 검증 10-14)."""
+def sign_ceo(handsign=False):
+    """대표 서약 날인란. 기본 = 사용인감(직인, 사용인감계로 신고 · 다른 서식과 같음, 본부장 10-15).
+    handsign=True(S1_HANDSIGN) = 출력용 — 자필 서명 + 법인인감 실물 날인 후 스캔(디지털 직인 없음)."""
     yy, mm, dd = ymd()
+    mark = ('<span class="sgl">(자필 서명)</span><span class="sg"></span><span class="seal">(법인인감)</span>' if handsign
+            else '<span class="seal">(인)</span>')
     return (f'<div class="sign"><div class="d">{yy}년 {mm}월 {dd}일</div>'
-            f'<div class="who">서약인 : {D.COMPANY} &nbsp; 대표이사 &nbsp; {D.CEO}'
-            f'<span class="sgl">(자필 서명)</span><span class="sg"></span><span class="seal">(법인인감)</span></div></div>'
+            f'<div class="who">서약인 : {D.COMPANY} &nbsp; 대표이사 &nbsp; {D.CEO}{mark}</div></div>'
             f'<div class="to">{e(D.CLIENT)} 귀중</div>')
 
 
@@ -313,7 +318,7 @@ def readiness():
     """서류별 조치 상태 — 파일을 쓰기 전에 계산한다(--final 사전 점검 · 제출본 복사 기준)."""
     r = dict(ingam=bool(D.INGAM_DATE and os.path.exists(INGAM_PDF)), gam=_scan_ok(GAM_SCAN),
              crime=bool(os.path.exists(CRIME_PDF) or CRIME_SUBST),
-             s1=bool(getattr(D, "CEO_CONFIRMED", False) and _scan_ok(S1_SCAN)))
+             s1=bool(getattr(D, "CEO_CONFIRMED", False) and (_scan_ok(S1_SCAN) or not HANDSIGN)))
     miss = []
     if not r["ingam"]:
         miss.append("4 법인인감증명서 — 공고일(10.12) 이후 발급본(보유본 10.08) · 증빙 폴더 법인인감증명서.pdf + data.py INGAM_DATE")
@@ -325,7 +330,7 @@ def readiness():
                     " → 제안서 p90이 바뀌므로 build_bd.py · mail_lite.py · docs_bd.py 순서로 모두 다시)")
     if not getattr(D, "CEO_CONFIRMED", False):
         miss.append("14 ① 결격사유 서약서 — 대표 ①~⑥ 사실 확인(현재 ⑤만 확인) 후 data.py CEO_CONFIRMED = True")
-    if not _scan_ok(S1_SCAN):
+    if HANDSIGN and not _scan_ok(S1_SCAN):
         miss.append("14 ① 결격사유 서약서 — 출력용(작업/14_1)에 대표 자필 서명 · 법인인감 실물 → " + SCAN_TIP
                     + " → seal_scan/분당_결격사유서약서_서명날인.pdf")
     for label, h in (("02 제안서", P02_HTML), ("14 ② 요약제안서", P14_SUM_HTML)):
@@ -592,7 +597,7 @@ def form_doc(no, title, paras, items):
 
 
 # ================================================================== 14 ① 대표자 결격사유 부존재 서약서
-def doc14_1():
+def doc14_1(handsign=False):
     birth = e(CEO_BIRTH) if CEO_BIRTH else todo("대표자 생년월일 — org_private.json(ceo_birth)")
     items = [
         "금고 이상의 실형을 선고받고 그 집행이 끝나거나(집행이 끝난 것으로 보는 경우를 포함합니다) 집행이 면제된 날부터 2년이 지나지 않은 사람에 해당하지 않습니다.",
@@ -612,7 +617,7 @@ def doc14_1():
 <div class="art" style="margin-top:8pt"><ol style="font-size:10.4pt">{lis.replace("<li>", '<li style="margin-top:5pt;font-size:10.4pt;line-height:1.7">')}</ol></div>
 <p class="body">위 내용이 사실과 다르거나 중요한 사항을 누락한 것으로 확인될 경우, 선정 이후라도 공고 9항 11) · 10항 10)에 따른 <b>선정 취소 및 협약 무효 · 해지</b> 등 귀 협의회의 조치를 이의 없이 받아들이겠습니다.
 귀 협의회가 요청하면 관련 법령이 허용하는 범위에서 확인 서류를 지체 없이 제출하겠습니다.</p>
-{sign_ceo()}"""
+{sign_ceo(handsign)}"""
     return doc("14 ① 대표자 결격사유 부존재 서약서", [body])
 
 
@@ -965,16 +970,22 @@ def main():
         res["07"] = merge(N07, [fit(render("07_1_조치필요", doc07_action()), 1)], "7 대표자 범죄사실확인서(조치 필요)")
     for no, name, fno, title, paras, items in FORMS:
         res[no] = stamped(fit(render(name, form_doc(fno, title, paras, items)), 1))
-    # 14 기타 = ① 결격사유 서약서(대표 자필 서명 + 법인인감 스캔) ② 요약제안서(메일용) ③ 보증증권(표지 + 사본) ④ NICE ⑤ 실적 확약서
-    s1_print = fit(render("14_1_결격사유부존재서약서_출력용", doc14_1()), 1)
-    if getattr(D, "CEO_CONFIRMED", False) and _scan_ok(S1_SCAN):
-        s1 = S1_SCAN
-    else:
-        if not getattr(D, "CEO_CONFIRMED", False):
-            todo("14 ① 결격사유 서약서 — 대표 ①~⑥ 사실 확인")
-        if not _scan_ok(S1_SCAN):
+    # 14 기타 = ① 결격사유 서약서(사용인감 직인 · 선택 시 자필 서명 스캔) ② 요약제안서(메일용) ③ 보증증권(표지 + 사본) ④ NICE ⑤ 실적 확약서
+    if not getattr(D, "CEO_CONFIRMED", False):
+        todo("14 ① 결격사유 서약서 — 대표 ①~⑥ 사실 확인")
+    s1_print_path = os.path.join(WORK, PFX + "14_1_결격사유부존재서약서_출력용.pdf")
+    if HANDSIGN:
+        s1_print = fit(render("14_1_결격사유부존재서약서_출력용", doc14_1(True)), 1)
+        if _scan_ok(S1_SCAN):
+            s1 = S1_SCAN
+        else:
             todo("14 ① 결격사유 서약서 — 대표 자필 서명 · 법인인감 스캔")
-        s1 = s1_print
+            s1 = s1_print
+    else:
+        for _ext in (".pdf", ".html"):  # 자필 서명 출력용은 쓰지 않음 — 헷갈리지 않게 지움
+            if os.path.exists(s1_print_path[:-4] + _ext):
+                os.remove(s1_print_path[:-4] + _ext)
+        s1 = stamped(fit(render("14_1_결격사유부존재서약서", doc14_1()), 1))
     s3 = fit(render("14_3_보증증권_표지", doc14_3()), 1)
     nice = nice_masked(nice)  # ④ 대표 외 임직원 생년월일 가림본
     parts = [s1, sum14, s3, SGI, nice]
