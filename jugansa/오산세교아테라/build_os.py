@@ -292,6 +292,8 @@ ST = D.SITE
 _rec_n, _rec_hh = len(D.RECORDS), sum(r[3] for r in D.RECORDS)
 R3 = D.RECENT3_OS
 _r3_n, _r3_hh = len(R3), sum(r[3] for r in R3)
+R5 = D.RECENT3_500  # 최근 3년 500세대 이상 입주박람회 진행 20개 단지(주관 8 + 수임 · 진행 12)
+_r5_n, _r5_hh = len(R5), sum(r[2] for r in R5)
 _types_txt = " · ".join(a for a, _ in ST["types"])
 _types_full = " · ".join(f"{a} {n}" for a, n in ST["types"])
 
@@ -300,6 +302,7 @@ T_MAP = "1차 심사 [[4개 기준 · 가산점 7개]], 이 쪽에 있습니다"
 T_SITE = f"{ST['name']}, [[이런 단지]]입니다"
 T_FIRST = "433세대 · 59㎡ 단일 면적이라 [[먼저 챙길 것]]"
 T_FIT = "적합성 - 연혁 · 실적 · [[기업신용평가]]"
+T_R500 = f"최근 3년 500세대 이상 입주박람회 [[진행 실적 {_r5_n}개 단지]]"
 T_TRUST = "신뢰성 - [[협약이행 · 하자이행]]을 약속하는 장치"
 T_STABLE = "안정성 - 브랜드 품질 · [[무상보증기간]]"
 T_FACT = "사실성 - 직영 운영 · [[온 · 오프라인 투명 운영]]"
@@ -332,7 +335,7 @@ new("divider", n="01", title=T_DIV,
 
 # ------------------------------------------------------------ 1차 심사 4개 기준 + 가산점 7개 ↔ 쪽 대응표(맞춤 장 첫머리)
 MAP11 = [  # (구분, 공고 기준, 엣지컴퍼니 제안 핵심, [PGREF 키])
-    ("심사 1", "적합성 - 사업장 연혁 · 실적 · 기업신용평가", f"설립 2022.02 · 자본금 2억 · 최근 3년 주관 {_r3_n}개 단지 · NICE BB-", ["fit", "hist", "succ", "people"]),
+    ("심사 1", "적합성 - 사업장 연혁 · 실적 · 기업신용평가", f"설립 2022.02 · 자본금 2억 · 최근 3년 500세대 이상 진행 {_r5_n}개 단지 · NICE BB-", ["fit", "r500", "hist", "people"]),
     ("심사 2", "신뢰성 - 협약이행 · 하자이행", "제안 = PT = 협약서 · 특약이행각서 · 48시간 하자보수 · 선보상", ["trust", "wty", "rule1"]),
     ("심사 3", "안정성 - 브랜드 품질 확보 · 무상보증기간", "정품 · 모델코드 공개 · KC 확인 · 무상 A/S 최소 2년(계약서 명시)", ["stable", "screen"]),
     ("심사 4", "사실성 - 직영 · 온/오프라인 투명 운영", "주관사 직원 직접 운영 · 단가 사전 공개 = 현장 = 온라인", ["fact", "guard4", "report"]),
@@ -403,7 +406,40 @@ new("std", sec=S0, title=T_FIT,
           f'<p>평가서 원본 {PG("ev")}</p></div>'
           '</div></div>'),
     kp=(f"2023년 이후 1,000세대 이상 주관 [[{_rec_n}개 단지 · {_rec_hh:,}세대]] - 그중 최근 3년 {_r3_n}개 단지입니다.",
-        "500 ~ 999세대 단지는 01장 수임 목록에만 적고 주관 실적 건수에는 넣지 않았습니다"))
+        f"최근 3년 500세대 이상 입주박람회 진행 실적은 {_r5_n}개 단지 · {_r5_hh:,}세대(공고 3항 6) · {PG('r500')}"))
+_half5 = (len(R5) + 1) // 2
+
+
+def _r5tb(rows, s0):
+    return ('<table class="r5"><thead><tr><th>NO</th><th>입주</th><th>단지</th><th>세대</th><th>구분</th></tr></thead><tbody>'
+            + "".join(f'<tr{" class=jg" if j else ""}><td class="n">{i:02d}</td><td class="m">{m}</td><td class="k">{t(nm)}</td>'
+                      f'<td class="r">{n:,}</td><td class="g">{"주관" if j else "진행"}</td></tr>' for i, (m, nm, n, j) in enumerate(rows, s0))
+            + '</tbody></table>')
+
+
+new("std", sec=S0, title=T_R500,
+    lead="공고 3항 6 - 최근 3년(입주 2023.10 ~ 2026.12) 500세대 이상 단지 중 입주박람회를 진행한 단지입니다. 2027년 입주 예정 단지는 넣지 않았습니다.",
+    body=('<div class="nb"><div class="r5x">' + _r5tb(R5[:_half5], 1) + _r5tb(R5[_half5:], _half5 + 1) + '</div>'
+          '<div class="r5b">'
+          f'<div><b>{_r5_n}<small>개 단지</small></b><span>500세대 이상 입주박람회 진행</span></div>'
+          f'<div><b>{_r5_hh:,}<small>세대</small></b><span>{_r5_n}개 단지 세대 합계</span></div>'
+          f'<div><b>{sum(1 for r in R5 if r[3])}<small>개 단지</small></b><span>그중 1,000세대 이상 주관(금색)</span></div>'
+          f'<div><b>{sum(1 for r in R5 if not r[3])}<small>개 단지</small></b><span>수임 · 진행</span></div>'
+          '</div></div>'),
+    kp=(f"공고 기준 10회 이상 - 최근 3년 500세대 이상 [[{_r5_n}개 단지]]에서 입주박람회를 진행했습니다.",
+        "단지명 · 세대수는 수임 목록 기준 · 날짜는 입주 연월 · 증빙 자료 별도 제출"))
+B.CSS += (".r5x{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;min-height:0}"
+          ".r5{width:100%;border-collapse:collapse}"
+          ".r5 th{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--gold2);text-align:left;padding:0 8px 7px;border-bottom:1.5px solid rgba(200,168,106,.55)}"
+          ".r5 td{font-size:14.5px;padding:6.5px 8px;border-bottom:1px dashed rgba(255,255,255,.12);color:var(--sub)}"
+          ".r5 td.n{width:34px;color:var(--mute);font-size:12.5px}.r5 td.m{width:72px;font-variant-numeric:tabular-nums}"
+          ".r5 td.k{color:var(--ink);font-weight:600}.r5 td.r{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}"
+          ".r5 td.g{width:46px;text-align:center;font-size:12px}"
+          ".r5 tr.jg td.k,.r5 tr.jg td.r,.r5 tr.jg td.g{color:var(--gold);font-weight:700}"
+          ".r5b{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(200,168,106,.5);border-radius:12px;background:rgba(235,203,143,.05)}"
+          ".r5b>div{padding:9px 16px;border-left:1px solid rgba(200,168,106,.25)}.r5b>div:first-child{border-left:0}"
+          ".r5b b{font-size:26px;font-weight:800;color:var(--gold);line-height:1.1;white-space:nowrap}.r5b b small{font-size:13px;margin-left:2px}"
+          ".r5b span{display:block;font-size:12.5px;color:var(--sub);margin-top:2px}")
 B.CSS += (".fitx{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:16px;flex:1;min-height:0}"
           ".fitx .fc{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;min-height:0;"
           "background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 45%)}"
@@ -828,7 +864,7 @@ QUAL12 = [  # (공고 3항 참가자격, 엣지컴퍼니 현황, 증빙, 확인 
     ("사업개시 3년 이상 · 자본금 2억원 이상", f"법인 설립 · 개업 {D.FOUNDED}(4년 7개월) · 자본금 [[2억원]](2026.04 증자 등기) · 대표자 명의 통장", "제출서류 2 · 3 · 6", False),
     ("관리감독 외 민원 실행 인원 8인 이상", f"4개 팀 {_n12}명(대표이사 · 총괄 본부장 제외) · 4대보험 가입 정규직 10명", "제출서류 8", False),
     ("국세 · 지방세 체납 없음", "체납 없음 - 최근 1개월 이내 완납증명서 제출", "제출서류 7", False),
-    ("최근 3년 500세대 이상 박람회 10회 이상", f"증빙 가능한 주관 실적: 1,000세대 이상 [[{_r3_n}개 단지 · {_r3_hh:,}세대]](2023.11 ~ 2026.09 입주)", "제출서류 12", True),
+    ("최근 3년 500세대 이상 박람회 10회 이상", f"충족 · [[{_r5_n}회]](최근 3년 500세대 이상 · {_r5_hh:,}세대 · 그중 1,000세대 이상 주관 {_r3_n}) · 단지 목록 {PG('r500')}", "증빙 자료 별도 제출", False),
     ("최근 3년 500세대 이상 협약이행증권 10회 이상", "협약 시 입예협과 협의해 이행 담보 방안 마련", "협약 시", True),
     ("협약 철회 · 취소 사례 없음", "해당 없음", "자체 확인", False),
     ("하자 · A/S · 분쟁 손해배상 이행", "특약이행각서 · 선보상 · 하자 예치금 · 업체 도산 시 이관(비용 주관사 부담)", "제출서류 14 · 15", False),
@@ -1121,7 +1157,7 @@ PGREF = {
     "req": T_REQ, "qchk": "공용부 [[구조·시공 품질]] 점검",
     "check": T_CHECK, "x10": "[[최저가 차액 10배]] 보상",
     "pm": T_PM, "call": "주관 [[콜센터]]와 선보상", "map": T_MAP,
-    "fit": T_FIT, "trust": T_TRUST, "stable": T_STABLE, "fact": T_FACT, "as": T_AS, "special": T_SPECIAL,
+    "fit": T_FIT, "r500": T_R500, "trust": T_TRUST, "stable": T_STABLE, "fact": T_FACT, "as": T_AS, "special": T_SPECIAL,
     "lx": T_LX, "lx2": T_LX2, "mon1": T_MON1, "mon2": T_MON2, "report": T_REPORT,
     "qual": T_QUAL, "ban": T_LIMIT, "note": T_NOTE,  # 목차 띠 — 3항 자격 · 6항 무효 · 2 · 7항 유의사항
 }

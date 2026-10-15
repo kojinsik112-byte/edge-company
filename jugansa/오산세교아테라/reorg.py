@@ -864,7 +864,7 @@ def apply(G):
          + [T(x) for x in ["입주박람회 [[운영 계획]]", "행사장 대관과 [[운영 준비]]"]] + [p_floor] + [T(x) for x in ["가족이 머무는 [[편의시설]]",
                            "못 오셔도 [[괜찮습니다]]", "실제 박람회 [[현장]]"]]),
         ("07. 오산세교아테라 맞춤 제안", [d07] + [T(G[x]) for x in [
-            "T_MAP", "T_SITE", "T_FIRST", "T_FIT", "T_TRUST", "T_STABLE", "T_FACT", "T_CHECK", "T_ITEMS", "T_VENDORS", "T_VMGT",
+            "T_MAP", "T_SITE", "T_FIRST", "T_FIT", "T_R500", "T_TRUST", "T_STABLE", "T_FACT", "T_CHECK", "T_ITEMS", "T_VENDORS", "T_VMGT",
             "T_REQ", "T_AS", "T_DEFECT", "T_SPECIAL", "T_LX", "T_LX2", "T_MON1", "T_MON2", "T_PM", "T_STAFF", "T_PRIV", "T_REPORT",
             "T_QUAL", "T_LIMIT", "T_NOTE"]]),
         ("08. 혜택안내 · 세대 혜택 패키지", [dv("08", "혜택은 [[세대에]], 가격은 [[경쟁과 검수로]]",
