@@ -80,7 +80,7 @@ def apply(G):
             s = sub(s, '<span class="post">부가세 포함</span>', '<span class="post">상당 · 부가세 포함</span>')
             s = sub(s, '<div class="nm2">발전지원금</div>', '<div class="nm2">발전지원 · 혜택 패키지</div>')
             s = sub(s, "박람회 참가비가 아니라 <em>단지로 돌아가는 금액</em>입니다.",
-                    "박람회 참가비가 아니라 <em>단지로 돌아가는 혜택</em>입니다(현금 지급 없음). 공고 업무 범위의 기본 업무는 이와 별도로 수행합니다.")
+                    "박람회 참가비가 아니라 <em>단지로 돌아가는 혜택</em>입니다. 공고 업무 범위의 기본 업무는 이와 별도로 수행합니다.")
         return s
     B_hi_fund = B.p_hi_fund
     B.p_hi_fund = p_hi_fund
@@ -190,7 +190,7 @@ def apply(G):
 
     S8 = "08. 혜택안내"
     _choice_pkg = ("std", dict(sec=S8 + " · 발전지원 15만원", title=B.FUND_CHOICE_TITLE,
-        lead="현금으로 드리지 않고, 입예협이 고른 항목을 주관사가 직접 구매·제공합니다(전기·조명은 직접 시공).",
+        lead="입예협이 고른 항목을 주관사가 직접 구매·제공합니다(전기·조명은 직접 시공).",  # 본부장 10-15: '현금 아님' 류 문구 삭제
         body=('<div class="nb"><div class="optx">'
               '<div class="op"><i>방법 1</i><h3>혜택 패키지로 받기</h3><div class="v">A · B · C</div>'
               f'<ul><li>분양 {hh:,}세대 × {fund}만원 상당 (총 {total}, 부가세 포함)</li>'
@@ -200,7 +200,7 @@ def apply(G):
               '<ul><li>공용물품 · 커뮤니티 집기 · 입주 행사</li><li>단지 개선 용역(조명 시공 · 조경 설계·자문)</li>'
               f'<li>같은 금액({total}) 범위 · 협약서로 확정</li></ul></div></div>'
               '<div class="basex"><b>A 패키지</b> = <em>백화점 상품권 5만원 또는 10만원</em> + 정회원 혜택·사은품·사전점검 할인·실측·VR·3D · <b>박람회 상품권(정회원 30만원)만</b> 업체 계약 할인권이라 15만원 환산 제외</div></div>'),
-        kp=(f"세대당 {fund}만원 상당 = [[패키지 구성]] 또는 [[입예협 지정 항목]]", "직접 제공 · 사용 내역 공개 · 현금 지급 없음")))
+        kp=(f"세대당 {fund}만원 상당 = [[패키지 구성]] 또는 [[입예협 지정 항목]]", "직접 제공 · 사용 내역 공개")))
     p_choice = ("std", dict(sec=S8 + " · 발전지원 15만원", title=B.FUND_CHOICE_TITLE,
         lead="두 가지를 다 드리는 것이 아니라, 받는 방식을 입예협이 고르십니다.",
         body=('<div class="nb"><div class="optx">'
@@ -669,7 +669,7 @@ def apply(G):
               + '</div><div class="fps">'
               + '<div class="tot"><i>현장 배치 인원 (안)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주 · 행사 규모에 따라 변동</span></div>'
               + '<ul>' + "".join(f'<li><span>{_h.escape(a)}</span><b>{n}명</b></li>' for a, n in staff) + '</ul>'
-              + '<div class="bdg"><span>행사(영업)배상책임보험 가입</span><span>119 연계 · 구급차 대비</span><span>전 인원 금색 명찰(직책·이름)</span><span>금·토·일 3일 운영</span></div>'
+              + '<div class="bdg"><span>행사주최자배상책임보험(개최 전 가입)</span><span>119 연계 · 구급차 대비</span><span>전 인원 금색 명찰(직책·이름)</span><span>금·토·일 3일 운영</span></div>'
               + '</div></div></div>'),
         kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "인원은 행사 규모에 따라 변동 · 타 단지 운영 기준(안)")))
     B.CSS += r"""

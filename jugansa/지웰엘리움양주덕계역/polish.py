@@ -64,8 +64,8 @@ def apply(G):
     _nd, _nh = _c[-1][3], _c[-1][4]
     k = kw("숫자로 보는 [[엣지컴퍼니]]")
     k["body"] = B.cards([
-        dict(lb="PROJECTS", big=str(_nd), unit="개 단지", nm="누적 주관·수임 단지", ds="2018년 첫 단지(전신 실적 포함)부터 2027년 입주 예정 단지까지."),
-        dict(lb="HOUSEHOLDS", big=f"{_nh:,}", unit="세대", nm="누적 주관·수임 세대",
+        dict(lb="PROJECTS", big=str(_nd), unit="개 단지", nm="누적 수임 단지", ds="2018년 첫 단지(전신 실적 포함)부터 2027년 입주 예정 단지까지."),
+        dict(lb="HOUSEHOLDS", big=f"{_nh:,}", unit="세대", nm="누적 수임 세대",
              ds=f"2023년 이후 1,000세대 이상 {sum(1 for r in D.SUIM if r[1] >= 1000)}곳(입주 예정 포함)."),
         dict(lb="LARGEST", big="4,470", unit="세대", nm="최대 단지 규모", ds="레이카운티 단일 단지 주관."),
         dict(lb="GROWTH", big=f"×{_nd / _c[0][3]:.1f}", unit="", nm="누적 단지 증가", ds=f"2021년 {_c[0][3]}곳 → 2027년 {_nd}곳(입주 예정 포함)."),
