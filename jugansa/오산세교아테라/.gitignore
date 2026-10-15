@@ -11,3 +11,6 @@ org_private.json
 # docs_bd.py 출력(증빙 원본 · 직인 포함) — 중간 파일 · 제출본 폴더
 작업/
 제출본/
+
+# docs_os.py 제출 ZIP(증빙 원본 포함)
+*.zip
