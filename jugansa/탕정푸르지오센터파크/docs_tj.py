@@ -215,7 +215,7 @@ def doc01():
 <h2>공고 7항 제출서류 (공고 순서)</h2>
 <table class="t"><thead><tr><th style="width:6%">No</th><th>서류</th><th style="width:38%">비고</th><th style="width:7%">부수</th></tr></thead><tbody>{rows}</tbody></table>
 <p class="note">※ 공고 7항 15): 모든 제출 서류는 입찰공고일({D.NOTICE_DATE}) 이후 발급분 기준. 단, 10 기업신용평가서는 평가 유효기간(~2027.06.18) 안의 최신 평가본입니다. 2차 심사 시 원본을 제출합니다(원본과 동등한 효력이 있는 서류 제외).</p>
-<p class="note">※ 10 기업신용평가서의 본사 주소는 본점 이전(2026.07.02 등기) 전 주소입니다. 현재 본점은 위 소재지와 같습니다.</p>
+<p class="note">※ 10 기업신용평가서의 본사 주소는 본점 이전(2026.07.02 등기) 전 주소이고, 종업원 수(5명)와 경영진 현황은 평가 당시(2026.05) 기준이며, 주관사업 총괄 본부장은 평가 이후 합류했습니다. 현재 본점은 위 소재지와 같고, 현재 임직원은 14명(정규직 10 · 인턴 4, 2026.10)입니다.</p>
 <p class="note">※ 메일 제출: {D.SUBMIT_TO} · 제목 「[아산탕정 푸르지오 센터파크 입찰 참가]_{D.COMPANY}」 · 마감 {D.DEADLINE}</p>"""
     return doc("01 입찰 참가 신청서", [f1, f2])
 
@@ -250,7 +250,7 @@ CAFE_DAESUNG = ("2024.11 ~ 2025.12", "에코델타 대성베르힐", "부산 에
 
 def doc07():
     recs = sorted([(d, nm, reg, n, "NICE 연혁(별첨 1)") for d, nm, reg, n in D.RECENT3] + list(D.RECENT3_EXTRA))
-    recs.append(CAFE_DAESUNG + ("입예협 카페 공지(별첨 2 확약서 붙임 2)",))
+    recs.append(CAFE_DAESUNG + ("입주자 모임 카페 주관사 공지(별첨 2 확약서 붙임 2)",))  # 분당 재검증 10-14와 같게: 입예협 공식 카페 아님
     recs.sort(key=lambda r: r[0])
     rows = "".join(
         f'<tr><td>{i}</td><td style="white-space:nowrap">{d}</td><td class="l">{e(nm)}</td><td>{e(reg)}</td><td class="r">{n:,}</td>'
@@ -272,7 +272,7 @@ def doc07():
 <h2>2. 별첨 증빙</h2>
 <ol style="list-style:none;font-size:10pt;line-height:1.8">
 <li>별첨 1. NICE디앤비 CLIP 기업신용평가보고서 ‘연혁’ 발췌 — 1매 (보고서 전문은 제출서류 10)</li>
-<li>별첨 2. 대표이사 실적 확약서 — 1매 · 붙임: 입예협 공식 카페 주관사 공지 캡처 2매(입주민 닉네임 동·호수 가림) · BEXCO 공식 행사일정 캡처 1매</li>
+<li>별첨 2. 대표이사 실적 확약서 — 1매 · 붙임: 단지 카페(입주민 소통 · 입주자 모임 카페) 주관사 게시판 · 공지 캡처 2매(입주민 닉네임 동·호수 가림) · BEXCO 공식 행사일정 캡처 1매</li>
 <li>입예협 요청 시 계약서 · 실적 확인서 · 정산 자료를 지체 없이 추가 제출합니다(공고 5항 13).</li></ol>
 <p class="body" style="font-size:10pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 6항 5) · 8항 4)에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign()}"""
     return doc("07 입주박람회 실적 및 공동구매 증빙자료", [body])
@@ -432,13 +432,13 @@ def doc12_cover():
     body = f"""{head("제출서류 12", "입주박람회 성과 및 성공사례 자료")}
 <div class="box"><b>요약</b> &nbsp; 누적 수임 <b>67개 단지 · 56,361세대</b>(전신 실적 포함, 2027년 입주 예정 단지까지) ·
 1,000세대 이상 주관 <b>10개 단지 · 19,563세대</b> · 최대 단일 단지 <b>레이카운티 4,470세대</b> · 사송 · 에코델타 신도시 연속 수임</div>
-<h2>1. 입예협 카페 이벤트 · 공지 사례 (붙임 캡처)</h2>
+<h2>1. 단지 카페 이벤트 · 공지 사례 (붙임 캡처)</h2>
 <table class="t"><thead><tr><th style="width:13%">날짜</th><th>글 제목 — 카페 화면 원문(작성자: 주관사 엣지컴퍼니)</th><th style="width:9%">댓글</th></tr></thead><tbody>{rows}</tbody></table>
-<p class="note">※ 단지별 입예협 공식 카페 화면 그대로입니다(붙임 1 · 2). 입주민 닉네임의 동 · 호수와 캡처 계정 닉네임은 개인정보 보호를 위해 가렸습니다.</p>
+<p class="note">※ 단지 카페(입주민 소통 카페 주관사 게시판 · 입주자 모임 카페 주관사 공지) 화면 그대로입니다(붙임 1 · 2). 입주민 닉네임의 동 · 호수와 캡처 계정 닉네임은 개인정보 보호를 위해 가렸습니다.</p>
 <h2>2. 성공사례 · 현장 자료 (입찰제안서 발췌)</h2>
 <p style="font-size:9.8pt;line-height:1.8">{e(lst)}</p>
 <p class="note">※ 사진 속 단지 · 행사는 타 단지 실제 운영 사례이며, 세부는 입찰제안서(제출서류 05) 해당 쪽과 같습니다.</p>"""
-    caps = [f'<h2>붙임 {i}. {e(nm)} 입예협 카페</h2><p class="note">{e(url)} · 입주민 닉네임(동·호수) 가림</p>'
+    caps = [f'<h2>붙임 {i}. {e(nm)} 단지 카페</h2><p class="note">{e(url)} · 입주민 닉네임(동·호수) 가림</p>'
             f'<img src="assets_ins/{f}" style="display:block;max-width:100%;max-height:228mm;margin:6pt auto 0;border:.6pt solid #C9CED6">'
             for i, (f, nm, url, _) in enumerate(CAFE, 1)]
     return doc("12 입주박람회 성과 및 성공사례 자료", [body] + caps)
