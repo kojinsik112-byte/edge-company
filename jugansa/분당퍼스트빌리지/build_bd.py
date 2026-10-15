@@ -11,7 +11,7 @@
 - 사진·발췌 장은 동탄 폴더 assets_ins / assets_full 을 공유(심볼릭 링크, 깃 제외). 본부장 제공 예정 사진(bd_*)은 파일이 생기면 자동 반영.
 
 사용: python3 build_bd.py [--compact] [--no-summary] [--no-pdf] [--final] [--src <통합제안서 기본틀 PDF>]
-- 기본 = 전체본(134쪽, 본부장 10-14 저녁 '134쪽으로 되돌리고 본부장이 직접 줄임') → NAME.html/.pdf
+- 기본 = 전체본(134쪽, 본부장 10-14 저녁 '134쪽으로 되돌리고 본부장이 직접 줄임' · 10-15 신도시 2쪽 합쳐 133쪽) → NAME.html/.pdf
   + 14 요약제안서(공고 7항 14 '기타', summary_bd.py) → 엣지컴퍼니_분당퍼스트빌리지_14_요약제안서.html/.pdf
 - --compact = 압축본(약 109쪽) → NAME_압축본.html/.pdf · 압축 대상은 compact.py 한 곳에 모음
 - --no-summary = 요약제안서 생략
@@ -470,8 +470,8 @@ new("std", sec=S0, title=T_CHECK,
     kp=("검수는 [[박람회 전]], 보상은 [[계약 후]] - 두 번 확인합니다.", "최저가 차액 10배 보상은 인근 오프라인 매장 동일 제품 기준(온라인 · 시공 품목 제외) · 규정 제8조"))
 
 ONE_L = [  # (숫자, 단위, 혜택, 조건)
-    (f"{D.FUND}", "만원 상당", "세대당 혜택 패키지", f"{SL} {D.FUND_HH:,}세대 · 현금 아님 · A·B·C 또는 입예협 지정"),
-    ("30", "만원", "정회원 박람회 상품권 (안)", "참여업체 의무 조건으로 입찰 · 입예협 승인 후 확정 · 품목당 1매"),
+    (f"{D.FUND}", "만원 상당", "세대당 혜택 패키지", f"{SL} {D.FUND_HH:,}세대 · A·B·C 또는 입예협 지정 · 방문 선물 · 경품 등 포함"),
+    ("30", "만원", "정회원 박람회 상품권 (안)", "업체 제공(안) · 참여업체 의무 조건 · 입예협 승인 후 확정 · 품목당 1매"),
     ("10", "배", "최저가 차액 보상", "인근 오프라인 동일 제품 · 계약 후 7일 · 온라인·시공 제외"),
     (f"{D.DEPOSIT_MAX}", "%", "계약금 상한", "잔금은 시공 · 설치 후 · 카드 · 현금 동일가"),
     ("3", "영업일", "환불", "취소 기한 안이면 위약금 없이 전액"),
@@ -786,9 +786,11 @@ new("std", sec=S0, title=T_QUAL,
 
 # 7 대표자 범죄사실확인서 — docs_bd.py(신청서 7행 · 07)와 같은 D.CRIME_SUBST 값을 쓴다(검증 10-14: 제안서와 제출서류가 서로 다른 말을 하지 않게)
 _CRIME = getattr(D, "CRIME_SUBST", None)
-_SUB13 = ("7항 제출서류 1 ~ 13 제출(7은 협의회 승인에 따라 14 ① 서약서로 갈음 · 14 선택)" if _CRIME else
+# 본부장 10-15: 회보서 사본은 내지 않는다(형실효법 제6조 · 제10조 — data.py CRIME_SUBST 주석) → 14 ① 서약서로 갈음 · 요청 시 대표가 지참해 열람 확인
+_SUB13 = ("7항 제출서류 1 ~ 13 제출(7은 14 ① 서약서로 갈음 · 14 선택)" if _CRIME else
           "7항 제출서류 1 ~ 13 제출(14 선택)")
-_ROW9 = (("협의회 승인에 따라 대표자 결격사유 부존재 서약서로 갈음(공고 7항 7)", "제출서류 14 ①") if _CRIME else
+_ROW9 = (("해당 없음 - 대표자 결격사유 부존재 서약서(14 ①)로 갈음 · 회보서는 형실효법(제6조 · 제10조)상 입찰 제출용 발급 근거를 확인하지 못해 "
+          "사본 미제출 · 요청 시 대표가 지참해 열람 확인", "제출서류 7 · 14 ①") if _CRIME else
          ("대표자 범죄경력회보서(본인 발급본) 제출 · 결격사유 부존재 서약서 함께 제출", "제출서류 7 · 14 ①"))
 LIMIT10 = [  # 공고 9항 참가 제한 및 무효 1 ~ 10 — (제한 사유, 확인, 근거)
     ("참가자격 미달 · 필수 제출서류 누락", f"해당 없음 - 4항 자격 충족(8 보증증권은 협약 시 제출) · {_SUB13}", "제출서류 목록"),
@@ -857,13 +859,16 @@ _lead_n = getattr(D, "STAFF_LEAD", 2) + sum(c for _, c, _ in D.STAFF)
 PRO5 = [("전기", 3), ("도장", 2), ("타일", 1), ("조경", 1), ("간호사", 1)]
 new("std", sec=S0, title=T_PEOPLE,
     lead="공고 8항 2 · 4항 4 - 대표자와 핵심 운영인력이 맡아 온 실적과, 분당 퍼스트빌리지에서 맡을 역할입니다.",
-    # 대표 개인 경력 칸: 답이 없어 메모 결정대로 법인 실적 문구로(검증 10-14 — 노란 칸 삭제, KEY POINT도 법인 실적 기준)
+    # 대표 개인 경력(본부장 10-15) — NICE 기업신용평가보고서(제출서류 14 ④) 13쪽 '대표자1' 약력 · 전기공사업 등록증 · ISO 인증서(3종 모두 최초 2025.08.12)로
+    # 확인되는 사실만. 현장 총괄 문구는 본부장 10-15 확인. 경영경력 8년 8개월 = NICE 평가 당시(2026.05) 기재값.
     body=('<div class="nb"><div class="ppx">'
-          '<div class="pp1"><i>대표이사</i><h3>고진식</h3><ul>'
-          '<li>법인 대표이사 · 협약 최종 책임자</li>'
-          # 재검증 10-14: 대표 개인 경력 · 10개 현장 총괄로 읽히지 않게 — 법인 실적 + 대표 재임 기간(NICE 취임 2022.02.28, 실적 주관 시기 2022.12 ~)으로 범위 한정
-          f'<li>엣지컴퍼니(법인) 1,000세대 이상 입주박람회 주관 <b>{_rec_n}개 단지 · {_rec_hh:,}세대</b> - 대표이사 재임(2022.02 ~) 중 법인 실적</li>'
-          '<li>PT · 질의응답 참석(공고 6항) · 협약 서명</li></ul></div>'
+          '<div class="pp1 ceo"><i>대표이사</i><h3>고진식</h3><ul>'
+          '<li>울산과학대학교 전기과</li>'
+          '<li>대한유화 2011 ~ 2018(최종 대리) → 엣지조명 대표 2019 ~ 2021 → <b>㈜엣지컴퍼니 창업 2022.02</b> · 대표 경영경력 8년 8개월(NICE 2026.05 기준)</li>'
+          f'<li>전기공사업 등록(제 울산-00821호) 대표자</li>'
+          '<li>ISO 9001 · 14001 · 45001 인증 취득 총괄 - 최초 인증 2025.08.12 · 박람회 · 전시회 기획 · 대행 / 전기공사 / 조명공사</li>'
+          '<li><b>주관 박람회 전 과정 현장 점검 · 진두지휘</b>(참여업체 검수 · 부스 배치 · 당일 운영)</li>'
+          '<li>법인 대표이사 · 협약 최종 책임 · PT 참석(공고 6항)</li></ul></div>'
           '<div class="pp1"><i>주관사업 총괄 본부장 · 전담 총괄</i><h3>총괄 본부장</h3><ul>'
           f'<li>{ST["short"]} 총괄 책임 · 직통 <span style="white-space:nowrap">{D.MANAGER[2]}</span></li>'
           # 본부장 10-14 저녁: 개인 현장(송도) 문구 대신 협의회 운영 경험 한 줄 · 단지명은 쓰지 않음(송도는 회사 실적 10개 단지로만)
@@ -878,8 +883,9 @@ new("std", sec=S0, title=T_PEOPLE,
           '<div><b>4,470<small>세대</small></b><span>단일 단지 최대<br>레이카운티</span></div>'
           '<div><b>67<small>개 단지</small></b><span>누적 수임 56,361세대<br>(전신 실적 · 입주 예정 포함)</span></div>'
           '</div></div>'),
-    kp=(f"1,000세대 이상 {_rec_n}개 단지를 맡아 온 [[운영 체계]]를 그대로 옮깁니다.", "팀별 담당은 협약 시 명단 제출 · 실적 증빙은 제출서류 14(NICE 연혁 · 카페 공지 · BEXCO 행사일정)"))
-B.CSS += (".ppx{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:16px;flex:1;min-height:0}"
+    kp=("전기 전공 · 조명 사업 출신 대표가 박람회 전 과정을 [[현장에서 직접]] 챙깁니다.",
+        "대표 약력은 NICE 보고서(제출서류 14 ④) 13쪽 · 팀별 담당은 협약 시 명단 제출 · 실적 증빙은 제출서류 14(NICE 연혁 · 카페 공지 · BEXCO 행사일정)"))
+B.CSS += (".ppx{display:grid;grid-template-columns:1.22fr .82fr 1.3fr;gap:16px;flex:1;min-height:0}"
           ".ppx>div{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;min-height:0;"
           "background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 45%)}"
           ".ppx i{font-style:normal;font-size:12px;letter-spacing:.14em;color:var(--gold2);font-weight:700}"
@@ -887,6 +893,7 @@ B.CSS += (".ppx{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:16px;flex:
           ".pp1 ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}"
           ".pp1 li{font-size:15px;line-height:1.5;padding-left:14px;position:relative}.pp1 li:before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--gold2)}"
           ".pp1 li b{color:var(--gold)}"
+          ".pp1.ceo ul{gap:6px}.pp1.ceo li{font-size:13.6px;line-height:1.42}.pp1.ceo li:before{top:7px}"
           ".pp2>div:not(.pro2){display:grid;grid-template-columns:54px 92px 1fr;gap:8px;align-items:center;padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.12)}"
           ".pp2>div b{font-size:24px;font-weight:800;color:var(--gold);line-height:1}.pp2>div b small{font-size:12px;margin-left:1px}"
           ".pp2>div span{font-size:15px;font-weight:700}.pp2>div p{font-size:12.5px;color:var(--sub);line-height:1.4}"
@@ -1480,8 +1487,9 @@ B_p_toc = B.p_toc
 def p_contact():
     s = B_p_contact()
     # 지사: 직영 4곳 + 협력 8곳 = 전국 12개 지사망(2026.10 확정). 본사 주소는 사업자등록증(2026.08.04) 기준.
+    # 대전 지사 주소 — 본부장 10-15 정정: 디펠리체 204호 유지(오전 '주소 없음' 삭제를 되돌림)
     s = sub(s, "울산 본사 · 울산광역시 울주군 청량읍 상남1길 28, 2동 &nbsp;|&nbsp; 부산 지사 · 해운대구 &nbsp;|&nbsp; 대전 지사<br>",
-            f"울산 본사 · {D.ADDRESS}<br>대전 지사 · 충청권 거점 &nbsp;|&nbsp; 청주 지사 · 청주시 흥덕구 직지대로 642 &nbsp;|&nbsp; "
+            f"울산 본사 · {D.ADDRESS}<br>대전 지사 · 디펠리체 204호 &nbsp;|&nbsp; 청주 지사 · 청주시 흥덕구 직지대로 642 &nbsp;|&nbsp; "
             "부산 해운대 지사 · 해운대구 아르파나 B1<br>직영 4곳 + 협력 8곳 = 전국 12개 지사망 · 콜센터 평일 09:00–18:00 · 온라인 365일 접수 · 24시간 이내 회신<br>")
     s = sub(s, "삼성전자 MOU 체결</div>", "삼성 측 업무제휴 · 세스코 MOU 체결</div>")  # 재검증 10-14: 계약서 제목 '업무제휴 계약서' · 상대방 판독 불확실
     s = sub(s, '<div class="who">주식회사 엣지컴퍼니<br>대표이사 고진식</div>', "")
@@ -1512,7 +1520,7 @@ def p_hi_fund(no, sec):
             f"<em>공고 단지 전 세대 {hh:,}세대</em>를 기준으로 지급하고, <em>입예협 공식 통장</em>으로 입금합니다.")
     s = sub(s, "<span>현금성 지원</span>", "<span>현금성 지원 · 입예협 공식 통장 입금 가능</span>")  # 본부장 10-07
     return sub(s, "예: 1,000세대 단지 기준 <em>1억 5천만원</em>의 발전지원 규모.",
-               f"{D.SITE['sale_label']} {hh:,}세대 × {D.FUND}만원 상당 = <em>{won(n)} 상당</em>(현금 아님 · 부가세 포함)")
+               f"{D.SITE['sale_label']} {hh:,}세대 × {D.FUND}만원 상당 = <em>{won(n)} 상당</em>(부가세 포함)")
 
 
 B_p_hi_fund = B.p_hi_fund
@@ -1592,6 +1600,29 @@ if not os.environ.get("NO_NATIVE"):
     import reorg  # noqa: E402  (목차 10장 재배치 · 15만원 현금/패키지 선택 · 특화서비스 요약 — reorg.py)
     reorg.apply(globals())
 
+# 본부장 10-15: p24 '한 신도시' 막대 + p25 '사송 · 에코델타 단지별 주관 현황' 조감 사진 → 1쪽. 분당(수도권) 입예협에겐 지역 자체보다
+# '한 신도시의 여러 단지를 연속으로 맡은 운영 체력'이 메시지 — 사진은 카드 위 작은 띠로만. 압축본(compact.py)도 이 1쪽을 그대로 쓴다.
+T_CITY = "한 신도시의 여러 단지를 [[연속으로]] 맡았습니다"
+if not os.environ.get("NO_NATIVE"):
+    _ct = [i for i, (_, kw) in enumerate(B.PAGES) if kw.get("title") == "한 단지가 아니라 [[한 신도시]]를 맡습니다"]
+    _ph = [i for i, (_, kw) in enumerate(B.PAGES) if kw.get("title") == "[[사송 · 에코델타]] 단지별 주관 현황"]
+    assert len(_ct) == 1 and len(_ph) == 1 and _ph[0] == _ct[0] + 1, ("신도시 2쪽 합치기 — 위치 확인", _ct, _ph)
+    _kw = B.PAGES[_ct[0]][1]
+    _imgs = iter([("g13_sasong_u", "양산 사송신도시 · 조감"), ("g13_eco_u", "부산 에코델타시티 · 조감")])
+    _body, _n = re.subn(r'<div><div class="dn">',
+                        lambda m: (lambda im: f'<div><div class="cph"><img src="assets_ins/{im[0]}.jpg" alt=""><span>{im[1]}</span></div><div class="dn">')(next(_imgs)),
+                        _kw["body"])
+    assert _n == 2, _n
+    _kw.update(title=T_CITY, body=_body.replace('<div class="ct2">', '<div class="ct2 cm">'),
+               lead="양산 사송 5개 단지 · 부산 에코델타 5개 단지 - 같은 신도시에서 단지를 이어 맡으며 운영을 다듬었습니다.",
+               kp=("한 신도시의 여러 단지를 연속으로 맡아 온 [[운영 체력]]입니다.", "사진은 각 신도시 조감 이미지 · 단지명은 정식 명칭을 줄여 표기"))
+    del B.PAGES[_ph[0]]
+    B.CSS += (".ct2.cm>div{grid-template-rows:auto 1fr;padding:14px 22px 18px;row-gap:14px;align-items:center}"
+              ".ct2.cm .cph{grid-column:1/-1;position:relative;height:150px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}"
+              ".ct2.cm .cph img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}"
+              ".ct2.cm .cph span{position:absolute;left:10px;bottom:8px;font-size:11.5px;color:#fff;background:rgba(11,26,45,.72);border-radius:99px;padding:3px 10px}"
+              ".ct2.cm .hb{margin-bottom:9px}.ct2.cm .sb2{margin-bottom:12px}")
+
 
 def p_toc_bd(no):
     """목차 아래 띠: 공고 8항 필수 9항목 대응표 쪽(평가위원이 목차에서 바로 찾도록)."""
@@ -1615,7 +1646,9 @@ if COMPACT and not os.environ.get("NO_NATIVE"):
 # - '사옥' = 자가 건물로 읽힘(NICE 사업장 현황은 임차) → '본사 · 쇼룸'
 # - 삼성 계약서 = '업무제휴 계약서'(MOU 아님 · 상대방 판독 불확실) → '삼성 측 업무제휴'
 RETITLE = {"해마다 쌓이는 [[누적 주관 단지]]": "해마다 쌓이는 [[누적 수임 단지]]",
-           "[[본사 사옥]] 운영 · 자본금 2억": "[[본사 · 쇼룸]] 운영 · 자본금 2억"}
+           "[[본사 사옥]] 운영 · 자본금 2억": "[[본사 · 쇼룸]] 운영 · 자본금 2억",
+           # 본부장 10-15: 정회원 혜택도 세대당 15만원 상당 범위 안에서 배분 — '추가 혜택'은 따로 더 주는 것으로 읽힘
+           "정회원 전용 [[추가 혜택]] (안)": "정회원 전용 [[혜택]] (안)"}
 RELABEL = {"본사 사옥 · 자본금 2억": "본사 · 쇼룸 · 자본금 2억", "삼성전자 MOU · ISO 3종": "삼성 측 업무제휴 · ISO 3종"}
 if not os.environ.get("NO_NATIVE"):
     _hit = set()

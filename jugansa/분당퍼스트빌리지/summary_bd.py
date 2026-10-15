@@ -233,7 +233,7 @@ def emit_summary(G):
     p3 = f"""<div class="sx" style="grid-template-columns:1.18fr 1fr">
 <div class="bx hl"><h3><i>FUND</i>세대당 {fund}만원 상당 · 혜택 패키지<small>제안서 {pg('fund', 'sep')}</small></h3>
 <div class="fx"><div class="bg">{fund}<small>만원 상당</small></div>
-<div class="fm">{ST['sale_label']} {hh:,}세대 × 세대당 {fund}만원 상당<br>= <em>총 {tot} 상당</em> (부가세 포함) · <em>현금 지급 없음</em></div></div>
+<div class="fm">{ST['sale_label']} {hh:,}세대 × 세대당 {fund}만원 상당<br>= <em>총 {tot} 상당</em> (부가세 포함)</div></div>
 <div class="pk">
 <div><b class="L">A</b><div><strong>입주민 특화서비스 - 세대가 직접 받는 혜택</strong><span>백화점 상품권 5만원 또는 10만원(세대 현물 직접 지급) · 사전점검 대행 최대 50% 할인 · 타입별 실측 · 샘플하우스 · 항공 VR · 3D 홈스타일링</span></div></div>
 <div><b class="L">B</b><div><strong>협의회 단지발전지원 - 입예협 업무 · 하자 대응</strong><span>공용부 품질 점검 · 도면 분석보고서 · 열화상 드론 · 라돈 측정 · 사전점검 당일 추가 지원 · 온라인 위임장 · 협상 미팅 동석 등</span></div></div>
@@ -249,11 +249,12 @@ def emit_summary(G):
 <div class="k"><i>입예협</i><div><b>혜택 패키지 · 지정 항목</b><span>A · B · C 또는 입예협 지정 · 사용 내역 공개</span></div></div>
 </div>
 <div class="nt" style="margin-top:8px">공구가는 이 흐름과 따로 - 업체 공개 입찰 경쟁과 시중가 · 온라인 최저가 검수로 정해집니다.</div></div>
-<div class="bx fl"><h3><i>NOTE</i>{fund}만원 환산에 넣지 않은 것</h3>
+<div class="bx fl"><h3><i>NOTE</i>{fund}만원 상당 범위와 구분</h3>
 <ul class="xl">
-<li><b>박람회 상품권(정회원 30만원) · 정회원 혜택 · 사은품 · 경품 · 현장 할인</b> - 참여업체 제공(안) · 입예협 승인 후 확정</li>
-<li><b>{ST['rental_label']} {ST['rental']}세대</b> - 운영기관 · 입예협 협의 후 박람회 참여를 안내합니다</li>
-<li><b>기본 지원</b> - 정당계약일 부스 · 사전점검 행사 물품 · 카페 콘텐츠(주관사 부담)</li>
+<li><b>방문 선물 · 사은품 · 경품 · 정회원 혜택</b> - {fund}만원 상당 범위 안에서 입예협과 배분(안)</li>
+<li><b>박람회 상품권(정회원 30만원) · 현장 할인</b> - 업체 제공(안) · 승인 후 확정</li>
+<li><b>{ST['rental_label']} {ST['rental']}세대</b> - 운영기관 · 입예협 협의 후 참여 안내</li>
+<li><b>공고 기본 업무</b> - 정당계약일 부스 · 사전점검 물품 · 카페 콘텐츠(주관사 부담)</li>
 </ul></div>
 </div></div>"""
 
@@ -372,7 +373,7 @@ def emit_summary(G):
 <div class="hb">{hb}</div><div class="nt" style="margin-top:6px">날짜 = 입주 연월(제출서류 14 ⑤ 실적 확약서의 날짜는 주관 시기)</div></div>
 <div class="bx"><h3><i>PEOPLE</i>분당 퍼스트빌리지를 맡을 사람<small>제안서 {pg('people', 'org')}</small></h3>
 <div class="ppl">
-<div><i>대표이사</i><b>고진식</b><span>협약 최종 책임 · PT · 질의응답 참석(공고 6항) · 엣지컴퍼니(법인) 1,000세대 이상 주관 {rec_n}개 단지 - 대표이사 재임 중 법인 실적</span></div>
+<div><i>대표이사</i><b>고진식</b><span>협약 최종 책임 · PT 참석 · 울산과학대 전기과 · 대한유화 → 엣지조명 대표 → <nobr>㈜엣지컴퍼니 창업(2022.02)</nobr> · 전기공사업 등록 대표자 · 박람회 현장 진두지휘</span></div>
 <div><i>주관사업 총괄 본부장 · 전담 총괄</i><b>총괄 본부장</b><span><em>입주예정자협의회 회장 3년 역임</em> - 입주민 입장에서 협의회 운영을 직접 겪어 봤습니다 · 정례회의 · 박람회 · 사전점검 현장 참석</span></div>
 <div><i>핵심 운영인력</i><b>임직원 {G['_lead_n']}명</b><span>대표 · 본부장 + {stf}명 - 이 중 단지 전담 PM 1명 지정(성명 · 연락처는 협약 시 제출)</span>
 <div class="pro">{pro}</div></div>
@@ -405,8 +406,8 @@ def emit_summary(G):
             f"{ST['name']} {ST['households']:,}세대 - 우리 집이 받는 혜택과 조건을 한 장에 모았습니다.", p2,
             ("혜택은 [[조건까지]], 가격은 [[같은 조건 총액]]으로 보여 드립니다.", "‘(안)’ = 참여업체 확정 후 입예협 승인으로 확정(공고 10항 2)")),
         std("발전지원", f"세대당 {fund}만원 상당, [[혜택 패키지]]로 드립니다",
-            "현금으로 드리지 않고, 입예협이 고른 항목을 주관사가 직접 구매 · 제공합니다(전기 · 조명은 직접 시공).", p3,
-            (f"{ST['sale_label']} {hh:,}세대 × {fund}만원 상당 = [[{tot} 상당]]", "현금 아님 · 부가세 포함 · 사용 내역 공개 · 협약서로 확정")),
+            "입예협이 고른 항목을 주관사가 직접 구매 · 제공합니다(전기 · 조명은 직접 시공).", p3,
+            (f"{ST['sale_label']} {hh:,}세대 × {fund}만원 상당 = [[{tot} 상당]]", "부가세 포함 · 사용 내역 공개 · 협약서로 확정")),
         std("가격 투명성", "가격은 [[박람회 전에]] 검수하고, [[계약 후에도]] 지킵니다",
             "공고 8항 5 · 8 - 시중가 · 온라인 최저가와 같은 조건 총액으로 비교하고, 입예협 검수를 거친 단가만 공개합니다.", p4,
             ("검수는 [[박람회 전]], 보상은 [[계약 후]] - 두 번 확인합니다.", f"공식 유상옵션과 겹치는 품목은 수요조사로 확인 후 남은 수요만 모집 · 제안서 {pg('check', 'opt')}")),
