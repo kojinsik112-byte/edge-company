@@ -574,7 +574,7 @@ def doc12_cover():
 ‘주관’ = 당사가 주관사로 수행 — 1,000세대 이상 {nb}개 단지 + 주관사 협약서 {len(_have)}개 단지 · ‘진행’ = 당사 수임으로 입주박람회 · 공동구매 진행</div>
 <ol class="pl" style="margin-top:3pt"><li class="sm">별첨 1. NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌 — 1쪽(주관 실적 6개 단지 · 보고서는 제출서류 9)</li>
 <li class="sm">별첨 2. 실적 확약서(1,000세대 이상 입주박람회 주관 10개 단지) — 붙임 1 · 2 단지 카페 주관사 공지 캡처(입주민 닉네임 가림) · 붙임 3 BEXCO 공식 행사일정 캡처</li>
-<li class="sm">별첨 3. 500세대 이상 주관사 협약서 — {(" · ".join(f"3-{k + 1} {e(nm)}" for k, nm in enumerate(_have)) + "(상대방 대표자 성명 · 발전기금 금액 가림)") if r500 else todo("본부장 준비 중")}</li>
+<li class="sm">별첨 3. 500세대 이상 주관사 협약서 — {(" · ".join(f"3-{k + 1} {e(nm)}" for k, nm in enumerate(_have)) + " — 협약일 순(상대방 대표자 성명 · 서명 가림, 3-2 특약 금액 가림)") if r500 else todo("본부장 준비 중")}</li>
 </ol>
 <p class="note">※ 입예협 요청 시 ② 진행 단지의 계약서 · 정산 자료 등 증빙을 지체 없이 추가 제출합니다. 주관 시기(NICE 연혁)와 입주 연월은 다를 수 있습니다.</p>
 <p class="body" style="font-size:10pt;margin-top:3pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 6항 4 · 7항 2에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign().replace('class="sign"', 'class="sign" style="margin-top:6pt"').replace('class="to"', 'class="to" style="margin-top:8pt"')}"""
@@ -877,10 +877,10 @@ def main():
     res["11"] = stamped(fit(render("11_업무이행각서", doc11()), 1))
     a1 = stamped(annex12_nice(nice_src, out("12_2_별첨1_NICE연혁발췌.pdf")))
     parts12 = [stamped(fit(render("12_1_실적표", doc12_cover()), 1)), a1, stamped(fit(render("12_3_별첨2_실적확약서", doc12_hwakyak()), 4))]
-    names12 = ["실적표(20개 단지 · 주관 10)", "별첨 1 NICE 연혁 발췌", "별첨 2 실적 확약서 · 붙임 1 ~ 3"]
+    names12 = [f"실적표(20개 단지 · 주관 {sum(1 for r in D.RECENT3_500 if r[3])})", "별첨 1 NICE 연혁 발췌", "별첨 2 실적 확약서 · 붙임 1 ~ 3"]
     if ok["12"]:
         parts12.append(D.R500_DOC)
-        names12.append("별첨 3 주관사 협약서 2건")
+        names12.append(f"별첨 3 주관사 협약서 {len(D.R500_HAVE)}건(협약일 순)")
     toc, pg0 = [], 1
     for nm, p in zip(names12, parts12):
         toc.append([1, nm, pg0])
