@@ -9,6 +9,8 @@ import os
 import random
 import sys
 
+import numpy as np
+
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
@@ -97,6 +99,89 @@ def stamped(mask, seed=7):
     return colorize(m.point(lambda v: 0 if v < 40 else v)).rotate(-1.2, resample=Image.BICUBIC)
 
 
+def _fbm(shape, rng, scales, weights):
+    """여러 주파수 노이즈 합(0~1)."""
+    h, w = shape
+    acc = np.zeros(shape, np.float32)
+    for sc, wt in zip(scales, weights):
+        g = rng.random((max(2, h // sc), max(2, w // sc))).astype(np.float32)
+        acc += wt * np.asarray(Image.fromarray(g).resize((w, h), Image.BICUBIC), np.float32)
+    acc -= acc.min()
+    return acc / max(acc.max(), 1e-6)
+
+
+def _blur(a, r):
+    if r <= 0:
+        return a
+    im = Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8))
+    return np.asarray(im.filter(ImageFilter.GaussianBlur(r)), np.float32) / 255
+
+
+def realistic(mask, seed=1, pad=60):
+    """실제 날인 재현: 지글지글한 외곽, 인주 빠짐, 압력 편차, 테두리 인주 고임, 번짐, 흐림."""
+    rng = np.random.default_rng(seed)
+    m = Image.new("L", (SIZE + pad * 2, SIZE + pad * 2), 0)
+    m.paste(mask, (pad, pad))
+    a = np.asarray(m, np.float32) / 255
+    h, w = a.shape
+
+    # 1) 외곽 떨림: 저주파+고주파 변위로 획 경계를 비틀기
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    dx = (_fbm(a.shape, rng, [90, 18, 5], [1, .5, .35]) - .5) * 9
+    dy = (_fbm(a.shape, rng, [90, 18, 5], [1, .5, .35]) - .5) * 9
+    xi = np.clip(xx + dx, 0, w - 1).astype(np.int32)
+    yi = np.clip(yy + dy, 0, h - 1).astype(np.int32)
+    a = a[yi, xi]
+
+    # 2) 지글지글: 살짝 뭉갠 뒤 종이결 노이즈를 섞어 다시 이진화 → 톱니 외곽
+    grain = _fbm(a.shape, rng, [3, 1], [1, .8])
+    a = _blur(a, 2.2)
+    a = (a + (grain - .5) * .75 > .5).astype(np.float32)
+
+    # 3) 압력 편차: 한쪽으로 기운 손힘 + 얼룩
+    ang = rng.uniform(0, 2 * np.pi)
+    tilt = ((xx - w / 2) * np.cos(ang) + (yy - h / 2) * np.sin(ang)) / w
+    pressure = np.clip(.78 + tilt * .55 + (_fbm(a.shape, rng, [140, 50], [1, .6]) - .5) * .6, .25, 1)
+
+    # 4) 인주 빠짐: 압력 낮을수록 종이 요철에 인주가 안 묻음(하얀 점·긁힘)
+    fiber = _fbm(a.shape, rng, [2, 1], [1, 1])
+    streak = rng.random((h, w))  # 미세 점
+    drop = (fiber > pressure * .9 + .07) | (streak > .997)
+    a = a * (~drop)
+
+    # 5) 테두리 인주 고임: 획 가장자리가 안쪽보다 진함
+    core = _blur(a, 3.5)
+    rim = np.clip(a - core, 0, 1) * 1.6
+    dens = a * (.58 + .42 * pressure) + rim * .25
+
+    # 6) 번짐(블리드) + 전체 흐림
+    bleed = _blur(a, 4) * .22
+    dens = np.maximum(dens, bleed)
+    dens = _blur(dens, 1.1)
+    dens = np.clip(dens * rng.uniform(.95, 1.05), 0, 1)
+
+    # 7) 색: 진한 곳은 검붉은 주홍, 옅은 곳은 분홍빛
+    t = dens[..., None]
+    deep = np.array([178, 14, 26], np.float32)
+    light = np.array([222, 58, 66], np.float32)
+    rgb = light * (1 - t) + deep * t
+    out = np.dstack([rgb, dens * 255]).astype(np.uint8)
+    im = Image.fromarray(out, "RGBA")
+    return im.rotate(rng.uniform(-3, 3), resample=Image.BICUBIC)
+
+
+def on_paper(stamp, seed=0):
+    """흰 서류 위에 찍힌 모습 미리보기(곱하기 합성)."""
+    rng = np.random.default_rng(seed)
+    w, h = stamp.size
+    paper = 246 + (_fbm((h, w), rng, [4, 1], [1, 1]) - .5) * 10
+    paper = np.dstack([paper, paper - 2, paper - 6])
+    rgba = np.asarray(stamp, np.float32) / 255
+    al = rgba[..., 3:4]
+    out = paper * (1 - al) + paper * rgba[..., :3] * al
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+
+
 def main(font_dir):
     variants = {
         "myeongjo": sorted(glob.glob(os.path.join(font_dir, "**/nanum-myeongjo-*-800-normal.woff"), recursive=True)),
@@ -106,6 +191,11 @@ def main(font_dir):
         mask = build_mask(GlyphFonts(paths))
         colorize(mask).save(os.path.join(OUT, f"입예협회장_도장_{name}_clean.png"))
         stamped(mask).save(os.path.join(OUT, f"입예협회장_도장_{name}_stamp.png"))
+        for k in (1, 2, 3):  # 실제 도장처럼 찍을 때마다 다른 3가지 인영
+            r = realistic(mask, seed=k * 11 + len(name))
+            r.save(os.path.join(OUT, f"입예협회장_도장_{name}_real{k}.png"))
+            if k == 1:
+                on_paper(r).save(os.path.join(OUT, f"입예협회장_도장_{name}_real_미리보기.jpg"), quality=92)
         print("ok", name)
 
 
