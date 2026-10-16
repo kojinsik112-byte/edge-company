@@ -82,7 +82,7 @@ def emit_summary(G):
 
     # ---------------------------------------------------------------- 3 · 발전지원금 6,000만원 상당
     p3 = f"""<div class="sx" style="grid-template-columns:1.18fr 1fr">
-<div class="bx hl"><h3><i>BENEFIT</i>발전지원금 {tot} 상당 · 세대 혜택 패키지 (안)<small>제안서 {pg('세대 혜택 패키지 (안)', 'sep')}</small></h3>
+<div class="bx hl"><h3><i>BENEFIT</i>발전지원금 {tot} 상당 · 세대 혜택 패키지 (안)<small>제안서 {pg('입예협이 골라서', 'sep')}</small></h3>
 <div class="fx"><div class="bg">{D.FUND_TOTAL:,}<small>만원 상당</small></div>
 <div class="fm">{hh:,}세대 전 세대 · 세대당 약 {per} 상당<br>= <em>주관사 부담</em> · 공구가에 얹지 않음</div></div>
 <div class="pk">

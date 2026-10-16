@@ -32,7 +32,8 @@ def apply(G):
     hh, fund = getattr(D, "FUND_HH", D.SITE["households"]), D.FUND  # 분당: 공공분양 933세대 기준
     SL, RL = D.SITE["sale_label"], D.SITE["rental_label"]
     CASH = getattr(D, "FUND_CASH", False)
-    B.FUND_CHOICE_TITLE = f"세대당 {fund}만원 상당 범위, [[세대 혜택 패키지]] (안)"
+    # 본부장 10-16: 82쪽은 분당 기존틀(A · B · C 선택) 그대로 · 금액만 발전지원금 6,000만원 상당
+    B.FUND_CHOICE_TITLE = f"발전지원금 {D.FUND_TOTAL:,}만원 상당, [[입예협이 골라서]] 받습니다"
     total = won(hh * fund)
     # 정회원 혜택(안) — 품목 유형 예시만(할인율 · 무상 표기 없음). 공식 유상옵션(현관 중문) · 기본 제공 겹침(욕실 환풍) 품목은 뺐다(검증 10-14)
     MEM = [("박람회 상품권 +10만원", "일반회원 20만원에 정회원 추가 10만원 · 참여업체 의무 조건"), ("도어락 나노코팅", "생활방수 코팅 · 오염·물때 방지"),
@@ -204,18 +205,18 @@ def apply(G):
         return f'<div class="pk"><div class="hd2"><div class="L">{L}</div><h3>{name}<small>{en}</small></h3></div>{ul}{li}</ul>{nt}</div>'
 
     S8 = "08. 혜택안내"
-    _choice_pkg = ("std", dict(sec=S8 + " · 세대 혜택 패키지", title=B.FUND_CHOICE_TITLE,
-        lead="세대에 돌아가는 혜택만 담았습니다 - 공용부 기증 · 기금은 제안하지 않습니다(공고 6항 6).",
+    _ft = f"{D.FUND_TOTAL:,}만원"
+    _choice_pkg = ("std", dict(sec=S8 + " · 발전지원금 " + _ft, title=B.FUND_CHOICE_TITLE,
+        lead="A · B · C는 예시입니다 - 입예협이 원하는 항목을 고르면 주관사가 직접 구매 · 제공합니다(전기 · 조명은 직접 시공).",
         body=('<div class="nb"><div class="optx">'
-              '<div class="op"><i>세대가 받는 혜택</i><h3>A 입주민 특화서비스</h3><div class="v">A</div>'
-              f'<ul><li>세대당 {fund}만원 상당 범위 (안)</li><li>백화점 상품권 · 사전점검 할인 · 실측 · VR · 3D</li>'
-              '<li>항목 · 금액은 입예협과 협의 후 협약서로 확정</li></ul></div>'
-              '<div class="or">+</div>'
-              '<div class="op"><i>입예협 업무를 돕는 서비스</i><h3>B 업무지원 · C 컨설팅</h3><div class="v">B · C</div>'
-              '<ul><li>품질 점검 · 하자 분석 · 위임장 · 사전점검 지원</li><li>경관조명 진단 등 컨설팅(보고서 · 자료 제공)</li>'
-              '<li>같은 범위 안에서 입예협이 골라 구성</li></ul></div></div>'
-              f'<div class="basex"><b>세대당 {fund}만원 상당 범위</b> = 주관사 부담 항목(<em>백화점 상품권 5만원 또는 10만원</em> · 사전점검 할인·실측·VR·3D 등) + <b>방문 선물 · 사은품 · 경품 · 정회원 혜택</b>을 이 범위 안에서 입예협과 배분(안) · 참여업체 박람회 상품권은 업체 제공(안) · <b>주관사 몫에서 부담 - 공구가에 얹지 않습니다</b></div></div>'),
-        kp=(f"세대당 {fund}만원 상당 범위 = [[세대 혜택]]과 [[입예협 업무 지원 서비스]]", "주관사가 직접 제공 · 사용 내역 공개 · 협약서로 확정")))
+              '<div class="op"><i>예시 · 이런 항목들이 있습니다</i><h3>혜택 패키지 예시</h3><div class="v">A · B · C</div>'
+              f'<ul><li>{hh:,}세대 · 세대당 약 {D.FUND_TOTAL / hh:.1f}만원 상당</li>'
+              '<li>섞어서 구성하거나 다른 항목으로 바꿔도 됩니다</li></ul></div>'
+              '<div class="or">›</div>'
+              '<div class="op"><i>선택 · 입예협</i><h3>입예협이 원하는 것을 골라서</h3><div class="v">자유 선택</div>'
+              f'<ul><li>같은 금액({_ft} 상당) 범위 안에서 입예협이 결정</li><li>공용부 기증 · 기금은 제외(공고 6항 6)</li></ul></div></div>'
+              f'<div class="basex"><b>발전지원금 {_ft} 상당</b> = 주관사 부담 항목(<em>백화점 상품권 5만원 또는 10만원</em> · 사전점검 할인·실측·VR·3D 등) + <b>방문 선물 · 사은품 · 경품 · 정회원 혜택</b>을 이 범위 안에서 입예협과 배분(안) · 참여업체 박람회 상품권은 업체 제공(안) · <b>주관사 부담 · 공구가에 얹지 않습니다</b></div></div>'),
+        kp=(f"발전지원금 {_ft} 상당 = [[입예협이 원하는 항목]]으로 구성", "A · B · C는 예시 · 사용 내역 공개 · 협약서로 확정")))
     p_choice = ("std", dict(sec=S8 + " · 발전지원 15만원", title=B.FUND_CHOICE_TITLE,
         lead="두 가지를 다 드리는 것이 아니라, 받는 방식을 입예협이 고르십니다.",
         body=('<div class="nb"><div class="optx">'

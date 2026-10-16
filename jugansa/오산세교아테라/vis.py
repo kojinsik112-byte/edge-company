@@ -787,6 +787,20 @@ def apply2(B, D, take, sub):
 .xbw .leg:before{left:30px;transform:rotate(25deg)}.xbw .leg:after{right:30px;transform:rotate(-25deg)}
 """
 
+    # 본부장 10-16: 82쪽 발전지원금 6,000만원 상당 - 분당 기존틀처럼 왼쪽 A · B · C 칩 / 오른쪽 집행 흐름
+    k = take(B.FUND_CHOICE_TITLE)[1]
+    opf = ('<div class="opf">'
+           f'<div>{ic("checklist")}입예협 항목 선택</div><em>›</em><div>{ic("truck")}주관사 직접 구매·제공</div><em>›</em><div>{ic("report")}검수 · 사용 내역 공개</div></div>')
+    opk = ('<div class="opk"><div><b>A</b>입주민<br>특화서비스</div><div><b>B</b>협의회<br>업무지원</div><div><b>C</b>단지지원<br>컨설팅</div></div>')
+    b = sub(k["body"], '</li></ul></div><div class="or">', '</li></ul>' + opk + '</div><div class="or">')
+    k["body"] = sub(b, '</li></ul></div></div><div class="basex">', '</li></ul>' + opf + '</div></div><div class="basex">')
+    B.CSS += (".opf{margin-top:auto;display:flex;align-items:stretch;gap:4px}"
+              ".opf div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:12px 6px;background:#0f2237;font-size:14px;text-align:center;line-height:1.3}"
+              ".opf .cic{margin:0;width:30px;height:30px}.opf em{display:flex;align-items:center;color:var(--gold);font-style:normal;font-weight:800;font-size:18px}"
+              ".opk{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}"
+              ".opk div{border:1px solid rgba(235,203,143,.5);border-radius:12px;padding:12px 8px;background:rgba(13,30,51,.55);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:14px;line-height:1.3}"
+              ".opk b{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#0d1e33;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:center}")
+
     # 핵심 혜택 6가지 — 앞 장들과 같은 아이콘을 오른쪽 위에(높이 영향 없음)
     k = take(f"{D.SITE['short']}에 드리는 [[핵심 약속 6가지]]")[1]
     k["body"] = inject(k["body"], ["coin10", "clock", "calendar", "lockdoc", "vault", "coins"], "tile").replace('class="tiles lg"', 'class="tiles lg c6"', 1)
