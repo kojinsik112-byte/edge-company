@@ -14,3 +14,4 @@ org_private.json
 
 # docs_os.py 제출 ZIP(증빙 원본 포함)
 *.zip
+*.pptx
