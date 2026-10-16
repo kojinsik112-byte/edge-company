@@ -377,6 +377,18 @@ def apply(G):
 .bond .wm{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%) rotate(-18deg);font-size:76px;font-weight:900;color:rgba(192,57,43,.13);letter-spacing:.3em;white-space:nowrap}
 .docx{display:grid;gap:30px;flex:1;min-height:0;align-items:stretch}
 .docx .pp{display:flex;justify-content:center;min-height:0;height:100%}
+.docx .pp .docimg{height:100%;max-width:100%;object-fit:contain;background:#fff;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.4),0 18px 40px rgba(0,0,0,.55)}
+.dfr{height:100%;max-width:100%;display:flex;flex-direction:column;border:1px solid rgba(200,168,106,.45);border-top:2px solid var(--gold2);border-radius:14px;padding:10px 14px 10px;background:linear-gradient(180deg,rgba(235,203,143,.09),rgba(255,255,255,.015) 40%)}
+.dfr .dh{display:flex;align-items:baseline;gap:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.1)}
+.dfr .dh i{font-style:normal;font-size:11px;letter-spacing:.24em;color:var(--gold2);font-weight:700}.dfr .dh b{font-size:16px;color:var(--gold)}
+.dfr .di{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px 6px 8px}
+.dfr .di .docimg{height:auto;max-height:100%;max-width:100%;box-shadow:0 10px 26px rgba(0,0,0,.5)}
+.dfr .dc{font-size:12px;color:var(--mute);text-align:center}
+.docx.gk .gkl{display:flex;flex-direction:column;justify-content:center;gap:22px;min-width:0}
+.g9 h5{margin:0 0 10px;font-size:15px;color:var(--gold)}.g9g{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.g9g div{border:1px solid rgba(200,168,106,.35);border-radius:9px;padding:8px 10px;font-size:14px;font-weight:600;background:rgba(255,255,255,.03);display:flex;gap:8px;align-items:center}
+.g9g div:last-child{border-color:var(--gold);background:rgba(235,203,143,.1)}
+.g9g i{font-style:normal;font-size:12px;color:var(--gold2);font-weight:700}
 .msx{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;flex:1;min-height:0}
 .msx .mc{border:1px solid var(--line);border-radius:14px;overflow:hidden;display:grid;grid-template-rows:minmax(0,1fr) 150px;text-align:center;
   background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015))}
@@ -481,25 +493,16 @@ def apply(G):
     k = take("이행보증보험 [[2년 · 10억]]")[1]
     k["title"] = "이행보증보험 [[2년 · 최대 10억]]"
     k["lead"] = "공고 4항 8 · 10 — 계약이행 보증과 하자보수 이행 보증을 협약 시 증권으로 제출합니다."
-    bond = ('<div class="paper bond"><div class="stamp">견본</div><div class="wm">견 본</div>'
-            '<div class="bt">이행(하자)보증보험증권</div><div class="bs">증권 항목 설명용 견본 · 실제 증권은 보증보험사가 발급합니다</div>'
-            '<h5>기본사항</h5><table>'
-            '<tr><th>증권번호</th><td>제 ○○○-○○○-○○○○ 호</td></tr>'
-            '<tr><th>보험계약자</th><td>주식회사 엣지컴퍼니</td></tr>'
-            f'<tr><th>피보험자</th><td>{D.CLIENT}</td></tr>'
-            '<tr><th>보험가입금액</th><td>최대 금 10억원 (협약 확정액)</td></tr>'
-            '<tr><th>보험기간</th><td>2년 (개시일은 박람회·입주 일정에 맞춰 협약으로 확정)</td></tr></table>'
-            '<h5>보증하는 사항</h5><table>'
-            '<tr><th>보증내용</th><td>입주박람회 주관 협약에 따른 이행(하자)보증</td></tr>'
-            f'<tr><th>주계약내용</th><td>{D.SITE["official"]} 입주박람회 주관 협약서 — 제안 내용 이행 · 참여업체 하자보수 이관</td></tr></table>'
-            '<div class="ft">증권을 받으시면 보험가입금액 · 보험기간 · 피보험자 · 주계약내용이 협약서와 같은지 확인해 주십시오.</div></div>')
+    # 본부장 10-16: SGI 실제 증권 양식을 바탕으로 만든 분당 맞춤 견본($SP/bond/2_견본.pdf → assets_ins, 깃 제외)
+    bond = '<img class="docimg" src="assets_ins/bd_bond_sample.jpg" alt="이행(하자)보증보험증권 발급 예정 내용 견본">'
     k["body"] = ('<div class="nb"><div class="docx" style="grid-template-columns:1fr 1fr">'
                  '<div class="bulx">'
                  '<div><b>보증 금액 · 최대 10억원</b><p>제안 내용 미이행·업체 도산·검증 미비에 대한 주관사 책임 범위. 금액은 협약으로 확정합니다.</p></div>'
                  '<div><b>보증 기간 · 2년</b><p>박람회·입주 기간을 보증하도록 개시일을 협약으로 정합니다.</p></div>'
                  '<div><b>업체 도산 시 · 전액</b><p>엣지컴퍼니가 비용 전액을 부담하고 동종업체로 하자보수를 이관합니다.</p></div>'
                  '<div><b>증권 실물 제출</b><p>협약식 때 증권 실물을 입예협에 전달합니다.</p></div>'
-                 '</div><div class="pp">' + bond + '</div></div></div>')
+                 '</div><div class="pp">' + ('<div class="dfr"><div class="dh"><i>SAMPLE</i><b>이행(하자)보증보험증권 · 견본</b></div>'
+                 '<div class="di">' + bond + '</div><div class="dc">실제 증권은 협약 확정 후 보증보험사가 발급합니다</div></div>') + '</div></div></div>')
     k["kp"] = ("주관사가 약속을 지키지 않으면 [[보험이 대신 지급]]합니다.", "오른쪽은 증권 견본(예시)")
 
     k = take("보증보험증권 [[제출과 확인]]")[1]
@@ -525,18 +528,15 @@ def apply(G):
             ("주관사 이관", "도산 시 ㈜엣지컴퍼니의 사후관리·하자보수 이관에 동의한다.")]
     trs = "".join(f'<tr{" class=red" if i == 9 else ""}><td class="n">{i}</td><td class="h">{a}</td><td>{b}</td></tr>'
                   for i, (a, b) in enumerate(arts, 1))
-    a4 = ('<div class="paper a4"><div class="stamp">예시</div><h2>입주박람회 특약이행각서</h2>'
-          f'<div class="sub">{D.SITE["name"]} 입주박람회 참여업체 · 하자보수 이관 의무 이행</div>'
-          f'<table><thead><tr><th>항목</th><th colspan="2">내용</th></tr></thead><tbody>{trs}</tbody></table>'
-          f'<div class="ag">위 업체는 상기 조건에 동의하며, {D.SITE["name"]} 입주박람회에 제안한 내용과 공고 게시사항 및 계약 내용을 성실히 이행할 것을 확약합니다.</div>'
-          '<div class="dt">20&nbsp;&nbsp;&nbsp;년&nbsp;&nbsp;&nbsp;&nbsp;월&nbsp;&nbsp;&nbsp;&nbsp;일</div>'
-          '<div class="sg"><i>업 체 명</i><span></span><i>사업자번호</i><span></span><i>대 표 자</i><span>(인)</span></div></div>')
-    k["body"] = ('<div class="nb"><div class="docx" style="grid-template-columns:1fr 1.05fr">'
-                 '<div class="bulx">'
-                 '<div><b>9개 항을 서면으로</b><p>하자보수 이관 의무부터 지연 배상·민원 처리까지 문서로 약속받습니다.</p></div>'
+    # 본부장 10-16: 실제 각서 양식(9개 조항 · 바탕체 공문 형식, $SP/gaksu/gaksu_v.html → assets_ins, 깃 제외)
+    a4 = '<img class="docimg" src="assets_ins/bd_gaksu_v.jpg" alt="입주박람회 참여업체 특약이행각서 양식">'
+    k["body"] = ('<div class="nb"><div class="docx gk" style="grid-template-columns:1.08fr 0.92fr">'
+                 '<div class="gkl"><div class="bulx">'
                  '<div><b>서명한 업체만 참여</b><p>각서를 내지 않은 업체는 박람회에 들어올 수 없습니다.</p></div>'
                  '<div><b>업체가 도산해도</b><p>주관사가 동종업체로 하자보수를 이관하고, A/S 비용을 지급·처리합니다.</p></div>'
-                 '</div><div class="pp">' + a4 + '</div></div></div>')
+                 '</div><div class="g9"><h5>각서 9개 조항</h5><div class="g9g">' + "".join(f'<div><i>{i:02d}</i>{a}</div>' for i, (a, _) in enumerate(arts, 1)) + '</div></div></div>'
+                 '<div class="pp">' + ('<div class="dfr"><div class="dh"><i>FORM</i><b>참여업체 특약이행각서 · 양식</b></div>'
+                 '<div class="di">' + a4 + '</div><div class="dc">업체명 · 대표자 · 날인은 박람회 참여 계약 때 기재</div></div>') + '</div></div></div>')
     k["kp"] = ("업체가 사라져도 [[하자보수 책임]]은 남도록 계약으로 묶어 둡니다.", "오른쪽은 각서 양식 예시 · 문구는 입예협 협의 후 확정")
 
     k = take("주요 클레임 품목과 [[보상 기준]]")[1]
@@ -649,6 +649,12 @@ def apply(G):
 .org .tm li span{background:rgba(200,168,106,.16);color:var(--gold);font-size:13.5px;font-weight:700;text-align:center;padding:3px 0}
 .org .tm li b{font-size:15px;text-align:center;padding:3px 0;letter-spacing:.06em}
 """
+    # 본부장 10-16 '조직도 이상해졌어': 본부장 칸을 줄 옆이 아니라 CEO → 본부장 → 4개 팀 한 줄기 가운데에 둔다
+    B.CSS += (".org .ceo{width:138px!important;height:138px!important}.org .ceo b{font-size:34px!important}.org .ceo span{font-size:20px}"
+              ".org .gmr{height:auto;display:flex;justify-content:center;padding:20px 0 26px}"
+              ".org .gm{position:relative;left:auto;top:auto;padding:10px 26px;border-width:2px;background:linear-gradient(180deg,#132a45,#0b1a2d)}"
+              ".org .gm:before{display:none}.org .gm i{font-size:14px}.org .gm b{font-size:20px}"
+              ".org .tms{padding-top:26px}")
 
     # 실적 기간은 전신 실적 포함(본부장 10-08)
     k = take("숫자로 보는 [[엣지컴퍼니]]")[1]
@@ -850,7 +856,7 @@ def apply(G):
         ("03. 업체선정", [d03, T("공동구매 [[품목]]을 한눈에")] + [T(x) for x in [
             "[[4단계]] 공개 심사 프로세스", "업체 [[심사 기준]]과 계약 원칙", "참여업체 [[서비스 교육]]", "검증된 [[인근 지역업체]] 선정 원칙",
             "공동구매 단가를 지키는 [[4가지 장치]]", "[[최저가 차액 10배]] 보상", "실적 비례 [[추가할인]] 구조", "입주민 [[자금]]을 먼저 지킵니다",
-            "품목별 [[취소 기한]]과 환불 절차", G["T_RULE1"], G["T_RULE2"]]]),
+            "품목별 [[취소 기한]]과 환불 절차"]]),  # 본부장 10-16: 환불 규정 전문 2쪽 뺌(공고 8항 필수 아님 · 전문은 제출서류 8)
         ("04. 하자보증", [d04] + [T(x) for x in [
             "입주민을 지키는 [[3중 안전망]]", "이행보증보험 [[2년 · 최대 10억]]", "보증보험증권 [[제출과 확인]]", "참여업체 [[하자보증]] 체계",
             "입주박람회 [[특약이행각서]] (예시)", "주요 클레임 품목과 [[보상 기준]] (예시)", "참여업체 [[패널티 3단계]]"]]),

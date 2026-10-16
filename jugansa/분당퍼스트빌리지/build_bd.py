@@ -190,6 +190,7 @@ B.CSS += r"""
   box-shadow:0 0 0 1px rgba(0,0,0,.55),0 18px 36px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.35)}  /* 금색 액자 + 흰 매트 */
 .docs .cap{margin-top:14px;font-size:15.5px;font-weight:700;color:var(--gold);text-align:center;line-height:1.35}
 .docs .cap small{display:block;font-size:12.5px;font-weight:400;color:var(--mute);margin-top:2px}
+.dgrp{display:grid;gap:20px;flex:1;min-height:0}.dgrp .gp{display:flex;flex-direction:column;min-height:0;border:1px solid rgba(200,168,106,.38);border-top:2px solid var(--gold2);border-radius:14px;padding:12px 18px 14px;background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.012) 40%)}.dgrp .gh{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,.1)}.dgrp .gh i{font-style:normal;font-size:11.5px;letter-spacing:.24em;color:var(--gold2);font-weight:700}.dgrp .gh b{font-size:19px;color:var(--gold)}.dgrp .gh small{margin-left:auto;font-size:12.5px;color:var(--mute)}.dgrp .docs{gap:18px}
 .bulx{display:flex;flex-direction:column;justify-content:center;gap:16px;flex:1;min-height:0}
 .bulx>div{position:relative;padding-left:24px}
 .bulx>div:before{content:'';position:absolute;left:0;top:9px;width:9px;height:9px;border-radius:50%;background:var(--gold2)}
@@ -782,8 +783,8 @@ QUAL10 = [  # 공고 4항 입찰 참가자격 1 ~ 10 — (요건, 현황, 증빙
     # 본부장 10-15 밤: 14 ③(증권 사본)은 제출서류에서 뺌(그대로) → 본부장 10-16: 제안서 안에 '보증증권 발급 이력' 1쪽(T_BOND · 가림본)을 넣고
     # 증빙 칸은 그 쪽 번호(PG 자동) + '협약 시 증권 제출'. 현황 문구는 그대로 · 증권 사본을 별도 제출서류로 추가하지 않음
     ("계약이행보증보험 등 보증증권 발행 가능", "보증증권 발행 가능 · 본 협약 이행보증 금액은 협약 때 단지 규모에 맞춰 확정",
-     f"발급 이력 {PG('bond')} · 협약 시 증권 제출"),
-    ("취소 · 환불 기준과 하자 · 분쟁 대응 절차", "계약 취소 · 환불 규정 전문(제1 ~ 10조 · 별표) · 하자 접수 책임 구분", "03장 · 제출서류 8"),
+     f"이행 이력 {PG('bond')} · 협약 시 증권 제출"),
+    ("취소 · 환불 기준과 하자 · 분쟁 대응 절차", "품목별 취소 기한 · 환불 절차(규정 전문 제1 ~ 10조 · 별표는 제출서류 8) · 하자 접수 책임 구분", "03장 · 제출서류 8"),
     ("A/S 대책 · 사후보증기간 · 손해배상 이행", "무상 A/S 최소 2년(업체 · 품목별 상이) · 48시간 하자보수 · 하자 예치금 최대 1억 선보상", "04 · 05장 · 서식 2"),
 ]
 new("std", sec=S0, title=T_QUAL,
@@ -797,22 +798,37 @@ new("std", sec=S0, title=T_QUAL,
 # 주계약명 · 계약금액 · 대리점 모집자/담당자/주소를 회색 처리(모자이크)로 가린 assets_ins/bd_sgi_bond_masked.png, 깃 제외 · 이미지는 손대지 않음).
 # 광고대행 용역 계약보증 — 입주박람회 이행보증 가입 실적이 아니다(그렇게 읽히는 표현 금지). 제출서류 14는 그대로(증권 사본 별도 제출 없음).
 # 화면은 render_std()가 T_BOND 제목을 가로채 '왼쪽 증권 원본(세로 · contain) + 오른쪽 제목 · 요약 · KEY POINT'로 그린다.
-T_BOND = "보증증권 [[발급 이력]]"
+T_BOND = "보증보험 · 예치금 [[이행 이력]]"  # 본부장 10-16: 보증증권 발급 이력 + 1억 예치금 약정을 한 쪽으로
 BOND_IMG = "assets_ins/bd_sgi_bond_masked.png"
-BOND_ROWS = [  # (항목, 내용) — 증권 1쪽에 적힌 사실만
-    ("보증 종목", "계약보증 (보증금율 20%)"),
-    ("보험가입금액", "[[7억 400만원]]"),
-    ("보험기간", "2026.08.13 ~ 2027.08.12"),
+BOND_ROWS = [  # (항목, 내용) — 증권 1쪽에 적힌 사실만 · 본부장 10-16 '굳이 다 적을 필요?' → 발급 능력만 보이는 3행(기간 · 주계약 · 계약자는 이미지로 갈음)
+    ("발급 기관", "서울보증보험(SGI)"),
+    ("보험가입금액", "[[7억 400만원]] (계약보증)"),
     ("발급일", "2026.09.07"),
-    ("주계약", "광고대행 용역 (발주처 · 계약명 가림)"),
-    ("보험계약자", "㈜엣지컴퍼니"),
 ]
+ESCROW_IMG = "assets_ins/g14_escrow.jpg"  # 드파인 센텀 에스크로(예치금) 약정서 — 상대방 대표 성명 · 연락처 · 계좌 흐림, 워터마크 제거(깃 제외)
+def _bcard(tag, name, img, alt, rows):
+    dl = "".join(f"<div><dt>{t(k)}</dt><dd>{t(v)}</dd></div>" for k, v in rows)
+    return (f'<div class="cd"><div class="hdr"><i>{tag}</i><b>{t(name)}</b></div>'
+            f'<div class="im"><img src="{img}" alt="{alt}"></div><dl>{dl}</dl></div>')
 new("std", sec=S0, title=T_BOND,
-    lead="서울보증보험(SGI) 신용 심사를 거쳐 계약보증보험증권을 발급받았습니다. 원본 1쪽을 수록하고 상대방 정보 · 보험료 등은 가렸습니다.",
-    body=table(["항목", "증권 기재 내용"], "".join(f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td></tr>' for a, b in BOND_ROWS), "bondt"),  # reorg.py .bond(04장 견본 증권)과 겹치지 않게
-    kp=("본 증권은 광고대행 용역 계약보증이며 [[입주박람회 협약 이행보증이 아닙니다]]. 분당 퍼스트빌리지 협약 이행(하자)보증은 "
-        "협약 체결 후 협의회를 피보험자로 별도 발급하며, 금액은 협약 때 단지 규모에 맞춰 확정합니다.",
-        "가림 없는 원본은 요청 시 열람 · 진위 확인 가능"))
+    lead="보증보험증권 발급과 법무법인을 통한 예치금 약정 - 이행을 담보하는 두 가지 방식을 모두 실제로 해 왔습니다. 상대방 정보 · 보험료 · 계좌는 가렸습니다.",
+    body=('<div class="bnd2">'
+          + _bcard("BOND", "보증보험증권 발급 이력", BOND_IMG, "서울보증보험 계약보증보험증권 1쪽(가림본)", BOND_ROWS)
+          + _bcard("DEPOSIT", "1억 원 예치금 약정", ESCROW_IMG, "에스크로(예치금) 약정서(가림본)",
+                   [("약정 당사자", "드파인 센텀 입주예정자협의회 · 엣지컴퍼니 · 법무법인"), ("예치 금액", "[[1억 원]] (물품지원 이행담보)"), ("약정일", "2023.12.20")])
+          + '</div>'),
+    kp=("보증보험 발급과 1억 원 예치, [[두 방식 모두 실제로 이행]]해 왔습니다.",
+        "분당 협약 이행(하자)보증은 협약 체결 후 협의회를 피보험자로 별도 발급(금액은 협약 때 확정) · 위 증권은 다른 용역의 계약보증 · 가림 없는 원본은 요청 시 열람"))
+B.CSS += (".bnd2{flex:1;min-height:0;display:grid;grid-template-columns:0.82fr 1.18fr;gap:22px}"
+          ".bnd2 .cd{min-height:0;display:flex;flex-direction:column;border:1px solid rgba(200,168,106,.4);border-top:2px solid var(--gold2);border-radius:14px;"
+          "background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.015) 40%);padding:12px 16px 12px}"
+          ".bnd2 .hdr{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}.bnd2 .hdr i{font-style:normal;font-size:11.5px;letter-spacing:.24em;color:var(--gold2);font-weight:700}"
+          ".bnd2 .hdr b{font-size:18px;color:var(--gold)}"
+          ".bnd2 .im{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18);border-radius:8px;padding:10px}"
+          ".bnd2 .im img{max-width:100%;max-height:100%;object-fit:contain;display:block;border-radius:3px;box-shadow:0 10px 28px rgba(0,0,0,.5);background:#fff}"
+          ".bnd2 dl{margin:10px 0 0;display:flex;flex-direction:column;gap:4px}"
+          ".bnd2 dl div{display:grid;grid-template-columns:96px 1fr;font-size:13.5px;border-bottom:1px solid rgba(255,255,255,.08);padding:2px 0}"
+          ".bnd2 dt{color:var(--sub)}.bnd2 dd{margin:0;color:var(--ink)}")
 # 증권 칸 너비 고정(468px ≈ 세로 662px, 머리글 ~ 바닥글 사이 664px 안) — 이미지는 max 크기 안에서 contain(잘림 없음)
 B.CSS += (".bondp{flex:1;min-height:0;display:grid;grid-template-columns:468px 1fr;grid-template-rows:minmax(0,1fr);gap:30px;padding:10px 0 6px}"
           ".bondp .im{min-height:0;min-width:0;display:flex;align-items:center;justify-content:center}"
@@ -998,21 +1014,24 @@ def _arts(arts):
     return out
 
 
-new("std", sec=S0, title=T_RULE1,
-    lead="공고 4항 9 · 8항 5 · 6 - 참여 품목별 계약 취소 및 환불 규정입니다. 모든 공동구매 계약서에 이 규정을 첨부합니다.",
-    body=f'<div class="rgl">{_arts(_ARTS1)}</div>',
-    kp=("기한 안 취소는 [[전액 환불]], 업체 귀책이면 [[기한과 관계없이]] 전액 환불합니다.", "세부 품목 기한은 다음 장 [별표] · 제출서류 8 방안서와 같은 기준"))
-new("std", sec=S0, title=T_RULE2,
-    lead="환불 절차 · 주관사 책임 · 가격 보호와 품목별 취소 가능 기한[별표]입니다.",
-    body=f'<div class="rgl">{_arts(_ARTS2)}<div class="art bt"><h4>[별표] 품목별 취소 가능 기한 (시공일 기준)</h4>'
-         '<table class="rtb"><tbody>'
-         f'<tr><td>시공일 7일 전까지</td><td>{_C7}</td></tr>'
-         f'<tr><td>시공일 15일 전까지</td><td>{_C15}</td></tr>'
-         f'<tr><td>출고 지시 전까지</td><td>맞춤 제작 품목({_CU})은 업체와 협의 후 취소 · 브랜드 가전·가구(미제작 시)</td></tr>'
-         '<tr><td>본사 규정 품목</td><td>렌탈 · 보험 · 통신 · 사전점검 대행 · 브랜드 본사 직영 품목 - 각 본사 계약 규정(계약 전 서면 고지)</td></tr>'
-         '<tr><td>당일 취소</td><td>사전 해피콜 미이행 시 모든 품목(공급사 귀책)</td></tr>'
-         '</tbody></table><p class="rn">※ 품목 구성은 입예협 수요조사 결과에 따라 확정되며, 추가 품목의 기한은 성격이 같은 품목의 기한을 따릅니다.</p></div></div>',
-    kp=("환불은 [[3영업일 이내]], 업체가 미루면 [[주관사가 먼저 보상]]합니다.", "협약 체결일부터 입주 후 1년까지 체결된 계약에 적용"))
+# 본부장 10-16: 공고 8항 필수 9항목에 '환불 규정 전문'은 없음(제출서류 8 방안서가 전문) → 제안서에서 2쪽 뺌. 되돌리려면 True + reorg.py 03장 목록에 T_RULE1 · 2
+RULE_FULL = False
+if RULE_FULL:
+    new("std", sec=S0, title=T_RULE1,
+        lead="공고 4항 9 · 8항 5 · 6 - 참여 품목별 계약 취소 및 환불 규정입니다. 모든 공동구매 계약서에 이 규정을 첨부합니다.",
+        body=f'<div class="rgl">{_arts(_ARTS1)}</div>',
+        kp=("기한 안 취소는 [[전액 환불]], 업체 귀책이면 [[기한과 관계없이]] 전액 환불합니다.", "세부 품목 기한은 다음 장 [별표] · 제출서류 8 방안서와 같은 기준"))
+    new("std", sec=S0, title=T_RULE2,
+        lead="환불 절차 · 주관사 책임 · 가격 보호와 품목별 취소 가능 기한[별표]입니다.",
+        body=f'<div class="rgl">{_arts(_ARTS2)}<div class="art bt"><h4>[별표] 품목별 취소 가능 기한 (시공일 기준)</h4>'
+             '<table class="rtb"><tbody>'
+             f'<tr><td>시공일 7일 전까지</td><td>{_C7}</td></tr>'
+             f'<tr><td>시공일 15일 전까지</td><td>{_C15}</td></tr>'
+             f'<tr><td>출고 지시 전까지</td><td>맞춤 제작 품목({_CU})은 업체와 협의 후 취소 · 브랜드 가전·가구(미제작 시)</td></tr>'
+             '<tr><td>본사 규정 품목</td><td>렌탈 · 보험 · 통신 · 사전점검 대행 · 브랜드 본사 직영 품목 - 각 본사 계약 규정(계약 전 서면 고지)</td></tr>'
+             '<tr><td>당일 취소</td><td>사전 해피콜 미이행 시 모든 품목(공급사 귀책)</td></tr>'
+             '</tbody></table><p class="rn">※ 품목 구성은 입예협 수요조사 결과에 따라 확정되며, 추가 품목의 기한은 성격이 같은 품목의 기한을 따릅니다.</p></div></div>',
+        kp=("환불은 [[3영업일 이내]], 업체가 미루면 [[주관사가 먼저 보상]]합니다.", "협약 체결일부터 입주 후 1년까지 체결된 계약에 적용"))
 B.CSS += (".rgl{flex:1;min-height:0;column-count:3;column-gap:24px;column-fill:balance;column-rule:1px solid rgba(255,255,255,.08)}"
           ".rgl .art{margin:0 0 9px}.rgl .art h4{break-after:avoid}.rgl li{break-inside:avoid}"
           ".rgl h4{font-size:14px;font-weight:800;color:var(--gold);margin:0 0 3px}"
@@ -1096,7 +1115,7 @@ PGREF = {
     "expo": T_EXPO, "venue": "행사장 대관과 [[운영 준비]]", "floor": "박람회장 배치와 [[인원 운영]] (안)", "comfort": "가족이 머무는 [[편의시설]]",
     "items": T_ITEMS, "opt": T_OPT, "vendors": T_VENDORS, "vmgt": T_VMGT, "screen": "[[4단계]] 공개 심사 프로세스",
     "one": T_ONE, "fund": "세대당 15만원 상당, [[혜택 패키지]]로 드립니다", "sep": T_SEP, "guard4": "공동구매 단가를 지키는 [[4가지 장치]]",
-    "safe3": "입주민을 지키는 [[3중 안전망]]", "defect": T_DEFECT, "cpl": T_CPL, "rule1": T_RULE1, "wty": "참여업체 [[하자보증]] 체계",
+    "safe3": "입주민을 지키는 [[3중 안전망]]", "defect": T_DEFECT, "cpl": T_CPL, "rule1": "품목별 [[취소 기한]]과 환불 절차", "wty": "참여업체 [[하자보증]] 체계",
     "support": T_SUPPORT, "booth": T_BOOTH, "req": T_REQ, "pkb": "B 패키지 · [[협의회 단지발전지원]]",
     "check": T_CHECK, "x10": "[[최저가 차액 10배]] 보상",
     "pm": T_PM, "call": "주관 [[콜센터]]와 선보상", "crm": "클레임 [[처리 흐름]]과 CRM 관리",
@@ -1295,6 +1314,13 @@ def blk(b):
             figs += f'<figure class="{cls}"{span}><img src="assets_ins/{it["img"]}.jpg"{pos} alt="">{cap}</figure>'
         g = b.get("grow", 1)
         return f'<div class="gal" style="grid-template-columns:repeat({cols},1fr){rs};flex:{g} 1 0">{figs}</div>'
+    if k == "docgroups":  # 본부장 10-16: 서류를 묶음(제휴 · 면허·인증)별 테두리 안에 나눠 배치
+        gs = ""
+        for g in b["groups"]:
+            gs += (f'<div class="gp"><div class="gh"><i>{g["tag"]}</i><b>{t(g["head"])}</b>'
+                   + (f'<small>{t(g["sub"])}</small>' if g.get("sub") else "") + "</div>"
+                   + blk({"type": "docs", "items": g["items"]}) + "</div>")
+        return f'<div class="dgrp" style="grid-template-columns:{b.get("cols", "1fr 1fr")}">{gs}</div>'
     if k == "docs":
         ds = "".join(f'<div class="d"><div class="pp"><img src="assets_ins/{it["img"]}.jpg" alt=""></div>'
                      f'<div class="cap">{t(it["cap"])}' + (f'<small>{t(it["sub"])}</small>' if it.get("sub") else "")
@@ -1451,16 +1477,6 @@ def render_std(no, sec, title, lead, body, kp):
 <div class="r">{B.QUOTE} &nbsp;·&nbsp; {no:02d}</div></div>
 <div class="ct"></div>
 {(f'<div class="kp"><b>KEY POINT</b><span>{t(kp[0])}<small>{t(kp[1])}</small></span></div>' if isinstance(kp, tuple) else f'<div class="kp"><b>KEY POINT</b><span>{t(kp)}</span></div>') if kp else ''}
-<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
-</section>"""
-    if title == T_BOND:  # 보증증권 발급 이력 — 왼쪽 증권 원본(세로 · 잘림 없이 contain) + 오른쪽 제목 · 리드 · 요약 · KEY POINT
-        a, b = kp
-        return f"""<section class="page">
-<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">{sec}</span></div>
-<div class="r">{B.QUOTE} &nbsp;·&nbsp; {no:02d}</div></div>
-<div class="bondp"><div class="im"><img src="{BOND_IMG}" alt="서울보증보험 계약보증보험증권 1쪽(가림본)"></div>
-<div class="tx"><h1>{t(title)}</h1><div class="lead">{t(lead)}</div><div class="rule"></div>{body}
-<div class="kp"><b>KEY POINT</b><span>{t(a)}<small>{t(b)}</small></span></div></div></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>"""
     if title != INS:

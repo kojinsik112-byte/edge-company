@@ -207,7 +207,6 @@ def emit_summary(G):
         assert len(hits) == 1, ("요약제안서 - 제안서 쪽을 찾지 못함", title, hits)
         return hits[0] + 1
 
-    p_rule2 = pg_title(G["T_RULE2"])
 
     def std(label, title, lead, body, kp):
         return ("std", dict(sec=f"{sec} · {label}", title=title, lead=lead, body=body, kp=kp))
@@ -292,7 +291,7 @@ def emit_summary(G):
         ("기한 지난 뒤", "실제 든 자재 · 제작비만 공제 - 업체가 내역을 서면으로 제시하고 주관사가 검토", "x"),
     ])
     p5 = f"""<div class="sx" style="grid-template-columns:1.45fr 1fr">
-<div class="bx"><h3><i>DEADLINE</i>품목별 취소 가능 기한 (시공일 기준)<small>제안서 {pg('rule1')} · {p_rule2:02d}</small></h3>
+<div class="bx"><h3><i>DEADLINE</i>품목별 취소 가능 기한 (시공일 기준)<small>제안서 {pg('rule1')} · 규정 전문 제출서류 8</small></h3>
 <table class="rt"><tbody>{rt}</tbody></table>
 <div class="nt" style="margin-top:6px">기한 안에 취소하면 납부한 금액 <b style="color:var(--ink)">전액</b>을 환불합니다 · 추가 품목은 성격이 같은 품목의 기한을 따릅니다.</div></div>
 <div class="bx hl"><h3><i>REFUND</i>환불은 이렇게 끝까지</h3>
