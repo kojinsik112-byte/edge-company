@@ -849,6 +849,11 @@ def main():
     res["04"] = merge(NAMES["04"], [f"{EV}/법인인감증명서.pdf", gam], "4 인감증명서 · 사용인감계")
     res["05"] = merge(NAMES["05"], [stamped(fit(render("05_1_표지", doc05()), 1)), KB], "5 배상책임보험 증권 · 행사주최자배상책임보험 가입 계획")
     res["06"] = merge(NAMES["06"], [f"{EV}/잔액증명서_1013_가림.pdf"], "6 계좌 잔액증명서")
+    # 본부장 10-16: 06 발급일(2026.10.14 = 공고일 이후)에 형광펜 표시 — 내용은 그대로, 노란 반투명 띠만 얹음
+    _d = fitz.open(res["06"]); _p = _d[0]
+    _a = _p.add_rect_annot(fitz.Rect(361, 631.5, 495, 647.5))  # 곱하기(Multiply) 합성 → 글자는 진하게 남고 바탕만 노랗게
+    _a.set_colors(stroke=None, fill=(1, 0.93, 0.2)); _a.set_border(width=0); _a.set_blendmode(fitz.PDF_BM_Multiply); _a.set_opacity(0.85); _a.update()
+    _d.save(res["06"] + ".tmp", garbage=3, deflate=True); _d.close(); os.replace(res["06"] + ".tmp", res["06"])
     res["07"] = merge(NAMES["07"], [f"{EV}/국세_납세증명서.pdf", f"{EV}/지방세_납세증명서.pdf"], "7 국세 · 지방세 완납증명서")
     res["08"] = merge(NAMES["08"], [ROSTER, f"{EV}/4대보험_완납증명서.pdf", f"{EV}/고용산재_완납증명서.pdf"], "8 4대보험 가입자 명부 · 완납증명서")
     res["09"] = merge(NAMES["09"], [fit(render("09_1_표지", doc09_cover()), 1), nice_extract(nice_src)], "9 기업신용평가(NICE)")
