@@ -117,6 +117,7 @@ h3.s{font-size:10.4pt;font-weight:800;color:#0D1E33;margin:8pt 0 3pt;break-after
 .t.ls{font-size:8.7pt;line-height:1.35}ol.pl li.sm{font-size:9.2pt;margin-top:2pt;line-height:1.5}.t.ls td{padding:2pt 5pt}
 .t tr.jg td{background:#FBF8F1}.t tr.jg td.g{color:#9A7B3F;font-weight:800}
 .t tr.sum td{background:#F1EDE4;font-weight:800}
+.t tr.gh td{background:#0D1E33;color:#fff;font-weight:800;text-align:left;font-size:8.6pt;letter-spacing:.02em}
 .t td.st{font-weight:800;white-space:nowrap}.t td.st.ok{color:#1F6B3A}.t td.st.na{color:#5B6676}.t td.st.td{color:#9A6A00}
 .box{border:1pt solid #C8A86A;background:#FBF8F1;border-radius:4pt;padding:7pt 11pt;margin-top:10pt;font-size:9.8pt;line-height:1.65}
 .box b{color:#0D1E33}
@@ -251,13 +252,14 @@ def submit_rows(n):
         ("10", "공동구매 입찰제안서(자유양식)", f"입주박람회 주관사 제안서 {n['10']}쪽", "제출"),
         ("11", "업무 이행 각서", "제안 내용 이행 · 사용인감 날인본(법인인감 날인 원본은 협약 시 제출)", "제출"),
         ("12", "최근 3년 500세대 이상 행사 실적 및 공동구매 증빙자료",
-         f"실적표 {len(D.RECENT3_500)}개 단지 · {sum(r[2] for r in D.RECENT3_500):,}세대(1,000세대 이상 주관 {sum(1 for r in D.RECENT3_500 if r[3])} · 진행 "
-         f"{sum(1 for r in D.RECENT3_500 if not r[3])}) · 별첨 NICE 연혁 발췌 · 실적 확약서(붙임 카페 공지 2 · BEXCO 행사일정 1)"
+         f"실적표 {len(D.RECENT3_500)}개 단지 · {sum(r[2] for r in D.RECENT3_500):,}세대(주관 {sum(1 for r in D.RECENT3_500 if r[3])} · 진행 "
+         f"{sum(1 for r in D.RECENT3_500 if not r[3])}) · 별첨 NICE 연혁 발췌 · 실적 확약서(붙임 카페 공지 2 · BEXCO 행사일정 1) · 주관사 협약서 {len(D.R500_HAVE)}건"
          + ("" if r500 else " · " + todo("진행 12개 단지 증빙 — 본부장 준비 중")), "제출" if r500 else "조치 중"),
         ("13", "최근 3년 500세대 이상 협약이행증권 협의회 발행본 10부 이상", "해당 없음 — 협약 시 입예협과 협의해 이행 담보 방안 마련", "해당 없음"),
         ("14", "A/S 이행각서", "사용인감 날인", "제출"),
         ("15", "하자 보수 대응 방안 상세 계획서", f"{n['15']}쪽 · 제안서(제출서류 10)와 같은 기준", "제출"),
         ("16", "선정 결과 이의 제기 금지 서약서", "사용인감 날인", "제출"),
+        ("17", "기타 · 요약제안서(선택 자료)", f"입주박람회 주관사 요약제안서 {n['17']}쪽 · 제안서(제출서류 10) 내용 요약 · 투표 참고용", "제출"),
     ]
 
 
@@ -286,7 +288,7 @@ def doc01(n):
     rows = "".join(f'<tr><td>{no}</td><td class="l">{e(t)}</td><td class="l">{r}</td>'
                    f'<td class="st {cls.get(s, "ok" if s.startswith("제출") else "td")}">{e(s)}</td></tr>' for no, t, r, s in submit_rows(n))
     p2 = f"""{head("입찰 신청서 붙임", "제출서류 목록")}
-<h2>공고 4항 제출서류 16종 (공고 순서 · 번호 그대로)</h2>
+<h2>공고 4항 제출서류 16종 (공고 순서 · 번호 그대로) + 기타 1종</h2>
 <table class="t ls"><thead><tr><th style="width:5%">No</th><th style="width:27%">서류 (공고 4항)</th><th>제출 내용 · 발급일</th><th style="width:11%">상태</th></tr></thead><tbody>{rows}</tbody></table>
 <p class="note">※ 파일 이름은 ‘엣지컴퍼니_오산세교아테라_번호_서류명.pdf’로 공고 순서와 같습니다. 13은 제출 파일이 없습니다(이행 담보 방안은 협약 시 입예협과 협의).</p>
 <p class="note">※ 신청서 · 각서 · 서약서 · 계획서 · 실적 서류의 날인은 사용인감입니다(제출서류 4 사용인감계에 법인인감과 함께 신고).</p>
@@ -539,32 +541,43 @@ def doc12_cover():
     r5 = D.RECENT3_500
     r500 = bool(D.R500_DOC) and os.path.exists(D.R500_DOC)
     nice_names = {r[1] for r in D.RECENT3}
-    rows = ""
-    for i, (m, nm, n, j) in enumerate(r5, 1):
-        if j:
-            ev = EV_OF.get(nm) or ("NICE 연혁(별첨 1) · 실적 확약서(별첨 2)" if nm in nice_names else None)
-            assert ev, f"주관 단지 증빙 없음: {nm}"
-        else:
-            _have = getattr(D, "R500_HAVE", {})
-            ev = _have[nm] if (r500 and nm in _have) else ("요청 시 제출" if r500 else todo("증빙 자료 본부장 준비 중"))
-        rows += (f'<tr class="{"jg" if j else ""}"><td>{i}</td><td>{m}</td><td class="l">{e(nm)}</td><td class="r">{n:,}</td>'
-                 f'<td class="g">{"주관" if j else "진행"}</td><td class="l">{ev}</td></tr>')
-    tot, nj = sum(r[2] for r in r5), sum(1 for r in r5 if r[3])
-    hj = sum(r[2] for r in r5 if r[3])
+    _have = getattr(D, "R500_HAVE", {})
+    big = {r[1] for r in D.RECENT3_OS}
+    # 본부장 10-16: ① 주관 10(증빙 첨부 · 요건 충족) ② 수임 · 진행 10(참고) 두 묶음 · 묶음 안은 입주 연월순
+    grp = [("①", "주관 — 증빙 첨부", [r for r in r5 if r[3]]), ("②", "수임 · 진행 — 참고(증빙 요청 시 제출)", [r for r in r5 if not r[3]])]
+    rows, i = "", 0
+    for gno, gname, rs in grp:
+        rows += (f'<tr class="gh"><td colspan="6">{gno} {gname} · {len(rs)}개 단지 · {sum(r[2] for r in rs):,}세대</td></tr>')
+        for m, nm, n, j in rs:
+            i += 1
+            if j and nm in big:
+                ev = EV_OF.get(nm) or ("NICE 연혁(별첨 1) · 실적 확약서(별첨 2)" if nm in nice_names else None)
+                assert ev, f"주관 단지 증빙 없음: {nm}"
+                kind = "주관"
+            elif j:
+                assert r500 and nm in _have, f"협약 주관 단지 증빙 없음: {nm}"
+                ev, kind = _have[nm], "주관"
+            else:
+                ev, kind = ("요청 시 제출" if r500 else todo("증빙 자료 본부장 준비 중")), "진행"
+            rows += (f'<tr class="{"jg" if j else ""}"><td>{i}</td><td>{m}</td><td class="l">{e(nm)}</td><td class="r">{n:,}</td>'
+                     f'<td class="g">{kind}</td><td class="l">{ev}</td></tr>')
+    tot = sum(r[2] for r in r5)
+    nj, hj = sum(1 for r in r5 if r[3]), sum(r[2] for r in r5 if r[3])
+    nb = sum(1 for r in r5 if r[1] in big)
     body = f"""{head("제출서류 12", "최근 3년 500세대 이상 행사 실적 및 공동구매 증빙자료")}
-<p class="note" style="margin-top:6pt">기준: 공고 3항 6 · 4항 12 — 최근 3년 이내 500세대 이상 공동주택 입주박람회(공동구매 포함) 진행 · 단지 입주 연월 2023.10 ~ 2026.12(2027년 입주 예정 단지 제외) · 단지명 · 세대수는 당사 수임 목록 기준.</p>
-<table class="t ls" style="margin-top:6pt"><thead><tr><th style="width:5%">No</th><th style="width:10%">입주</th><th>단지명</th><th style="width:10%">세대수</th><th style="width:7%">구분</th><th style="width:34%">증빙</th></tr></thead>
+<p class="note" style="margin-top:4pt">기준: 공고 3항 6 · 4항 12 — 최근 3년 이내 500세대 이상 입주박람회(공동구매 포함) 진행 · 입주 연월 2023.10 ~ 2026.12 · 단지명 · 세대수는 당사 수임 목록 기준.</p>
+<style>.t.ls.r12 td{{padding:1.4pt 5pt}}.t.ls.r12 tr.gh td{{padding:1.6pt 6pt}}</style>
+<table class="t ls r12" style="margin-top:6pt"><thead><tr><th style="width:5%">No</th><th style="width:10%">입주</th><th>단지명</th><th style="width:10%">세대수</th><th style="width:7%">구분</th><th style="width:34%">증빙</th></tr></thead>
 <tbody>{rows}
-<tr class="sum"><td colspan="3">합계 {len(r5)}개 단지 (그중 1,000세대 이상 주관 {nj}개 단지 · {hj:,}세대)</td><td class="r">{tot:,}</td><td></td><td></td></tr></tbody></table>
-<div class="box"><b>공고 3항 6 대비</b> &nbsp; 요건: 최근 3년 이내 500세대 이상 입주박람회 진행 10회 이상 &nbsp;→&nbsp; <b>{len(r5)}개 단지 · {tot:,}세대</b><br>
-‘주관’ = 당사가 입주박람회 주관사로 수행한 1,000세대 이상 단지(NICE 연혁 · BEXCO 행사일정 · 단지 카페 공지로 확인) · ‘진행’ = 당사 수임으로 입주박람회 · 공동구매를 진행한 단지.{(' · 증빙 첨부 주관 ' + str(nj) + ' + 진행 ' + str(len(getattr(D, 'R500_HAVE', {}))) + ' = <b>' + str(nj + len(getattr(D, 'R500_HAVE', {}))) + '회</b>(10회 충족)') if r500 else ''}</div>
-<ol class="pl" style="margin-top:6pt"><li style="font-weight:800;color:#0D1E33">별첨</li>
-<li class="sm">별첨 1. NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌 — 1쪽(주관 실적 6개 단지 · 보고서는 제출서류 9)</li>
+<tr class="sum"><td colspan="3">합계 {len(r5)}개 단지 (주관 {nj}개 단지 · {hj:,}세대)</td><td class="r">{tot:,}</td><td></td><td></td></tr></tbody></table>
+<div class="box"><b>공고 3항 6 대비</b> &nbsp; 요건 10회 이상 &nbsp;→&nbsp; <b>증빙 첨부 주관 {nj}회 = 충족</b> (전체 진행 {len(r5)}개 단지 · {tot:,}세대)<br>
+‘주관’ = 당사가 주관사로 수행 — 1,000세대 이상 {nb}개 단지 + 주관사 협약서 {len(_have)}개 단지 · ‘진행’ = 당사 수임으로 입주박람회 · 공동구매 진행</div>
+<ol class="pl" style="margin-top:3pt"><li class="sm">별첨 1. NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌 — 1쪽(주관 실적 6개 단지 · 보고서는 제출서류 9)</li>
 <li class="sm">별첨 2. 실적 확약서(1,000세대 이상 입주박람회 주관 10개 단지) — 붙임 1 · 2 단지 카페 주관사 공지 캡처(입주민 닉네임 가림) · 붙임 3 BEXCO 공식 행사일정 캡처</li>
-<li class="sm">별첨 3. 500세대 이상 진행 단지 증빙 자료 — {"첨부" if r500 else todo("본부장 준비 중")}</li>
+<li class="sm">별첨 3. 500세대 이상 주관사 협약서 — {(" · ".join(f"3-{k + 1} {e(nm)}" for k, nm in enumerate(_have)) + "(상대방 대표자 성명 · 발전기금 금액 가림)") if r500 else todo("본부장 준비 중")}</li>
 </ol>
-<p class="note">※ 입예협 요청 시 계약서 · 정산 자료 등 증빙을 지체 없이 추가 제출합니다. 주관 시기(NICE 연혁)와 입주 연월은 다를 수 있습니다.</p>
-<p class="body" style="font-size:10pt;margin-top:6pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 6항 4 · 7항 2에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign().replace('class="sign"', 'class="sign" style="margin-top:6pt"').replace('class="to"', 'class="to" style="margin-top:8pt"')}"""
+<p class="note">※ 입예협 요청 시 ② 진행 단지의 계약서 · 정산 자료 등 증빙을 지체 없이 추가 제출합니다. 주관 시기(NICE 연혁)와 입주 연월은 다를 수 있습니다.</p>
+<p class="body" style="font-size:10pt;margin-top:3pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 6항 4 · 7항 2에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign().replace('class="sign"', 'class="sign" style="margin-top:6pt"').replace('class="to"', 'class="to" style="margin-top:8pt"')}"""
     return doc("12 최근 3년 500세대 이상 행사 실적 및 공동구매 증빙자료", [body])
 
 
@@ -804,8 +817,9 @@ NAMES = {  # 제출본 파일 이름(공고 4항 번호 · 항목)
     "05": "05_배상책임보험_증권_가입계획", "06": "06_계좌잔고증명서", "07": "07_국세_지방세_완납증명서",
     "08": "08_4대보험_가입자명부_완납증명서", "09": "09_기업신용평가", "10": "10_공동구매_입찰제안서", "11": "11_업무이행각서",
     "12": "12_최근3년_500세대이상_실적_공동구매증빙", "14": "14_AS_이행각서", "15": "15_하자보수_대응방안_상세계획서",
-    "16": "16_선정결과_이의제기_금지서약서",
+    "16": "16_선정결과_이의제기_금지서약서", "17": "17_기타_요약제안서",
 }
+P17 = os.path.join(HERE, PFX + "기타_요약제안서.pdf")  # build_os.py → summary_os.py(본부장 10-16 지시 · 선택 자료)
 
 
 def main():
@@ -833,7 +847,8 @@ def main():
         assert n == n_expect, f"날인 자리 {n}곳(예상 {n_expect}): {p}"
         return o
 
-    res, n = {}, {"10": len(fitz.open(P10))}
+    assert os.path.exists(P17) and os.path.getmtime(P17) >= os.path.getmtime(P10) - 600, "요약제안서가 없거나 제안서보다 오래됨 — build_os.py 다시"
+    res, n = {}, {"10": len(fitz.open(P10)), "17": len(fitz.open(P17))}
     res["15"] = stamped(fit(render("15_하자보수_대응방안_상세계획서", doc15()), 2, 4))
     n["15"] = len(fitz.open(res["15"]))
     res["01"] = stamped(fit(render("01_입찰신청서", doc01(n)), 2))
@@ -862,10 +877,10 @@ def main():
     res["11"] = stamped(fit(render("11_업무이행각서", doc11()), 1))
     a1 = stamped(annex12_nice(nice_src, out("12_2_별첨1_NICE연혁발췌.pdf")))
     parts12 = [stamped(fit(render("12_1_실적표", doc12_cover()), 1)), a1, stamped(fit(render("12_3_별첨2_실적확약서", doc12_hwakyak()), 4))]
-    names12 = ["실적표(20개 단지)", "별첨 1 NICE 연혁 발췌", "별첨 2 실적 확약서 · 붙임 1 ~ 3"]
+    names12 = ["실적표(20개 단지 · 주관 10)", "별첨 1 NICE 연혁 발췌", "별첨 2 실적 확약서 · 붙임 1 ~ 3"]
     if ok["12"]:
         parts12.append(D.R500_DOC)
-        names12.append("별첨 3 진행 단지 증빙")
+        names12.append("별첨 3 주관사 협약서 2건")
     toc, pg0 = [], 1
     for nm, p in zip(names12, parts12):
         toc.append([1, nm, pg0])
@@ -873,6 +888,8 @@ def main():
     res["12"] = merge(NAMES["12"], parts12, "12 최근 3년 500세대 이상 행사 실적 및 공동구매 증빙자료", toc)
     res["14"] = stamped(fit(render("14_AS_이행각서", doc14()), 1))
     res["16"] = stamped(fit(render("16_선정결과_이의제기_금지서약서", doc16()), 1))
+    res["17"] = out(NAMES["17"] + ".pdf")
+    shutil.copyfile(P17, res["17"])
 
     # ---- 제출본/: 조치 끝난 서류만(지난 실행 파일은 지우고 다시) · 10은 원본
     for f in os.listdir(SUBMIT):

@@ -297,7 +297,7 @@ ST = D.SITE
 _rec_n, _rec_hh = len(D.RECORDS), sum(r[3] for r in D.RECORDS)
 R3 = D.RECENT3_OS
 _r3_n, _r3_hh = len(R3), sum(r[3] for r in R3)
-R5 = D.RECENT3_500  # 최근 3년 500세대 이상 입주박람회 진행 20개 단지(주관 8 + 수임 · 진행 12)
+R5 = D.RECENT3_500  # 최근 3년 500세대 이상 입주박람회 진행 20개 단지(주관 10 = 1,000세대 이상 8 + 주관사 협약서 2 · 수임 · 진행 10)
 _r5_n, _r5_hh = len(R5), sum(r[2] for r in R5)
 _types_txt = " · ".join(a for a, _ in ST["types"])
 _types_full = " · ".join(f"{a} {n}" for a, n in ST["types"])
@@ -428,11 +428,11 @@ new("std", sec=S0, title=T_R500,
           '<div class="r5b">'
           f'<div><b>{_r5_n}<small>개 단지</small></b><span>500세대 이상 입주박람회 진행</span></div>'
           f'<div><b>{_r5_hh:,}<small>세대</small></b><span>{_r5_n}개 단지 세대 합계</span></div>'
-          f'<div><b>{sum(1 for r in R5 if r[3])}<small>개 단지</small></b><span>그중 1,000세대 이상 주관(금색)</span></div>'
+          f'<div><b>{sum(1 for r in R5 if r[3])}<small>개 단지</small></b><span>그중 주관(금색) · 1,000세대 이상 {_r3_n} + 협약 {len(D.R500_HAVE)}</span></div>'
           f'<div><b>{sum(1 for r in R5 if not r[3])}<small>개 단지</small></b><span>수임 · 진행</span></div>'
           '</div></div>'),
     kp=(f"공고 기준 10회 이상 - 최근 3년 500세대 이상 [[{_r5_n}개 단지]]에서 입주박람회를 진행했습니다.",
-        "단지명 · 세대수는 수임 목록 기준 · 날짜는 입주 연월 · 증빙 자료 별도 제출"))
+        "단지명 · 세대수는 수임 목록 기준 · 날짜는 입주 연월 · 주관 단지 증빙 = 제출서류 12"))
 B.CSS += (".r5x{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;min-height:0}"
           ".r5{width:100%;border-collapse:collapse}"
           ".r5 th{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--gold2);text-align:left;padding:0 8px 7px;border-bottom:1.5px solid rgba(200,168,106,.55)}"
@@ -869,7 +869,7 @@ QUAL12 = [  # (공고 3항 참가자격, 엣지컴퍼니 현황, 증빙, 확인 
     ("사업개시 3년 이상 · 자본금 2억원 이상", f"법인 설립 · 개업 {D.FOUNDED}(4년 7개월) · 자본금 [[2억원]](2026.04 증자 등기) · 대표자 명의 통장", "제출서류 2 · 3 · 6", False),
     ("관리감독 외 민원 실행 인원 8인 이상", f"4개 팀 {_n12}명(대표이사 · 총괄 본부장 제외) · 4대보험 가입 정규직 10명", "제출서류 8", False),
     ("국세 · 지방세 체납 없음", "체납 없음 - 최근 1개월 이내 완납증명서 제출", "제출서류 7", False),
-    ("최근 3년 500세대 이상 박람회 10회 이상", f"충족 · [[{_r5_n}회]](최근 3년 500세대 이상 · {_r5_hh:,}세대 · 그중 1,000세대 이상 주관 {_r3_n}) · 단지 목록 {PG('r500')}", "제출서류 12", False),
+    ("최근 3년 500세대 이상 박람회 10회 이상", f"충족 · [[{_r5_n}회]](최근 3년 500세대 이상 · {_r5_hh:,}세대 · 주관 {sum(1 for r in R5 if r[3])} · 그중 1,000세대 이상 {_r3_n}) · 단지 목록 {PG('r500')}", "제출서류 12", False),
     ("최근 3년 500세대 이상 협약이행증권 10회 이상", f"보증보험증권 발급 · 법무법인 예치금 약정 이력 보유({PG('bond')}) · 오산 협약이행증권은 협약 시 협의회를 피보험자로 발급", f"이행 이력 {PG('bond')} · 협약 시", True),
     ("협약 철회 · 취소 사례 없음", "해당 없음", "자체 확인", False),
     ("하자 · A/S · 분쟁 손해배상 이행", "특약이행각서 · 선보상 · 하자 예치금 · 업체 도산 시 이관(비용 주관사 부담) · 협약이행 · 하자보증 증권 12개월 이상 발급(협약 시)", f"제출서류 14 · 15 · {PG('bond')}", False),
@@ -1984,8 +1984,10 @@ def build():
     out = (os.path.join(HERE, NAME + "_압축본.html") if COMPACT else os.path.join(HERE, NAME + "_전체본.html") if FULL else B.OUT_HTML)
     emit(list(B.PAGES), out, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
     print(f"오산 제안서 {len(B.PAGES)}쪽 → {out}")
-    # 공고 7항 14 '기타' — 요약제안서(정회원 투표 50점 대상, 8 ~ 12쪽). 숫자 · 문구는 위 제안서와 같은 D · ST 값.
-    # 오산: 요약본은 만들지 않음(지시 전)
+    # 본부장 10-16: 기타 요약제안서(선택 자료 · 2차 심사 투표 참고) — 숫자 · 문구는 위 제안서와 같은 D · ST 값(summary_os.py)
+    if "--no-summary" not in sys.argv and not COMPACT and not FULL:
+        import summary_os  # noqa: E402
+        summary_os.emit_summary(globals())
 
 
 if __name__ == "__main__":
