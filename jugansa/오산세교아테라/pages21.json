@@ -1332,14 +1332,14 @@
         "fit": "contain",
         "items": [
          {
-          "img": "g14_mou_dfc",
+          "img": "os_mou_dfc",
           "cap": "드파인 센텀 협의회 MOU",
           "sub": "2023.12.20 · 특약 18개 항목"
          },
          {
-          "img": "g14_escrow",
+          "img": "os_escrow",
           "cap": "에스크로(예치금) 약정서",
-          "sub": "1억 원 예치"
+          "sub": "법무법인 예치금 약정"
          },
          {
           "img": "g14_mou_det",

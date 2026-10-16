@@ -881,7 +881,7 @@ def apply(G):
         ("07. 오산세교아테라 맞춤 제안", [d07] + [T(G[x]) for x in [
             "T_MAP", "T_SITE", "T_FIRST", "T_FIT", "T_R500", "T_TRUST", "T_STABLE", "T_FACT", "T_CHECK", "T_ITEMS", "T_VENDORS", "T_VMGT",
             "T_REQ", "T_AS", "T_DEFECT", "T_SPECIAL", "T_LX", "T_LX2", "T_MON1", "T_MON2", "T_PM", "T_STAFF", "T_PRIV", "T_REPORT",
-            "T_QUAL", "T_LIMIT", "T_NOTE"]]),
+            "T_QUAL", "T_BOND", "T_LIMIT", "T_NOTE"]]),  # T_BOND = 보증보험 · 예치금 이행 이력(본부장 10-16 · 금액 없음)
         ("08. 혜택안내 · 세대 혜택 패키지", [dv("08", "혜택은 [[세대에]], 가격은 [[경쟁과 검수로]]",
             [f"세대당 {fund}만원 상당 범위 (안)", "A 입주민 특화서비스", "B 협의회 업무지원", "C 진단 · 컨설팅"]),
             p_choice, T(G["T_SEP"]), p_pack]),

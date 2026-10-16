@@ -869,10 +869,10 @@ QUAL12 = [  # (공고 3항 참가자격, 엣지컴퍼니 현황, 증빙, 확인 
     ("사업개시 3년 이상 · 자본금 2억원 이상", f"법인 설립 · 개업 {D.FOUNDED}(4년 7개월) · 자본금 [[2억원]](2026.04 증자 등기) · 대표자 명의 통장", "제출서류 2 · 3 · 6", False),
     ("관리감독 외 민원 실행 인원 8인 이상", f"4개 팀 {_n12}명(대표이사 · 총괄 본부장 제외) · 4대보험 가입 정규직 10명", "제출서류 8", False),
     ("국세 · 지방세 체납 없음", "체납 없음 - 최근 1개월 이내 완납증명서 제출", "제출서류 7", False),
-    ("최근 3년 500세대 이상 박람회 10회 이상", f"충족 · [[{_r5_n}회]](최근 3년 500세대 이상 · {_r5_hh:,}세대 · 그중 1,000세대 이상 주관 {_r3_n}) · 단지 목록 {PG('r500')}", "증빙 자료 별도 제출", False),
-    ("최근 3년 500세대 이상 협약이행증권 10회 이상", "협약 시 입예협과 협의해 이행 담보 방안 마련", "협약 시", True),
+    ("최근 3년 500세대 이상 박람회 10회 이상", f"충족 · [[{_r5_n}회]](최근 3년 500세대 이상 · {_r5_hh:,}세대 · 그중 1,000세대 이상 주관 {_r3_n}) · 단지 목록 {PG('r500')}", "제출서류 12", False),
+    ("최근 3년 500세대 이상 협약이행증권 10회 이상", f"보증보험증권 발급 · 법무법인 예치금 약정 이력 보유({PG('bond')}) · 오산 협약이행증권은 협약 시 협의회를 피보험자로 발급", f"이행 이력 {PG('bond')} · 협약 시", True),
     ("협약 철회 · 취소 사례 없음", "해당 없음", "자체 확인", False),
-    ("하자 · A/S · 분쟁 손해배상 이행", "특약이행각서 · 선보상 · 하자 예치금 · 업체 도산 시 이관(비용 주관사 부담)", "제출서류 14 · 15", False),
+    ("하자 · A/S · 분쟁 손해배상 이행", "특약이행각서 · 선보상 · 하자 예치금 · 업체 도산 시 이관(비용 주관사 부담) · 협약이행 · 하자보증 증권 12개월 이상 발급(협약 시)", f"제출서류 14 · 15 · {PG('bond')}", False),
     ("협약 취소 시 환불 규정 첨부", "환불 규정 협약서 첨부 · 입주민 계약 취소 · 환불 규정 전문은 03장", "협약서", False),
     ("선정결과 이의 제기 안 함", "이의 제기하지 않음", "제출서류 16", False),
     ("사업자의 범죄 사실 없음", "해당 없음", "자체 확인", False),
@@ -883,6 +883,35 @@ new("std", sec=S0, title=T_QUAL,
         f'<tr{" class=chk" if c4 else ""}><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
         for i, (a, b, c, c4) in enumerate(QUAL12, 1)), "q10"),
     kp=("자격은 말이 아니라 [[제출 서류로]] 확인받겠습니다.", "증빙 번호 = 공고 4항 제출서류 번호"))
+
+# 본부장 10-16: 분당 p78과 같은 '보증보험 · 예치금 이행 이력' 1쪽 — 오산은 금액을 넣지 않는다(증권 가입금액 · 예치 금액 모자이크, 글에도 없음)
+T_BOND = "보증보험 · 예치금 [[이행 이력]]"
+BOND_IMG = "assets_ins/os_sgi_bond_masked.png"   # SGI 계약보증보험증권 1쪽 — 상대방 · 보험료 · 증권번호 뒷자리 · 가입금액 가림(깃 제외)
+ESCROW_IMG = "assets_ins/os_escrow.jpg"          # 에스크로(예치금) 약정서 — 단지명 · 날짜 · 금액 · 상대방 대표 · 연락처 · 계좌 가림(깃 제외)
+def _bcard(tag, name, img, alt, rows):
+    dl = "".join(f"<div><dt>{t(k)}</dt><dd>{t(v)}</dd></div>" for k, v in rows)
+    return (f'<div class="cd"><div class="hdr"><i>{tag}</i><b>{t(name)}</b></div>'
+            f'<div class="im"><img src="{img}" alt="{alt}"></div><dl>{dl}</dl></div>')
+new("std", sec=S0, title=T_BOND,
+    lead="보증보험증권 발급과 법무법인을 통한 예치금 약정 - 이행을 담보하는 두 가지 방식을 모두 실제로 해 왔습니다. 금액 · 상대방 정보 · 계좌는 가렸습니다.",
+    body=('<div class="bnd2">'
+          + _bcard("BOND", "보증보험증권 발급 이력", BOND_IMG, "서울보증보험 계약보증보험증권 1쪽(가림본)",
+                   [("발급 기관", "서울보증보험(SGI)"), ("보증 종목", "계약보증보험"), ("발급일", "2026.09.07")])
+          + _bcard("DEPOSIT", "예치금 약정 이력", ESCROW_IMG, "에스크로(예치금) 약정서(가림본)",
+                   [("약정 당사자", "입주예정자협의회 · 엣지컴퍼니 · 법무법인"), ("담보 내용", "물품지원 이행담보"), ("예치 방식", "법무법인 지정 계좌 예치(에스크로)")])
+          + '</div>'),
+    kp=("보증보험 발급과 예치금 약정, [[두 방식 모두 실제로 이행]]해 왔습니다.",
+        "오산세교아테라 협약이행 · 하자보증 증권은 협약 체결 후 협의회를 피보험자로 12개월 이상 발급 · 위 증권은 다른 용역의 계약보증 · 가림 없는 원본은 요청 시 열람"))
+B.CSS += (".bnd2{flex:1;min-height:0;display:grid;grid-template-columns:0.82fr 1.18fr;gap:22px}"
+          ".bnd2 .cd{min-height:0;display:flex;flex-direction:column;border:1px solid rgba(200,168,106,.4);border-top:2px solid var(--gold2);border-radius:14px;"
+          "background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.015) 40%);padding:12px 16px 12px}"
+          ".bnd2 .hdr{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}.bnd2 .hdr i{font-style:normal;font-size:11.5px;letter-spacing:.24em;color:var(--gold2);font-weight:700}"
+          ".bnd2 .hdr b{font-size:18px;color:var(--gold)}"
+          ".bnd2 .im{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18);border-radius:8px;padding:10px}"
+          ".bnd2 .im img{max-width:100%;max-height:100%;object-fit:contain;display:block;border-radius:3px;box-shadow:0 10px 28px rgba(0,0,0,.5);background:#fff}"
+          ".bnd2 dl{margin:10px 0 0;display:flex;flex-direction:column;gap:4px}"
+          ".bnd2 dl div{display:grid;grid-template-columns:96px 1fr;font-size:13.5px;border-bottom:1px solid rgba(255,255,255,.08);padding:2px 0}"
+          ".bnd2 dt{color:var(--sub)}.bnd2 dd{margin:0;color:var(--ink)}")
 
 LIMIT7 = [  # 공고 6항 입찰의 무효 1 ~ 7 — (사유, 확인, 근거)
     ("입찰 참가 자격 미준수", "3항 자격 대응표 그대로 - 서류로 다 채우지 못하는 항목은 사실대로 기재", "3항 대응표"),
@@ -1164,7 +1193,7 @@ PGREF = {
     "pm": T_PM, "call": "주관 [[콜센터]]와 선보상", "map": T_MAP,
     "fit": T_FIT, "r500": T_R500, "trust": T_TRUST, "stable": T_STABLE, "fact": T_FACT, "as": T_AS, "special": T_SPECIAL,
     "lx": T_LX, "lx2": T_LX2, "mon1": T_MON1, "mon2": T_MON2, "report": T_REPORT,
-    "qual": T_QUAL, "ban": T_LIMIT, "note": T_NOTE,  # 목차 띠 — 3항 자격 · 6항 무효 · 2 · 7항 유의사항
+    "qual": T_QUAL, "bond": T_BOND, "ban": T_LIMIT, "note": T_NOTE,  # 목차 띠 — 3항 자격 · 6항 무효 · 2 · 7항 유의사항
 }
 PGNO = {}
 
@@ -1907,7 +1936,7 @@ def finish(path, title):
         _txt = _txt.replace(_o, "")
     left = re.findall(r".{0,14}(?:분당|퍼스트빌리지|e편한세상|동원동|성남|낙생|DL이앤씨|933|1,400|행복주택|신혼희망|신혼|SETEC|aT센터|미금|ns-manager|정당계약|51A|55A|55B|59T|"
                       r"28개월|2028|2029|지웰|양주|덕계|탕정|센터파크|철산|광명|조합|임예협|KINTEX|공고 8항|공고 9항|공고 10항|서식 \d|8항|9항|10항|"
-                      r"이행보증|보증보험|증권|발전기금|단지발전|입예협 지정|공용물품|커뮤니티 집기|bd_|화재 ·|배상책임보험 개최).{0,10}", _txt)
+                      r"발전기금|단지발전|입예협 지정|공용물품|커뮤니티 집기|bd_|화재 ·|배상책임보험 개최).{0,10}", _txt)
     assert not left, left
     # 대응표 쪽 번호(⟪pg:키⟫) — emit()에서 재배치가 끝난 B.PAGES로 계산
     doc = re.sub(r"⟪pg:(\w+)⟫", lambda m: f"p.{PGNO[m.group(1)]:02d}", doc)
