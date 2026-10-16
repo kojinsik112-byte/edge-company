@@ -775,8 +775,10 @@ QUAL10 = [  # 공고 4항 입찰 참가자격 1 ~ 10 — (요건, 현황, 증빙
     ("전담 PM과 운영체계 구성", "전담 PM 지정 · 4개 팀 12명 + 대표 · 본부장 · 공고 업무별 담당", "제안서 07장"),
     ("국세 · 지방세 · 4대보험 체납 없음", "체납 없음 - 유효기간 내 완납증명서 제출", "제출서류 5 · 6"),
     ("금품 · 담합 · 중대 위반 · 분쟁으로 해지 · 취소 이력 없음", "해당 없음", "서식 1 · 5"),
-    # 본부장 10-15 밤(정정): 보증 문구는 기존대로 — 단 14 ③(증권 사본)을 제출서류에서 뺐으므로 증권 사본 · 발급 이력 언급 없이 '협약 시 증권 제출'만
-    ("계약이행보증보험 등 보증증권 발행 가능", "보증증권 발행 가능 · 본 협약 이행보증 금액은 협약 때 단지 규모에 맞춰 확정", "협약 시 증권 제출"),
+    # 본부장 10-15 밤: 14 ③(증권 사본)은 제출서류에서 뺌(그대로) → 본부장 10-16: 제안서 안에 '보증증권 발급 이력' 1쪽(T_BOND · 가림본)을 넣고
+    # 증빙 칸은 그 쪽 번호(PG 자동) + '협약 시 증권 제출'. 현황 문구는 그대로 · 증권 사본을 별도 제출서류로 추가하지 않음
+    ("계약이행보증보험 등 보증증권 발행 가능", "보증증권 발행 가능 · 본 협약 이행보증 금액은 협약 때 단지 규모에 맞춰 확정",
+     f"발급 이력 {PG('bond')} · 협약 시 증권 제출"),
     ("취소 · 환불 기준과 하자 · 분쟁 대응 절차", "계약 취소 · 환불 규정 전문(제1 ~ 10조 · 별표) · 하자 접수 책임 구분", "03장 · 제출서류 8"),
     ("A/S 대책 · 사후보증기간 · 손해배상 이행", "무상 A/S 최소 2년(업체 · 품목별 상이) · 48시간 하자보수 · 하자 예치금 최대 1억 선보상", "04 · 05장 · 서식 2"),
 ]
@@ -786,6 +788,38 @@ new("std", sec=S0, title=T_QUAL,
         f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
         for i, (a, b, c) in enumerate(QUAL10, 1)), "q10"),
     kp="자격은 말이 아니라 [[제출 서류로]] 확인받겠습니다.")
+
+# 본부장 10-16: 자격 8(보증증권 발행 가능)의 근거 — 서울보증보험 계약보증보험증권 1쪽(200dpi · 상대방 정보 · 보험료 · 증권번호 뒷자리 ·
+# 주계약명 · 계약금액 · 대리점 모집자/담당자/주소를 회색 처리(모자이크)로 가린 assets_ins/bd_sgi_bond_masked.png, 깃 제외 · 이미지는 손대지 않음).
+# 광고대행 용역 계약보증 — 입주박람회 이행보증 가입 실적이 아니다(그렇게 읽히는 표현 금지). 제출서류 14는 그대로(증권 사본 별도 제출 없음).
+# 화면은 render_std()가 T_BOND 제목을 가로채 '왼쪽 증권 원본(세로 · contain) + 오른쪽 제목 · 요약 · KEY POINT'로 그린다.
+T_BOND = "보증증권 [[발급 이력]]"
+BOND_IMG = "assets_ins/bd_sgi_bond_masked.png"
+BOND_ROWS = [  # (항목, 내용) — 증권 1쪽에 적힌 사실만
+    ("보증 종목", "계약보증 (보증금율 20%)"),
+    ("보험가입금액", "[[7억 400만원]]"),
+    ("보험기간", "2026.08.13 ~ 2027.08.12"),
+    ("발급일", "2026.09.07"),
+    ("주계약", "광고대행 용역 (발주처 · 계약명 가림)"),
+    ("보험계약자", "㈜엣지컴퍼니"),
+]
+new("std", sec=S0, title=T_BOND,
+    lead="서울보증보험(SGI) 신용 심사를 거쳐 계약보증보험증권을 발급받았습니다. 원본 1쪽을 수록하고 상대방 정보 · 보험료 등은 가렸습니다.",
+    body=table(["항목", "증권 기재 내용"], "".join(f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td></tr>' for a, b in BOND_ROWS), "bond"),
+    kp=("본 증권은 광고대행 용역 계약보증이며 [[입주박람회 협약 이행보증이 아닙니다]]. 분당 퍼스트빌리지 협약 이행(하자)보증은 "
+        "협약 체결 후 협의회를 피보험자로 별도 발급하며, 금액은 협약 때 단지 규모에 맞춰 확정합니다.",
+        "가림 없는 원본은 요청 시 열람 · 진위 확인 가능"))
+B.CSS += (".bondp{flex:1;min-height:0;display:grid;grid-template-columns:auto 1fr;gap:30px;padding:10px 0 6px}"
+          ".bondp .im{height:100%;min-height:0;display:flex;align-items:center;justify-content:center}"
+          ".bondp .im img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;border-radius:6px;"
+          "box-shadow:0 14px 40px rgba(0,0,0,.5);background:#fff}"
+          ".bondp .tx{display:flex;flex-direction:column;min-width:0}"
+          ".bondp .tx h1{margin-top:0}.bondp .tx .lead{font-size:17px}.bondp .tx .rule{margin:14px 0 14px}"
+          ".bondp .tx .tbl td{font-size:16px;padding:7px 12px}.bondp .tx .tbl td.k{font-size:16px;white-space:nowrap;width:120px}"
+          ".bondp .tx .tbl th{padding:0 12px 7px}"
+          ".bondp .tx .kp{margin-top:auto;flex-direction:column;align-items:flex-start;gap:8px;padding:14px 20px}"
+          ".bondp .tx .kp span{font-size:16px;line-height:1.45}"
+          ".bondp .tx .kp small{display:block;margin:6px 0 0;font-size:13.5px}")
 
 # 7 대표자 범죄사실확인서 — docs_bd.py(신청서 7행 · 07)와 같은 D.CRIME_SUBST 값을 쓴다(검증 10-14: 제안서와 제출서류가 서로 다른 말을 하지 않게)
 _CRIME = getattr(D, "CRIME_SUBST", None)
@@ -1065,6 +1099,7 @@ PGREF = {
     # gate = C 커뮤니티 조명 쪽의 문주 안내(본부장 10-15 밤 · 압축본은 합친 쪽)
     "deposit": "선보상 재원 · 하자 예치금 [[최대 1억원]]", "gate": "문주·경관조명 [[컨설팅]]", "report": T_REPORT,
     "scope": T_SCOPE, "qual": T_QUAL, "ban": T_LIMIT, "note": T_NOTE,  # 목차 띠 — 4 · 5 · 9 · 10항 대응 쪽
+    "bond": T_BOND,  # 본부장 10-16: 자격 8행 증빙 칸 → 보증증권 발급 이력 쪽(MID · 압축본에서도 빼지 않음)
 }
 PGNO = {}
 
@@ -1409,6 +1444,16 @@ def render_std(no, sec, title, lead, body, kp):
 <div class="r">{B.QUOTE} &nbsp;·&nbsp; {no:02d}</div></div>
 <div class="ct"></div>
 {(f'<div class="kp"><b>KEY POINT</b><span>{t(kp[0])}<small>{t(kp[1])}</small></span></div>' if isinstance(kp, tuple) else f'<div class="kp"><b>KEY POINT</b><span>{t(kp)}</span></div>') if kp else ''}
+<div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
+</section>"""
+    if title == T_BOND:  # 보증증권 발급 이력 — 왼쪽 증권 원본(세로 · 잘림 없이 contain) + 오른쪽 제목 · 리드 · 요약 · KEY POINT
+        a, b = kp
+        return f"""<section class="page">
+<div class="hd"><div class="l"><span class="logo">EG</span><span class="sec">{sec}</span></div>
+<div class="r">{B.QUOTE} &nbsp;·&nbsp; {no:02d}</div></div>
+<div class="bondp"><div class="im"><img src="{BOND_IMG}" alt="서울보증보험 계약보증보험증권 1쪽(가림본)"></div>
+<div class="tx"><h1>{t(title)}</h1><div class="lead">{t(lead)}</div><div class="rule"></div>{body}
+<div class="kp"><b>KEY POINT</b><span>{t(a)}<small>{t(b)}</small></span></div></div></div>
 <div class="ft"><span>주식회사 엣지컴퍼니</span><span>EDGE COMPANY</span></div>
 </section>"""
     if title != INS:
@@ -1759,7 +1804,7 @@ def finish(path, title):
     # 재검증 10-14: p90 9행을 정한 CRIME_SUBST 값을 남긴다 — docs_bd.py가 지금 data.py 값과 다르면 02를 제출본에 넣지 않음(다시 빌드 안내)
     doc = doc.replace("</title>", f'</title><meta name="bd-crime-subst" content="{_h.escape(_CRIME or "")}">', 1)
     doc = sub(doc, "</body>", ALIGN_JS + "</body>")
-    left = re.findall(r".{0,12}(?:지웰|양주|덕계|1,595|1,355|대방산업|대방 |대방건설|신영|gwell|gw_|KINTEX|104동|덕정|회천|의정부|경기 북부|30개월|동탄|임예협|임차|임대사업자|철산|광명|조합|1,395|GS건설|탕정|센터파크|아산|천안|세종|OSCO|DCC|유관순|물의정원|중앙광장|1,416|17개월|22개 항목|prugiocenterpark|tj_|대우건설|사전청약|632세대|301세대|1,741|총회장).{0,6}", re.sub(r"<style.*?</style>", "", doc, flags=re.S))
+    left = re.findall(r".{0,12}(?:지웰|양주|덕계|1,595|1,355|대방산업|(?<!상)대방 |대방건설|신영|gwell|gw_|KINTEX|104동|덕정|회천|의정부|경기 북부|30개월|동탄|임예협|임차|임대사업자|철산|광명|조합|1,395|GS건설|탕정|센터파크|아산|천안|세종|OSCO|DCC|유관순|물의정원|중앙광장|1,416|17개월|22개 항목|prugiocenterpark|tj_|대우건설|사전청약|632세대|301세대|1,741|총회장).{0,6}", re.sub(r"<style.*?</style>", "", doc, flags=re.S))
     assert not left, left  # 지웰·동탄·철산·탕정 문구가 남지 않게(분당은 입예협 — '조합' 없음)
     # 대응표 쪽 번호(⟪pg:키⟫) — emit()에서 재배치가 끝난 B.PAGES로 계산
     doc = re.sub(r"⟪pg:(\w+)⟫", lambda m: f"p.{PGNO[m.group(1)]:02d}", doc)

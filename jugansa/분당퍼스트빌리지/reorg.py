@@ -862,7 +862,7 @@ def apply(G):
         ("07. 분당 퍼스트빌리지 맞춤 제안", [d07] + [T(G[x]) for x in [
             "T_MAP", "T_SITE", "T_FIRST", "T_OPT", "T_ITEMS", "T_VENDORS", "T_VMGT", "T_CHECK", "T_ONE", "T_SPECIAL",
             "T_SUPPORT", "T_BOOTH", "T_REQ", "T_LX", "T_PM", "T_STAFF", "T_PRIV", "T_DEFECT", "T_REPORT",
-            "T_MONTHS", "T_SCHED", "T_SCOPE", "T_QUAL", "T_LIMIT", "T_NOTE"]]),
+            "T_MONTHS", "T_SCHED", "T_SCOPE", "T_QUAL", "T_BOND", "T_LIMIT", "T_NOTE"]]),  # T_BOND = 보증증권 발급 이력(본부장 10-16)
         ("08. 혜택안내 · 발전지원 15만원", [dv("08", "입주민과 협의회를 [[함께]] 챙깁니다",
             [f"세대당 {fund}만원 — 현금 또는 패키지 선택" if CASH else f"세대당 {fund}만원 상당 — 패키지 · 입예협 지정", "A 입주민 특화서비스", "B 협의회 단지발전지원", "C 단지지원 컨설팅"]),
             T(kind="hi_fund"), p_choice, T(G["T_SEP"]), p_pack, p_examples]),
