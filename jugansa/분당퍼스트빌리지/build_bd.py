@@ -12,6 +12,7 @@
 
 사용: python3 build_bd.py [--compact] [--no-summary] [--no-pdf] [--final] [--src <통합제안서 기본틀 PDF>]
 - 기본 = 전체본(134쪽, 본부장 10-14 저녁 '134쪽으로 되돌리고 본부장이 직접 줄임' · 10-15 신도시 2쪽 합쳐 133쪽) → NAME.html/.pdf
+  (본부장 10-15 이후 기본 = 약 120쪽 MID · --full = 전체본 · 10-16 보증증권 발급 이력 1쪽 추가 → MID 121쪽 · 전체본 134쪽 · 압축본 110쪽)
   + 14 요약제안서(공고 7항 14 '기타', summary_bd.py) → 엣지컴퍼니_분당퍼스트빌리지_14_요약제안서.html/.pdf
 - --compact = 압축본(약 109쪽) → NAME_압축본.html/.pdf · 압축 대상은 compact.py 한 곳에 모음
 - --no-summary = 요약제안서 생략
@@ -805,7 +806,7 @@ BOND_ROWS = [  # (항목, 내용) — 증권 1쪽에 적힌 사실만
 ]
 new("std", sec=S0, title=T_BOND,
     lead="서울보증보험(SGI) 신용 심사를 거쳐 계약보증보험증권을 발급받았습니다. 원본 1쪽을 수록하고 상대방 정보 · 보험료 등은 가렸습니다.",
-    body=table(["항목", "증권 기재 내용"], "".join(f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td></tr>' for a, b in BOND_ROWS), "bond"),
+    body=table(["항목", "증권 기재 내용"], "".join(f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td></tr>' for a, b in BOND_ROWS), "bondt"),  # reorg.py .bond(04장 견본 증권)과 겹치지 않게
     kp=("본 증권은 광고대행 용역 계약보증이며 [[입주박람회 협약 이행보증이 아닙니다]]. 분당 퍼스트빌리지 협약 이행(하자)보증은 "
         "협약 체결 후 협의회를 피보험자로 별도 발급하며, 금액은 협약 때 단지 규모에 맞춰 확정합니다.",
         "가림 없는 원본은 요청 시 열람 · 진위 확인 가능"))
@@ -1807,6 +1808,7 @@ def finish(path, title):
     doc = sub(doc, "</body>", ALIGN_JS + "</body>")
     left = re.findall(r".{0,12}(?:지웰|양주|덕계|1,595|1,355|대방산업|(?<!상)대방 |대방건설|신영|gwell|gw_|KINTEX|104동|덕정|회천|의정부|경기 북부|30개월|동탄|임예협|임차|임대사업자|철산|광명|조합|1,395|GS건설|탕정|센터파크|아산|천안|세종|OSCO|DCC|유관순|물의정원|중앙광장|1,416|17개월|22개 항목|prugiocenterpark|tj_|대우건설|사전청약|632세대|301세대|1,741|총회장).{0,6}", re.sub(r"<style.*?</style>", "", doc, flags=re.S))
     assert not left, left  # 지웰·동탄·철산·탕정 문구가 남지 않게(분당은 입예협 — '조합' 없음)
+    # 10-16: '대방 '(대방건설) 검사는 '상대방 '(보증증권 쪽 리드)을 빼고 본다
     # 대응표 쪽 번호(⟪pg:키⟫) — emit()에서 재배치가 끝난 B.PAGES로 계산
     doc = re.sub(r"⟪pg:(\w+)⟫", lambda m: f"p.{PGNO[m.group(1)]:02d}", doc)
     doc = re.sub(r"⟪pgs:([\w,]+)⟫", lambda m: "p." + " · ".join(f"{n:02d}" for n in sorted({PGNO[k] for k in m.group(1).split(",")})), doc)
