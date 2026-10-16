@@ -175,6 +175,9 @@ B.CSS += r"""
 .gal figure{position:relative;margin:0;border-radius:12px;overflow:hidden;border:1px solid rgba(200,168,106,.32);background:#0a1626;min-height:0}
 .gal img{width:100%;height:100%;object-fit:cover;display:block}
 .gal figure.ct img{object-fit:contain;background:#fff}
+.gal figure.cb{display:flex;flex-direction:column}  /* 캡션을 사진 아래로(문서 사진의 서명·날인부 가림 방지) */
+.gal figure.cb img{flex:1 1 0;min-height:0;height:auto;object-fit:contain;background:#0a1626}
+.gal figure.cb figcaption{position:static;padding:8px 12px 9px;background:#0d1b2e}
 .gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:22px 14px 9px;font-size:14.5px;font-weight:700;line-height:1.3;
   background:linear-gradient(0deg,rgba(5,12,22,.94) 0%,rgba(5,12,22,.72) 55%,rgba(5,12,22,0) 100%)}
 .gal figcaption small{display:block;font-size:12.5px;font-weight:400;color:var(--sub);margin-top:2px}
@@ -1279,6 +1282,8 @@ def blk(b):
         figs = ""
         for it in b["items"]:
             cls = "ct" if (it.get("fit") or b.get("fit")) == "contain" else ""
+            if b.get("capbelow"):
+                cls = (cls + " cb").strip()
             span = ";".join(x for x in [f'grid-column:span {it["span"]}' if it.get("span") else "",
                                         f'grid-row:span {it["rspan"]}' if it.get("rspan") else ""] if x)
             span = f' style="{span}"' if span else ""
