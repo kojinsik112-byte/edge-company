@@ -809,9 +809,10 @@ new("std", sec=S0, title=T_BOND,
     kp=("본 증권은 광고대행 용역 계약보증이며 [[입주박람회 협약 이행보증이 아닙니다]]. 분당 퍼스트빌리지 협약 이행(하자)보증은 "
         "협약 체결 후 협의회를 피보험자로 별도 발급하며, 금액은 협약 때 단지 규모에 맞춰 확정합니다.",
         "가림 없는 원본은 요청 시 열람 · 진위 확인 가능"))
-B.CSS += (".bondp{flex:1;min-height:0;display:grid;grid-template-columns:auto 1fr;gap:30px;padding:10px 0 6px}"
-          ".bondp .im{height:100%;min-height:0;display:flex;align-items:center;justify-content:center}"
-          ".bondp .im img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;border-radius:6px;"
+# 증권 칸 너비 고정(468px ≈ 세로 662px, 머리글 ~ 바닥글 사이 664px 안) — 이미지는 max 크기 안에서 contain(잘림 없음)
+B.CSS += (".bondp{flex:1;min-height:0;display:grid;grid-template-columns:468px 1fr;grid-template-rows:minmax(0,1fr);gap:30px;padding:10px 0 6px}"
+          ".bondp .im{min-height:0;min-width:0;display:flex;align-items:center;justify-content:center}"
+          ".bondp .im img{max-height:100%;max-width:100%;width:auto;height:auto;object-fit:contain;display:block;border-radius:6px;"
           "box-shadow:0 14px 40px rgba(0,0,0,.5);background:#fff}"
           ".bondp .tx{display:flex;flex-direction:column;min-width:0}"
           ".bondp .tx h1{margin-top:0}.bondp .tx .lead{font-size:17px}.bondp .tx .rule{margin:14px 0 14px}"
