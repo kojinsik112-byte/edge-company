@@ -170,6 +170,10 @@ B.CSS += r"""
 .gal figure{position:relative;margin:0;border-radius:12px;overflow:hidden;border:1px solid rgba(200,168,106,.32);background:#0a1626;min-height:0}
 .gal img{width:100%;height:100%;object-fit:cover;display:block}
 .gal figure.ct img{object-fit:contain;background:#fff}
+.gal figure.cb{display:flex;flex-direction:column}
+.gal figure.cb img{flex:1 1 0;min-height:0;height:auto;object-fit:contain;background:#0a1626}
+.gal figure.cb figcaption{position:static;padding:8px 12px 9px;background:#0d1b2e}
+.gal figure.cb.cv{display:block;position:relative;width:100%;height:100%}.gal figure.cb.cv img{position:absolute;left:0;top:0;width:100%;height:calc(100% - 54px);object-fit:cover;object-position:center}.gal figure.cb.cv figcaption{position:absolute;left:0;right:0;bottom:0;height:54px;box-sizing:border-box}
 .gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:22px 14px 9px;font-size:14.5px;font-weight:700;line-height:1.3;
   background:linear-gradient(0deg,rgba(5,12,22,.94) 0%,rgba(5,12,22,.72) 55%,rgba(5,12,22,0) 100%)}
 .gal figcaption small{display:block;font-size:12.5px;font-weight:400;color:var(--sub);margin-top:2px}
@@ -182,6 +186,7 @@ B.CSS += r"""
   box-shadow:0 0 0 1px rgba(0,0,0,.55),0 18px 36px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.35)}  /* 금색 액자 + 흰 매트 */
 .docs .cap{margin-top:14px;font-size:15.5px;font-weight:700;color:var(--gold);text-align:center;line-height:1.35}
 .docs .cap small{display:block;font-size:12.5px;font-weight:400;color:var(--mute);margin-top:2px}
+.dgrp{display:grid;gap:20px;flex:1;min-height:0}.dgrp .gp{display:flex;flex-direction:column;min-height:0;border:1px solid rgba(200,168,106,.38);border-top:2px solid var(--gold2);border-radius:14px;padding:12px 18px 14px;background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.012) 40%)}.dgrp .gh{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,.1)}.dgrp .gh i{font-style:normal;font-size:11.5px;letter-spacing:.24em;color:var(--gold2);font-weight:700}.dgrp .gh b{font-size:19px;color:var(--gold)}.dgrp .gh small{margin-left:auto;font-size:12.5px;color:var(--mute)}.dgrp .docs{gap:18px}
 .bulx{display:flex;flex-direction:column;justify-content:center;gap:16px;flex:1;min-height:0}
 .bulx>div{position:relative;padding-left:24px}
 .bulx>div:before{content:'';position:absolute;left:0;top:9px;width:9px;height:9px;border-radius:50%;background:var(--gold2)}
@@ -1150,7 +1155,7 @@ new("std", sec=S0, title="공동구매 단가를 지키는 [[4가지 장치]]",
 PGREF = {
     "num": "숫자로 보는 [[엣지컴퍼니]]", "hist": T_HIST, "succ": "주관 [[성공사례]] · 수임실적",
     "people": T_PEOPLE, "docs": "회사 개요와 [[법인 서류]]", "ev": "재무·납세·고용 [[증빙 원본]]", "cert": "공인된 [[자격과 신뢰]]",
-    "rec": "타 단지 협의회의 [[추천과 감사]]",
+    "rec": "타 단지가 남긴 [[추천과 협약]]",
     "expo": T_EXPO, "items": T_ITEMS, "vendors": T_VENDORS, "vmgt": T_VMGT, "screen": "[[4단계]] 공개 심사 프로세스",
     "sep": T_SEP, "guard4": "공동구매 단가를 지키는 [[4가지 장치]]",
     "defect": T_DEFECT, "cpl": T_CPL, "rule1": T_RULE1, "rule2": T_RULE2, "wty": "참여업체 [[하자보증]] 체계",
@@ -1337,6 +1342,10 @@ def blk(b):
         figs = ""
         for it in b["items"]:
             cls = "ct" if (it.get("fit") or b.get("fit")) == "contain" else ""
+            if b.get("capbelow"):
+                cls = (cls + " cb").strip()
+            if it.get("fit") == "cover":  # 캡션 아래 + 사진은 칸에 꽉 차게(잘림 허용)
+                cls = (cls + " cv").strip()
             span = ";".join(x for x in [f'grid-column:span {it["span"]}' if it.get("span") else "",
                                         f'grid-row:span {it["rspan"]}' if it.get("rspan") else ""] if x)
             span = f' style="{span}"' if span else ""
@@ -1348,6 +1357,13 @@ def blk(b):
             figs += f'<figure class="{cls}"{span}><img src="assets_ins/{it["img"]}.jpg"{pos} alt="">{cap}</figure>'
         g = b.get("grow", 1)
         return f'<div class="gal" style="grid-template-columns:repeat({cols},1fr){rs};flex:{g} 1 0">{figs}</div>'
+    if k == "docgroups":  # 분당 10-16과 같게: 서류를 묶음(제휴 · 면허·인증)별 테두리 안에 나눠 배치
+        gs = ""
+        for g in b["groups"]:
+            gs += (f'<div class="gp"><div class="gh"><i>{g["tag"]}</i><b>{t(g["head"])}</b>'
+                   + (f'<small>{t(g["sub"])}</small>' if g.get("sub") else "") + "</div>"
+                   + blk({"type": "docs", "items": g["items"]}) + "</div>")
+        return f'<div class="dgrp" style="grid-template-columns:{b.get("cols", "1fr 1fr")}">{gs}</div>'
     if k == "docs":
         ds = "".join(f'<div class="d"><div class="pp"><img src="assets_ins/{it["img"]}.jpg" alt=""></div>'
                      f'<div class="cap">{t(it["cap"])}' + (f'<small>{t(it["sub"])}</small>' if it.get("sub") else "")
@@ -1848,6 +1864,13 @@ def finish(path, title):
     with open(path, encoding="utf-8") as f:
         doc = f.read()
     doc = term(doc)
+    for _a, _b in getattr(D, "FUND_RELABEL", []):  # 본부장 10-16: 발전지원금 6,000만원(세대 혜택) 표기
+        doc = doc.replace(_a, _b)
+    _left = [m.start() for m in re.finditer("15만원", re.sub(r"<[^>]+>", "", doc))]
+    if _left:
+        _tx = re.sub(r"<[^>]+>", "", doc)
+        for _i in _left[:12]: print("  남은 15만원:", _tx[max(0, _i - 50):_i + 30].replace("\n", " "))
+    assert not _left, "발전지원금 6,000만원 — 남은 '15만원' 표기"
     doc = doc.replace("<span>주식회사 엣지컴퍼니 · 대표이사 고진식</span>", "<span>주식회사 엣지컴퍼니</span>")
     # 본부장 10-15 밤: 조직 구성 쪽 KEY POINT — '박람회 현장 운영 인력 약 21명 …'은 줄을 바꿔 다음 문단으로(문구 그대로)
     assert doc.count("<small>박람회 현장 운영 인력 약 21명") == (0 if "요약제안서" in path else 1), "조직 구성 쪽 KEY POINT 소문구를 찾지 못함"
@@ -1884,7 +1907,7 @@ def finish(path, title):
         _txt = _txt.replace(_o, "")
     left = re.findall(r".{0,14}(?:분당|퍼스트빌리지|e편한세상|동원동|성남|낙생|DL이앤씨|933|1,400|행복주택|신혼희망|신혼|SETEC|aT센터|미금|ns-manager|정당계약|51A|55A|55B|59T|"
                       r"28개월|2028|2029|지웰|양주|덕계|탕정|센터파크|철산|광명|조합|임예협|KINTEX|공고 8항|공고 9항|공고 10항|서식 \d|8항|9항|10항|"
-                      r"이행보증|보증보험|증권|발전지원|발전기금|단지발전|입예협 지정|공용물품|커뮤니티 집기|bd_|화재 ·|배상책임보험 개최).{0,10}", _txt)
+                      r"이행보증|보증보험|증권|발전기금|단지발전|입예협 지정|공용물품|커뮤니티 집기|bd_|화재 ·|배상책임보험 개최).{0,10}", _txt)
     assert not left, left
     # 대응표 쪽 번호(⟪pg:키⟫) — emit()에서 재배치가 끝난 B.PAGES로 계산
     doc = re.sub(r"⟪pg:(\w+)⟫", lambda m: f"p.{PGNO[m.group(1)]:02d}", doc)
