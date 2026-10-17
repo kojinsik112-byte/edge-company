@@ -169,8 +169,8 @@ def emit_summary(G):
 <div class="sn3">
 <div class="bx hl"><b class="n"><i>최대</i>1<small>억원</small></b><strong>하자 예치금 · 선보상 재원</strong>
 <ul class="xl"><li>엣지컴퍼니 자산으로 예치 - 참여업체에게 걷은 돈이 아닙니다</li><li>업체 사고 · 도산 시에도 입주민 먼저 보상</li><li>사용 내역 공개 · 예치 규모는 입예협과 협의</li></ul></div>
-<div class="bx"><b class="n">12<small>개월 이상</small></b><strong>협약이행 · 하자보증 증권</strong>
-<ul class="xl"><li>협약 시 협의회를 피보험자로 발급(공고 3항 9)</li><li>보증보험증권 발급 · 법무법인 예치금 약정 이력 보유</li><li>불이행 시 협약 해지 · 차순위 선정을 받아들입니다</li></ul></div>
+<div class="bx"><b class="n"><i>최대</i>10<small>억원</small></b><strong>이행보증보험 2년</strong>
+<ul class="xl"><li>계약이행 · 하자보수 이행 보증 - 금액은 협약으로 확정</li><li>협약 시 협의회를 피보험자로 증권 발급(12개월 이상 · 공고 3항 9)</li><li>업체 도산 시 동종업체로 이관 · 비용은 엣지컴퍼니 부담</li></ul></div>
 <div class="bx"><b class="n">2<small>년 이상</small></b><strong>무상 A/S · 참여업체 하자보증</strong>
 <ul class="xl"><li>무상 A/S 최소 2년(계약서 명시 · 업체 · 품목별 상이)</li><li>참여업체 전원 특약이행각서 9개 항 · 하자보수 이행각서</li><li>패널티 3단계: 홍보정지 → 총액 10% 배상 → 자격박탈 · 계약 이관</li></ul></div>
 </div>

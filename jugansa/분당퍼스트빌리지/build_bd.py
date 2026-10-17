@@ -1570,8 +1570,7 @@ def p_contact():
     s = sub(s, "삼성전자 MOU 체결</div>", "삼성 측 업무제휴 · 세스코 MOU 체결</div>")  # 재검증 10-14: 계약서 제목 '업무제휴 계약서' · 상대방 판독 불확실
     s = sub(s, '<div class="who">주식회사 엣지컴퍼니<br>대표이사 고진식</div>', "")
     s = sub(s, '<div class="addr">', '<div class="addr" style="font-size:14.2px">')
-    s = sub(s, "입주예정자협의회·시공사·협력업체 모두 환영합니다. 가장 편한 방법으로 연락 주십시오.",
-            f"선정 전 문의는 공고 지정 이메일({D.SUBMIT_TO})로만 받습니다(공고 3항). 아래는 선정 후 연락처입니다.")
+    # 본부장 10-17: '선정 전 문의 … 선정 후 연락처' 문장 삭제(기본틀 환영 문장 그대로) — 10.16 제출본에는 들어가 있음
     label = f"입주박람회 주관사 선정 · {D.SITE['name']}"
     return sub(s, "SUMMARY PROPOSAL · 요약제안서", label)
 
