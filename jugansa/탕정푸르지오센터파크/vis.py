@@ -876,7 +876,7 @@ def apply2(B, D, take, sub):
               ".opk b{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#0d1e33;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:center}")
 
     # 핵심 혜택 6가지 — 앞 장들과 같은 아이콘을 오른쪽 위에(높이 영향 없음)
-    k = take("탕정 푸르지오 센터파크에 드리는 [[핵심 혜택 6가지]]")[1]
-    k["body"] = inject(k["body"], ["coins", "shield", "coin10", "lockdoc", "clock", "vault"], "tile").replace('class="tiles lg"', 'class="tiles lg c6"', 1)
+    k = take("탕정 푸르지오 센터파크에 드리는 [[핵심 제안 6가지]]")[1]
+    k["body"] = inject(k["body"], ["coins", "shield", "vault", "clock", "coin10", "calendar"], "tile").replace('class="tiles lg"', 'class="tiles lg c6"', 1)
     B.CSS += (".c6 .tile{position:relative}.c6 .tile>.cic{position:absolute;right:18px;top:16px;width:44px;height:44px;padding:10px;border-radius:12px;"
               "background:rgba(235,203,143,.09);border:1px solid rgba(235,203,143,.38);margin:0}")

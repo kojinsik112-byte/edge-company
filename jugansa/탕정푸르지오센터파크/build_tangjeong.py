@@ -142,6 +142,7 @@ B.CSS += r"""
   linear-gradient(270deg,rgba(13,30,51,.45) 0%,rgba(13,30,51,0) 14%)}
 .cvart.tj .credit{z-index:1;right:40px;bottom:122px;color:rgba(255,255,255,.55)}
 .cv4 h1.tj{font-size:48px}
+.ctp .mid{width:48%}.ctp .contacts{grid-template-columns:1fr;gap:14px;margin-top:22px}.ctp .contacts b{font-size:27px}.ctp .contacts .me{grid-column:auto}.ctp .contacts .me b{font-size:23px}.ctp .contacts span{font-size:14px}.ctp .addr{font-size:12.6px;line-height:1.8;margin-top:26px;color:var(--mute)}.ctp .addr b{color:var(--sub);font-weight:700;margin-right:4px}.ctp .gbar{margin:18px 0 6px}.ctp h1.tj{font-size:46px}
 .cv4 .gbar{width:150px;height:2px;background:var(--gold2);margin:26px 0 20px}
 .cv4 h1{font-size:52px;line-height:1.28;margin-top:24px}
 .cv4 .tag2{font-size:19px;line-height:1.6;margin-top:0}
@@ -839,8 +840,8 @@ if not os.environ.get("NO_NATIVE"):
     # 핵심 혜택 한 장(본부장 지시 10-07: 표지 수치 대신 뒤쪽에 임팩트 있게) — 마무리 약속 장 바로 앞
     _ci = next(i for i, (k, _) in enumerate(B.PAGES) if k == "closing")
     _hh = D.SITE["households"]
-    B.PAGES.insert(_ci, ("std", dict(sec=B.PAGES[_ci][1].get("sec", ""), title="탕정 푸르지오 센터파크에 드리는 [[핵심 혜택 6가지]]",
-        lead="숫자로 약속하고, 협약서로 지킵니다.",
+    B.PAGES.insert(_ci, ("std", dict(sec=B.PAGES[_ci][1].get("sec", ""), title="탕정 푸르지오 센터파크에 드리는 [[핵심 제안 6가지]]",
+        lead="숫자로 제안하고, 입예협과 협의해 협약서로 확정합니다.",
         body=B.tiles([
             dict(lb="발전지원금", big=f"{D.FUND}", unit="만원", nm="세대당 발전지원금",
                  ds=f"{_hh:,}세대 기준 총 {_hh * D.FUND // 10000}억 {_hh * D.FUND % 10000:,}만원 (부가세 포함)"),
@@ -915,10 +916,10 @@ def p_cover_impact():
 <div class="hero3">
 <div class="h1x"><i>{'세대당 발전지원금' if CASHV else '세대당 발전지원 · 혜택 패키지'}</i><b>{D.FUND}<small>{'만원' if CASHV else '만원 상당'}</small></b>
 <p>{hh:,}세대 × {D.FUND}만원 = <em>총 {won(hh * D.FUND)}{'' if CASHV else ' 상당'}</em>(부가세 포함) · {'현금 또는 같은 금액의 혜택 패키지 중 선택' if CASHV else '패키지 또는 입예협 지정 항목으로 제공'}</p></div>
-<div><i>이행보증보험 2년</i><b><small class="mx">최대</small>10<small>억</small></b><p>증권 실물 제출</p></div>
-<div><i>하자 예치금</i><b><small class="mx">최대</small>1<small>억</small></b><p>하자 시 입주민 선보상</p></div>
+<div><i>이행보증보험 · 협의</i><b><small class="mx">최대</small>10<small>억</small></b><p>금액은 협약 때 확정</p></div>
+<div><i>하자 예치금 · 협의</i><b><small class="mx">최대</small>1<small>억</small></b><p>이행보증으로 갈음 가능</p></div>
 </div>
-<div class="lxband"><b>전기공사업 면허 주관사</b><span>경관조명·공용부 조명 개선을 제안에서 직접 시공까지<br>전기공사업 등록 제 울산-00821호</span></div>
+<div class="lxband"><b>전기공사업 면허 주관사</b><span>경관조명·공용부 조명 진단 · 개선안 제안 · 설치는 입예협 승인 시<br>전기공사업 등록 제 울산-00821호</span></div>
 </div>
 {sub2}
 <div class="bt"><span>입주박람회 주관사 입찰 · 요약 제안서</span><span>2026.10</span></div>
@@ -986,16 +987,26 @@ B_p_toc = B.p_toc
 
 
 def p_contact():
-    s = B_p_contact()
-    # 지사: 직영 4곳 + 협력 8곳 = 전국 12개 지사망(2026.10 확정). 본사 주소는 사업자등록증(2026.08.04) 기준.
-    s = sub(s, "울산 본사 · 울산광역시 울주군 청량읍 상남1길 28, 2동 &nbsp;|&nbsp; 부산 지사 · 해운대구 &nbsp;|&nbsp; 대전 지사<br>",
-            f"울산 본사 · {D.ADDRESS}<br>대전 지사 · 디펠리체 204호 &nbsp;|&nbsp; 청주 지사 · 청주시 흥덕구 직지대로 642 &nbsp;|&nbsp; "
-            "부산 해운대 지사 · 해운대구 아르파나 B1<br>직영 4곳 + 협력 8곳 = 전국 12개 지사망 · 콜센터 평일 09:00–18:00 · 온라인 365일 접수 · 24시간 이내 회신<br>")
-    s = sub(s, "삼성전자 MOU 체결</div>", "삼성 측 업무제휴 · 세스코 MOU 체결</div>")  # 10-15 정정
-    s = sub(s, '<div class="who">주식회사 엣지컴퍼니<br>대표이사 고진식</div>', "")
-    s = sub(s, '<div class="addr">', '<div class="addr" style="font-size:14.2px">')
+    # 본부장 10-17(오산과 같게): 환영 문장 삭제 · 표지와 같은 사진 배치(경관조명 연출 예시) · 연락처 세로 정렬
     label = "회사소개서 · 탕정 푸르지오 센터파크" if COVER.get("kind") == "company" else "입주박람회 주관사 입찰 · 탕정 푸르지오 센터파크"
-    return sub(s, "SUMMARY PROPOSAL · 요약제안서", label)
+    art = ('<div class="cvart tj"><img src="assets_ins/tj_facade_night.jpg" alt="" style="object-position:60% 55%">'
+           '<span class="credit">단지 경관조명 · 연출 예시 이미지</span></div>')
+    return f"""<section class="page cv cv4 ctp">{art}{COVER_TOP}
+<div class="mid"><span class="pill">CONTACT</span>
+<h1 class="tj">단지가 끝날 때까지,<br><em>끝까지 함께하겠습니다.</em></h1>
+<div class="gbar"></div>
+<div class="contacts">
+<div><b>1533-3210</b><span>본사 대표번호 · 주관 콜센터</span></div>
+<div><b>010-3345-6107</b><span>대표이사 직통</span></div>
+<div><b>010-7273-9901</b><span>주관사업 총괄 본부장</span></div>
+<div class="me"><b>edgecompany1@naver.com</b><span>이메일</span></div>
+</div>
+<div class="addr"><b>울산 본사</b> {D.ADDRESS}<br><b>지사</b> 대전 디펠리체 204호 · 청주 직지대로 642 · 부산 해운대 아르파나 B1 · 전국 12개 지사망<br>
+<b>콜센터</b> 평일 09:00 ~ 18:00 · 온라인 365일 접수 · 24시간 이내 회신<br>
+<b>등록 · 인증</b> {D.ELEC_LICENSE} · ISO 9001 / 14001 / 45001<br><b>제휴</b> 삼성 측 업무제휴 · 세스코 MOU</div>
+</div>
+<div class="bt"><span>{label}</span><span>주식회사 엣지컴퍼니</span></div>
+</section>"""
 
 
 B_p_contact = B.p_contact
@@ -1061,17 +1072,17 @@ B.p_pricing = p_pricing
 def p_closing(no, sec):
     n = D.SITE["households"] * D.FUND
     items = [(f"세대당 {D.FUND}만원 발전지원금", f"전 세대 {D.SITE['households']:,}세대 기준 · 총 {won(n)}(부가세 포함)"),
-             ("하자 예치금 1억 · 이행보증보험 10억", "엣지컴퍼니 자산으로 공동통장 예치 · 증권 실물 제출"),
+             ("이행 담보 - 보증보험 또는 예치금 (협의)", "이행보증보험(최대 10억) · 하자 예치금(최대 1억) 중 협약 시 협의해 확정 · 업체 도산 시 이관 비용 주관사 부담"),
              ("입예협 전용 8가지 무상 지원", "별도 비용 없음 · 자체 인력"),
              ("유상옵션 중복 확인 · 가격 공개표", "유상옵션과 겹치는 품목 사전 확인 · 시공비·추가금 포함 공개"),
              ("시공 품목 인근 지역업체 90% 선정", "48시간 A/S가 가능한 거리"),
              ("최저가 차액 10배 보상", "단가표 사전 공개 · 현장 가격 변경 없음"),
              ("48시간 하자보수 · 무상 A/S 최소 2년", "업체·품목별 기간 상이 · 장기관리 최대 10년 · 접수 365일 · 24시간 내 회신"),
-             ("경관조명 컨설팅 · 설계 · 생산 · 직접시공", "전기공사업 면허 기반 직접 시공 · KC 인증 제품")]
+             ("경관조명 진단 · 개선안 (협의)", "전기공사업 등록 업체 · KC 인증 제품 · 설치 여부 · 비용은 입예협 · 관리주체 결정")]
     its = "".join(f'<div class="it"><div class="no">{i:02d}</div><div><b>{B.html.escape(a)}</b><p>{B.html.escape(b)}</p></div></div>'
                   for i, (a, b) in enumerate(items, 1))
-    return B.render_std(no, sec, "엣지컴퍼니가 [[약속드리는 것]]", "제안서에 쓴 것은 전부 협약서와 증빙으로 남깁니다.",
-                        f'<div class="cl">{its}</div>', "제안서의 약속은 [[협약서에 그대로 옮겨]] 끝까지 이행하겠습니다.")
+    return B.render_std(no, sec, "엣지컴퍼니가 [[제안드리는 것]]", "제안 내용은 입예협과 협의해 협약서에 확정하고, 확정된 것은 끝까지 이행합니다.",
+                        f'<div class="cl">{its}</div>', "협의로 확정한 약속은 [[협약서에 그대로 옮겨]] 끝까지 이행하겠습니다.")
 
 
 B_p_divider_lx = B.p_divider_lx
@@ -1296,7 +1307,7 @@ def summary_pages():
         '<img class="bg" src="assets_ins/tj_gate_night.jpg" alt=""><div class="veil"></div><span class="hcap">문주·진입부 경관조명 · 연출 예시 이미지</span>'
         '<div class="hin"><div class="kick">경관조명 · 전기공사업 면허 주관사</div>'
         '<h2>단지의 밤,<br><em>경관조명이 완성합니다</em></h2><div class="bar"></div>'
-        '<p>엣지컴퍼니는 전기공사업 면허를 갖춘 입주박람회 주관사입니다.<br>경관조명은 제안서로 끝내지 않고,<br>컨설팅부터 직접 시공까지 면허 범위 안에서 책임집니다.</p></div>'
+        '<p>엣지컴퍼니는 전기공사업 면허를 갖춘 입주박람회 주관사입니다.<br>경관조명은 진단 · 개선안부터 시공까지 면허 범위 안에서 할 수 있고,<br>설치 여부와 비용은 입예협 · 관리주체가 정합니다.</p></div>'
         '<div class="pil">'
         '<div><i>1단계</i><b>컨설팅 · 설계</b><span>조도·색온도·배광을 단지 동선과 외관에 맞춰 도면으로 제안</span></div>'
         '<div><i>2단계</i><b>직수입 · 생산</b><span>설계 사양 그대로 제작 · KC 인증 제품만 납품</span></div>'
@@ -1329,7 +1340,7 @@ def summary_pages():
         take("선정부터 입주까지 [[추진 일정]] (안)", sec=S5),
         take("숫자로 보는 [[엣지컴퍼니]]", sec=S6),
         take("[[2,000세대 이상]] 초대형 단지를 맡아 왔습니다", sec=S6),
-        take("탕정 푸르지오 센터파크에 드리는 [[핵심 혜택 6가지]]", sec="CLOSING"),
+        take("탕정 푸르지오 센터파크에 드리는 [[핵심 제안 6가지]]", sec="CLOSING"),
         take(kind="closing"),
         take(kind="contact"),
     ]
