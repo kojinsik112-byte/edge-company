@@ -925,14 +925,14 @@ B.CSS += (".bnd2{flex:1;min-height:0;display:grid;grid-template-columns:0.82fr 1
           ".bnd2 dt{color:var(--sub)}.bnd2 dd{margin:0;color:var(--ink)}")
 
 LIMIT10 = [  # 공고 입찰 참가 제한 1 ~ 10 — (사유, 확인, 근거)
-    ("계약의 공정한 이행 · 정상적인 입찰 진행을 해칠 우려", "해당 없음 - 공고 · 서식 조건 그대로 제출", "제출서류"),
+    ("공정한 계약 이행 · 입찰 진행을 해칠 우려", "해당 없음 - 공고 · 서식 조건 그대로 제출", "제출서류"),
     ("특정 업체 선정을 위한 담합", "해당 없음 - 참여업체 공개 입찰 · 4단계 심사 · 입예협 최종 컨펌", "03장"),
-    ("계약 · 선정 목적의 금품 또는 향응 제공", "해당 없음 - 청렴계약 이행 준수 서약 · 문의는 접수처 이메일로만", "별지 4"),
-    ("정당한 사유 없는 계약이행능력 심사 서류 미제출", "해당 없음 - 서류 제출 목록표대로 제출 · 대표이사 범죄사실증명서는 서류심사 합격 시", "별지 6"),
+    ("계약 · 선정 목적의 금품 · 향응 제공", "해당 없음 - 청렴계약 이행 준수 서약 · 문의는 접수처 이메일로만", "별지 4"),
+    ("이행능력 심사 서류 미제출", "해당 없음 - 목록표대로 제출 · 범죄사실증명서는 서류심사 합격 시", "별지 6"),
     ("입찰 참가자격 미달", f"해당 없음 - 참가자격 7개 대응표 {PG('qual')}", "참가자격"),
     ("계약이행능력 검증 서류 누락", "해당 없음 - 신용평가서 · 완납증명서 · 영업배상책임보험 증서 제출", "제출서류"),
     ("불법 · 부정한 방법의 영업 · 입찰 참여", "해당 없음", "자체 확인"),
-    ("제출서류 · 제안내용의 허위사실", "해당 없음 - 실적은 NICE 연혁 · 단지 카페 공지 · BEXCO 행사일정 · 협약서로 증빙 · 확정 전 혜택은 ‘(안)’", "별지 2 · 증빙"),
+    ("제출서류 · 제안내용의 허위사실", "해당 없음 - 실적은 NICE 연혁 · 카페 공지 · BEXCO · 협약서로 증빙 · 미확정 혜택은 ‘(안)’", "별지 2 · 증빙"),
     ("타 단지 입주박람회 중대한 계약불이행", "해당 없음 - 협약 철회 · 계약 해지 이력 없음", "자체 확인"),
     ("타 업체 비방 · 입찰 진행 방해", "해당 없음 - 타 업체를 비교 · 비방하는 문구 없음", "제안서"),
 ]
@@ -942,7 +942,7 @@ new("std", sec=S0, title=T_LIMIT,
         f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
         for i, (a, b, c) in enumerate(LIMIT10, 1)), "q10 l7"),
     kp=("제안서와 제출서류에 [[허위 없이]] - 확정 전 혜택은 ‘(안)’으로 적었습니다.", "제한 사유가 확인되면 선정 제외를 받아들입니다"))
-B.CSS += ".tbl.q10.l7 td{padding:8px 12px;font-size:14.5px}.tbl.q10.l7 td.k{font-size:15px}"
+B.CSS += ".tbl.q10.l7 td{padding:9px 12px !important;font-size:15px !important;line-height:1.4}.tbl.q10.l7 td.k{font-size:15.5px !important}.tbl.q10.l7 td:last-child{width:12%}"
 
 NOTE7 = [  # 공고 심사 및 선정절차 · 주의사항 · 별지 5 — (공고, 약속)
     ("1차 서류심사", "제안서와 제출서류로 평가받습니다 - 유효기간 안의 발급본만 냅니다(미비 · 만료 시 감점 · 제외 유의)."),
@@ -956,9 +956,11 @@ NOTE7 = [  # 공고 심사 및 선정절차 · 주의사항 · 별지 5 — (공
 new("std", sec=S0, title=T_NOTE,
     lead="공고 심사 및 선정절차 · 주의사항과 서약서(별지 5) 내용을 제안에 그대로 반영했습니다.",
     body=table(["공고", "엣지컴퍼니 약속"], "".join(
-        f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td></tr>' for a, b in NOTE7), "nt7"),
+        f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td></tr>' for a, b in NOTE7), "nt7")
+         + '<div class="hflow"><span>제안서 · 서류 제출 (10.25)</span><i>›</i><span>1차 서류심사</span><i>›</i><span>2차 PT · 실제 책임자 발표</span><i>›</i>'
+           '<span>우선협상 · 30일 안에 계약</span><i>›</i><span>계약이행보증보험 제출</span></div>',
     kp=("제안서에 쓴 조건 그대로 [[PT에서도, 계약서에서도]] 같습니다.", "제출 서류 원본 · 인감 날인본은 계약 시 제출"))
-B.CSS += ".tbl.nt7 td{padding:12px 14px;font-size:15px;line-height:1.45}.tbl.nt7 td.k{width:20%;font-size:16px;color:var(--ink);font-weight:700}"
+B.CSS += ".tbl.nt7 td{padding:13px 14px;font-size:15.5px;line-height:1.45}.tbl.nt7 td.k{width:20%;font-size:16px;color:var(--ink);font-weight:700}"
 
 # 기존 장에서 쓰던 표 스타일(분당 01장 블록) — 다른 장이 그대로 쓰므로 함께 둔다
 B.CSS += (".itx{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;flex:1;min-height:0}"
@@ -2001,8 +2003,10 @@ def build():
     out = (os.path.join(HERE, NAME + "_압축본.html") if COMPACT else os.path.join(HERE, NAME + "_전체본.html") if FULL else B.OUT_HTML)
     emit(list(B.PAGES), out, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
     print(f"고양 제안서 {len(B.PAGES)}쪽 → {out}")
-    # 본부장 10-16: 기타 요약제안서(선택 자료 · 2차 심사 투표 참고) — 숫자 · 문구는 위 제안서와 같은 D · ST 값(summary_os.py)
-    # 요약제안서는 고양 공고 제출서류에 없음 — 필요하면 summary 모듈을 따로 만든다
+    # 본부장 10-17: 요약제안서 — 고양 공고 제출서류에 없지만 만든다(제출서류 17 · 선택 자료). 숫자 · 문구는 위 제안서와 같은 D · ST 값(summary_gy.py)
+    if "--no-summary" not in sys.argv and not COMPACT and not FULL:
+        import summary_gy  # noqa: E402
+        summary_gy.emit_summary(globals())
 
 
 if __name__ == "__main__":
