@@ -803,6 +803,6 @@ def apply2(B, D, take, sub):
 
     # 핵심 혜택 6가지 — 앞 장들과 같은 아이콘을 오른쪽 위에(높이 영향 없음)
     k = take(f"{D.SITE['short']}에 드리는 [[핵심 제안 6가지]]")[1]
-    k["body"] = inject(k["body"], ["coin10", "clock", "calendar", "lockdoc", "vault", "coins"], "tile").replace('class="tiles lg"', 'class="tiles lg c6"', 1)
+    k["body"] = inject(k["body"], ["coins", "lockdoc", "vault", "clock", "coin10", "calendar"], "tile").replace('class="tiles lg"', 'class="tiles lg c6"', 1)
     B.CSS += (".c6 .tile{position:relative}.c6 .tile>.cic{position:absolute;right:18px;top:16px;width:44px;height:44px;padding:10px;border-radius:12px;"
               "background:rgba(235,203,143,.09);border:1px solid rgba(235,203,143,.38);margin:0}")

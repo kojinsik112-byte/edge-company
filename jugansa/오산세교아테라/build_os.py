@@ -1637,7 +1637,7 @@ B_p_toc = B.p_toc
 
 def p_contact():
     # 본부장 10-17: 환영 문장 삭제 · 표지와 같은 사진 배치로 마무리(경관조명 시뮬레이션) · 연락처 세로 정렬
-    art = ('<div class="cvart cvx osc"><img src="assets_ins/os_lx_front2.jpg" alt="" style="object-position:84% 60%">'
+    art = ('<div class="cvart cvx osc"><img src="assets_ins/os_lx_front2.jpg" alt="" style="object-position:94% 60%">'
            f'<span class="credit">{D.SITE["name"]} 경관조명 제안 시뮬레이션 이미지 · 실제와 다를 수 있음</span></div>')
     return f"""<section class="page cv cv4 ctp">{art}{COVER_TOP}
 <div class="mid"><span class="pill">CONTACT</span>

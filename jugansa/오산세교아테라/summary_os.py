@@ -60,12 +60,12 @@ def emit_summary(G):
 
     # ---------------------------------------------------------------- 2 · 한눈에
     _tp = " · ".join(a for a, _ in ST["types"])
-    one = [("×10", "", "최저가 차액 10배 보상", "박람회 전 가격 검수 · 계약 후 인근 매장 동일 제품이 더 싸면 차액의 10배(온라인 판매 · 시공 품목 제외)"),
+    one = [(f"{D.FUND_TOTAL:,}", "만원", "발전지원금 상당 (안)", f"세대 혜택 패키지 · 세대당 약 {per} · 주관사 부담 · 공구가와 분리"),
+           ("10", "억원 한도", "이행보증보험 (협의)", "협약 시 협의회를 피보험자로 발급 · 2년 · 금액은 단지 규모에 맞춰 협약 때 확정"),
+           ("1", "억원 한도", "하자 예치금 (협의)", "이행보증으로 갈음 가능 · 둘 중 방식 · 금액은 협약 시 입예협과 협의 · 선보상 재원"),
            ("48", "시간", "하자보수 원칙", "24시간 안에 1차 회신 · 업체 미응답 시 주관사 선보상"),
-           ("2", "년 이상", "무상 A/S", "계약서에 기간 명시 · 업체 · 품목별 상이 · 주관 창구 입주 후 1년"),
-           (f"{D.DEPOSIT_MAX}", "%", "계약금 상한", "잔금은 시공 · 설치 후 · 취소 기한 안이면 전액 환불"),
-           ("10", "억원 한도", "이행 담보 (협의)", "이행보증보험(최대 10억) 또는 하자 예치금(최대 1억) · 협약 시 협의해 확정 · 선보상 재원"),
-           (f"{D.FUND_TOTAL:,}", "만원", "발전지원금 상당 (안)", f"세대 혜택 패키지 · 세대당 약 {per} · 주관사 부담 · 공구가와 분리")]
+           ("×10", "", "최저가 차액 10배 보상", "박람회 전 가격 검수 · 계약 후 인근 매장 동일 제품이 더 싸면 차액의 10배(온라인 판매 · 시공 품목 제외)"),
+           ("2", "년 이상", "무상 A/S", "계약서에 기간 명시 · 업체 · 품목별 상이 · 주관 창구 입주 후 1년")]
     ob = "".join(f'<div><b>{a}<small>{u}</small></b><div><strong>{n}</strong><span>{c}</span></div></div>' for a, u, n, c in one)
     p2 = f"""<div class="sx" style="grid-template-rows:auto 1fr">
 <div class="fact">
@@ -242,9 +242,9 @@ def emit_summary(G):
 <div class="hb">{hb}</div><div class="nt" style="margin-top:6px">날짜 = 입주 연월 · 실적 증빙 = 제출서류 12(NICE 연혁 · 실적 확약서 · 주관사 협약서)</div></div>
 <div class="bx"><h3><i>PEOPLE</i>오산세교아테라를 맡을 사람<small>제안서 {pg('people', 'pm')}</small></h3>
 <div class="ppl">
-<div><i>대표이사</i><b>고진식</b><span>협약 최종 책임 · PT 참석 · 울산과학대 전기과 · 대한유화 → 엣지조명 대표 → <nobr>㈜엣지컴퍼니 창업(2022.02)</nobr> · 전기공사업 등록 대표자</span></div>
-<div><i>주관사업 총괄 본부장 · 전담 총괄</i><b>총괄 본부장</b><span><em>입주예정자협의회 회장 3년 역임</em> - 입주민 입장에서 협의회 운영을 직접 겪어 봤습니다 · 정례회의 · 박람회 · 사전점검 현장 참석</span></div>
-<div><i>핵심 운영인력</i><b>임직원 {G['_lead_n']}명</b><span>대표 · 본부장 + {stf}명 - 단지 전담 PM 지정(성명 · 연락처는 협약 시 제출)</span>
+<div><i>대표이사</i><b>고진식</b><span><em>주관 박람회 전 과정 현장 점검 · 진두지휘</em> - 협약 최종 책임 · PT 참석<br>울산과학대 전기과 · 대한유화 → 엣지조명 대표 → <nobr>㈜엣지컴퍼니 창업(2022.02)</nobr> · 전기공사업 등록 대표자</span></div>
+<div><i>주관사업 총괄 본부장 · 전담 총괄</i><b>총괄 본부장</b><span><em>입주예정자협의회 회장 3년 역임</em> - 협의회 운영을 직접 겪어 봤습니다 · 정례회의 · 박람회 · 사전점검 현장 참석</span></div>
+<div><i>핵심 운영인력</i><b>임직원 {G['_lead_n']}명</b><span>대표 · 본부장 + {stf}명 - 단지 전담 PM 지정(명단은 협약 시 제출)</span>
 <div class="pro">{pro}</div></div>
 </div></div>
 </div>
@@ -306,6 +306,9 @@ def emit_summary(G):
 
     def cover_sum():
         s = cover0()
+        s = G["sub"](s, '<div class="cvart cvx osc day"><img src="assets_ins/os_cover_aerial_2x.jpg" alt="">',
+                     '<div class="cvart cvx osc"><img src="assets_ins/os_lx_gate.jpg" alt="" style="object-position:50% 55%">')
+        s = G["sub"](s, f"{D.SITE['name']} 조감도 · 실제와 다를 수 있음", f"{D.SITE['name']} 정문 문주 경관조명 제안 · 시뮬레이션 이미지 · 실제와 다를 수 있음")
         s = G["sub"](s, "<em>입주박람회 주관사 제안서</em>", "<em>입주박람회 주관사 요약제안서</em>")
         s = G["sub"](s, f'<span class="pill">{G["COVER"]["pill"]}</span>', '<span class="pill">요약제안서 · 기타 참고 자료</span>')
         s = G["sub"](s, f'<div class="tag2">{G["COVER"]["tag"]}</div>',
@@ -315,7 +318,7 @@ def emit_summary(G):
     out = os.path.join(G["HERE"], NAME_SUM + ".html")
     keep_pages, keep_css = list(B.PAGES), B.CSS
     B.p_cover = cover_sum
-    B.CSS += CSS + CSS_OS + ".cv4 h1.cvx{font-size:44px}"
+    B.CSS += CSS + CSS_OS + ".cv4 h1.cvx{font-size:44px}.ppl{gap:6px}.ppl>div{padding-bottom:6px}.ppl span{font-size:12.5px;line-height:1.4}.ppl .pro{padding:0;border:0;background:none;margin-top:7px}"
     try:
         B.PAGES[:] = pages
         B.OUT_HTML, B.OUT_PDF = out, out[:-5] + ".pdf"
