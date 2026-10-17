@@ -720,12 +720,7 @@ def apply(G):
 .org .tm li span{background:rgba(200,168,106,.16);color:var(--gold);font-size:13.5px;font-weight:700;text-align:center;padding:3px 0}
 .org .tm li b{font-size:15px;text-align:center;padding:3px 0;letter-spacing:.06em}
 """
-    # 분당 10-16과 같게: 본부장 칸을 CEO → 본부장 → 4개 팀 한 줄기 가운데에
-    B.CSS += (".org .ceo{width:138px!important;height:138px!important}.org .ceo b{font-size:34px!important}.org .ceo span{font-size:20px}"
-              ".org .gmr{height:auto;display:flex;justify-content:center;padding:20px 0 26px}"
-              ".org .gm{position:relative;left:auto;top:auto;padding:10px 26px;border-width:2px;background:linear-gradient(180deg,#132a45,#0b1a2d)}"
-              ".org .gm:before{display:none}.org .gm i{font-size:14px}.org .gm b{font-size:20px}"
-              ".org .tms{padding-top:26px}")
+    # 조직도 = 기존(지웰 · 탕정) 배치 그대로: 본부장 칸은 CEO → 4개 팀 줄기에서 오른쪽으로 빠짐(본부장 10-17 '기존꺼 대로')
 
     # 실적 기간은 전신 실적 포함(본부장 10-08)
     k = take("숫자로 보는 [[엣지컴퍼니]]")[1]

@@ -306,7 +306,7 @@ def emit_summary(G):
 
     def cover_sum():
         s = cover0()
-        s = G["sub"](s, '<div class="cvart cvx osc day"><img src="assets_ins/os_cover_aerial_2x.jpg" alt="">',
+        s = G["sub"](s, '<div class="cvart cvx osc day"><img src="assets_ins/os_cover_soft.jpg" alt="">',
                      '<div class="cvart cvx osc"><img src="assets_ins/os_lx_gate.jpg" alt="" style="object-position:50% 55%">')
         s = G["sub"](s, f"{D.SITE['name']} 조감도 · 실제와 다를 수 있음", f"{D.SITE['name']} 정문 문주 경관조명 제안 · 시뮬레이션 이미지 · 실제와 다를 수 있음")
         s = G["sub"](s, "<em>입주박람회 주관사 제안서</em>", "<em>입주박람회 주관사 요약제안서</em>")
