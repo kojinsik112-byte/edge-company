@@ -659,7 +659,7 @@ def apply2(B, D, take, sub):
            '<figure><img src="assets_ins/n13_gx.jpg" alt=""><figcaption>커뮤니티 공간<small>예시 이미지</small></figcaption></figure>'
            '<figure><img src="assets_ins/n03_light.jpg" alt=""><figcaption>등기구 설치 현장<small>엣지컴퍼니 시공팀</small></figcaption></figure>'
            '<figure><img src="assets_ins/g14_light1c.jpg" alt=""><figcaption>입주 기념 점등식<small>타 단지 현장</small></figcaption></figure>'
-           f'<figure class="ipn">{ic("streetlight")}<p><b>동 파사드 · 문주 조명</b>외부 경관 진단 · ⟪pg:lx⟫</p></figure></div>')
+           '<figure><img src="assets_ins/os_lx_gate.jpg" alt="" style="object-position:50% 55%"><figcaption>동 파사드 · 문주 조명<small>외부 경관 진단 · ⟪pg:lx⟫ · 시뮬레이션</small></figcaption></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
     # 조명 수직계열화 — 아이콘 체인
@@ -802,7 +802,7 @@ def apply2(B, D, take, sub):
               ".opk b{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#0d1e33;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:center}")
 
     # 핵심 혜택 6가지 — 앞 장들과 같은 아이콘을 오른쪽 위에(높이 영향 없음)
-    k = take(f"{D.SITE['short']}에 드리는 [[핵심 약속 6가지]]")[1]
+    k = take(f"{D.SITE['short']}에 드리는 [[핵심 제안 6가지]]")[1]
     k["body"] = inject(k["body"], ["coin10", "clock", "calendar", "lockdoc", "vault", "coins"], "tile").replace('class="tiles lg"', 'class="tiles lg c6"', 1)
     B.CSS += (".c6 .tile{position:relative}.c6 .tile>.cic{position:absolute;right:18px;top:16px;width:44px;height:44px;padding:10px;border-radius:12px;"
               "background:rgba(235,203,143,.09);border:1px solid rgba(235,203,143,.38);margin:0}")

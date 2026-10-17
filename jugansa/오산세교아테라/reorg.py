@@ -226,7 +226,7 @@ def apply(G):
               '<li>섞어서 구성하거나 다른 항목으로 바꿔도 됩니다</li></ul></div>'
               '<div class="or">›</div>'
               '<div class="op"><i>선택 · 입예협</i><h3>입예협이 원하는 것을 골라서</h3><div class="v">자유 선택</div>'
-              f'<ul><li>같은 금액({_ft} 상당) 범위 안에서 입예협이 결정</li><li>공용부 기증 · 기금은 제외(공고 6항 6)</li></ul></div></div>'
+              f'<ul><li>같은 금액({_ft} 상당) 범위 안에서 입예협이 결정</li><li>주관사 부담 · 공구단가에 영향 없음(공고 6항 6)</li></ul></div></div>'
               f'<div class="basex"><b>발전지원금 {_ft} 상당</b> = 주관사 부담 항목(<em>백화점 상품권 5만원 또는 10만원</em> · 사전점검 할인·실측·VR·3D 등) + <b>방문 선물 · 사은품 · 경품 · 정회원 혜택</b>을 이 범위 안에서 입예협과 배분(안) · 참여업체 박람회 상품권은 업체 제공(안) · <b>주관사 부담 · 공구가에 얹지 않습니다</b></div></div>'),
         kp=(f"발전지원금 {_ft} 상당 = [[입예협이 원하는 항목]]으로 구성", "A · B · C는 예시 · 사용 내역 공개 · 협약서로 확정")))
     p_choice = ("std", dict(sec=S8 + " · 발전지원 15만원", title=B.FUND_CHOICE_TITLE,
@@ -345,6 +345,37 @@ def apply(G):
                 ("최저가 보상", "시중가 · 온라인 최저가 검수 · 차액 10배"),
                 ("A/S 한 창구", "콜센터 비용 주관사 부담 · 업체 예치금 없음"),
                 ("월별 타임테이블", "2026.10 ~ 2027.11 · 입주 후 1년 관리")]
+    # 본부장 10-17: 09장에 오산 경관조명 제안 요약 1쪽(시뮬레이션 5장 + 진단 → 설계 → 생산 → 시공)
+    def _lf(img, cap, sub_, pos="50% 50%"):
+        return f'<figure><img src="assets_ins/{img}.jpg" alt="" style="object-position:{pos}"><figcaption>{cap}<small>{sub_}</small></figcaption></figure>'
+    p_lx5 = ("std", dict(sec="09. 차별화 포인트", title=f"{D.SITE['short']} [[경관조명 제안]] 한눈에",
+        lead="동 파사드 → 정문 문주 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다 - 아래는 제안 시뮬레이션 이미지입니다(실제와 다를 수 있음).",
+        body=('<div class="nb"><div class="gal lx5">'
+              + _lf("os_lx_front1", "동 파사드 라인조명", "외부 경관 ① · 야간 인지성 · 눈부심 없는 상향광")
+              + _lf("os_lx_front2", "1202 ~ 1204동 측면 경관", "외부 경관 ② · 동 간 통일된 색온도")
+              + _lf("os_lx_gate", "정문 문주 · 사인 조명", "진입부 첫인상 · 간접광")
+              + _lf("os_lx_play", "어린이놀이터 조명", "보행 밝기 · 타이머 · 눈부심 검토")
+              + _lf("os_lx_court", "배드민턴장 · 산책로", "운동 · 산책 동선 보행등")
+              + '</div><div class="lxstep">'
+              '<div><i>STEP 01</i><b>진단</b><span>현황 조도 · 눈부심 · 사각지대 측정</span></div><em>›</em>'
+              '<div><i>STEP 02</i><b>설계</b><span>조도 · 색온도 · 배광을 도면으로</span></div><em>›</em>'
+              '<div><i>STEP 03</i><b>생산</b><span>단지 맞춤 제작 · KC 인증 제품</span></div><em>›</em>'
+              '<div><i>STEP 04</i><b>시공 · A/S</b><span>전기공사업 등록 업체 직접 시공</span></div>'
+              '</div></div>'),
+        kp=("진단 · 개선안 · 자료 제공까지가 제안 범위입니다 - [[설치 여부 · 비용은 입예협 · 관리주체]]가 정합니다.",
+            f"{D.ELEC_LICENSE} · 이미지는 시뮬레이션")))
+    B.CSS += r"""
+.gal.lx5{grid-template-columns:repeat(6,1fr);grid-template-rows:1.15fr 1fr;gap:12px}
+.gal.lx5 figure:nth-child(1),.gal.lx5 figure:nth-child(2){grid-column:span 3}
+.gal.lx5 figure:nth-child(n+3){grid-column:span 2}
+.gal.lx5 figcaption{font-size:15px}
+.lxstep{display:flex;align-items:stretch;gap:8px;margin-top:12px}
+.lxstep>div{flex:1;border:1px solid rgba(200,168,106,.45);border-radius:11px;padding:8px 12px;background:rgba(235,203,143,.05)}
+.lxstep i{font-style:normal;font-size:10.5px;letter-spacing:.18em;color:var(--gold2);font-weight:700}
+.lxstep b{display:block;font-size:15px;margin-top:2px}.lxstep span{display:block;font-size:12.5px;color:var(--sub);line-height:1.4;margin-top:2px}
+.lxstep em{align-self:center;color:var(--gold);font-weight:800;font-style:normal}
+"""
+
     p_s3 = ("std", dict(sec=S10, title="특화서비스 요약 ③ [[안전망 · 업체선정 · 홍보 · 단지 맞춤]]",
         lead="입주민 돈을 지키는 장치와 박람회 운영 약속입니다.",
         body='<div class="nb"><div class="sumx">' + sb("03", "하자보증 · 안전망", safety) + sb("04", "업체선정 · 가격 보호", vendor)
@@ -354,30 +385,30 @@ def apply(G):
     # ------------------------------------------------ 핵심 혜택 6가지 · 약속 장 정리
     k = take(G["T_CORE6"])[1]
     k["sec"] = S10
-    k["lead"] = "숫자로 약속하고, 협약서로 지킵니다."
+    k["lead"] = "숫자로 제안하고, 입예협과 협의해 협약서로 확정합니다."
     k["body"] = B.tiles([
         dict(lb="최저가 보상", big="10", unit="배", nm="차액 보상", ds="박람회 전 가격 검수 · 계약 후 인근 매장 동일 제품이 더 싸면 차액의 10배(온라인 판매·시공 품목 제외)"),
         dict(lb="하자보수", big="48", unit="시간", nm="하자보수 원칙", ds="24시간 안에 1차 회신 · 업체 미응답 시 주관사 선보상"),
         dict(lb="무상 A/S", big="2", unit="년 이상", nm="계약서에 기간 명시", ds="업체 · 품목별 상이 · 주관 창구 입주 후 1년"),
         dict(lb="계약금 상한", big=f"{D.DEPOSIT_MAX}", unit="%", nm="계약 보호", ds="잔금은 시공·설치 후 · 취소 기한 안이면 전액 환불"),
-        dict(lb="하자 예치금", big="@@MX1", unit="억원", nm="선보상 재원", ds="엣지컴퍼니 자산으로 예치 · 업체 예치금 받지 않음 · 사용 내역 공개"),
+        dict(lb="이행 담보 · 협의", big="10", unit="억원 한도", nm="이행보증 또는 하자 예치금", ds="이행보증보험(최대 10억) · 하자 예치금(최대 1억) 중 협약 시 입예협과 협의해 방식 · 금액 확정"),
         dict(lb="세대 혜택", big=f"{fund}", unit="만원 상당", nm="세대 혜택 패키지 (안)", ds="주관사 몫에서 부담 · 공구가와 분리 · 항목은 입예협과 협의"),
     ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"').replace("@@MX1", '<small class="mx">최대</small>1')
-    k["kp"] = "모든 약속은 [[협약서에 그대로 옮겨]] 끝까지 이행합니다."
+    k["kp"] = ("확정된 약속은 [[협약서에 그대로 옮겨]] 끝까지 이행합니다.", "담보 방식 · 혜택 항목은 입예협과 협의 후 협약서로 확정")
 
     def p_closing(no, sec):
         items = [("최저가 보상 · 가격 검수", "시중가 · 온라인 최저가 같은 조건 총액 비교 · 박람회 전 공개 · 차액 10배(온라인·시공 품목 제외)"),
                  ("A/S 주관사 한 창구", "24시간 1차 회신 · 48시간 하자보수 · 미응답 시 선보상 · 업체 부담 늘리지 않음"),
                  ("무상 A/S 최소 2년", "업체 · 품목별 기간을 계약서에 명시 · 주관 창구 입주 후 1년"),
-                 ("이행보증보험 최대 10억 · 하자 예치금 최대 1억", "협약 확정액 증권 제출 · 엣지컴퍼니 자산으로 예치 · 업체 도산 시 이관 비용 주관사 부담"),
+                 ("이행 담보 - 보증보험 또는 예치금 (협의)", "이행보증보험(최대 10억) · 하자 예치금(최대 1억) 중 협약 시 협의해 확정 · 업체 도산 시 이관 비용 주관사 부담"),
                  ("월별 업무 타임테이블", "2026.10 협약부터 2027.11 입주 완료까지 월별 업무 · 보고"),
                  ("59㎡ 4개 타입 표준 견적", "타입별 실측 · 유상옵션 겹침 확인 · 남은 수요만 모집"),
                  ("시행 · 시공사 협의 지원", "건의 관리표 · 공문 · 품질 점검 자료 · 협의 동석"),
-                 ("경관조명 진단 · 개선안", "동 파사드 → 정문 문주 → 놀이터 · 산책로 · 전기공사업 등록 업체")]
+                 ("경관조명 진단 · 개선안 (협의)", "동 파사드 → 정문 문주 → 놀이터 · 산책로 진단 · 설치 여부 · 비용은 입예협 · 관리주체 결정")]
         its = "".join(f'<div class="it"><div class="no">{i:02d}</div><div><b>{_h.escape(a)}</b><p>{_h.escape(b)}</p></div></div>'
                       for i, (a, b) in enumerate(items, 1))
-        return B.render_std(no, sec, "엣지컴퍼니가 [[약속드리는 것]]", "제안서에 쓴 것은 전부 협약서와 증빙으로 남깁니다.",
-                            f'<div class="cl">{its}</div>', ("확정된 약속은 [[협약서에 그대로 옮겨]] 끝까지 이행하겠습니다.", "‘(안)’ 항목은 참여업체 확정 후 입예협 승인으로 협약서에 반영"))
+        return B.render_std(no, sec, "엣지컴퍼니가 [[제안드리는 것]]", "제안 내용은 입예협과 협의해 협약서에 확정하고, 확정된 것은 끝까지 이행합니다.",
+                            f'<div class="cl">{its}</div>', ("협의로 확정한 약속은 [[협약서에 그대로 옮겨]] 끝까지 이행하겠습니다.", "‘(안)’ · (협의) 항목은 입예협 승인으로 협약서에 반영"))
     B_closing = B.p_closing
     B.p_closing = p_closing
 
@@ -420,6 +451,8 @@ def apply(G):
 .dfr .di{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px 6px 8px}
 .dfr .di .docimg{height:auto;max-height:100%;max-width:100%;box-shadow:0 10px 26px rgba(0,0,0,.5)}
 .dfr .dc{font-size:12px;color:var(--mute);text-align:center}
+.dfr .di .docimg{height:auto;width:auto;max-width:100%;max-height:430px;object-fit:contain}
+.dfr .di{overflow:hidden}
 .docx.gk .gkl{display:flex;flex-direction:column;justify-content:center;gap:22px;min-width:0}
 .g9 h5{margin:0 0 10px;font-size:15px;color:var(--gold)}.g9g{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .g9g div{border:1px solid rgba(200,168,106,.35);border-radius:9px;padding:8px 10px;font-size:14px;font-weight:600;background:rgba(255,255,255,.03);display:flex;gap:8px;align-items:center}
@@ -879,7 +912,7 @@ def apply(G):
     d04[1]["bl"] = [{"하자 예치금 현금 1억": "하자 예치금 최대 1억"}.get(x, x) for x in d04[1]["bl"] if "콜센터" not in x]
     d07 = T(G["T_DIV"])
     d07[1]["n"] = "07"
-    d07[1]["bl"] = ["1차 심사 4개 기준 · 가산점 7개 대응표", "적합성 · 신뢰성 · 안정성 · 사실성", "최저가 보상 · A/S 정책 · 경관조명 특화", "월별 타임테이블 · 자격 12 · 무효 7"]
+    d07[1]["bl"] = ["1차 심사 4개 기준 · 가산점 7개 대응표", "적합성 · 신뢰성 · 안정성 · 사실성", "최저가 보상 · A/S 정책 · 경관조명 특화", "월별 타임테이블"]
 
     ch = [
         ("01. 회사소개", [d01] + [T(x) for x in [
@@ -915,7 +948,7 @@ def apply(G):
             "공용부 [[구조·시공 품질]] 점검", "보이지 않는 [[하자]]까지 확인합니다",
             "도면·하자 분석 [[보고서 샘플]]", "사전점검 당일 [[현장 지원]]", "위임장, 이제 [[휴대폰으로]] 받습니다"]]),
         ("08. 혜택안내 · C 진단 · 컨설팅", [pkC, T("커뮤니티·공용부 [[조명 개선]]")]),
-        ("09. 차별화 포인트", [T(kind="divider_lx"), T(kind="landscape"), T("[[조명 수직계열화]] · 유통 단계 없는 공급")]),
+        ("09. 차별화 포인트", [T(kind="divider_lx"), T(kind="landscape"), p_lx5, T("[[조명 수직계열화]] · 유통 단계 없는 공급")]),
         ("10. 특화서비스 요약", [dv("10", "한눈에 보는 [[특화서비스]]", ["A 입주민 특화서비스", "B 협의회 업무지원 · C 진단 · 컨설팅", "안전망 · 업체선정 · 홍보", "오산세교아테라 맞춤"]),
                                 p_s1, p_s2, p_s3, T(G["T_CORE6"])]),
     ]
@@ -961,8 +994,8 @@ def apply(G):
         [("03", "업체선정", ["공동구매 품목 · 수요조사", "4단계 공개 심사", "인근 지역업체 선정", "최저가 차액 10배", "계약·환불 규정 전문"]),
          ("08", "혜택안내", [f"{fund}만원 상당 범위 (안)", "A 입주민 특화서비스", "B 협의회 업무지원", "C 진단 · 컨설팅"])],
         [("04", "하자보증", ["이행보증보험 최대 10억", "업체 하자보증 · 특약각서", "클레임 보상 기준"]),
-         ("09", "차별화 포인트", ["경관조명 설계·생산·시공", "조명 수직계열화"])],
+         ("09", "차별화 포인트", ["경관조명 설계·생산·시공", f"{D.SITE['short']} 경관조명 제안 요약", "조명 수직계열화"])],
         [("05", "주관 콜센터", ["콜센터 · 선보상", "하자 예치금 최대 1억", "클레임 처리 · CRM", "컴플레인 · 해결 사례"]),
-         ("10", "특화서비스 요약", ["A 입주민 특화서비스", "B 업무지원 · C 컨설팅", "안전망 · 업체 · 홍보", "핵심 약속 6가지"])],
+         ("10", "특화서비스 요약", ["A 입주민 특화서비스", "B 업무지원 · C 컨설팅", "안전망 · 업체 · 홍보", "핵심 제안 6가지"])],
     ]
     G["TOC_CLS"] = "toc5"

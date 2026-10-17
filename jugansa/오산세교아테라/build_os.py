@@ -156,6 +156,7 @@ B.CSS += r"""
 .cv4 h1{font-size:52px;line-height:1.28;margin-top:24px}
 .cv4 .tag2{font-size:19px;line-height:1.6;margin-top:0}
 .cv4 .stats{margin-top:34px}
+.ctp .mid{width:46%}.ctp .contacts{grid-template-columns:1fr;gap:14px;margin-top:22px}.ctp .contacts b{font-size:27px}.ctp .contacts .me{grid-column:auto}.ctp .contacts .me b{font-size:23px}.ctp .contacts span{font-size:14px}.ctp .mid{width:48%}.ctp .addr{font-size:12.6px;line-height:1.8;margin-top:26px;color:var(--mute)}.ctp .addr b{color:var(--sub);font-weight:700;margin-right:4px}.ctp .gbar{margin:18px 0 6px}.ctp h1.cvx{font-size:46px}
 .sub2{display:flex;gap:64px;padding:18px 0 20px;border-top:1px solid rgba(200,168,106,.35)}
 .sub2 i{display:block;font-style:normal;font-size:12px;letter-spacing:.3em;color:var(--gold2);font-weight:700}
 .sub2 b{display:block;font-size:17px;font-weight:700;margin-top:6px}
@@ -333,10 +334,10 @@ T_NOTE = "선정 절차 · 유의사항, [[그대로 지킵니다]]"
 T_PEOPLE = "대표자 · 핵심 운영인력 [[수행 경험]]"
 T_HIST = "엣지컴퍼니 [[연혁]] · 주요 이력"
 T_CPL = "입주민 [[컴플레인]], 이렇게 해결합니다"
-T_CORE6 = f"{ST['short']}에 드리는 [[핵심 약속 6가지]]"
+T_CORE6 = f"{ST['short']}에 드리는 [[핵심 제안 6가지]]"
 
 new("divider", n="01", title=T_DIV,
-    bl=["1차 심사 4개 기준 · 가산점 7개 대응표", "적합성 · 신뢰성 · 안정성 · 사실성", "최저가 보상 · A/S 정책 · 특화 제안", "월별 타임테이블 · 자격 12 · 무효 7"])
+    bl=["1차 심사 4개 기준 · 가산점 7개 대응표", "적합성 · 신뢰성 · 안정성 · 사실성", "최저가 보상 · A/S 정책 · 특화 제안", "월별 타임테이블"])
 
 # ------------------------------------------------------------ 1차 심사 4개 기준 + 가산점 7개 ↔ 쪽 대응표(맞춤 장 첫머리)
 MAP11 = [  # (구분, 공고 기준, 엣지컴퍼니 제안 핵심, [PGREF 키])
@@ -919,7 +920,7 @@ LIMIT7 = [  # 공고 6항 입찰의 무효 1 ~ 7 — (사유, 확인, 근거)
     ("서류 위조 · 변조", "해당 없음 - 원본 발급본 · 원본 스캔만 제출", "제출서류"),
     ("담합 · 허위사실", "해당 없음 - 실적은 NICE 연혁 · 단지 카페 공지 · BEXCO 행사일정으로 증빙", "제출서류 12"),
     ("이행 당사자 연락 · 만남 · 금품 제의", "해당 없음 - 문의는 접수처 이메일로만(7항 5)", "공고 7항"),
-    ("공구단가에 영향을 주는 과다한 공용부 기증 · 기금 제안", "해당 없음 - [[공용부 기증 · 기금 제안 없음]] · 세대 혜택은 주관사 몫에서 부담하고 공구가와 분리", "08장"),
+    ("공구단가에 영향을 주는 과다한 공용부 기증 · 기금 제안", "해당 없음 - 발전지원금은 [[주관사 몫에서 부담]]하는 세대 혜택이라 공구단가에 영향을 주지 않음 · 공구가는 업체 공개 입찰 경쟁과 입예협 가격 검수로 정함", "08장"),
     ("최근 3년 입예협과 소송 중 · 계약 해지", "해당 없음", "자체 확인"),
 ]
 new("std", sec=S0, title=T_LIMIT,
@@ -927,7 +928,7 @@ new("std", sec=S0, title=T_LIMIT,
     body=table(["NO", "공고 6항 입찰의 무효", "엣지컴퍼니 확인", "근거"], "".join(
         f'<tr><td class="n">{i:02d}</td><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td></tr>'
         for i, (a, b, c) in enumerate(LIMIT7, 1)), "q10 l7"),
-    kp=("특히 6항 6 - 혜택은 [[세대에]], 가격은 [[업체 경쟁과 검수로]] 정합니다.", "허위 또는 입찰 과정에 문제가 확인되면 협약 체결 이후라도 해지(7항 2)를 받아들입니다"))
+    kp=("특히 6항 6 - 발전지원금은 [[주관사 부담]]이라 [[공구단가와 무관]]합니다.", "허위 또는 입찰 과정에 문제가 확인되면 협약 체결 이후라도 해지(7항 2)를 받아들입니다"))
 B.CSS += ".tbl.q10.l7 td{padding:12px 12px;font-size:15px}.tbl.q10.l7 td.k{font-size:15.5px}"
 
 NOTE7 = [  # 공고 2항 · 7항 — (공고, 약속)
@@ -1124,7 +1125,7 @@ new("std", sec=S0, title=T_SEP,
     body=('<div class="sepx"><div class="sepf">'
           '<div class="sb1"><i>업체</i><b>참가비 정액제</b><span>업체 참가비는 정액으로 - 공구가와 연동하지 않음</span></div><em>›</em>'
           '<div class="sb1 hl"><i>주관사</i><b>운영비 + 세대 혜택</b><span>박람회 운영비와 세대당 ' + str(D.FUND) + '만원 상당을 주관사 몫에서 부담</span></div><em>›</em>'
-          '<div class="sb1"><i>입주민 세대</i><b>세대 혜택 패키지</b><span>패키지 A·B·C · 사용 내역 공개 · 공용부 기증 · 기금 없음</span></div></div>'
+          '<div class="sb1"><i>입주민 세대</i><b>세대 혜택 패키지</b><span>패키지 A·B·C · 사용 내역 공개 · 공구단가와 무관</span></div></div>'
           '<div class="sepn">공구가는 이 흐름과 따로 - <b>업체 공개 입찰 경쟁</b>과 <b>시중가 · 온라인 최저가 검수</b>로 정해집니다</div>'
           + B.tiles([
               dict(lb="01 · 정액", nm="참가비 정액제", ds="업체 참가비는 정액으로 받습니다. 세대 혜택을 공구가에 얹는 구조가 아닙니다."),
@@ -1631,18 +1632,25 @@ B_p_toc = B.p_toc
 
 
 def p_contact():
-    s = B_p_contact()
-    # 지사: 직영 4곳 + 협력 8곳 = 전국 12개 지사망(2026.10 확정). 본사 주소는 사업자등록증(2026.08.04) 기준.
-    # 대전 지사 주소 — 본부장 10-15 정정: 디펠리체 204호 유지(오전 '주소 없음' 삭제를 되돌림)
-    s = sub(s, "울산 본사 · 울산광역시 울주군 청량읍 상남1길 28, 2동 &nbsp;|&nbsp; 부산 지사 · 해운대구 &nbsp;|&nbsp; 대전 지사<br>",
-            f"울산 본사 · {D.ADDRESS}<br>대전 지사 · 디펠리체 204호 &nbsp;|&nbsp; 청주 지사 · 청주시 흥덕구 직지대로 642 &nbsp;|&nbsp; "
-            "부산 해운대 지사 · 해운대구 아르파나 B1<br>직영 4곳 + 협력 8곳 = 전국 12개 지사망 · 콜센터 평일 09:00–18:00 · 온라인 365일 접수 · 24시간 이내 회신<br>")
-    s = sub(s, "삼성전자 MOU 체결</div>", "삼성 측 업무제휴 · 세스코 MOU 체결</div>")  # 재검증 10-14: 계약서 제목 '업무제휴 계약서' · 상대방 판독 불확실
-    s = sub(s, '<div class="who">주식회사 엣지컴퍼니<br>대표이사 고진식</div>', "")
-    s = sub(s, '<div class="addr">', '<div class="addr" style="font-size:14.2px">')
-    # 본부장 10-17: '선정 전 문의는 접수처 이메일로만 … 선정 후 연락처' 문장 삭제(기본틀 환영 문장 그대로)
-    label = f"입주박람회 주관사 선정 · {D.SITE['name']}"
-    return sub(s, "SUMMARY PROPOSAL · 요약제안서", label)
+    # 본부장 10-17: 환영 문장 삭제 · 표지와 같은 사진 배치로 마무리(경관조명 시뮬레이션) · 연락처 세로 정렬
+    art = ('<div class="cvart cvx osc"><img src="assets_ins/os_lx_front2.jpg" alt="" style="object-position:50% 60%">'
+           f'<span class="credit">{D.SITE["name"]} 경관조명 제안 시뮬레이션 이미지 · 실제와 다를 수 있음</span></div>')
+    return f"""<section class="page cv cv4 ctp">{art}{COVER_TOP}
+<div class="mid"><span class="pill">CONTACT</span>
+<h1 class="cvx">단지가 끝날 때까지,<br><em>끝까지 함께하겠습니다.</em></h1>
+<div class="gbar"></div>
+<div class="contacts">
+<div><b>1533-3210</b><span>본사 대표번호 · 주관 콜센터</span></div>
+<div><b>010-3345-6107</b><span>대표이사 고진식 직통</span></div>
+<div><b>010-7273-9901</b><span>주관사업 총괄 본부장</span></div>
+<div class="me"><b>edgecompany1@naver.com</b><span>이메일</span></div>
+</div>
+<div class="addr"><b>울산 본사</b> {D.ADDRESS}<br><b>지사</b> 대전 디펠리체 204호 · 청주 직지대로 642 · 부산 해운대 아르파나 B1 · 전국 12개 지사망<br>
+<b>콜센터</b> 평일 09:00 ~ 18:00 · 온라인 365일 접수 · 24시간 이내 회신<br>
+<b>등록 · 인증</b> {D.ELEC_LICENSE} · ISO 9001 / 14001 / 45001<br><b>제휴</b> 삼성 측 업무제휴 · 세스코 MOU</div>
+</div>
+<div class="bt"><span>입주박람회 주관사 제안서 · {D.SITE['name']}</span><span>주식회사 엣지컴퍼니</span></div>
+</section>"""
 
 
 B_p_contact = B.p_contact
