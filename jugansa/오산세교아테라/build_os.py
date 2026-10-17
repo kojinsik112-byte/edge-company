@@ -150,7 +150,11 @@ B.CSS += r"""
   linear-gradient(180deg,#0D1E33 0%,rgba(13,30,51,.55) 14%,rgba(13,30,51,0) 34%,rgba(13,30,51,0) 66%,rgba(13,30,51,.7) 84%,#0D1E33 100%),
   linear-gradient(270deg,rgba(13,30,51,.45) 0%,rgba(13,30,51,0) 14%)}
 .cvart.cvx .credit{z-index:1;right:40px;bottom:122px;color:rgba(255,255,255,.55)}
-.cvart.cvx.osc img{object-position:58% 50%}
+.cvart.cvx.osc img{object-position:69% 50%}
+.cv4>.cvart.cvx.day{width:60%}.cvart.cvx.day img{object-position:74% 40%}
+.cvart.cvx.day:after{background:
+  linear-gradient(90deg,#0D1E33 0%,rgba(13,30,51,.78) 10%,rgba(13,30,51,.3) 24%,rgba(13,30,51,0) 38%),
+  linear-gradient(180deg,rgba(13,30,51,.6) 0%,rgba(13,30,51,0) 16%,rgba(13,30,51,0) 70%,rgba(13,30,51,.75) 88%,#0D1E33 100%)}
 .cv4 h1.cvx{font-size:48px}
 .cv4 .gbar{width:150px;height:2px;background:var(--gold2);margin:26px 0 20px}
 .cv4 h1{font-size:52px;line-height:1.28;margin-top:24px}
@@ -1594,8 +1598,8 @@ def p_cover():
     sub2 = f'<div class="sub2"><div><i>제출처</i><b>{D.CLIENT}</b></div><div><i>제안사</i><b>{D.COMPANY}</b></div></div>'
     # 표지 이미지 = 슬롯 'cover'(data.IMG) — 네이비 배경에 스며들도록 위·왼쪽을 배경색으로 페이드. 파일이 없으면 이미지 없이 중립 디자인
     im, _own = slot("cover")
-    art = (f'<div class="cvart cvx osc"><img src="assets_ins/{im}.jpg" alt="">'
-           f'<span class="credit">{D.SITE["name"]} 야간 경관 · 시뮬레이션 이미지 · 실제와 다를 수 있음</span></div>') if im else ""
+    art = (f'<div class="cvart cvx osc day"><img src="assets_ins/{im}.jpg" alt="">'
+           f'<span class="credit">{D.SITE["name"]} 조감도 · 실제와 다를 수 있음</span></div>') if im else ""
     return f"""<section class="page cv cv4">{art}{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
 <h1 class="cvx">{TITLE_H1}</h1>
@@ -1633,7 +1637,7 @@ B_p_toc = B.p_toc
 
 def p_contact():
     # 본부장 10-17: 환영 문장 삭제 · 표지와 같은 사진 배치로 마무리(경관조명 시뮬레이션) · 연락처 세로 정렬
-    art = ('<div class="cvart cvx osc"><img src="assets_ins/os_lx_front2.jpg" alt="" style="object-position:50% 60%">'
+    art = ('<div class="cvart cvx osc"><img src="assets_ins/os_lx_front2.jpg" alt="" style="object-position:84% 60%">'
            f'<span class="credit">{D.SITE["name"]} 경관조명 제안 시뮬레이션 이미지 · 실제와 다를 수 있음</span></div>')
     return f"""<section class="page cv cv4 ctp">{art}{COVER_TOP}
 <div class="mid"><span class="pill">CONTACT</span>
@@ -1641,7 +1645,7 @@ def p_contact():
 <div class="gbar"></div>
 <div class="contacts">
 <div><b>1533-3210</b><span>본사 대표번호 · 주관 콜센터</span></div>
-<div><b>010-3345-6107</b><span>대표이사 고진식 직통</span></div>
+<div><b>010-3345-6107</b><span>대표이사 직통</span></div>
 <div><b>010-7273-9901</b><span>주관사업 총괄 본부장</span></div>
 <div class="me"><b>edgecompany1@naver.com</b><span>이메일</span></div>
 </div>
