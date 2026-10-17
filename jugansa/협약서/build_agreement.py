@@ -522,18 +522,13 @@ def build():
     ], note="공고가 공용부 기증 · 기금을 제한하는 단지는 세대 혜택 · 협의회 업무 지원 항목으로만 구성한다.")
 
     # ---- 서명란 (날짜 + 서명표를 한 표로 묶어 쪽이 갈리지 않게)
-    p = para(doc, before=10, after=0, keep=True)
+    p = para(doc, before=16, after=10, align=WD_ALIGN_PARAGRAPH.CENTER, keep=True)
+    add_runs(p, "【20    】년  【   】월  【   】일", size=12, bold=True)
     t = doc.add_table(rows=1, cols=2)
     t.alignment = WD_TABLE_ALIGNMENT.CENTER
     t.autofit = False
     table_borders(t, color="0D1E33", size=8, inside=True)
-    c = t.rows[0].cells[0].merge(t.rows[0].cells[1])
-    cell_margins(c, 160, 160, 160, 160)
-    p = c.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_after = Pt(0)
-    add_runs(p, "【20    】년  【   】월  【   】일", size=12, bold=True)
-    row = t.add_row()
+    row = t.rows[0]
     for i, (who, rows) in enumerate([
         ("협 의 회", [("단 체 명", "【단지명】 입주예정자협의회"), ("주      소", "【주소】"), ("카페 주소", "【카페 주소】"), ("대      표", "【성명】                    (인)")]),
         ("주 관 사", [("상      호", "주식회사 엣지컴퍼니"), ("사업자번호", "508-81-42798"), ("주      소", "울산광역시 울주군 청량읍 온산로 615-1, 2층"), ("대 표 이 사", "고 진 식                    (인)")]),
