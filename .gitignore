@@ -15,3 +15,6 @@ business-ops/insta-growth/.browser_profile/
 business-ops/insta-growth/state.json
 business-ops/insta-growth/logs/
 business-ops/insta-growth/.env
+
+# 주관사 이벤트 참여자 명단 (입주민 동호수·닉네임 — 개인정보, 커밋 금지)
+jugansa/raffle/data/
