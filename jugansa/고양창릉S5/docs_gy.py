@@ -192,7 +192,7 @@ def birth(v, who):
 
 # ------------------------------------------------------------------ 상태 점검(파일을 쓰기 전에)
 def venue_missing():
-    return [nm for _m, nm, _n, j in D.RECENT3_500 if j and not D.EXPO_VENUE.get(nm)]
+    return [nm for _m, nm, _n, j in D.RECENT3_500 if j and not all(D.EXPO_VENUE.get(nm) or (None, None))]
 
 
 def readiness():
@@ -288,11 +288,11 @@ def doc01():
 
 # ================================================================== 09 [별지 2호] 실적 총괄표 + 증빙 안내
 def _expo(nm):
-    v = D.EXPO_VENUE.get(nm)
-    if not v:
+    sch, plc = D.EXPO_VENUE.get(nm) or (None, None)
+    if not sch:  # 일정 미확인(장소만 확인된 단지 포함)
         sg = D.R500_SIGNED.get(nm)
-        return (f'입주박람회 · 공동구매 <span style="color:#555">(협약 {sg})</span><br>' if sg else "") + todo("일정 확인"), todo("장소 확인")
-    sch, plc = v
+        return ((f'입주박람회 · 공동구매 <span style="color:#555">(협약 {sg})</span><br>' if sg else "") + todo("일정 확인"),
+                e(plc) if plc else todo("장소 확인"))
     return "입주박람회 · 공동구매<br>" + e(sch).replace("\n", "<br>"), e(plc)
 
 
