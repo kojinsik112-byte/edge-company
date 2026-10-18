@@ -87,24 +87,23 @@ function PopupCard({ popup, onClose }: { popup: PopupRow; onClose: (id: string, 
   const [dont, setDont] = useState(false);
   const close = () => onClose(popup.id, dont);
 
-  // object-contain: 비율이 달라도 글자가 잘리지 않게 전체 표시 (남는 부분은 흰 여백).
-  // 여백 없이 꽉 채우려면 이미지를 840×1188px(A4 세로 비율)로 제작하면 된다.
+  // 이미지 원본 비율 그대로, 카드에 꽉 차게 표시 (여백·크롭 없음 — 카드 높이가 이미지에 딱 맞춰짐)
   const img = popup.image && (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={popup.image} alt={popup.title} className="h-full w-full object-contain" />
+    <img src={popup.image} alt={popup.title} className="block h-auto w-full" />
   );
 
   return (
     <div className="flex max-h-[88vh] w-[min(88vw,400px)] shrink-0 flex-col overflow-hidden rounded-2xl bg-surface shadow-2xl">
       {popup.image ? (
         <>
-          {/* 이미지 영역: A4 세로 비율 고정 → 모든 카드 동일 사이즈 */}
-          <div className="relative aspect-[210/297] w-full shrink overflow-hidden bg-white">
+          {/* 이미지 영역: 원본 비율 유지, 화면보다 길면 안쪽 스크롤 */}
+          <div className="min-h-0 flex-1 overflow-y-auto">
             {popup.link ? (
-              <Link href={popup.link} onClick={close} className="block h-full w-full">{img}</Link>
+              <Link href={popup.link} onClick={close} className="block">{img}</Link>
             ) : (
               // 링크 없는 이미지 팝업: 클릭하면 그냥 닫힘 (깨진 # 이동 방지)
-              <div className="h-full w-full cursor-pointer" onClick={close}>{img}</div>
+              <div className="cursor-pointer" onClick={close}>{img}</div>
             )}
           </div>
           {/* 제목 줄: 링크 유무와 관계없이 같은 높이 (사이즈 통일) */}
