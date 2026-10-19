@@ -191,7 +191,7 @@ def birth(v, who):
 
 
 # ------------------------------------------------------------------ 상태 점검(파일을 쓰기 전에)
-def venue_missing():  # 별지 2 = 주관 + 운영(진행) 전 단지
+def venue_missing():  # 별지 2 = 주관 + 운영 전 단지
     return [nm for _m, nm, _n, j in D.RECENT3_500 if not all(D.EXPO_VENUE.get(nm) or (None, None))]
 
 
@@ -329,10 +329,10 @@ def _expo(nm):
 
 
 def doc09_form():
-    # 본부장 10-19: 주관 11 + 수임 · 진행(운영) 9 — 공고 참가자격 '주관 또는 운영실적'
+    # 본부장 10-19: 주관 16 + 운영 4 — 공고 참가자격 '주관 또는 운영실적'
     rs = sorted(D.RECENT3_500, key=lambda r: r[0])
     rows = ""
-    for gname, g in (("① 주관", [r for r in rs if r[3]]), ("② 운영(수임 · 진행)", [r for r in rs if not r[3]])):
+    for gname, g in (("① 주관", [r for r in rs if r[3]]), ("② 운영", [r for r in rs if not r[3]])):
         rows += f'<tr><th colspan="4" style="text-align:left;background:#E6E6E6">{gname} · {len(g)}개 단지 · {sum(r[2] for r in g):,}세대</th></tr>'
         for m, nm, n, _j in g:
             sch, plc = _expo(nm)
@@ -364,7 +364,7 @@ def doc09_cover():
     nice_names = {r[1] for r in D.RECENT3}
     big = {r[1] for r in D.RECENT3_OS}
     have = list(D.R500_HAVE)
-    grp = [("①", "주관 — 증빙 첨부(별지 2 총괄표와 같음)", [r for r in r5 if r[3]]), ("②", "수임 · 진행(운영) — 참고(증빙 요청 시 제출)", [r for r in r5 if not r[3]])]
+    grp = [("①", "주관(별지 2 총괄표와 같음)", [r for r in r5 if r[3]]), ("②", "운영 — 참고(증빙 요청 시 제출)", [r for r in r5 if not r[3]])]
     rows, i = "", 0
     for gno, gname, rs in grp:
         rows += f'<tr class="gh"><td colspan="6">{gno} {gname} · {len(rs)}개 단지 · {sum(r[2] for r in rs):,}세대</td></tr>'
@@ -373,12 +373,14 @@ def doc09_cover():
             if j and nm in big:
                 ev = EV_OF.get(nm) or ("NICE 연혁(별첨 1) · 실적 확약서(별첨 2)" if nm in nice_names else None)
                 assert ev, f"주관 단지 증빙 없음: {nm}"
+            elif j and nm in D.JUGWAN_ADD:
+                ev = "요청 시 제출(박람회 일정 · 장소는 별지 2)"
             elif j:
                 ev = f"주관사 협약서(별첨 3-{sorted(have, key=lambda k: D.R500_SIGNED[k]).index(nm) + 1} · 협약 {D.R500_SIGNED[nm]})"
             else:
                 ev = "요청 시 제출"
             rows += (f'<tr class="{"jg" if j else ""}"><td>{i}</td><td>{m}</td><td class="l">{e(nm)}</td><td class="r">{n:,}</td>'
-                     f'<td class="g">{"주관" if j else "진행"}</td><td class="l">{ev}</td></tr>')
+                     f'<td class="g">{"주관" if j else "운영"}</td><td class="l">{ev}</td></tr>')
     tot = sum(r[2] for r in r5)
     nj, hj = sum(1 for r in r5 if r[3]), sum(r[2] for r in r5 if r[3])
     body = f"""{head("제출서류 9", "최근 3년간 주관 · 운영 실적 — 실적 증빙 안내")}
@@ -387,13 +389,13 @@ def doc09_cover():
 <table class="t ls r9" style="margin-top:6pt"><thead><tr><th style="width:5%">No</th><th style="width:10%">입주</th><th>단지명</th><th style="width:10%">세대수</th><th style="width:7%">구분</th><th style="width:36%">증빙</th></tr></thead>
 <tbody>{rows}
 <tr class="sum"><td colspan="3">합계 {len(r5)}개 단지 (주관 {nj}개 단지 · {hj:,}세대)</td><td class="r">{tot:,}</td><td></td><td></td></tr></tbody></table>
-<div class="box"><b>참가자격 대비</b> &nbsp; 최근 3년 500세대 이상 주관 또는 운영 실적 &nbsp;→&nbsp; <b>주관 {nj}개 단지 증빙 첨부 · 충족</b> (주관 · 운영 전체 {len(r5)}개 단지 · {tot:,}세대)<br>
-‘주관’ = 당사가 주관사로 수행 — 1,000세대 이상 {len(big)}개 단지 + 주관사 협약서 {len(have)}개 단지 · ‘진행’ = 당사 수임으로 입주박람회 · 공동구매 운영</div>
+<div class="box"><b>참가자격 대비</b> &nbsp; 최근 3년 500세대 이상 주관 또는 운영 실적 &nbsp;→&nbsp; <b>주관 {nj}개 단지(증빙 첨부 {nj - len(D.JUGWAN_ADD)}개 단지) · 충족</b> (주관 · 운영 전체 {len(r5)}개 단지 · {tot:,}세대)<br>
+‘주관’ = 당사가 주관사로 수행 — 1,000세대 이상 {len(big)}개 단지 + 주관사 협약서 {len(have)}개 단지 + 500 ~ 999세대 {len(D.JUGWAN_ADD)}개 단지 · ‘운영’ = 당사 수임으로 입주박람회 · 공동구매 운영</div>
 <ol class="pl" style="margin-top:3pt"><li class="sm">별첨 1. NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌 — 1쪽(보고서 전문은 제출서류 15)</li>
 <li class="sm">별첨 2. 실적 확약서(1,000세대 이상 입주박람회 주관 10개 단지) — 붙임 1 · 2 단지 카페 주관사 공지 캡처(입주민 닉네임 가림) · 붙임 3 BEXCO 공식 행사일정 캡처</li>
 <li class="sm">별첨 3. 500세대 이상 주관사 협약서 — {" · ".join(f"3-{k + 1} {e(nm)}" for k, nm in enumerate(sorted(have, key=lambda k: D.R500_SIGNED[k])))} — 협약일 순(상대방 대표자 성명 · 서명 가림, 3-2 특약 금액 가림)</li>
 </ol>
-<p class="note">※ 요청 시 ② 진행 단지의 계약서 · 정산 자료를 지체 없이 추가 제출합니다. 주관 시기(NICE 연혁)와 입주 연월은 다를 수 있습니다.</p>
+<p class="note">※ 요청 시 ② 운영 단지와 ① 주관 중 증빙 미첨부 단지의 계약서 · 정산 자료를 지체 없이 추가 제출합니다. 주관 시기(NICE 연혁)와 입주 연월은 다를 수 있습니다.</p>
 <p class="body" style="font-size:9.6pt;margin-top:2pt;line-height:1.6">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 ‘입찰 참가 제한’(제출서류 · 제안내용의 허위사실)에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign().replace('class="sign"', 'class="sign" style="margin-top:2pt"').replace('class="to"', 'class="to" style="margin-top:4pt"')}"""
     return doc("09 실적 증빙 안내", [body])
 
@@ -805,7 +807,7 @@ def main():
     a1 = stamped(annex_nice(NICE_SRC, out("09_3_별첨1_NICE연혁발췌.pdf")))
     parts9 = [stamped(fit(render("09_1_별지2_실적총괄표", doc09_form()), 1)), stamped(fit(render("09_2_실적증빙_안내", doc09_cover()), 1)), a1,
               stamped(fit(render("09_4_별첨2_실적확약서", doc09_hwakyak()), 4)), D.R500_DOC]
-    names9 = ["[별지 2호] 최근 3년간 주관사 실적 총괄표", "실적 증빙 안내(주관 11 · 진행 9)", "별첨 1 NICE 연혁 발췌",
+    names9 = ["[별지 2호] 최근 3년간 주관사 실적 총괄표", f"실적 증빙 안내(주관 {sum(1 for r in D.RECENT3_500 if r[3])} · 운영 {sum(1 for r in D.RECENT3_500 if not r[3])})", "별첨 1 NICE 연혁 발췌",
               "별첨 2 실적 확약서 · 붙임 1 ~ 3", f"별첨 3 주관사 협약서 {len(D.R500_HAVE)}건(협약일 순)"]
     toc, pg0 = [], 1
     for nm, p in zip(names9, parts9):

@@ -300,7 +300,7 @@ ST = D.SITE
 _rec_n, _rec_hh = len(D.RECORDS), sum(r[3] for r in D.RECORDS)
 R3 = D.RECENT3_OS
 _r3_n, _r3_hh = len(R3), sum(r[3] for r in R3)
-R5 = D.RECENT3_500  # 최근 3년 500세대 이상 입주박람회 진행 20개 단지(주관 10 = 1,000세대 이상 8 + 주관사 협약서 2 · 수임 · 진행 10)
+R5 = D.RECENT3_500  # 최근 3년 500세대 이상 입주박람회 진행 20개 단지(주관 16 = 1,000세대 이상 8 + 주관사 협약서 3 + 본부장 확인 5 · 운영 4)
 _r5_n, _r5_hh = len(R5), sum(r[2] for r in R5)
 _types_txt = " · ".join(a for a, _ in ST["types"])
 _types_full = " · ".join(f"{a} {n}" for a, n in ST["types"])
@@ -433,7 +433,7 @@ new("std", sec=S0, title=T_R500,
           f'<div><b>{_r5_n}<small>개 단지</small></b><span>500세대 이상 입주박람회 주관 · 운영</span></div>'
           f'<div><b>{_r5_hh:,}<small>세대</small></b><span>{_r5_n}개 단지 세대 합계</span></div>'
           f'<div><b>{sum(1 for r in R5 if r[3])}<small>개 단지</small></b><span>그중 주관(금색) · 1,000세대 이상 {_r3_n} + 협약 {len(D.R500_HAVE)}</span></div>'
-          f'<div><b>{sum(1 for r in R5 if not r[3])}<small>개 단지</small></b><span>수임 · 운영</span></div>'
+          f'<div><b>{sum(1 for r in R5 if not r[3])}<small>개 단지</small></b><span>운영</span></div>'
           '</div></div>'),
     kp=(f"최근 3년 500세대 이상 [[{_r5_n}개 단지]]에서 입주박람회를 주관 · 운영했습니다.",
         "단지명 · 세대수는 수임 목록 기준 · 날짜는 입주 연월 · 별지 2 실적 총괄표 + 협약서 · 수임 실적 증빙 별도 제출"))

@@ -252,7 +252,7 @@ def emit_summary(G):
 </div>
 <div class="rec">
 <div><b>67<small>개 단지</small></b><span>누적 수임 56,361세대<br>(전신 실적 · 입주 예정 포함)</span></div>
-<div><b>{r5_n}<small>개 단지</small></b><span>최근 3년 500세대 이상 진행<br>그중 주관 {r5_j} · 증빙 첨부</span></div>
+<div><b>{r5_n}<small>개 단지</small></b><span>최근 3년 500세대 이상 진행<br>그중 주관 {r5_j}</span></div>
 <div><b>4,470<small>세대</small></b><span>단일 단지 최대<br>레이카운티</span></div>
 <div><b>2<small>억원</small></b><span>자본금 · NICE BB-<br>현금흐름 A</span></div>
 <div><b>ISO 3종</b><span>9001 · 14001 · 45001<br>{D.ELEC_LICENSE}</span></div>
