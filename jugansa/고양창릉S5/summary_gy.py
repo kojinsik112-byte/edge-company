@@ -120,7 +120,7 @@ def emit_summary(G):
 <div class="bx"><h3><i>GUARD</i>공동구매 단가를 지키는 4가지 장치<small>제안서 {pg('guard4')}</small></h3>
 <div class="g4">
 <div><b>공개</b><strong>단가표 사전 공개</strong><span>박람회 전 품목별 단가 · 할인율 · 모델코드를 입예협이 검수 · 현장 가격 변경 없음</span></div>
-<div><b>10<small>배</small></b><strong>최저가 차액 보상</strong><span>인근 매장 동일 제품이 더 싸면 차액 10배 보상(구매 영수증 · 주관사 확인 · 1건당 계약금액 한도)</span></div>
+<div><b>10<small>배</small></b><strong>최저가 차액 보상</strong><span>인근 매장 동일 제품이 더 싸면 차액 10배 보상(구매 영수증 · 주관사 확인 · 1건당 계약금액 한도 · 최대액 협의)</span></div>
 <div><b>{D.DEPOSIT_MAX}<small>%</small></b><strong>계약금 상한</strong><span>계약금은 총액의 {D.DEPOSIT_MAX}% 이하, 잔금은 시공 · 설치 후</span></div>
 <div><b>동일</b><strong>현금 · 카드 동일가</strong><span>결제 방식에 따른 단가 차이 없음 · 현금영수증 발행</span></div>
 </div></div>
@@ -129,7 +129,7 @@ def emit_summary(G):
 <div><div class="lb2">박람회 공동구매가 (예시)</div><div class="br" style="width:100%">35만원</div></div>
 <div><div class="lb2">인근({ST['local']}) 매장 동일 제품</div><div class="br g" style="width:91.4%">32만원</div></div>
 <div class="rw2"><b>30<small>만원</small></b><span>차액 3만원 × 10배 보상<br>+ 판매가 32만원으로 조정</span></div>
-<div class="nt">동일 모델 새 제품 · 인근 오프라인 매장 정상가 · 구매 영수증 + 주관사 매장 확인 · 계약 후 7일 이내 · 1건당 계약금액 한도(세대 · 품목당 1회). 온라인 · 홈쇼핑, 시공 품목, 카드할인 · 사은품, 전시 · 리퍼, 특판 · 한정 수량 행사가는 비교 대상에서 제외(규정 제8조).</div>
+<div class="nt">동일 모델 새 제품 · 인근 오프라인 매장 정상가 · 구매 영수증 + 주관사 매장 확인 · 계약 후 7일 이내 · 1건당 계약금액 한도 · 최대액 협의(세대 · 품목당 1회). 온라인 · 홈쇼핑, 시공 품목, 카드할인 · 사은품, 전시 · 리퍼, 특판 · 한정 수량 행사가는 비교 대상에서 제외(규정 제8조).</div>
 </div></div>
 </div></div>"""
 
