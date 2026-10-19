@@ -124,11 +124,11 @@ def apply(G):
     k["title"] = "[[최저가 차액 10배]] 보상"
     k["lead"] = "인근 오프라인 매장이 같은 제품을 더 싸게 팔면 차액의 10배를 보상합니다(온라인 판매·시공 품목 제외)."
     k["body"] = ('<div class="nb">' + B.cards([
-        dict(lb="GROUP PRICE", big="33", unit="만원", ds="박람회 공동구매가 (예시)"),
-        dict(lb="FOUND PRICE", big="28", unit="만원", ds="인근 매장 동일 제품"),
-        dict(lb="GAP", big="5", unit="만원", ds="차액"),
-        dict(lb="REWARD ×10", big="50", unit="만원", ds="보상 + 판매가 28만원으로 조정", hl=True),
-    ]) + f'<div class="notex">※ 동일 모델 새 제품 · 인근({D.SITE["local"]}) 오프라인 매장 정상가 · 계약 후 7일 이내 기준. '
+        dict(lb="GROUP PRICE", big="35", unit="만원", ds="박람회 공동구매가 (예시)"),
+        dict(lb="FOUND PRICE", big="32", unit="만원", ds="인근 매장 동일 제품"),
+        dict(lb="GAP", big="3", unit="만원", ds="차액"),
+        dict(lb="REWARD ×10", big="30", unit="만원", ds="보상 + 판매가 32만원으로 조정", hl=True),
+    ]) + f'<div class="notex">※ 동일 모델 새 제품 · 인근({D.SITE["local"]}) 오프라인 매장 정상가 · 구매 영수증 + 주관사 매장 확인 · 계약 후 7일 이내 기준 · 보상은 1건당 계약금액 한도(세대 · 품목당 1회). '
          '온라인·홈쇼핑, 시공 품목, 카드할인·사은품, 전시·리퍼, 특판·한정 수량 행사가는 비교 대상에서 제외. 세부 조건은 계약 취소·환불 규정 제8조를 따릅니다.</div></div>')
     k["kp"] = "동일 제품 확인 시 [[차액의 10배]]를 보상합니다."
     k12["body"] = sub(k12["body"], "동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)",

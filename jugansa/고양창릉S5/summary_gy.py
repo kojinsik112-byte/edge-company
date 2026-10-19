@@ -126,10 +126,10 @@ def emit_summary(G):
 </div></div>
 <div class="bx"><h3><i>× 10</i>최저가 차액 10배 보상 (예시)<small>제안서 {pg('x10')}</small></h3>
 <div class="x10">
-<div><div class="lb2">박람회 공동구매가 (예시)</div><div class="br" style="width:100%">33만원</div></div>
-<div><div class="lb2">인근({ST['local']}) 매장 동일 제품</div><div class="br g" style="width:84.8%">28만원</div></div>
-<div class="rw2"><b>50<small>만원</small></b><span>차액 5만원 × 10배 보상<br>+ 판매가 28만원으로 조정</span></div>
-<div class="nt">동일 모델 새 제품 · 인근 오프라인 매장 정상가 · 계약 후 7일 이내 기준. 온라인 · 홈쇼핑, 시공 품목, 카드할인 · 사은품, 전시 · 리퍼, 특판 · 한정 수량 행사가는 비교 대상에서 제외(규정 제8조).</div>
+<div><div class="lb2">박람회 공동구매가 (예시)</div><div class="br" style="width:100%">35만원</div></div>
+<div><div class="lb2">인근({ST['local']}) 매장 동일 제품</div><div class="br g" style="width:91.4%">32만원</div></div>
+<div class="rw2"><b>30<small>만원</small></b><span>차액 3만원 × 10배 보상<br>+ 판매가 32만원으로 조정</span></div>
+<div class="nt">동일 모델 새 제품 · 인근 오프라인 매장 정상가 · 구매 영수증 + 주관사 매장 확인 · 계약 후 7일 이내 · 1건당 계약금액 한도(세대 · 품목당 1회). 온라인 · 홈쇼핑, 시공 품목, 카드할인 · 사은품, 전시 · 리퍼, 특판 · 한정 수량 행사가는 비교 대상에서 제외(규정 제8조).</div>
 </div></div>
 </div></div>"""
 

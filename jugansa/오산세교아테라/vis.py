@@ -316,11 +316,11 @@ def apply(B, D, take, sub):
     k = take("[[최저가 차액 10배]] 보상")[1]
     note = re.search(r'<div class="notex">.*?</div>', k["body"]).group(0)
     k["body"] = ('<div class="nb"><div class="rw"><div class="ch">'
-                 '<div><div class="lbl">박람회 공동구매가 (예시)</div><div class="bar" style="width:100%">33만원</div></div>'
-                 '<div><div class="lbl">인근 매장 동일 제품</div><div class="bar g" style="width:84.8%">28만원'
-                 '<span class="gap" style="left:100%;width:17.9%"><b>차액 5만원</b></span></div></div></div>'
-                 '<div class="x10"><b>×10</b><i></i><span>차액의 10배</span></div><div class="rew"><i>REWARD</i><div class="v">50<small>만원</small></div><p>차액 5만원 × 10배 보상</p>'
-                 '<span class="chip">+ 판매가 28만원으로 조정</span></div></div>' + note + '</div>')
+                 '<div><div class="lbl">박람회 공동구매가 (예시)</div><div class="bar" style="width:100%">35만원</div></div>'
+                 '<div><div class="lbl">인근 매장 동일 제품</div><div class="bar g" style="width:91.4%">32만원'
+                 '<span class="gap" style="left:100%;width:9.4%"><b>차액 3만원</b></span></div></div></div>'
+                 '<div class="x10"><b>×10</b><i></i><span>차액의 10배</span></div><div class="rew"><i>REWARD</i><div class="v">30<small>만원</small></div><p>차액 3만원 × 10배 보상 · 계약금액 한도 안</p>'
+                 '<span class="chip">+ 판매가 32만원으로 조정</span></div></div>' + note + '</div>')
 
     # 한 단지가 아니라 한 신도시 — 도넛 + 단지별 막대(쪽에 있던 단지·세대수 그대로)
     k = take("한 단지가 아니라 [[한 신도시]]를 맡습니다")[1]
