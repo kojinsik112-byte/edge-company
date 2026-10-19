@@ -5,7 +5,7 @@
   02 사업자등록증                                      03 법인등기부등본
   04 지방세 완납 증명서                                05 국세 완납 증명서
   06 법인인감증명서(10.15 · 주민번호 뒷자리 가림본)
-  07 대표이사 범죄사실증명서 — 서류심사 합격한 주관사 해당(별지 6) → 지금은 파일 없음(목록표 '미제출 · 합격 시 제출')
+  07 대표이사 범죄사실증명서 — 본부장 10-19: 회보서 대신 갈음 안내 + 대표자 결격사유 부존재 서약서(분당 방식) · 회보서는 서류심사 합격 시 지참 열람
   08 주관사 제안서 = build_gy.py 결과 그대로(제출본 = 원본)
   09 최근 3년간 주관사 실적 총괄표 [별지 2호] + 실적 증빙 안내 + 별첨 1 NICE 연혁 발췌 · 별첨 2 실적 확약서(붙임 캡처 3) · 별첨 3 주관사 협약서 3건
   09-2 4대 보험 완납증명서(건강 · 연금 + 고용 · 산재)
@@ -191,8 +191,8 @@ def birth(v, who):
 
 
 # ------------------------------------------------------------------ 상태 점검(파일을 쓰기 전에)
-def venue_missing():
-    return [nm for _m, nm, _n, j in D.RECENT3_500 if j and not all(D.EXPO_VENUE.get(nm) or (None, None))]
+def venue_missing():  # 별지 2 = 주관 + 운영(진행) 전 단지
+    return [nm for _m, nm, _n, j in D.RECENT3_500 if not all(D.EXPO_VENUE.get(nm) or (None, None))]
 
 
 def readiness():
@@ -233,10 +233,10 @@ def list_rows(n):
         ("4", "지방세 완납 증명서", "O", f"필수 · {D.ISSUE['ltax']} 발급"),
         ("5", "국세 완납 증명서", "O", f"필수 · {D.ISSUE['tax']} 발급(유효 ~2026.11.13)"),
         ("6", "법인인감증명서", "O", f"필수 · {D.INGAM_DATE} 발급(최근 1개월 이내 · 대표자 주민등록번호 뒷자리 가림)"),
-        ("7", "대표이사 범죄사실증명서(서류심사 합격한 주관사 해당)", "X", "서류심사 합격 시 제출"),
+        ("7", "대표이사 범죄사실증명서(서류심사 합격한 주관사 해당)", "O", "대표자 결격사유 부존재 서약서로 먼저 제출 · 회보서는 서류심사 합격 시 대표 지참 열람(형실효법 제6조 · 제10조)"),
         ("8", "주관사 제안서", "O", f"필수 · {n['08']}쪽"),
         ("9", "최근 3년간 500세대 이상 주관사 실적 총괄표【별지서식 2호】", "O",
-         f"필수 · 주관 {len(r5j)}개 단지 · {sum(r[2] for r in r5j):,}세대 · 증빙: NICE 연혁 발췌 · 실적 확약서 · 주관사 협약서 {len(D.R500_HAVE)}건"),
+         f"필수 · 주관 {len(r5j)} + 운영 {len(D.RECENT3_500) - len(r5j)} = {len(D.RECENT3_500)}개 단지 · {sum(r[2] for r in D.RECENT3_500):,}세대 · 증빙: NICE 연혁 발췌 · 실적 확약서 · 주관사 협약서 {len(D.R500_HAVE)}건"),
         ("9", "4대 보험 완납증명서", "O", f"필수 · 건강 · 연금(국민건강보험공단) · 고용 · 산재(근로복지공단) 각 {D.WANNAP_DATE} 발급"),
         ("10", "하자보수(환불)이행각서【별지서식 제3호】", "O", "필수"),
         ("11", "청렴계약 이행 준수 서약서【별지서식 제4호】", "O", "필수"),
@@ -258,7 +258,7 @@ def doc00(n):
 <p style="font-size:11pt;margin-bottom:6pt">업체명 : <b>{D.COMPANY}</b></p>
 <table class="ft r2 l6"><thead><tr><th rowspan="2" style="width:6%">NO</th><th rowspan="2">제출 서류명</th><th colspan="2">제출/미제출</th><th rowspan="2" style="width:33%">비고</th></tr>
 <tr><th style="width:8%">제출(O)</th><th style="width:8%">미제출(X)</th></tr></thead><tbody>{rows}</tbody></table>
-<p class="note" style="color:#444">※ 7 범죄사실증명서는 서류심사 합격 시, 13 계약이행보증보험은 주관사 선정 후 제출합니다. 16은 공고 ◆필수 제출서류의 ‘사업장 및 조직현황’, 17은 선택 자료입니다.
+<p class="note" style="color:#444">※ 7은 결격사유 부존재 서약서로 먼저 제출하고 회보서는 서류심사 합격 시 열람으로 확인하며, 13 계약이행보증보험은 주관사 선정 후 제출합니다. 16은 공고 ◆필수 제출서류의 ‘사업장 및 조직현황’, 17은 선택 자료입니다.
 ZIP 안의 폴더 이름은 위 번호 · 서류명과 같습니다(‘9’ 두 건은 09 · 09-2).</p>
 <div class="dt" style="margin-top:10pt">{yy}년 &nbsp; {mm}월 &nbsp; {dd}일</div>
 <div class="to2" style="margin-top:12pt">{FORM_TO} 귀하</div></div>"""
@@ -286,27 +286,62 @@ def doc01():
     return doc("01 입찰 참가 신청서", [body])
 
 
+# ================================================================== 07 대표이사 범죄사실증명서 — 갈음 안내 + 결격사유 부존재 서약서(분당 docs_bd 07 · 14 ① 방식 · 본부장 10-19)
+def doc07():
+    yy, mm, dd = ymd()
+    items = [
+        "금고 이상의 실형을 선고받고 그 집행이 끝나거나(집행이 끝난 것으로 보는 경우를 포함합니다) 집행이 면제된 날부터 2년이 지나지 않은 사람에 해당하지 않습니다.",
+        "금고 이상의 형의 집행유예를 선고받고 그 유예기간 중에 있는 사람에 해당하지 않습니다.",
+        "파산선고를 받고 복권되지 않은 사람에 해당하지 않습니다.",
+        "사기 · 횡령 · 배임 · 업무방해 등 업무와 관련된 범죄로 형을 선고받고 그 형이 실효되지 않은 사람에 해당하지 않습니다.",
+        "당사와 대표자는 금품 · 향응 제공, 담합, 불법 · 부정한 영업, 타 단지 입주박람회의 중대한 계약불이행으로 계약 해지 · 선정 취소된 이력이 없습니다(공고 ◆입찰 참가 제한).",
+    ]
+    p1 = f"""{head("제출서류 7", "대표이사 범죄사실증명서")}
+<div class="box" style="margin-top:18pt;font-size:10.4pt;line-height:1.75"><b>범죄경력회보서 사본 대신 서약서를 먼저 제출합니다</b><br>
+① 공고 별지 6은 대표이사 범죄사실증명서를 ‘서류심사 합격한 주관사 해당’으로 정하고 있습니다.<br>
+② 「형의 실효 등에 관한 법률」은 범죄경력 조회와 그 회보를 법에서 정한 경우로 제한하고(제6조), 범죄경력자료를 목적 외로 취득 · 사용하는 것을 금지 · 처벌하도록 정하고 있습니다(제10조). 본인이 발급받는 회보서에도 ‘목적 외 사용 시 취득 · 사용자 처벌’ 안내가 인쇄되어 있습니다.<br>
+③ 이에 회보서 사본 대신 <b>다음 쪽 대표자 결격사유 부존재 서약서</b>를 지금 제출합니다.<br>
+④ 서류심사에 합격하여 귀 협의회가 요청하시면, 대표이사가 회보서를 지참하여 열람으로 확인하실 수 있게 하겠습니다.</div>
+<p class="note" style="margin-top:10pt">※ 근거: 공고 ◆필수 제출서류 7 · [별지 서식 제6호] 7번 · 형의 실효 등에 관한 법률 제6조 · 제10조</p>"""
+    lis = "".join(f'<li style="margin-top:5pt;font-size:10.4pt;line-height:1.7">{"①②③④⑤"[i]} {x}</li>' for i, x in enumerate(items))
+    p2 = f"""{head("제출서류 7", "대표자 결격사유 부존재 서약서", True)}
+<table class="info" style="margin-top:16pt"><tr><th>상호</th><td>{D.COMPANY}</td><th>법인등록번호</th><td>{D.CORP_NO}</td></tr>
+<tr><th>대표자 성명</th><td>대표이사 {D.CEO}</td><th>생년월일</th><td>{birth(CEO_BIRTH, "대표자")}</td></tr>
+<tr><th>본사 소재지</th><td colspan="3">{D.ADDRESS}</td></tr></table>
+<p class="body">본인은 {D.COMPANY}의 대표이사로서 「{e(D.NOTICE)}」에 참가하면서, 당사와 본인이 공고의 입찰 참가 제한 사유에 해당하지 않음을 서약합니다.
+아울러 대표이사 범죄사실증명서와 관련하여, 공동주택관리법상 동별 대표자 결격사유(제14조제4항)를 참고한 아래 기준(①~③)과 업무 관련 범죄 기준(④), 공고 입찰 참가 제한 사항(⑤)을 스스로 확인하였습니다.</p>
+<div class="art" style="margin-top:8pt"><ol class="pl" style="font-size:10.4pt">{lis}</ol></div>
+<p class="body">위 내용이 사실과 다르거나 중요한 사항을 누락한 것으로 확인될 경우, 선정 이후라도 공고 입찰 참가 제한(제출서류의 허위사실)에 따른 <b>선정 제외 · 계약 해지</b> 등 귀 협의회의 조치를 이의 없이 받아들이겠습니다.
+귀 협의회가 요청하시면 관련 법령이 허용하는 범위에서 확인 서류를 지체 없이 제출하겠습니다(범죄경력회보서는 대표이사가 지참하여 열람으로 확인).</p>
+{sign()}"""
+    return doc("07 대표이사 범죄사실증명서 · 결격사유 부존재 서약서", [p1, p2])
+
+
 # ================================================================== 09 [별지 2호] 실적 총괄표 + 증빙 안내
 def _expo(nm):
     sch, plc = D.EXPO_VENUE.get(nm) or (None, None)
     if not sch:  # 일정 미확인(장소만 확인된 단지 포함)
         sg = D.R500_SIGNED.get(nm)
-        return ((f'입주박람회 · 공동구매 <span style="color:#555">(협약 {sg})</span><br>' if sg else "") + todo("일정 확인"),
+        return (((f'<span style="color:#555">협약 {sg}</span> ' if sg else ""))
+                + todo(getattr(D, "EXPO_ASK", {}).get(nm, "일정 확인")),
                 e(plc) if plc else todo("장소 확인"))
-    return "입주박람회 · 공동구매<br>" + e(sch).replace("\n", "<br>"), e(plc)
+    return e(sch).replace("\n", "<br>"), e(plc)  # 구분(입주박람회 · 공동구매)은 열 제목에 한 번
 
 
 def doc09_form():
-    rs = sorted([r for r in D.RECENT3_500 if r[3]], key=lambda r: r[0])
+    # 본부장 10-19: 주관 11 + 수임 · 진행(운영) 9 — 공고 참가자격 '주관 또는 운영실적'
+    rs = sorted(D.RECENT3_500, key=lambda r: r[0])
     rows = ""
-    for m, nm, n, _j in rs:
-        sch, plc = _expo(nm)
-        rows += f'<tr><td>{e(nm)} <span style="color:#555">({m})</span></td><td class="c">{n:,}</td><td class="c" style="font-size:8.9pt">{sch}</td><td class="c">{plc}</td></tr>'
+    for gname, g in (("① 주관", [r for r in rs if r[3]]), ("② 운영(수임 · 진행)", [r for r in rs if not r[3]])):
+        rows += f'<tr><th colspan="4" style="text-align:left;background:#E6E6E6">{gname} · {len(g)}개 단지 · {sum(r[2] for r in g):,}세대</th></tr>'
+        for m, nm, n, _j in g:
+            sch, plc = _expo(nm)
+            rows += f'<tr><td>{e(nm)} <span style="color:#555">({m})</span></td><td class="c">{n:,}</td><td class="c" style="font-size:8.6pt">{sch}</td><td class="c">{plc}</td></tr>'
     tot = sum(r[2] for r in rs)
     yy, mm, dd = ymd()
-    body = f"""<style>.b2 th,.b2 td{{padding:3pt 6pt!important;font-size:9.6pt!important;line-height:1.4!important}}</style>
+    body = f"""<style>.b2 th,.b2 td{{padding:1.6pt 5pt!important;font-size:8.8pt!important;line-height:1.28!important}}</style>
 <div class="form"><div class="no">[별지 서식 제2호]</div><h1 style="letter-spacing:.12em;margin:6pt 0 10pt">최근 3년간 주관사 실적 총괄표</h1>
-<table class="ft r2 b2"><thead><tr><th>아파트명 (입주일)</th><th style="width:10%">세대수</th><th style="width:37%">박람회 일정</th><th style="width:19%">행사 장소</th></tr></thead>
+<table class="ft r2 b2"><thead><tr><th>아파트명 (입주일)</th><th style="width:10%">세대수</th><th style="width:37%">박람회 일정<br><span style="font-weight:400;font-size:8pt">(구분: 입주박람회 · 공동구매)</span></th><th style="width:19%">행사 장소</th></tr></thead>
 <tbody>{rows}<tr><th>합계 {len(rs)}개 단지</th><th>{tot:,}</th><th colspan="2"></th></tr></tbody></table>
 <div style="font-size:8.8pt;color:#444;margin-top:4pt;line-height:1.5">※ 세대수가 500세대 이상인 아파트 기준으로 작성<br>
 ※ 박람회 일정에는 공동구매, 입주박람회 등 구분 기재<br>
@@ -716,10 +751,10 @@ def fit(path, lo, hi=None):
     return path
 
 
-ORDER = ["00", "01", "02", "03", "04", "05", "06", "08", "09", "09-2", "10", "11", "12", "14", "15", "16", "17"]
+ORDER = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "09-2", "10", "11", "12", "14", "15", "16", "17"]
 NAMES = {  # 제출본 파일 · ZIP 폴더 이름(별지 6 번호 · 서류명)
     "00": "00_서류제출목록표", "01": "01_입찰참가신청서", "02": "02_사업자등록증", "03": "03_법인등기부등본",
-    "04": "04_지방세_완납증명서", "05": "05_국세_완납증명서", "06": "06_법인인감증명서", "08": "08_주관사_제안서",
+    "04": "04_지방세_완납증명서", "05": "05_국세_완납증명서", "06": "06_법인인감증명서", "07": "07_대표이사_범죄사실증명서_결격사유서약서", "08": "08_주관사_제안서",
     "09": "09_최근3년_주관사실적_총괄표_증빙", "09-2": "09-2_4대보험_완납증명서", "10": "10_하자보수_이행각서",
     "11": "11_청렴계약_이행준수_서약서", "12": "12_영업배상책임보험_증서", "14": "14_이의제기_금지_서약서",
     "15": "15_신용평가서_상세내역", "16": "16_사업장_및_조직현황", "17": "17_기타_요약제안서",
@@ -764,6 +799,7 @@ def main():
     res["04"] = merge(NAMES["04"], [f"{EV}/지방세_납세증명서.pdf"], "4 지방세 완납 증명서")
     res["05"] = merge(NAMES["05"], [f"{EV}/국세_납세증명서.pdf"], "5 국세 완납 증명서")
     res["06"] = merge(NAMES["06"], [f"{EV}/법인인감증명서.pdf"], "6 법인인감증명서")
+    res["07"] = stamped(fit(render("07_대표이사_범죄사실증명서_결격사유서약서", doc07()), 2))
     res["08"] = out(NAMES["08"] + "_메일용.pdf")  # 작업/ = 메일용 사본 · 제출본/ = 원본(아래)
     shutil.copyfile(P08_MAIL, res["08"])
     a1 = stamped(annex_nice(NICE_SRC, out("09_3_별첨1_NICE연혁발췌.pdf")))
@@ -788,6 +824,18 @@ def main():
         res["17"] = out(NAMES["17"] + ".pdf")
         shutil.copyfile(P17, res["17"])
 
+    # ---- 서식 날인용 출력본(본부장 10-19): 직인 찍기 전 서식만 한 파일로 — 출력 → 실물 인감 날인 → 스캔
+    PRINT_SRC = ["01_입찰참가신청서", "07_대표이사_범죄사실증명서_결격사유서약서", "09_1_별지2_실적총괄표", "09_2_실적증빙_안내",
+                 "09_3_별첨1_NICE연혁발췌", "09_4_별첨2_실적확약서", "10_하자보수_이행각서", "11_청렴계약_이행준수_서약서",
+                 "14_이의제기_금지_서약서", "16_사업장_및_조직현황"]
+    pr, toc, pg0 = fitz.open(), [], 1
+    for nm in PRINT_SRC:
+        d_ = fitz.open(out(nm + ".pdf"))
+        toc.append([1, nm, pg0]); pg0 += len(d_); pr.insert_pdf(d_)
+    pr.set_toc(toc); pr.set_metadata({"title": "서식 날인용 출력본(직인 전)", "author": D.COMPANY})
+    pr.save(out("서식날인_출력용.pdf"), garbage=GARBAGE, deflate=True)
+    print(f"[출력용] {PFX}서식날인_출력용.pdf {len(pr)}쪽 — '(인)' 자리에 실물 인감 날인 후 스캔")
+
     # ---- 제출본/: 조치 끝난 서류만(지난 실행 파일은 지우고 다시) · 08은 원본
     for f in os.listdir(SUBMIT):
         if f.endswith(".pdf"):
@@ -806,7 +854,7 @@ def main():
             dst = os.path.join(SUBMIT, PFX + NAMES[k] + ".pdf")
             shutil.copyfile(src, dst)
             attach.append((k, dst))
-    lines += ["07 대표이사 범죄사실증명서 — 서류심사 합격 시 제출(파일 없음)", "13 계약이행보증보험 — 주관사 선정 후 제출(파일 없음)"]
+    lines += ["13 계약이행보증보험 — 주관사 선정 후 제출(파일 없음)"]
     if os.path.exists(ZIP):
         os.remove(ZIP)
     with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED) as z:  # 공고: '제출서류는 보기좋게 폴더별로 .zip'
