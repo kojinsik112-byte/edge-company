@@ -232,6 +232,14 @@ _JUGWAN = {r[1] for r in RECENT3_OS}
 JUGWAN_ADD = {"연산포레 서희스타힐스", "강서자이 에코델타", "에코델타시티 푸르지오 린", "남울산 노르웨이숲", "영주자이 시그니처"}
 RECENT3_500 = [(m, nm, n, nm in _JUGWAN or nm in R500_HAVE or nm in JUGWAN_ADD) for nm, n, _u, m in sorted(SUIM, key=lambda r: r[3])
                if n >= 500 and "2023.10" <= m <= "2026.12"]  # (입주 연월, 단지, 세대, 주관 여부)
+# 본부장 10-19 제공: BEXCO 공식 행사일정 캡처(주최/주관 엣지컴퍼니) — 제출서류 9 별첨 4(한 장에 2 ~ 3곳) · 입주 순
+BEXCO_CAPS = [  # (단지 = SUIM 이름, 파일(assets_ins/), BEXCO 행사명, 기간, 장소)
+    ("연산포레 서희스타힐스", "bx_yeonsan.png", "연산 서희스타힐스 입주박람회", "2024.07.20 ~ 07.21", "제2전시장 4(D, E)홀"),
+    ("e편한세상 에코델타 센터포인트", "bx_centerpoint.png", "e편한세상 에코델타 센터포인트 입주박람회", "2025.02.14 ~ 02.16", "제2전시장 4E, F홀"),
+    ("강서자이 에코델타", "bx_gangseo.png", "강서자이 에코델타 입주박람회", "2025.02.21 ~ 02.23", "제2전시장 4(E-F)홀"),
+    ("에코델타시티 푸르지오 린", "bx_prugio_lin.png", "에코델타 푸르지오 린 입주박람회", "2025.07.05 ~ 07.07", "제2전시장 4(E-F)홀"),
+    ("에코델타 대성베르힐", "bx_daesung.png", "에코델타 대성베르힐 입주박람회", "2025.11.28 ~ 11.30", "제2전시장 4(D-F)홀"),
+]
 assert len(RECENT3_500) == 20 and sum(1 for r in RECENT3_500 if r[3]) == 16 and all(any(r[1] == k for r in RECENT3_500) for k in JUGWAN_ADD) and all(any(r[1] == k for r in RECENT3_500) for k in R500_HAVE), len(RECENT3_500)
 
 # ------------------------------------------------------------ 제출서류(docs_gy.py) — 공고 ◆필수 제출서류 · 별지 6 서류 제출 목록표 순서
