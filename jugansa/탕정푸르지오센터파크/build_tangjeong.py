@@ -806,17 +806,36 @@ if not os.environ.get("NO_NATIVE"):
     _rows = (sorted([r for r in D.SUIM if r[1] >= 1000], key=lambda r: -r[1])
              + sorted([r for r in D.SUIM if r[1] < 1000], key=lambda r: r[3]))
     _now = "2026.10"
-    _li = "".join(f'<li class="{"big" if n >= 1000 else ""}{" fut" if m > _now else ""}"><span>{nm} <i>{m}{" 예정" if m > _now else ""}</i></span>'
+    _held = {"영주자이 시그니처"}  # 박람회를 이미 치른 입주 전 단지(영주자이 2026.08 개최 · 2026.12 입주) — '개최 예정'에서 뺀다
+    _li = "".join(f'<li class="{"big" if n >= 1000 else ""}{" fut" if m > _now else ""}"><span>{nm} <i>{m}{" 입주 · 주관 개최 예정" if m > _now and nm not in _held else " 입주 예정" if m > _now else ""}</i></span>'
                   f'<b>{n:,}{u}</b></li>' for nm, n, u, m in _rows)
     _cols = [f"<ul>{_li}</ul>"]
     _n1k = sum(1 for r in _rows if r[1] >= 1000)
-    _nfut = sum(1 for r in _rows if r[3] > _now)
+    _nfut = sum(1 for r in _rows if r[3] > _now and r[0] not in _held)
     _di = next(i for i, (_, k) in enumerate(B.PAGES) if k.get("title") == "[[대단지]] 운영 경험")
     B.PAGES.insert(_di + 1, ("std", dict(sec=B.PAGES[_di][1].get("sec", ""), title=f"2023년 이후 수임 단지 [[{sum(D.DANJI_N.get(r[0], 1) for r in _rows)}곳]]",
-        lead="1,000세대 이상(금색)은 세대수 순, 나머지는 입주 순 · 날짜는 입주 연월(입주 전은 예정월).",
+        lead="1,000세대 이상(금색)은 세대수 순, 나머지는 입주 순 · 날짜는 입주 연월 · 입주 전 단지는 박람회 주관 개최 예정.",
         body='<div class="ylist">' + "".join(_cols) + "</div>",
-        kp=(f"{sum(D.DANJI_N.get(r[0], 1) for r in _rows)}개 단지 · 1,000세대 이상 [[{_n1k}곳]] · 입주 예정 [[{_nfut}곳]] 진행 중",
+        kp=(f"{sum(D.DANJI_N.get(r[0], 1) for r in _rows)}개 단지 · 1,000세대 이상 [[{_n1k}곳]] · 주관 개최 예정 [[{_nfut}곳]]",
             "공식 단지명·총세대수 기준 · 양정자이더샵SK VIEW 1·2단지는 2개 단지로 집계"))))
+    # 앞으로 주관할 단지(본부장 10-19) — 수임 단지 장 바로 뒤 · 입주 전 단지 = 주관 개최 예정(박람회 시기 = 입주 2 ~ 3개월 전 · 2 ~ 3일)
+    def _ym(m, k):
+        y, mo = int(m[:4]), int(m[5:]) - k
+        return f"{y + (mo - 1) // 12}.{(mo - 1) % 12 + 1:02d}"
+    _fu = sorted([r for r in D.SUIM if r[3] > _now and r[0] not in _held], key=lambda r: r[3])
+    _ftr = "".join(f'<tr><td class="k">{nm}</td><td style="text-align:right">{n:,}세대</td><td style="text-align:center">{m}</td>'
+                   f'<td style="text-align:center">{_ym(m, 3)} ~ {_ym(m, 2)} (안)</td><td style="text-align:center">주관 개최 예정</td></tr>' for nm, n, _u, m in _fu)
+    _fh = sum(r[1] for r in _fu)
+    _fband = ('<div class="bband" style="margin-top:18px">'
+              f'<div><i>주관 개최 예정</i><b>{len(_fu)}<small>개 단지</small></b></div>'
+              f'<div><i>예정 세대 합계</i><b>{_fh:,}<small>세대</small></b></div>'
+              f'<div><i>1,000세대 이상</i><b>{sum(1 for r in _fu if r[1] >= 1000)}<small>곳</small></b></div>'
+              f'<div class="nx"><i>가장 가까운 박람회</i><b>{_ym(_fu[0][3], 3)} ~ {_ym(_fu[0][3], 2)}</b><p>{_fu[0][0]} · {_fu[0][3]} 입주</p></div></div>')
+    B.PAGES.insert(_di + 2, ("std", dict(sec=B.PAGES[_di][1].get("sec", ""), title=f"앞으로 주관할 단지 [[{len(_fu)}곳]]",
+        lead="이미 수임해 입주를 준비 중인 단지입니다. 박람회는 입주 2 ~ 3개월 전, 2 ~ 3일 동안 엽니다.",
+        body='<div class="nb">' + table(["단지", "세대", "입주 예정", "박람회 시기(안)", "구분"], _ftr) + _fband + "</div>",
+        kp=(f"{_fh:,}세대의 박람회가 이미 [[예정되어 있습니다]] - 같은 팀이 {D.SITE['name']}도 맡습니다.",
+            "입주 일정 · 박람회 날짜는 각 단지 입주예정자협의회와 확정 · 사정에 따라 바뀔 수 있음"))))
     # 2,000세대 이상 초대형 단지 강조(본부장 지시 10-07, 통합제안서 대단지 장 참고) — 성공사례 장 바로 뒤
     _big = [("n02_raycounty_v2", "레이카운티", 4470, "2023.11 입주", "부산 거제2구역 재개발", "단일 단지 최대 규모"),
             ("n02_oceancity_v2", "두산위브더제니스 오션시티", 2813, "2026.01 입주", "부산 우암2구역 재개발", "대단지 입주 운영"),

@@ -368,7 +368,7 @@ def doc09_cover():
     grp = [(None, None, sorted(r5, key=lambda r: r[0]))]  # 본부장 10-19: 한 목록 · 입주 순
     rows, i, n_ev = "", 0, 0
     bx = {c[0]: k for k, c in enumerate(D.EXPO_CAPS, 1)}
-    src = {c[0]: ("UECO 공식 행사일정" if "UECO" in c[2] else "입주자 공식 카페 공지" if "카페" in c[2] else "BEXCO 공식 행사일정") for c in D.EXPO_CAPS}
+    src = {c[0]: ("UECO 공식 행사일정" if "UECO" in c[2] else "CECO 공식 행사일정" if "CECO" in c[2] else "입주자 공식 카페 공지" if "카페" in c[2] else "BEXCO 공식 행사일정") for c in D.EXPO_CAPS}
     for gno, gname, rs in grp:
         for m, nm, n, j in rs:
             i += 1
@@ -558,6 +558,7 @@ def CAP_SRC():
     k = []
     if any(c[2].startswith("BEXCO") for c in D.EXPO_CAPS): k.append("벡스코(BEXCO) 홈페이지 ‘행사일정’ 상세 화면")
     if any("UECO" in c[2] for c in D.EXPO_CAPS): k.append("울산전시컨벤션센터(UECO) 홈페이지 ‘전체일정’ 화면")
+    if any("CECO" in c[2] for c in D.EXPO_CAPS): k.append("창원컨벤션센터(CECO) 홈페이지 ‘전체일정’ 화면")
     if any("카페" in c[2] for c in D.EXPO_CAPS): k.append("단지 입주자 공식 카페 ‘엣지컴퍼니 공지사항’ 게시판")
     return " · ".join(k)
 

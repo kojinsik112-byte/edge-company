@@ -241,6 +241,7 @@ EXPO_CAPS_ALL = [  # (단지 = SUIM 이름, 파일(assets_ins/), 출처, 기간,
     ("에코델타 대성베르힐", "bx_daesung.png", "BEXCO 공식 행사일정", "2025.11.28 ~ 11.30", "BEXCO 제2전시장 4(D-F)홀"),
     ("남울산 노르웨이숲", "ueco_namulsan.png", "울산전시컨벤션센터(UECO) 공식 행사일정", "2026.03.28 ~ 03.29", "UECO 전시장 B"),
     ("영주자이 시그니처", "cafe_yeongju.png", "입주자 공식 카페 ‘엣지컴퍼니 공지사항’ 게시판(입주민 닉네임 가림)", "2026.08.29 ~ 08.30", "영주 그랜드컨벤션"),
+    ("창원 센트럴 아이파크", "ceco_changwon.png", "창원컨벤션센터(CECO) 공식 행사일정", "2026.07.03 ~ 07.05", "CECO 제2전시장"),  # 본부장 10-19 캡처(주최 엣지컴퍼니)
 ]
 import os as _os
 _AI = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "assets_ins")
