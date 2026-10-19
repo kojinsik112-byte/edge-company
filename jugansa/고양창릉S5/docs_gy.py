@@ -368,7 +368,7 @@ def doc09_cover():
     grp = [(None, None, sorted(r5, key=lambda r: r[0]))]  # 본부장 10-19: 한 목록 · 입주 순
     rows, i, n_ev = "", 0, 0
     bx = {c[0]: k for k, c in enumerate(D.EXPO_CAPS, 1)}
-    src = {c[0]: c[2] for c in D.EXPO_CAPS}
+    src = {c[0]: ("UECO 공식 행사일정" if "UECO" in c[2] else "입주자 공식 카페 공지" if "카페" in c[2] else "BEXCO 공식 행사일정") for c in D.EXPO_CAPS}
     for gno, gname, rs in grp:
         for m, nm, n, j in rs:
             i += 1
