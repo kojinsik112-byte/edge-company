@@ -191,7 +191,7 @@ def birth(v, who):
 
 
 # ------------------------------------------------------------------ 상태 점검(파일을 쓰기 전에)
-def venue_missing():  # 별지 2 = 주관 + 운영 전 단지
+def venue_missing():  # 별지 2 = 주관 전 단지
     return [nm for _m, nm, _n, j in D.RECENT3_500 if not all(D.EXPO_VENUE.get(nm) or (None, None))]
 
 
@@ -236,7 +236,7 @@ def list_rows(n):
         ("7", "대표이사 범죄사실증명서(서류심사 합격한 주관사 해당)", "O", "대표자 결격사유 부존재 서약서로 먼저 제출 · 회보서는 서류심사 합격 시 대표 지참 열람(형실효법 제6조 · 제10조)"),
         ("8", "주관사 제안서", "O", f"필수 · {n['08']}쪽"),
         ("9", "최근 3년간 500세대 이상 주관사 실적 총괄표【별지서식 2호】", "O",
-         f"필수 · 주관 {len(r5j)} + 운영 {len(D.RECENT3_500) - len(r5j)} = {len(D.RECENT3_500)}개 단지 · {sum(r[2] for r in D.RECENT3_500):,}세대 · 증빙: NICE 연혁 발췌 · 실적 확약서 · 주관사 협약서 {len(D.R500_HAVE)}건"),
+         f"필수 · 주관 {len(r5j)}개 단지 · {sum(r[2] for r in D.RECENT3_500):,}세대 · 증빙: NICE 연혁 발췌 · 실적 확약서 · 주관사 협약서 {len(D.R500_HAVE)}건"),
         ("9", "4대 보험 완납증명서", "O", f"필수 · 건강 · 연금(국민건강보험공단) · 고용 · 산재(근로복지공단) 각 {D.WANNAP_DATE} 발급"),
         ("10", "하자보수(환불)이행각서【별지서식 제3호】", "O", "필수"),
         ("11", "청렴계약 이행 준수 서약서【별지서식 제4호】", "O", "필수"),
@@ -329,14 +329,14 @@ def _expo(nm):
 
 
 def doc09_form():
-    # 본부장 10-19: 주관 16 + 운영 4 — 공고 참가자격 '주관 또는 운영실적'
+    # 본부장 10-19: 20개 단지 한 목록 · 입주 순 — 모두 당사 주관
     rs = sorted(D.RECENT3_500, key=lambda r: r[0])
     rows = ""
-    for gname, g in (("① 주관", [r for r in rs if r[3]]), ("② 운영", [r for r in rs if not r[3]])):
-        rows += f'<tr><th colspan="4" style="text-align:left;background:#E6E6E6">{gname} · {len(g)}개 단지 · {sum(r[2] for r in g):,}세대</th></tr>'
-        for m, nm, n, _j in g:
-            sch, plc = _expo(nm)
-            rows += f'<tr><td>{e(nm)} <span style="color:#555">({m})</span></td><td class="c">{n:,}</td><td class="c" style="font-size:8.6pt">{sch}</td><td class="c">{plc}</td></tr>'
+    for m, nm, n, j in rs:
+        sch, plc = _expo(nm)
+        assert j, nm
+        tag = ""
+        rows += f'<tr><td>{e(nm)} <span style="color:#555">({m})</span>{tag}</td><td class="c">{n:,}</td><td class="c" style="font-size:8.6pt">{sch}</td><td class="c">{plc}</td></tr>'
     tot = sum(r[2] for r in rs)
     yy, mm, dd = ymd()
     body = f"""<style>.b2 th,.b2 td{{padding:1.6pt 5pt!important;font-size:8.8pt!important;line-height:1.28!important}}</style>
@@ -345,6 +345,7 @@ def doc09_form():
 <tbody>{rows}<tr><th>합계 {len(rs)}개 단지</th><th>{tot:,}</th><th colspan="2"></th></tr></tbody></table>
 <div style="font-size:8.8pt;color:#444;margin-top:4pt;line-height:1.5">※ 세대수가 500세대 이상인 아파트 기준으로 작성<br>
 ※ 박람회 일정에는 공동구매, 입주박람회 등 구분 기재<br>
+※ 20개 단지 모두 당사 주관 · 입주 연월 순<br>
 ※ 증빙할 수 있는 협약서 또는 수임 실적 증명서 등 스캔본 별도 추가 제출 — 다음 쪽 ‘실적 증빙 안내’ · 별첨 1 ~ 4</div>
 <p class="tx" style="text-align:center;text-indent:0;margin-top:8pt">이상 사실과 다름이 없습니다.</p>
 <div class="dt" style="margin-top:4pt">{yy}년 &nbsp; {mm}월 &nbsp; {dd}일</div>
@@ -364,11 +365,11 @@ def doc09_cover():
     nice_names = {r[1] for r in D.RECENT3}
     big = {r[1] for r in D.RECENT3_OS}
     have = list(D.R500_HAVE)
-    grp = [("①", "주관(별지 2 총괄표와 같음)", [r for r in r5 if r[3]]), ("②", "운영 — 참고(증빙 요청 시 제출)", [r for r in r5 if not r[3]])]
+    grp = [(None, None, sorted(r5, key=lambda r: r[0]))]  # 본부장 10-19: 한 목록 · 입주 순
     rows, i, n_ev = "", 0, 0
-    bx = {c[0]: k for k, c in enumerate(D.BEXCO_CAPS, 1)}
+    bx = {c[0]: k for k, c in enumerate(D.EXPO_CAPS, 1)}
+    src = {c[0]: c[2] for c in D.EXPO_CAPS}
     for gno, gname, rs in grp:
-        rows += f'<tr class="gh"><td colspan="6">{gno} {gname} · {len(rs)}개 단지 · {sum(r[2] for r in rs):,}세대</td></tr>'
         for m, nm, n, j in rs:
             i += 1
             if j and nm in big:
@@ -377,31 +378,31 @@ def doc09_cover():
             elif j and nm in D.R500_HAVE:
                 ev = f"주관사 협약서(별첨 3-{sorted(have, key=lambda k: D.R500_SIGNED[k]).index(nm) + 1} · 협약 {D.R500_SIGNED[nm]})"
             elif j and nm in bx:
-                ev = f"BEXCO 공식 행사일정(별첨 4-{bx[nm]})"
+                ev = f"{src[nm].split('(입주민')[0]}(별첨 4-{bx[nm]})"
             elif j:
                 assert nm in D.JUGWAN_ADD, nm
                 ev = "요청 시 제출(박람회 일정 · 장소는 별지 2)"
             else:
                 ev = "요청 시 제출"
-            if j and nm in bx and "BEXCO" not in ev:
-                ev += f" · BEXCO(별첨 4-{bx[nm]})"
+            if j and nm in bx and "별첨 4" not in ev:
+                ev += f" · {src[nm].split(' ')[0]}(별첨 4-{bx[nm]})"
             n_ev += 1 if j and not ev.startswith("요청") else 0
             rows += (f'<tr class="{"jg" if j else ""}"><td>{i}</td><td>{m}</td><td class="l">{e(nm)}</td><td class="r">{n:,}</td>'
-                     f'<td class="g">{"주관" if j else "운영"}</td><td class="l">{ev}</td></tr>')
+                     f'<td class="g">주관</td><td class="l">{ev}</td></tr>')
     tot = sum(r[2] for r in r5)
     nj, hj = sum(1 for r in r5 if r[3]), sum(r[2] for r in r5 if r[3])
-    body = f"""{head("제출서류 9", "최근 3년간 주관 · 운영 실적 — 실적 증빙 안내")}
-<p class="note" style="margin-top:4pt">기준: 공고 입찰 참가자격 ‘최근 3년 이내 500세대 이상 공동주택 입주박람회 주관 또는 운영실적’ · 입주 연월 2023.10 ~ 2026.12(2027년 입주 예정 단지 제외) · 단지명 · 세대수는 당사 수임 목록 기준.</p>
+    body = f"""{head("제출서류 9", "최근 3년간 주관 실적 — 실적 증빙 안내")}
+<p class="note" style="margin-top:4pt">기준: 공고 입찰 참가자격 ‘최근 3년 이내 500세대 이상 공동주택 입주박람회 주관 또는 운영실적’ · 입주 연월 2023.10 ~ 2026.12(2027년 입주 예정 단지 제외) · 단지명 · 세대수는 당사 실적 목록 기준.</p>
 <style>.t.ls.r9 td{{padding:.5pt 5pt;font-size:8.5pt;line-height:1.3}}.t.ls.r9 th{{font-size:8.8pt}}.pl li.sm{{font-size:8.6pt!important;margin:0!important}}.t.ls.r9 tr.gh td{{padding:1.5pt 6pt}}h1{{font-size:16.5pt!important;margin-top:8pt!important}}.box{{margin-top:6pt!important;padding:5pt 10pt!important;font-size:9.3pt!important}}</style>
 <table class="t ls r9" style="margin-top:6pt"><thead><tr><th style="width:5%">No</th><th style="width:10%">입주</th><th>단지명</th><th style="width:10%">세대수</th><th style="width:7%">구분</th><th style="width:36%">증빙</th></tr></thead>
 <tbody>{rows}
-<tr class="sum"><td colspan="3">합계 {len(r5)}개 단지 (주관 {nj}개 단지 · {hj:,}세대)</td><td class="r">{tot:,}</td><td></td><td></td></tr></tbody></table>
-<div class="box"><b>참가자격 대비</b> &nbsp; 최근 3년 500세대 이상 주관 또는 운영 실적 &nbsp;→&nbsp; <b>주관 {nj}개 단지(증빙 첨부 {n_ev}개 단지) · 충족</b> (주관 · 운영 전체 {len(r5)}개 단지 · {tot:,}세대)<br>
-‘주관’ = 당사가 주관사로 수행 — 1,000세대 이상 {len(big)}개 단지 + 주관사 협약서 {len(have)}개 단지 + 500 ~ 999세대 {len(D.JUGWAN_ADD)}개 단지 · ‘운영’ = 당사 수임으로 입주박람회 · 공동구매 운영</div>
+<tr class="sum"><td colspan="3">합계 {len(r5)}개 단지 (모두 주관)</td><td class="r">{tot:,}</td><td></td><td></td></tr></tbody></table>
+<div class="box"><b>참가자격 대비</b> &nbsp; 최근 3년 500세대 이상 주관 또는 운영 실적 &nbsp;→&nbsp; <b>주관 {nj}개 단지(증빙 첨부 {n_ev}개 단지) · 충족</b> (전체 {len(r5)}개 단지 · {tot:,}세대)<br>
+‘주관’ = 당사가 주관사로 수행 — 1,000세대 이상 {len(big)}개 단지 + 주관사 협약서 {len(have)}개 단지 + 500 ~ 999세대 {len(D.JUGWAN_ADD)}개 단지</div>
 <ol class="pl" style="margin-top:3pt"><li class="sm">별첨 1. NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌 — 1쪽(보고서 전문은 제출서류 15)</li>
-<li class="sm">별첨 2. 실적 확약서(1,000세대 이상 입주박람회 주관 10개 단지) — 붙임 1 · 2 단지 카페 주관사 공지 캡처(입주민 닉네임 가림) · 붙임 3 BEXCO 공식 행사일정 캡처</li>
+<li class="sm">별첨 2. 실적 확약서(1,000세대 이상 입주박람회 주관 10개 단지 · 최근 3년 8 + 2023.10 이전 2) — 붙임 1 · 2 단지 카페 주관사 공지 캡처(입주민 닉네임 가림) · 붙임 3 BEXCO 공식 행사일정 캡처</li>
 <li class="sm">별첨 3. 500세대 이상 주관사 협약서 — {" · ".join(f"3-{k + 1} {e(nm)}" for k, nm in enumerate(sorted(have, key=lambda k: D.R500_SIGNED[k])))} — 협약일 순(상대방 대표자 성명 · 서명 가림, 3-2 특약 금액 가림)</li>
-<li class="sm">별첨 4. BEXCO 공식 행사일정 캡처(주최/주관 엣지컴퍼니) — {len(D.BEXCO_CAPS)}곳 · 표의 ‘별첨 4-n’</li>
+<li class="sm">별첨 4. {CAP_TITLE()}(주최/주관란에 엣지컴퍼니 기재) — {len(D.EXPO_CAPS)}곳 · 표의 ‘별첨 4-n’</li>
 </ol>
 <p class="note">※ 증빙 미첨부 단지(‘요청 시 제출’)는 요청 시 계약서 · 정산 자료를 지체 없이 추가 제출합니다. 주관 시기(NICE 연혁)와 입주 연월은 다를 수 있습니다.</p>
 <p class="body" style="font-size:9.6pt;margin-top:2pt;line-height:1.6">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 ‘입찰 참가 제한’(제출서류 · 제안내용의 허위사실)에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign().replace('class="sign"', 'class="sign" style="margin-top:2pt"').replace('class="to"', 'class="to" style="margin-top:4pt"')}"""
@@ -553,21 +554,46 @@ def doc09_hwakyak():
     return f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>실적 확약서</title><style>{hw.CSS}{HW_FIT}</style></head><body>{p1}{caps}</body></html>'
 
 
-def doc09_bexco():  # 별첨 4 — 한 장에 2 ~ 3곳(본부장 10-19: 서류 수를 늘리지 않게 묶음)
-    caps = list(enumerate(D.BEXCO_CAPS, 1))
-    pages = [caps[:3], caps[3:]]
+def CAP_SRC():
+    k = []
+    if any(c[2].startswith("BEXCO") for c in D.EXPO_CAPS): k.append("벡스코(BEXCO) 홈페이지 ‘행사일정’ 상세 화면")
+    if any("UECO" in c[2] for c in D.EXPO_CAPS): k.append("울산전시컨벤션센터(UECO) 홈페이지 ‘전체일정’ 화면")
+    if any("카페" in c[2] for c in D.EXPO_CAPS): k.append("단지 입주자 공식 카페 ‘엣지컴퍼니 공지사항’ 게시판")
+    return " · ".join(k)
+
+
+def CAP_TITLE():
+    return "BEXCO 공식 행사일정 캡처" if all(c[2].startswith("BEXCO") for c in D.EXPO_CAPS) else "박람회장 공식 행사일정 · 카페 공지 캡처"
+
+
+def doc09_bexco():  # 별첨 4 — 한 장에 2 ~ 3곳(본부장 10-19: 서류 수를 늘리지 않게 묶음 · 안 되면 나눔)
+    from PIL import Image
+    caps = []
+    for k, (nm, f, kind, per, hall) in enumerate(D.EXPO_CAPS, 1):
+        w, h = Image.open(os.path.join(HERE, "assets_ins", f)).size
+        caps.append((k, nm, f, kind, per, hall, 2 if h > w else 1))  # 세로 캡처 = 2칸
+    tot_w = sum(c[-1] for c in caps)
+    npg = max(1, -(-tot_w // 3))
+    pages, cur, cw, left = [], [], 0, tot_w
+    for c in caps:
+        tgt = -(-left // (npg - len(pages))) if npg > len(pages) else 3
+        if cur and cw + c[-1] > tgt:
+            pages.append(cur); left -= cw; cur, cw = [], 0
+            tgt = -(-left // max(1, npg - len(pages)))
+        cur.append(c); cw += c[-1]
+    if cur: pages.append(cur)
     secs = []
     for pi, cs in enumerate(pages):
         items = "".join(
-            f'<div class="bxc"><div class="bh"><b>4-{k}</b> {e(nm)} <span>· {e(per)} · BEXCO {e(hall)}</span></div>'
-            f'<img src="../assets_ins/{f}" alt=""></div>' for k, (nm, f, _t, per, hall) in cs)
-        secs.append(head("제출서류 9 · 별첨 4", f"BEXCO 공식 행사일정 캡처 ({pi + 1}/{len(pages)})")
-                    + '<p class="note" style="margin-top:4pt">출처: 벡스코(BEXCO) 홈페이지 ‘행사일정’ 상세 화면 · 주최/주관란 = 주식회사 엣지컴퍼니 · 화면 그대로(가공 없음)</p>'
+            f'<div class="bxc{" tall" if wt == 2 else ""}"><div class="bh"><b>4-{k}</b> {e(nm)} <span>· {e(kind)} · {e(per)} · {e(hall)}</span></div>'
+            f'<img src="../assets_ins/{f}" alt=""></div>' for k, nm, f, kind, per, hall, wt in cs)
+        secs.append(head("제출서류 9 · 별첨 4", f"{CAP_TITLE()} ({pi + 1}/{len(pages)})")
+                    + f'<p class="note" style="margin-top:4pt">출처: {CAP_SRC()} · 주최 · 주관란 = 주식회사 엣지컴퍼니 · 화면 그대로{"(입주민 닉네임만 가림)" if any("카페" in c[2] for c in D.EXPO_CAPS) else "(가공 없음)"}</p>'
                     + f'<div class="bxs">{items}</div>')
     css = CSS + (".bxs{display:flex;flex-direction:column;gap:7pt;margin-top:6pt}.bxc{border:1px solid #c9ced6;border-radius:3pt;padding:5pt 6pt}"
                  ".bh{font-size:10pt;margin-bottom:4pt}.bh b{color:#9A7B3F;margin-right:4pt}.bh span{color:#555;font-size:9pt}"
-                 ".bxc img{display:block;width:100%;max-height:58mm;object-fit:contain;object-position:left top}")
-    return doc("09 별첨 4 BEXCO 공식 행사일정", secs, css)
+                 ".bxc img{display:block;width:100%;max-height:58mm;object-fit:contain;object-position:left top}.bxc.tall img{max-height:130mm}")
+    return doc("09 별첨 4 박람회 공식 행사일정 · 카페 공지", secs, css), len(pages)
 
 
 # ================================================================== 10 하자 보수 이행 각서 [별지 3호]
@@ -830,10 +856,11 @@ def main():
     res["08"] = out(NAMES["08"] + "_메일용.pdf")  # 작업/ = 메일용 사본 · 제출본/ = 원본(아래)
     shutil.copyfile(P08_MAIL, res["08"])
     a1 = stamped(annex_nice(NICE_SRC, out("09_3_별첨1_NICE연혁발췌.pdf")))
+    _b4 = doc09_bexco()
     parts9 = [stamped(fit(render("09_1_별지2_실적총괄표", doc09_form()), 1)), stamped(fit(render("09_2_실적증빙_안내", doc09_cover()), 1)), a1,
-              stamped(fit(render("09_4_별첨2_실적확약서", doc09_hwakyak()), 4)), D.R500_DOC, fit(render("09_5_별첨4_BEXCO", doc09_bexco()), 2)]
-    names9 = ["[별지 2호] 최근 3년간 주관사 실적 총괄표", f"실적 증빙 안내(주관 {sum(1 for r in D.RECENT3_500 if r[3])} · 운영 {sum(1 for r in D.RECENT3_500 if not r[3])})", "별첨 1 NICE 연혁 발췌",
-              "별첨 2 실적 확약서 · 붙임 1 ~ 3", f"별첨 3 주관사 협약서 {len(D.R500_HAVE)}건(협약일 순)", f"별첨 4 BEXCO 공식 행사일정 {len(D.BEXCO_CAPS)}곳"]
+              stamped(fit(render("09_4_별첨2_실적확약서", doc09_hwakyak()), 4)), D.R500_DOC, fit(render("09_5_별첨4_BEXCO", _b4[0]), _b4[1])]
+    names9 = ["[별지 2호] 최근 3년간 주관사 실적 총괄표", f"실적 증빙 안내(주관 {sum(1 for r in D.RECENT3_500 if r[3])}개 단지 · 증빙 첨부 {D._EV_N})", "별첨 1 NICE 연혁 발췌",
+              "별첨 2 실적 확약서 · 붙임 1 ~ 3", f"별첨 3 주관사 협약서 {len(D.R500_HAVE)}건(협약일 순)", f"별첨 4 {CAP_TITLE()} {len(D.EXPO_CAPS)}곳"]
     toc, pg0 = [], 1
     for nm, p in zip(names9, parts9):
         toc.append([1, nm, pg0])

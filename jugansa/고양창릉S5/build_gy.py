@@ -300,7 +300,7 @@ ST = D.SITE
 _rec_n, _rec_hh = len(D.RECORDS), sum(r[3] for r in D.RECORDS)
 R3 = D.RECENT3_OS
 _r3_n, _r3_hh = len(R3), sum(r[3] for r in R3)
-R5 = D.RECENT3_500  # 최근 3년 500세대 이상 입주박람회 진행 20개 단지(주관 16 = 1,000세대 이상 8 + 주관사 협약서 3 + 본부장 확인 5 · 운영 4)
+R5 = D.RECENT3_500  # 최근 3년 500세대 이상 입주박람회 진행 20개 단지(주관 16 = 1,000세대 이상 8 + 주관사 협약서 3 + 500 ~ 999세대 9 · 본부장 10-19 모두 주관)
 _r5_n, _r5_hh = len(R5), sum(r[2] for r in R5)
 _types_txt = " · ".join(a for a, _ in ST["types"])
 _types_full = " · ".join(f"{a} {n}" for a, n in ST["types"])
@@ -310,7 +310,7 @@ T_MAP = "공고 제안서 [[주요내용 11개]], 이 쪽에 있습니다"
 T_SITE = f"{ST['name']}, [[이런 단지]]입니다"
 T_FIRST = "759세대 공공분양이라 [[먼저 챙길 것]]"
 T_FIT = "운영 실적 · 연혁 · [[기업신용평가]]"
-T_R500 = f"최근 3년 500세대 이상 입주박람회 [[주관 · 운영 {_r5_n}개 단지]]"
+T_R500 = f"최근 3년 500세대 이상 입주박람회 [[주관 {_r5_n}개 단지]]"
 T_TRUST = "계약 이행 · [[하자 이행]]을 약속하는 장치"
 T_STABLE = "브랜드 품질 · [[무상보증기간]]"
 T_FACT = "직영 운영 · [[온 · 오프라인 투명 운영]]"
@@ -415,28 +415,28 @@ new("std", sec=S0, title=T_FIT,
           f'<p>평가서 원본 {PG("ev")}</p></div>'
           '</div></div>'),
     kp=(f"2023년 이후 1,000세대 이상 주관 [[{_rec_n}개 단지 · {_rec_hh:,}세대]] - 그중 최근 3년 {_r3_n}개 단지입니다.",
-        f"최근 3년 500세대 이상 입주박람회 주관 · 운영 실적은 {_r5_n}개 단지 · {_r5_hh:,}세대(참가자격 2 · 별지 2) · {PG('r500')}"))
+        f"최근 3년 500세대 이상 입주박람회 주관 실적은 {_r5_n}개 단지 · {_r5_hh:,}세대(참가자격 2 · 별지 2) · {PG('r500')}"))
 _half5 = (len(R5) + 1) // 2
 
 
 def _r5tb(rows, s0):
     return ('<table class="r5"><thead><tr><th>NO</th><th>입주</th><th>단지</th><th>세대</th><th>구분</th></tr></thead><tbody>'
             + "".join(f'<tr{" class=jg" if j else ""}><td class="n">{i:02d}</td><td class="m">{m}</td><td class="k">{t(nm)}</td>'
-                      f'<td class="r">{n:,}</td><td class="g">{"주관" if j else "운영"}</td></tr>' for i, (m, nm, n, j) in enumerate(rows, s0))
+                      f'<td class="r">{n:,}</td><td class="g">주관</td></tr>' for i, (m, nm, n, j) in enumerate(rows, s0))
             + '</tbody></table>')
 
 
 new("std", sec=S0, title=T_R500,
-    lead="공고 참가자격 2 · 별지 2 - 최근 3년(입주 2023.10 ~ 2026.12) 500세대 이상 공동주택 중 입주박람회를 주관 또는 운영한 단지입니다. 2027년 입주 예정 단지는 넣지 않았습니다.",
+    lead="공고 참가자격 2 · 별지 2 - 최근 3년(입주 2023.10 ~ 2026.12) 500세대 이상 공동주택 중 당사가 입주박람회를 주관한 단지입니다. 2027년 입주 예정 단지는 넣지 않았습니다.",
     body=('<div class="nb"><div class="r5x">' + _r5tb(R5[:_half5], 1) + _r5tb(R5[_half5:], _half5 + 1) + '</div>'
           '<div class="r5b">'
-          f'<div><b>{_r5_n}<small>개 단지</small></b><span>500세대 이상 입주박람회 주관 · 운영</span></div>'
+          f'<div><b>{_r5_n}<small>개 단지</small></b><span>500세대 이상 입주박람회 주관</span></div>'
           f'<div><b>{_r5_hh:,}<small>세대</small></b><span>{_r5_n}개 단지 세대 합계</span></div>'
-          f'<div><b>{sum(1 for r in R5 if r[3])}<small>개 단지</small></b><span>그중 주관(금색) · 1,000세대 이상 {_r3_n} + 협약 {len(D.R500_HAVE)}</span></div>'
-          f'<div><b>{sum(1 for r in R5 if not r[3])}<small>개 단지</small></b><span>운영</span></div>'
+          f'<div><b>{_r3_n}<small>개 단지</small></b><span>그중 1,000세대 이상 · 나머지 {len(R5) - _r3_n}개 단지는 500 ~ 999세대</span></div>'
+          f'<div><b>{D._EV_N}<small>개 단지</small></b><span>증빙 첨부(NICE · 확약서 · 협약서 · 행사일정) · 나머지 요청 시 제출</span></div>'
           '</div></div>'),
-    kp=(f"최근 3년 500세대 이상 [[{_r5_n}개 단지]]에서 입주박람회를 주관 · 운영했습니다.",
-        "단지명 · 세대수는 수임 목록 기준 · 날짜는 입주 연월 · 별지 2 실적 총괄표 + 협약서 · 수임 실적 증빙 별도 제출"))
+    kp=(f"최근 3년 500세대 이상 [[{_r5_n}개 단지]]에서 입주박람회를 주관했습니다.",
+        "단지명 · 세대수는 당사 실적 목록 기준 · 날짜는 입주 연월 · 별지 2 실적 총괄표 + 협약서 · 행사일정 등 증빙 별도 제출(제출서류 9)"))
 B.CSS += (".r5x{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;min-height:0}"
           ".r5{width:100%;border-collapse:collapse}"
           ".r5 th{font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--gold2);text-align:left;padding:0 8px 7px;border-bottom:1.5px solid rgba(200,168,106,.55)}"
@@ -770,7 +770,7 @@ new("std", sec=S0, title=T_PM,
               ("정례 · 행사", "입예협 정례회의 · PT · 박람회 · 사전점검에 본부장 · 운영팀이 현장 참석"),
               ("입주 집중기", "단지 안 임시 상주 창구(입예협 · 관리주체 협의)"),
               ("시공 · A/S", f"{ST['local']} 시공업체 우선 선정 - [[48시간 A/S가 가능한 거리]]"),
-              ("수도권 거점", "본사 전담 PM 정기 방문 - 입예협 정례회의 · 박람회 · 사전점검 일정에 맞춰 현장 대응"),
+              ("수도권 정기 방문", "본사 전담 PM 정기 방문 - 입예협 정례회의 · 박람회 · 사전점검 일정에 맞춰 현장 대응"),
           ], title_w=128) + '</div></div></div>'),
     kp=("입주민은 [[한 창구]]로 연락하시면 됩니다.", "콜센터 평일 09:00 ~ 18:00 · 온라인 365일 접수 · 24시간 이내 회신"))
 B.CSS += (".pmx{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;min-height:0}"
@@ -1148,7 +1148,7 @@ new("std", sec=S0, title=T_SEP,
               dict(lb="01 · 정액", nm="참가비 정액제", ds="업체 참가비는 정액으로 받습니다. 세대 혜택을 공구가에 얹는 구조가 아닙니다."),
               dict(lb="02 · 공개", nm="단가표 사전 공개", ds="박람회 전 품목별 단가 · 할인율 · 모델코드를 입예협이 검수합니다. 현장 가격 변경 없음."),
               dict(lb="03 · 검증", nm="시중가 · 온라인 최저가 비교", ds="같은 조건 총액으로 비교하고, 입예협이 품목을 골라 직접 확인합니다."),
-              dict(lb="04 · 보상", big="10", unit="배", nm="최저가 차액 보상", ds="동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)"),
+              dict(lb="04 · 보상", big="10", unit="배", nm="최저가 차액 보상", ds="인근 매장 동일 제품이 더 싸면 차액 10배 보상(구매 영수증 · 주관사 확인 · 1건당 계약금액 한도 · 온라인·시공 품목 제외)"),
           ], cols=4) + '</div>'),
     kp=(f"세대 혜택을 0원으로 해도 공구가는 같습니다 - 가격은 [[업체 경쟁과 가격 검수]]로 정해집니다.", "참가비 정액제 · 카드·현금 동일가 · 최저가 차액 10배(온라인·시공 품목 제외)"))
 B.CSS += (".sepx{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px}"
@@ -1192,7 +1192,7 @@ new("std", sec=S0, title="공동구매 단가를 지키는 [[4가지 장치]]",
     lead="‘행사비 때문에 오르는 단가’를 구조로 막습니다.",
     body=B.cards([
         dict(lb="01", big="공개", nm="단가표 사전 공개", ds="박람회 전 품목별 단가·할인율을 입예협에 제출해 검수받습니다. 현장 가격 변경 없음."),
-        dict(lb="02", big="10", unit="배", nm="최저가 차액 보상", ds="동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)"),
+        dict(lb="02", big="10", unit="배", nm="최저가 차액 보상", ds="인근 매장 동일 제품이 더 싸면 차액 10배 보상(구매 영수증 · 주관사 확인 · 1건당 계약금액 한도 · 온라인·시공 품목 제외)"),
         dict(lb="03", big="추가할인", nm="실적 비례 추가할인", ds="업체 기대매출을 넘기면 계약 세대 잔금에서 추가할인. 할인율은 업체 입찰 조건으로 입예협과 확정."),
         dict(lb="04", big=str(D.DEPOSIT_MAX), unit="%", nm="계약금 상한", ds=f"계약금은 총액의 {D.DEPOSIT_MAX}% 이하, 잔금은 시공·설치 후. 현금·카드 동일가."),
     ]),
@@ -1551,7 +1551,7 @@ if not os.environ.get("NO_NATIVE"):
                  ds=f"{_hh:,}세대 기준 총 {_hh * D.FUND // 10000}억 {_hh * D.FUND % 10000:,}만원 (부가세 포함)"),
             dict(lb="하자 예치금", big="1", unit="억원", nm="현금 예치", ds="엣지컴퍼니 자산으로 입예협 공동통장에 직접 예치"),
             dict(lb="이행보증보험", big="10", unit="억원", nm="2년 보증", ds="증권 실물을 입예협에 전달"),
-            dict(lb="최저가 보장", big="10", unit="배", nm="차액 보상", ds="동일 브랜드·동일 제품이 더 싸면 차액의 10배 보상. (온라인 판매·시공 품목 제외)"),
+            dict(lb="최저가 보장", big="10", unit="배", nm="차액 보상", ds="인근 매장 동일 제품이 더 싸면 차액 10배 보상(구매 영수증 · 주관사 확인 · 1건당 계약금액 한도 · 온라인·시공 품목 제외)"),
             dict(lb="입예협 지원", big="8", unit="가지", nm="무상 단지지원", ds="사전점검 지원·라돈측정·도면 분석 등 자체 인력"),
             dict(lb="정회원 혜택", big="60", unit="만원 상당", nm="세대당 혜택", ds="정회원 박람회 방문 세대 전용"),
         ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"'),

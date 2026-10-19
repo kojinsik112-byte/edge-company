@@ -235,7 +235,7 @@ def submit_rows(n):
     bal_issue, bal_base = D.BALANCE
     return [
         ("1", "입찰 신청서(자유양식)", "본 서류 · 제출서류 목록 포함", "제출"),
-        ("2", "법인 사업자등록증 & 통장 사본", f"사업자등록증 {D.ISSUE['biz']} 발급(울산세무서) · 법인 명의 우리은행 기업자유예금 통장 사본", "제출"),
+        ("2", "법인 사업자등록증 & 통장 사본", f"사업자등록증 {D.ISSUE['biz']} 발급(울산세무서 · 종목 광고대행업 · 전시, 박람회 및 행사 대행업 — 광고기획은 등기 목적 ‘마케팅 및 광고기획업’, 제출서류 3) · 법인 명의 우리은행 기업자유예금 통장 사본", "제출"),
         ("3", "법인등기부 등본", f"등기사항전부증명서 {D.ISSUE['reg']} 발급", "제출"),
         ("4", "인감증명서", f"법인 인감증명서 {D.INGAM_DATE} 발급(대표자 주민등록번호 뒷자리 가림) · 사용인감계(서류 날인 인감 신고)"
          + ("" if seal else " · " + todo("사용인감계 — 본부장 실물 날인 스캔 받으면 교체")), "제출" if seal else "조치 중"),
@@ -252,10 +252,10 @@ def submit_rows(n):
         ("10", "공동구매 입찰제안서(자유양식)", f"입주박람회 주관사 제안서 {n['10']}쪽", "제출"),
         ("11", "업무 이행 각서", "제안 내용 이행 · 사용인감 날인본(법인인감 날인 원본은 협약 시 제출)", "제출"),
         ("12", "최근 3년 500세대 이상 행사 실적 및 공동구매 증빙자료",
-         f"실적표 {len(D.RECENT3_500)}개 단지 · {sum(r[2] for r in D.RECENT3_500):,}세대(주관 {sum(1 for r in D.RECENT3_500 if r[3])} · 진행 "
-         f"{sum(1 for r in D.RECENT3_500 if not r[3])}) · 별첨 NICE 연혁 발췌 · 실적 확약서(붙임 카페 공지 2 · BEXCO 행사일정 1) · 주관사 협약서 {len(D.R500_HAVE)}건"
+         f"실적표 {len(D.RECENT3_500)}개 단지 · {sum(r[2] for r in D.RECENT3_500):,}세대(주관 {sum(1 for r in D.RECENT3_500 if r[3])} · 증빙 첨부 "
+         f"{D._EV_N}) · 별첨 NICE 연혁 발췌 · 실적 확약서(붙임 카페 공지 2 · BEXCO 행사일정 1) · 주관사 협약서 {len(D.R500_HAVE)}건 · 박람회 행사일정 캡처 {len(D.EXPO_CAPS)}곳"
          + ("" if r500 else " · " + todo("진행 12개 단지 증빙 — 본부장 준비 중")), "제출" if r500 else "조치 중"),
-        ("13", "최근 3년 500세대 이상 협약이행증권 협의회 발행본 10부 이상", "해당 없음 — 협약 시 입예협과 협의해 이행 담보 방안 마련", "해당 없음"),
+        ("13", "최근 3년 500세대 이상 협약이행증권 협의회 발행본 10부 이상", "미보유(발행 이력 없음) — 협약 시 입예협과 협의해 이행 담보 방안 마련", "미제출"),
         ("14", "A/S 이행각서", "사용인감 날인", "제출"),
         ("15", "하자 보수 대응 방안 상세 계획서", f"{n['15']}쪽 · 제안서(제출서류 10)와 같은 기준", "제출"),
         ("16", "선정 결과 이의 제기 금지 서약서", "사용인감 날인", "제출"),
@@ -284,7 +284,7 @@ def doc01(n):
 <table class="sgt"><tr><td rowspan="2" class="w">신청인</td><td>상 &nbsp; &nbsp; 호 :</td><td><b>{D.COMPANY}</b></td></tr>
 <tr><td>대 표 자 :</td><td><b>대표이사 {D.CEO}</b><span style="margin-left:34pt;position:relative;top:4pt">(인)</span></td></tr></table>
 <div class="to2">{e(D.CLIENT)} 귀중</div></div>"""
-    cls = {"제출": "ok", "해당 없음": "na"}
+    cls = {"제출": "ok", "해당 없음": "na", "미제출": "na"}
     rows = "".join(f'<tr><td>{no}</td><td class="l">{e(t)}</td><td class="l">{r}</td>'
                    f'<td class="st {cls.get(s, "ok" if s.startswith("제출") else "td")}">{e(s)}</td></tr>' for no, t, r, s in submit_rows(n))
     p2 = f"""{head("입찰 신청서 붙임", "제출서류 목록")}
@@ -349,7 +349,7 @@ def doc09_cover():
 <tr><td class="k">평가일 · 유효기간</td><td class="l">{D.NICE_DATE} · ~2027.06.18 — 당사의 가장 최근 평가</td></tr>
 <tr><td class="k">결과</td><td class="l">신용등급 BB- · 현금흐름등급 A</td></tr>
 <tr><td class="k">첨부 범위</td><td class="l">원본 24쪽 중 {len(NICE_PAGES)}쪽 — 원본 1쪽 표지 · 3쪽 기업신용평가 요약 · 9쪽 기업개요 · 연혁</td></tr>
-<tr><td class="k">개인정보</td><td class="l">원본 13쪽 대표 외 임직원 2명의 생년월일은 개인정보 보호를 위해 가렸습니다.</td></tr>
+<tr><td class="k">재무 참고</td><td class="l">보고서 재무의 자본금 152백만원은 2025.12 결산 기준 · 2026.04.30 증자 등기로 현재 자본금 2억원(제출서류 3 등기부)</td></tr>
 </tbody></table>
 <p class="note" style="margin-top:8pt">※ 보고서의 본사 주소는 본점 이전(2026.07.02 등기) 전 주소이고, 종업원 수는 평가 당시(2026.05) 기준입니다. 현재 본점 · 등기 사항은 제출서류 2 · 3과 같습니다.</p>
 <p class="note">※ 보고서 전문(24쪽)은 협의회가 요청하시면 바로 제출하겠습니다. 실적 근거인 연혁(원본 9쪽)은 제출서류 12에도 발췌해 붙였습니다.</p>"""
@@ -377,7 +377,7 @@ DUTY = [  # (분야, 이행 내용) — 제안서(제출서류 10)에 적은 조
     ("가격 검증", "단가표 박람회 전 공개 · 시중가 · 온라인 최저가 검수 · 최저가 차액 10배 보상(환불 규정 제8조 — 동일 브랜드 · 모델 새 제품, 구매 영수증 + 주관사 매장 확인, 1건당 계약금액 한도, 온라인 판매 · 시공 품목 등 제외)"),
     ("하자 · A/S", "한 창구 접수 · 24시간 안에 1차 회신 · 48시간 하자보수 원칙 · 무상 A/S 최소 2년(업체 · 품목별 상이, 계약서 명시) · 업체 미응답 시 주관사 선보상 · 업체 도산 시 동종업체 이관(A/S 비용 주관사 부담)"),
     ("보상 재원", "하자 예치금 최대 1억원(엣지컴퍼니 자산 · 금액은 단지 규모와 입예협 협의로 결정) · 협약 이행 담보 방안은 협약 시 입예협과 협의해 마련"),
-    ("세대 혜택", "발전지원금 6,000만원 상당 — 세대 혜택 패키지(안)로 집행 · 주관사 부담 · 공구가 전가 · 공용부 기증 없음"),
+    ("세대 혜택", "발전지원금 6,000만원 상당 — 세대 혜택 패키지(안)로 집행 · 주관사 부담(공구가 전가 · 기증 없음)"),
     ("직영 · 투명", "주관 업무 재위탁 · 명의 대여 없음 · 사전 공개 단가 = 박람회장 단가 = 온라인 박람회 단가 · 계약 · 환불 · A/S · 하자 처리 현황 정례 보고"),
     ("일정 · 보고", "월별 업무 타임테이블(2026.10 ~ 입주 후 1년) · 박람회 결과보고서 · 최종 결과 보고서"),
 ]
@@ -505,8 +505,8 @@ def doc15():
 </tbody></table>
 <p class="note">※ 민원 처리에 쓰는 개인정보는 처리 목적에만 쓰고, 입예협 보고에는 동 · 호수 · 연락처를 싣지 않습니다.</p>
 
-<h2>6. 참여업체 하자보증 관리 — 특약이행각서 9개 항(참여 조건)</h2>
-<table class="t"><thead><tr><th style="width:5%">No</th><th style="width:15%">항목</th><th>내용</th><th style="width:5%">No</th><th style="width:15%">항목</th><th>내용</th></tr></thead><tbody>
+<style>.t9 td,.t9 th{{padding:2.4pt 5pt!important;line-height:1.35!important}}</style><h2 style="break-before:page;margin-top:0">6. 참여업체 하자보증 관리 — 특약이행각서 9개 항(참여 조건)</h2>
+<table class="t t9" style="break-inside:avoid"><thead><tr><th style="width:5%">No</th><th style="width:15%">항목</th><th>내용</th><th style="width:5%">No</th><th style="width:15%">항목</th><th>내용</th></tr></thead><tbody>
 {"".join('<tr>' + "".join(f'<td>{i + 1}</td><td class="k">{OATH9[i][0]}</td><td class="l">{OATH9[i][1]}</td>' if i < 9 else '<td></td><td></td><td></td>' for i in (r, r + 5)) + '</tr>' for r in range(5))}
 </tbody></table>
 <p class="note">※ 각서 문구는 입예협 협의 후 확정 · 업체 전원에게 최종 확정 시 징구(물품공급계약서 · 청렴이행서약서와 함께). 불이행 업체 패널티: 1단계 홍보정지 → 2단계 총액 10% 배상 → 3단계 자격박탈 · 입예협 승인 후 전 계약 대체업체 이관.</p>
@@ -543,40 +543,47 @@ def doc12_cover():
     nice_names = {r[1] for r in D.RECENT3}
     _have = getattr(D, "R500_HAVE", {})
     big = {r[1] for r in D.RECENT3_OS}
-    # 본부장 10-16: ① 주관 10(증빙 첨부 · 요건 충족) ② 수임 · 진행 10(참고) 두 묶음 · 묶음 안은 입주 연월순
-    grp = [("①", "주관 — 증빙 첨부", [r for r in r5 if r[3]]), ("②", "수임 · 진행 — 참고(증빙 요청 시 제출)", [r for r in r5 if not r[3]])]
-    rows, i = "", 0
-    for gno, gname, rs in grp:
-        rows += (f'<tr class="gh"><td colspan="6">{gno} {gname} · {len(rs)}개 단지 · {sum(r[2] for r in rs):,}세대</td></tr>')
-        for m, nm, n, j in rs:
-            i += 1
-            if j and nm in big:
-                ev = EV_OF.get(nm) or ("NICE 연혁(별첨 1) · 실적 확약서(별첨 2)" if nm in nice_names else None)
-                assert ev, f"주관 단지 증빙 없음: {nm}"
-                kind = "주관"
-            elif j:
-                assert r500 and nm in _have, f"협약 주관 단지 증빙 없음: {nm}"
-                ev, kind = _have[nm], "주관"
-            else:
-                ev, kind = ("요청 시 제출" if r500 else todo("증빙 자료 본부장 준비 중")), "진행"
-            rows += (f'<tr class="{"jg" if j else ""}"><td>{i}</td><td>{m}</td><td class="l">{e(nm)}</td><td class="r">{n:,}</td>'
-                     f'<td class="g">{kind}</td><td class="l">{ev}</td></tr>')
+    # 본부장 10-19: 20개 단지 한 목록 · 입주 순 — 모두 당사 주관 · '요청 시 제출' = 사송 데시앙 3차 · 청계 센트럴 · 사송역 우미린 · 영등포자이 + 연산포레(고양과 같음)
+    bx = {c[0]: k for k, c in enumerate(D.EXPO_CAPS, 1)}
+    src = {c[0]: c[2] for c in D.EXPO_CAPS}
+    rows, i, n_ev = "", 0, 0
+    for m, nm, n, j in sorted(r5, key=lambda r: r[0]):
+        i += 1
+        if j and nm in big:
+            ev = EV_OF.get(nm) or ("NICE 연혁(별첨 1) · 실적 확약서(별첨 2)" if nm in nice_names else None)
+            assert ev, f"주관 단지 증빙 없음: {nm}"
+        elif j and nm in _have:
+            assert r500, f"협약 주관 단지 증빙 없음: {nm}"
+            ev = _have[nm]
+        elif j and nm in bx:
+            ev = f"{src[nm].split('(입주민')[0]}(별첨 4-{bx[nm]})"
+        elif j:
+            assert nm in D.JUGWAN_ADD, nm
+            ev = "요청 시 제출"
+        else:
+            ev = "요청 시 제출"
+        if j and nm in bx and "별첨 4" not in ev:
+            ev += f" · {src[nm].split(' ')[0]}(별첨 4-{bx[nm]})"
+        n_ev += 1 if j and not ev.startswith("요청") else 0
+        rows += (f'<tr class="{"jg" if j else ""}"><td>{i}</td><td>{m}</td><td class="l">{e(nm)}</td><td class="r">{n:,}</td>'
+                 f'<td class="g">주관</td><td class="l">{ev}</td></tr>')
     tot = sum(r[2] for r in r5)
     nj, hj = sum(1 for r in r5 if r[3]), sum(r[2] for r in r5 if r[3])
     nb = sum(1 for r in r5 if r[1] in big)
     body = f"""{head("제출서류 12", "최근 3년 500세대 이상 행사 실적 및 공동구매 증빙자료")}
-<p class="note" style="margin-top:4pt">기준: 공고 3항 6 · 4항 12 — 최근 3년 이내 500세대 이상 입주박람회(공동구매 포함) 진행 · 입주 연월 2023.10 ~ 2026.12 · 단지명 · 세대수는 당사 수임 목록 기준.</p>
+<p class="note" style="margin-top:4pt">기준: 공고 3항 6 · 4항 12 — 최근 3년 이내 500세대 이상 입주박람회(공동구매 포함) 진행 · 입주 연월 2023.10 ~ 2026.12 · 단지명 · 세대수는 당사 실적 목록 기준.</p>
 <style>.t.ls.r12 td{{padding:1.4pt 5pt}}.t.ls.r12 tr.gh td{{padding:1.6pt 6pt}}</style>
 <table class="t ls r12" style="margin-top:6pt"><thead><tr><th style="width:5%">No</th><th style="width:10%">입주</th><th>단지명</th><th style="width:10%">세대수</th><th style="width:7%">구분</th><th style="width:34%">증빙</th></tr></thead>
 <tbody>{rows}
-<tr class="sum"><td colspan="3">합계 {len(r5)}개 단지 (주관 {nj}개 단지 · {hj:,}세대)</td><td class="r">{tot:,}</td><td></td><td></td></tr></tbody></table>
-<div class="box"><b>공고 3항 6 대비</b> &nbsp; 요건 10회 이상 &nbsp;→&nbsp; <b>증빙 첨부 주관 {nj}회 = 충족</b> (전체 진행 {len(r5)}개 단지 · {tot:,}세대)<br>
-‘주관’ = 당사가 주관사로 수행 — 1,000세대 이상 {nb}개 단지 + 주관사 협약서 {len(_have)}개 단지 · ‘진행’ = 당사 수임으로 입주박람회 · 공동구매 진행</div>
+<tr class="sum"><td colspan="3">합계 {len(r5)}개 단지 (모두 주관)</td><td class="r">{tot:,}</td><td></td><td></td></tr></tbody></table>
+<div class="box"><b>공고 3항 6 대비</b> &nbsp; 요건 10회 이상 &nbsp;→&nbsp; <b>주관 {nj}회(증빙 첨부 {n_ev}회) = 충족</b> (전체 진행 {len(r5)}개 단지 · {tot:,}세대)<br>
+‘주관’ = 당사가 주관사로 수행 — 1,000세대 이상 {nb}개 단지 + 주관사 협약서 {len(_have)}개 단지 + 500 ~ 999세대 {len(D.JUGWAN_ADD)}개 단지</div>
 <ol class="pl" style="margin-top:3pt"><li class="sm">별첨 1. NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌 — 1쪽(주관 실적 6개 단지 · 보고서는 제출서류 9)</li>
-<li class="sm">별첨 2. 실적 확약서(1,000세대 이상 입주박람회 주관 10개 단지) — 붙임 1 · 2 단지 카페 주관사 공지 캡처(입주민 닉네임 가림) · 붙임 3 BEXCO 공식 행사일정 캡처</li>
+<li class="sm">별첨 2. 실적 확약서(1,000세대 이상 입주박람회 주관 10개 단지 · 최근 3년 8 + 2023.10 이전 2) — 붙임 1 · 2 단지 카페 주관사 공지 캡처(입주민 닉네임 가림) · 붙임 3 BEXCO 공식 행사일정 캡처</li>
 <li class="sm">별첨 3. 500세대 이상 주관사 협약서 — {(" · ".join(f"3-{k + 1} {e(nm)}" for k, nm in enumerate(_have)) + " — 협약일 순(상대방 대표자 성명 · 서명 가림, 3-2 특약 금액 가림)") if r500 else todo("본부장 준비 중")}</li>
+<li class="sm">별첨 4. {CAP_TITLE()}(주최/주관란에 엣지컴퍼니 기재) — {len(D.EXPO_CAPS)}곳 · 표의 ‘별첨 4-n’</li>
 </ol>
-<p class="note">※ 입예협 요청 시 ② 진행 단지의 계약서 · 정산 자료 등 증빙을 지체 없이 추가 제출합니다. 주관 시기(NICE 연혁)와 입주 연월은 다를 수 있습니다.</p>
+<p class="note">※ 증빙 미첨부 단지(‘요청 시 제출’)는 입예협 요청 시 계약서 · 정산 자료 등을 지체 없이 추가 제출합니다. 주관 시기(NICE 연혁)와 입주 연월은 다를 수 있습니다.</p>
 <p class="body" style="font-size:10pt;margin-top:3pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 6항 4 · 7항 2에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign().replace('class="sign"', 'class="sign" style="margin-top:6pt"').replace('class="to"', 'class="to" style="margin-top:8pt"')}"""
     return doc("12 최근 3년 500세대 이상 행사 실적 및 공동구매 증빙자료", [body])
 
@@ -684,6 +691,47 @@ def _hwakyak():
 
 
 HW_FIT = "p.body{margin:8pt 0 5pt;line-height:1.75}.t td{padding:2.2pt 5pt}ol{margin-top:6pt;line-height:1.6}.sign{margin-top:8pt;line-height:1.85}.to{margin-top:6pt}"
+
+
+def CAP_SRC():
+    k = []
+    if any(c[2].startswith("BEXCO") for c in D.EXPO_CAPS): k.append("벡스코(BEXCO) 홈페이지 ‘행사일정’ 상세 화면")
+    if any("UECO" in c[2] for c in D.EXPO_CAPS): k.append("울산전시컨벤션센터(UECO) 홈페이지 ‘전체일정’ 화면")
+    if any("카페" in c[2] for c in D.EXPO_CAPS): k.append("단지 입주자 공식 카페 ‘엣지컴퍼니 공지사항’ 게시판")
+    return " · ".join(k)
+
+
+def CAP_TITLE():
+    return "BEXCO 공식 행사일정 캡처" if all(c[2].startswith("BEXCO") for c in D.EXPO_CAPS) else "박람회장 공식 행사일정 · 카페 공지 캡처"
+
+
+def doc12_expo():  # 별첨 4 — 한 장에 2 ~ 3곳(본부장 10-19 · 고양 docs_gy.doc09_bexco와 같은 배치)
+    from PIL import Image
+    caps = []
+    for k, (nm, f, kind, per, hall) in enumerate(D.EXPO_CAPS, 1):
+        w, h = Image.open(os.path.join(HERE, "assets_ins", f)).size
+        caps.append((k, nm, f, kind, per, hall, 2 if h > w else 1))  # 세로 캡처 = 2칸
+    tot_w = sum(c[-1] for c in caps)
+    npg = max(1, -(-tot_w // 3))
+    pages, cur, cw, left = [], [], 0, tot_w
+    for c in caps:
+        tgt = -(-left // max(1, npg - len(pages)))
+        if cur and cw + c[-1] > tgt:
+            pages.append(cur); left -= cw; cur, cw = [], 0
+        cur.append(c); cw += c[-1]
+    if cur: pages.append(cur)
+    secs = []
+    for pi, cs in enumerate(pages):
+        items = "".join(
+            f'<div class="bxc{" tall" if wt == 2 else ""}"><div class="bh"><b>4-{k}</b> {e(nm)} <span>· {e(kind)} · {e(per)} · {e(hall)}</span></div>'
+            f'<img src="../assets_ins/{f}" alt=""></div>' for k, nm, f, kind, per, hall, wt in cs)
+        secs.append(head("제출서류 12 · 별첨 4", f"{CAP_TITLE()} ({pi + 1}/{len(pages)})")
+                    + f'<p class="note" style="margin-top:4pt">출처: {CAP_SRC()} · 주최 · 주관란 = 주식회사 엣지컴퍼니 · 화면 그대로{"(입주민 닉네임만 가림)" if any("카페" in c[2] for c in D.EXPO_CAPS) else "(가공 없음)"}</p>'
+                    + f'<div class="bxs">{items}</div>')
+    css = CSS + (".bxs{display:flex;flex-direction:column;gap:7pt;margin-top:6pt}.bxc{border:1px solid #c9ced6;border-radius:3pt;padding:5pt 6pt}"
+                 ".bh{font-size:10pt;margin-bottom:4pt}.bh b{color:#9A7B3F;margin-right:4pt}.bh span{color:#555;font-size:9pt}"
+                 ".bxc img{display:block;width:100%;max-height:58mm;object-fit:contain;object-position:left top}.bxc.tall img{max-height:130mm}")
+    return doc("12 별첨 4 박람회 공식 행사일정 · 카페 공지", secs, css), len(pages)
 
 
 def doc12_hwakyak():
@@ -877,10 +925,14 @@ def main():
     res["11"] = stamped(fit(render("11_업무이행각서", doc11()), 1))
     a1 = stamped(annex12_nice(nice_src, out("12_2_별첨1_NICE연혁발췌.pdf")))
     parts12 = [stamped(fit(render("12_1_실적표", doc12_cover()), 1)), a1, stamped(fit(render("12_3_별첨2_실적확약서", doc12_hwakyak()), 4))]
-    names12 = [f"실적표(20개 단지 · 주관 {sum(1 for r in D.RECENT3_500 if r[3])})", "별첨 1 NICE 연혁 발췌", "별첨 2 실적 확약서 · 붙임 1 ~ 3"]
+    names12 = [f"실적표(20개 단지 · 주관 {sum(1 for r in D.RECENT3_500 if r[3])} · 증빙 첨부 {D._EV_N})", "별첨 1 NICE 연혁 발췌", "별첨 2 실적 확약서 · 붙임 1 ~ 3"]
     if ok["12"]:
         parts12.append(D.R500_DOC)
         names12.append(f"별첨 3 주관사 협약서 {len(D.R500_HAVE)}건(협약일 순)")
+    if D.EXPO_CAPS:
+        _b4 = doc12_expo()
+        parts12.append(fit(render("12_4_별첨4_박람회일정", _b4[0]), _b4[1]))
+        names12.append(f"별첨 4 {CAP_TITLE()} {len(D.EXPO_CAPS)}곳")
     toc, pg0 = [], 1
     for nm, p in zip(names12, parts12):
         toc.append([1, nm, pg0])
@@ -909,7 +961,7 @@ def main():
             dst = os.path.join(SUBMIT, PFX + NAMES[k] + ".pdf")
             shutil.copyfile(src, dst)
             attach.append(dst)
-    lines.append("13 해당 없음 — 파일 없음(협약 시 입예협과 협의해 이행 담보 방안 마련)")
+    lines.append("13 미제출 — 발행 이력 없음 · 파일 없음(협약 시 입예협과 협의해 이행 담보 방안 마련)")
     if os.path.exists(ZIP):
         os.remove(ZIP)
     with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED) as z:
