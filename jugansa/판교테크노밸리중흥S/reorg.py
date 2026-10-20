@@ -351,7 +351,7 @@ def apply(G):
             return ""
         return f'<figure><img src="assets_ins/{img}.jpg" alt="" style="object-position:{pos}"><figcaption>{cap}<small>{sub_}</small></figcaption></figure>'
     p_lx5 = ("std", dict(sec="09. 차별화 포인트", title=f"{D.SITE['short']} [[경관조명 제안]] 한눈에",
-        lead="동 파사드 → 정문 문주 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다 - 아래는 판교 중흥S클래스 경관조명 제안 시뮬레이션입니다.",
+        lead="동 파사드 → 정문 문주 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다 - 아래는 판교 중흥S-클래스 경관조명 제안 시뮬레이션입니다.",
         body=('<div class="nb"><div class="gal lx5">'
               + _lf("lx_front1", "동 파사드 라인조명", "야간 인지성 · 눈부심 없는 상향광")
               + _lf("lx_gate", "정문 문주", "문주 사인 간접조명 · 진입부 밝기", "50% 45%")
@@ -364,7 +364,7 @@ def apply(G):
               '<div><i>STEP 04</i><b>시공 · A/S</b><span>전기공사업 등록 업체 직접 시공</span></div>'
               '</div></div>'),
         kp=("진단 · 개선안 · 자료 제공까지가 제안 범위입니다 - [[설치 여부 · 비용은 입예협 · 관리주체]]가 정합니다.",
-            f"{D.ELEC_LICENSE} · 이미지는 판교 중흥S클래스 시뮬레이션")))
+            f"{D.ELEC_LICENSE} · 이미지는 판교 중흥S-클래스 시뮬레이션")))
     B.CSS += r"""
 .gal.lx5{grid-template-columns:repeat(6,1fr);grid-template-rows:1.15fr 1fr;gap:12px}
 .gal.lx5 figure:nth-child(1),.gal.lx5 figure:nth-child(2){grid-column:span 3}
@@ -614,7 +614,7 @@ def apply(G):
     k = take("주요 클레임 품목과 [[보상 기준]]")[1]
     k["title"] = "주요 클레임 품목과 [[보상 기준]] (예시)"
     k["body"] = sub(k["body"], "건수: 과거 입주 시점 주요 클레임 접수 집계. 품목 구성은 단지 여건에 맞춰 조정합니다.",
-                    "예시 — 건수는 과거 단지 입주 시점 주요 클레임 접수 집계 · 보상 기준은 판교 중흥S클래스 적용 기준으로 입예협 승인 후 확정합니다.")
+                    "예시 — 건수는 과거 단지 입주 시점 주요 클레임 접수 집계 · 보상 기준은 판교 중흥S-클래스 적용 기준으로 입예협 승인 후 확정합니다.")
 
     # A 입주민 특화서비스 — 상품권 사용 안내 · 정회원 혜택 상세
     def rc(tag, nm, v, items, hl=False):
@@ -680,14 +680,14 @@ def apply(G):
     _n_ext = sum(c for _, c in _ext)
     _exb = ('<div class="oext"><b>분야별 외부 전문 협력</b><div>'
             + "".join(f"<span>{_h.escape(a)}</span>" for a, _ in _ext) + "</div></div>") if _ext else ""
-    B.ORG_ANON = ("std", dict(sec="01. 회사소개", title="회사 [[조직 구성]] · 판교 중흥S클래스 전담 배치",
+    B.ORG_ANON = ("std", dict(sec="01. 회사소개", title="회사 [[조직 구성]] · 판교 중흥S-클래스 전담 배치",
         lead="대표이사 아래 주관사업 총괄 본부장이 4개 팀과 외부 전문 협력을 이끕니다.",
         body=('<div class="nb"><div class="org">'
               '<div class="ceo"><i>㈜엣지컴퍼니</i><b>CEO</b><span>대표이사</span></div>'
               '<div class="gmr"><div class="gm"><i>주관사업</i><b>총괄 본부장</b></div></div>'
               f'<div class="tms">{tms0}</div>{_exb}</div></div>'),
         kp=(f"임직원 [[{_n_in}명]](정규직 10 + 인턴 4) - 대표·본부장과 4개 팀이 나눠 맡고, 분야별 [[외부 전문 협력]]이 받칩니다.",
-            "박람회 현장 운영 인력 약 21명(행사 규모별 변동 · 안내·보안 등 외부 인력 포함) + 주관사 운영팀 상주(06장) · 명단은 협약 시 제출 · 외부 협력은 전문 업무(하도급 아님)")))
+            "박람회 현장 운영 인력 약 14명(행사 규모별 변동 · 안내·보안 등 외부 인력 포함) + 주관사 운영팀 상주(06장) · 명단은 협약 시 제출 · 외부 협력은 전문 업무(하도급 아님)")))
     B.CSS += (".org .tm h3 em{font-style:normal;font-size:15px;color:var(--ink);margin-left:4px}"
               ".org .tm p{font-size:12.5px;color:var(--sub);text-align:center;line-height:1.4;margin:0}"
               ".org .ceo{width:150px!important;height:150px!important}.org .ceo b{font-size:36px!important}"
@@ -734,33 +734,30 @@ def apply(G):
         st = f'<b class="st">{staff}</b>' if staff else ""
         return f'<div class="z {cls}" style="grid-area:{area}"><h4>{name}{st}</h4><p>{desc}</p></div>'
     staff = [("주차 안내요원", 3), ("안내데스크 · 체크인 도우미", 5), ("보안요원", 2), ("구급요원", 1),
-             ("카페테리아", 3), ("어린이 놀이방", 4), ("이벤트(네일·타로·캐리커처)", 3)]
+             ("이벤트(네일·타로·캐리커처)", 3)]   # 본부장 10-20: 놀이방 · 카페테리아 = 공간이 좁아 운영 안 함
     tot = sum(n for _, n in staff)
-    assert tot == 21, tot  # 본부장 10-15: 주차 5 → 3 · 체크인 3 → 5, 합계 21명 그대로
-    p_floor = ("std", dict(sec="06. 입주박람회", title="박람회장 배치와 [[인원 운영]] (안)",
-        lead="방문 동선을 따라 구역마다 담당 인원을 둡니다. 배치는 행사장 확정 후 입예협과 확정합니다.",
+    assert tot == 14, tot  # 본부장 10-20: 21 − 카페테리아 3 − 놀이방 4
+    p_floor = ("std", dict(sec="06. 입주박람회", title="박람회장 배치와 [[인원 운영]] (예시)",
+        lead="아래는 예시입니다 - 방문 동선을 따라 구역마다 담당 인원을 두고, 배치는 행사장 확정 후 입예협과 정합니다.",
         body=('<div class="nb"><div class="fpx"><div class="fp">'
-              + zn("kids", "어린이 놀이방", "키즈존 · 어린이 편의시설", "4명")
               + zn("brand", "브랜드 존", "가전 · 가구 · 렌탈")
-              + zn("cafe", "카페테리아", "휴게 · 음료", "3명")
               + zn("own", "조명·커튼 품목 존", "조명 · 커튼 · 실링팬 · 다른 업체도 같은 심사")
               + zn("coun", "시공 · 판매 품목 존", "청소·줄눈·탄성·방충망 · 인테리어 · 가전·가구 · 공개 단가표 그대로", "", "hl")
               + zn("sign", "상담·계약 데스크", "공개 단가표 그대로 계약")
-              + zn("build", "휴게 · 수유실", "가족 휴게 · 유모차 대여")
               + zn("event", "이벤트 · 경품존", "네일 · 타로 · 캐리커처", "3명")
               + zn("entry", "안내데스크 · 체크인 · 입예협 부스", "정회원 등록 · 가입 안내 · 방문 선물 · 주관사 운영팀", "도우미 5명", "ent")
               + zn("safe", "안전 · 구급", "보안 2 · 구급 1 · 119 연계", "3명", "sf")
               + zn("park", "주차장 · 외부 동선", "차량 유도 · 하역 구역 분리", "3명", "pk")
               + '</div><div class="fps">'
-              + '<div class="tot"><i>현장 배치 인원 (안)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주 · 행사 규모에 따라 변동</span></div>'
+              + '<div class="tot"><i>현장 배치 인원 (예시)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주 · 행사 규모에 따라 변동</span></div>'
               + '<ul>' + "".join(f'<li><span>{_h.escape(a)}</span><b>{n}명</b></li>' for a, n in staff) + '</ul>'
               + '<div class="bdg"><span>배상책임보험 · 입예협 요청 시 가입</span><span>119 연계 · 구급차 대비</span><span>전 인원 금색 명찰(직책·이름)</span><span>주말 포함 2 ~ 3일 운영</span></div>'
               + '</div></div></div>'),
-        kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "인원 수만 타 단지 운영 기준(안) · 행사 규모에 따라 변동")))
+        kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "배치 · 인원은 타 단지 운영 기준 예시 · 행사장 규모에 따라 변동")))
     B.CSS += r"""
 .fpx{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;flex:1;min-height:0}
 .fp{display:grid;gap:8px;grid-template-columns:1fr 1.15fr 1.15fr 1fr;grid-template-rows:repeat(3,1fr) .82fr .62fr;
-  grid-template-areas:"kids brand brand cafe" "own coun coun sign" "build coun coun event" "safe entry entry event" "park park park park";
+  grid-template-areas:"brand brand brand own" "coun coun coun sign" "coun coun coun event" "safe entry entry event" "park park park park";
   border:1.5px dashed rgba(200,168,106,.55);border-radius:14px;padding:12px;min-height:0;
   background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 22px),repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 22px)}
 .fp .z{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:rgba(13,30,51,.85);display:flex;flex-direction:column;justify-content:center;min-height:0}
@@ -928,8 +925,8 @@ def apply(G):
             "입주박람회 [[특약이행각서]] (예시)", "주요 클레임 품목과 [[보상 기준]] (예시)"]]),
         ("05. 주관 콜센터", [dv("05", "클레임은 [[주관사가 먼저]] 받습니다", ["주관 콜센터 · 선보상", "하자 예치금 최대 1억", "클레임 처리 흐름 · CRM", "컴플레인 예시 · 해결 우수 사례"])]
          + [T("주관 [[콜센터]]와 선보상"), p_deposit] + [T(x) for x in ["클레임 [[처리 흐름]]과 CRM 관리", "입주민 [[컴플레인]], 이렇게 해결합니다", "입주민 후기 · [[실시간 응대]] 화면"]]),
-        ("06. 입주박람회", [dv("06", "확인하고 비교하는 [[입주박람회]]", [f"{D.SITE['expo']} · 코리아디자인센터 B1 제2관", "32 ~ 39개 업체 · 인원 · 안전", "편의시설 · 온라인 박람회", "실제 박람회 현장"])]
-         + [T(x) for x in ["입주박람회 [[운영 계획]]", "행사장 대관과 [[운영 준비]]"]] + [p_floor, T(G["T_SAFE"])] + [T(x) for x in ["가족이 머무는 [[편의시설]]",
+        ("06. 입주박람회", [dv("06", "확인하고 비교하는 [[입주박람회]]", [f"{D.SITE['expo']} · 행사장 후보 3곳 협의", "32 ~ 39개 업체 · 인원 · 안전", "온라인 박람회", "실제 박람회 현장"])]
+         + [T(x) for x in ["입주박람회 [[운영 계획]]", "행사장 대관과 [[운영 준비]]"]] + [p_floor, T(G["T_SAFE"])] + [T(x) for x in [
                            "못 오셔도 [[괜찮습니다]]", "실제 박람회 [[현장]]"]]),
         (f"07. {D.SITE['name']} 맞춤 제안", [d07] + [T(G[x]) for x in [
             "T_MAP", "T_SITE", "T_FIRST", "T_FIT", "T_R500", "T_TRUST", "T_STABLE", "T_FACT", "T_CHECK", "T_ITEMS", "T_IT35", "T_VENDORS", "T_VMGT",
@@ -949,7 +946,7 @@ def apply(G):
                                 p_s1, p_s2, p_s3, T(G["T_CORE6"])]),
     ]
     # 오산: 단지 규모(433세대) · 공고 6항 6 · 보증 문구(본부장 10-15) · 같은 말 반복 · 사진 나열 장을 뺀다(약 105쪽)
-    drop = [T("위임장, 이제 [[휴대폰으로]] 받습니다"), T(kind="hi_money"), T("발전지원금은 [[이렇게 쓰입니다]]"), T("협의회 전용 [[8가지 무상 단지지원]]"), T("입예협·입주민 [[지원 한눈에]]"),
+    drop = [T("가족이 머무는 [[편의시설]]"), T("위임장, 이제 [[휴대폰으로]] 받습니다"), T(kind="hi_money"), T("발전지원금은 [[이렇게 쓰입니다]]"), T("협의회 전용 [[8가지 무상 단지지원]]"), T("입예협·입주민 [[지원 한눈에]]"),
             T("협의회 전용 [[단지 지원]]"), T("입주민에게 [[직접]] 돌아가는 혜택"), T("기록이 [[증명]]합니다."), T("하루가 [[즐거운]] 박람회"),
             p_examples, p_badd, p_inner, p_mission,
             T("해마다 쌓이는 [[누적 주관 단지]]"), T("전국 지사망 · [[직영 4곳 + 협력 8곳]]"), T("[[2,000세대 이상]] 초대형 단지를 맡아 왔습니다"),
@@ -984,7 +981,7 @@ def apply(G):
     # ------------------------------------------------ 목차 10장(5열 × 2)
     G["TOC4"][:] = [
         [("01", "회사소개", ["숫자 · 연혁 · 법인 서류", "대표자 · 핵심 운영인력", "지사망 · 직영 운영", "주관 · 수임 실적", "추천 · 감사 · 현장 지원"]),
-         ("06", "입주박람회", ["2 ~ 3일(안) · 대관", "배치 · 인원 · 안전관리", "편의시설 · 온라인", "박람회 현장"])],
+         ("06", "입주박람회", ["2 ~ 3일(안) · 행사장 협의", "배치 · 인원 · 안전관리", "온라인 박람회", "박람회 현장"])],
         [("02", "마케팅전략", ["카페 홍보 콘텐츠", "사전점검 언박싱", "드론 · 검색 · 언론", "현수막 · 버스 광고"]),
          ("07", f"{D.SITE['short']} 맞춤", ["공고 업무 범위 9 대응표", "실적 · 신뢰 · 품질 · 직영", "최저단가 보장 · 32 ~ 39개 업체", "박람회 · 타임테이블"])],
         [("03", "업체선정", ["공동구매 품목 · 수요조사", "4단계 공개 심사", "인근 지역업체 선정", "최저가 차액 10배", "계약·환불 규정 전문"]),

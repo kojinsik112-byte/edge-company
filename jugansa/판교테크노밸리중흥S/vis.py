@@ -297,7 +297,7 @@ def apply(B, D, take, sub):
     k = take(f"{D.SITE['short']} [[특화 제안]]")[1]
     k["body"] = inject(k["body"], ["checklist", "tape", "lockdoc", "users", "monitor", "streetlight"], "tile")
 
-    # 판교테크노밸리 중흥S클래스, 이런 단지입니다 — 왼쪽 띠 = 단지 이미지 슬롯(data.IMG['site'] · 없으면 조감도)
+    # 판교테크노밸리 중흥S-클래스, 이런 단지입니다 — 왼쪽 띠 = 단지 이미지 슬롯(data.IMG['site'] · 없으면 조감도)
     k = take(f"{D.SITE['name']}, [[이런 단지]]입니다")[1]
     hh = D.SITE["households"]
     import os as _os
@@ -339,7 +339,7 @@ def apply(B, D, take, sub):
 
     # 대단지 운영 경험 — 입주 순 막대(세대수 비례)
     k = take("[[대단지]] 운영 경험")[1]
-    SHORT = {"부산사상 중흥S-클래스 그랜드센트럴": "사상 중흥S클래스", "e편한세상 송도 더퍼스트비치": "송도 더퍼스트비치",
+    SHORT = {"부산사상 중흥S-클래스 그랜드센트럴": "사상 중흥S-클래스", "e편한세상 송도 더퍼스트비치": "송도 더퍼스트비치",
              "두산위브더제니스 센트럴사하": "센트럴사하", "양정자이더샵SK VIEW 1·2단지": "양정자이 1·2단지",
              "춘천 학곡지구 중해마루힐 포레스트": "춘천 중해마루힐", "에코델타 대성베르힐": "대성베르힐",
              "두산위브더제니스 오션시티": "오션시티", "창원 센트럴 아이파크": "창원 센트럴 아이파크"}
@@ -644,7 +644,7 @@ def apply2(B, D, take, sub):
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
-           + f'</div><div class="thc">01 · 02 = 판교 중흥S클래스 경관조명 시뮬레이션 · 03 ~ 05 = 타 단지 현장 · 예시</div>')
+           + f'</div><div class="thc">01 · 02 = 판교 중흥S-클래스 경관조명 시뮬레이션 · 03 ~ 05 = 타 단지 현장 · 예시</div>')
     k["body"] = sub(k["body"], "</li></ul></div></div></div>", "</li></ul>" + thm + "</div></div></div>")
 
     # 커뮤니티·공용부 조명 개선 — 목록 + 2×2

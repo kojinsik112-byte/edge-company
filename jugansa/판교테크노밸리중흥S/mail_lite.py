@@ -21,7 +21,7 @@ sys.path[:0] = [BASE]
 import build as B  # noqa: E402  (기본틀 — build_pdf()만 쓴다)
 
 NAME = "엣지컴퍼니_판교테크노밸리중흥S_입주지원_주관사_제안서"
-TITLE = "엣지컴퍼니 판교테크노밸리 중흥S클래스 입주지원 주관사 제안서"
+TITLE = "엣지컴퍼니 판교테크노밸리 중흥S-클래스 입주지원 주관사 제안서"
 SRC_HTML = os.path.join(HERE, NAME + ".html")
 SRC_PDF = os.path.join(HERE, NAME + ".pdf")
 OUT_PDF = os.path.join(HERE, NAME + "_메일용.pdf")

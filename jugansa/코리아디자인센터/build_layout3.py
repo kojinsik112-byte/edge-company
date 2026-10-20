@@ -166,7 +166,7 @@ h1{{font-size:20px;margin:4px 0 0}}.sub{{color:var(--sub);font-size:13.5px;margi
 td b{{color:var(--hl)}}
 </style>
 <div class="wrap">
-<div><h1>판교테크노밸리 중흥S클래스 입주박람회 · 부스 배치 시안 v3</h1>
+<div><h1>판교테크노밸리 중흥S-클래스 입주박람회 · 부스 배치 시안 v3</h1>
 <p class="sub">코리아디자인센터 B1 제2관(717㎡ · 약 40 × 18m 추정) · 가운데 통로 1개 + 섬 2개 · 같은 업종은 옆 · 등 맞댐 · 맞은편 금지(대각선 허용) — 생성할 때 자동 검사</p></div>
 <div class="leg">{LEG}</div>
 <div class="plan">{svg(PLANS["A"], a_in, a_all)}</div>
