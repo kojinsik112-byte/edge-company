@@ -59,7 +59,7 @@
 ## 🏠 입주주관사 (6+4) — 고객확보 깔때기 + 분석 심화
 - **movein_consultant** 입주 상담 · **movein_partnership** 건설사·시행사 제휴 · **movein_funnel** 고객 깔때기 운영 · **movein_event** 입주행사·부스 · **movein_data** 단지 데이터·타겟 · **movein_cs** 입주민 응대·예약
 - **pt_builder** 주관사 PT·제안서 빌더 · **realestate_analyst** 부동산·아파트 단지 분석 · **cafe_insight** 입주민 카페 인사이트(네이버) · **jugansa_scholar** 주관사 사업·경쟁 전략 연구
-- **입찰본부 (+5 · 2026-10-20)**: **bid_notice_analyst** 공고 분석 · **bid_economist** 손익·지원금 · **bid_docs** 제출서류·증빙·병합 · **bid_venue** 행사장 조사 · **bid_mail** 접수·발송 · **bid_visual** 단지 비주얼(조감도·경관조명 연출·메일 GIF, 10-20 추가) / 착수 = `/kickoff`(=/착수) 스킬(분석 4팀 + 비주얼 동시 → 착수 보고서) / 검토 = `/court` 스킬(검사 → 변호 → 판결) · 사용법 = `jugansa/AI입찰본부_가이드.md`
+- **입찰본부 (+5 · 2026-10-20)**: **bid_notice_analyst** 공고 분석 · **bid_economist** 손익·지원금 · **bid_docs** 제출서류·증빙·병합 · **bid_venue** 행사장 조사 · **bid_mail** 접수·발송 · **bid_visual** 단지 비주얼(조감도·경관조명 연출·메일 GIF, 10-20 추가) · **bid_pmo** 마감 관제(`jugansa/입찰현황판.md`) · **bid_pt_coach** PT 발표 코치 · **bid_retro** 결과 분석(`jugansa/입찰_결과분석.md`) / 착수 = `/kickoff`(=/착수) 스킬(분석 4팀 + 비주얼 동시 → 착수 보고서) / 검토 = `/court` 스킬(검사 → 변호 → 판결) · 사용법 = `jugansa/AI입찰본부_가이드.md`
 
 ## 🪟 엣지리브커튼 (6) — 커튼·블라인드
 - **curtain_designer** 디자인·패브릭 · **curtain_measure** 실측·견적 · **curtain_sourcing** 원단·전동 소싱 · **curtain_sales** 영업·상담 · **curtain_install** 시공 · **curtain_estimator** 견적·원가
