@@ -640,11 +640,11 @@ def apply2(B, D, take, sub):
     # C 패키지 — 항목 썸네일
     k = take("C 패키지 · [[단지지원 컨설팅]]")[1]
     _gy = lambda key: (lambda own: own if _os2.path.exists(_os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "assets_ins", own + ".jpg")) else D.IMG[key][1])(D.IMG[key][0])
-    th = [(_gy("lx_front1"), "동 파사드"), (_gy("lx_play"), "놀이터 (예시)"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
+    th = [(_gy("lx_front1"), "동 파사드"), (_gy("lx_play"), "놀이터"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
-           + f'</div><div class="thc">01 · 02 = 타 단지 경관조명 시뮬레이션 예시 · 03 ~ 05 = 타 단지 현장 · 예시</div>')
+           + f'</div><div class="thc">01 · 02 = 판교 중흥S클래스 경관조명 시뮬레이션 · 03 ~ 05 = 타 단지 현장 · 예시</div>')
     k["body"] = sub(k["body"], "</li></ul></div></div></div>", "</li></ul>" + thm + "</div></div></div>")
 
     # 커뮤니티·공용부 조명 개선 — 목록 + 2×2
@@ -657,7 +657,7 @@ def apply2(B, D, take, sub):
            '<figure><img src="assets_ins/n13_gx.jpg" alt=""><figcaption>커뮤니티 공간<small>예시 이미지</small></figcaption></figure>'
            '<figure><img src="assets_ins/n03_light.jpg" alt=""><figcaption>등기구 설치 현장<small>엣지컴퍼니 시공팀</small></figcaption></figure>'
            '<figure><img src="assets_ins/g14_light1c.jpg" alt=""><figcaption>입주 기념 점등식<small>타 단지 현장</small></figcaption></figure>'
-           f'<figure><img src="assets_ins/{_gy("lx_gate")}.jpg" alt="" style="object-position:50% 55%"><figcaption>산책로 · 운동시설 조명<small>외부 경관 진단 · ⟪pg:lx⟫ · 시뮬레이션</small></figcaption></figure></div>')
+           f'<figure><img src="assets_ins/{_gy("lx_court")}.jpg" alt="" style="object-position:50% 55%"><figcaption>운동시설 · 산책로 조명<small>외부 경관 진단 · ⟪pg:lx⟫ · 시뮬레이션</small></figcaption></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
     # 조명 수직계열화 — 아이콘 체인

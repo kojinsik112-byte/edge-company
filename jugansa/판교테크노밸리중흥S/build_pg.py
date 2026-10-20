@@ -7,7 +7,7 @@
   제출서류 12 · 선정 절차 · 기타사항
 - 공고 6항: 지원 불가 · 기완료 사항(위임장 · 동의율) 제안 금지 · 모호한 표현 금지(숫자로) — 본부장 10-20
 - 발전지원 = 세대당 12만원 상당 혜택 패키지(317세대 · 3,804만원 상당)
-- 단지 이미지 없음 → 표지 중립 디자인 · 경관조명은 타 단지 시뮬레이션 '예시'로 표기
+- 단지 이미지 = 본부장 제공(주간 조감도 · 정면 + 야간 경관 시뮬레이션 5장) · 파일이 없으면 중립 디자인 · 타 단지 '예시'
 
 사용: python3 build_pg.py [--no-pdf] [--final] → 엣지컴퍼니_판교테크노밸리중흥S_입주지원_주관사_제안서.html/.pdf
 """
@@ -724,9 +724,9 @@ T_LX2 = "단지 안 놀이터 · 운동시설 · 산책로, [[밤길까지]] 살
 new("std", sec=S0, title=T_LX,
     lead="전기공사업 등록 업체로서 단지의 밤 얼굴부터 - 동 파사드 → 정문 문주 순서로 진단하고 개선안을 냅니다.",
     body=('<div class="nb"><div class="lxo"><div class="gal lxa">'
-          + _fig("lx_front1", "① 동 파사드", "외벽 라인조명 · 타 단지 시뮬레이션 예시", "50% 45%")
-          + _fig("lx_front2", "② 동 측면 야간", "동 간 통일된 색온도 · 타 단지 예시", "50% 50%")
-          + _fig("lx_gate", "③ 산책로 · 운동시설", "보행등 · 바닥 밝기 · 타 단지 예시", "50% 55%")
+          + _fig("lx_front1", "① 동 파사드", "외벽 라인조명 · 단지 실루엣", "50% 45%")
+          + _fig("lx_front2", "② 단지 야간 전경", "동 간 통일된 색온도 · 가로 보행등", "50% 50%")
+          + _fig("lx_gate", "③ 정문 문주", "문주 사인 간접조명 · 진입부 밝기", "50% 45%")
           + '</div><div class="lxd">'
           + "".join(f"<div><b>{a}</b><p>{t(b)}</p></div>" for a, b in [
               ("우선 1 · 동 파사드", "외벽 라인조명 · 단지 실루엣 - 기존 경관조명 도면 · 배선 · 조도 · 타이머부터 확인합니다."),
@@ -739,7 +739,8 @@ new("std", sec=S0, title=T_LX,
 new("std", sec=S0, title=T_LX2,
     lead="외부 경관 다음은 매일 걷는 곳 - 어린이놀이터 · 운동시설 · 산책로의 야간 밝기와 안전을 살핍니다.",
     body=('<div class="nb"><div class="lxo s2"><div class="gal lxb">'
-          + _fig("lx_play", "어린이놀이터 · 산책로 (예시)", "타 단지 시뮬레이션 · 볼라드 · 수목 업라이트 · 바닥 밝기", "50% 50%")
+          + _fig("lx_play", "어린이놀이터 · 산책로", "볼라드 · 수목 업라이트 · 바닥 밝기", "50% 50%")
+          + _fig("lx_court", "운동시설 · 배드민턴장", "코트 균일 조도 · 눈부심 없는 볼라드", "50% 50%")
           + '</div><div class="lxd">'
           + "".join(f"<div><b>{a}</b><p>{t(b)}</p></div>" for a, b in [
               ("보행등 · 볼라드", "산책로 · 계단 · 단차 바닥 밝기를 확보해 야간 보행이 안전합니다."),
@@ -753,7 +754,7 @@ new("std", sec=S0, title=T_LX2,
 B.CSS += (".lxo{display:grid;grid-template-columns:1.75fr 1fr;gap:18px;flex:1;min-height:0}"
           ".gal.lxa{grid-template-columns:1.25fr 1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:0}"
           ".gal.lxa figure:first-child{grid-row:span 2}"
-          ".gal.lxb{grid-template-columns:1fr;gap:12px;min-height:0}"
+          ".gal.lxb{grid-template-columns:1fr 1fr;gap:12px;min-height:0}"  # 놀이터 + 배드민턴장(본부장 10-20)
           ".lxo .gal figcaption{font-size:15px;padding:24px 12px 9px}.lxo .gal figcaption small{font-size:12px}"
           ".lxo .lxd{display:flex;flex-direction:column;justify-content:center;gap:12px;min-height:0}"
           ".lxo .lxd>div{border-left:2px solid var(--gold2);padding:2px 0 2px 14px}"
@@ -1709,7 +1710,7 @@ B_p_toc = B.p_toc
 
 def p_contact():
     # 본부장 10-17: 환영 문장 삭제 · 표지와 같은 사진 배치로 마무리(경관조명 시뮬레이션) · 연락처 세로 정렬
-    _im, _own = slot("lx_front1")
+    _im, _own = slot("lx_front2")   # 본부장 10-20: 마지막 쪽 = 판교 야간 전경(표지 주간 조감도와 짝)
     _cr = D.LX_CAP
     art = (f'<div class="cvart cvx osc"><img src="assets_ins/{_im}.jpg" alt="" style="object-position:62% 50%">'
            f'<span class="credit">{_cr}</span></div>') if _im else ""

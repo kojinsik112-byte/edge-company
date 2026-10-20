@@ -351,12 +351,12 @@ def apply(G):
             return ""
         return f'<figure><img src="assets_ins/{img}.jpg" alt="" style="object-position:{pos}"><figcaption>{cap}<small>{sub_}</small></figcaption></figure>'
     p_lx5 = ("std", dict(sec="09. 차별화 포인트", title=f"{D.SITE['short']} [[경관조명 제안]] 한눈에",
-        lead="동 파사드 → 정문 문주 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다 - 아래는 타 단지 제안 시뮬레이션 예시입니다(판교 단지 이미지는 협약 후 제작).",
+        lead="동 파사드 → 정문 문주 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다 - 아래는 판교 중흥S클래스 경관조명 제안 시뮬레이션입니다.",
         body=('<div class="nb"><div class="gal lx5">'
-              + _lf("lx_front1", "동 파사드 라인조명", "야간 인지성 · 눈부심 없는 상향광 · 타 단지 예시")
-              + _lf("lx_front2", "동 측면 야간 경관", "동 간 통일된 색온도 · 타 단지 예시")
-              + _lf("lx_gate", "산책로 · 운동시설", "보행 밝기 · 바닥 조명 · 타 단지 예시")
-              + _lf("lx_play", "어린이놀이터 (예시)", "타 단지 시뮬레이션 · 보행 밝기 · 타이머")
+              + _lf("lx_front1", "동 파사드 라인조명", "야간 인지성 · 눈부심 없는 상향광")
+              + _lf("lx_gate", "정문 문주", "문주 사인 간접조명 · 진입부 밝기", "50% 45%")
+              + _lf("lx_court", "운동시설 · 배드민턴장", "코트 균일 조도 · 볼라드")
+              + _lf("lx_play", "어린이놀이터", "보행 밝기 · 수목 업라이트 · 타이머")
               + '</div><div class="lxstep">'
               '<div><i>STEP 01</i><b>진단</b><span>현황 조도 · 눈부심 · 사각지대 측정</span></div><em>›</em>'
               '<div><i>STEP 02</i><b>설계</b><span>조도 · 색온도 · 배광을 도면으로</span></div><em>›</em>'
@@ -364,7 +364,7 @@ def apply(G):
               '<div><i>STEP 04</i><b>시공 · A/S</b><span>전기공사업 등록 업체 직접 시공</span></div>'
               '</div></div>'),
         kp=("진단 · 개선안 · 자료 제공까지가 제안 범위입니다 - [[설치 여부 · 비용은 입예협 · 관리주체]]가 정합니다.",
-            f"{D.ELEC_LICENSE} · 이미지는 타 단지 시뮬레이션 예시")))
+            f"{D.ELEC_LICENSE} · 이미지는 판교 중흥S클래스 시뮬레이션")))
     B.CSS += r"""
 .gal.lx5{grid-template-columns:repeat(6,1fr);grid-template-rows:1.15fr 1fr;gap:12px}
 .gal.lx5 figure:nth-child(1),.gal.lx5 figure:nth-child(2){grid-column:span 3}
