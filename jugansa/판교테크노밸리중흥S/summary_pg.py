@@ -27,6 +27,7 @@ CSS_OS = r"""
 .sx table.mt td.n{width:62px;white-space:nowrap}
 .sx table.mt td{font-size:12.4px;padding:3px 9px;line-height:1.22}
 .sx .q4 span{font-size:11.8px}
+.sx .ob>div{grid-template-columns:150px 1fr}.sx .ob>div:first-child b{font-size:27px}
 .sx .flw.tl7 .st{padding:8px 9px}.sx .flw.tl7 .st b{font-size:13.5px}.sx .flw.tl7 .st span{font-size:11.2px;line-height:1.35}
 .sx .m3.f6{grid-template-columns:1fr 1fr;flex:1;align-content:start}
 .sx .ms3{display:flex;flex-direction:column;gap:8px}
@@ -85,7 +86,8 @@ def emit_summary(G):
     MON = G["MON"]
     tl_rows = [r for r in MON if r[0] in ("협약 후 1주", "협약 후 2 ~ 3주", "협약 후 4주", "박람회 2주 전", "2026.12", "2027.01", "2027.02")]
     assert len(tl_rows) == 7, [r[0] for r in tl_rows]
-    tl = "".join((('<span class="ar">›</span>' if i else "") + f'<div class="st{" hl" if a == "2026.12" else ""}"><i>{a}</i><b>{t(b.split(" · ", 1)[0])}</b><span>{t(b.split(" · ", 1)[1])}</span></div>')
+    _pl = lambda x: re.sub(r"\[\[|\]\]", "", x)  # 괄호 표시가 쪼개지지 않게 먼저 걷어냄
+    tl = "".join((('<span class="ar">›</span>' if i else "") + f'<div class="st{" hl" if a == "2026.12" else ""}"><i>{a}</i><b>{_pl(b).split(" · ", 1)[0]}</b><span>{_pl(b).split(" · ", 1)[1]}</span></div>')
                  for i, (a, b, c) in enumerate(tl_rows))
     fast = [("동시에 시작", "수요조사(카페 · 3일)와 업체 공개 입찰을 협약 직후 함께 진행 - 순서대로 기다리지 않습니다"),
             ("84㎡ 표준 견적 1장", "전 세대가 같은 면적 - 커튼 · 수납 · 가전 표준 견적표 하나로 먼저 공개하고 세대별 실측으로 확인"),
@@ -341,14 +343,23 @@ def emit_summary(G):
         s = G["sub"](s, f'<div class="cvart cvx osc day"><img src="assets_ins/{im}.jpg" alt="">',
                      '<div class="cvart cvx osc"><img src="assets_ins/pg_lx_gate.jpg" alt="" style="object-position:38% 50%">')
         s = G["sub"](s, f"{D.SITE['name']} 조감도 · 홍보용 이미지 · 실제와 다를 수 있음", f"{D.SITE['name']} 정문 문주 경관조명 제안 · 시뮬레이션 이미지 · 실제와 다를 수 있음")
+        s = G["sub"](s, "<em>입주지원 주관사 제안서</em></h1>", "<em>입주지원 주관사 요약제안서</em></h1>")
         s = G["sub"](s, f'<span class="pill">{G["COVER"]["pill"]}</span>', '<span class="pill">요약제안서 · 참고 자료</span>')
         s = G["sub"](s, f'<div class="tag2">{G["COVER"]["tag"]}</div>',
                      '<div class="tag2">박람회까지 남은 시간이 짧은 단지 -<br>일정 · 혜택 · 가격 · 환불 · A/S · 실적을 10쪽에 담았습니다.</div>')
         return G["sub"](s, '<div class="bt"><span>입주지원 주관사 제안서</span>', '<div class="bt"><span>입주지원 주관사 요약제안서</span>')
 
+    contact0 = B.p_contact
+
+    def contact_sum():
+        s = contact0()
+        assert s.count("입주지원 주관사 제안서 · ") == 1, "연락처 쪽 꼬리말"
+        return s.replace("입주지원 주관사 제안서 · ", "입주지원 주관사 요약제안서 · ")
+
     out = os.path.join(G["HERE"], NAME_SUM + ".html")
     keep_pages, keep_css = list(B.PAGES), B.CSS
     B.p_cover = cover_sum
+    B.p_contact = contact_sum
     B.CSS += CSS + CSS_OS + ".cv4 h1.cvx{font-size:44px}.ppl{gap:6px}.ppl>div{padding-bottom:6px}.ppl span{font-size:12.5px;line-height:1.4}.ppl .pro{padding:0;border:0;background:none;margin-top:7px}"
     try:
         B.PAGES[:] = pages
@@ -363,6 +374,7 @@ def emit_summary(G):
             B.build_pdf()
     finally:
         B.p_cover = cover0
+        B.p_contact = contact0
         B.CSS = keep_css
         B.PAGES[:] = keep_pages
     print(f"요약제안서 {len(pages)}쪽 → {out}")
