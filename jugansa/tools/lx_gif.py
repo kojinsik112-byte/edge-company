@@ -1,12 +1,13 @@
 """단지 비주얼팀(bid_visual) · 경관조명 메일 GIF 합성기.
 
 사용: python lx_gif.py <사진1> <사진2> ... -o 결과.gif [--title 상단문구] [--cap 하단캡션]
-                       [--width 640] [--ratio 16:9] [--hold 1.6] [--fade 0.6] [--max-mb 5]
+                       [--width 0] [--ratio 16:9] [--hold 1.6] [--fade 0.6] [--max-mb 10]
 
 - 순서 = 낮(조감도) → 밤 → 경관조명 켜짐. 사진마다 hold초 보여 주고 fade초 동안 겹쳐 넘긴다(무한 반복).
 - 모든 사진을 같은 비율로 가운데 잘라 맞춘다(--ratio, 기본 = 첫 사진 비율).
 - 하단 캡션 기본값 = '경관조명 연출 시뮬레이션 · 실제와 다를 수 있음'(빼지 않는다 — 시뮬레이션 표시 규칙).
-- 한글은 Pretendard로 얹는다(AI 한글 깨짐 방지). 용량이 --max-mb를 넘으면 폭 · 색 수를 줄여 다시 만든다.
+- 한글은 Pretendard로 얹는다(AI 한글 깨짐 방지).
+- 폭은 정하지 않는다(본부장 10-20 '폭 상관없고 10MB 이내'): 원본 폭(최대 1600)에서 시작해 --max-mb(기본 10)를 넘으면 폭을 줄여 다시 만든다.
 """
 import argparse
 import os
@@ -85,27 +86,26 @@ def main():
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--title", default="")
     ap.add_argument("--cap", default=CAP)
-    ap.add_argument("--width", type=int, default=640)
+    ap.add_argument("--width", type=int, default=0)   # 0 = 자동(원본 폭 · 최대 1600)
     ap.add_argument("--ratio", default="")
     ap.add_argument("--hold", type=float, default=1.6)
     ap.add_argument("--fade", type=float, default=0.6)
-    ap.add_argument("--max-mb", type=float, default=5.0)
+    ap.add_argument("--max-mb", type=float, default=10.0)
     a = ap.parse_args()
     if len(a.images) < 2:
         sys.exit("사진은 2장 이상(낮 → 밤 → 조명 켜짐 순)")
-    if a.ratio:
-        rw, rh = (float(x) for x in a.ratio.split(":"))
-    else:
-        im0 = Image.open(a.images[0])
-        rw, rh = im0.width, im0.height
-    w, colors = a.width, 256
+    im0 = Image.open(a.images[0])
+    rw, rh = (float(x) for x in a.ratio.split(":")) if a.ratio else (im0.width, im0.height)
+    w, colors = a.width or min(im0.width, 1600), 256
     while True:
         h = round(w * rh / rw / 2) * 2
         fr, dur = frames(a.images, w, h, a.title, a.cap, a.hold, a.fade)
         mb = save(fr, dur, a.out, colors)
         if mb <= a.max_mb or w <= 360:
             break
-        w, colors = round(w * 0.88), max(96, colors - 48)
+        w = round(w * 0.9) if mb < a.max_mb * 1.25 else round(w * (a.max_mb / mb) ** 0.5 * 0.97)
+        if w <= 640:
+            colors = max(128, colors - 32)
     print(f"{a.out}  {w}×{h}px · {len(fr)}프레임 · 한 바퀴 {sum(dur) / 1000:.1f}초 · {mb:.2f}MB · 색 {colors}")
 
 
