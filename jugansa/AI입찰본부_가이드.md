@@ -15,13 +15,13 @@
 
 ## 2. 추천 프롬프트 (복사해서 쓰세요)
 
-### ① 새 단지 착수
+### ① 새 단지 착수 (`/kickoff` = `/착수`)
 ```
-[단지명] 공고 올릴게(첨부). 분석해줘 — 참여 여부 결론, 사업성 점수, 제출서류 체크리스트,
-참가자격·평가표 대응, 함정 조항, 질의 메일 초안. 마감 [날짜].
+/kickoff [단지명]  (+공고 · 지침서 · 별지 양식 첨부)
 ```
-- 담당: `bid_notice_analyst`(공고) + `realestate_analyst`(단지) + `bid_economist`(손익)
-- 결과: 분석 md 1개 + 본부장 확인 질문 최대 5개
+- "착수해줘", "공고 분석해줘"라고 하셔도 됩니다.
+- 한 번에 5팀이 동시에 움직입니다: `bid_notice_analyst`(공고) · `realestate_analyst`(단지) · `cafe_insight`(카페) · `bid_economist`(손익) · `bid_visual`(쓸 사진 목록)
+- 결과: 착수 보고서 1장 = 참여 결론 · 사업성 점수 · 지원금 상한 · 일정 · 제출서류 체크리스트(보유 ✅/⚠️/❌) · 함정 · 질의 메일 · 비주얼 소재 · 복제할 기존 빌더 + 본부장 질문 최대 5개
 
 ### ② 제안서 · 제출서류 전체 만들기
 ```
@@ -63,11 +63,14 @@
 ```
 - 담당: `bid_venue`
 
-### ⑧ 제출 메일
+### ⑧ 경관조명 GIF + 제출 메일
 ```
-[단지] 제출 메일 문구 + 디자인(HTML) 만들어줘. 가운데 GIF 넣을 거야.
+[단지] 경관조명 GIF 만들어줘 (사진 첨부: 조감도 · 야간 연출).
+[단지] 제출 메일 문구 + 디자인(HTML) 만들어줘. 가운데 GIF 넣어줘.
 ```
-- 담당: `bid_mail` · 메일 제목 · 파일명은 공고 형식 그대로 맞춥니다.
+- 담당: `bid_visual`(사진 출처 · 보정 · 야간 연출 프롬프트 · GIF) → `bid_mail`(글귀 · 디자인 메일 · 체크리스트)
+- GIF = 낮 → 밤 → 조명 켜짐, 폭 640 · 5MB 이내 · 하단 "경관조명 연출 시뮬레이션 · 실제와 다를 수 있음" 고정(`jugansa/tools/lx_gif.py`)
+- 야간 연출을 본부장님 이미지 도구로 만드실 때는 비주얼팀이 컷별 프롬프트를 드립니다.
 
 ### ⑨ 규칙으로 고정하기
 ```
@@ -91,17 +94,19 @@
                                  │
    ┌──────────────┬──────────────┼──────────────┬──────────────┐
  분석 팀          제작 팀         서류 팀         검토 팀         현장 · 발송 팀
- bid_notice_     pt_builder      bid_docs        /court(검사 ·   bid_venue
- analyst         (제안서 07장)    (별지 · 증빙 ·   변호 · 판사)     (행사장)
- realestate_     designer ·      병합 · 날인     auditor         bid_mail
- analyst         infographic     규칙)           legal           (메일 · 체크리스트)
- cafe_insight    (시각화)
- bid_economist
- (손익 · 지원금)
+ /kickoff(착수)  pt_builder      bid_docs        /court(검사 ·   bid_venue
+ bid_notice_     (제안서 07장)    (별지 · 증빙 ·   변호 · 판사)     (행사장)
+ analyst         bid_visual      병합 · 날인     auditor         bid_mail
+ realestate_     (조감도 · 경관   규칙)           legal           (메일 · GIF ·
+ analyst         조명 · GIF)                                      체크리스트)
+ cafe_insight    designer ·
+ bid_economist   infographic
+ (손익 · 지원금)  (+lighting_designer 조명 사양)
 ```
 
 | 팀 | 에이전트 | 하는 일 | 새로 만듦 |
 |---|---|---|---|
+| 분석 | `/kickoff` 스킬 | 분석 4팀 + 비주얼팀 동시 실행 → 착수 보고서 1장 | ✅ 10-20 |
 | 분석 | `bid_notice_analyst` | 공고 해부 → 제출서류 · 자격 · 평가 · 함정 체크리스트 | ✅ |
 | 분석 | `realestate_analyst` | 단지 세대 · 타입 · 시공사 · 분양 현황 | 기존 |
 | 분석 | `cafe_insight` | 입주민 카페 관심사 | 기존 |
@@ -111,14 +116,15 @@
 | 검토 | `/court` 스킬 | 검사 → 변호 → 판결(탈락 · 허위 · 약속 위험) | ✅ |
 | 검토 | `auditor` · `legal` | 사실 · 표시광고 · 법적 리스크 | 기존 |
 | 현장 | `bid_venue` | 행사장 후보 · 면적 · 요금 | ✅ |
+| 제작 | `bid_visual` | 사진 출처 · 보정 · 경관조명 연출 프롬프트 · 메일 GIF | ✅ 10-20 |
 | 발송 | `bid_mail` | 메일 문구 · 디자인 · 발송 체크리스트 | ✅ |
 
 ### 한 단지가 흘러가는 순서
-1. **공고 수령** → 분석 팀(①) → 본부장 결정(참여 · 지원금)
+1. **공고 수령** → `/kickoff`(①) → 본부장 결정(참여 · 지원금)
 2. **빌드** → 제작 · 서류 팀(②) — 노란 칸 = 본부장 자료 대기
 3. **미비 점검**(③) → **법정 검토**(④) → 한 번에 고치기(⑤)
 4. **날인 · 스캔**(⑥) → 최종본
-5. **메일 · 발송**(⑧) → 필요하면 업로드("ZIP으로 올려줘")
+5. **경관조명 GIF · 메일 · 발송**(⑧) → 필요하면 업로드("ZIP으로 올려줘")
 
 ---
 
@@ -139,5 +145,5 @@
 
 - 단지별 폴더: `jugansa/<단지>/` — `build_xx.py`(제안서) · `docs_xx.py`(제출서류) · `data.py`(숫자는 여기 한 곳)
 - 결과물: `<단지>/제출본/`(통합 PDF) · `<단지>/작업/제출현황.txt`(쪽 번호 · 조치) — 깃에는 올라가지 않음(개인정보)
-- 팀 지침: `.claude/agents/bid_*.md` · 법정 검토: `.claude/skills/court/SKILL.md`
+- 팀 지침: `.claude/agents/bid_*.md` · 착수: `.claude/skills/kickoff/SKILL.md` · 법정 검토: `.claude/skills/court/SKILL.md` · GIF 합성기: `jugansa/tools/lx_gif.py`
 - 규칙 메모: `jugansa/CLAUDE.md`
