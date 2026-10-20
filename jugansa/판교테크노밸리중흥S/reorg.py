@@ -34,7 +34,7 @@ def apply(G):
     CASH = getattr(D, "FUND_CASH", False)
     # 본부장 10-16: 82쪽은 분당 기존틀(A · B · C 선택) 그대로 · 금액만 발전지원금 6,000만원 상당
     B.FUND_CHOICE_TITLE = G["T_FUNDCH"]
-    total = won(hh * fund)
+    total = won(D.FUND_TOTAL)   # 본부장 10-20 판교: 총 4,000만원
     # 정회원 혜택(안) — 품목 유형 예시만(할인율 · 무상 표기 없음). 공식 유상옵션(현관 중문) · 기본 제공 겹침(욕실 환풍) 품목은 뺐다(검증 10-14)
     MEM = [("박람회 상품권 +10만원", "일반회원 20만원에 정회원 추가 10만원 · 참여업체 의무 조건"), ("도어락 나노코팅", "생활방수 코팅 · 오염·물때 방지"),
            ("실링팬 정회원 특가", "자사 실링팬 · 천장 보강 확인 후 시공"), ("우물 간접조명", "거실 우물천장 간접조명 시공 지원"),
@@ -88,7 +88,7 @@ def apply(G):
         s = B_hi_fund(no, sec)
         _ft = won(D.FUND_TOTAL)
         s = sub(s, f'<span class="pre">세대당</span><span class="v">{fund}만원</span><span class="post">부가세 포함</span>',
-                f'<span class="pre">세대당</span><span class="v">{fund}만원</span><span class="post">상당 · 부가세 포함</span>')
+                f'<span class="pre">발전지원금</span><span class="v" style="font-size:108px">{D.FUND_TOTAL:,}만원</span><span class="post">상당 · 부가세 포함</span>')   # 본부장 10-20: 총액
         s = sub(s, '<div class="nm2">발전지원금</div>', '<div class="nm2">발전지원 · 세대 혜택 패키지 (안)</div>')
         s = re.sub(r"<p>박람회 참가비가 아니라 .*?</p>",
                    f"<p>박람회 참가비가 아니라 <em>단지로 돌아가는 혜택</em>입니다. 공고 업무 범위의 기본 업무는 이와 별도로 수행합니다.<br>"
@@ -388,7 +388,7 @@ def apply(G):
     k["sec"] = S10
     k["lead"] = "숫자로 제안하고, 입예협과 협의해 협약서로 확정합니다."
     k["body"] = B.tiles([
-        dict(lb="발전지원 · 혜택 패키지", big=f"{fund}", unit="만원 상당", nm="세대당 · 패키지 (안)", ds=f"{hh:,}세대 · 총 {won(D.FUND_TOTAL)} 상당 · 주관사 부담 · 공구가와 분리 · 항목은 입예협이 선택"),
+        dict(lb="발전지원 · 혜택 패키지", big=f"{D.FUND_TOTAL:,}", unit="만원 상당", nm="발전지원금 총액", ds=f"{hh:,}세대 · 세대당 {fund}만원 상당 · 주관사 부담 · 공구가와 분리 · 항목은 입예협이 선택"),
         dict(lb="이행보증보험 · 협의", big="10", unit="억원 한도", nm="협의회 피보험자 · 2년", ds="협약 시 증권 발급 · 금액은 단지 규모에 맞춰 협약 때 확정"),
         dict(lb="하자 예치금 · 협의", big="1", unit="억원 한도", nm="이행보증으로 갈음 가능", ds="보증보험 · 예치금 중 방식 · 금액은 협약 시 입예협과 협의 · 선보상 재원"),
         dict(lb="하자보수", big="48", unit="시간", nm="하자보수 원칙", ds="24시간 안에 1차 회신 · 업체 미응답 시 주관사 선보상"),
