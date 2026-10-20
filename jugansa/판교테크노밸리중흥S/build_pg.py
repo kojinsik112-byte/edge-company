@@ -1876,7 +1876,7 @@ def p_divider_os(n, title, bl):
     if n != "07" or not im:
         return s
     art = (f'<div class="dvim"><img src="assets_ins/{im}.jpg" alt=""><div class="vl"></div>'
-           f'<span class="cap">{D.LX_CAP}</span></div>')
+           f'<span class="cap">{"조감도 · 홍보용 이미지 · 실제와 다를 수 있음" if _own else D.LX_CAP}</span></div>')
     return sub(s, '<section class="page dv">', '<section class="page dv dvo">' + art)
 
 

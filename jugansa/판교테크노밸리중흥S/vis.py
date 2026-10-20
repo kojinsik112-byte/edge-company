@@ -304,8 +304,8 @@ def apply(B, D, take, sub):
     _own, _alt, _ = D.IMG["site"]
     _here = _os.path.dirname(_os.path.abspath(__file__))
     _im = next((x for x in (_own, _alt) if x and _os.path.exists(_os.path.join(_here, "assets_ins", x + ".jpg"))), None)
-    _cap = D.LX_CAP if _im == _own else "조감도 · 홍보용 이미지 · 실제와 다를 수 있음"
-    bnr = ('<div class="bnr" style="flex-basis:25%"><img src="assets_ins/' + _im + '.jpg" alt="" style="object-position:55% 45%">'
+    _cap = "조감도 · 홍보용 이미지 · 실제와 다를 수 있음" if _im == _own else D.LX_CAP  # 본부장 10-20: 판교 단지 조감도 받음
+    bnr = ('<div class="bnr" style="flex-basis:25%"><img src="assets_ins/' + _im + '.jpg" alt="" style="object-position:50% 22%">'
            f'<b>{D.SITE["official"]} · {hh:,}세대 · {D.SITE["supply"]}</b><span>{_cap}</span></div>') if _im else ""
     k["body"] = '<div class="nb">' + bnr + k["body"] + '</div>'
 
