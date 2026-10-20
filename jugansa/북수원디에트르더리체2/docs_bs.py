@@ -57,6 +57,7 @@ CAP_DIR = f"{SP}/hw/cap"
 WORK = os.path.join(HERE, "작업")
 SUBMIT = os.path.join(HERE, "제출본")
 P04 = os.path.join(HERE, PFX + "입주박람회_주관사_제안서.pdf")
+INGAM = f"{EV}/법인인감증명서.pdf"   # 기존 법인인감증명서(D.INGAM_DATE 발급 · 주민번호 뒷자리 가림본) — 본부장 10-20 '기존 것 사용'
 SEAL_SCAN = getattr(D, "SEAL_SCAN", None) or f"{SP}/seal_scan/북수원_별지1-5_법인인감.pdf"   # 별지 1 ~ 5 법인인감 날인 스캔(5쪽 · 순서 = 별지 1 · 2 · 3 · 5 · 4)
 
 _priv = os.path.join(HERE, "org_private.json")  # 깃 제외(생년월일 · 실명)
@@ -669,7 +670,7 @@ def doc00(spans):
 <tr><th>접수</th><td colspan="3">{D.SUBMIT_TO} · 마감 2026.10.25(일) 24:00 · 제목 “{e(D.MAIL_TITLE)}”</td></tr></table>
 <table class="t" style="margin-top:10pt"><thead><tr><th style="width:6%">No</th><th style="width:37%">제출 서류(제4조)</th><th>내용 · 발급일</th><th style="width:13%">이 파일 쪽</th></tr></thead><tbody>{rows}</tbody></table>
 <p class="note" style="margin-top:8pt">※ 모든 서류를 번호 순서대로 PDF 1개로 병합했습니다(PDF 책갈피 = 번호별). 발행일 1개월 이내 서류만 냈습니다(운영계획서 · 지명원 · 환불 규정 제외 · 신용평가는 연 1회 평가의 최근 평가).</p>
-<p class="note">※ 별지 1 ~ 5는 법인 인감 날인본입니다. 개인정보는 별지 1 · 재직증명서의 책임자 생년월일 외에는 적지 않았고, 4대보험 명부 · 신용평가서의 개인정보는 가렸습니다.</p>
+<p class="note">※ {"별지 1 ~ 5는 법인 인감 날인본입니다" if os.path.exists(SEAL_SCAN) else "별지 1 ~ 5의 날인은 직인입니다"} · 법인인감증명서({D.INGAM_DATE} 발급)는 1번에 첨부했습니다. 개인정보는 별지 1 · 재직증명서의 책임자 생년월일 외에는 적지 않았고, 4대보험 명부 · 신용평가서 · 인감증명서의 개인정보는 가렸습니다.</p>
 <div class="sign" style="margin-top:14pt"><div class="d">{yy}년 {mm}월 {dd}일</div><div class="who">{D.COMPANY}</div></div>"""
     return doc("00 제출서류 목록", [body])
 
@@ -752,7 +753,7 @@ def evidence_check():
     t = fitz.open(KB)[0].get_text()
     assert "영업배상책임보험" in t and "2027년 10월 14일 24:00" in t, "KB 증권 글자 확인 실패"
     assert len(fitz.open(ROSTER)) == 2, "4대보험 가입자 명부(2026.10.02 · 가림본) 2쪽 확인 실패"   # 이미지 PDF — 글자 확인 불가(철산 06 · 지웰 07과 같은 파일)
-    for p in (f"{EV}/법인등기부등본.pdf", f"{EV}/지방세_납세증명서.pdf", NICE_SRC, SGI_IMG, P04):
+    for p in (f"{EV}/법인등기부등본.pdf", f"{EV}/지방세_납세증명서.pdf", NICE_SRC, SGI_IMG, P04, INGAM):
         assert os.path.exists(p), f"없음: {p}"
 
 
@@ -822,8 +823,9 @@ def main():
         """(번호, 이름, 내용, [(pdf, 쪽 목록 또는 None, 책갈피)])"""
         p04 = P04
         return [
-            ("1", "참가신청서 · 확약서 · 청렴이행각서 (별지 1 · 2 · 3)", "법인 인감 날인" if have_scan else "직인본(법인인감 스캔 교체 전)",
-             [(forms[0], [0, 1, 2], None)] if have_scan else [(forms[0], None, "별지 1 제안 참가 신청서"), (forms[1], None, "별지 2 확약서"), (forms[2], None, "별지 3 청렴이행각서")]),
+            ("1", "참가신청서 · 확약서 · 청렴이행각서 (별지 1 · 2 · 3)", ("법인 인감 날인" if have_scan else "직인 날인") + f" · 법인인감증명서 {D.INGAM_DATE} 발급(주민번호 뒷자리 가림) 첨부",
+             ([(forms[0], [0, 1, 2], None)] if have_scan else [(forms[0], None, "별지 1 제안 참가 신청서"), (forms[1], None, "별지 2 확약서"), (forms[2], None, "별지 3 청렴이행각서")])
+             + [(INGAM, None, "법인인감증명서")]),
             ("2", "적격심사 자기평가서 · 운영 실적표 (별지 5 · 4)", f"자기평가 1 ~ 4번 {sum(x[2] for x in D.SELF_EVAL)}점 · 실적 {len(D.BS_REC)}건",
              [(forms[0], [3, 4], None)] if have_scan else [(forms[3], None, "별지 5 적격심사 평가표"), (forms[4], None, "별지 4 운영 실적표")]),
             ("3", "사업자등록증 사본 및 법인등기부등본", f"사업자등록증 {D.ISSUE['biz']} · 등기부등본 {D.ISSUE['reg']} 발급",
