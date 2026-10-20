@@ -3,7 +3,7 @@
 사용: python lx_gif.py <사진1> <사진2> ... -o 결과.gif [--title 상단문구] [--cap 하단캡션]
                        [--width 0] [--ratio 16:9] [--hold 1.6] [--fade 0.6] [--max-mb 10]
 
-- 순서 = 낮(조감도) → 밤 → 경관조명 켜짐. 사진마다 hold초 보여 주고 fade초 동안 겹쳐 넘긴다(무한 반복).
+- 순서 = 낮(조감도) → 밤 → 경관조명 켜짐. 낮 · 밤이 같은 구도면 `align_pair.py`로 먼저 맞추고 `--fade1 1.2`를 주면 불이 켜지는 듯 넘어간다. 사진마다 hold초 보여 주고 fade초 동안 겹쳐 넘긴다(무한 반복).
 - 모든 사진을 같은 비율로 가운데 잘라 맞춘다(--ratio, 기본 = 첫 사진 비율).
 - 하단 캡션 기본값 = '경관조명 연출 시뮬레이션 · 실제와 다를 수 있음'(빼지 않는다 — 시뮬레이션 표시 규칙).
 - 한글은 Pretendard로 얹는다(AI 한글 깨짐 방지).
@@ -60,14 +60,14 @@ def overlay(im, title, cap):
     return Image.alpha_composite(im, layer).convert("RGB")
 
 
-def frames(paths, w, h, title, cap, hold, fade, fps=10):
+def frames(paths, w, h, title, cap, hold, fade, fade1=0, fps=10):
     base = [overlay(fit(Image.open(p), w, h), title, cap) for p in paths]
     out, dur = [], []
-    n = max(2, round(fade * fps))
     for i, a in enumerate(base):
         b = base[(i + 1) % len(base)]
         out.append(a)
         dur.append(round(hold * 1000))
+        n = max(2, round((fade1 if i == 0 and fade1 else fade) * fps))  # 첫 전환(낮 → 같은 구도 밤)만 길게 할 수 있음
         for k in range(1, n):
             out.append(Image.blend(a, b, k / n))
             dur.append(round(1000 / fps))
@@ -90,6 +90,7 @@ def main():
     ap.add_argument("--ratio", default="")
     ap.add_argument("--hold", type=float, default=1.6)
     ap.add_argument("--fade", type=float, default=0.6)
+    ap.add_argument("--fade1", type=float, default=0, help="첫 전환(1 → 2번 사진) 길이 · 같은 구도 낮 → 밤일 때 1.2 정도")
     ap.add_argument("--max-mb", type=float, default=10.0)
     a = ap.parse_args()
     if len(a.images) < 2:
@@ -99,7 +100,7 @@ def main():
     w, colors = a.width or min(im0.width, 1600), 256
     while True:
         h = round(w * rh / rw / 2) * 2
-        fr, dur = frames(a.images, w, h, a.title, a.cap, a.hold, a.fade)
+        fr, dur = frames(a.images, w, h, a.title, a.cap, a.hold, a.fade, a.fade1)
         mb = save(fr, dur, a.out, colors)
         if mb <= a.max_mb or w <= 360:
             break
