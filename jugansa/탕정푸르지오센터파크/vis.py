@@ -612,10 +612,12 @@ def apply2(B, D, take, sub):
     band = ('<div class="pt3"><h5>보호 기간 한눈에<small>눈금은 기간에 비례하지 않습니다 · 무상 A/S 기간은 업체·품목별로 다를 수 있음</small></h5>'
             '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:42%">이행보증보험 2년 · 최대 10억</i></div></div>'
             '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:15%">48시간 처리</i></div></div>'
-            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:42%">무상 A/S 최소 2년</i><i class="c" style="left:42%;width:58%">장기 관리 최대 10년</i></div></div>'
-            '<div class="tk"><span style="left:0">입주</span><span style="left:15%">48시간</span><span style="left:42%">2년</span><span style="left:100%">10년</span></div></div>')
-    k["body"] = '<div class="nb">' + band + sub(k["body"], "최소 2년 무상 A/S, 최대 10년 장기 관리.",
-                                                "최소 2년 무상 A/S(업체·품목에 따라 기간이 다를 수 있음), 최대 10년 장기 관리.") + '</div>'
+            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:100%">무상 A/S 최소 2년(업체·품목별) · 주관 창구 운영 입주 후 1년</i></div></div>'
+            '<div class="tk"><span style="left:0">입주</span><span style="left:15%">48시간</span><span style="left:50%">1년</span><span style="left:100%">2년</span></div></div>')
+    b3 = sub(k["body"], '<div class="big">10<small>년</small></div><div class="nm">장기 사후관리</div>',
+             '<div class="big">2<small>년</small></div><div class="nm">무상 A/S · 사후관리</div>')  # /court 10-20: 근거 없는 '최대 10년' 약속 삭제
+    b3 = sub(b3, "최소 2년 무상 A/S, 최대 10년 장기 관리.", "업체·품목별 상이. 입주 후 1년 주관 창구 운영 · 무상 A/S 기간은 계약서에 명시.")
+    k["body"] = '<div class="nb">' + band + b3 + '</div>'
 
     # 선보상 재원 — 돈의 흐름
     k = take("선보상 재원 · 하자 예치금 [[최대 1억원]]")[1]
