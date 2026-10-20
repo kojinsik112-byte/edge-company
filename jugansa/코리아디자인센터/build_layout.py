@@ -6,27 +6,24 @@ OX, OY = 40, 110
 # (라벨, 그룹, x, y, w, h) — m 단위, 칸 = 3m × 3m
 G = {"furn": ("#dbeafe", "#2563eb"), "elec": ("#fee2e2", "#dc2626"), "build": ("#fef3c7", "#c08a2d"),
      "life": ("#dcfce7", "#16a34a"), "own": ("#f3e8c8", "#a8843f"), "ops": ("#eef1f5", "#64748b")}
-B = []
-x = 0
-for nm, w, g in [("가구 1", 9, "furn"), ("가구 2", 9, "furn"), ("가구 3", 9, "furn"), ("인테리어", 3, "build"),
-                 ("중문", 3, "build"), ("커튼 1", 3, "build"), ("커튼 2<br>직영", 3, "own")]:
-    B.append((nm, g, x + 0.5, 0, w, 3)); x += w
-for nm, y, h, g in [("가전 1", 3, 6, "elec"), ("가전 2", 9, 6, "elec"), ("조명<br>직영", 15, 3, "own")]:
-    B.append((nm, g, 37, y, 3, h))
-x = 10
-for nm, w, g in [("가전 3", 6, "elec"), ("냉장고<br>붙박이장", 3, "elec"), ("에어컨", 3, "elec"), ("청정 환기", 3, "life"),
-                 ("통신", 3, "life"), ("렌탈", 3, "life"), ("인덕션", 3, "elec"), ("보험", 3, "ops")]:
-    B.append((nm, g, x, 15, w, 3)); x += w
-isl = [["줄눈 1", "줄눈 2", "줄눈 3", "코팅 1"], ["코팅 2", "탄성 1", "탄성 2", "필름"],
-       ["청소 1", "청소 2", "새집증후군", "음식물<br>처리기"], ["매트", "벽걸이 TV", "선반", "이사"]]
-grp = {"줄눈": "build", "코팅": "build", "탄성": "build", "필름": "build"}
-for k, (x0, y0) in enumerate([(7, 6), (7, 9), (22, 6), (22, 9)]):
-    for j, nm in enumerate(isl[k]):
-        B.append((nm, grp.get(nm.split()[0], "life"), x0 + 3 * j, y0, 3, 3))
-B.append(("안전망", "life", 0.5, 6, 3, 3))
-vend = [b for b in B]
-n_v = len(vend); n_c = sum(int(b[4] * b[5] / 9) for b in B)
-assert n_v == 35 and n_c == 44, (n_v, n_c)
+# 본부장 10-20: 업체를 하나씩 펼치지 않고 품목군 구역으로 묶음 · 34 ~ 40개 업체 · 전시장 미확정 → 대략 시안
+B = [  # (라벨, 그룹, x, y, w, h, 업체 수)
+    ("가구", "furn", 0.5, 0, 18, 3, "3 ~ 5곳"),
+    ("필름 · 중문 · 인테리어", "build", 18.5, 0, 12, 3, "3 ~ 4곳"),
+    ("주관사 직영<br>커튼 · 블라인드 · 조명", "own", 30.5, 0, 9, 3, "3곳"),
+    ("가전", "elec", 37, 3, 3, 15, "3 ~ 4곳"),
+    ("설비 가전<br>에어컨 · 인덕션 · 냉장고", "elec", 10, 15, 9, 3, "3곳"),
+    ("서비스 · 이사 · 통신 · 렌탈 · 보험", "life", 19, 15, 12, 3, "4곳"),
+    ("안전 · 환기", "life", 31, 15, 6, 3, "1 ~ 2곳"),
+    ("줄눈", "build", 7, 6, 12, 3, "3곳"),
+    ("코팅 · 탄성", "build", 7, 9, 12, 3, "4곳"),
+    ("입주청소 · 새집증후군", "life", 22, 6, 12, 3, "3곳"),
+    ("생활 · 수납 · 매트 · 선반 · TV", "life", 22, 9, 12, 3, "4 ~ 5곳"),
+]
+_rng = [tuple(int(x) for x in c.replace("곳", "").split(" ~ ")) for *_, c in B]
+n_lo, n_hi = sum(r[0] for r in _rng), sum(r[-1] for r in _rng)
+assert (n_lo, n_hi) == (34, 40), (n_lo, n_hi)
+
 
 def r(x, y, w, h, **k):
     a = " ".join(f'{kk.replace("_", "-")}="{v}"' for kk, v in k.items())
@@ -42,10 +39,18 @@ def t(x, y, s, size=12, w=600, fill="#15233b", anchor="middle"):
 
 sv = []
 sv.append(f'<polygon points="{OX},{OY} {OX + W * S},{OY} {OX + W * S},{OY + H * S} {OX},{OY + H * S}" fill="#fbfaf7" stroke="#47637a" stroke-width="3"/>')
-for nm, g, x, y, w, h in B:
-    f, s = G[g]
-    sv.append(r(x + .08, y + .08, w - .16, h - .16, rx=3, fill=f, stroke=s, stroke_width=1.3))
-    sv.append(t(x + w / 2, y + h / 2, nm, 13 if w * h >= 18 else 11))
+for nm, g, x, y, w, h, c in B:
+    f, s_ = G[g]
+    sv.append(r(x + .08, y + .08, w - .16, h - .16, rx=4, fill=f, stroke=s_, stroke_width=1.4))
+    if w >= 9 or h >= 9:  # 구역 안 3m 칸 눈금(대략 칸 수)
+        for k_ in range(1, int(max(w, h) // 3)):
+            if w >= h:
+                sv.append(f'<line x1="{OX + (x + 3 * k_) * S}" y1="{OY + (y + .35) * S}" x2="{OX + (x + 3 * k_) * S}" y2="{OY + (y + h - .35) * S}" stroke="{s_}" stroke-opacity=".28" stroke-dasharray="3 3"/>')
+            else:
+                sv.append(f'<line x1="{OX + (x + .35) * S}" y1="{OY + (y + 3 * k_) * S}" x2="{OX + (x + w - .35) * S}" y2="{OY + (y + 3 * k_) * S}" stroke="{s_}" stroke-opacity=".28" stroke-dasharray="3 3"/>')
+    vertical = h > w
+    sv.append(t(x + w / 2, y + h / 2 - (0 if vertical else .35), nm.replace(" · ", "<br>") if vertical else nm, 12 if vertical else 13))
+    sv.append(t(x + w / 2, y + h / 2 + (2.6 if vertical else 1.0), c, 11, 800, s_))
 # 운영 구역
 sv.append(r(0.5, 10, 6, 5, rx=4, fill="#ffffff", stroke="#94a3b8", stroke_width=1, stroke_dasharray="5 4"))
 sv.append(t(3.5, 11.6, "상담 · 휴게석", 11, 600, "#475569"))
@@ -72,8 +77,8 @@ for g, nm in leg:
     lx += 34 + len(nm) * 12.5
 svg = (f'<svg viewBox="0 0 {W * S + 2 * OX + 20} {OY + H * S + 90}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="코리아디자인센터 제2관 배치도">'
        '<defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 2L8 5L2 8" fill="none" stroke="#8a6a2c" stroke-width="1.6"/></marker></defs>'
-       f'<text x="{OX}" y="40" font-size="20" font-weight="800" fill="#0d1e33">판교테크노밸리 중흥S클래스 입주박람회 · 부스 배치도(안)</text>'
-       f'<text x="{OX}" y="66" font-size="13" fill="#475569">코리아디자인센터 B1 제2관 · 전용 717.36㎡(217평) · 업체 {n_v}개 · {n_c}칸(3m × 3m) · 부스 {n_c * 9}㎡(면적의 {n_c * 9 / 717:.0%}) · 테이블 · 의자 · 테이블보 렌탈</text>'
+       f'<text x="{OX}" y="40" font-size="20" font-weight="800" fill="#0d1e33">판교테크노밸리 중흥S클래스 입주박람회 · 부스 배치 시안</text>'
+       f'<text x="{OX}" y="66" font-size="13" fill="#475569">코리아디자인센터 B1 제2관 · 전용 717.36㎡(217평) · 11개 품목군 · 업체 {n_lo} ~ {n_hi}곳 · 3m 통로 · 테이블 · 의자 · 테이블보 렌탈 · 전시장 미확정 대략 시안</text>'
        + "".join(sv) + "</svg>")
 html = """<title>코리아디자인센터 2관 배치도</title>
 <style>
@@ -97,11 +102,11 @@ ul{margin:0;padding-left:18px;font-size:14px}
 <div class="plan">SVG</div>
 <div class="card"><h2>구역별 배치 원칙</h2><div class="scroll"><table>
 <tr><th>구역</th><th>업체</th><th>이유</th></tr>
-<tr><td>북측 벽</td><td>가구 3(각 3칸) · 인테리어 · 중문 · 커튼 2(엣지리브 직영 1)</td><td>큰 전시가 필요한 품목을 벽에 붙여 동선 끝까지 끌어당김</td></tr>
-<tr><td>동측 벽</td><td>가전 2(각 2칸) · 조명(직영 · 아크로)</td><td>가전은 입구 반대편 끝 = 전 구역을 지나가게 하는 '앵커'</td></tr>
-<tr><td>남측 벽</td><td>가전 1(2칸) · 냉장고/붙박이장 · 에어컨 · 청정환기 · 통신 · 렌탈 · 인덕션 · 보험</td><td>설비 · 계약형 품목을 한 줄로 · 출구 쪽 마지막 상담</td></tr>
-<tr><td>중앙 섬 2개(양면)</td><td>줄눈 3 · 코팅 2 · 탄성 2 · 필름 · 청소 2 · 새집 · 음식물 · 매트 · 벽걸이 · 선반 · 이사</td><td>계약률 높은 1칸 품목 = 동선 중심 · 줄눈/코팅/탄성은 한 섬에 모아 비교 상담</td></tr>
-<tr><td>입구 쪽(서측)</td><td>접수 · 혜택 안내 데스크 · 안전망 · 상담 · 휴게석</td><td>입장 즉시 발전지원 혜택 안내 → 입주민 체류 시간 확보</td></tr>
+<tr><td>북측 벽</td><td>가구(3 ~ 5곳) · 필름 · 중문 · 인테리어(3 ~ 4곳) · 주관사 직영 커튼 · 조명(3곳)</td><td>큰 전시가 필요한 품목군을 벽에 붙여 동선 끝까지 끌어당김</td></tr>
+<tr><td>동측 벽</td><td>가전(3 ~ 4곳)</td><td>입구 반대편 끝 = 전 구역을 지나가게 하는 '앵커'</td></tr>
+<tr><td>남측 벽</td><td>설비 가전(3곳) · 서비스 이사 · 통신 · 렌탈 · 보험(4곳) · 안전 · 환기(1 ~ 2곳)</td><td>계약형 품목을 한 줄로 · 출구 쪽 마지막 상담</td></tr>
+<tr><td>중앙 섬 2개(양면)</td><td>줄눈(3곳) · 코팅 · 탄성(4곳) / 입주청소 · 새집증후군(3곳) · 생활 · 수납(4 ~ 5곳)</td><td>계약률 높은 시공 · 생활 품목군 = 동선 중심 · 비교 상담</td></tr>
+<tr><td>입구 쪽(서측)</td><td>접수 · 혜택 안내 데스크 · 상담 · 휴게석</td><td>입장 즉시 발전지원 혜택 안내 → 입주민 체류 시간 확보</td></tr>
 </table></div></div>
 <div class="card"><h2>참고: 광주 송정 중흥S클래스 파크뷰(타사 · 2026.05.15 ~ 17)</h2><ul>
 <li>840세대 · 제2관 + 제3관(1,216㎡) · 업체 약 75개(배치도 판독 · ±5) = 100세대당 약 9개 — 엣지컴퍼니 에코델타 실적(100세대당 8 ~ 9개)과 같은 밀도.</li>
@@ -110,9 +115,9 @@ ul{margin:0;padding-left:18px;font-size:14px}
 <div class="card"><h2>확인할 것</h2><ul>
 <li>제2관 실제 가로 · 세로 · 기둥 위치 · 입구 위치 — 치수는 타사 배치도(광주 송정, 2·3관) 표기로 추정했습니다.</li>
 <li>대관비 표 '대관료 2,500 · 수도광열비 800 · 계 3,300'의 <b>단위(천원/일인지)와 대상(2관 단독인지, 2·3관 합계인지)</b>.</li>
-<li>렌탈 수량(안): 업체 칸당 테이블 2 · 의자 3 ~ 4 + 테이블보 → 테이블 약 90 · 의자 약 150 + 상담 · 휴게석 테이블 6 · 의자 24.</li>
+<li>렌탈 수량(대략): 업체당 테이블 2 · 의자 3 ~ 4 + 테이블보 → 테이블 약 70 ~ 80 · 의자 약 120 ~ 150 + 상담 · 휴게석 테이블 6 · 의자 24.</li>
 </ul><p class="note">통로 3m(주통로) · 섬 사이 3m · 소방 통로는 대관 측 기준으로 다시 맞춥니다.</p></div>
 </div>
 """.replace("SVG", svg)
 open("코리아디자인센터_2관_배치도.html", "w").write(html)
-print(n_v, n_c)
+print(n_lo, n_hi)
