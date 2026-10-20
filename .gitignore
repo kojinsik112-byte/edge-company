@@ -15,3 +15,7 @@ business-ops/insta-growth/.browser_profile/
 business-ops/insta-growth/state.json
 business-ops/insta-growth/logs/
 business-ops/insta-growth/.env
+
+# 주관사 공고 감시 상태 · 신규 개척 연락처 (개인정보 · 로컬 전용)
+jugansa/watch/state/
+jugansa/개척/*/private.md
