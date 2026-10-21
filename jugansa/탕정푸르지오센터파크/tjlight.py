@@ -153,6 +153,13 @@ def light_svg(html):
 def light(src, out, n_dv, n_hi, label, extra="", hh=None, fund=None, site="탕정 푸르지오 센터파크"):
     """다른 단지도 쓴다(jugansa/tools/light_build.py) — hh · fund · site를 넘기면 그 단지 값, 없으면 탕정 data.py."""
     doc = open(src, encoding="utf-8").read()
+    # 48시간 = 방문 일정 확정 · 30일 안 현장 사무소(본부장 10-21 2차 · 4개 단지 공통)
+    sys.path.insert(0, os.path.join(HERE, "..", "tools"))
+    import common_fix as CF  # noqa: E402
+    doc, rep = CF.fix48(doc)
+    bad = CF.residue48(doc)
+    print("[48시간 · 30일]", sum(rep.values()), "곳", rep)
+    assert not bad, ("48시간 문구 남음", bad[:8])
     head, rest = doc.split("</head>", 1)
     head = re.sub(r"<style>(.*?)</style>", lambda m: "<style>" + light_css(m.group(1)) + "</style>", head, flags=re.S)
     head = head.replace("</style>", OVR + extra + "</style>", 1) if head.count("</style>") == 1 else head + f"<style>{OVR}{extra}</style>"

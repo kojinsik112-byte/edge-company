@@ -68,6 +68,41 @@ def fix(html):
     return head + sep + body, rep
 
 
+# ---- 10-21 2차(본부장 '48시간 문구는 추천안 · 30일 안 거점 사무실'): 밝은 시안(tjlight.light)에서 4개 단지 모두 적용
+#   48시간 = 방문 '일정 확정' · 방문은 입주민과 협의한 날 · 긴급 하자 = 우선 배정(숫자 없음)
+#   선정 후 30일 안 현장 사무소 개설 · 전담 PM 배치(위치 · 운영 시간은 협약 시 확정)
+D48 = "[\\s  ⁠]*·[\\s  ⁠]*"
+OFFICE = "선정 후 30일 안 현장 사무소 개설 · 전담 PM 배치"
+RULES48 = [
+    (rf"48시간 안 방문{D48}착수\(원칙\){D48}완료 일정은 유형별로 안내",
+     "48시간 안 방문 일정 확정 · 입주민과 협의한 날 방문 · 긴급 하자 우선 배정"),
+    (rf"(width:1[57]%\">)48시간 방문{D48}착수</i>", r"\g<1>48시간 방문 일정</i>"),
+    (rf"관리({D48})감독 하 보수 착수", r"관리\1감독 하 협의한 날 방문"),
+    (rf"방문{D48}착수", "방문 일정 확정"),
+    (r"48시간 방문 일정", "48시간 안 방문 일정"),
+    (r"48시간 내 재(실측|방문)", r"48시간 안 재\1 일정 확정"),
+    # 30일 안 현장 사무소
+    (r"<b>시공 품목 인근 지역업체 우선 선정</b><p>48시간 A/S가 가능한 거리</p>",
+     f"<b>{OFFICE.split(' · ')[0]}</b><p>전담 PM 배치 · 시공 품목은 인근 업체 우선 선정</p>"),
+]
+BAD48 = [r"방문\W{0,3}착수", r"보수 착수", r"48시간[^.]{0,12}착수", r"48시간 (?:내 )?(?:처리|하자보수)"]  # '마감 착수 전'(공정)은 정상
+
+
+def fix48(html):
+    head, sep, body = html.partition("</head>")
+    rep = {}
+    for pat, new in RULES48:
+        body, n = re.subn(pat, new, body)
+        if n:
+            rep[pat[:28]] = n
+    return head + sep + body, rep
+
+
+def residue48(html):
+    t = text_of(html)
+    return [t[max(0, m.start() - 30):m.end() + 20] for p in BAD48 for m in re.finditer(p, t)]
+
+
 def text_of(html):
     b = re.sub(r"<style.*?</style>|<script.*?</script>", "", html, flags=re.S)
     b = re.sub(r"<[^>]+>", " ", b).replace("⁠", "").replace(" ", " ")
