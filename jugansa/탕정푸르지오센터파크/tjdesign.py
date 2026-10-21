@@ -153,6 +153,18 @@ CSS = f"""
 .cert .cgrid i{{display:block;font-style:normal;font-size:12px;letter-spacing:.26em;color:#866322;font-weight:700}}
 .cert .cgrid b{{display:block;font-size:19px;color:{INK};margin-top:5px;letter-spacing:-.01em}}
 .cert .cgrid small{{display:block;font-size:12.5px;color:#5C6878;margin-top:2px}}
+/* 본문 쪽 바탕(본부장 10-21 '배경도 고급스럽게') — 아이보리 종이 + 왼쪽 위 빛 · 오른쪽 아래 샴페인 금빛 + 가는 금색 안쪽 테두리 · 모서리 장식
+   글자 대비 계산 기준색(background-color)은 그대로 #FAF7F0 */
+.page:not(.cv):not(.dv){{background-color:{PAPER}!important;background-image:
+  radial-gradient(120% 85% at 0% 0%,rgba(255,255,255,.9) 0%,rgba(255,255,255,0) 55%),
+  radial-gradient(75% 70% at 100% 100%,rgba(201,163,90,.13) 0%,rgba(201,163,90,0) 62%),
+  linear-gradient(180deg,#FCFAF5 0%,#F7F2E8 100%)!important}}
+.page:not(.cv):not(.dv):before{{content:'';position:absolute;inset:12px;border:1px solid rgba(184,149,90,.30);pointer-events:none;z-index:0}}
+.page:not(.cv):not(.dv):after{{content:'';position:absolute;inset:7px;pointer-events:none;z-index:0;opacity:.75;background:
+  linear-gradient({CHAMP},{CHAMP}) left top/22px 1.5px no-repeat,linear-gradient({CHAMP},{CHAMP}) left top/1.5px 22px no-repeat,
+  linear-gradient({CHAMP},{CHAMP}) right top/22px 1.5px no-repeat,linear-gradient({CHAMP},{CHAMP}) right top/1.5px 22px no-repeat,
+  linear-gradient({CHAMP},{CHAMP}) left bottom/22px 1.5px no-repeat,linear-gradient({CHAMP},{CHAMP}) left bottom/1.5px 22px no-repeat,
+  linear-gradient({CHAMP},{CHAMP}) right bottom/22px 1.5px no-repeat,linear-gradient({CHAMP},{CHAMP}) right bottom/1.5px 22px no-repeat}}
 """
 
 
