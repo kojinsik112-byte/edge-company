@@ -85,6 +85,12 @@ CSS = """
 .tbl.big td{font-size:16px;padding:14px 14px;line-height:1.5}.tbl.big td.k{font-size:16.5px}.tbl.big th{font-size:12.5px}
 .toc4.t3 .s h3 .tpg{font-size:13px;color:var(--gold2);font-weight:700;margin-left:8px;letter-spacing:.02em}
 .v2b span{display:block;font-size:12.5px;color:var(--sub);margin-top:2px}
+.dfr{height:100%;max-width:100%;display:flex;flex-direction:column;border:1px solid rgba(200,168,106,.45);border-top:2px solid var(--gold2);border-radius:14px;padding:10px 14px 10px;background:linear-gradient(180deg,rgba(235,203,143,.09),rgba(255,255,255,.015) 40%)}
+.dfr .dh{display:flex;align-items:baseline;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.dfr .dh i{font-style:normal;font-size:11px;letter-spacing:.24em;color:var(--gold2);font-weight:700}.dfr .dh b{font-size:16px;color:var(--gold)}
+.dfr .di{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px 6px 8px;overflow:hidden}
+.dfr .di .docimg{height:100%;width:auto;max-width:100%;object-fit:contain;background:#fff;border-radius:3px;box-shadow:0 0 0 1px rgba(13,30,51,.18),0 10px 26px rgba(13,30,51,.22)}
+.dfr .dc{font-size:12px;color:var(--mute);text-align:center;padding-top:4px}
 """
 
 S0 = "제안 개요"
@@ -154,6 +160,15 @@ def apply(G):
         assert "sec" in kw, ("탕정 v2: 장 이름 없는 특수 장", kind)
         kw["sec"] = sec
         return (k, kw)
+
+    def bond_img(page):  # 본부장 10-21: 그림 견본 대신 '발급 예정 내용' A4 견본(판교 · 고양과 같은 틀, $SP/bond/bond_tj.html → assets_ins/tj_bond_sample.jpg)
+        k, kw = page
+        i = kw["body"].index('<div class="pp"><div class="paper bond">')
+        assert kw["body"].endswith("</div></div></div>"), "탕정 v2: 보증 견본 자리"
+        kw["body"] = (kw["body"][:i] + '<div class="pp"><div class="dfr"><div class="dh"><i>SAMPLE</i><b>이행(하자)보증보험증권 발급 예정 내용 · 견본</b></div>'
+                      '<div class="di"><img class="docimg" src="assets_ins/tj_bond_sample.jpg" alt="이행(하자)보증보험증권 발급 예정 내용 견본"></div>'
+                      '<div class="dc">실제 증권은 협약 확정 후 보증보험사가 발급합니다 · 선보상 예치금은 별도</div></div></div></div></div>')
+        return page
 
     def std(sec, title, lead, body, kp):
         return ("std", dict(sec=sec, title=title, lead=lead, body=body, kp=kp))
@@ -363,8 +378,8 @@ def apply(G):
         reuse(R["call"], S3, subs=[H48]),
         p_sla,
         reuse(R["crm"], S3), reuse(R["net3"], S3),
-        reuse(R["bond"], S3, subs=[("협약식 때 증권 실물을 입예협에 전달합니다.", "협약 시 협의한 시기에 증권 실물을 입예협에 전달합니다."),
-                                   ("협약 시 증권으로 제출합니다.", f"협약 시 증권으로 제출합니다(금액은 협약 시 확정). 선보상 예치금({P('escrow')})과 함께 두 겹으로 지킵니다.")]),
+        bond_img(reuse(R["bond"], S3, subs=[("협약식 때 증권 실물을 입예협에 전달합니다.", "협약 시 협의한 시기에 증권 실물을 입예협에 전달합니다."),
+                                   ("협약 시 증권으로 제출합니다.", f"협약 시 증권으로 제출합니다(금액은 협약 시 확정). 선보상 예치금({P('escrow')})과 함께 두 겹으로 지킵니다.")])),
         reuse(R["bondck"], S3),
         reuse(R["escrow"], S3, lead=f"콜센터가 먼저 보상하는 첫 번째 재원이고, 큰 사고는 이행보증보험({P('bond')})이 두 번째로 받칩니다. 타 단지에서 1억 원 에스크로 예치를 약정한 방식 그대로입니다({P('mou')})."),
         reuse(R["vdef"], S3), reuse(R["gaksu"], S3),
