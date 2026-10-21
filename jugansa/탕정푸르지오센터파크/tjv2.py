@@ -13,7 +13,7 @@ PH = "○○"
 
 CSS = """
 .sheet{background:#F6F2E9;color:#1d2733;border-radius:6px;padding:20px 22px 12px;box-shadow:0 14px 36px rgba(0,0,0,.45);position:relative;display:flex;flex-direction:column;gap:8px;min-height:0;overflow:hidden}
-.sheet .stag{position:absolute;top:0;right:18px;background:#9C7425;color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:0 0 6px 6px}
+.sheet .stag{position:absolute;top:0;right:18px;background:#866322;color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:0 0 6px 6px}
 .sheet .shd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #1d2733;padding-bottom:6px;gap:12px}
 .sheet .shd b{font-size:19px;font-weight:800}
 .sheet .shd span{font-size:11.5px;color:#5b6573;white-space:nowrap}
@@ -41,6 +41,7 @@ CSS = """
 .toc4.t3 .col{display:grid!important;grid-template-rows:repeat(3,min-content);align-content:space-between;gap:22px}
 .toc4.t3 .s .sn{font-size:26px}.toc4.t3 .s h3{font-size:20px;margin:4px 0 6px}.toc4.t3 .s li{font-size:15px;line-height:1.7}
 .tbl.big td{font-size:16px;padding:14px 14px;line-height:1.5}.tbl.big td.k{font-size:16.5px}.tbl.big th{font-size:12.5px}
+.toc4.t3 .s h3 .tpg{font-size:13px;color:var(--gold2);font-weight:700;margin-left:8px;letter-spacing:.02em}
 .v2b span{display:block;font-size:12.5px;color:var(--sub);margin-top:2px}
 """
 
@@ -174,7 +175,7 @@ def apply(G):
     # ============================================================ 앞부분 — 결론 · 대응표
     one_rows = [
         "공고 2항 종합평가 4요소",
-        ["공동구매 단가", t("품목별 가격 비교자료 박람회 D-30 제출 · D-14 입예협 확정 · 현장 가격 변경 없음 · 행사비는 주관사 부담"), (P("price", "guard4"), "pg")],
+        ["공동구매 단가", t("품목별 가격 비교자료 박람회 D-30 제출 · D-14 입예협 확정 · 현장 가격 변경 없음 · 행사비가 단가에 얹히지 않게 입예협 검수"), (P("price", "guard4"), "pg")],
         ["A/S 처리 및 대책", t("주관 콜센터 한 창구 · 24시간 1차 회신 · 48시간 방문 · 착수 원칙 · 사실 확인 후 선보상"), (P("call", "sla"), "pg")],
         ["사후관리", t("하자 책임 분리 접수 · 하자처리 현황 입주 지정기간 주 1회 보고 · 결과보고서 4항목"), (P("defect", "report"), "pg")],
         ["입주지원", t("공고 4항 2) 다섯 가지 — 행정 · 사전점검 인력 · 입주지원센터 · 공용물품 · 민원"), (P("mv"), "pg")],
@@ -193,7 +194,7 @@ def apply(G):
                 ("평가하실 순서대로 [[답과 쪽 번호]]를 먼저 드립니다.", "제안서 내용은 협약서에 그대로 옮깁니다(공고 8항)"))
 
     _sc = G["TJ_SCOPE"]
-    m8pg = [P("expo", "screen", "price", "refund", "report"), P("mv", "sched", "preday", "pchk"), P("bpkg", "preday", "cafe"),
+    m8pg = [P("expo", "screen", "price", "refund", "report"), P("mv", "sched", "preday", "pchk", "pprice"), P("bpkg", "preday", "cafe"),
             P("team", "qual", "org", "gate"), P("defect", "report", "qchk", "hidden"), P("priv", "cafe"), P("call", "sla", "crm"), P("cond")]
     p_map8 = std(S0, T_MAP8, "공고 4항 업무 범위 1) ~ 8)을 빠짐없이 맡고, 각 항목을 설명한 쪽 번호를 함께 적었습니다.",
                  tb(["NO", "공고 업무 범위", "엣지컴퍼니 수행 내용", "쪽"],
@@ -212,7 +213,7 @@ def apply(G):
         ["사후관리", t("하자 책임 분리 · 보고 4종 · 클레임 보상 기준"), (P("defect", "report", "claim"), "pg")],
         ["입주지원", t("입주지원 5가지 · 추진 일정 · 사전점검"), (P("mv", "sched", "pchk"), "pg")],
         "유의 사항",
-        ["행사비와 단가 (6항 3)", t("행사비 · 15만원 상당은 주관사 부담 · 업체 단가는 입예협이 비교자료로 검수"), (P("price"), "pg")],
+        ["행사비와 단가 (6항 3)", t("행사비 · 15만원 상당은 주관사가 집행 · 업체 단가는 입예협이 비교자료로 검수"), (P("price"), "pg")],
         ["제안서 효력 (8항)", t("확정 · 협의 · 상한을 한 장으로 정리"), (P("cond"), "pg")],
     ]
     p_map4 = std(S0, T_MAP4, "공고가 '제안서에 명시'하라고 한 4가지와 2항 종합평가 4요소를 어디서 설명했는지 쪽 번호로 정리했습니다.",
@@ -223,7 +224,7 @@ def apply(G):
     fdesc = '<div class="fd">' + "".join(f"<div><i>{t(a)}</i><p>{t(b)}</p></div>" for a, b in [
         ("제출 일정", "박람회 D-30 1차 제출 › D-14 입예협 검수 · 확정 › 박람회 현장에서 가격을 바꾸지 않습니다"),
         ("비교 기준", "같은 모델 · 같은 규격(타입별) · 설치 · 철거 · 추가금을 포함한 총액. 인근 오프라인 정상가는 조사처와 조사일을 적습니다"),
-        ("행사비와 단가", "박람회 행사비와 세대당 15만원 상당 혜택은 주관사가 부담합니다. 업체 단가는 입예협이 이 자료로 검수하므로, 행사비가 단가에 얹히면 비교표에서 드러납니다"),
+        ("행사비와 단가", "박람회 운영비와 세대당 15만원 상당 혜택은 주관사가 집행합니다. 업체 단가는 입예협이 이 자료로 검수하므로, 행사비가 단가에 얹히면 비교표에서 드러납니다"),
         ("시공 품목", "규격 · 현장 조건이 달라 같은 제품끼리 비교하기 어려운 품목은 시공비 · 추가금을 모두 적은 가격 공개표로 비교합니다"),
     ]) + "</div>"
     prow = [("사전점검 대행", "전문 업체 점검 · 입주 후 점검 1회 · 보고서 2회", "평당 16,250원", "평당 25,000원 (2026.06 기본 소비자가)", "-", PH, True),
@@ -238,7 +239,7 @@ def apply(G):
              '<div class="meta"><i>1차 제출</i><span>박람회 D-30</span><i>확정</i><span>D-14 · 입예협 검수 후</span></div>'
              '<table><thead><tr><th>품목</th><th>모델 · 규격</th><th>공동구매가</th><th>인근 오프라인 정상가</th><th>설치 · 추가금</th><th>무상 A/S</th></tr></thead>'
              f'<tbody>{trs}</tbody></table>'
-             f'<div class="note">노란 줄 = 본 제안서 {P("pchk")} 사전점검 대행 가격(2026년 6월 기준 · 변동 가능) · 나머지 줄은 품목 확정 후 채우는 예시 칸입니다. 온라인 최저가는 참고로만 적습니다.</div>'
+             f'<div class="note">노란 줄 = 본 제안서 {P("pprice")} 사전점검 대행 가격(2026년 6월 기준 · 변동 가능) · 나머지 줄은 품목 확정 후 채우는 예시 칸입니다. 온라인 최저가는 참고로만 적습니다.</div>'
              f'<div class="sig"><span>{t(D.CLIENT)} 검수 (서명)</span><span>작성 · {t(D.COMPANY)}</span></div></div>')
     p_price = std(S2, T_PRICE, "공고 4항 1) '공동구매 품목별 가격 비교자료' — 언제, 무엇을, 어떤 기준으로 내는지 미리 정했습니다.",
                   f'<div class="fmx">{fdesc}{sheet}</div>',
@@ -259,7 +260,7 @@ def apply(G):
 
     mv = [
         [t("입주 관련 행정지원"), t("입주 안내문 · 일정 공지 초안 · 공문 · 민원 양식 작성 지원 · 시공사 · 관리주체 협의 자료 준비"), t("대외지원팀 3명"), t("협약 ~ 입주 후 1년")],
-        [t("사전점검 지원 · 전문인력 배치"), t(f"기본 지원 - 체크리스트 · 점검요령 영상 · 당일 현장 지원 · 사내 자격 · 협회 등록 인력(전기 · 도장 · 타일 · 조경) 하자 확인 / 선택 - 전문 업체 대행 할인(세대 선택 {P('pchk')})"),
+        [t("사전점검 지원 · 전문인력 배치"), t(f"기본 지원 - 체크리스트 · 점검요령 영상 · 당일 현장 지원 · 사내 자격 · 협회 등록 인력(전기 · 도장 · 타일 · 조경) 하자 확인 / 선택 - 전문 업체 대행 할인(세대 선택 {P('pchk', 'pprice')})"),
          t("행사관리팀 4명 · 사내 인력"), t("사전점검일(입예협 공지)")],
         [t("입주지원센터 운영 지원"), t("입주 지정기간 안내 · 하자 접수 창구 연결 · 공동구매 시공 일정 조율"), t("행사관리팀 · 대외지원팀"), t("입주 지정기간 · 인원은 협약 시 확정")],
         [t("공용물품 지원"), t("세대당 15만원 상당 혜택 중 입예협 지정 항목으로 집행 · 품목과 수량은 입예협이 정함"), t("본부장 · 대외지원팀"), t("입예협 결정 시")],
@@ -308,7 +309,8 @@ def apply(G):
         reuse(R["call"], S3, subs=[H48]),
         p_sla,
         reuse(R["crm"], S3), reuse(R["net3"], S3),
-        reuse(R["bond"], S3, subs=[("협약식 때 증권 실물을 입예협에 전달합니다.", "협약 시 협의한 시기에 증권 실물을 입예협에 전달합니다.")]),
+        reuse(R["bond"], S3, subs=[("협약식 때 증권 실물을 입예협에 전달합니다.", "협약 시 협의한 시기에 증권 실물을 입예협에 전달합니다."),
+                                   ("협약 시 증권으로 제출합니다.", "협약 시 증권으로 제출할 수 있습니다(이행 담보 방식 · 금액은 협약 시 확정).")]),
         reuse(R["bondck"], S3),
         reuse(R["escrow"], S3, lead="콜센터가 먼저 보상할 수 있게 하는 재원입니다. 이행 담보는 이 예치금 또는 이행보증보험 중 협약 시 정합니다."),
         reuse(R["vdef"], S3), reuse(R["gaksu"], S3),
@@ -328,7 +330,9 @@ def apply(G):
         reuse(R["preday"], S5), reuse(R["pchk"], S5), take(kind="pricing"), reuse(R["preview"], S5),
         dv("06", "입예협의 일을 [[함께]] 합니다", ["B 협의회 단지발전지원 15가지", "온라인 위임장", "사전점검 세미나 영상", "현장 안전 · 위생 · 조경 분석"]),
         reuse(R["bpkg"], S6, lead="공고 4항 3) 기본 업무(행사 인력 · 장비 · 비품 · 현장 운영 · 홍보물)는 따로 수행하고, B는 그 위에 더하는 15가지입니다.",
-              subs=[("2025.11 MOU · 동별 대표세대 진단", "2025.11 MOU(2026.12 갱신 예정) · 동별 대표세대 진단")]),
+              subs=[("2025.11 MOU · 동별 대표세대 진단", "2025.11 MOU(2026.12 갱신 예정) · 동별 대표세대 진단"),
+                    ("다음 장부터 [[B 항목]]을 하나씩 보여 드립니다.",
+                     f"[[B 항목]] 상세는 {P('qchk', 'hidden', 'sun', 'sample', 'always', 'preday', 'poa', 'semi', 'safe', 'land')}에 있습니다.")]),
         reuse(R["poa"], S6, subs=[("서명 이미지·서명 일시·필압 등 주요 정보를 저장합니다.", "서명 이미지 · 서명 일시를 저장합니다.")]),
         reuse(R["semi"], S6),
         reuse(R["safe"], S6, subs=[("2025.11 MOU. 협의회 지정", "2025.11 MOU(2026.12 갱신 예정). 협의회 지정")]),
@@ -346,14 +350,16 @@ def apply(G):
               kp=("입주민 명단은 [[업체 영업 명단이 아닙니다.]]", "개인정보 보호책임자 = 대외지원팀장 · 참여업체도 같은 기준으로 서약")),
         reuse(R["cafe"], S8), reuse(R["unbox"], S8),
         dv("09", f"세대당 {D.FUND}만원 상당, [[입예협이 고릅니다]]", ["A · B · C 패키지", "박람회 상품권 · 현장 혜택", "정회원 혜택", "사은품 · 경품"]),
-        take(kind="hi_fund"), reuse(R["fund15"], S9), reuse(R["abc"], S9), reuse(R["pkgex"], S9), reuse(R["apkg"], S9),
+        take(kind="hi_fund"), reuse(R["fund15"], S9), reuse(R["abc"], S9, subs=[("각 항목의 자세한 내용은 [[다음 장부터 A → B → C 순서]]로 보여 드립니다.",
+                                                       f"자세한 내용은 [[A {P('apkg')} · B {P('bpkg')} · C {P('cpkg')}]]부터 보여 드립니다.")]), reuse(R["pkgex"], S9), reuse(R["apkg"], S9, subs=[("다음 장부터 [[A 항목]]을 하나씩 보여 드립니다.",
+                                                         f"[[A 항목]] 상세는 {P('gift', 'vip', 'vip2', 'giveaway', 'pchk', 'pprice', 'preview')}에 있습니다.")]),
         reuse(R["gift"], S9, subs=[("입예협 승인 후 확정 · 백화점 상품권은 15만원 상당 범위 안", "입예협 승인 후 확정 · 공개 단가에서 빼는 할인(단가에 얹지 않음) · 백화점 상품권은 15만원 상당 범위 안")]),
         reuse(R["vip"], S9), reuse(R["vip2"], S9), reuse(R["giveaway"], S9),
         dv("10", "말이 아니라 [[서류로]] 보여 드립니다", ["주관 실적 · 대단지", "법인 · 재무 · 인증 서류", "직영 4곳 · 지사망", "협약서 원본"]),
         reuse(R["num"], S10), reuse(R["big"], S10), reuse(R["rec43"], S10), reuse(R["fut7"], S10),
         reuse(R["ph2326"], S10, new_title="사진으로 보는 함께한 단지 [[2023–2026]]"),
         reuse(R["city"], S10, subs=[("88% 주관", "88% 진행")]),
-        reuse(R["corp"], S10), reuse(R["fin"], S10), reuse(R["lic"], S10), reuse(R["hq"], S10), reuse(R["br"], S10), reuse(R["br2"], S10),
+        reuse(R["corp"], S10), reuse(R["fin"], S10), reuse(R["lic"], S10, subs=[("앞 장의 제휴·면허·국제표준 인증을", f"{P('qual')}의 제휴·면허·국제표준 인증을")]), reuse(R["hq"], S10), reuse(R["br"], S10), reuse(R["br2"], S10),
         reuse(R["mou"], S10, new_title="타 단지가 남긴 [[감사패와 협약]]",
               subs=[("감사패·추천서와,", "감사패와,"), ("감사패 · 추천서 진열장", "감사패 진열장"), ("받은 감사패와 추천서", "받은 감사패")]),
         reuse(R["q1"], SX, subs=[("본 제안서 04장", f"본 제안서 {P('bond', 'bondck')}")]),
@@ -376,13 +382,23 @@ def apply(G):
         if kw.get("title"):
             idx.setdefault(kw["title"], i)
     pgno = {key: idx[title] for key, title in REF.items() if title in idx}
-    pgno["pchk"] = next(i for i, (k, _) in enumerate(pages, 1) if k == "pricing")  # 사전점검 대행 가격 = pricing 쪽
+    pgno["pprice"] = next(i for i, (k, _) in enumerate(pages, 1) if k == "pricing")  # 사전점검 대행 가격표 = pricing 쪽
 
     def fix(s):
         if not isinstance(s, str):
             return s
         s = re.sub(r"⟪v2:(\w+)⟫", lambda m: f"p.{pgno[m.group(1)]:02d}", s)
-        return re.sub(r"p\.\d\d(?: · p\.\d\d)+", lambda m: " · ".join(sorted(set(m.group(0).split(" · ")))), s)
+        return re.sub(r"p\.\d{2,3}(?: · p\.\d{2,3})+", lambda m: _runs(sorted({int(x[2:]) for x in m.group(0).split(" · ")})), s)
+
+    def _runs(ns):
+        out, i = [], 0
+        while i < len(ns):
+            j = i
+            while j + 1 < len(ns) and ns[j + 1] == ns[j] + 1:
+                j += 1
+            out += [f"p.{ns[i]:02d} ~ {ns[j]:02d}"] if j - i >= 2 else [f"p.{n:02d}" for n in ns[i:j + 1]]
+            i = j + 1
+        return " · ".join(out)
     for k, kw in pages:
         for f in ("lead", "body", "title"):
             if f in kw:
@@ -417,6 +433,11 @@ def apply(G):
     ]
 
     G["TOC_CLS"] = "toc4 t3"
+    _dv = {kw.get("n"): i for i, (k, kw) in enumerate(pages, 1) if k == "divider"}
+    _start = dict(_dv, **{"00": pgno["one"], "부록": pgno["q1"]})
+    for col in G["TOC4"]:
+        for j, (n_, name, items) in enumerate(col):
+            col[j] = (n_, f'{name} <small class="tpg">p.{_start[n_]:02d}</small>', items)
 
     # ------------------------------------------------------------ 렌더 후 고치기(마무리 장 · 문자열 검사)
     _fin = G["finish"]
