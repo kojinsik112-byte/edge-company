@@ -60,9 +60,9 @@ CAP_DIR = f"{SP}/hw/cap"  # 실적 확약서 캡처 원본(가림본 assets_ins/
 WORK = os.path.join(HERE, "작업")
 SUBMIT = os.path.join(HERE, "제출본")
 ZIP = os.path.join(HERE, PFX + "제출서류.zip")
-P08 = os.path.join(HERE, PFX + "입주박람회_주관사_제안서.pdf")
-P08_MAIL = os.path.join(HERE, PFX + "입주박람회_주관사_제안서_메일용.pdf")
-P17 = os.path.join(HERE, PFX + "요약제안서.pdf")  # summary_gy.py(본부장 10-17: 공고 서류에 없어도 요약본은 만든다)
+# 본부장 10-21: 제출본 = 밝은 버전(tools/light_build.py) · 메일용 경량본은 쓰지 않음(원본 그대로 대용량 첨부)
+P08 = os.path.join(HERE, PFX + "입주박람회_주관사_제안서_밝은시안.pdf")
+P17 = os.path.join(HERE, PFX + "요약제안서_밝은시안.pdf")  # summary_gy.py(본부장 10-17: 공고 서류에 없어도 요약본은 만든다)
 
 _priv = os.path.join(HERE, "org_private.json")  # 깃 제외(생년월일 · 실명)
 PRIV = json.load(open(_priv, encoding="utf-8")) if os.path.exists(_priv) else {}
@@ -217,7 +217,7 @@ def evidence_check():
     t = fitz.open(f"{EV}/국세_납세증명서.pdf")[0].get_text()
     assert "2026 년10 월14 일" in t and "2026 년11 월13 일" in t, "국세 납세증명서 발급일 · 유효기간 확인 실패"
     for p in (f"{EV}/법인인감증명서.pdf", f"{EV}/법인등기부등본.pdf", f"{EV}/지방세_납세증명서.pdf", f"{EV}/4대보험_완납증명서.pdf",
-              f"{EV}/고용산재_완납증명서.pdf", NICE_SRC, D.R500_DOC, P08, P08_MAIL):
+              f"{EV}/고용산재_완납증명서.pdf", NICE_SRC, D.R500_DOC, P08):
         assert os.path.exists(p), f"없음: {p}"
     assert len(fitz.open(D.R500_DOC)) == len(D.R500_HAVE) == 3, "협약서 3건"
 
@@ -821,8 +821,6 @@ def main():
     if not args:
         sys.exit(__doc__)
     seal_path = args[0]
-    assert os.path.getmtime(P08_MAIL) >= os.path.getmtime(P08), "제안서 메일용이 원본보다 오래됨 — mail_lite.py 다시"
-    assert len(fitz.open(P08_MAIL)) == len(fitz.open(P08)), "제안서 메일용 쪽수가 원본과 다름"
     evidence_check()
 
     ok, miss = readiness()
@@ -854,8 +852,8 @@ def main():
     res["05"] = merge(NAMES["05"], [f"{EV}/국세_납세증명서.pdf"], "5 국세 완납 증명서")
     res["06"] = merge(NAMES["06"], [f"{EV}/법인인감증명서.pdf"], "6 법인인감증명서")
     res["07"] = stamped(fit(render("07_대표이사_범죄사실증명서_결격사유서약서", doc07()), 2))
-    res["08"] = out(NAMES["08"] + "_메일용.pdf")  # 작업/ = 메일용 사본 · 제출본/ = 원본(아래)
-    shutil.copyfile(P08_MAIL, res["08"])
+    res["08"] = out(NAMES["08"] + ".pdf")
+    shutil.copyfile(P08, res["08"])
     a1 = stamped(annex_nice(NICE_SRC, out("09_3_별첨1_NICE연혁발췌.pdf")))
     _b4 = doc09_bexco()
     parts9 = [stamped(fit(render("09_1_별지2_실적총괄표", doc09_form()), 1)), stamped(fit(render("09_2_실적증빙_안내", doc09_cover()), 1)), a1,

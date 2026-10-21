@@ -56,7 +56,7 @@ SGI_IMG = os.path.join(HERE, "assets_ins", "os_sgi_bond_masked.png")   # SGI 계
 CAP_DIR = f"{SP}/hw/cap"
 WORK = os.path.join(HERE, "작업")
 SUBMIT = os.path.join(HERE, "제출본")
-P04 = os.path.join(HERE, PFX + "입주박람회_주관사_제안서.pdf")
+P04 = os.path.join(HERE, PFX + "입주박람회_주관사_제안서_밝은시안.pdf")  # 본부장 10-21: 제출본 = 밝은 버전(tools/light_build.py)
 INGAM = f"{EV}/법인인감증명서.pdf"   # 기존 법인인감증명서(D.INGAM_DATE 발급 · 주민번호 뒷자리 가림본) — 본부장 10-20 '기존 것 사용'
 SEAL_SCAN = getattr(D, "SEAL_SCAN", None) or f"{SP}/seal_scan/북수원_별지1-5_법인인감.pdf"   # 별지 1 ~ 5 법인인감 날인 스캔(5쪽 · 순서 = 별지 1 · 2 · 3 · 5 · 4)
 

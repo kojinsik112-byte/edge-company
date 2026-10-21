@@ -150,7 +150,8 @@ def light_svg(html):
     return re.sub(r'\b(stroke|fill)="([^"]+)"', attr, html)
 
 
-def light(src, out, n_dv, n_hi, label, extra=""):
+def light(src, out, n_dv, n_hi, label, extra="", hh=None, fund=None, site="탕정 푸르지오 센터파크"):
+    """다른 단지도 쓴다(jugansa/tools/light_build.py) — hh · fund · site를 넘기면 그 단지 값, 없으면 탕정 data.py."""
     doc = open(src, encoding="utf-8").read()
     head, rest = doc.split("</head>", 1)
     head = re.sub(r"<style>(.*?)</style>", lambda m: "<style>" + light_css(m.group(1)) + "</style>", head, flags=re.S)
@@ -160,9 +161,11 @@ def light(src, out, n_dv, n_hi, label, extra=""):
     rest = re.sub(r'(<section class="page(?![^"]*\b(?:cv|dv)\b)[^"]*">)(.*?)(</section>)', lambda m: m.group(1) + light_svg(m.group(2)) + m.group(3), rest, flags=re.S)
     # 디자인 레이어(명조 대제목 · 표지 · 간지 · 15만원 증서 · 배치도 · 콜센터 · 캡션 · KEY POINT)
     sys.path.insert(0, HERE)
-    import data as D  # noqa: E402
     import tjdesign  # noqa: E402
-    head, rest = tjdesign.apply(head, rest, D.SITE["households"], D.FUND, n_dv=n_dv, n_hi=n_hi, label=label)
+    if hh is None:
+        import data as D  # noqa: E402
+        hh, fund = D.SITE["households"], D.FUND
+    head, rest = tjdesign.apply(head, rest, hh, fund, n_dv=n_dv, n_hi=n_hi, label=label, site=site)
     assert rest.count("</body>") == 1
     rest = rest.replace("</body>", FIX_JS + "</body>")
     open(out, "w", encoding="utf-8").write(head + "</head>" + rest)

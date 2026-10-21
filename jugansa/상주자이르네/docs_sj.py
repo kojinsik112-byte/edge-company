@@ -48,7 +48,7 @@ R500_DOC = D.R500_DOC   # 주관사 협약서 3건(센터포인트 · 드파인 
 EXPERT_DIR = f"{SP}/sangju/experts"   # 별지2호 증빙(자격증 사본 · 재직증명서 · 협력 계약서) — 본부장 제공 시 여기에 PDF로(파일명 순서대로 붙임)
 WORK = os.path.join(HERE, "작업")
 SUBMIT = os.path.join(HERE, "제출본")
-P09 = os.path.join(HERE, "엣지컴퍼니_상주자이르네_입주박람회_주관사_업무수행제안서.pdf")
+P09 = os.path.join(HERE, "엣지컴퍼니_상주자이르네_입주박람회_주관사_업무수행제안서_밝은시안.pdf")  # 본부장 10-21: 제출본 = 밝은 버전(tools/light_build.py)
 SEAL_SCAN = getattr(D, "SEAL_SCAN", None) or f"{SP}/seal_scan/상주_사용인감계_날인.pdf"   # 별지4호 사용인감계 법인인감 실물 날인 스캔(1쪽)
 
 
