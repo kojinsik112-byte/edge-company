@@ -1370,6 +1370,12 @@ def summary_pages():
 def build():
     full = sys.argv[sys.argv.index("--full") + 1] if "--full" in sys.argv else None
     render_full_pages(full)
+    if "--v2" in sys.argv:  # 10-21 v2(평가 순서 재구성 · 원본 05와 비교용) — 원본 파일은 건드리지 않고 NAME_v2로만 출력
+        import tjv2  # noqa: E402
+        tjv2.apply(globals())
+        emit(list(B.PAGES), os.path.join(HERE, NAME + "_v2.html"), "엣지컴퍼니 탕정 푸르지오 센터파크 입주박람회 주관사 제안서")
+        print(f"탕정 v2 {len(B.PAGES)}쪽")
+        return
     emit(list(B.PAGES), B.OUT_HTML, "엣지컴퍼니 탕정 푸르지오 센터파크 입주박람회 주관사 제안서")
     if not os.environ.get("NO_NATIVE"):
         # 요약본 [2-2] — 본 제안서 틀 그대로, 표지는 숫자(15만원·10억·1억)로
