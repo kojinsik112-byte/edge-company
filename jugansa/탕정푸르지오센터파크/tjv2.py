@@ -1,6 +1,443 @@
 # -*- coding: utf-8 -*-
+"""탕정 푸르지오 센터파크 제안서 v2(10-21) — 평가자가 채점하는 순서로 다시 묶은 판. build_tangjeong.py --v2 에서 apply(globals()).
+
+근거: scratchpad tj_v2/review.md (공고문만으로 만든 100점 평가표 · 원본 05 = 약 68.5점)
+  앞  : 표지 · 한 장 결론 · 공고 업무 8 대응(쪽 번호) · 명시 4 + 평가 4요소 찾아보기 · 목차
+  01 ~ 08장 = 공고 4항 업무 범위 순서(특화 → 박람회·가격 → 민원·A/S → 하자·보고 → 입주지원 → 협의회 지원 → 전문인력 → 개인정보)
+  09장 혜택 · 10장 회사 근거 · 부록 자격 22 · 마무리(제안드리는 것 · 제안 조건 한 장 · 연락처)
+원본 05(119쪽)는 그대로 두고 _v2 파일로만 낸다. 새 약속 · 새 돈 · 새 자격은 넣지 않는다(공고 8항 — 제안서 = 계약서 효력).
+"""
+import re
+
+PH = "○○"
+
+CSS = """
+.sheet{background:#F6F2E9;color:#1d2733;border-radius:6px;padding:20px 22px 12px;box-shadow:0 14px 36px rgba(0,0,0,.45);position:relative;display:flex;flex-direction:column;gap:8px;min-height:0;overflow:hidden}
+.sheet .stag{position:absolute;top:0;right:18px;background:#9C7425;color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:0 0 6px 6px}
+.sheet .shd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #1d2733;padding-bottom:6px;gap:12px}
+.sheet .shd b{font-size:19px;font-weight:800}
+.sheet .shd span{font-size:11.5px;color:#5b6573;white-space:nowrap}
+.sheet .meta{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 10px;font-size:12.5px;line-height:1.4}
+.sheet .meta i{font-style:normal;color:#5b6573;font-weight:700}
+.sheet table{width:100%;border-collapse:collapse;font-size:12.5px}
+.sheet th{background:#E7DFCF;font-weight:700;text-align:left;padding:5px 7px;border:1px solid #cdbfa6;white-space:nowrap}
+.sheet td{padding:6px 7px;border:1px solid #d6cbb6;vertical-align:top;line-height:1.38}
+.sheet td.k{font-weight:700;white-space:nowrap}
+.sheet tr.real td{background:#fff7e0}
+.sheet .note{font-size:11.5px;color:#4b5563;line-height:1.45}
+.sheet .sig{display:flex;justify-content:space-between;font-size:12px;color:#3a4553;margin-top:auto;padding-top:6px;border-top:1px dashed #b9ab92}
+.fmx{display:grid;grid-template-columns:300px 1fr;gap:22px;flex:1;min-height:0}
+.fd{display:flex;flex-direction:column;gap:12px;min-height:0;justify-content:center}
+.fd>div{border-left:3px solid var(--gold2);padding:6px 0 6px 13px}
+.fd i{font-style:normal;font-size:11.5px;letter-spacing:.2em;color:var(--gold2);font-weight:700}
+.fd p{font-size:14.5px;color:var(--ink);line-height:1.5;margin-top:3px}
+.tbl td.pg{white-space:nowrap;color:var(--gold);font-weight:700;font-size:13.5px}
+.tbl.xs td{font-size:13.5px;padding:6px 11px;line-height:1.38}.tbl.xs td.k{font-size:14px}.tbl.xs th{font-size:11.5px;padding:0 11px 7px}
+.tbl tr.grp td{background:rgba(200,168,106,.14);color:var(--gold);font-weight:800;font-size:12.5px;letter-spacing:.12em;padding:5px 11px}
+.v2b{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
+.v2b>div{border:1px solid rgba(200,168,106,.45);border-radius:12px;padding:12px 16px;background:rgba(255,255,255,.03)}
+.v2b i{font-style:normal;font-size:11.5px;letter-spacing:.18em;color:var(--gold2);font-weight:800}
+.v2b b{display:block;font-size:22px;color:var(--gold);font-weight:800;margin-top:3px}
+.toc4.t3 .col{display:grid!important;grid-template-rows:repeat(3,min-content);align-content:space-between;gap:22px}
+.toc4.t3 .s .sn{font-size:26px}.toc4.t3 .s h3{font-size:20px;margin:4px 0 6px}.toc4.t3 .s li{font-size:15px;line-height:1.7}
+.tbl.big td{font-size:16px;padding:14px 14px;line-height:1.5}.tbl.big td.k{font-size:16.5px}.tbl.big th{font-size:12.5px}
+.v2b span{display:block;font-size:12.5px;color:var(--sub);margin-top:2px}
+"""
+
+S0 = "제안 개요"
+S1 = "01. 단지 이해 · 특화 제안"
+S2 = "02. 박람회 운영 · 업체 선정 · 가격"
+S3 = "03. 민원 · 고객지원 · A/S"
+S4 = "04. 하자점검 · 품질관리 · 보고"
+S5 = "05. 입주지원"
+S6 = "06. 입예협 행사 · 활동 지원"
+S7 = "07. 전문분야 · 전문인력"
+S8 = "08. 개인정보 · 홍보 관리"
+S9 = "09. 입주민 혜택 · 15만원 상당"
+S10 = "10. 엣지컴퍼니 · 실적 근거"
+SX = "부록 · 입찰 참가 자격 22개"
+
+
 def apply(G):
-    import json
-    B = G["B"]
-    json.dump([(i + 1, k, kw.get("sec"), kw.get("title"), kw.get("n"), kw.get("bl")) for i, (k, kw) in enumerate(B.PAGES)],
-              open("/tmp/claude-0/tj_titles.json", "w", encoding="utf-8"), ensure_ascii=False)
+    B, D, table = G["B"], G["D"], G["table"]
+    t = B.t
+    ST = D.SITE
+    HH = ST["households"]
+    OLD = list(B.PAGES)
+    B.CSS += CSS
+
+    def take(title=None, kind=None):
+        hits = [(k, kw) for k, kw in OLD if (title is not None and kw.get("title") == title) or (kind is not None and title is None and k == kind)]
+        assert len(hits) == 1, ("탕정 v2: 기존 장을 찾지 못함", title, kind, len(hits))
+        k, kw = hits[0]
+        return k, dict(kw)
+
+    def reuse(title, sec, new_title=None, lead=None, kp=None, subs=()):
+        k, kw = take(title)
+        if "sec" in kw or k in ("std",):
+            kw["sec"] = sec
+        if new_title:
+            kw["title"] = new_title
+        if lead is not None:
+            kw["lead"] = lead
+        if kp is not None:
+            kw["kp"] = kp
+        for a, b in subs:
+            n = 0
+            for f in ("lead", "body", "title"):
+                if isinstance(kw.get(f), str) and a in kw[f]:
+                    n += kw[f].count(a)
+                    kw[f] = kw[f].replace(a, b)
+            if isinstance(kw.get("kp"), tuple):
+                n += sum(x.count(a) for x in kw["kp"])
+                kw["kp"] = tuple(x.replace(a, b) for x in kw["kp"])
+            elif isinstance(kw.get("kp"), list):
+                n += sum(x.count(a) for x in kw["kp"])
+                kw["kp"] = [x.replace(a, b) for x in kw["kp"]]
+            elif isinstance(kw.get("kp"), str) and a in kw["kp"]:
+                n += kw["kp"].count(a)
+                kw["kp"] = kw["kp"].replace(a, b)
+            assert n, ("탕정 v2: 바꿀 문구를 찾지 못함", title, a)
+        return (k, kw)
+
+    def std(sec, title, lead, body, kp):
+        return ("std", dict(sec=sec, title=title, lead=lead, body=body, kp=kp))
+
+    def dv(n, title, bl):
+        return ("divider", dict(n=n, title=title, bl=bl))
+
+    def tb(head, rows, cls="sm"):
+        h = ""
+        for r in rows:
+            if isinstance(r, str):  # 묶음 제목 줄
+                h += f'<tr class="grp"><td colspan="{len(head)}">{t(r)}</td></tr>'
+                continue
+            h += "<tr>"
+            for j, c in enumerate(r):
+                if isinstance(c, tuple):
+                    h += f'<td class="{c[1]}">{c[0]}</td>'
+                else:
+                    h += f'<td{" class=" + chr(34) + "k" + chr(34) if j == 0 else ""}>{c}</td>'
+            h += "</tr>"
+        return table(head, h, cls)
+
+    def nb(*parts):
+        return '<div class="nb">' + "".join(parts) + "</div>"
+
+    def P(*keys):  # 쪽 번호 자리표 — 장 순서가 정해진 뒤 실제 번호로 바꾼다
+        return " · ".join(f"⟪v2:{k}⟫" for k in keys)
+
+    # ------------------------------------------------------------ 쪽 참조 키 → 원본 제목
+    REF = {
+        "site": "탕정 푸르지오 센터파크, [[이런 단지]]입니다", "first": "이 단지라서 [[먼저 챙길 것]]", "spec": "탕정 푸르지오 센터파크 [[특화 제안]]",
+        "req": "입주민 건의, [[관리표로]] 끝까지 챙깁니다", "night": "중앙광장 · 물의정원, [[밤까지]] 살피겠습니다", "m17": "입주까지 17개월, [[빈틈없이]] 관리합니다",
+        "expo": "입주박람회 [[운영 계획]]", "venue": "행사장 대관과 [[운영 준비]]", "floor": "박람회장 배치와 [[인원 운영]] (안)",
+        "items": "공동구매 [[품목]]을 한눈에", "screen": "[[4단계]] 공개 심사 프로세스", "crit": "업체 [[심사 기준]]과 계약 원칙",
+        "local": "검증된 [[인근 지역업체]] 선정 원칙", "edu": "참여업체 [[서비스 교육]]", "vend": "품목별 [[예상 참가 업체]]",
+        "guard4": "공동구매 단가를 지키는 [[4가지 장치]]", "x10": "[[최저가 차액 10배]] 보상", "plus": "실적 비례 [[추가할인]] 구조",
+        "fund_safe": "입주민 [[자금]]을 먼저 지킵니다", "refund": "품목별 [[취소 기한]]과 환불 절차",
+        "call": "주관 [[콜센터]]와 선보상", "crm": "클레임 [[처리 흐름]]과 CRM 관리", "net3": "입주민을 지키는 [[3중 안전망]]",
+        "bond": "이행보증보험 [[2년 · 최대 10억]]", "bondck": "보증보험증권 [[제출과 확인]]", "escrow": "선보상 재원 · 하자 예치금 [[최대 1억원]]",
+        "vdef": "참여업체 [[하자보증]] 체계", "gaksu": "입주박람회 [[특약이행각서]] (예시)", "claim": "주요 클레임 품목과 [[보상 기준]] (예시)",
+        "pen": "참여업체 [[패널티 3단계]]", "live": "입주민 후기 · [[실시간 응대]] 화면",
+        "defect": "하자 접수, [[책임부터]] 나눕니다", "report": "보고는 [[항목과 시점]]을 정해 둡니다", "qchk": "공용부 [[구조·시공 품질]] 점검",
+        "hidden": "보이지 않는 [[하자]]까지 확인합니다", "sun": "입주 전에 보는 [[일조 시뮬레이션]]", "sample": "도면·하자 분석 [[보고서 샘플]]",
+        "sched": "선정부터 입주까지 [[추진 일정]] (안)", "always": "입주 전부터 [[끝까지]] 붙어 있습니다", "preday": "사전점검 당일 [[현장 지원]]",
+        "pchk": "사전점검 대행, [[이렇게 봅니다]]", "preview": "입주 전에 [[미리 보는]] 우리 집",
+        "bpkg": "B 패키지 · [[협의회 단지발전지원]]", "poa": "위임장, 이제 [[휴대폰으로]] 받습니다", "semi": "사전점검 세미나, [[영상으로]] 다시 봅니다",
+        "safe": "현장 안전 · 공용부 위생까지 [[함께 챙깁니다]]", "land": "[[조경·착공]] 분석보고서",
+        "team": "입예협 [[전담 체계]] — 자격 18 · 19 · 22 대응", "qual": "공인된 [[자격과 신뢰]]", "org": "회사 [[조직 구성]] · 탕정 전담 배치 (안)",
+        "vert": "[[조명 수직계열화]] · 유통 단계 없는 공급", "cpkg": "C 패키지 · [[단지지원 컨설팅]]", "gate": "문주·경관조명 [[컨설팅]]",
+        "inner": "단지 내부 [[경관조명]] 제안", "comm": "커뮤니티·공용부 [[조명 개선]]", "fit": "피트니스·키즈 공간 [[개선 제안]]", "ev": "전기차 충전 [[인프라 검토]]",
+        "priv": "입주민 개인정보는 [[행사 운영에만]] 씁니다", "cafe": "입예협 카페 [[홍보 콘텐츠]] 제작", "unbox": "사전점검 [[언박싱 영상]]과 현장 홍보",
+        "fund15": "세대당 15만원 상당, [[혜택 패키지]]로 드립니다", "abc": "혜택 패키지 [[A · B · C]] 구성 항목", "pkgex": "이렇게 [[패키지로]] 받으실 수 있습니다 (예시)",
+        "apkg": "A 패키지 · [[입주민 특화서비스]]", "gift": "방문 세대 [[박람회 상품권 · 현장 혜택]]", "vip": "정회원 전용 [[혜택]]", "vip2": "정회원 혜택 [[상세]]",
+        "giveaway": "박람회 [[사은품 · 경품]]",
+        "num": "숫자로 보는 [[엣지컴퍼니]]", "corp": "회사 개요와 [[법인 서류]]", "fin": "재무·납세·고용 [[증빙 원본]]", "lic": "제휴 · 면허 · 인증 [[원본 서류]]",
+        "hq": "[[본사 · 쇼룸]] 운영 · 자본금 2억", "br": "전국 지사망 · [[직영 4곳 + 협력 8곳]]", "br2": "[[직영 4곳]]이 지키는 12개 지사망",
+        "big": "[[대단지]] 운영 경험", "rec43": "2023년 이후 수임 단지 [[43곳]]", "fut7": "앞으로 주관할 단지 [[7곳]]",
+        "ph2326": "사진으로 보는 주관 단지 [[2023–2026]]", "city": "한 단지가 아니라 [[한 신도시]]를 맡습니다", "mou": "타 단지가 남긴 [[추천과 협약]]",
+        "q1": "입찰 참가 자격 [[22개 항목]] 대응 ①", "q2": "입찰 참가 자격 [[22개 항목]] 대응 ②",
+    }
+    T_ONE = "한 장으로 보는 [[탕정 제안]]"
+    T_MAP8 = "공고 업무 범위 [[8개 항목]] 대응"
+    T_MAP4 = "제안서 명시 4가지 · 평가 4요소 [[찾아보기]]"
+    T_PRICE = "품목별 [[가격 비교자료]] - 제출 일정과 양식"
+    T_SLA = "민원 유형별 [[처리기한]]"
+    T_MV = "입주지원 업무 [[5가지]]"
+    T_COND = "협약서에 옮길 [[제안 조건 한 장]]"
+    REF.update(one=T_ONE, map8=T_MAP8, map4=T_MAP4, price=T_PRICE, sla=T_SLA, mv=T_MV, cond=T_COND)
+    _hit = {kw.get("title") for _, kw in OLD}
+    for k_, v_ in REF.items():
+        assert v_ in _hit or v_ in (T_ONE, T_MAP8, T_MAP4, T_PRICE, T_SLA, T_MV, T_COND), ("탕정 v2: 참조 제목 없음", k_, v_)
+
+    # ============================================================ 앞부분 — 결론 · 대응표
+    one_rows = [
+        "공고 2항 종합평가 4요소",
+        ["공동구매 단가", t("품목별 가격 비교자료 박람회 D-30 제출 · D-14 입예협 확정 · 현장 가격 변경 없음 · 행사비는 주관사 부담"), (P("price", "guard4"), "pg")],
+        ["A/S 처리 및 대책", t("주관 콜센터 한 창구 · 24시간 1차 회신 · 48시간 방문 · 착수 원칙 · 사실 확인 후 선보상"), (P("call", "sla"), "pg")],
+        ["사후관리", t("하자 책임 분리 접수 · 하자처리 현황 입주 지정기간 주 1회 보고 · 결과보고서 4항목"), (P("defect", "report"), "pg")],
+        ["입주지원", t("공고 4항 2) 다섯 가지 — 행정 · 사전점검 인력 · 입주지원센터 · 공용물품 · 민원"), (P("mv"), "pg")],
+        "제안서에 명시할 4가지",
+        ["입주민 특화 제안", t("단지 맞춤 특화 제안 · 중앙광장 · 물의정원 야간 점검 · 전기공사업 등록 주관사의 경관조명 진단"), (P("spec", "night"), "pg")],
+        ["협의회 활동 지원", t("B 협의회 단지발전지원 15가지 · 사전점검 당일 지원 · 온라인 위임장"), (P("bpkg", "preday"), "pg")],
+        ["최저가 보상", t("최저가 차액 10배 보상 · 1건당 최대 50만원(최대 금액은 입예협과 협의) · 계약 후 7일 이내"), (P("x10"), "pg")],
+        ["A/S 정책", t("특약이행각서 9개 항 · 업체 도산 시 동종업체 이관 · 패널티 3단계"), (P("vdef", "gaksu"), "pg")],
+    ]
+    band = ('<div class="v2b">'
+            f'<div><i>세대당 혜택</i><b>{D.FUND}만원 상당</b><span>{HH:,}세대 · 총 {G["won"](HH * D.FUND)} 상당(부가세 포함)</span></div>'
+            '<div><i>주관 실적</i><b>10개 단지</b><span>1,000세대 이상 · 19,563세대 · 실적 확약서 · NICE 연혁</span></div>'
+            '<div><i>이행 담보</i><b>보증보험 또는 예치금</b><span>이행보증보험 최대 10억 · 하자 예치금 최대 1억 · 방식 · 금액 협약 시 확정</span></div></div>')
+    p_one = std(S0, T_ONE, "공고 2항 종합평가 4요소와 '제안서에 명시' 4가지에 대한 답을 한 장에 모았습니다. 오른쪽 쪽 번호로 바로 찾으실 수 있습니다.",
+                nb(band, tb(["평가 항목", "엣지컴퍼니 제안", "쪽"], one_rows, "sm")),
+                ("평가하실 순서대로 [[답과 쪽 번호]]를 먼저 드립니다.", "제안서 내용은 협약서에 그대로 옮깁니다(공고 8항)"))
+
+    _sc = G["TJ_SCOPE"]
+    m8pg = [P("expo", "screen", "price", "refund", "report"), P("mv", "sched", "preday", "pchk"), P("bpkg", "preday", "cafe"),
+            P("team", "qual", "org", "gate"), P("defect", "report", "qchk", "hidden"), P("priv", "cafe"), P("call", "sla", "crm"), P("cond")]
+    p_map8 = std(S0, T_MAP8, "공고 4항 업무 범위 1) ~ 8)을 빠짐없이 맡고, 각 항목을 설명한 쪽 번호를 함께 적었습니다.",
+                 tb(["NO", "공고 업무 범위", "엣지컴퍼니 수행 내용", "쪽"],
+                    [[(f"{i:02d}", "n"), (t(a), "k"), t(b), (pg, "pg")] for i, ((a, b, _c), pg) in enumerate(zip(_sc, m8pg), 1)], "sm tjs"),
+                 "업무 범위가 바뀌어도 [[입예협과 협의해]] 협약서에 그대로 옮깁니다.")
+
+    m4_rows = [
+        "제안서에 명시 (공고 5항)",
+        ["① 입주민 특화 제안 · 아이디어", t("타입별 · 지하 진입 높이 등 단지 맞춤 · 건의 관리표 · 중앙광장 · 물의정원 · 통학"), (P("spec", "first", "night"), "pg")],
+        ["② 입예협 활동 지원", t("B 15가지 · 위임장 · 세미나 영상 · 현장 안전 · 위생"), (P("bpkg", "poa", "semi"), "pg")],
+        ["③ 최저가 보상 방안", t("차액 10배 · 1건당 최대 50만원 · 단가 사전 공개"), (P("x10", "guard4"), "pg")],
+        ["④ 명확한 A/S 정책", t("콜센터 · 처리기한 · 하자보증 · 특약이행각서 · 패널티"), (P("call", "sla", "vdef", "gaksu"), "pg")],
+        "공고 2항 종합평가",
+        ["공동구매 단가", t("가격 비교자료 양식 · 4가지 장치 · 실적 비례 추가할인"), (P("price", "guard4", "plus"), "pg")],
+        ["A/S 처리 및 대책", t("3중 안전망 · 이행보증 · 선보상 재원"), (P("net3", "bond", "escrow"), "pg")],
+        ["사후관리", t("하자 책임 분리 · 보고 4종 · 클레임 보상 기준"), (P("defect", "report", "claim"), "pg")],
+        ["입주지원", t("입주지원 5가지 · 추진 일정 · 사전점검"), (P("mv", "sched", "pchk"), "pg")],
+        "유의 사항",
+        ["행사비와 단가 (6항 3)", t("행사비 · 15만원 상당은 주관사 부담 · 업체 단가는 입예협이 비교자료로 검수"), (P("price"), "pg")],
+        ["제안서 효력 (8항)", t("확정 · 협의 · 상한을 한 장으로 정리"), (P("cond"), "pg")],
+    ]
+    p_map4 = std(S0, T_MAP4, "공고가 '제안서에 명시'하라고 한 4가지와 2항 종합평가 4요소를 어디서 설명했는지 쪽 번호로 정리했습니다.",
+                 nb(tb(["공고 항목", "엣지컴퍼니 답", "쪽"], m4_rows, "sm")),
+                 "찾으시는 답은 [[쪽 번호]]로 바로 가실 수 있습니다.")
+
+    # ============================================================ 새 장 — 가격 비교자료 · 처리기한 · 입주지원 · 제안 조건
+    fdesc = '<div class="fd">' + "".join(f"<div><i>{t(a)}</i><p>{t(b)}</p></div>" for a, b in [
+        ("제출 일정", "박람회 D-30 1차 제출 › D-14 입예협 검수 · 확정 › 박람회 현장에서 가격을 바꾸지 않습니다"),
+        ("비교 기준", "같은 모델 · 같은 규격(타입별) · 설치 · 철거 · 추가금을 포함한 총액. 인근 오프라인 정상가는 조사처와 조사일을 적습니다"),
+        ("행사비와 단가", "박람회 행사비와 세대당 15만원 상당 혜택은 주관사가 부담합니다. 업체 단가는 입예협이 이 자료로 검수하므로, 행사비가 단가에 얹히면 비교표에서 드러납니다"),
+        ("시공 품목", "규격 · 현장 조건이 달라 같은 제품끼리 비교하기 어려운 품목은 시공비 · 추가금을 모두 적은 가격 공개표로 비교합니다"),
+    ]) + "</div>"
+    prow = [("사전점검 대행", "전문 업체 점검 · 입주 후 점검 1회 · 보고서 2회", "평당 16,250원", "평당 25,000원 (2026.06 기본 소비자가)", "-", PH, True),
+            ("줄눈", "84A · 욕실 2 · 현관 · 발코니", PH, f"{PH} ({PH}점 · {PH}일)", PH, PH, False),
+            ("입주청소", "84㎡ · 기본 + 새집증후군", PH, f"{PH} ({PH}점 · {PH}일)", PH, PH, False),
+            ("중문", "3연동 · 84B 현관", PH, f"{PH} ({PH}점 · {PH}일)", f"철거 · 운반 {PH}", PH, False),
+            ("시스템에어컨", f"모델 {PH} · 84㎡ 4대", PH, f"{PH} ({PH}점 · {PH}일)", f"배관 · 타공 {PH}", PH, False)]
+    trs = "".join(f'<tr{" class=real" if r else ""}><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td><td>{t(e)}</td><td>{t(f)}</td></tr>'
+                  for a, b, c, d, e, f, r in prow)
+    sheet = ('<div class="sheet"><span class="stag">견본 · 작성 예시</span>'
+             f'<div class="shd"><b>공동구매 품목별 가격 비교자료</b><span>{t(D.CLIENT)}</span></div>'
+             '<div class="meta"><i>1차 제출</i><span>박람회 D-30</span><i>확정</i><span>D-14 · 입예협 검수 후</span></div>'
+             '<table><thead><tr><th>품목</th><th>모델 · 규격</th><th>공동구매가</th><th>인근 오프라인 정상가</th><th>설치 · 추가금</th><th>무상 A/S</th></tr></thead>'
+             f'<tbody>{trs}</tbody></table>'
+             f'<div class="note">노란 줄 = 본 제안서 {P("pchk")} 사전점검 대행 가격(2026년 6월 기준 · 변동 가능) · 나머지 줄은 품목 확정 후 채우는 예시 칸입니다. 온라인 최저가는 참고로만 적습니다.</div>'
+             f'<div class="sig"><span>{t(D.CLIENT)} 검수 (서명)</span><span>작성 · {t(D.COMPANY)}</span></div></div>')
+    p_price = std(S2, T_PRICE, "공고 4항 1) '공동구매 품목별 가격 비교자료' — 언제, 무엇을, 어떤 기준으로 내는지 미리 정했습니다.",
+                  f'<div class="fmx">{fdesc}{sheet}</div>',
+                  ("가격은 [[D-14에 확정]]하고, 박람회 현장에서 바꾸지 않습니다.", "공고 4항 1) 가격 비교자료 · 6항 3) 행사비 단가 전가 방지 · 7항 13) 단가비교표"))
+
+    sla = [
+        [t("일반 문의"), "24시간 안", t("담당 팀 지정 · 안내"), t("미결 건은 정례 보고에 포함"), t("콜센터 · 영업팀")],
+        [t("계약 변경 · 취소"), "24시간 안", t("품목별 취소 기한(시공일 7일 · 15일 전) 안이면 전액 환불 · 환불은 취소 확정일부터 3영업일 이내"), t("주관사 해피콜로 환불 완료 확인"), t("콜센터 · 참여업체")],
+        [t("공동구매 하자 · A/S"), "24시간 안", t("48시간 안 방문 · 착수(원칙) · 완료 일정은 유형별로 안내"), t("보수 후 해피콜 검수 · 지연 건은 사유와 다음 일정 보고"), t("참여업체 · 주관사 관리 · 감독")],
+        [t("업체 분쟁 · 피해"), t("24시간 안 · 업체 미응답 시 주관사 직접 개입"), t("주관사 1차 중재 · 업체 책임 확인 시 이행 담보 범위에서 선보상 후 정산"), t("결과보고서에 처리 결과 기록"), t("본부장 · 대외지원팀")],
+        [t("시공사 하자(공용부 · 전용부)"), t("접수 대행"), t("시공사 접수 · 회신 추적 · 현장 확인 지원"), t(f"하자처리 현황 보고 {P('report')}"), t("대외지원팀")],
+        [t("개인정보 · 홍보 민원"), "24시간 안", t("해당 게시물 내림 · 사실 확인"), t("조치 결과를 입예협에 서면 보고"), t("본부장")],
+    ]
+    p_sla = std(S3, T_SLA, "공고 4항 7) '처리절차 및 처리기한 마련' — 흩어져 있던 기한을 민원 유형별로 한 표에 모았습니다.",
+                nb(tb(["민원 유형", "1차 회신", "처리", "완료 확인 · 보고", "담당"], sla, "sm big"),
+                   '<div class="notex" style="margin-top:12px">' + t("접수 채널 4종(콜센터 · 공식카페 신문고 · 카카오채널 · 홈페이지) · 온라인 접수 365일 · 콜센터 평일 09:00 ~ 18:00") + "</div>"),
+                ("24시간 = [[1차 회신]], 48시간 = [[방문 · 착수]] — 제안서 모든 쪽에서 같은 뜻입니다.", "완료까지 걸리는 시간은 하자 유형 · 자재 수급에 따라 다르며, 지연 시 사유와 다음 일정을 먼저 알립니다"))
+
+    mv = [
+        [t("입주 관련 행정지원"), t("입주 안내문 · 일정 공지 초안 · 공문 · 민원 양식 작성 지원 · 시공사 · 관리주체 협의 자료 준비"), t("대외지원팀 3명"), t("협약 ~ 입주 후 1년")],
+        [t("사전점검 지원 · 전문인력 배치"), t(f"기본 지원 - 체크리스트 · 점검요령 영상 · 당일 현장 지원 · 사내 자격 · 협회 등록 인력(전기 · 도장 · 타일 · 조경) 하자 확인 / 선택 - 전문 업체 대행 할인(세대 선택 {P('pchk')})"),
+         t("행사관리팀 4명 · 사내 인력"), t("사전점검일(입예협 공지)")],
+        [t("입주지원센터 운영 지원"), t("입주 지정기간 안내 · 하자 접수 창구 연결 · 공동구매 시공 일정 조율"), t("행사관리팀 · 대외지원팀"), t("입주 지정기간 · 인원은 협약 시 확정")],
+        [t("공용물품 지원"), t("세대당 15만원 상당 혜택 중 입예협 지정 항목으로 집행 · 품목과 수량은 입예협이 정함"), t("본부장 · 대외지원팀"), t("입예협 결정 시")],
+        [t("입주 과정 민원 지원"), t(f"주관 콜센터 한 창구 · 유형별 처리기한 {P('sla')} · 시공사 하자 접수 대행 · 회신 추적 {P('defect')}"), t("대외지원팀 · 콜센터"), t("입주 지정기간 ~ 입주 후 1년")],
+    ]
+    p_mv = std(S5, T_MV, "공고 4항 2) 입주지원 업무 다섯 줄을 그대로 옮기고, 무엇을 · 누가 · 언제 하는지 적었습니다.",
+               nb(tb(["공고 4항 2)", "엣지컴퍼니가 하는 일", "담당", "시기"], mv, "sm big")),
+               ("사전점검 기본 지원은 [[입예협 · 세대 부담 없이]] 하고, 대행은 세대가 고르는 [[선택 할인]]입니다.", "공용물품은 새 비용이 아니라 15만원 상당 범위에서 입예협이 지정합니다"))
+
+    cond = [
+        ("제안서 효력", "이 제안서의 내용은 협약서에 옮겨 이행합니다(공고 8항). 아래 '협의'라고 적은 항목은 협약 때 입예협과 정한 값이 기준입니다"),
+        ("세대 혜택", f"세대당 {D.FUND}만원 상당 · {HH:,}세대 총 {G['won'](HH * D.FUND)} 상당(부가세 포함) · 항목 배분은 입예협이 정함"),
+        ("이행 담보", "이행보증보험(최대 10억 · 2년) 또는 하자 예치금(최대 1억) - 방식 · 금액은 협약 시 확정 · 증권은 협약 시 협의한 시기에 제출"),
+        ("선보상", "사실 확인 후 이행 담보 범위에서 먼저 보상하고, 업체와는 나중에 정산"),
+        ("가격", "품목별 가격 비교자료 D-30 제출 · D-14 입예협 확정 · 현장 가격 변경 없음 · 계약금 10% 상한 · 카드 · 현금 동일가"),
+        ("최저가 보상", "차액 10배 · 1건당 최대 50만원(최대 금액은 입예협과 협의) · 동일 모델 새 제품 · 인근 오프라인 정상가 · 계약 후 7일 이내"),
+        ("민원 · A/S", "24시간 안 1차 회신 · 48시간 안 방문 · 착수(원칙) · 무상 A/S 최소 2년(업체 · 품목별 상이 · 품목별 기간은 가격 비교자료에 표기)"),
+        ("업체 도산", "동종업체로 하자보수 이관 · 이관 비용 주관사 부담"),
+        ("보고", "정례 진행 보고 · 하자처리 현황(입주 지정기간 주 1회 · 이후 월 1회) · 박람회 결과보고서 · 최종 결과 보고서"),
+        ("개인정보", "행사 운영 목적에만 사용 · 입예협 사전 서면 승인 없는 제3자 제공 금지 · 위반 시 공고 4항 6) 조치를 따름"),
+    ]
+    p_cond = std("CLOSING", T_COND, "확정한 약속 · 협의할 항목 · 금액 상한을 한 장에 모았습니다. 협약서의 뼈대로 쓰실 수 있습니다.",
+                 nb(tb(["조건", "내용"], [[t(a), t(b)] for a, b in cond], "sm")),
+                 ("이 한 장이 그대로 [[협약서의 뼈대]]가 됩니다.", "공고 9항 2) - 해석이 갈리지 않도록 상한과 정의를 먼저 적었습니다"))
+
+    # ============================================================ 원본 장 고치기(review.md A2 ~ A12)
+    R = REF
+    H48 = ("48시간 내 하자보수 의무 이행.", "48시간 안 방문 · 착수(원칙) · 완료 일정은 유형별로 안내.")
+    pages = [
+        take(kind="cover"), p_one, p_map8, p_map4, take(kind="toc"),
+        dv("01", "단지를 먼저 [[이해]]합니다", [f"{HH:,}세대 · 타입별 이해", "특화 제안 · 먼저 챙길 것", "입주민 건의 관리표", "중앙광장 · 물의정원 · 17개월 관리"]),
+        reuse(R["site"], S1), reuse(R["first"], S1), reuse(R["spec"], S1), reuse(R["req"], S1), reuse(R["night"], S1), reuse(R["m17"], S1),
+        dv("02", "박람회와 가격, [[공개된 기준]]으로", ["운영 계획 · 행사장 · 배치", "4단계 공개 심사 · 인근 업체", "가격 비교자료 D-30 제출", "차액 10배 · 계약금 10% · 환불"]),
+        reuse(R["expo"], S2), reuse(R["venue"], S2), reuse(R["floor"], S2),
+        reuse("가족이 머무는 [[편의시설]]", S2), reuse("실제 박람회 [[현장]]", S2),
+        reuse(R["items"], S2, subs=[('<span class="">SK매직</span>', "")]),
+        reuse(R["screen"], S2, subs=[("대기업·브랜드·본사직영 우선.", "브랜드 품목은 본사 · 공식 판매점, 시공 품목은 인근 업체 우선.")]),
+        reuse(R["crit"], S2), reuse(R["local"], S2), reuse(R["edu"], S2),
+        reuse(R["vend"], S2, subs=[("<td>SK매직</td><td>참가 협의 중 · 설치·철거 간편</td>", "<td>브랜드 렌탈사</td><td>공개 모집 · 심사 후 확정 · 설치·철거 간편</td>"),
+                                   ("<td>에몬스</td><td>참가 협의 중</td>", "<td>브랜드 가구사</td><td>공개 모집 · 심사 후 확정</td>"),
+                                   ("<td>LX하우시스 지인(Z:IN) 대리점</td><td>참가 협의 중</td>", "<td>브랜드 자재 대리점</td><td>공개 모집 · 심사 후 확정</td>"),
+                                   ("2025.11 MOU 체결 · 입예협 무상 점검 연계", "2025.11 MOU 체결(2026.12 갱신 예정) · 입예협 점검 연계")]),
+        p_price,
+        reuse(R["guard4"], S2), reuse(R["x10"], S2), reuse(R["plus"], S2), reuse(R["fund_safe"], S2), reuse(R["refund"], S2),
+        dv("03", "민원은 [[주관사가 먼저]] 받습니다", ["콜센터 한 창구 · 처리기한 표", "24시간 회신 · 48시간 방문 · 착수", "이행 담보 · 선보상", "특약이행각서 · 패널티 3단계"]),
+        reuse(R["call"], S3, subs=[H48]),
+        p_sla,
+        reuse(R["crm"], S3), reuse(R["net3"], S3),
+        reuse(R["bond"], S3, subs=[("협약식 때 증권 실물을 입예협에 전달합니다.", "협약 시 협의한 시기에 증권 실물을 입예협에 전달합니다.")]),
+        reuse(R["bondck"], S3),
+        reuse(R["escrow"], S3, lead="콜센터가 먼저 보상할 수 있게 하는 재원입니다. 이행 담보는 이 예치금 또는 이행보증보험 중 협약 시 정합니다."),
+        reuse(R["vdef"], S3), reuse(R["gaksu"], S3),
+        reuse(R["claim"], S3, lead="자주 발생한 클레임부터 품목별 보상 기준을 미리 정해 두고, 품목별 확정 기준은 참여업체 계약서에 넣습니다."),
+        reuse(R["pen"], S3, subs=[("클레임 2회 이상 누적 시", "사실 확인된 미처리 클레임 2회 이상 시")]),
+        reuse(R["live"], S3),
+        dv("04", "하자는 [[나눠 받고]], 정한 때 보고합니다", ["하자 책임 분리 접수", "보고 4종 · 주기 · 기한", "공용부 품질 점검", "도면 · 하자 분석보고서"]),
+        reuse(R["defect"], S4),
+        reuse(R["report"], S4, subs=[("입주 후 정기(주기는 입예협과 협의)", "입주 지정기간 중 주 1회 · 이후 월 1회(입예협이 정하면 그 주기)"),
+                                     ("<td>박람회 종료 후</td>", "<td>박람회 종료 후 30일 이내</td>"),
+                                     ("<td>입주 후 1년 운영 관리 종료 시</td>", "<td>입주 후 1년 운영 관리 종료 후 30일 이내</td>")]),
+        reuse(R["qchk"], S4), reuse(R["hidden"], S4, subs=[("라돈 무료측정", "라돈 측정")]), reuse(R["sun"], S4), reuse(R["sample"], S4),
+        dv("05", "입주 과정을 [[곁에서]] 지원합니다", ["입주지원 5가지", "선정부터 입주까지 추진 일정", "사전점검 당일 지원", "사전점검 대행 · 미리 보는 우리 집"]),
+        p_mv,
+        reuse(R["sched"], S5),
+        reuse(R["always"], S5, subs=[("서명 이미지·일시·필압까지 저장.", "서명 이미지·일시를 저장.")]),
+        reuse(R["preday"], S5), reuse(R["pchk"], S5), take(kind="pricing"), reuse(R["preview"], S5),
+        dv("06", "입예협의 일을 [[함께]] 합니다", ["B 협의회 단지발전지원 15가지", "온라인 위임장", "사전점검 세미나 영상", "현장 안전 · 위생 · 조경 분석"]),
+        reuse(R["bpkg"], S6, lead="공고 4항 3) 기본 업무(행사 인력 · 장비 · 비품 · 현장 운영 · 홍보물)는 따로 수행하고, B는 그 위에 더하는 15가지입니다.",
+              subs=[("2025.11 MOU · 동별 대표세대 진단", "2025.11 MOU(2026.12 갱신 예정) · 동별 대표세대 진단")]),
+        reuse(R["poa"], S6, subs=[("서명 이미지·서명 일시·필압 등 주요 정보를 저장합니다.", "서명 이미지 · 서명 일시를 저장합니다.")]),
+        reuse(R["semi"], S6),
+        reuse(R["safe"], S6, subs=[("2025.11 MOU. 협의회 지정", "2025.11 MOU(2026.12 갱신 예정). 협의회 지정")]),
+        reuse(R["land"], S6, subs=[("설명회를 무료 제공합니다.", "설명회를 제공합니다.")]),
+        dv("07", "전문 분야는 [[사람으로]] 답합니다", ["전담 체계 · 4개 팀", "자격 · 협회 등록 인력 · 조직", "경관조명 수직계열화", "C 단지지원 컨설팅"]),
+        reuse(R["team"], S7),
+        reuse(R["qual"], S7, subs=[("세스코 MOU 2025.11 체결. LX하우시스·에몬스와 제휴 추가 협의 중.", "세스코 MOU 2025.11 체결 · 2026.12 갱신 예정.")]),
+        reuse(R["org"], S7, subs=[("외부 인력 포함 약 21명(06장)", f"외부 인력 포함 약 21명({P('floor')})")]),
+        take(kind="landscape"),
+        reuse(R["vert"], S7, subs=[("중국 상해·중산 라인 무역 체결 완료.", "중국 상해·중산 직수입 협력 라인.")]),
+        reuse(R["cpkg"], S7), reuse(R["gate"], S7), reuse(R["inner"], S7), reuse(R["comm"], S7), reuse(R["fit"], S7), reuse(R["ev"], S7),
+        dv("08", "개인정보는 [[행사 운영에만]] 씁니다", ["수집 · 이용 · 보관 · 제공 · 파기", "참여업체 관리 · 감독", "홍보물 사전 승인", "카페 콘텐츠 · 현장 홍보"]),
+        reuse(R["priv"], S8, subs=[("보호 의무를 계약 조건에 넣습니다.", "보호 의무와 개인정보 처리 서약을 계약 조건에 넣습니다."),
+                                   ("보관기간이 지나면 파기하고,", "보관기간이 지나면 파기하고 파기 확인서를 입예협에 내며,")],
+              kp=("입주민 명단은 [[업체 영업 명단이 아닙니다.]]", "개인정보 보호책임자 = 대외지원팀장 · 참여업체도 같은 기준으로 서약")),
+        reuse(R["cafe"], S8), reuse(R["unbox"], S8),
+        dv("09", f"세대당 {D.FUND}만원 상당, [[입예협이 고릅니다]]", ["A · B · C 패키지", "박람회 상품권 · 현장 혜택", "정회원 혜택", "사은품 · 경품"]),
+        take(kind="hi_fund"), reuse(R["fund15"], S9), reuse(R["abc"], S9), reuse(R["pkgex"], S9), reuse(R["apkg"], S9),
+        reuse(R["gift"], S9, subs=[("입예협 승인 후 확정 · 백화점 상품권은 15만원 상당 범위 안", "입예협 승인 후 확정 · 공개 단가에서 빼는 할인(단가에 얹지 않음) · 백화점 상품권은 15만원 상당 범위 안")]),
+        reuse(R["vip"], S9), reuse(R["vip2"], S9), reuse(R["giveaway"], S9),
+        dv("10", "말이 아니라 [[서류로]] 보여 드립니다", ["주관 실적 · 대단지", "법인 · 재무 · 인증 서류", "직영 4곳 · 지사망", "협약서 원본"]),
+        reuse(R["num"], S10), reuse(R["big"], S10), reuse(R["rec43"], S10), reuse(R["fut7"], S10),
+        reuse(R["ph2326"], S10, new_title="사진으로 보는 함께한 단지 [[2023–2026]]"),
+        reuse(R["city"], S10, subs=[("88% 주관", "88% 진행")]),
+        reuse(R["corp"], S10), reuse(R["fin"], S10), reuse(R["lic"], S10), reuse(R["hq"], S10), reuse(R["br"], S10), reuse(R["br2"], S10),
+        reuse(R["mou"], S10, new_title="타 단지가 남긴 [[감사패와 협약]]",
+              subs=[("감사패·추천서와,", "감사패와,"), ("감사패 · 추천서 진열장", "감사패 진열장"), ("받은 감사패와 추천서", "받은 감사패")]),
+        reuse(R["q1"], SX, subs=[("본 제안서 04장", f"본 제안서 {P('bond', 'bondck')}")]),
+        reuse(R["q2"], SX, subs=[("최저가 차액 10배", "최저가 차액 10배(1건당 최대 50만원)"),
+                                 ("본 제안서 06 · 08장", f"본 제안서 {P('team', 'bpkg')}"), ("각서(별지 2호) · 05장", f"각서(별지 2호) · {P('call')}"),
+                                 ("본 제안서 03 · 08 · 09장", f"본 제안서 {P('x10', 'vip', 'vert')}"), ("본 제안서 03 · 08장", f"본 제안서 {P('x10', 'fund15')}"),
+                                 ("전담 체계 · 02장", f"전담 체계 · {P('team', 'cafe')}")]),
+        take(kind="closing"), p_cond, take(kind="contact"),
+    ]
+    # 자격 22 표의 이행보증 행(08) · A/S 행(07)은 ①쪽에 있다
+    i_q1 = next(i for i, (k, kw) in enumerate(pages) if kw.get("title") == R["q1"])
+    k, kw = pages[i_q1]
+    for a, b in [("협약 시 증권 실물 제출", "보증보험 또는 예치금 중 협약 시 확정 · 증권은 협약 시 협의한 시기에 제출")]:
+        assert a in kw["body"], ("탕정 v2: 자격 ① 문구", a)
+        kw["body"] = kw["body"].replace(a, b)
+
+    # ------------------------------------------------------------ 쪽 번호 자리표 → 실제 번호 · 옛 장 번호 참조 → 쪽 번호
+    idx = {}
+    for i, (k, kw) in enumerate(pages, 1):
+        if kw.get("title"):
+            idx.setdefault(kw["title"], i)
+    pgno = {key: idx[title] for key, title in REF.items() if title in idx}
+    pgno["pchk"] = next(i for i, (k, _) in enumerate(pages, 1) if k == "pricing")  # 사전점검 대행 가격 = pricing 쪽
+
+    def fix(s):
+        if not isinstance(s, str):
+            return s
+        s = re.sub(r"⟪v2:(\w+)⟫", lambda m: f"p.{pgno[m.group(1)]:02d}", s)
+        return re.sub(r"p\.\d\d(?: · p\.\d\d)+", lambda m: " · ".join(sorted(set(m.group(0).split(" · ")))), s)
+    for k, kw in pages:
+        for f in ("lead", "body", "title"):
+            if f in kw:
+                kw[f] = fix(kw[f])
+        if isinstance(kw.get("kp"), (tuple, list)):
+            kw["kp"] = type(kw["kp"])(fix(x) for x in kw["kp"])
+        elif isinstance(kw.get("kp"), str):
+            kw["kp"] = fix(kw["kp"])
+    G["V2_PG"] = pgno
+
+    # 같은 제목이 두 번 나오지 않게 · 필수 장(조직 구성) 확인
+    tts = [kw.get("title") for k, kw in pages if k == "std"]
+    dup = {x for x in tts if tts.count(x) > 1}
+    assert not dup, ("탕정 v2: 제목 중복", dup)
+    assert R["org"] in tts
+    B.PAGES[:] = pages
+
+    # ------------------------------------------------------------ 목차(4열 × 3)
+    G["TOC4"][:] = [
+        [("00", "제안 개요", ["한 장 결론", "업무 8 대응 · 쪽 번호", "명시 4 · 평가 4요소"]),
+         ("01", "단지 이해 · 특화", ["단지 · 먼저 챙길 것", "특화 제안 · 건의 관리", "광장 · 17개월 관리"]),
+         ("02", "박람회 · 업체 · 가격", ["운영 · 행사장 · 배치", "4단계 심사 · 인근 업체", "가격 비교자료 · 10배"])],
+        [("03", "민원 · A/S", ["콜센터 · 처리기한 표", "이행 담보 · 선보상", "각서 · 패널티"]),
+         ("04", "하자 · 보고", ["책임 분리 접수", "보고 4종 · 주기", "공용부 품질 점검"]),
+         ("05", "입주지원", ["입주지원 5가지", "추진 일정", "사전점검 지원"])],
+        [("06", "입예협 활동 지원", ["B 15가지", "위임장 · 세미나", "안전 · 위생 · 조경"]),
+         ("07", "전문분야 · 인력", ["전담 체계 · 조직", "자격 · 경관조명", "C 단지지원 컨설팅"]),
+         ("08", "개인정보 · 홍보", ["관리 6원칙", "업체 관리 · 감독", "홍보물 사전 승인"])],
+        [("09", "혜택 · 15만원 상당", ["A · B · C 패키지", "상품권 · 정회원", "사은품 · 경품"]),
+         ("10", "엣지컴퍼니 근거", ["주관 실적 · 대단지", "법인 · 인증 서류", "지사망 · 협약서"]),
+         ("부록", "자격 22 · 마무리", ["자격 22개 대응", "제안 조건 한 장", "연락처"])],
+    ]
+
+    G["TOC_CLS"] = "toc4 t3"
+
+    # ------------------------------------------------------------ 렌더 후 고치기(마무리 장 · 문자열 검사)
+    _fin = G["finish"]
+
+    def finish_v2(path, title):
+        _fin(path, title)
+        with open(path, encoding="utf-8") as f:
+            doc = f.read()
+        for a, b in [("업체·품목별 기간 상이 · 주관 창구 입주 후 1년 · 접수 365일 · 24시간 내 회신",
+                      "24시간 1차 회신 · 48시간 방문·착수 원칙 · 기간은 업체·품목별 상이 · 주관 창구 입주 후 1년"),
+                     ("<b>최저가 차액 10배 보상</b><p>단가표 사전 공개 · 현장 가격 변경 없음</p>",
+                      "<b>최저가 차액 10배 보상</b><p>1건당 최대 50만원 · 단가표 사전 공개 · 현장 가격 변경 없음</p>")]:
+            assert doc.count(a) == 1, ("탕정 v2: 마무리 장 문구", a, doc.count(a))
+            doc = doc.replace(a, b)
+        body = re.sub(r"<style.*?</style>|<script.*?</script>", "", doc, flags=re.S)
+        body = re.sub(r"<[^>]+>", " ", body)
+        bad = re.findall(r".{0,14}(?:의무 이행\.|추천서|무료|필압|체결 완료|협의 중|대기업|SK매직|에몬스|LX하우시스|협약식 때|⟪).{0,10}", body)
+        assert not bad, ("탕정 v2: 남은 위험 문구", bad[:12])
+        old_ch = re.findall(r".{0,16}(?:본 제안서 \d\d|\d\d장|\d\d · \d\d장).{0,8}", body)
+        if old_ch:
+            print("[v2 옛 장 번호 참조]", len(old_ch), " / ".join(dict.fromkeys(x.strip() for x in old_ch))[:2000])
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(doc)
+    G["finish"] = finish_v2
