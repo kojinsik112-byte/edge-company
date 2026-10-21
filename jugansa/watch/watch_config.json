@@ -1,5 +1,5 @@
 {
-  "_설명": "주관사 모집공고 감시 설정 — 비밀값 없음(키는 design-division/.env). 카페 4곳 search_url은 본부장이 브라우저에서 카페 안 검색(주관사) 후 주소창 URL을 그대로 붙여 넣는다.",
+  "_설명": "주관사 모집공고 감시 설정 — 비밀값 없음(키는 design-division/.env). 카페는 home(카페 주소) + keyword만 적으면 cafe_watch.js가 카페 번호를 찾아 카페 안 검색 결과를 읽는다. search_url(검색 결과 주소)을 직접 적으면 그걸 우선 사용.",
   "api_queries": [
     "주관사 공고",
     "주관사 모집",
@@ -31,20 +31,39 @@
   "cafes": [
     {
       "name": "경산 상방공원 호반써밋 1단지 입예협",
-      "search_url": "https://cafe.naver.com/sbhoban",
+      "home": "https://cafe.naver.com/sbhoban",
+      "keyword": "주관사",
       "_메모": "본부장 10-21 · 공고 10.26 ~ 10.31 · 카페 쪽지 · 개별 연락 금지(자격 박탈) — 감시(읽기)만"
     },
     {
-      "name": "카페 2 (이름 입력)",
-      "search_url": ""
+      "name": "aptmaster10",
+      "home": "https://m.cafe.naver.com/ca-fe/aptmaster10",
+      "keyword": "주관사",
+      "_메모": "본부장 10-21 · 공고 감시 카페"
     },
     {
-      "name": "카페 3 (이름 입력)",
-      "search_url": ""
+      "name": "rainup",
+      "home": "https://m.cafe.naver.com/ca-fe/rainup",
+      "keyword": "주관사",
+      "_메모": "본부장 10-21 · 공고 감시 카페"
     },
     {
-      "name": "카페 4 (이름 입력)",
-      "search_url": ""
+      "name": "casa114",
+      "home": "https://m.cafe.naver.com/ca-fe/casa114",
+      "keyword": "주관사",
+      "_메모": "본부장 10-21 · 공고 감시 카페"
+    },
+    {
+      "name": "jaegebal",
+      "home": "https://m.cafe.naver.com/ca-fe/jaegebal",
+      "keyword": "주관사",
+      "_메모": "본부장 10-21 · 공고 감시 카페"
+    },
+    {
+      "name": "ishift",
+      "home": "https://m.cafe.naver.com/ca-fe/ishift",
+      "keyword": "주관사",
+      "_메모": "본부장 10-21 · 공고 감시 카페"
     }
   ],
   "times": [

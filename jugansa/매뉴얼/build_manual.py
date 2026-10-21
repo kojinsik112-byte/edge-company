@@ -33,7 +33,7 @@ TEAMS = [  # (구역, 이름, 영문, 하는 일, 이렇게 말하세요, 결과
      "[단지] 개척팩 만들어줘 (카페 주소 · 아는 정보)\n[단지] 미팅 잡혔어 (날짜)",
      "jugansa/개척/[단지]/개척팩.md · 요약본 6쪽", "가입 · 쪽지 발송 · 미팅(직접)"),
     ("공고 전", "공고 감시팀", "bid_watch",
-     "네이버 카페 전체검색('주관사 공고' 등 6개) + 지정 카페 4곳을 하루 4번(09 · 12 · 15 · 18시) 찾아 새 공고만 카톡",
+     "네이버 카페 전체검색('주관사 공고' 등 6개) + 지정 카페 6곳을 하루 4번(09 · 12 · 15 · 18시) 찾아 새 공고만 카톡",
      "감시 결과 보여줘\n검색어 추가해줘 ○○",
      "카톡 알림 · jugansa/watch/state/log.md", "사무실 PC에 1회 설치 · 네이버 로그인 1회"),
     ("착수", "/kickoff (착수)", "skill",
@@ -118,7 +118,7 @@ DEVICES = [
 WATCH_SETUP = [
     "네이버 검색 API 키 → design-division/.env (NAVER_CLIENT_ID · SECRET)",
     "카톡 인증 1번 → business-ops/secretary/tools/kakao_send.py 안내대로(본부장 계정)",
-    "카페 4곳: 카페 안에서 '주관사' 검색 → 주소 복사 → jugansa/watch/watch_config.json",
+    "카페 6곳 등록 끝(10-21) · 더할 때 = watch_config.json cafes에 카페 주소 + keyword '주관사'",
     "로그인 1번: tools/scraper 에서 npm install → node cafe_watch.js --login → 직접 로그인 → 창 닫기",
     "첫 실행: python jugansa/watch/notice_watch.py --init",
     "예약 등록: powershell -ExecutionPolicy Bypass -File jugansa/watch/register_watch.ps1",

@@ -8,7 +8,7 @@
 
 두 갈래로 찾는다:
   ① 네이버 검색 API(카페글) — '주관사 공고' 등 키워드 · 최신순. 로그인 불필요, 검색 공개 글만 잡힌다(= 카페 상단 전체검색 대체).
-  ② 로그인 카페 4곳 — watch_config.json의 search_url(카페 안 검색 결과 주소)을 본부장 로그인 프로필로 연다(tools/scraper/cafe_watch.js).
+  ② 지정 카페 6곳 — watch_config.json의 home(카페 주소) + keyword('주관사')로 카페 안 검색 결과를 본부장 로그인 프로필로 연다(tools/scraper/cafe_watch.js).
 걸러내기: 제목+요약에 must_any 하나 + also_any 하나, exclude_any 없음. 이미 본 링크는 state/seen.json(깃 제외)으로 거른다.
 키: design-division/.env 의 NAVER_CLIENT_ID / SECRET · 카톡 = business-ops/secretary/tools/kakao_send.py(나에게 보내기 · 본부장 PC에서 본부장 계정으로 1회 인증).
 """
@@ -65,8 +65,8 @@ def api_search():
 
 
 def cafe_search():
-    """② 로그인 카페 4곳(search_url 있는 곳만) — Node 스크립트 결과."""
-    if not any(c.get("search_url") for c in CFG["cafes"]):
+    """② 로그인 카페(home 또는 search_url 있는 곳) — Node 스크립트 결과."""
+    if not any(c.get("search_url") or c.get("home") for c in CFG["cafes"]):
         return []
     try:
         p = subprocess.run(["node", str(CAFE_JS), str(HERE / "watch_config.json")], cwd=str(CAFE_JS.parent),
