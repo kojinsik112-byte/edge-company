@@ -167,8 +167,12 @@ def issued(key, label):
     return f"{v} 발급" if v else todo(f"{label} 재발급일(공고일 이후)")
 
 
-_p05 = os.path.join(HERE, PFX + "05_입주박람회_입찰제안서.pdf")
+# 제출본 = v2 밝은 시안(본부장 10-21 확정) — build_tangjeong.py --v2 → tjlight.py 가 05 · 요약 · 회사소개서를 같이 만든다
+V2 = "_v2_밝은시안.pdf"
+_p05 = os.path.join(HERE, PFX + "05_입주박람회_입찰제안서" + V2)
 PROP = fitz.open(_p05) if os.path.exists(_p05) else None
+_pco = os.path.join(HERE, PFX + "회사소개서" + V2)
+CO = fitz.open(_pco) if os.path.exists(_pco) else None
 
 
 def submit_rows():
@@ -391,8 +395,9 @@ def doc11():
 
 # ================================================================== 12 성과 및 성공사례 자료
 # 입찰제안서(05)에서 성과·사례 쪽만 제목으로 찾아 붙인다(쪽 번호가 바뀌어도 안전).
+# 05 v2에 없는 회사 이력 쪽(성공사례 · 2,000세대 · 현장 지원)은 회사소개서(제출서류 14)에서 찾는다
 CASE_PAGES = ["숫자로 보는 엣지컴퍼니", "주관 성공사례 · 수임실적", "2,000세대 이상 초대형 단지를 맡아 왔습니다", "대단지 운영 경험",
-              "사진으로 보는 주관 단지 2023 ~ 2026", "한 단지가 아니라 한 신도시를 맡습니다", "타 단지가 남긴 추천과 협약",
+              "사진으로 보는 함께한 단지", "한 단지가 아니라 한 신도시를 맡습니다", "타 단지가 남긴 감사패와 협약",
               "행사 밖에서도 현장 지원", "입예협 카페 홍보 콘텐츠 제작", "입주민 후기 · 실시간 응대 화면", "실제 박람회 현장"]
 CAFE = [  # (캡처 파일, 단지, 카페 주소, [(날짜, 글 제목 — 캡처 화면 원문 그대로(이모티콘 제외), 댓글 수)]) — 07 붙임과 같은 순서(사상 → 대성)
     ("cafe_sasang_2.png", "부산사상 중흥S-클래스 그랜드센트럴 (1,572세대)", "cafe.naver.com/f-e/cafes/30121620/menus/111",
@@ -416,13 +421,18 @@ CAFE = [  # (캡처 파일, 단지, 카페 주소, [(날짜, 글 제목 — 캡�
 
 
 def find_pages(titles):
-    idx = []
+    """[(문서, 쪽 index, 표시)] — 입찰제안서(05) 먼저, 없으면 회사소개서."""
+    out = []
     for t in titles:
-        # 본문 쪽만(머리글의 '“입주민의 든든한 파트너' 문구가 있는 쪽) — 장 간지·표지는 제외
-        hit = [i for i, p in enumerate(PROP) if (lambda x: "든든한 파트너" in x[:200] and t in x[:400])(p.get_text().replace("\n", " ").strip())]
-        assert hit, f"제안서에서 쪽을 찾지 못함: {t}"
-        idx.append(hit[0])
-    return idx
+        for doc, name in ((PROP, ""), (CO, "회사소개서 ")):
+            # 본문 쪽만(머리글의 '“입주민의 든든한 파트너' 문구가 있는 쪽) — 장 간지·표지는 제외
+            hit = [i for i, p in enumerate(doc or []) if (lambda x: "든든한 파트너" in x[:200] and t in x[:400])(p.get_text().replace("\n", " ").strip())]
+            if hit:
+                out.append((doc, hit[0], f"{name}{hit[0] + 1}쪽"))
+                break
+        else:
+            raise AssertionError(f"제안서 · 회사소개서에서 쪽을 찾지 못함: {t}")
+    return out
 
 
 def doc12_cover():
@@ -430,16 +440,16 @@ def doc12_cover():
                    + "".join(f'<tr><td style="white-space:nowrap">{d}</td><td class="l">{e(t)}</td><td>{e(c)}</td></tr>' for d, t, c in ev)
                    for k, (_, nm, _, ev) in enumerate(CAFE, 1))
     pages = find_pages(CASE_PAGES) if PROP else []
-    lst = " · ".join(f"{t}({i + 1}쪽)" for t, i in zip(CASE_PAGES, pages))
+    lst = " · ".join(f"{t}({lb})" for t, (_, _, lb) in zip(CASE_PAGES, pages))
     body = f"""{head("제출서류 12", "입주박람회 성과 및 성공사례 자료")}
 <div class="box"><b>요약</b> &nbsp; 누적 수임 <b>67개 단지 · 56,361세대</b>(전신 실적 포함, 2027년 입주 예정 단지까지) ·
 1,000세대 이상 주관 <b>10개 단지 · 19,563세대</b> · 최대 단일 단지 <b>레이카운티 4,470세대</b> · 사송 · 에코델타 신도시 연속 수임</div>
 <h2>1. 단지 카페 이벤트 · 공지 사례 (붙임 캡처)</h2>
 <table class="t"><thead><tr><th style="width:13%">날짜</th><th>글 제목 — 카페 화면 원문(작성자: 주관사 엣지컴퍼니)</th><th style="width:9%">댓글</th></tr></thead><tbody>{rows}</tbody></table>
 <p class="note">※ 단지 카페(입주민 소통 카페 주관사 게시판 · 입주자 모임 카페 주관사 공지) 화면 그대로입니다(붙임 1 · 2). 입주민 닉네임의 동 · 호수와 캡처 계정 닉네임은 개인정보 보호를 위해 가렸습니다.</p>
-<h2>2. 성공사례 · 현장 자료 (입찰제안서 발췌)</h2>
+<h2>2. 성공사례 · 현장 자료 (입찰제안서 · 회사소개서 발췌)</h2>
 <p style="font-size:9.8pt;line-height:1.8">{e(lst)}</p>
-<p class="note">※ 사진 속 단지 · 행사는 타 단지 실제 운영 사례이며, 세부는 입찰제안서(제출서류 05) 해당 쪽과 같습니다.</p>"""
+<p class="note">※ 사진 속 단지 · 행사는 타 단지 실제 운영 사례이며, 세부는 입찰제안서(제출서류 05) · 회사소개서(제출서류 14) 해당 쪽과 같습니다.</p>"""
     caps = [f'<h2>붙임 {i}. {e(nm)} 단지 카페</h2><p class="note">{e(url)} · 입주민 닉네임(동·호수) 가림</p>'
             f'<img src="assets_ins/{f}" style="display:block;max-width:100%;max-height:228mm;margin:6pt auto 0;border:.6pt solid #C9CED6">'
             for i, (f, nm, url, _) in enumerate(CAFE, 1)]
@@ -615,12 +625,12 @@ def main():
     res["11"] = stamped(render("11_청렴계약이행서약서", doc11()))
     cov12 = render("12_성과_성공사례_표지", doc12_cover())
     sel = fitz.open()
-    for i in find_pages(CASE_PAGES):
-        sel.insert_pdf(PROP, from_page=i, to_page=i)
+    for doc, i, _ in find_pages(CASE_PAGES):
+        sel.insert_pdf(doc, from_page=i, to_page=i)
     res["12"] = merge("12_성과_성공사례", [cov12, sel], "12 입주박람회 성과 및 성공사례 자료")
     cov14 = render("14_기타_표지", doc14_cover())
     qual = stamped(render("14_1_자격확약서", doc_qual()))
-    res["14"] = merge("14_기타_요약제안서_회사소개서", [cov14, qual, os.path.join(HERE, PFX + "요약제안서.pdf"), os.path.join(HERE, PFX + "회사소개서.pdf")],
+    res["14"] = merge("14_기타_요약제안서_회사소개서", [cov14, qual, os.path.join(HERE, PFX + "요약제안서" + V2), _pco],
                       "14 기타 입찰제안 자료 (요약 제안서 · 회사소개서)")
     for k, v in res.items():
         print(k, os.path.basename(v), len(fitz.open(v)), "p")

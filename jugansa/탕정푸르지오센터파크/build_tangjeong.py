@@ -1285,10 +1285,12 @@ HIST_CSS = r"""
 """
 
 
-def company_pages():
-    """제출서류 07 회사소개서 — 표지 + 01 간지 + 연혁 + 조직 구성(실명 없음) + 제안서 01장 + 연락처."""
-    pick = [p for p in B.PAGES if p[1].get("sec") == "01. 회사소개" and p[0] != "divider"]
-    d01 = [p for p in B.PAGES if p[0] == "divider" and p[1].get("n") == "01"]
+def company_pages(pick=None, d01=None):
+    """제출서류 07 회사소개서 — 표지 + 01 간지 + 연혁 + 조직 구성(실명 없음) + 제안서 01장 + 연락처. v2는 고친 장(pick · d01)을 넘겨준다."""
+    if pick is None:
+        pick = [p for p in B.PAGES if p[1].get("sec") == "01. 회사소개" and p[0] != "divider"]
+    if d01 is None:
+        d01 = [p for p in B.PAGES if p[0] == "divider" and p[1].get("n") == "01"]
     assert len(d01) == 1 and len(pick) > 15, (len(d01), len(pick))
     key = ("설립", "등록", "ISO", "MOU")
     def keep(t):  # '주관 · 1,643세대'는 한 줄로
@@ -1308,9 +1310,13 @@ def company_pages():
     return [("cover", {})] + d01 + [hist] + pick + contact  # 조직 구성 장은 01장(pick)에 이미 들어 있음
 
 
-def summary_pages():
-    """요약 제안서 — 본 제안서(B.PAGES, 재배치 후)에서 필요한 장만 골라 압축. 장 표시(sec)만 요약본 기준으로 바꾼다."""
+def summary_pages(alias=None, kps=None):
+    """요약 제안서 — 본 제안서(B.PAGES, 재배치 후)에서 필요한 장만 골라 압축. 장 표시(sec)만 요약본 기준으로 바꾼다.
+    v2: alias = {원본 제목: v2 제목}(v2에 없는 장의 대체) · kps = {제목: KEY POINT}(옛 장 번호를 가리키는 KEY POINT 교체)."""
     def take(title=None, kind=None, sec=None, kp=None):
+        if title and kps and title in kps:
+            kp = kps[title]
+        title = (alias or {}).get(title, title)
         hits = [(k, kw) for k, kw in B.PAGES if (title and kw.get("title") == title) or (kind and not title and k == kind)]
         assert len(hits) == 1, (title, kind, len(hits))
         k, kw = hits[0]
@@ -1375,6 +1381,15 @@ def build():
         tjv2.apply(globals())
         emit(list(B.PAGES), os.path.join(HERE, NAME + "_v2.html"), "엣지컴퍼니 탕정 푸르지오 센터파크 입주박람회 주관사 제안서")
         print(f"탕정 v2 {len(B.PAGES)}쪽")
+        if not os.environ.get("NO_NATIVE"):  # 제출서류 14 = 요약 제안서 · 회사소개서도 v2(고친 장 · 쪽 번호)로
+            COVER.update(kind="impact", pill="요약 제안서")
+            CLOSING_DROP[:] = ["03", "04"]
+            emit(tjv2.summary_v2(globals()), os.path.join(HERE, NAME22 + "_v2.html"), "엣지컴퍼니 탕정 푸르지오 센터파크 요약 제안서")
+            CLOSING_DROP[:] = []
+            COVER.update(kind="company")
+            B.CSS += HIST_CSS
+            emit(tjv2.company_v2(globals()), os.path.join(HERE, NAME07 + "_v2.html"), "엣지컴퍼니 회사소개서")
+            COVER.update(kind="stats", pill="입주박람회 주관사 제안서")
         return
     emit(list(B.PAGES), B.OUT_HTML, "엣지컴퍼니 탕정 푸르지오 센터파크 입주박람회 주관사 제안서")
     if not os.environ.get("NO_NATIVE"):

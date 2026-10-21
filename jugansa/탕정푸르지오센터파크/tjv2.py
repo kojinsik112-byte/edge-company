@@ -7,9 +7,47 @@
   09장 혜택 · 10장 회사 근거 · 부록 자격 22 · 마무리(제안드리는 것 · 제안 조건 한 장 · 연락처)
 원본 05(119쪽)는 그대로 두고 _v2 파일로만 낸다. 새 약속 · 새 돈 · 새 자격은 넣지 않는다(공고 8항 — 제안서 = 계약서 효력).
 """
+import os
 import re
 
 PH = "○○"
+
+# 렌더 뒤 HTML 문구 고치기 (바꿀 문구, 새 문구, 05 본문에 있어야 할 개수) — 10-21 법정 판결 Claude 담당분 포함
+FIX_HTML = [
+    # 마무리 장(제안드리는 것)
+    ("업체·품목별 기간 상이 · 주관 창구 입주 후 1년 · 접수 365일 · 24시간 내 회신",
+     "24시간 1차 회신 · 48시간 방문·착수 원칙 · 기간은 업체·품목별 상이 · 주관 창구 입주 후 1년", 1),
+    ("<b>최저가 차액 10배 보상</b><p>단가표 사전 공개 · 현장 가격 변경 없음</p>",
+     "<b>최저가 차액 10배 보상</b><p>1건당 최대 50만원 · 단가표 사전 공개 · 현장 가격 변경 없음</p>", 1),
+    # 48시간 = 방문 · 착수(p.33 처리기한 표의 정의)로 통일 — '48시간 A/S'(거리 설명)는 그대로
+    ('<span class="g">24시간 회신 · 48시간 처리</span>', '<span class="g">24시간 회신 · 48시간 안 방문·착수</span>', 1),
+    ('<div class="tt">48시간 내 처리</div>', '<div class="tt">48시간 안 방문·착수</div>', 1),
+    ("<span>48시간 내 처리</span>", "<span>48시간 안 방문·착수</span>", 1),
+    ("<b>48시간 처리</b><p>관리·감독 하 보수 이행</p>", "<b>48시간 방문·착수</b><p>관리·감독 하 보수 착수</p>", 1),
+    ('<div class="nm">하자보수 원칙</div>', '<div class="nm">방문·착수 원칙</div>', 1),
+    ('width:15%">48시간 처리</i>', 'width:15%">48시간 방문·착수</i>', 1),
+    ("<td>48시간 하자보수 원칙 · 업체 미응답 시 개입 · 선보상</td>", "<td>48시간 안 방문·착수 원칙 · 업체 미응답 시 개입 · 선보상</td>", 1),
+    ("주관사 단일 창구 · 48시간 하자보수 원칙", "주관사 단일 창구 · 48시간 안 방문·착수 원칙", 1),
+    ("<b>48시간 하자보수 · 무상 A/S 최소 2년</b>", "<b>48시간 방문·착수 · 무상 A/S 최소 2년</b>", 1),
+    ("시공업체로 48시간 처리 원칙을 지킵니다", "시공업체로 48시간 안 방문·착수 원칙을 지킵니다", 0),  # 회사소개서(왜 직영) 장
+    # 참가 업체 · 인력 · 상품권 · 행사장 · 할인율 · 이관
+    ("<td>참가 확정 · 욕실 환기·온풍</td>", "<td>참가 예정 · 같은 심사 · 욕실 환기·온풍</td>", 1),
+    ("<span>임직원 10명 + 인턴 4명, <em>14명</em>이 4개 팀으로 나눠 맡고, 분야별 <em>외부 전문 협력</em>이 받칩니다.",
+     "<span>대표 · 본부장 + 4개 팀 12명 = <em>14명</em>(임직원 10 · 인턴 4)이 맡고, 분야별 <em>외부 전문 협력</em>이 받칩니다.", 1),
+    (" - 같은 팀이 탕정 푸르지오 센터파크도 맡습니다.", " - 같은 운영 체계로 탕정 푸르지오 센터파크도 맡고, 탕정 담당 책임자를 따로 지정합니다.", 1),
+    ("<em>30만원</em>은 계약금으로,", "<em>30만원</em>은 계약 때 쓰는 할인권으로,", 1),
+    ('<div class="nm">청주 OSCO · 대전 DCC · 천안 유관순체육관</div><div class="ds">아산에서 가까운 전시장 3곳을 순위별 후보로, 입예협과 답사한 뒤 확정합니다.</div>',
+     '<div class="nm">청주 OSCO · 천안 · 대전 DCC</div><div class="ds">규모 우선 청주 OSCO(약 40분) · 거리 우선 천안 유관순체육관(약 20분) · 예비 대전 DCC</div>', 1),
+    ("① <em>청주 OSCO</em>(오송) ② 대전 DCC 제2전시장 ③ 천안 유관순체육관(판매행사 승인 확인 시)",
+     "규모 우선 <em>청주 OSCO</em>(오송 · 약 40분) · 거리 우선 천안 유관순체육관(약 20분 · 판매행사 승인 확인 시) · 예비 대전 DCC 제2전시장", 1),
+    ('<div class="lb">STANDARD</div><div class="big">35<small>% 할인</small></div>',
+     '<div class="lb">STANDARD</div><div class="big"><small>약 </small>35<small>% 할인</small></div>', 1),
+    ("입예협 승인으로 대체업체를 정해", "입예협 승인과 계약자 동의로 대체업체를 정해", 1),
+    ("<b>마지막 단계에서는 <em>전 계약을 대체업체로 이관</em>합니다", "<b>마지막 단계에서는 계약자 동의를 받아 <em>전 계약을 대체업체로 이관</em>합니다", 1),
+    # 기본 업무(인력 · 운영 · 행사 비품) ↔ 15만원 상당(공용물품 · 총회 · 설명회 비용) 경계
+    ("<li>총회·설명회 운영 지원 · 단지 개선 용역</li>", "<li>총회·설명회 비용(대관·인쇄·다과) · 단지 개선 용역</li>", 1),
+    ("<span>지정</span>총회·설명회 운영 지원</li>", "<span>지정</span>총회·설명회 비용(대관·인쇄·다과)</li>", 1),
+]
 
 CSS = """
 .sheet{background:#F6F2E9;color:#1d2733;border-radius:6px;padding:20px 22px 12px;box-shadow:0 14px 36px rgba(0,0,0,.45);position:relative;display:flex;flex-direction:column;gap:8px;min-height:0;overflow:hidden}
@@ -66,6 +104,11 @@ def apply(G):
     HH = ST["households"]
     OLD = list(B.PAGES)
     B.CSS += CSS
+    ORIG = {}
+    G["V2_ORIG"] = ORIG
+    G["V2_CO"] = [kw["title"] for k, kw in OLD if kw.get("sec") == "01. 회사소개" and k != "divider"]  # 원본 01장 = 회사소개서 본문
+    G["V2_D01"] = [(k, dict(kw)) for k, kw in OLD if k == "divider" and kw.get("n") == "01"]
+    G["V2_OLDMAP"] = {kw["title"]: (k, dict(kw)) for k, kw in OLD if kw.get("title")}
 
     def take(title=None, kind=None):
         hits = [(k, kw) for k, kw in OLD if (title is not None and kw.get("title") == title) or (kind is not None and title is None and k == kind)]
@@ -99,6 +142,7 @@ def apply(G):
                 n += kw["kp"].count(a)
                 kw["kp"] = kw["kp"].replace(a, b)
             assert n, ("탕정 v2: 바꿀 문구를 찾지 못함", title, a)
+        ORIG[title] = (k, kw)  # 원본 제목 → v2 장(회사소개서 v2가 고친 판을 다시 쓴다)
         return (k, kw)
 
     def tk(kind, sec):  # 제목 없는 특수 장(가격표 · 경관 사진 · 15만원) — 머리글 장 이름만 새 장으로
@@ -233,7 +277,7 @@ def apply(G):
         ("행사비와 단가", "박람회 운영비와 세대당 15만원 상당 혜택은 주관사가 집행합니다. 업체 단가는 입예협이 이 자료로 검수하므로, 행사비가 단가에 얹히면 비교표에서 드러납니다"),
         ("시공 품목", "규격 · 현장 조건이 달라 같은 제품끼리 비교하기 어려운 품목은 시공비 · 추가금을 모두 적은 가격 공개표로 비교합니다"),
     ]) + "</div>"
-    prow = [("사전점검 대행", "전문 업체 점검 · 입주 후 점검 1회 · 보고서 2회", "평당 16,250원", "평당 25,000원 (2026.06 기본 소비자가)", "-", PH, True),
+    prow = [("사전점검 대행", "전문 업체 점검 · 입주 후 점검 1회 · 보고서 2회", "평당 16,250원", "자사 기본 소비자가 평당 25,000원 (2026.06)", "-", PH, True),
             ("줄눈", "84A · 욕실 2 · 현관 · 발코니", PH, f"{PH} ({PH}점 · {PH}일)", PH, PH, False),
             ("입주청소", "84㎡ · 기본 + 새집증후군", PH, f"{PH} ({PH}점 · {PH}일)", PH, PH, False),
             ("중문", "3연동 · 84B 현관", PH, f"{PH} ({PH}점 · {PH}일)", f"철거 · 운반 {PH}", PH, False),
@@ -245,7 +289,7 @@ def apply(G):
              '<div class="meta"><i>1차 제출</i><span>박람회 D-30</span><i>확정</i><span>D-14 · 입예협 검수 후</span></div>'
              '<table><thead><tr><th>품목</th><th>모델 · 규격</th><th>공동구매가</th><th>인근 오프라인 정상가</th><th>설치 · 추가금</th><th>무상 A/S</th></tr></thead>'
              f'<tbody>{trs}</tbody></table>'
-             f'<div class="note">노란 줄 = 본 제안서 {P("pprice")} 사전점검 대행 가격(2026년 6월 기준 · 변동 가능) · 나머지 줄은 품목 확정 후 채우는 예시 칸입니다. 온라인 최저가는 참고로만 적습니다.</div>'
+             f'<div class="note">노란 줄 = 본 제안서 {P("pprice")} 사전점검 대행 가격(2026년 6월 기준 · 변동 가능) · 이 줄의 비교 칸은 인근 정상가가 아닌 자사 기본 소비자가이며, 인근 정상가는 D-30 제출 때 조사처 · 조사일과 함께 적습니다. 나머지 줄은 품목 확정 후 채우는 예시 칸이고, 온라인 최저가는 참고로만 적습니다.</div>'
              f'<div class="sig"><span>{t(D.CLIENT)} 검수 (서명)</span><span>작성 · {t(D.COMPANY)}</span></div></div>')
     p_price = std(S2, T_PRICE, "공고 4항 1) '공동구매 품목별 가격 비교자료' — 언제, 무엇을, 어떤 기준으로 내는지 미리 정했습니다.",
                   f'<div class="fmx">{fdesc}{sheet}</div>',
@@ -269,12 +313,12 @@ def apply(G):
         [t("사전점검 지원 · 전문인력 배치"), t(f"기본 지원 - 체크리스트 · 점검요령 영상 · 당일 현장 지원 · 사내 자격 · 협회 등록 인력(전기 · 도장 · 타일 · 조경) 하자 확인 / 선택 - 전문 업체 대행 할인(세대 선택 {P('pchk', 'pprice')})"),
          t("행사관리팀 4명 · 사내 인력"), t("사전점검일(입예협 공지)")],
         [t("입주지원센터 운영 지원"), t("입주 지정기간 안내 · 하자 접수 창구 연결 · 공동구매 시공 일정 조율"), t("행사관리팀 · 대외지원팀"), t("입주 지정기간 · 인원은 협약 시 확정")],
-        [t("공용물품 지원"), t("세대당 15만원 상당 혜택 중 입예협 지정 항목으로 집행 · 품목과 수량은 입예협이 정함"), t("본부장 · 대외지원팀"), t("입예협 결정 시")],
+        [t("공용물품 지원"), t("선정 · 구매 · 전달 실무는 주관사 기본 업무 · 물품 비용은 세대당 15만원 상당 범위에서 입예협 지정 항목으로 집행 · 품목과 수량은 입예협이 정함"), t("본부장 · 대외지원팀"), t("입예협 결정 시")],
         [t("입주 과정 민원 지원"), t(f"주관 콜센터 한 창구 · 유형별 처리기한 {P('sla')} · 시공사 하자 접수 대행 · 회신 추적 {P('defect')}"), t("대외지원팀 · 콜센터"), t("입주 지정기간 ~ 입주 후 1년")],
     ]
     p_mv = std(S5, T_MV, "공고 4항 2) 입주지원 업무 다섯 줄을 그대로 옮기고, 무엇을 · 누가 · 언제 하는지 적었습니다.",
                nb(tb(["공고 4항 2)", "엣지컴퍼니가 하는 일", "담당", "시기"], mv, "sm big")),
-               ("사전점검 기본 지원은 [[입예협 · 세대 부담 없이]] 하고, 대행은 세대가 고르는 [[선택 할인]]입니다.", "공용물품은 새 비용이 아니라 15만원 상당 범위에서 입예협이 지정합니다"))
+               ("사전점검 기본 지원은 [[입예협 · 세대 부담 없이]] 하고, 대행은 세대가 고르는 [[선택 할인]]입니다.", "기본 업무 = 인력 · 운영 · 행사 비품 / 15만원 상당 = 공용물품 · 총회 · 설명회 비용(대관 · 인쇄 · 다과) - 입예협이 지정합니다"))
 
     cond = [
         ("제안서 효력", "이 제안서의 내용은 협약서에 옮겨 이행합니다(공고 8항). 아래 '협의'라고 적은 항목은 협약 때 입예협과 정한 값이 기준입니다"),
@@ -452,11 +496,10 @@ def apply(G):
         _fin(path, title)
         with open(path, encoding="utf-8") as f:
             doc = f.read()
-        for a, b in [("업체·품목별 기간 상이 · 주관 창구 입주 후 1년 · 접수 365일 · 24시간 내 회신",
-                      "24시간 1차 회신 · 48시간 방문·착수 원칙 · 기간은 업체·품목별 상이 · 주관 창구 입주 후 1년"),
-                     ("<b>최저가 차액 10배 보상</b><p>단가표 사전 공개 · 현장 가격 변경 없음</p>",
-                      "<b>최저가 차액 10배 보상</b><p>1건당 최대 50만원 · 단가표 사전 공개 · 현장 가격 변경 없음</p>")]:
-            assert doc.count(a) == 1, ("탕정 v2: 마무리 장 문구", a, doc.count(a))
+        main05 = "_05_" in os.path.basename(path)  # 05 본문은 개수까지 확인 · 요약 · 회사소개는 있는 것만 바꿈
+        for a, b, n in FIX_HTML:
+            c = doc.count(a)
+            assert c == n or not main05, ("탕정 v2: 문구 개수", os.path.basename(path), a, c, n)
             doc = doc.replace(a, b)
         body = re.sub(r"<style.*?</style>|<script.*?</script>", "", doc, flags=re.S)
         body = re.sub(r"<[^>]+>", " ", body)
@@ -468,3 +511,51 @@ def apply(G):
         with open(path, "w", encoding="utf-8") as f:
             f.write(doc)
     G["finish"] = finish_v2
+
+
+# ================================================================ 제출서류 14 — 요약 제안서 · 회사소개서 v2
+_RUN = re.compile(r"(?:본 제안서 )?p\.\d{2,3}(?: ~ \d{2,3})?(?: · p\.\d{2,3}(?: ~ \d{2,3})?)*")
+
+
+def _refer(s):
+    """다른 문서로 옮긴 장의 쪽 번호는 입찰제안서(05) 쪽이라고 밝힌다 — 대응표의 쪽 칸(td.pg)은 머리글로 밝힌다."""
+    if not isinstance(s, str):
+        return s
+    parts = re.split(r'(<td class="pg">.*?</td>)', s)
+    out = [x if x.startswith('<td class="pg">') else _RUN.sub(lambda m: "입찰제안서 " + m.group(0).replace("본 제안서 ", ""), x) for x in parts]
+    return "".join(out).replace("<th>쪽</th>", "<th>입찰제안서 쪽</th>")
+
+
+def _moved(page, sec=None):
+    k, kw = page
+    kw = dict(kw)
+    if sec and "sec" in kw:
+        kw["sec"] = sec
+    for f in ("lead", "body", "title"):
+        if f in kw:
+            kw[f] = _refer(kw[f])
+    if isinstance(kw.get("kp"), (tuple, list)):
+        kw["kp"] = type(kw["kp"])(_refer(x) for x in kw["kp"])
+    elif isinstance(kw.get("kp"), str):
+        kw["kp"] = _refer(kw["kp"])
+    return (k, kw)
+
+
+def summary_v2(G):
+    pg = G["V2_PG"]
+    alias = {"[[2,000세대 이상]] 초대형 단지를 맡아 왔습니다": "[[대단지]] 운영 경험",
+             "탕정 푸르지오 센터파크에 드리는 [[핵심 제안 6가지]]": "협약서에 옮길 [[제안 조건 한 장]]"}
+    kps = {"혜택 패키지 [[A · B · C]] 구성 항목": ("다음 장은 받으시는 방식별 [[패키지 구성 예시]]입니다.",
+                                             f"항목별 상세 = 입찰제안서 A {pg['apkg']}쪽 · B {pg['bpkg']}쪽 · C {pg['cpkg']}쪽 · 공용부 항목은 입예협·관리주체 협의 전제")}
+    pages = G["summary_pages"](alias=alias, kps=kps)
+    return [_moved(p) for p in pages]
+
+
+def company_v2(G):
+    ORIG = G["V2_ORIG"]
+    # 05 v2에 남은 장은 고친 판 · 05에서 뺀 회사 이력 장은 원본 그대로(finish_v2 금지어 검사를 같이 받음)
+    pick = [_moved(ORIG[t] if t in ORIG else G["V2_OLDMAP"][t], sec="01. 회사소개") for t in G["V2_CO"]]
+    miss = [t for t in G["V2_CO"] if t not in ORIG]
+    if miss:
+        print("[회사소개서 v2] 05 v2에 없는 회사 이력 장(원본 사용):", " / ".join(miss))
+    return G["company_pages"](pick=pick, d01=G["V2_D01"])

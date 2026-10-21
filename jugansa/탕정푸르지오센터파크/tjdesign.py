@@ -171,29 +171,35 @@ def cert_html(hh, fund):
             '<div class="cname">발전지원 · 혜택 패키지</div><div class="cline"></div>'
             '<p>박람회 참가비가 아니라 <em>단지로 돌아가는 혜택</em>입니다.<br>공고 업무 범위의 기본 업무는 이와 별도로 수행합니다.</p>'
             '<div class="cgrid">'
-            f'<div><i>대상</i><b>전 세대 {hh:,}세대</b><small>일반 분양 전 세대</small></div>'
+            f'<div><i>대상</i><b>전 세대 {hh:,}세대</b><small>전 세대 동일 기준</small></div>'
             f'<div><i>총 규모</i><b>{won(hh * fund)} 상당</b><small>{hh:,}세대 × {fund}만원 · 부가세 포함</small></div>'
             '<div><i>받는 방식</i><b>A · B · C 패키지 또는 입예협 지정</b><small>입예협이 고른 항목을 주관사가 직접 구매 · 제공</small></div>'
             '</div></div></div></div>')
 
 
-def apply(head, rest, hh, fund):
-    """head = </head> 앞 · rest = 뒤(body). 반환 (head, rest)."""
+PILL = {"입주박람회 주관사 제안서": "MOVE-IN FAIR PROPOSAL", "요약 제안서": "PROPOSAL SUMMARY", "회사소개서": "COMPANY PROFILE"}
+
+
+def apply(head, rest, hh, fund, n_dv=10, n_hi=1, label="입주박람회 주관사 제안서"):
+    """head = </head> 앞 · rest = 뒤(body). 반환 (head, rest). n_dv · n_hi = 문서에 있어야 할 간지 · 15만원 쪽 수(05 = 10 · 1)."""
     ensure_fonts()
     head = head.replace("<style>", FONT_LINK + "<style>", 1)
     head = head.replace("</style>", CSS + "</style>", 1)
     # 표지 라벨(제목 둘째 줄과 같은 말 → 영문 라벨)
-    assert rest.count('<span class="pill">입주박람회 주관사 제안서</span>') == 1
-    rest = rest.replace('<span class="pill">입주박람회 주관사 제안서</span>', '<span class="pill">MOVE-IN FAIR PROPOSAL</span>')
+    n_pill = 0
+    for a, b in PILL.items():
+        n_pill += rest.count(f'<span class="pill">{a}</span>')
+        rest = rest.replace(f'<span class="pill">{a}</span>', f'<span class="pill">{b}</span>')
+    assert n_pill == 1, ("표지 라벨 수", n_pill)
     # 간지 — 장 번호 라벨 · 큰 외곽선 번호 · 아래 띠
     def dv(m):
         n = m.group(1)
         return (f'<section class="page dv"><div class="bign">{n}</div><div class="kick">CHAPTER {n}</div>'
                 + m.group(2)
-                + '<div class="dvft"><span>탕정 푸르지오 센터파크 · 입주박람회 주관사 제안서</span><span>EDGE COMPANY</span></div></section>')
-    rest, n_dv = re.subn(r'<section class="page dv">\s*<div class="n">(\d\d)</div>(.*?)</section>', dv, rest, flags=re.S)
-    assert n_dv == 10, ("간지 수", n_dv)
+                + f'<div class="dvft"><span>탕정 푸르지오 센터파크 · {label}</span><span>EDGE COMPANY</span></div></section>')
+    rest, n = re.subn(r'<section class="page dv">\s*<div class="n">(\d\d)</div>(.*?)</section>', dv, rest, flags=re.S)
+    assert n == n_dv, ("간지 수", n, n_dv)
     # 15만원 쪽 — 증서
-    rest, n_hi = re.subn(r'<div class="ct"><div class="hi">.*?</div></div>\s*(?=<div class="kp">)', lambda m: cert_html(hh, fund) + "\n", rest, count=1, flags=re.S)
-    assert n_hi == 1, "15만원 쪽을 찾지 못함"
+    rest, n = re.subn(r'<div class="ct"><div class="hi">.*?</div></div>\s*(?=<div class="kp">)', lambda m: cert_html(hh, fund) + "\n", rest, count=1, flags=re.S)
+    assert n == n_hi, ("15만원 쪽 수", n, n_hi)
     return head, rest

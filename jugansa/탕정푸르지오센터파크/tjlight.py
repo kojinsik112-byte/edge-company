@@ -6,15 +6,19 @@
 금색 '채움'(막대 · 알약 · 강조 칸)은 글자 금색과 분리해 #C9A35A로 둔다(남색 글자 대비 7 이상).
 화면을 그릴 때 두 단계 보정(FIX_JS): ① 남색 판(캡션 띠 · 배치도 구역 · 콜센터 원 등) 안은 네이비 색 체계로 되돌림
 ② 그래도 대비 기준(작은 글자 4.5 · 큰 글자 3) 미만인 글자는 진한 금색 / 남색 / 아이보리 중 기준을 넘는 색으로 — 사진 위 캡션은 건드리지 않는다(휴대폰 모형 · 보증증권 견본은 원래 색).
-사용: python3 tjlight.py  (먼저 build_tangjeong.py --v2 로 v2 HTML을 만든다)
+사용: python3 tjlight.py [05_입주박람회_입찰제안서|요약제안서|회사소개서]  (먼저 build_tangjeong.py --v2 로 v2 HTML 3개를 만든다)
 """
 import os
 import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "엣지컴퍼니_탕정푸르지오센터파크_05_입주박람회_입찰제안서_v2.html")
-OUT = os.path.join(HERE, "엣지컴퍼니_탕정푸르지오센터파크_05_입주박람회_입찰제안서_v2_밝은시안.html")
+PFX = os.path.join(HERE, "엣지컴퍼니_탕정푸르지오센터파크_")
+# (v2 HTML, 간지 수, 15만원 쪽 수, 간지 띠 문서명) — 05 입찰제안서 · 14 요약 제안서 · 14 회사소개서
+JOBS = [("05_입주박람회_입찰제안서", 10, 1, "입주박람회 주관사 제안서"),
+        ("요약제안서", 0, 0, "요약 제안서"),
+        ("회사소개서", 1, 0, "회사소개서")]
+EXTRA = {"회사소개서": ".cv4 h1.tj{font-size:38px!important}"}  # '주식회사 엣지컴퍼니'가 명조 50px이면 표지 사진 밑으로 들어감
 
 DARK = "--bg:#0D1E33;--gold:#EBCB8F;--gold2:#C8A86A;--ink:#F4F6F9;--sub:#B4BECA;--mute:#8595A8;--line:rgba(255,255,255,.13)"
 LIGHT = "--bg:#FAF7F0;--gold:#7A5716;--gold2:#866322;--ink:#14243A;--sub:#3B4A5D;--mute:#5C6878;--line:rgba(13,30,51,.14)"
@@ -146,11 +150,11 @@ def light_svg(html):
     return re.sub(r'\b(stroke|fill)="([^"]+)"', attr, html)
 
 
-def main():
-    doc = open(SRC, encoding="utf-8").read()
+def light(src, out, n_dv, n_hi, label, extra=""):
+    doc = open(src, encoding="utf-8").read()
     head, rest = doc.split("</head>", 1)
     head = re.sub(r"<style>(.*?)</style>", lambda m: "<style>" + light_css(m.group(1)) + "</style>", head, flags=re.S)
-    head = head.replace("</style>", OVR + "</style>", 1) if head.count("</style>") == 1 else head + f"<style>{OVR}</style>"
+    head = head.replace("</style>", OVR + extra + "</style>", 1) if head.count("</style>") == 1 else head + f"<style>{OVR}{extra}</style>"
     rest = re.sub(r"<style>(.*?)</style>", lambda m: "<style>" + light_css(m.group(1)) + "</style>", rest, flags=re.S)
     rest = re.sub(r'style="([^"]*)"', lambda m: 'style="' + light_css(m.group(1)) + '"', rest)
     rest = re.sub(r'(<section class="page(?![^"]*\b(?:cv|dv)\b)[^"]*">)(.*?)(</section>)', lambda m: m.group(1) + light_svg(m.group(2)) + m.group(3), rest, flags=re.S)
@@ -158,16 +162,26 @@ def main():
     sys.path.insert(0, HERE)
     import data as D  # noqa: E402
     import tjdesign  # noqa: E402
-    head, rest = tjdesign.apply(head, rest, D.SITE["households"], D.FUND)
+    head, rest = tjdesign.apply(head, rest, D.SITE["households"], D.FUND, n_dv=n_dv, n_hi=n_hi, label=label)
     assert rest.count("</body>") == 1
     rest = rest.replace("</body>", FIX_JS + "</body>")
-    open(OUT, "w", encoding="utf-8").write(head + "</head>" + rest)
-    print("HTML:", OUT)
+    open(out, "w", encoding="utf-8").write(head + "</head>" + rest)
+    print("HTML:", out)
     if "--no-pdf" not in sys.argv:
         sys.path.insert(0, os.path.join(HERE, "..", "요약제안서"))
         import build as B
-        B.OUT_HTML, B.OUT_PDF = OUT, OUT[:-5] + ".pdf"
+        B.OUT_HTML, B.OUT_PDF = out, out[:-5] + ".pdf"
         B.build_pdf()
+
+
+def main():
+    only = [a for a in sys.argv[1:] if not a.startswith("--")]  # 예: python3 tjlight.py 요약제안서
+    for name, n_dv, n_hi, label in JOBS:
+        if only and name not in only:
+            continue
+        src = PFX + name + "_v2.html"
+        assert os.path.exists(src), ("v2 HTML 없음 — build_tangjeong.py --v2 먼저", src)
+        light(src, src[:-5] + "_밝은시안.html", n_dv, n_hi, label, EXTRA.get(name, ""))
 
 
 if __name__ == "__main__":
