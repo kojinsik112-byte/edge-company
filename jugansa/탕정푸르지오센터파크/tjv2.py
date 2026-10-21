@@ -101,6 +101,12 @@ def apply(G):
             assert n, ("탕정 v2: 바꿀 문구를 찾지 못함", title, a)
         return (k, kw)
 
+    def tk(kind, sec):  # 제목 없는 특수 장(가격표 · 경관 사진 · 15만원) — 머리글 장 이름만 새 장으로
+        k, kw = take(kind=kind)
+        assert "sec" in kw, ("탕정 v2: 장 이름 없는 특수 장", kind)
+        kw["sec"] = sec
+        return (k, kw)
+
     def std(sec, title, lead, body, kp):
         return ("std", dict(sec=sec, title=title, lead=lead, body=body, kp=kp))
 
@@ -327,7 +333,7 @@ def apply(G):
         p_mv,
         reuse(R["sched"], S5),
         reuse(R["always"], S5, subs=[("서명 이미지·일시·필압까지 저장.", "서명 이미지·일시를 저장.")]),
-        reuse(R["preday"], S5), reuse(R["pchk"], S5), take(kind="pricing"), reuse(R["preview"], S5),
+        reuse(R["preday"], S5), reuse(R["pchk"], S5), tk("pricing", S5), reuse(R["preview"], S5),
         dv("06", "입예협의 일을 [[함께]] 합니다", ["B 협의회 단지발전지원 15가지", "온라인 위임장", "사전점검 세미나 영상", "현장 안전 · 위생 · 조경 분석"]),
         reuse(R["bpkg"], S6, lead="공고 4항 3) 기본 업무(행사 인력 · 장비 · 비품 · 현장 운영 · 홍보물)는 따로 수행하고, B는 그 위에 더하는 15가지입니다.",
               subs=[("2025.11 MOU · 동별 대표세대 진단", "2025.11 MOU(2026.12 갱신 예정) · 동별 대표세대 진단"),
@@ -341,7 +347,7 @@ def apply(G):
         reuse(R["team"], S7),
         reuse(R["qual"], S7, subs=[("세스코 MOU 2025.11 체결. LX하우시스·에몬스와 제휴 추가 협의 중.", "세스코 MOU 2025.11 체결 · 2026.12 갱신 예정.")]),
         reuse(R["org"], S7, subs=[("외부 인력 포함 약 21명(06장)", f"외부 인력 포함 약 21명({P('floor')})")]),
-        take(kind="landscape"),
+        tk("landscape", S7),
         reuse(R["vert"], S7, subs=[("중국 상해·중산 라인 무역 체결 완료.", "중국 상해·중산 직수입 협력 라인.")]),
         reuse(R["cpkg"], S7), reuse(R["gate"], S7), reuse(R["inner"], S7), reuse(R["comm"], S7), reuse(R["fit"], S7), reuse(R["ev"], S7),
         dv("08", "개인정보는 [[행사 운영에만]] 씁니다", ["수집 · 이용 · 보관 · 제공 · 파기", "참여업체 관리 · 감독", "홍보물 사전 승인", "카페 콘텐츠 · 현장 홍보"]),
@@ -350,7 +356,7 @@ def apply(G):
               kp=("입주민 명단은 [[업체 영업 명단이 아닙니다.]]", "개인정보 보호책임자 = 대외지원팀장 · 참여업체도 같은 기준으로 서약")),
         reuse(R["cafe"], S8), reuse(R["unbox"], S8),
         dv("09", f"세대당 {D.FUND}만원 상당, [[입예협이 고릅니다]]", ["A · B · C 패키지", "박람회 상품권 · 현장 혜택", "정회원 혜택", "사은품 · 경품"]),
-        take(kind="hi_fund"), reuse(R["fund15"], S9), reuse(R["abc"], S9, subs=[("각 항목의 자세한 내용은 [[다음 장부터 A → B → C 순서]]로 보여 드립니다.",
+        tk("hi_fund", S9), reuse(R["fund15"], S9), reuse(R["abc"], S9, subs=[("각 항목의 자세한 내용은 [[다음 장부터 A → B → C 순서]]로 보여 드립니다.",
                                                        f"자세한 내용은 [[A {P('apkg')} · B {P('bpkg')} · C {P('cpkg')}]]부터 보여 드립니다.")]), reuse(R["pkgex"], S9), reuse(R["apkg"], S9, subs=[("다음 장부터 [[A 항목]]을 하나씩 보여 드립니다.",
                                                          f"[[A 항목]] 상세는 {P('gift', 'vip', 'vip2', 'giveaway', 'pchk', 'pprice', 'preview')}에 있습니다.")]),
         reuse(R["gift"], S9, subs=[("입예협 승인 후 확정 · 백화점 상품권은 15만원 상당 범위 안", "입예협 승인 후 확정 · 공개 단가에서 빼는 할인(단가에 얹지 않음) · 백화점 상품권은 15만원 상당 범위 안")]),

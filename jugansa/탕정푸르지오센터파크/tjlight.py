@@ -5,7 +5,7 @@
 색 기준(WCAG 대비, 아이보리 #FAF7F0 위): 글자 금색 #7A5716 = 6.1 · 라벨 금색 #866322 = 5.1 · 보조 회색 #5C6878 = 5.3 · 본문 #14243A.
 금색 '채움'(막대 · 알약 · 강조 칸)은 글자 금색과 분리해 #C9A35A로 둔다(남색 글자 대비 7 이상).
 화면을 그릴 때 두 단계 보정(FIX_JS): ① 남색 판(캡션 띠 · 배치도 구역 · 콜센터 원 등) 안은 네이비 색 체계로 되돌림
-② 그래도 대비 3 미만인 글자는 남색 / 아이보리 중 잘 보이는 쪽으로 — 사진 위 캡션은 건드리지 않는다(휴대폰 모형 · 보증증권 견본은 원래 색).
+② 그래도 대비 기준(작은 글자 4.5 · 큰 글자 3) 미만인 글자는 진한 금색 / 남색 / 아이보리 중 기준을 넘는 색으로 — 사진 위 캡션은 건드리지 않는다(휴대폰 모형 · 보증증권 견본은 원래 색).
 사용: python3 tjlight.py  (먼저 build_tangjeong.py --v2 로 v2 HTML을 만든다)
 """
 import os
@@ -55,18 +55,44 @@ document.querySelectorAll('section.page:not(.cv):not(.dv)').forEach(function(sec
     var o=layers(s);if(!o.length)return;var top=o.reduce(function(a,c){return c.a>a.a?c:a;});
     if(top.a>=.5&&lum(top)<.05){for(var k in D)el.style.setProperty(k,D[k]);el.setAttribute('data-dk','1');
       var fg=P(getComputedStyle(el).color);if(fg&&cr(fg,eff(el))<4.5)el.style.color='var(--ink)';}});
-  // ② 남은 글자 대비 3 미만 → 남색 / 아이보리 중 잘 보이는 쪽(사진 위 캡션은 제외)
+  // ② 남은 글자 대비 기준 미만(작은 글자 4.5 · 큰 글자 3) → 진한 금색 / 남색 / 아이보리 중 기준을 넘는 색(사진 위 캡션은 제외)
   all.forEach(function(el){if(!ownText(el)||el.closest('.kp,.todo'))return;
     var s=getComputedStyle(el);if(s.display==='none'||s.visibility==='hidden')return;
     var fg=P(s.color);if(!fg||fg.a<.05)return;if(overImg(el,sec,imgs))return;
-    var bg=eff(el),f=fg.a<1?blend(fg,bg):fg;if(cr(f,bg)>=3)return;
-    el.style.color=cr(NAVY,bg)>=cr(PAPER,bg)?'#14243A':'#FAF7F0';el.setAttribute('data-fx','1');});
+    var bg=eff(el),f=fg.a<1?blend(fg,bg):fg,fs=parseFloat(s.fontSize),bold=parseInt(s.fontWeight)>=700;
+    var need=(fs>=24||(fs>=18.5&&bold))?3:4.5;if(cr(f,bg)>=need)return;
+    // 금색 글자는 더 진한 금색부터(디자인 유지) → 그래도 부족하면 남색 / 아이보리
+    var cand=(f.r>f.b+30)?['#6B4C12','#14243A','#FAF7F0']:['#14243A','#FAF7F0'];
+    var pick=null;for(var i=0;i<cand.length;i++){if(cr(H(cand[i]),bg)>=need){pick=cand[i];break;}}
+    if(!pick)pick=cr(NAVY,bg)>=cr(PAPER,bg)?'#14243A':'#FAF7F0';
+    el.style.color=pick;el.setAttribute('data-fx','1');});
 });
 })();
 </script>"""
 
 
+CARD_SHADOW = "0 1px 2px rgba(13,30,51,.05),0 14px 30px -20px rgba(13,30,51,.32)"
+
+
+def white_card(m):
+    """흰 반투명 그라데이션 카드(네이비 판의 '살짝 밝은 카드') → 밝은 바탕에서는 흰 카드 + 은은한 그림자."""
+    sel, body = m.group(1), m.group(2)
+    g = re.search(r"background:\s*linear-gradient\(([^;]*)\)", body)
+    if not g:
+        return m.group(0)
+    stops = re.findall(r"rgba?\([^)]*\)|#[0-9a-fA-F]{3,6}|var\(--[\w-]+\)", g.group(1))
+    if not stops or not all(re.match(r"rgba\(255,\s*255,\s*255,\s*0?\.(0\d+|1[0-2]?)\)", x) for x in stops):
+        return m.group(0)
+    body = body.replace(g.group(0), "background:#FFFFFF")
+    if "box-shadow" not in body:
+        body = body.rstrip().rstrip(";") + ";box-shadow:" + CARD_SHADOW
+    return sel + "{" + body + "}"
+
+
 def light_css(css):
+    if "{" in css:
+        css = re.sub(r"([^{}]*)\{([^{}]*)\}", white_card, css)
+
     def decl(m):
         prop, val = m.group(1), m.group(2)
         p = prop.strip().lower()
@@ -79,6 +105,8 @@ def light_css(css):
         if p in ("background", "background-color"):
             val = re.sub(r"^\s*rgba\((\d+),\s*(\d+),\s*(\d+),\s*(0?\.[5-8]\d*)\)",
                          lambda n: f"rgba({n.group(1)},{n.group(2)},{n.group(3)},.92)" if max(int(n.group(i)) for i in (1, 2, 3)) < 60 else n.group(0), val)
+        # 연한 금색 채움 · 테두리(네이비 바탕용 #EBCB8F) → 샴페인 금색(밝은 바탕에서 막대 · 띠가 흐려지지 않게)
+        val = re.sub(r"rgba\(235,\s*203,\s*143,\s*([.\d]+)\)", lambda n: f"rgba(184,149,90,{min(1, float(n.group(1)) * 1.15):.3f})", val)
         # 반투명 흰 덧칠(카드 · 선 · 바탕) → 반투명 네이비(밝은 바탕에서 같은 깊이로 보이게 투명도 0.8배)
         val = re.sub(r"rgba\(255,\s*255,\s*255,\s*([.\d]+)\)", lambda n: f"rgba(13,30,51,{min(1, float(n.group(1)) * .8):.3f})", val)
         return prop + ":" + val
@@ -126,6 +154,11 @@ def main():
     rest = re.sub(r"<style>(.*?)</style>", lambda m: "<style>" + light_css(m.group(1)) + "</style>", rest, flags=re.S)
     rest = re.sub(r'style="([^"]*)"', lambda m: 'style="' + light_css(m.group(1)) + '"', rest)
     rest = re.sub(r'(<section class="page(?![^"]*\b(?:cv|dv)\b)[^"]*">)(.*?)(</section>)', lambda m: m.group(1) + light_svg(m.group(2)) + m.group(3), rest, flags=re.S)
+    # 디자인 레이어(명조 대제목 · 표지 · 간지 · 15만원 증서 · 배치도 · 콜센터 · 캡션 · KEY POINT)
+    sys.path.insert(0, HERE)
+    import data as D  # noqa: E402
+    import tjdesign  # noqa: E402
+    head, rest = tjdesign.apply(head, rest, D.SITE["households"], D.FUND)
     assert rest.count("</body>") == 1
     rest = rest.replace("</body>", FIX_JS + "</body>")
     open(OUT, "w", encoding="utf-8").write(head + "</head>" + rest)
