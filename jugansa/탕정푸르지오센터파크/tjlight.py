@@ -189,7 +189,7 @@ def light_svg(html):
     return re.sub(r'\b(stroke|fill)="([^"]+)"', attr, html)
 
 
-def light(src, out, n_dv, n_hi, label, extra="", hh=None, fund=None, site="탕정 푸르지오 센터파크"):
+def light(src, out, n_dv, n_hi, label, extra="", hh=None, fund=None, site="탕정 푸르지오 센터파크", post=None):
     """다른 단지도 쓴다(jugansa/tools/light_build.py) — hh · fund · site를 넘기면 그 단지 값, 없으면 탕정 data.py."""
     doc = open(src, encoding="utf-8").read()
     # 48시간 = 방문 일정 확정 · 30일 안 현장 사무소(본부장 10-21 2차 · 4개 단지 공통)
@@ -199,6 +199,8 @@ def light(src, out, n_dv, n_hi, label, extra="", hh=None, fund=None, site="탕�
     bad = CF.residue48(doc)
     print("[48시간 · 30일]", sum(rep.values()), "곳", rep)
     assert not bad, ("48시간 문구 남음", bad[:8])
+    if post:
+        doc = post(doc)
     head, rest = doc.split("</head>", 1)
     head = re.sub(r"<style>(.*?)</style>", lambda m: "<style>" + light_css(m.group(1)) + "</style>", head, flags=re.S)
     head = head.replace("</style>", OVR + extra + "</style>", 1) if head.count("</style>") == 1 else head + f"<style>{OVR}{extra}</style>"
@@ -223,6 +225,18 @@ def light(src, out, n_dv, n_hi, label, extra="", hh=None, fund=None, site="탕�
         B.build_pdf()
 
 
+# 10-22 본부장 '선정 후 30일 안 현장 사무소는 힘들다' → 3단계안(선정 후 30일 전담 PM · 박람회 60일 전 사무소 · 입주 지정기간 상주 창구) — 탕정만
+TJ_OFFICE = [("<b>선정 후 30일 안 현장 사무소 개설</b><p>전담 PM 배치 · 시공 품목은 인근 업체 우선 선정</p>",
+              "<b>박람회 60일 전 현장 사무소 개설</b><p>선정 후 30일 안 전담 PM 지정 · 입주 지정기간 단지 내 상주 창구(협의)</p>")]
+
+
+def tj_post(doc):
+    for a, b in TJ_OFFICE:
+        doc = doc.replace(a, b)
+    assert "선정 후 30일 안 현장 사무소" not in doc and "선정 후 30일 안 아산" not in doc, "탕정: 옛 30일 사무소 문구 남음"
+    return doc
+
+
 def main():
     only = [a for a in sys.argv[1:] if not a.startswith("--")]  # 예: python3 tjlight.py 요약제안서
     for name, n_dv, n_hi, label in JOBS:
@@ -230,7 +244,7 @@ def main():
             continue
         src = PFX + name + "_v2.html"
         assert os.path.exists(src), ("v2 HTML 없음 — build_tangjeong.py --v2 먼저", src)
-        light(src, src[:-5] + "_밝은시안.html", n_dv, n_hi, label, EXTRA.get(name, ""))
+        light(src, src[:-5] + "_밝은시안.html", n_dv, n_hi, label, EXTRA.get(name, ""), post=tj_post)
 
 
 if __name__ == "__main__":
