@@ -838,10 +838,23 @@ def main():
         return o
 
     res = {}
+    # 본부장 10-22: '반드시 업체 인감 날인' 서식(별지 1 · 4 · 5) = 실물 법인인감 날인 스캔 3쪽(순서 1 · 4 · 5)이 있으면 그 쪽으로 바꾼다 · 나머지는 직인
+    GY_SCAN = getattr(D, "SEAL_SCAN", None) or f"{SP}/seal_scan/고양_별지1_4_5_법인인감.pdf"
+
+    def scanned(i, name, fallback):
+        if not os.path.exists(GY_SCAN):
+            return fallback()
+        sc = fitz.open(GY_SCAN)
+        assert len(sc) == 3, f"고양 법인인감 스캔은 3쪽(별지 1 · 4 · 5)이어야 함: {GY_SCAN}"
+        o = fitz.open()
+        o.insert_pdf(sc, from_page=i, to_page=i)
+        p = out(name + "_법인인감.pdf")
+        o.save(p, garbage=GARBAGE, deflate=True)
+        return p
     nice15 = nice_full(NICE_SRC)
     n = {"08": len(fitz.open(P08)), "15n": len(fitz.open(nice15))}
     res["00"] = fit(render("00_서류제출목록표", doc00(n)), 1)
-    res["01"] = stamped(fit(render("01_입찰참가신청서", doc01()), 1))
+    res["01"] = scanned(0, "01_입찰참가신청서", lambda: stamped(fit(render("01_입찰참가신청서", doc01()), 1)))
     biz = fitz.open(f"{EV}/사업자등록증.pdf")
     for pg_ in biz:
         for a in list(pg_.annots()):  # 발급 뒤 덧붙인 스탬프 주석이 원본 칸을 가리지 않게
@@ -867,9 +880,9 @@ def main():
     res["09"] = merge(NAMES["09"], parts9, "9 최근 3년간 주관사 실적 총괄표 · 증빙", toc)
     res["09-2"] = merge(NAMES["09-2"], [f"{EV}/4대보험_완납증명서.pdf", f"{EV}/고용산재_완납증명서.pdf"], "9 4대 보험 완납증명서")
     res["10"] = stamped(fit(render("10_하자보수_이행각서", doc10()), 1))
-    res["11"] = stamped(fit(render("11_청렴계약_이행준수_서약서", doc11()), 1))
+    res["11"] = scanned(1, "11_청렴계약_이행준수_서약서", lambda: stamped(fit(render("11_청렴계약_이행준수_서약서", doc11()), 1)))
     res["12"] = merge(NAMES["12"], [KB], "12 영업배상책임보험 증서")
-    res["14"] = stamped(fit(render("14_이의제기_금지_서약서", doc14()), 1))
+    res["14"] = scanned(2, "14_이의제기_금지_서약서", lambda: stamped(fit(render("14_이의제기_금지_서약서", doc14()), 1)))
     res["15"] = merge(NAMES["15"], [fit(render("15_1_표지", doc15_cover(n["15n"])), 1), nice15], "15 신용평가서 상세내역(NICE 전문)",
                       [[1, "표지", 1], [1, "NICE디앤비 CLIP 기업신용평가보고서 전문", 2]])
     res["16"] = stamped(fit(render("16_사업장_및_조직현황", doc16()), 1, 2))
