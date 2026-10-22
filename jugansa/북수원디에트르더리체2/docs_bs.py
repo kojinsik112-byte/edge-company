@@ -276,13 +276,13 @@ def form5():
 
 # ================================================================== 2 · [별지 4] 입주박람회 운영 실적표
 def form4():
-    rows = "".join(f'<tr><td>{e(nm)}</td><td class="c">{n:,}</td><td class="c" style="font-size:9.6pt">{e(when)}</td>'
+    rows = "".join(f'<tr><td>{e(nm)}</td><td class="c">{n:,}</td><td class="c" style="font-size:9.6pt">{e(when).replace(chr(10), "<br>")}</td>'
                    f'<td style="font-size:8.8pt">{e(where)} · {e(ev)}</td></tr>' for nm, n, when, where, ev in D.BS_REC)
     tot = sum(r[1] for r in D.BS_REC)
     body = f"""<style>.f4 th,.f4 td{{padding:5pt 7pt!important;font-size:10pt!important;line-height:1.4!important}}</style>
 <div class="form"><div class="no">[별지서식4]</div><h1 style="letter-spacing:.12em">입주박람회 운영 실적표</h1>
 <table class="ft f4"><thead><tr><th>단지명</th><th style="width:11%">세대수</th><th style="width:25%">개최시기</th><th style="width:30%">비고</th></tr></thead>
-<tbody>{rows}<tr><th>합계 {len(D.BS_REC)}건</th><th>{tot:,}</th><th colspan="2" style="font-weight:400;font-size:9pt">레이카운티는 공고일 기준 3년 안 회차(2차)만 기재</th></tr></tbody></table>
+<tbody>{rows}<tr><th>합계 {len(D.BS_REC)}건</th><th>{tot:,}</th><th colspan="2" style="font-weight:400;font-size:9pt">레이카운티 · 센트럴사하는 1차 · 2차 박람회를 함께 기재(건수는 단지 기준)</th></tr></tbody></table>
 <div style="font-size:9.4pt;color:#222;margin-top:8pt;line-height:1.6">※ 실적 중 공고일 기준 최근 3년간 1,000세대 이상 단지의 입주박람회 수행 실적을 기재<br>
 - 입증 가능한 타 아파트 협약(계약)서 사본 또는 증빙자료 (후면 첨부) — 제출서류 9(별첨 1 ~ 3)<br>
 - 허위 기재시 즉시 탈락처리</div>
@@ -388,7 +388,7 @@ def doc09_cover():
             ev.append("카페 공지(별첨 2 붙임 2)")
         if nm in cap_of:
             ev.append(f"공식 행사일정(별첨 3-{cap_of[nm]})")
-        rows += (f'<tr><td>{i}</td><td class="l">{e(nm)}</td><td class="r">{n:,}</td><td>{e(when)}</td><td class="l">{e(where)}</td>'
+        rows += (f'<tr><td>{i}</td><td class="l">{e(nm)}</td><td class="r">{n:,}</td><td>{e(when).replace(chr(10), "<br>")}</td><td class="l">{e(where)}</td>'
                  f'<td class="l" style="font-size:8.4pt">{" · ".join(ev)}</td></tr>')
     tot = sum(r[1] for r in D.BS_REC)
     body = f"""{head("제출서류 9", "최근 3년간 1,000세대 이상 입주박람회 수행 실적 — 증빙 안내")}
