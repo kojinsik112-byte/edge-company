@@ -189,7 +189,7 @@ def light_svg(html):
     return re.sub(r'\b(stroke|fill)="([^"]+)"', attr, html)
 
 
-def light(src, out, n_dv, n_hi, label, extra="", hh=None, fund=None, site="탕정 푸르지오 센터파크", post=None):
+def light(src, out, n_dv, n_hi, label, extra="", hh=None, fund=None, site="탕정 푸르지오 센터파크", post=None, final=None):
     """다른 단지도 쓴다(jugansa/tools/light_build.py) — hh · fund · site를 넘기면 그 단지 값, 없으면 탕정 data.py."""
     doc = open(src, encoding="utf-8").read()
     # 48시간 = 방문 일정 확정 · 30일 안 현장 사무소(본부장 10-21 2차 · 4개 단지 공통)
@@ -216,6 +216,8 @@ def light(src, out, n_dv, n_hi, label, extra="", hh=None, fund=None, site="탕�
     head, rest = tjdesign.apply(head, rest, hh, fund, n_dv=n_dv, n_hi=n_hi, label=label, site=site)
     assert rest.count("</body>") == 1
     rest = rest.replace("</body>", FIX_JS + "</body>")
+    if final:  # 디자인 레이어까지 끝난 뒤 단지별 마지막 손질(예: 북수원 지원 대상 = 계약 세대 · 15만원 증서 포함)
+        rest = final(rest)
     open(out, "w", encoding="utf-8").write(head + "</head>" + rest)
     print("HTML:", out)
     if "--no-pdf" not in sys.argv:

@@ -27,6 +27,8 @@ DOCS = {
 # 10-22 본부장(2차): 경인 지사(평택 · 쇼룸 · 입예협 미팅 공간) 추가 → 현장 사무소 개설 약속 삭제 · 지역 거점 5곳 + 협력 네트워크 7곳(수도권 단지)
 KYEONGIN = {"고양창릉S5", "북수원디에트르더리체2"}
 FOLDER = ""
+# 지원금 '전 세대 고정 총액' 대신 '계약 세대 · 최대 총액'으로 적는 단지(폴더 → 세대수 표기) — 10-22 북수원 착수 분석
+CONTRACT_BASIS = {"북수원디에트르더리체2": "1,744"}
 
 
 def office3(doc):
@@ -58,6 +60,30 @@ def office3(doc):
     return doc
 
 
+def contract(doc):
+    """10-22 착수 분석(북수원 청약 31% · 손익 본전 79곳): 세대당 금액은 그대로, 지원 대상 = 계약 세대 · 총액은 '최대'.
+    tjlight.light(final=) — 디자인 레이어(15만원 증서)까지 끝난 뒤 실행."""
+    S = "[\\s\u00a0\u2060]*·[\\s\u00a0\u2060]*"
+    hh = CONTRACT_BASIS[FOLDER]
+    for a_, b_ in [(r"<b>전 세대 " + hh + r"세대</b><small>전 세대 동일 기준</small>", "<b>분양 계약 세대 모두</b><small>입주 지정기간 전 계약 · 같은 기준</small>"),
+                   (r"<i>총 규모</i><b>([^<]+?) 상당</b><small>(" + hh + r"세대) × (\d+)만원", r"<i>총 규모</i><b>최대 \1 상당</b><small>\2 모두 계약 시 × \3만원"),
+                   (r"(?:<em>)?전 세대 " + hh + r"세대(?:</em>)? × 세대당 (\d+)만원 상당 = <em>총? ?([^<]+?) 상당</em>",
+                    r"<em>분양 계약을 마친 모든 세대</em> × 세대당 \1만원 상당 · <em>최대 \2 상당</em>(" + hh + "세대 모두 계약 시)"),
+                   (hh + rf"세대({S})세대당 (\d+)만원 상당({S})총 ", r"계약 세대 모두\1세대당 \2만원 상당\3최대 "),
+                   (r"같은 금액\(([^)]+?) 상당\)", r"같은 금액(최대 \1 상당 · 계약 세대 기준)"),
+                   (r"상당\(총 ([^)]+?)\)", r"상당(최대 \1 · 계약 세대 기준)"),
+                   (r"전 세대 " + hh + rf"세대 기준({S})총 ", r"계약 세대 기준\1최대 "),
+                   (hh + rf"세대({S})총 ", r"계약 세대 기준\1최대 "),
+                   (hh + rf"세대 전 세대({S})총 ", r"계약 세대 모두\1최대 "),
+                   (r"총 (\d억 [\d,]+만원)(?![^<]{0,12}계약 세대)", r"최대 \1(계약 세대 기준)"),
+                   (r"모두 계약 시\)\(부가세 포함\)", "모두 계약 시 · 부가세 포함)")]:
+        doc = re.sub(a_, b_, doc)
+    _t = re.sub(r"<[^>]+>", " ", re.sub(r"<style.*?</style>|<script.*?</script>", "", doc, flags=re.S))
+    _left = re.findall(r".{0,20}(?:전 세대 " + hh + r"세대|총 \d억 [\d,]+만원).{0,20}", _t)
+    assert not _left, f"지원 대상 '계약 세대' 반영 전 문구 남음 {_left[:5]}"
+    return doc
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     folder = args[0].rstrip("/").split("/")[-1]
@@ -77,7 +103,8 @@ def main():
         print(f"[{name}] 문구 수정", sum(rep.values()), "곳", rep)
         assert not bad, ("남은 위험 문구", bad[:10])
         open(src, "w", encoding="utf-8").write(html)
-        tjlight.light(src, src[:-5] + "_밝은시안.html", None, None, label, hh=D.SITE["households"], fund=D.FUND, site=site, post=office3)
+        tjlight.light(src, src[:-5] + "_밝은시안.html", None, None, label, hh=D.SITE["households"], fund=D.FUND, site=site, post=office3,
+                     final=contract if folder in CONTRACT_BASIS else None)
 
 
 if __name__ == "__main__":
