@@ -23,7 +23,7 @@ EXTRA = {"회사소개서": ".cv4 h1.tj{font-size:38px!important}"}  # '주식�
 DARK = "--bg:#0D1E33;--gold:#EBCB8F;--gold2:#C8A86A;--ink:#F4F6F9;--sub:#B4BECA;--mute:#8595A8;--line:rgba(255,255,255,.13)"
 LIGHT = "--bg:#FAF7F0;--gold:#7A5716;--gold2:#866322;--ink:#14243A;--sub:#3B4A5D;--mute:#5C6878;--line:rgba(13,30,51,.14)"
 GOLD_FILL = "#C9A35A"
-DARK_PAGES = ".page.cv,.page.dv"
+DARK_PAGES = ".page.cv,.page.dv,.page.hero"  # hero = 사진 전면 쪽(요약 p.05 경관조명) — 글자가 사진 위라 어두운 색 체계
 
 OVR = f"""
 :root{{{LIGHT}}}
@@ -71,6 +71,45 @@ document.querySelectorAll('section.page:not(.cv):not(.dv)').forEach(function(sec
     if(!pick)pick=cr(NAVY,bg)>=cr(PAPER,bg)?'#14243A':'#FAF7F0';
     el.style.color=pick;el.setAttribute('data-fx','1');});
 });
+})();
+</script>""" + r"""<script>
+// ③ 겹침 자동 맞춤(본부장 10-22 '2 · 24 · 42 · 66 · 105 ~ 109쪽 겹침'): 본문(.ct)이 KEY POINT · 꼬리말을 침범하거나
+//    카드 · 표 안 글자가 상자 밖으로 나오거나 다른 상자를 덮으면 .ct를 3%씩 줄인다(최소 76%). 줄인 쪽은 data-fit에 배율.
+(function(){
+function vis(el){for(var n=el;n&&n.nodeType===1;n=n.parentElement){var s=getComputedStyle(n);if(s.display==='none'||s.visibility==='hidden'||parseFloat(s.opacity)===0)return false;}return true;}
+function lines(root){var out=[],tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),t;
+  while((t=tw.nextNode())){if(!t.textContent.trim()||!vis(t.parentElement))continue;var rg=document.createRange();rg.selectNodeContents(t);
+    var rs=rg.getClientRects();for(var i=0;i<rs.length;i++)if(rs[i].width>2&&rs[i].height>2)out.push({el:t.parentElement,r:rs[i]});}return out;}
+function boxes(root){var out=[];root.querySelectorAll('*').forEach(function(el){var s=getComputedStyle(el);if(s.position==='absolute'||el.tagName==='IMG'||s.backgroundImage.indexOf('url(')>=0)return;
+  var r=el.getBoundingClientRect();if(r.width<20||r.height<14||!vis(el))return;
+  var bg=s.backgroundColor&&!/rgba\(0, 0, 0, 0\)|transparent/.test(s.backgroundColor),gr=/gradient/.test(s.backgroundImage),
+      bd=parseFloat(s.borderTopWidth)>0||parseFloat(s.borderLeftWidth)>0;
+  if(bg||gr||bd||s.boxShadow!=='none')out.push({el:el,r:r,c:String(el.className)});});return out;}
+function ih(a,b){return Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);}
+function iw(a,b){return Math.min(a.right,b.right)-Math.max(a.left,b.left);}
+function bad(sec,ct,strict){var kp=sec.querySelector('.kp'),ft=sec.querySelector('.ft');
+  var lim=kp?kp.getBoundingClientRect().top-3:(ft?ft.getBoundingClientRect().top-2:sec.getBoundingClientRect().bottom);
+  var L=lines(ct),B=boxes(ct),i,j;
+  for(i=0;i<L.length;i++)if(L[i].r.bottom>lim+1)return 'kp';
+  for(j=0;j<B.length;j++)if(B[j].r.bottom>lim+2&&B[j].r.top<lim)return 'kpbox';
+  for(i=0;i<L.length;i++)for(j=0;j<B.length;j++){var l=L[i],b=B[j];if(iw(l.r,b.r)<3)continue;
+    if(b.el.contains(l.el)){if(l.r.bottom>b.r.bottom+2&&l.r.top<b.r.bottom)return 'out';continue;}
+    if(l.el.contains(b.el))continue;if(ih(l.r,b.r)>4)return 'cover';}
+  // 칸(그리드 · 묶음)보다 내용이 커서 아래 형제를 덮는 경우(카드 묶음이 전문 인력 띠 · 인용 띠를 덮음)
+  if(strict){var all=ct.querySelectorAll('*');for(i=0;i<all.length;i++){var e=all[i],s=getComputedStyle(e);
+    if(s.position==='absolute'||s.display.indexOf('inline')===0||s.overflowY==='hidden'||e.clientHeight<20||e.tagName==='svg'||e.closest('svg'))continue;
+    if(e.scrollHeight>e.clientHeight+8&&vis(e))return 'grow';}}
+  for(i=0;i<B.length;i++)for(j=i+1;j<B.length;j++){var a=B[i],c=B[j];if(a.el.contains(c.el)||c.el.contains(a.el)||a.c===c.c)continue;
+    if(iw(a.r,c.r)>6&&ih(a.r,c.r)>4)return 'box';}
+  return '';}
+function fitAll(){document.querySelectorAll('section.page:not(.cv):not(.dv)').forEach(function(sec){var ct=sec.querySelector(':scope>.ct');if(!ct)return;
+  // 엄격(칸 넘침 포함)으로 먼저 줄여 보고, 최소 배율로도 안 풀리면(장식용 넘침) 겹침 기준만으로 다시
+  var st=true,why=bad(sec,ct,st);if(!why)return;var z=1;
+  while(why&&z>0.77){z=Math.round((z-0.03)*100)/100;ct.style.zoom=z;why=bad(sec,ct,st);}
+  if(why){st=false;z=1;ct.style.zoom='';why=bad(sec,ct,st);while(why&&z>0.77){z=Math.round((z-0.03)*100)/100;ct.style.zoom=z;why=bad(sec,ct,st);}if(z===1){sec.setAttribute('data-fit','1 칸넘침');return;}}
+  sec.setAttribute('data-fit',z+(why?' 남음:'+why:''));});}
+// 글꼴 · 사진이 다 들어온 뒤에 잰다(먼저 재면 대체 글꼴 기준이라 인쇄 때 다시 넘침)
+(document.fonts?document.fonts.ready:Promise.resolve()).then(function(){if(document.readyState==='complete')fitAll();else addEventListener('load',fitAll);});
 })();
 </script>"""
 

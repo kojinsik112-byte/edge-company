@@ -124,6 +124,21 @@ CSS = f"""
 
 /* 사전점검 X배너 모형 — 아래가 잘리지 않게 */
 .xbn{{height:150px!important}}
+/* 10-22 본부장 — 사전점검 당일 '행사 물품' 남색 판 → 흰 카드(다른 칸과 같게) · X배너 모형은 판 안에 들어가게 */
+.bnx{{background:#FFFFFF!important;border:1px solid rgba(184,149,90,.38)!important;box-shadow:0 1px 2px rgba(13,30,51,.05),0 14px 30px -20px rgba(13,30,51,.32)!important}}
+.r91{{flex:0 0 202px!important}}
+.bnx .xbn{{box-shadow:0 6px 14px rgba(13,30,51,.22)!important}}
+.bnx .cp{{margin-top:3px!important}}
+/* 10-22 본부장 — 조직도 '총괄 본부장'만 흰 바탕 → 대표이사 원과 같은 남색 · 금색 글자 */
+.gm{{background:{NAVY}!important;border-color:{CHAMP}!important}}
+.gm b{{color:#F4E3BE!important}}
+.gm i{{color:#D9BC86!important;border-right-color:rgba(255,255,255,.25)!important}}
+/* 10-22 본부장 — 협약서 사진이 안내 띠에 가려 안 보임 → 띠를 사진 아래로 · 협약서 칸을 넓게 */
+.splitx:has(figure.ct){{grid-template-columns:.8fr 1.2fr!important}}
+.gal figure.ct{{display:flex;flex-direction:column}}
+.gal figure.ct img{{flex:1 1 0;min-height:0;height:auto!important;padding:4px}}
+.gal figure.ct figcaption{{position:static!important;flex:0 0 auto;padding:5px 10px!important;font-size:13px!important;line-height:1.3}}
+.gal figure.ct figcaption small{{font-size:11.5px!important;margin-top:0!important}}
 /* 15만원 — 증서 */
 .cert{{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:6px 0 2px}}
 .cert-in{{position:relative;width:88%;height:100%;max-height:560px;background:#FFFFFF;border:1px solid {CHAMP};
