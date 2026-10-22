@@ -191,7 +191,7 @@ def submit_rows():
         ("11", "청렴 계약 이행각서 [별지서식 제 4호]", "", "1부"),
         ("12", "입주박람회 성과 및 성공사례 자료(카페 이벤트 등 포함)", "", "1부"),
         ("13", "가장 최근 진행된 공동구매 물품 단가비교표", "가능한 경우 제출 항목 — 미제출", "-"),  # 본부장 10-12: 제출 안 함
-        ("14", "기타 입찰제안에 필요한 자료", "자격 확약서(5항 4·6) · 요약 제안서 · 회사소개서", "1부"),
+        ("14", "기타 입찰제안에 필요한 자료", "자격 확약서(5항 4·6) · 요약 제안서 · 회사소개서 · 발전지원 집행 계약서", "1부"),
     ]
 
 
@@ -476,6 +476,7 @@ def doc14_cover():
 <tr><td>1</td><td class="l">입찰 참가 자격 확약서</td><td class="l">공고 5항 4) · 6) 해당 사항 없음 확약 (대표이사 날인)</td></tr>
 <tr><td>2</td><td class="l">요약 제안서</td><td class="l">입찰제안서(05)의 핵심을 한 권으로 정리</td></tr>
 <tr><td>3</td><td class="l">회사소개서</td><td class="l">연혁 · 조직 구성 · 주관 실적 · 자격과 증빙</td></tr>
+<tr><td>4</td><td class="l">발전지원 집행 · 옵션 사양 변경 계약서 사본</td><td class="l">영주자이 시그니처 전 세대(763대) 디지털도어록 지문형 사양 변경 · 2,517.9만원(부가세 포함) · 엣지컴퍼니 부담(발전지원) · 공급사 대표자 성명 가림</td></tr>
 </tbody></table>"""
     return doc("14 기타 입찰제안 자료", [body])
 
@@ -630,7 +631,9 @@ def main():
     res["12"] = merge("12_성과_성공사례", [cov12, sel], "12 입주박람회 성과 및 성공사례 자료")
     cov14 = render("14_기타_표지", doc14_cover())
     qual = stamped(render("14_1_자격확약서", doc_qual()))
-    res["14"] = merge("14_기타_요약제안서_회사소개서", [cov14, qual, os.path.join(HERE, PFX + "요약제안서" + V2), _pco],
+    door = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(sys.argv[1]))), "yj_door", "contract_use.pdf")  # 10-22 본부장 제공 · 날인본 받으면 같은 파일명으로 교체
+    assert os.path.exists(door), ("영주자이 도어록 계약서 없음", door)
+    res["14"] = merge("14_기타_요약제안서_회사소개서", [cov14, qual, os.path.join(HERE, PFX + "요약제안서" + V2), _pco, door],
                       "14 기타 입찰제안 자료 (요약 제안서 · 회사소개서)")
     for k, v in res.items():
         print(k, os.path.basename(v), len(fitz.open(v)), "p")
