@@ -142,6 +142,9 @@ CSS = f"""
 .gal figure.ct img{{flex:1 1 0;min-height:0;height:auto!important;padding:4px}}
 .gal figure.ct figcaption{{position:static!important;flex:0 0 auto;padding:5px 10px!important;font-size:13px!important;line-height:1.3}}
 .gal figure.ct figcaption small{{font-size:11.5px!important;margin-top:0!important}}
+.splitx:has(img[src*="kyeongin_showroom"]){{grid-template-columns:1.1fr 1fr!important}}
+.gal:has(img[src*="kyeongin_showroom"]){{flex:0 0 auto!important}}
+.gal figure.ct img[src*="kyeongin_showroom"]{{object-fit:cover!important;padding:0!important;flex:0 0 auto!important;aspect-ratio:2000/950;width:100%}}
 /* 15만원 — 증서 */
 .cert{{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:6px 0 2px}}
 .cert-in{{position:relative;width:88%;height:100%;max-height:560px;background:#FFFFFF;border:1px solid {CHAMP};
