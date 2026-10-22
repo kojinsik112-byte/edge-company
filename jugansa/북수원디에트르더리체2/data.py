@@ -252,7 +252,7 @@ EXPO_CAPS = [c for c in EXPO_CAPS_ALL if _os.path.exists(_os.path.join(_AI, c[1]
 assert len(RECENT3_500) == 20 and sum(1 for r in RECENT3_500 if r[3]) == 20 and all(any(r[1] == k for r in RECENT3_500) for k in JUGWAN_ADD) and all(any(r[1] == k for r in RECENT3_500) for k in R500_HAVE), len(RECENT3_500)
 
 # ------------------------------------------------------------ 제출서류(docs_gy.py) — 공고 ◆필수 제출서류 · 별지 6 서류 제출 목록표 순서
-SIGN_DATE = (2026, 10, 23)        # 서식 작성일 — 제출(10.25 마감) 전 날짜 · 바뀌면 이 한 줄만 고친다(본부장 확인 전 기본값)
+SIGN_DATE = (2026, 10, 22)        # 서식 작성일 — 본부장 10-22 '오늘 날짜로'(법인인감 실물 날인 출력본과 같은 날)
 ISSUE = dict(biz="2026.10.14", reg="2026.10.14", tax="2026.10.14", ltax="2026.10.14")  # 사업자등록증 · 등기부 · 국세 · 지방세(유효 ~2026.11.13)
 INGAM_DATE = "2026.10.15"         # 법인 인감증명서(주민번호 뒷자리 가림본) — '최근 1개월 이내' 충족
 WANNAP_DATE = "2026.10.14"        # 4대 사회보험료 완납증명서(건강 · 연금) + 고용 · 산재 완납증명서

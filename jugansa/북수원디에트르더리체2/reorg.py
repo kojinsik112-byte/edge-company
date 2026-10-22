@@ -572,7 +572,7 @@ def apply(G):
                  '<div><b>보증 금액 · 최대 10억원</b><p>제안 내용 미이행·업체 도산·검증 미비에 대한 주관사 책임 범위. 금액은 협약으로 확정합니다.</p></div>'
                  '<div><b>보증 기간 · 2년</b><p>박람회·입주 기간을 보증하도록 개시일을 계약으로 정합니다.</p></div>'
                  '<div><b>업체 도산 시 · 전액</b><p>엣지컴퍼니가 비용 전액을 부담하고 동종업체로 하자보수를 이관합니다.</p></div>'
-                 '<div><b>증권 실물 제출</b><p>협약식 때 증권 실물을 입예협에 전달합니다.</p></div>'
+                 '<div><b>증권 실물 제출</b><p>협약 후 협의회를 피보험자로 발급해 실물을 전달합니다(시기 · 방식은 입예협과 협의).</p></div>'
                  '</div><div class="pp">' + ('<div class="dfr"><div class="dh"><i>SAMPLE</i><b>이행(하자)보증보험증권 · 견본</b></div>'
                  '<div class="di">' + bond + '</div><div class="dc">실제 증권은 협약 확정 후 보증보험사가 발급합니다</div></div>') + '</div></div></div>')
     k["kp"] = ("주관사가 약속을 지키지 않으면 [[보험이 대신 지급]]합니다.", "오른쪽은 증권 견본(예시)")
@@ -614,7 +614,7 @@ def apply(G):
     k = take("주요 클레임 품목과 [[보상 기준]]")[1]
     k["title"] = "주요 클레임 품목과 [[보상 기준]] (예시)"
     k["body"] = sub(k["body"], "건수: 과거 입주 시점 주요 클레임 접수 집계. 품목 구성은 단지 여건에 맞춰 조정합니다.",
-                    f"예시 — 건수는 과거 단지 입주 시점 주요 클레임 접수 집계 · 보상 기준은 {D.SITE['short']} 적용 기준(안)으로 입예협 협의 후 확정합니다.")
+                    f"예시 — 건수는 과거 단지 입주 시점 주요 클레임 접수 집계 · 보상 기준은 {D.SITE['short']} 적용 기준을 입예협과 협의해 확정합니다.")
 
     # A 입주민 특화서비스 — 상품권 사용 안내 · 정회원 혜택 상세
     def rc(tag, nm, v, items, hl=False):
@@ -737,7 +737,7 @@ def apply(G):
              ("카페테리아", 3), ("어린이 놀이방", 4), ("이벤트(네일·타로·캐리커처)", 3)]
     tot = sum(n for _, n in staff)
     assert tot == 21, tot  # 본부장 10-15: 주차 5 → 3 · 체크인 3 → 5, 합계 21명 그대로
-    p_floor = ("std", dict(sec="06. 입주박람회", title="박람회장 배치와 [[인원 운영]] (안)",
+    p_floor = ("std", dict(sec="06. 입주박람회", title="박람회장 배치와 [[인원 운영]] (예시)",
         lead="방문 동선을 따라 구역마다 담당 인원을 둡니다. 배치는 행사장 확정 후 입예협과 확정합니다.",
         body=('<div class="nb"><div class="fpx"><div class="fp">'
               + zn("kids", "어린이 놀이방", "키즈존 · 어린이 편의시설", "4명")
@@ -752,11 +752,11 @@ def apply(G):
               + zn("safe", "안전 · 구급", "보안 2 · 구급 1 · 119 연계", "3명", "sf")
               + zn("park", "주차장 · 외부 동선", "차량 유도 · 하역 구역 분리", "3명", "pk")
               + '</div><div class="fps">'
-              + '<div class="tot"><i>현장 배치 인원 (안)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주 · 행사 규모에 따라 변동</span></div>'
+              + '<div class="tot"><i>현장 배치 인원 (예시)</i><b>' + str(tot) + '<small>명</small></b><span>+ 주관사 운영팀 상주 · 행사 규모에 따라 변동</span></div>'
               + '<ul>' + "".join(f'<li><span>{_h.escape(a)}</span><b>{n}명</b></li>' for a, n in staff) + '</ul>'
-              + '<div class="bdg"><span>배상책임보험 · 입예협 요청 시 가입</span><span>119 연계 · 구급차 대비</span><span>전 인원 금색 명찰(직책·이름)</span><span>주말 포함 2 ~ 3일 운영</span></div>'
+              + '<div class="bdg"><span>행사배상책임보험 · 박람회 기간 가입</span><span>119 연계 · 구급차 대비</span><span>전 인원 금색 명찰(직책·이름)</span><span>주말 포함 2 ~ 3일 운영</span></div>'
               + '</div></div></div>'),
-        kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "인원 수만 타 단지 운영 기준(안) · 행사 규모에 따라 변동")))
+        kp=("입예협이 가장 먼저 묻는 [[인원 배치]] - 구역마다 담당을 정해 둡니다.", "인원 수 = 타 단지 운영 기준 예시 · 행사 규모에 따라 변동")))
     B.CSS += r"""
 .fpx{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;flex:1;min-height:0}
 .fp{display:grid;gap:8px;grid-template-columns:1fr 1.15fr 1.15fr 1fr;grid-template-rows:repeat(3,1fr) .82fr .62fr;

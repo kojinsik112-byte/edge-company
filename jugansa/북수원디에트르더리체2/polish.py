@@ -57,10 +57,12 @@ def apply(G):
     _c = D.cumulative()
     _nd, _nh = _c[-1][3], _c[-1][4]
     k = kw("숫자로 보는 [[엣지컴퍼니]]")
+    _k1000 = sum(1 for r in D.SUIM if r[1] >= 1000)
+    assert _k1000 - len(D.RECORDS) == sum(1 for r in D.SUIM if r[1] >= 1000 and r[3] > '2026.10'), '1,000세대 이상 = 주관 + 개최 예정'
     k["body"] = B.cards([
         dict(lb="PROJECTS", big=str(_nd), unit="개 단지", nm="누적 수임 단지", ds="2018년 첫 단지(전신 실적 포함)부터 2027년 입주 예정 단지까지."),
         dict(lb="HOUSEHOLDS", big=f"{_nh:,}", unit="세대", nm="누적 수임 세대",
-             ds=f"2023년 이후 1,000세대 이상 {sum(1 for r in D.SUIM if r[1] >= 1000)}곳(입주 예정 포함)."),
+             ds=f"2023년 이후 1,000세대 이상 {_k1000}곳 = 주관 {len(D.RECORDS)} + 주관 개최 예정 {_k1000 - len(D.RECORDS)}."),
         dict(lb="LARGEST", big="4,470", unit="세대", nm="최대 단지 규모", ds="레이카운티 단일 단지 주관."),
         dict(lb="GROWTH", big=f"×{_nd / _c[0][3]:.1f}", unit="", nm="누적 단지 증가", ds=f"2021년 {_c[0][3]}곳 → 2027년 {_nd}곳(입주 예정 포함)."),
     ])
@@ -193,7 +195,8 @@ def apply(G):
     total = sum(n for _, n, _ in recs)
     k["body"] = B.tiles([dict(lb=y, big=f"{n:,}", unit="세대", nm=nm) for y, n, nm in recs], cols=5, rows_n=2)
     k["lead"] = "2023.04 ~ 2026.09 입주, 1,000세대 이상 주관 단지입니다. 날짜는 입주 연월 기준."
-    k["kp"] = f"2023년 이후 1,000세대 이상 주관 [[{len(recs)}건 · {total:,}세대]]입니다."
+    k["kp"] = (f"2023년 이후 1,000세대 이상 주관 [[{len(recs)}건 · {total:,}세대]]입니다.",
+               f"공고일 기준 최근 3년 = {len(D.BS_REC)}개 단지 · {sum(r[1] for r in D.BS_REC):,}세대(별지 4 · 계량 평가 기준)")
 
     # 신도시 장 — 단지명·세대수 공식 기준, 미주관 단지(롯데캐슬·중흥S-클래스) 삭제 (본부장 확인 2026-10-05)
     body_sub("한 단지가 아니라 [[한 신도시]]",
