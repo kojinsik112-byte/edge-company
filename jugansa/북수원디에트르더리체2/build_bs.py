@@ -312,6 +312,7 @@ T_DIV = "디에트르 더리체2차를 위한 [[맞춤 제안]]"
 T_MAP = "협약 범위 7 · 운영계획서 6요소, [[이 쪽에]] 있습니다"
 T_SITE = f"{ST['name']}, [[이런 단지]]입니다"
 T_FIRST = "1,744세대 · 84㎡ 중심 대단지라 [[먼저 챙길 것]]"
+T_VOICE = "입주예정자가 먼저 묻는 [[다섯 가지]]"
 T_FIT = "운영 실적 · 연혁 · [[기업신용평가]]"
 T_R500 = f"최근 3년 1,000세대 이상 입주박람회 [[{len(D.BS_REC)}건]]"
 T_DIET = "같은 [[디에트르]] 단지, 먼저 운영해 봤습니다"
@@ -344,7 +345,7 @@ T_HIST = "엣지컴퍼니 [[연혁]] · 주요 이력"
 T_CPL = "입주민 [[컴플레인]], 이렇게 해결합니다"
 T_CORE6 = f"{ST['short']}에 드리는 [[핵심 제안 6가지]]"
 T_FUNDCH = f"세대당 {D.FUND}만원 상당 발전지원금, [[입예협이 골라서]] 받습니다"
-CH07 = ["T_MAP", "T_SITE", "T_FIRST", "T_FIT", "T_R500", "T_DIET", "T_TRUST", "T_STABLE", "T_FACT", "T_CHECK", "T_ITEMS", "T_VENDORS", "T_VMGT",
+CH07 = ["T_MAP", "T_SITE", "T_FIRST", "T_VOICE", "T_FIT", "T_R500", "T_DIET", "T_TRUST", "T_STABLE", "T_FACT", "T_CHECK", "T_ITEMS", "T_VENDORS", "T_VMGT",
         "T_REQ", "T_AS", "T_DEFECT", "T_SUPPORT", "T_SPECIAL", "T_LX", "T_LX2", "T_MON1", "T_MON2", "T_PM", "T_STAFF", "T_PRIV", "T_REPORT",
         "T_QUAL", "T_BOND", "T_LIMIT", "T_NOTE"]   # reorg.py 07장 순서(이 목록 하나로)
 CH07_BL = ["협약 범위 7 · 운영계획서 6요소 대응표", "실적 8건 · 디에트르 운영 경험", "가격 · A/S · 입주지원 · 협의회 지원", "월별 일정 · 자격 10 · 무효 · 평가"]
@@ -406,6 +407,23 @@ new("std", sec=S0, title=T_FIRST,
         ("이웃 1차가 먼저 입주", f"{_fst[0]}({_fst[1]}세대 · {_fst[2]} 입주 예정)의 공개된 하자 유형 · 시공사 회신 사례를 정리해 2차 [[사전점검 체크리스트]]에 반영합니다."),
     ], title_w=230),
     kp="이미 고른 옵션은 권하지 않고, [[남은 수요]]만 같은 조건으로 비교해 드립니다.")
+
+# 10-22 착수 분석(카페 인사이트 · 공개 보도 기준 — 카페 글 집계 아님): 입주예정자 관심사 5 → 우리 답 · 쪽(본부장 '분석 결과로 제안서에 반영')
+#  대방건설 품질 · 하자 판정 보도는 인용하지 않는다(비방 · 단정 금지) — 관심사 이름만
+VOICE = [
+    ("01", "하자 · 품질", "사전점검 동행 · 체크리스트 · 하자 접수 · 처리 추적까지 돕습니다. 시공사 하자 책임을 대신 약속하지 않고, 입예협 · 법무 대리인과 역할을 나눕니다.", ["defect", "pre1", "pre2"]),
+    ("02", "잔금 · 입주 자금", "입예협이 요청하면 은행 · 보증기관 잔금대출 설명회의 일정 · 장소 · 안내를 지원합니다(대출 알선 · 중개 없음). 박람회 계약은 계약금 5% 상한 · 잔금은 시공 · 설치 후입니다.", ["rule1", "check"]),
+    ("03", "일정 · 순차 입주", "입주 · 사전점검 일정이 바뀌면 시공 · 배송 일정을 위약금 없이 다시 잡고, 동별 · 세대별 일정 관리표로 이삿날과 시공이 겹치지 않게 맞춥니다.", ["mon2", "support"]),
+    ("04", "전매 · 계약자 변경", "분양권 전매로 계약자가 바뀌면 박람회 계약 · 혜택 · 납부한 계약금은 양도인 · 양수인 · 업체 동의로 승계하거나 환불 규정대로 돌려드립니다(협약 시 환불 규정 부칙으로 반영). 세대 혜택은 전 세대 같은 기준입니다.", ["rule2", "fund"]),
+    ("05", "업체 선정 · 가격 신뢰", "참여업체 명단(상호 · 사업자등록번호 · 품목)을 카페에 공개하고, 4단계 공개 심사 · 직영 품목도 같은 심사 · 최저가 차액 10배 보상 · 이행보증 · 예치금으로 지킵니다.", ["screen", "x10", "bond"]),
+]
+new("std", sec=S0, title=T_VOICE,
+    lead="공개 보도와 수원권 대단지 입주 사례에서 입주예정자가 가장 먼저 묻는 다섯 가지를 골라, 우리 답과 근거 쪽을 한 장에 모았습니다.",
+    body=table(["NO", "먼저 묻는 것", "엣지컴퍼니 답", "근거"], "".join(
+        f'<tr><td class="n">{n}</td><td class="k">{t(q)}</td><td>{t(a)}</td><td style="white-space:nowrap">{PGS(ks)}</td></tr>' for n, q, a, ks in VOICE), "vc5"),
+    kp=("입주 날 가장 무서운 것은 가격표가 아니라 [[하자 · 잔금 · 이삿날이 한꺼번에]] 몰리는 일입니다.",
+        "관심사 = 공개 보도 · 수원권 대단지 사례 기준(2026.10) · 카페 글 집계 아님 · 입예협 카페 공지로 다시 확인"))
+B.CSS += ".tbl.vc5 td{padding:10px 12px !important;font-size:15px !important;line-height:1.45}.tbl.vc5 td.k{width:15%;font-size:16px !important}.tbl.vc5 td:last-child{width:13%;font-size:13.5px}"
 
 # ------------------------------------------------------------ 심사 1 · 적합성
 _r3_rows = "".join(f'<tr><td class="n">{d}</td><td class="k">{t(nm)}</td><td class="r">{n:,}</td></tr>' for d, nm, _, n in R3)
@@ -1273,6 +1291,7 @@ PGREF = {
     "lx": T_LX, "lx2": T_LX2, "mon1": T_MON1, "mon2": T_MON2, "report": T_REPORT,
     "qual": T_QUAL, "bond": T_BOND, "ban": T_LIMIT, "note": T_NOTE, "safe": T_SAFE, "priv": T_PRIV, "fund": T_FUNDCH,
     "support": T_SUPPORT, "diet": T_DIET, "staff": T_STAFF,
+    "voice": T_VOICE, "pre1": "사전점검 대행, [[이렇게 봅니다]]", "pre2": "사전점검 당일 [[현장 지원]]",
     "venue": "행사장 대관과 [[운영 준비]]", "floor": "박람회장 배치와 [[인원 운영]] (예시)", "cafe": "입예협 카페 [[홍보 콘텐츠]] 제작", "online": "못 오셔도 [[괜찮습니다]]",
 }
 PGNO = {}
