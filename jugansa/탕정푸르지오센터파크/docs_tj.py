@@ -279,6 +279,10 @@ def doc07():
     recs = sorted([(d, nm, reg, n, "NICE 연혁(별첨 1)") for d, nm, reg, n in D.RECENT3] + list(D.RECENT3_EXTRA))
     recs.append(CAFE_DAESUNG + ("입주자 모임 카페 주관사 공지(별첨 2 확약서 붙임 2)",))  # 분당 재검증 10-14와 같게: 입예협 공식 카페 아님
     recs.sort(key=lambda r: r[0])
+    # 10-22 법정: 1,000세대 이상 3단지 요건(5항 17 '계약서 또는 실적증명자료')을 제3자 공식 일정으로도 바로 보이게
+    _third = {"창원 센트럴 아이파크": "NICE 연혁(별첨 1) · CECO 공식 행사일정(별첨 4)",
+              "에코델타 대성베르힐": "입주자 모임 카페 주관사 공지(별첨 2 확약서 붙임 2) · BEXCO 공식 행사일정(별첨 4)"}
+    recs = [r[:4] + (_third.get(r[1], r[4]),) for r in recs]
     rows = "".join(
         f'<tr><td>{i}</td><td style="white-space:nowrap">{d}</td><td class="l">{e(nm)}</td><td>{e(reg)}</td><td class="r">{n:,}</td>'
         f'<td class="l">{e(ev)}</td></tr>'
@@ -295,7 +299,8 @@ def doc07():
 <tr class="sum"><td colspan="4">합계 {len(recs)}개 단지</td><td class="r">{total:,}</td><td></td></tr></tbody></table>
 <div class="box"><b>공고 5항 17) 대비</b> &nbsp; 요건: 1,000세대 이상 공동주택 3개 단지 이상 입주컨설팅 · 입주박람회 수행 실적
 &nbsp;→&nbsp; 최근 3년만 <b>{len(recs)}개 단지 · {total:,}세대</b> &nbsp; <span class="ok">충족</span><br>
-3년 이전을 포함한 1,000세대 이상 주관 실적은 <b>10개 단지 · 19,563세대</b>입니다(별첨 2 실적 확약서).</div>
+3년 이전을 포함한 1,000세대 이상 주관 실적은 <b>10개 단지 · 19,563세대</b>입니다(별첨 2 실적 확약서).<br>
+제3자 공식 기록(주최 · 주관 엣지컴퍼니 표기)으로 확인되는 1,000세대 이상 단지 = <b>송도 더퍼스트비치 1,302 · 대성베르힐 1,120 · 창원 센트럴 아이파크 1,540 → 3개 단지</b>(BEXCO · CECO 공식 행사일정)</div>
 <h2>2. 별첨 증빙</h2>
 <ol style="list-style:none;font-size:9.3pt;line-height:1.42;margin:4pt 0">
 <li>별첨 1. NICE디앤비 CLIP 기업신용평가보고서 ‘연혁’ 발췌 — 1매 (보고서 전문은 제출서류 10)</li>
@@ -304,7 +309,7 @@ def doc07():
 <li>별첨 4. 공식 행사일정 캡처 2건 — 창원 센트럴 아이파크(CECO 2026.07) · 에코델타 대성베르힐(BEXCO 2025.11)</li>
 <li>입예협 요청 시 계약서 · 실적 확인서 · 정산 자료를 지체 없이 추가 제출합니다(공고 5항 13).</li></ol>
 <p class="body" style="font-size:9.5pt;margin-top:4pt">위 실적은 사실과 다름이 없음을 확인하며, 허위로 확인될 경우 공고 6항 5) · 8항 4)에 따른 어떠한 조치도 이의 없이 따르겠습니다.</p>{sign()}"""
-    body = '<style>.pg h2{margin:8pt 0 4pt}.pg .box{margin-top:6pt}.sign{margin-top:8pt}.to{margin-top:10pt}</style>' + body  # 10-22 별첨 3 · 4 추가 뒤에도 1쪽
+    body = '<style>.pg h2{margin:7pt 0 3pt}.pg .box{margin-top:5pt;padding-top:4pt;padding-bottom:4pt}.sign{margin-top:6pt}.to{margin-top:8pt}.pg table.t td,.pg table.t th{padding-top:1.6pt;padding-bottom:1.6pt;line-height:1.25}</style>' + body  # 10-22 별첨 3 · 4 추가 뒤에도 1쪽
     return doc("07 입주박람회 실적 및 공동구매 증빙자료", [body])
 
 
