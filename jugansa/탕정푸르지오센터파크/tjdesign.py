@@ -129,10 +129,13 @@ CSS = f"""
 .r91{{flex:0 0 202px!important}}
 .bnx .xbn{{box-shadow:0 6px 14px rgba(13,30,51,.22)!important}}
 .bnx .cp{{margin-top:3px!important}}
-/* 10-22 본부장 — 조직도 '총괄 본부장'만 흰 바탕 → 대표이사 원과 같은 남색 · 금색 글자 */
-.gm{{background:{NAVY}!important;border-color:{CHAMP}!important}}
-.gm b{{color:#F4E3BE!important}}
-.gm i{{color:#D9BC86!important;border-right-color:rgba(255,255,255,.25)!important}}
+/* 10-22 본부장 — 조직도: 남색 원 · 흰 본부장 칸이 따로 놀아 → 대표이사 · 본부장 · 4개 팀을 같은 밝은 카드 체계(아이보리 + 샴페인 금테)로 */
+.org .ceo{{background:radial-gradient(circle at 50% 35%,#FFFFFF 0%,#F7F0E1 100%)!important;border:2px solid {CHAMP}!important;
+  box-shadow:0 0 0 6px rgba(184,149,90,.12),0 14px 30px -18px rgba(13,30,51,.35)!important}}
+.org .ceo i{{color:#5C6878!important}} .org .ceo b{{color:{GOLD_HEAD}!important}} .org .ceo span{{color:{INK}!important}}
+.gm{{background:linear-gradient(180deg,rgba(184,149,90,.14),#FFFDF8)!important;border-color:{CHAMP}!important;box-shadow:0 6px 16px -10px rgba(13,30,51,.3)!important}}
+.gm b{{color:{INK}!important}}
+.gm i{{color:{GOLD_TXT}!important;border-right-color:rgba(13,30,51,.18)!important}}
 /* 10-22 본부장 — 협약서 사진이 안내 띠에 가려 안 보임 → 띠를 사진 아래로 · 협약서 칸을 넓게 */
 .splitx:has(figure.ct){{grid-template-columns:.8fr 1.2fr!important}}
 .gal figure.ct{{display:flex;flex-direction:column}}
