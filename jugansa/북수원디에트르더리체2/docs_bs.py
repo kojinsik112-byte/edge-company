@@ -816,7 +816,7 @@ def main():
     a2 = stamped(fit(render("09_3_별첨2_실적확약서", doc09_hwakyak()), 4))
     a3 = fit(render("09_4_별첨3_공식행사일정", doc09_caps()), 1)
     ch = ch01_pages(P04)
-    c10 = fit(render("10_1_지명원_표지", doc10_cover(f"표지 + 회사소개 {len(ch)}쪽(숫자 · 연혁 · 법인 서류 · 인증 · 대표자 · 조직 · 직영 거점 · 협력 네트워크 · 실적 · 추천과 협약 · 연락처)")), 1)
+    c10 = fit(render("10_1_지명원_표지", doc10_cover(f"표지 + 회사소개 {len(ch)}쪽(숫자 · 연혁 · 법인 서류 · 인증 · 대표자 · 조직 · 지역 거점 · 협력 네트워크 · 실적 · 추천과 협약 · 연락처)")), 1)
     r11 = stamped(fit(render("11_계약금_환불규정", doc11()), 2, 3))
 
     def plan():

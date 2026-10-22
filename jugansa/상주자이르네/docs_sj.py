@@ -614,7 +614,7 @@ def main():
     b7 = fit(render("7_4_증빙B_행사일정_카페공지", doc07_caps()), 1, 2)
     n7 = stamped(annex_nice(NICE_SRC, out("7_5_증빙C_NICE연혁발췌.pdf")))
     ch = ch01_pages(P09)
-    c8 = fit(render("8_1_회사소개서_표지", doc08_cover(f"표지 + 회사소개 {len(ch)}쪽(숫자 · 연혁 · 법인 서류 · 인증 · 대표자 · 조직 · 지사망 · 실적 · 추천과 협약 · 연락처)")), 1)
+    c8 = fit(render("8_1_회사소개서_표지", doc08_cover(f"표지 + 회사소개 {len(ch)}쪽(숫자 · 연혁 · 법인 서류 · 인증 · 대표자 · 조직 · 지역 거점 · 협력 네트워크 · 실적 · 추천과 협약 · 연락처)")), 1)
     ex6 = sorted(os.path.join(EXPERT_DIR, f) for f in (os.listdir(EXPERT_DIR) if os.path.isdir(EXPERT_DIR) else []) if f.lower().endswith(".pdf"))
 
     items = [  # (번호, 이름, 내용, [(pdf, 쪽 목록 또는 None, 책갈피)])
