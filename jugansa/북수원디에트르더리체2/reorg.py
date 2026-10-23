@@ -349,9 +349,12 @@ def apply(G):
         img, _own = G["slot"](key)
         if not img:
             return ""
+        if _own:   # 본부장 10-23 단지 이미지 — 타 단지 예시 표기 대신 이 단지 연출 시뮬레이션
+            cap = cap.replace("진입 광장 · 수경 조명", "정문 · 문주 조명").replace("(타 단지 예시)", "(연출 시뮬레이션)")
+            sub_ = sub_.replace("진입부 첫인상 · 간접광", "문주 사인 · 진입부 간접광").replace("실제 단지 놀이터 아님 · ", "")
         return f'<figure><img src="assets_ins/{img}.jpg" alt="" style="object-position:{pos}"><figcaption>{cap}<small>{sub_}</small></figcaption></figure>'
     p_lx5 = ("std", dict(sec="09. 차별화 포인트", title=f"{D.SITE['short']} [[경관조명 제안]] 한눈에",
-        lead="동 파사드 → 정문 · 진입 광장 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다 - 아래는 타 단지 경관조명 연출 예시이며, 이 단지 시뮬레이션은 협약 후 현황 진단과 함께 만듭니다.",
+        lead="동 파사드 → 정문 · 진입 광장 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다 - " + ("아래 ① ~ ③은 이 단지 경관조명 연출 시뮬레이션(④는 타 단지 예시)이며, 실제 설계는 협약 후 현황 진단과 함께 확정합니다" if G["slot"]("lx_front1")[1] else "아래는 타 단지 경관조명 연출 예시이며, 이 단지 시뮬레이션은 협약 후 현황 진단과 함께 만듭니다") + ".",
         body=('<div class="nb"><div class="gal lx5">'
               + _lf("lx_front1", "동 파사드 라인조명 (타 단지 예시)", "야간 인지성 · 눈부심 없는 상향광")
               + _lf("lx_front2", "단지 조감 야간 경관 (타 단지 예시)", "동 간 통일된 색온도 · 산책로 동선")
@@ -364,7 +367,7 @@ def apply(G):
               '<div><i>STEP 04</i><b>시공 · A/S</b><span>전기공사업 등록 업체 직접 시공</span></div>'
               '</div></div>'),
         kp=("진단 · 개선안 · 자료 제공까지가 제안 범위입니다 - [[설치 여부 · 비용은 입예협 · 관리주체]]가 정합니다.",
-            f"{D.ELEC_LICENSE} · 이미지는 타 단지 연출 예시(실제 단지 아님)")))
+            f"{D.ELEC_LICENSE} · " + ("이미지 ① ~ ③ = 이 단지 연출 시뮬레이션 · 실제와 다를 수 있음 · ④ = 타 단지 예시" if G["slot"]("lx_front1")[1] else "이미지는 타 단지 연출 예시(실제 단지 아님)"))))
     B.CSS += r"""
 .gal.lx5{grid-template-columns:repeat(6,1fr);grid-template-rows:1.15fr 1fr;gap:12px}
 .gal.lx5 figure:nth-child(1),.gal.lx5 figure:nth-child(2){grid-column:span 3}

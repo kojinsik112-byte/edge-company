@@ -747,10 +747,17 @@ new("std", sec=S0, title=T_SPECIAL,
     ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"'),
     kp=("제안 품목 · 혜택은 수요조사 결과에 따라 [[입예협과 최종 확정]]합니다.", "경관조명은 진단 · 개선안까지 - 설치 여부 · 비용은 입예협 · 관리주체 결정"))
 
+OWN_LX_CAP = f'{D.SITE["name"]} 경관조명 연출 시뮬레이션 · 실제와 다를 수 있음'   # 본부장 10-23 단지 이미지 9장
+
+
 def _fig(key, cap, sub_, pos="50% 50%"):
     im, _own = slot(key)
     if not im:
         return ""
+    if _own:   # 단지 이미지(본부장 10-23) — '타 단지 예시' 표기 대신 연출 시뮬레이션
+        cap = cap.replace("③ 진입 광장 · 수경", "③ 정문 · 문주").replace("(타 단지 예시)", "(연출 시뮬레이션)")
+        sub_ = {"진입부 보행 동선 · 수경 간접조명": "문주 사인 간접조명 · 진입부 보행 밝기",
+                "실제 단지 놀이터 아님 · 볼라드 · 수목 업라이트 · 바닥 밝기": "볼라드 · 수목 업라이트 · 바닥 밝기"}.get(sub_, sub_)
     return (f'<figure><img src="assets_ins/{im}.jpg" alt="" style="object-position:{pos}">'
             f'<figcaption>{cap}<small>{sub_}</small></figcaption></figure>')
 
@@ -770,7 +777,7 @@ new("std", sec=S0, title=T_LX,
               ("결정은 입예협 · 관리주체", "설치 여부 · 범위 · 비용은 도면 검토 뒤 입예협 · 관리주체가 정합니다."),
           ])
           + '</div></div></div>'),
-    kp=("단지 가치는 [[밤의 첫인상]]에서 - 외부 경관부터 진단합니다.", D.LX_CAP + " · 전기공사업 등록 제 울산-00821호"))
+    kp=("단지 가치는 [[밤의 첫인상]]에서 - 외부 경관부터 진단합니다.", (OWN_LX_CAP if slot("lx_front1")[1] else D.LX_CAP) + " · 전기공사업 등록 제 울산-00821호"))
 new("std", sec=S0, title=T_LX2,
     lead="외부 경관 다음은 매일 걷는 곳 - 어린이놀이터 · 운동시설 · 산책로의 야간 밝기와 안전을 살핍니다.",
     body=('<div class="nb"><div class="lxo s2"><div class="gal lxb">'
@@ -784,7 +791,7 @@ new("std", sec=S0, title=T_LX2,
               ("승인 후 진행", "기존 도면 대조 뒤 입예협 · 관리주체 승인 범위 안에서만 진행합니다."),
           ])
           + '</div></div></div>'),
-    kp=("같은 조명도 [[어디를 · 언제 · 얼마나]] 밝히느냐가 단지의 밤을 바꿉니다.", D.LX_PLAY_CAP + " · 시설 추가는 관리비 · 유지관리 주체 확인 후 판단"))
+    kp=("같은 조명도 [[어디를 · 언제 · 얼마나]] 밝히느냐가 단지의 밤을 바꿉니다.", (OWN_LX_CAP if slot("lx_play")[1] else D.LX_PLAY_CAP) + " · 시설 추가는 관리비 · 유지관리 주체 확인 후 판단"))
 B.CSS += (".lxo{display:grid;grid-template-columns:1.75fr 1fr;gap:18px;flex:1;min-height:0}"
           ".gal.lxa{grid-template-columns:1.25fr 1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:0}"
           ".gal.lxa figure:first-child{grid-row:span 2}"
@@ -1713,7 +1720,7 @@ def p_cover():
     # 표지 이미지 = 슬롯 'cover'(data.IMG) — 네이비 배경에 스며들도록 위·왼쪽을 배경색으로 페이드. 파일이 없으면 이미지 없이 중립 디자인
     im, _own = slot("cover")
     art = (f'<div class="cvart cvx osc day"><img src="assets_ins/{im}.jpg" alt="">'
-           f'<span class="credit">{D.SITE["name"]} 조감도 · 홍보용 이미지 · 실제와 다를 수 있음</span></div>') if im else ""
+           f'<span class="credit">{D.SITE["name"]} 투시도 · 홍보용 이미지 · 실제와 다를 수 있음</span></div>') if im else ""
     return f"""<section class="page cv cv4">{art}{COVER_TOP}
 <div class="mid"><span class="pill">{COVER['pill']}</span>
 <h1 class="cvx">{TITLE_H1}</h1>
@@ -1916,7 +1923,7 @@ def p_divider_os(n, title, bl):
     if n != "07" or not im:
         return s
     art = (f'<div class="dvim"><img src="assets_ins/{im}.jpg" alt=""><div class="vl"></div>'
-           f'<span class="cap">{D.LX_CAP}</span></div>')
+           f'<span class="cap">{OWN_LX_CAP if _own else D.LX_CAP}</span></div>')
     return sub(s, '<section class="page dv">', '<section class="page dv dvo">' + art)
 
 

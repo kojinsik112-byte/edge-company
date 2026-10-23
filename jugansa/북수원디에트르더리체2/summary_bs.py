@@ -317,7 +317,7 @@ def emit_summary(G):
         s = cover0()
         im, _own = G["slot"]("cover")
         if im:  # 단지 조감도가 있을 때만 사진 · 캡션(없으면 중립 표지 그대로)
-            s = G["sub"](s, f"{D.SITE['name']} 조감도 · 홍보용 이미지 · 실제와 다를 수 있음", f"{D.SITE['name']} 조감도 · 홍보용 이미지 · 실제와 다를 수 있음")
+            s = G["sub"](s, f"{D.SITE['name']} 투시도 · 홍보용 이미지 · 실제와 다를 수 있음", f"{D.SITE['name']} 투시도 · 홍보용 이미지 · 실제와 다를 수 있음")
         s = G["sub"](s, "<em>입주박람회 주관사 제안서</em>", "<em>입주박람회 주관사 요약제안서</em>")
         s = G["sub"](s, f'<span class="pill">{G["COVER"]["pill"]}</span>', '<span class="pill">요약제안서 · 참고 자료</span>')
         s = G["sub"](s, f'<div class="tag2">{G["COVER"]["tag"]}</div>',
