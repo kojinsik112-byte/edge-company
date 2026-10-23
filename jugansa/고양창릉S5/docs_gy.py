@@ -686,7 +686,7 @@ BIZ_TYPES = "건설업(전기공사) · 도매 및 소매업(조명자재 · 전
 def doc16():
     n_in = D.STAFF_LEAD + sum(c for _, c, _ in D.STAFF)
     tms = "".join(f'<div class="tm"><b>{e(n)}<em>{c}명</em></b><small>{e(r)}</small></div>' for n, c, r in D.STAFF)
-    rows = [("대표이사", 1, "경영 총괄 · 주관 박람회 현장 점검 · 진두지휘"),
+    rows = [("대표이사", 1, "경영 총괄 · 주관 박람회 현장 점검 · 진두지휘 · 2차 PT 동석(결정권자)"),
             ("주관사업 총괄 본부장", 1, "입찰 · 협약 · 주관 업무 총괄(본 건 책임자 · PT 참석)")] + [(n, c, r) for n, c, r in D.STAFF]
     tb = "".join(f'<tr><td class="k">{e(a)}</td><td>{b}명</td><td class="l">{e(c)}</td></tr>' for a, b, c in rows)
     ext = " · ".join(a for a, _ in D.STAFF_EXT)

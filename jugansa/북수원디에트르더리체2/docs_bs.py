@@ -365,7 +365,7 @@ def doc07_emp():
 <div class="who" style="margin-top:14pt">{D.COMPANY}</div>
 <div class="who" style="font-weight:400;font-size:11pt">{D.ADDRESS}</div>
 <div class="who">대표이사 &nbsp; {D.CEO}<span class="seal">(인)</span></div></div>
-<p class="note" style="margin-top:40pt">※ 4대보험 사업장 가입자 명부(앞 쪽)는 2026.10.23 발급본(13명)이며, 현장 책임자도 가입자로 반영되어 있습니다. 전담 인력 명단은 협약 시 제출합니다(제안서 · 제출서류에는 개인정보를 적지 않음 — 제안참여규정 제6조 ②).</p>"""
+<p class="note" style="margin-top:40pt">※ 4대보험 사업장 가입자 명부(앞 쪽 · 13명)에 현장 책임자도 가입자로 반영되어 있습니다. 전담 인력 명단은 협약 시 제출합니다(제안서 · 제출서류에는 개인정보를 적지 않음 — 제안참여규정 제6조 ②).</p>"""
     return doc("7 재직증명서", [body])
 
 
@@ -666,7 +666,7 @@ def doc00(spans):
     rows = "".join(f'<tr><td>{no}</td><td class="l">{e(t)}</td><td class="l" style="font-size:8.6pt">{e(note)}</td><td>{a}{"" if a == b else f" ~ {b}"}</td></tr>'
                    for no, t, note, a, b in spans)
     body = f"""{head("제출서류 목록", "입주박람회 주관사 제안 · 제출서류 (제안참여규정 제4조)")}
-<table class="info" style="margin-top:10pt"><tr><th>제안사</th><td>{D.COMPANY} · 대표이사 {D.CEO}</td><th>책임자</th><td>{D.MANAGER[1]} {D.MANAGER[0]} · {D.MANAGER[2]}</td></tr>
+<table class="info" style="margin-top:10pt"><tr><th>제안사</th><td>{D.COMPANY} · 대표이사 {D.CEO}</td><th>책임자</th><td>{D.MANAGER[1]} {D.MANAGER[0]}</td></tr>
 <tr><th>접수</th><td colspan="3">{D.SUBMIT_TO} · 마감 2026.10.25(일) 24:00 · 제목 “{e(D.MAIL_TITLE)}”</td></tr></table>
 <table class="t" style="margin-top:10pt"><thead><tr><th style="width:6%">No</th><th style="width:37%">제출 서류(제4조)</th><th>내용 · 발급일</th><th style="width:13%">이 파일 쪽</th></tr></thead><tbody>{rows}</tbody></table>
 <p class="note" style="margin-top:8pt">※ 모든 서류를 번호 순서대로 PDF 1개로 병합했습니다(PDF 책갈피 = 번호별). 발행일 1개월 이내 서류만 냈습니다(운영계획서 · 지명원 · 환불 규정 제외 · 신용평가는 연 1회 평가의 최근 평가).</p>
