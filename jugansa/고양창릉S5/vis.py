@@ -670,7 +670,7 @@ def apply2(B, D, take, sub):
     # 신혼희망타운이라서 먼저 챙길 것 — 벤(공식 유상옵션 × 공동구매) + 입주민 특성(모집공고 · 단지 개요 기준)
     k = take("759세대 공공분양이라 [[먼저 챙길 것]]")[1]
     rows = k["body"]
-    for n_, name in enumerate(["users", "tape", "checklist", "lockdoc"], 1):
+    for n_, name in enumerate(["users", "tape", "checklist", "lockdoc", "calendar"], 1):  # 05 = 겨울 입주(10-23)
         rows = sub(rows, f'<div class="no">{n_:02d}</div>', f'<div class="no">{n_:02d}</div>{ic(name)}')
     venn = ('<svg viewBox="0 0 340 176"><defs><clipPath id="vA"><circle cx="130" cy="88" r="78"/></clipPath></defs>'
             '<circle cx="130" cy="88" r="78" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>'
