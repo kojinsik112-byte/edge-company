@@ -687,7 +687,7 @@ def apply(G):
               '<div class="gmr"><div class="gm"><i>주관사업</i><b>총괄 본부장</b></div></div>'
               f'<div class="tms">{tms0}</div>{_exb}</div></div>'),
         kp=(f"임직원 [[{_n_in}명]](정규직 13 + 인턴 1) - 대표·본부장과 4개 팀이 나눠 맡고, 분야별 [[외부 전문 협력]]이 받칩니다.",
-            "박람회 현장 운영 인력 약 21명(행사 규모별 변동 · 안내·보안 등 외부 인력 포함) + 주관사 운영팀 상주(06장) · 명단은 협약 시 제출 · 외부 협력은 전문 업무(하도급 아님)")))
+            "박람회 현장 운영 인력 약 21명(행사 규모별 변동 · 안내·보안 등 외부 인력 포함) + 주관사 운영팀 상주(06장) · 명단은 협약 시 제출 · 외부 협력은 입예협 사전 서면 승인 후 전문 업무만(하도급 · 재위탁 아님 · 공고 9항 6)")))
     B.CSS += (".org .tm h3 em{font-style:normal;font-size:15px;color:var(--ink);margin-left:4px}"
               ".org .tm p{font-size:12.5px;color:var(--sub);text-align:center;line-height:1.4;margin:0}"
               ".org .ceo{width:150px!important;height:150px!important}.org .ceo b{font-size:36px!important}"

@@ -115,7 +115,7 @@ def emit_summary(G):
 <div><b>{D.DEPOSIT_MAX}<small>%</small></b><strong>계약금 상한</strong><span>맞춤 제작 품목 예외 · 잔금은 시공 · 설치 확인 후</span></div>
 <div><b>동일</b><strong>현금 · 카드 같은 단가</strong><span>결제 방식에 따른 단가 차이 없음 · 업체 참가비는 정액 · 공구가 연동 없음</span></div>
 </div></div>
-<div class="bx"><h3><i>× 10</i>최저가 차액 10배 보상 (예시)<small>제안서 {pg('x10', 'rule1')}</small></h3>
+<div class="bx"><h3><i>× 10</i>최저가 차액 10배 보상 (예시)<small>제안서 {pg('x10', 'rule2')}</small></h3>
 <div class="x10">
 <div><div class="lb2">박람회 공동구매가 (예시)</div><div class="br" style="width:100%">35만원</div></div>
 <div><div class="lb2">인근({ST['local']}) 매장 동일 제품</div><div class="br g" style="width:91.4%">32만원</div></div>
@@ -190,9 +190,9 @@ def emit_summary(G):
     pro = "".join(f"<u>{f} {c}</u>" for f, c in G["PRO5"])
     p10 = f"""<div class="sx" style="grid-template-rows:1fr auto">
 <div class="sx" style="grid-template-columns:1.15fr 1fr;min-height:0">
-<div class="bx"><h3><i>RECORD</i>1,000세대 이상 주관 {rec_n}개 단지 · {rec_hh:,}세대<small>제안서 {pg('r500')}</small></h3>
+<div class="bx"><h3><i>RECORD</i>1,000세대 이상 주관 {rec_n}개 단지 · {rec_hh:,}세대<small>제안서 {pg('k1000')}</small></h3>
 <div class="hb">{hb}</div><div class="nt" style="margin-top:6px">날짜 = 입주 연월 · 실적 증빙 = 제출서류 03(NICE 연혁 · 실적 확약서 · 주관사 협약서 · 공식 행사일정)</div></div>
-<div class="bx"><h3><i>PEOPLE</i>{ST['short']}을 맡을 사람<small>제안서 {pg('people', 'pm')}</small></h3>
+<div class="bx"><h3><i>PEOPLE</i>{ST['short']}{'을' if (ord(ST['short'][-1]) - 0xAC00) % 28 else '를'} 맡을 사람<small>제안서 {pg('people', 'pm')}</small></h3>
 <div class="ppl">
 <div><i>대표이사 · 결정권자</i><b>고진식</b><span><em>제안 조건을 PT 자리에서 확약</em><br>울산과학대 전기과 · 대한유화 → 엣지조명 대표 → <nobr>㈜엣지컴퍼니 창업(2022.02)</nobr> · 전기공사업 등록 대표자</span></div>
 <div><i>주관사업 총괄 본부장 · 책임자</i><b>총괄 본부장</b><span><em>입주예정자협의회 회장 3년 역임</em> - 계약 후 실제 업무를 맡을 책임자</span></div>
@@ -202,7 +202,7 @@ def emit_summary(G):
 </div>
 <div class="rec">
 <div><b>67<small>개 단지</small></b><span>누적 수임 56,361세대<br>(전신 실적 · 입주 예정 포함)</span></div>
-<div><b>{r5_n}<small>개 단지</small></b><span>최근 3년 500세대 이상<br>그중 주관 {r5_j}</span></div>
+<div><b>{r5_n}<small>개 단지</small></b><span>최근 3년 500세대 이상<br>{'모두 주관' if r5_j == r5_n else f'그중 주관 {r5_j}'}</span></div>
 <div><b>4,470<small>세대</small></b><span>단일 단지 최대<br>레이카운티</span></div>
 <div><b>2<small>억원</small></b><span>자본금 · NICE BB-<br>현금흐름 A</span></div>
 <div><b>ISO 3종</b><span>9001 · 14001 · 45001<br>{D.ELEC_LICENSE}</span></div>

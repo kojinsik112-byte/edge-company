@@ -637,12 +637,15 @@ def apply2(B, D, take, sub):
 
     # C 패키지 — 항목 썸네일
     k = take("C 패키지 · [[단지지원 컨설팅]]")[1]
-    _gy = lambda key: (lambda own: own if _os2.path.exists(_os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "assets_ins", own + ".jpg")) else "gy_cover_aerial")(D.IMG[key][0])
+    _hv = lambda n: bool(n) and _os2.path.exists(_os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "assets_ins", n + ".jpg"))
+    _gy = lambda key: D.IMG[key][0] if _hv(D.IMG[key][0]) else (D.IMG[key][1] if _hv(D.IMG[key][1]) else "gy_cover_aerial")  # 법정 10-23: 단지 사진 없으면 슬롯 대체(타 단지 예시)
+    _own_lx = _hv(D.IMG["lx_front1"][0])
     th = [(_gy("lx_front1"), "동 파사드 · 문주"), (_gy("lx_play"), "놀이터 (가상 연출)"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
-           + f'</div><div class="thc">01 = {D.SITE["name"]} 경관조명 제안 시뮬레이션 · 02 = 가상 연출(실제 단지 놀이터 아님) · 03 ~ 05 = 타 단지 현장 · 예시</div>')
+           + (f'</div><div class="thc">01 = {D.SITE["name"]} 경관조명 제안 시뮬레이션 · 02 = 가상 연출(실제 단지 놀이터 아님) · 03 ~ 05 = 타 단지 현장 · 예시</div>' if _own_lx
+              else f'</div><div class="thc">01 · 02 = 타 단지 경관조명 연출 예시({D.SITE["short"]} 이미지 아님 · 02는 가상 연출) · 03 ~ 05 = 타 단지 현장 · 예시</div>'))
     k["body"] = sub(k["body"], "</li></ul></div></div></div>", "</li></ul>" + thm + "</div></div></div>")
 
     # 커뮤니티·공용부 조명 개선 — 목록 + 2×2
@@ -655,7 +658,7 @@ def apply2(B, D, take, sub):
            '<figure><img src="assets_ins/n13_gx.jpg" alt=""><figcaption>커뮤니티 공간<small>예시 이미지</small></figcaption></figure>'
            '<figure><img src="assets_ins/n03_light.jpg" alt=""><figcaption>등기구 설치 현장<small>엣지컴퍼니 시공팀</small></figcaption></figure>'
            '<figure><img src="assets_ins/g14_light1c.jpg" alt=""><figcaption>입주 기념 점등식<small>타 단지 현장</small></figcaption></figure>'
-           f'<figure><img src="assets_ins/{_gy("lx_gate")}.jpg" alt="" style="object-position:50% 55%"><figcaption>동 파사드 · 문주 조명<small>외부 경관 진단 · ⟪pg:lx⟫ · 시뮬레이션</small></figcaption></figure></div>')
+           f'<figure><img src="assets_ins/{_gy("lx_gate")}.jpg" alt="" style="object-position:50% 55%"><figcaption>{"동 파사드 · 문주 조명" if _own_lx else "진입부 · 수경 조명"}<small>외부 경관 진단 · ⟪pg:lx⟫ · {"시뮬레이션" if _own_lx else "타 단지 예시"}</small></figcaption></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
     # 조명 수직계열화 — 아이콘 체인
