@@ -249,7 +249,7 @@ EXPO_CAPS = [c for c in EXPO_CAPS_ALL if _os.path.exists(_os.path.join(_AI, c[1]
 assert len(RECENT3_500) == 20 and sum(1 for r in RECENT3_500 if r[3]) == 20 and all(any(r[1] == k for r in RECENT3_500) for k in JUGWAN_ADD) and all(any(r[1] == k for r in RECENT3_500) for k in R500_HAVE), len(RECENT3_500)
 
 # ------------------------------------------------------------ 제출서류(docs_gy.py) — 공고 ◆필수 제출서류 · 별지 6 서류 제출 목록표 순서
-SIGN_DATE = (2026, 10, 26)        # 서식 작성일 — 재발급 이후(착수 strategy 4-2: 10.26 권장 · 바뀌면 이 한 줄만)
+SIGN_DATE = (2026, 10, 23)        # 서식 작성일 — 인계: 별지 작성일 10.23 가능(공고에 날짜 조건 없음) · 법인인감은 오늘 상주 사용인감계와 함께 날인
 ISSUE = dict(biz=None, reg=None, tax=None, ltax=None)  # 공고일(10.19) 이후 재발급본 날짜 — 본부장 재발급 후 기입(None = 노란 칸)
 INGAM_DATE = None                 # 법인 인감증명서 — 공고일 이후 재발급 대기
 WANNAP_DATE = None                # 4대 사회보험료 완납증명서 2종 — 공고일 이후 재발급 대기(10.14본은 14번 참고 · 자격 6 공고일 이전 완납)
