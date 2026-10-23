@@ -43,7 +43,7 @@ TODOS = []
 SP = "/tmp/claude-0/-home-user-edge-company/a96d9eb6-5244-5d3f-9f1b-6f379ac2a82c/scratchpad"
 EV = os.environ.get("SJ_EVIDENCE", f"{SP}/evidence")  # 증빙 원본(깃 제외)
 NICE_SRC = f"{EV}/NICE_기업신용평가.pdf"
-ROSTER = f"{SP}/cs_sub/엣지컴퍼니_철산역자이_06_4대보험_사업장가입자명부.pdf"   # 2026.10.02 발급 · 성명 가운데 글자 · 주민번호 뒷자리 가림본
+ROSTER = f"{SP}/cs_sub/엣지컴퍼니_4대보험_사업장가입자명부_20261023_가림.pdf"   # 2026.10.23 발급(13명) · 성명 가운데 글자 · 주민번호 뒷자리 가림본 — 본부장 10-23
 R500_DOC = D.R500_DOC   # 주관사 협약서 3건(센터포인트 · 드파인 센텀 · 디에트르 더퍼스트) — 상대방 성명 · 연락처 · 계좌 가림본
 EXPERT_DIR = f"{SP}/sangju/experts"   # 별지2호 증빙(자격증 사본 · 재직증명서 · 협력 계약서) — 본부장 제공 시 여기에 PDF로(파일명 순서대로 붙임)
 WORK = os.path.join(HERE, "작업")
@@ -554,7 +554,7 @@ def ch01_pages(pdf):
 
 
 def staff_n():
-    return 10   # 상시 종업원 수 = 4대보험 사업장 가입자 명부(2026.10.02) 10명 — 같은 명부를 제출서류 6에 붙임
+    return 13   # 상시 종업원 수 = 4대보험 사업장 가입자 명부(2026.10.23) 13명 — 같은 명부를 제출서류 6에 붙임
 
 
 STAFF_N = staff_n()
@@ -565,7 +565,7 @@ def evidence_check():
     assert "2026 년10 월14 일" in t and "전시,박람회및행사대행업" in t, "사업자등록증 발급일 · 종목 확인 실패"
     t = fitz.open(f"{EV}/국세_납세증명서.pdf")[0].get_text()
     assert "2026 년10 월14 일" in t and "2026 년11 월13 일" in t, "국세 납세증명서 발급일 · 유효기간 확인 실패"
-    assert len(fitz.open(ROSTER)) == 2, "4대보험 가입자 명부(2026.10.02 · 가림본) 2쪽 확인 실패"
+    assert len(fitz.open(ROSTER)) == 2, "4대보험 가입자 명부(2026.10.23 · 가림본) 2쪽 확인 실패"
     assert len(fitz.open(R500_DOC)) == 3, "주관사 협약서 3건 확인 실패"
     for p in (f"{EV}/법인등기부등본.pdf", f"{EV}/지방세_납세증명서.pdf", f"{EV}/법인인감증명서.pdf", f"{EV}/전기공사업_등록증.pdf", NICE_SRC, P09):
         assert os.path.exists(p), f"없음: {p}"

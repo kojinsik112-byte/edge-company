@@ -9,7 +9,7 @@
   4  입주박람회 운영계획서 = build_bs.py 제안서
   5  이행보증보험증권 발급 가능 확인 · 행사배상책임보험 가입 확약서(자체) + SGI 계약보증보험증권 발급 이력(가림본) + KB 영업배상책임보험(본사 시설 · 참고)
   6  신용평가등급 확인서 = NICE디앤비 기업신용평가보고서(표지 + 전문 · 대표 외 임직원 생년월일 가림)
-  7  4대보험 사업장 가입자 명부(2026.10.02 · 성명 · 주민번호 가림) + 재직증명서(현장 책임자)
+  7  4대보험 사업장 가입자 명부(2026.10.23 · 성명 · 주민번호 가림) + 재직증명서(현장 책임자)
   8  국세 · 지방세 완납 증명서(2026.10.14 발급)
   9  1,000세대 이상 수행 실적 증빙 — 안내 + 별첨 1 NICE 연혁 발췌 · 별첨 2 실적 확약서(붙임 캡처 3) · 별첨 3 박람회장 공식 행사일정(대성 · 창원)
   10 지명원(회사소개서) = 표지 + 제안서 01장 '회사소개'
@@ -51,7 +51,7 @@ SP = "/tmp/claude-0/-home-user-edge-company/a96d9eb6-5244-5d3f-9f1b-6f379ac2a82c
 EV = os.environ.get("BS_EVIDENCE", f"{SP}/evidence")  # 증빙 원본(깃 제외)
 KB = f"{EV}/KB_영업배상책임보험_시설소유관리자_20261014.pdf"
 NICE_SRC = f"{EV}/NICE_기업신용평가.pdf"
-ROSTER = f"{SP}/cs_sub/엣지컴퍼니_철산역자이_06_4대보험_사업장가입자명부.pdf"   # 2026.10.02 발급 · 성명 가운데 글자 · 주민번호 뒷자리 가림본(철산 06 · 지웰 07과 같은 파일)
+ROSTER = f"{SP}/cs_sub/엣지컴퍼니_4대보험_사업장가입자명부_20261023_가림.pdf"   # 2026.10.23 발급(13명 · 공고일 기준 10명) — 본부장 10-23 · 옛 10.02본 · 성명 가운데 글자 · 주민번호 뒷자리 가림본(철산 06 · 지웰 07과 같은 파일)
 SGI_IMG = os.path.join(HERE, "assets_ins", "os_sgi_bond_masked.png")   # SGI 계약보증보험증권 1쪽 — 상대방 · 보험료 · 증권번호 뒷자리 · 가입금액 가림
 CAP_DIR = f"{SP}/hw/cap"
 WORK = os.path.join(HERE, "작업")
@@ -269,7 +269,7 @@ def form5():
 <div style="font-size:8.3pt;color:#333;margin-top:4pt;line-height:1.45">1. 제안참여업체는 상기 “4번” 까지만 기재하고, “5번, 6번 항목 및 총 평점”은 입예협에서 기재함.<br>
 2. 업체별 적격심사 평가표는 제안자에 대한 평가기준이 되므로 만약 허위의 사실을 기재하는 경우 해당 업체에게 민형사상 책임을 물을 수 있으며 허위 기재가 발각될 시 즉시 무효 처리함.<br>
 3. ‘4. 입주박람회 운영 실적’은 ‘별지서식4’에 기입한 내용과 동일하여야 함.<br>
-<span style="color:#555">※ 제안사 기재: ● = 해당 평점 · 1 신용 BB-(NICE디앤비 평가 {D.NICE_DATE}) · 2 설립 {D.FOUNDED}(공고일 {D.NOTICE_DATE} 기준 4년 7개월) · 3 4대보험 가입자 10인(가입자 명부 2026.10.02) · 4 별지 4의 {len(D.BS_REC)}건</span></div>
+<span style="color:#555">※ 제안사 기재: ● = 해당 평점 · 1 신용 BB-(NICE디앤비 평가 {D.NICE_DATE}) · 2 설립 {D.FOUNDED}(공고일 {D.NOTICE_DATE} 기준 4년 7개월) · 3 4대보험 가입자 공고일 기준 10인(가입자 명부 2026.10.23 발급 · 발급일 현재 13명) · 4 별지 4의 {len(D.BS_REC)}건</span></div>
 {seal_tail(8).replace('class="dt"', 'class="dt" style="margin-top:8pt"').replace('class="to2"', 'class="to2" style="margin-top:12pt"').replace('class="warn"', 'class="warn" style="margin-top:4pt"')}</div>"""
     return doc("2 적격심사 평가표 [별지 5]", [body])
 
@@ -365,7 +365,7 @@ def doc07_emp():
 <div class="who" style="margin-top:14pt">{D.COMPANY}</div>
 <div class="who" style="font-weight:400;font-size:11pt">{D.ADDRESS}</div>
 <div class="who">대표이사 &nbsp; {D.CEO}<span class="seal">(인)</span></div></div>
-<p class="note" style="margin-top:40pt">※ 4대보험 사업장 가입자 명부(앞 쪽)는 2026.10.02 발급본으로, 현장 책임자는 그 뒤 반영 예정입니다. 전담 인력 명단은 협약 시 제출합니다(제안서 · 제출서류에는 개인정보를 적지 않음 — 제안참여규정 제6조 ②).</p>"""
+<p class="note" style="margin-top:40pt">※ 4대보험 사업장 가입자 명부(앞 쪽)는 2026.10.23 발급본(13명)이며, 현장 책임자도 가입자로 반영되어 있습니다. 전담 인력 명단은 협약 시 제출합니다(제안서 · 제출서류에는 개인정보를 적지 않음 — 제안참여규정 제6조 ②).</p>"""
     return doc("7 재직증명서", [body])
 
 
@@ -752,7 +752,7 @@ def evidence_check():
     assert "2026 년10 월14 일" in t and "2026 년11 월13 일" in t, "국세 납세증명서 발급일 · 유효기간 확인 실패"
     t = fitz.open(KB)[0].get_text()
     assert "영업배상책임보험" in t and "2027년 10월 14일 24:00" in t, "KB 증권 글자 확인 실패"
-    assert len(fitz.open(ROSTER)) == 2, "4대보험 가입자 명부(2026.10.02 · 가림본) 2쪽 확인 실패"   # 이미지 PDF — 글자 확인 불가(철산 06 · 지웰 07과 같은 파일)
+    assert len(fitz.open(ROSTER)) == 2, "4대보험 가입자 명부(2026.10.23 · 가림본) 2쪽 확인 실패"   # 이미지 PDF — 글자 확인 불가(철산 06 · 지웰 07과 같은 파일)
     for p in (f"{EV}/법인등기부등본.pdf", f"{EV}/지방세_납세증명서.pdf", NICE_SRC, SGI_IMG, P04, INGAM):
         assert os.path.exists(p), f"없음: {p}"
 
@@ -836,7 +836,7 @@ def main():
              [(d05, None, "발급 가능 확인 · 가입 확약서"), (KB, None, "참고 · KB 영업배상책임보험(본사 시설)")]),
             ("6", "민간제출용 신용평가등급 확인서", f"NICE디앤비 BB- · 현금흐름 A · 평가 {D.NICE_DATE}",
              [(c06, None, "표지"), (nice06, None, "NICE 기업신용평가보고서 전문(가림)")]),
-            ("7", "4대보험 가입자명부 및 재직증명서", "가입자 명부 2026.10.02(10명 · 가림) · 재직증명서(현장 책임자)",
+            ("7", "4대보험 가입자명부 및 재직증명서", "가입자 명부 2026.10.23(13명 · 공고일 기준 10명 · 가림) · 재직증명서(현장 책임자)",
              [(ROSTER, None, "4대보험 사업장 가입자 명부"), (emp, None, "재직증명서(현장 책임자)")]),
             ("8", "국세 및 지방세 완납 증명서", f"국세 {D.ISSUE['tax']} · 지방세 {D.ISSUE['ltax']} 발급(유효 ~2026.11.13)",
              [(f"{EV}/국세_납세증명서.pdf", None, "국세 납세증명서"), (f"{EV}/지방세_납세증명서.pdf", None, "지방세 납세증명서")]),
