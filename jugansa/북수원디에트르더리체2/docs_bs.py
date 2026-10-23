@@ -297,8 +297,8 @@ def doc05():
 <h2>1. 이행보증보험증권 — 발급 가능</h2>
 <table class="t"><tbody>
 <tr><td class="k" style="width:24%">발급 근거</td><td class="l">서울보증보험(SGI) <b>계약보증보험증권 발급 이력</b> — 발급일 2026.09.07 · 보증 종목 계약보증보험(용역 계약) — 다음 쪽 증권 사본(상대방 · 금액 · 증권번호 일부 가림)</td></tr>
-<tr><td class="k">이번 협약</td><td class="l">협약 체결 시 <b>귀 협의회를 피보험자</b>로 하는 이행(하자)보증보험증권을 보험사로부터 발급받아 제출</td></tr>
-<tr><td class="k">보증 금액 · 기간</td><td class="l">협약 시 귀 협의회와 협의하여 확정(제안서: 2년 · 최대 10억원 범위)</td></tr>
+<tr><td class="k">이번 협약</td><td class="l">협약 후 <b>귀 협의회를 피보험자</b>로 하는 이행(하자)보증보험증권을, 입주 일정에 맞춰 귀 협의회와 발급 시점을 확인해 보험사로부터 발급받아 제출</td></tr>
+<tr><td class="k">보증 금액 · 기간</td><td class="l">보험기간 = 입주 개시 1년 전 ~ 입주 개시 후 1년(2년 · 입주가 늦어지면 연장) · 금액은 협약 시 귀 협의회와 협의하여 확정(최대 10억원 범위)</td></tr>
 </tbody></table>
 <h2>2. 행사배상책임보험 — 협약 시 가입 확약(현재 미가입)</h2>
 <table class="t"><tbody>
@@ -357,7 +357,7 @@ def doc07_emp():
 <tr><th>성 &nbsp; &nbsp; 명</th><td>{m[0]}</td><th>생년월일</th><td>{birth(MGR_BIRTH, "책임자")}</td></tr>
 <tr><th>소 &nbsp; &nbsp; 속</th><td>주관사업</td><th>직 &nbsp; &nbsp; 위</th><td>총괄 본부장</td></tr>
 <tr><th>재직 기간</th><td colspan="3">{MGR_JOIN} ~ 현재</td></tr>
-<tr><th>담당 업무</th><td colspan="3">입주박람회 주관 업무 총괄 · 본 건 현장 책임자(제안 참가 신청서 책임자 · 2차 PT 발표)</td></tr>
+<tr><th>담당 업무</th><td colspan="3">입주박람회 주관 업무 총괄 · 본 건 현장 책임자(제안 참가 신청서 책임자 · 2차 PT 참석)</td></tr>
 <tr><th>용 &nbsp; &nbsp; 도</th><td colspan="3">{FORM_TO} 입주박람회 주관사 제안 제출용</td></tr>
 </table>
 <p class="body" style="text-align:center;margin-top:34pt;font-size:12pt">위 사람은 현재 당사에 재직하고 있음을 증명합니다.</p>

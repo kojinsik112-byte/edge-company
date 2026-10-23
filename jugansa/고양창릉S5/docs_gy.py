@@ -687,7 +687,7 @@ def doc16():
     n_in = D.STAFF_LEAD + sum(c for _, c, _ in D.STAFF)
     tms = "".join(f'<div class="tm"><b>{e(n)}<em>{c}명</em></b><small>{e(r)}</small></div>' for n, c, r in D.STAFF)
     rows = [("대표이사", 1, "경영 총괄 · 주관 박람회 현장 점검 · 진두지휘"),
-            ("주관사업 총괄 본부장", 1, "입찰 · 협약 · 주관 업무 총괄(본 건 책임자 · PT 발표)")] + [(n, c, r) for n, c, r in D.STAFF]
+            ("주관사업 총괄 본부장", 1, "입찰 · 협약 · 주관 업무 총괄(본 건 책임자 · PT 참석)")] + [(n, c, r) for n, c, r in D.STAFF]
     tb = "".join(f'<tr><td class="k">{e(a)}</td><td>{b}명</td><td class="l">{e(c)}</td></tr>' for a, b, c in rows)
     ext = " · ".join(a for a, _ in D.STAFF_EXT)
     body = f"""{head("제출서류 16", "사업장 및 조직현황")}
@@ -711,7 +711,7 @@ def doc16():
 <p class="note">분야별 외부 전문 협력: {e(ext)} — 자문 · 촬영 등 전문 업무이며 사업 전체를 일괄 도급하지 않습니다(별지 5).</p>
 <h2>3. {SITE} 전담 배치 (안)</h2>
 <table class="t"><tbody>
-<tr><td class="k" style="width:19%">책임자</td><td class="l">{D.MANAGER[1]} {D.MANAGER[0]} — 협의회 소통 · PT 발표 · 협약 이행 총괄(공고: PT 발표자는 실제 업무 책임자)</td></tr>
+<tr><td class="k" style="width:19%">책임자</td><td class="l">{D.MANAGER[1]} {D.MANAGER[0]} — 협의회 소통 · PT 참석(발표 · 질의) · 협약 이행 총괄(공고: PT에는 실제 업무 책임자 참석)</td></tr>
 <tr><td class="k">전담 PM</td><td class="l">단지 전담 PM 1명 지정 — 성명 · 연락처는 협약 시 제출</td></tr>
 <tr><td class="k">박람회 현장</td><td class="l">현장 운영 인력 약 21명(행사 규모별 변동 · 안내 · 보안 등 외부 인력 포함) + 주관사 운영팀 상주</td></tr>
 <tr><td class="k">민원 · A/S 창구</td><td class="l">주관 콜센터 {D.TEL}(평일 09:00 ~ 18:00) · 카페 신문고 · 카카오채널 · 홈페이지 365일 접수 — 입주 후 1년 운영</td></tr>
