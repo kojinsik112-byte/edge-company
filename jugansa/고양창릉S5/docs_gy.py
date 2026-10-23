@@ -678,6 +678,23 @@ def doc15_cover(n_pages):
     return doc("15 신용평가서 상세내역", [body])
 
 
+def doc17_door_cover():
+    # 본부장 10-23 '영주자이 도어록은 코멘트가 없어?' — 붙임 계약서가 무엇의 증빙인지 한 쪽으로 먼저 설명
+    body = f"""{head("제출서류 17 붙임", "발전지원 집행 계약서 사본 — 안내")}
+<table class="t" style="margin-top:14pt"><tbody>
+<tr><td class="k" style="width:22%">무엇인가</td><td class="l">주관사가 약속한 세대 혜택(발전지원)을 <b>실제로 집행한 계약서 사본</b>입니다 — 영주자이 시그니처 <b>전 세대 디지털도어록을 지문형으로 사양 변경</b>했습니다.</td></tr>
+<tr><td class="k">계약</td><td class="l">물품공급계약서 · 디지털도어록 사양 변경 계약(X120-F → X500-FH(s) · 지문 사양)</td></tr>
+<tr><td class="k">현장 · 수량</td><td class="l">영주자이 시그니처 · 763대(전 세대)</td></tr>
+<tr><td class="k">금액</td><td class="l">25,179,000원(공급가액 22,890,000원 + 부가세 2,289,000원)</td></tr>
+<tr><td class="k">기간</td><td class="l">계약일 2026.07.09 · 공사 기간 2026.08.01 ~ 2026.10.31</td></tr>
+<tr><td class="k">당사자</td><td class="l">갑(공급받은자) = {D.COMPANY} — 주관사가 직접 계약 · 을(공급자) = 도어록 공급사</td></tr>
+<tr><td class="k">가림</td><td class="l">공급사 상호 · 대표자 · 주소와 대금 지급 · 특약 등 세부 조항은 상대방 영업 정보라 모자이크했습니다. 원본은 2차 PT 때 지참해 열람할 수 있습니다.</td></tr>
+<tr><td class="k">관련 쪽</td><td class="l">제안서(제출서류 8) 88쪽 '실제 집행 예' · 요약제안서 3쪽 '집행 예'</td></tr>
+</tbody></table>
+<p class="note" style="margin-top:8pt">※ {ST['short']} 세대 혜택은 입예협이 고른 항목으로 주관사가 직접 구매 · 제공하고, 사용 내역을 공개합니다. 이 계약서는 그 방식을 다른 단지에서 실제로 지킨 사례입니다.</p>"""
+    return doc("17 붙임 · 발전지원 집행 계약서 사본 안내", [body])
+
+
 def nice_full(nice_path):
     d = fitz.open(nice_path)
     assert len(d) == 24, f"NICE 보고서 {len(d)}쪽 — 가림 좌표 다시 확인"
@@ -910,7 +927,8 @@ def main():
         door = f"{SP}/yj_door/contract_use.pdf"
         assert os.path.exists(door), ("영주자이 도어록 계약서 없음", door)
         n17 = len(fitz.open(P17))
-        res["17"] = merge(NAMES["17"], [P17, door], "17 기타 · 요약제안서 · 발전지원 집행 계약서 사본",
+        dcv = fit(render("17_1_붙임안내", doc17_door_cover()), 1)
+        res["17"] = merge(NAMES["17"], [P17, dcv, door], "17 기타 · 요약제안서 · 발전지원 집행 계약서 사본",
                           [[1, "요약제안서", 1], [1, "붙임 · 발전지원 집행 계약서 사본(영주자이 시그니처 도어록 763대)", n17 + 1]])
 
     # ---- 서식 날인용 출력본(본부장 10-19): 직인 찍기 전 서식만 한 파일로 — 출력 → 실물 인감 날인 → 스캔

@@ -109,8 +109,8 @@ def emit_summary(G):
 <div class="bx fl"><h3><i>NOTE</i>혜택 범위와 원칙 (안)</h3>
 <ul class="xl">
 <li><b>주관사 부담 · 공구단가와 무관</b> - 업체 참가비는 정액 · 발전지원금을 공구가에 얹지 않습니다</li>
-<li><b>방문 선물 · 사은품 · 경품 · 정회원 혜택</b> - 같은 범위 안에서 입예협과 배분(안)</li>
-<li><b>박람회 상품권 · 현장 할인</b> - 참여업체 제공(안) · 승인 후 확정</li>
+<li><b>업체 사은품 · 경품 · 정회원 혜택</b> - 참여업체 제공(안) · 15만원 상당과 별도</li>
+<li><b>박람회 상품권 · 현장 할인</b> - 참여업체 제공(안) · 15만원과 별도 · 승인 후 확정</li>
 <li><b>기본 업무</b> - 행사 · 사전점검 기본 지원은 이 범위와 별도(주관사 부담)</li>
 </ul></div>
 </div></div>"""
@@ -126,7 +126,7 @@ def emit_summary(G):
 <div class="g4">
 <div><b>공개</b><strong>단가표 사전 공개</strong><span>박람회 전 품목별 단가 · 할인율 · 모델코드를 입예협이 검수 · 현장 가격 변경 없음</span></div>
 <div><b>10<small>배</small></b><strong>최저가 차액 보상</strong><span>인근 매장 동일 제품이 더 싸면 차액 10배 보상(구매 영수증 · 주관사 확인 · 1건당 최대 50만원 · 최대 금액은 입예협과 협의)</span></div>
-<div><b>{D.DEPOSIT_MAX}<small>%</small></b><strong>계약금 상한</strong><span>계약금은 총액의 {D.DEPOSIT_MAX}% 이하, 잔금은 시공 · 설치 후</span></div>
+<div><b>{D.DEPOSIT_MAX}<small>%</small></b><strong>계약금 상한</strong><span>계약금은 총액의 {D.DEPOSIT_MAX}% 이하(맞춤 제작 품목 예외), 잔금은 시공 · 설치 후</span></div>
 <div><b>동일</b><strong>현금 · 카드 동일가</strong><span>결제 방식에 따른 단가 차이 없음 · 현금영수증 발행</span></div>
 </div></div>
 <div class="bx"><h3><i>× 10</i>최저가 차액 10배 보상 (예시)<small>제안서 {pg('x10')}</small></h3>
@@ -159,7 +159,7 @@ def emit_summary(G):
 <div><b>해피콜</b><div><strong>환불 완료 확인</strong><span>주관사가 계약자에게 직접 확인</span></div></div><em>↓</em>
 <div><b>선보상</b><div><strong>업체가 미루면</strong><span>콜센터 접수 → 사실 확인 후 주관사가 먼저 보상</span></div></div>
 </div>
-<div class="nt" style="margin-top:8px">계약금 {D.DEPOSIT_MAX}% 이하 · 잔금은 시공 · 설치 확인 후 · 규정은 모든 공동구매 계약서에 첨부</div></div>
+<div class="nt" style="margin-top:8px">계약금 {D.DEPOSIT_MAX}% 이하(맞춤 제작 품목 예외) · 잔금은 시공 · 설치 확인 후 · 규정은 모든 공동구매 계약서에 첨부</div></div>
 </div>"""
 
     # ---------------------------------------------------------------- 6 · A/S · 하자
@@ -243,7 +243,7 @@ def emit_summary(G):
     rec_n, rec_hh = G["_rec_n"], G["_rec_hh"]
     r5 = D.RECENT3_500
     r5_n, r5_j = len(r5), sum(1 for r in r5 if r[3])
-    stf = " · ".join(f"{n} {c}" for n, c, _ in D.STAFF)
+    stf = " · ".join(f"{n.replace('팀', '')} {c}" for n, c, _ in D.STAFF)  # 9쪽 PEOPLE 카드 한 줄(본부장 10-23 칩 잘림)
     pro = "".join(f"<u>{f} {c}</u>" for f, c in G["PRO5"])
     p9 = f"""<div class="sx" style="grid-template-rows:1fr auto">
 <div class="sx" style="grid-template-columns:1.15fr 1fr;min-height:0">
@@ -253,7 +253,7 @@ def emit_summary(G):
 <div class="ppl">
 <div><i>대표이사</i><b>고진식</b><span><em>주관 박람회 전 과정 현장 점검</em> - 협약 최종 책임 · PT 참석<br>울산과학대 전기과 · 대한유화 → 엣지조명 대표 → <nobr>㈜엣지컴퍼니 창업(2022.02)</nobr> · 전기공사업 등록 대표자</span></div>
 <div><i>주관사업 총괄 본부장 · 전담 총괄</i><b>총괄 본부장</b><span><em>입주예정자협의회 회장 3년 역임</em> - 협의회 운영을 직접 겪어 봤습니다 · 정례회의 · 박람회 · 사전점검 현장 참석</span></div>
-<div><i>핵심 운영인력</i><b>임직원 {G['_lead_n']}명</b><span>대표 · 본부장 + {stf}명 - 단지 전담 PM 지정(명단은 협약 시 제출)</span>
+<div><i>핵심 운영인력</i><b>임직원 {G['_lead_n']}명</b><span>대표 · 본부장 + {stf} · 단지 전담 PM 1명(명단은 협약 시)</span>
 <div class="pro">{pro}</div></div>
 </div></div>
 </div>
@@ -327,7 +327,7 @@ def emit_summary(G):
     out = os.path.join(G["HERE"], NAME_SUM + ".html")
     keep_pages, keep_css = list(B.PAGES), B.CSS
     B.p_cover = cover_sum
-    B.CSS += CSS + CSS_OS + ".sx table.mt.m13s td{font-size:11.6px;padding:2px 8px;line-height:1.18}.sx table.mt.m13s td.n{width:58px}.cv4 h1.cvx{font-size:40px}.ppl{gap:3px}.ppl>div{padding-bottom:3px}.ppl span{font-size:11.8px;line-height:1.34}.ppl .pro{padding:0;border:0;background:none;margin-top:4px}"
+    B.CSS += CSS + CSS_OS + ".sx table.mt.m13s td{font-size:11.6px;padding:2px 8px;line-height:1.18}.sx table.mt.m13s td.n{width:58px}.cv4 h1.cvx{font-size:40px}.ppl{gap:2px}.ppl>div{padding-bottom:2px}.ppl span{font-size:11.8px;line-height:1.34}.ppl .pro{padding:0;border:0;background:none;margin-top:4px}section.page .ppl span{font-size:11.8px!important;line-height:1.3!important}"
     try:
         B.PAGES[:] = pages
         B.OUT_HTML, B.OUT_PDF = out, out[:-5] + ".pdf"
