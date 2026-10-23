@@ -709,7 +709,7 @@ def doc16():
 <tr><td class="k" style="width:19%">상호 · 대표자</td><td class="l">{D.COMPANY} · 대표이사 {D.CEO}</td></tr>
 <tr><td class="k">사업자 · 법인 번호</td><td class="l">사업자등록번호 {D.BIZ_NO} · 법인등록번호 {D.CORP_NO}</td></tr>
 <tr><td class="k">설립(개업)</td><td class="l">{D.FOUNDED} · 자본금 2억원(2026.04 증자 · 등기부)</td></tr>
-<tr><td class="k">본사 · 쇼룸</td><td class="l">{D.ADDRESS} (본점 = 사업장 · 2층 · 3층 임차 · 시설면적 328.86㎡ — 영업배상책임보험 증권 기재)</td></tr>
+<tr><td class="k">본사 · 쇼룸</td><td class="l">{D.ADDRESS} (본점 = 사업장 · 2층 · 3층 임차 · 시설면적 328.86㎡ — 영업배상책임보험 증권 기재)</td></tr><tr><td class="k">경인 지사</td><td class="l">경기도 평택시 비전동 866-3 — 상설 쇼룸 · 수도권 시공 · A/S 관리(사무실 · 쇼룸 사용 합의 · 법인 등기 지점 아님)</td></tr>
 <tr><td class="k">업태 · 종목</td><td class="l">{BIZ_TYPES} — 사업자등록증 기재</td></tr>
 <tr><td class="k">면허 · 인증</td><td class="l">{D.ELEC_LICENSE}(2022.05) · ISO 9001 · 14001 · 45001(2025.08 · 박람회 기획 · 대행, 전기 · 조명공사)</td></tr>
 <tr><td class="k">신용 · 보험</td><td class="l">NICE디앤비 BB- · 현금흐름 A(평가 {D.NICE_DATE} · 제출서류 15) · KB손해보험 영업배상책임보험(2026.10.14 ~ 2027.10.14 · 제출서류 12)</td></tr>
