@@ -98,7 +98,7 @@ def emit_summary(G):
 <div class="sflow">
 <div><i>업체</i><div><b>참가비 정액제</b><span>업체 참가비는 정액으로 - 공구가와 연동하지 않음</span></div></div><em>↓</em>
 <div><i>주관사</i><div><b>운영비 + 세대 혜택</b><span>박람회 운영비와 세대당 {per} 상당을 주관사 몫에서 부담</span></div></div><em>↓</em>
-<div class="k"><i>입주민</i><div><b>세대 혜택 패키지</b><span>A · B · C 중 입예협이 골라 구성 · 사용 내역 공개</span></div></div>
+<div class="k"><i>입주민</i><div><b>세대 혜택 패키지</b><span>A · B · C 중 입예협이 골라 구성 · 사용 내역 공개 · 집행 예: 영주자이 시그니처 전 세대 도어록 763대</span></div></div>
 </div>
 <div class="nt" style="margin-top:8px">세대 혜택을 0원으로 해도 공구가는 같습니다 - 가격은 업체 공개 입찰 경쟁과 시중가 · 온라인 최저가 검수로 정해집니다.</div></div>
 <div class="bx fl"><h3><i>NOTE</i>혜택 범위와 원칙 (안)</h3>
@@ -278,7 +278,7 @@ def emit_summary(G):
             ("혜택은 [[조건까지]], 가격은 [[같은 조건 총액]]으로 보여 드립니다.", "‘(안)’ = 참여업체 · 항목 확정 후 입예협 승인으로 확정")),
         std("세대 혜택", f"세대당 {per} 상당, [[세대 혜택]]으로 드립니다",
             "공고 주요내용 4 - 입예협이 고른 항목을 주관사가 직접 구매 · 제공합니다. 주관사 부담이라 공구단가에 영향을 주지 않습니다.", p3,
-            (f"{hh:,}세대 · 세대당 {per} 상당 = [[발전지원금 {tot} 상당]] (안)", "주관사 부담 · 사용 내역 공개 · 협약서로 확정")),
+            (f"{hh:,}세대 · 세대당 {per} 상당 = [[발전지원금 {tot} 상당]] (안)", "주관사 부담 · 사용 내역 공개 · 협약서로 확정 · 집행 예: 영주자이 시그니처 전 세대 도어록 지문형 763대")),
         std("가격 투명성", "가격은 [[박람회 전에]] 검수하고, [[계약 후에도]] 지킵니다",
             "공고 주요내용 4 - 시중가 · 온라인 최저가와 같은 조건 총액으로 비교하고, 입예협 검수를 거친 단가만 공개합니다.", p4,
             ("검수는 [[박람회 전]], 보상은 [[계약 후]] - 두 번 확인합니다.", f"유상옵션과 겹치는 품목은 권하지 않고 남은 수요만 모집 · 제안서 {pg('check')}")),
@@ -321,7 +321,7 @@ def emit_summary(G):
     out = os.path.join(G["HERE"], NAME_SUM + ".html")
     keep_pages, keep_css = list(B.PAGES), B.CSS
     B.p_cover = cover_sum
-    B.CSS += CSS + CSS_OS + ".cv4 h1.cvx{font-size:44px}.ppl{gap:6px}.ppl>div{padding-bottom:6px}.ppl span{font-size:12.5px;line-height:1.4}.ppl .pro{padding:0;border:0;background:none;margin-top:7px}"
+    B.CSS += CSS + CSS_OS + ".cv4 h1.cvx{font-size:44px}.ppl{gap:3px}.ppl>div{padding-bottom:3px}.ppl span{font-size:11.8px;line-height:1.34}.ppl .pro{padding:0;border:0;background:none;margin-top:4px}"
     try:
         B.PAGES[:] = pages
         B.OUT_HTML, B.OUT_PDF = out, out[:-5] + ".pdf"
