@@ -166,8 +166,21 @@ def head(label, title, center=False):
             f'<div class="case" style="{"text-align:center" if center else ""}">건명 : {e(D.NOTICE)}</div>')
 
 
+ROSTER_DATE = (2026, 10, 23)   # 10-23 검수: 붙임 4대보험 명부(10.23 발급)를 적는 00 · 16은 작성일도 10.23(날짜 역전 방지)
+_YMD = None
+
+
 def ymd():
-    return D.SIGN_DATE
+    return _YMD or D.SIGN_DATE
+
+
+def sign_on(d):
+    global _YMD
+    _YMD = d
+    try:
+        return sign()
+    finally:
+        _YMD = None
 
 
 def sign():
@@ -251,7 +264,7 @@ def list_rows(n):
 
 
 def doc00(n):
-    yy, mm, dd = ymd()
+    yy, mm, dd = ROSTER_DATE
     rows = "".join(f'<tr><td class="c">{no}</td><td>{e(t)}</td><td class="c">{"O" if s == "O" else ""}</td><td class="c">{"X" if s == "X" else ""}</td>'
                    f'<td class="bg">{e(r)}</td></tr>' for no, t, s, r in list_rows(n))
     body = f"""<style>.l6 th,.l6 td{{padding:3.2pt 6pt!important;font-size:9.6pt!important;line-height:1.38!important}}.l6 td.bg{{font-size:8.3pt!important;color:#333}}</style>
@@ -717,7 +730,7 @@ def doc16():
 <tr><td class="k">민원 · A/S 창구</td><td class="l">주관 콜센터 {D.TEL}(평일 09:00 ~ 18:00) · 카페 신문고 · 카카오채널 · 홈페이지 365일 접수 — 입주 후 1년 운영</td></tr>
 </tbody></table>
 <p class="note">※ NICE 보고서(제출서류 15)의 종업원 수 · 경영진은 평가 당시(2026.05) 기준이며, 현재 조직은 위와 같습니다. 붙임: 4대보험 사업장 가입자 명부(2026.10.23 발급 · 13명 · 성명 가운데 글자 · 주민등록번호 뒷자리 가림).</p>
-{sign().replace('class="sign"', 'class="sign" style="margin-top:8pt"').replace('class="to"', 'class="to" style="margin-top:8pt"')}"""
+{sign_on(ROSTER_DATE).replace('class="sign"', 'class="sign" style="margin-top:8pt"').replace('class="to"', 'class="to" style="margin-top:8pt"')}"""
     return doc("16 사업장 및 조직현황", [body])
 
 
