@@ -54,6 +54,7 @@ TODOS = []
 
 SP = "/tmp/claude-0/-home-user-edge-company/a96d9eb6-5244-5d3f-9f1b-6f379ac2a82c/scratchpad"
 EV = os.environ.get("GY_EVIDENCE", f"{SP}/evidence")  # 증빙 원본(깃 제외)
+ROSTER = f"{SP}/cs_sub/엣지컴퍼니_4대보험_사업장가입자명부_20261023_가림.pdf"   # 2026.10.23 발급 13명 · 가림본(깃 제외) — 16에 붙임
 KB = f"{EV}/KB_영업배상책임보험_시설소유관리자_20261014.pdf"
 NICE_SRC = f"{EV}/NICE_기업신용평가.pdf"
 CAP_DIR = f"{SP}/hw/cap"  # 실적 확약서 캡처 원본(가림본 assets_ins/cafe_*.png가 없을 때만)
@@ -244,7 +245,7 @@ def list_rows(n):
         ("13", "계약이행보증보험(주관사 선정후)", "X", "주관사 선정 후 협의회를 피보험자로 발급해 제출"),
         ("14", "이의를 제기하지 않겠다는 서약서【별지서식 제5호】", "O", "필수"),
         ("15", "신용평가회사가 발급한 신용평가서 상세내역", "O", f"필수 · NICE디앤비 기업신용평가보고서 전문 {n['15n']}쪽 · 평가 {D.NICE_DATE} · BB- · 현금흐름 A"),
-        ("16", "사업장 및 조직현황", "O", "공고 필수 제출서류(목록표 밖) · 사업장 · 면허 · 인증 · 조직 · 전담 배치(안)"),
+        ("16", "사업장 및 조직현황", "O", "공고 필수 제출서류(목록표 밖) · 사업장 · 면허 · 인증 · 조직 · 전담 배치(안) · 붙임 4대보험 가입자 명부(2026.10.23)"),
         ("17", "기타 · 요약제안서", "O", "선택 자료 · 제안서(8) 내용 요약"),
     ]
 
@@ -701,7 +702,7 @@ def doc16():
 <tr><td class="k">신용 · 보험</td><td class="l">NICE디앤비 BB- · 현금흐름 A(평가 {D.NICE_DATE} · 제출서류 15) · KB손해보험 영업배상책임보험(2026.10.14 ~ 2027.10.14 · 제출서류 12)</td></tr>
 <tr><td class="k">연락처</td><td class="l">대표전화 {D.TEL} · {D.EMAIL} · 책임자 {D.MANAGER[1]} {D.MANAGER[0]} {D.MANAGER[2]}</td></tr>
 </tbody></table>
-<h2>2. 조직 현황 — 임직원 {n_in}명(정규직 10 · 인턴 4, 2026.10)</h2>
+<h2>2. 조직 현황 — 임직원 {n_in}명(4대보험 가입 13명 · 2026.10.23 명부 · 붙임)</h2>
 <div class="oc"><div class="ceo"><i>㈜엣지컴퍼니</i><b>CEO</b><span>대표이사</span></div>
 <div class="gmr"><div class="gm"><em>주관사업</em><b>총괄 본부장</b></div></div>
 <div class="bar"></div><div class="tms">{tms}</div></div>
@@ -715,7 +716,7 @@ def doc16():
 <tr><td class="k">박람회 현장</td><td class="l">현장 운영 인력 약 21명(행사 규모별 변동 · 안내 · 보안 등 외부 인력 포함) + 주관사 운영팀 상주</td></tr>
 <tr><td class="k">민원 · A/S 창구</td><td class="l">주관 콜센터 {D.TEL}(평일 09:00 ~ 18:00) · 카페 신문고 · 카카오채널 · 홈페이지 365일 접수 — 입주 후 1년 운영</td></tr>
 </tbody></table>
-<p class="note">※ NICE 보고서(제출서류 15)의 종업원 수 · 경영진은 평가 당시(2026.05) 기준이며, 현재 조직은 위와 같습니다.</p>
+<p class="note">※ NICE 보고서(제출서류 15)의 종업원 수 · 경영진은 평가 당시(2026.05) 기준이며, 현재 조직은 위와 같습니다. 붙임: 4대보험 사업장 가입자 명부(2026.10.23 발급 · 13명 · 성명 가운데 글자 · 주민등록번호 뒷자리 가림).</p>
 {sign().replace('class="sign"', 'class="sign" style="margin-top:8pt"').replace('class="to"', 'class="to" style="margin-top:8pt"')}"""
     return doc("16 사업장 및 조직현황", [body])
 
@@ -885,7 +886,12 @@ def main():
     res["14"] = scanned(2, "14_이의제기_금지_서약서", lambda: stamped(fit(render("14_이의제기_금지_서약서", doc14()), 1)))
     res["15"] = merge(NAMES["15"], [fit(render("15_1_표지", doc15_cover(n["15n"])), 1), nice15], "15 신용평가서 상세내역(NICE 전문)",
                       [[1, "표지", 1], [1, "NICE디앤비 CLIP 기업신용평가보고서 전문", 2]])
-    res["16"] = stamped(fit(render("16_사업장_및_조직현황", doc16()), 1, 2))
+    # 본부장 10-23: 4대보험 사업장 가입자 명부(2026.10.23 · 13명 · 가림본)를 16에 붙임 — 조직현황 인원의 증빙
+    s16 = stamped(fit(render("16_사업장_및_조직현황", doc16()), 1, 2))
+    s16d = fitz.open(stream=open(s16, "rb").read(), filetype="pdf")
+    assert len(fitz.open(ROSTER)) == 2, "4대보험 가입자 명부(2026.10.23 · 가림본) 2쪽 확인 실패"
+    res["16"] = merge(NAMES["16"], [s16d, ROSTER], "16 사업장 및 조직현황 · 붙임 4대보험 가입자 명부",
+                      [[1, "사업장 및 조직현황", 1], [1, "붙임 · 4대보험 사업장 가입자 명부(2026.10.23)", len(s16d) + 1]])
     if ok["17"]:
         res["17"] = out(NAMES["17"] + ".pdf")
         shutil.copyfile(P17, res["17"])
