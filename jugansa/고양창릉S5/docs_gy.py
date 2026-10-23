@@ -702,7 +702,7 @@ def doc16():
 <tr><td class="k">신용 · 보험</td><td class="l">NICE디앤비 BB- · 현금흐름 A(평가 {D.NICE_DATE} · 제출서류 15) · KB손해보험 영업배상책임보험(2026.10.14 ~ 2027.10.14 · 제출서류 12)</td></tr>
 <tr><td class="k">연락처</td><td class="l">대표전화 {D.TEL} · {D.EMAIL} · 책임자 {D.MANAGER[1]} {D.MANAGER[0]} {D.MANAGER[2]}</td></tr>
 </tbody></table>
-<h2>2. 조직 현황 — 임직원 {n_in}명(4대보험 가입 13명 · 2026.10.23 명부 · 붙임)</h2>
+<h2>2. 조직 현황 — 임직원 {n_in}명(정규직 13 + 인턴 1 · 4대보험 가입 13명 · 2026.10.23 명부 · 붙임)</h2>
 <div class="oc"><div class="ceo"><i>㈜엣지컴퍼니</i><b>CEO</b><span>대표이사</span></div>
 <div class="gmr"><div class="gm"><em>주관사업</em><b>총괄 본부장</b></div></div>
 <div class="bar"></div><div class="tms">{tms}</div></div>

@@ -214,11 +214,11 @@ def apply(G):
     S8 = "08. 혜택안내"
     _ft = won(D.FUND_TOTAL)
     _choice_pkg = ("std", dict(sec=S8 + " · 세대당 " + f"{fund}만원 상당", title=B.FUND_CHOICE_TITLE,
-        lead="A · B · C는 예시입니다 - 입예협이 원하는 항목을 고르면 주관사가 직접 구매 · 제공합니다(전기 · 조명은 직접 시공).",
+        lead="A · B · C는 예시입니다 - 한 안을 고른다고 그 안의 항목을 모두 드리는 것이 아니라, 입예협이 원하는 항목을 골라 세대당 금액 범위 안에서 항목 · 수량을 정합니다(주관사 직접 구매 · 제공, 전기 · 조명은 직접 시공).",  # 본부장 10-23: 예시일 뿐 전부 제공 아님
         body=('<div class="nb"><div class="optx">'
               '<div class="op"><i>예시 · 이런 항목들이 있습니다</i><h3>혜택 패키지 예시</h3><div class="v">A · B · C</div>'
               f'<ul><li>신청 기한까지 계약한 모든 세대 · 세대당 {fund}만원 상당</li>'
-              '<li>섞어서 구성하거나 다른 항목으로 바꿔도 됩니다</li></ul></div>'
+              '<li>섞거나 바꿔도 됩니다 · 금액 범위 안에서 항목 · 수량 협의</li></ul></div>'
               '<div class="or">›</div>'
               '<div class="op"><i>선택 · 입예협</i><h3>입예협이 원하는 것을 골라서</h3><div class="v">자유 선택</div>'
               f'<ul><li>세대당 같은 금액 범위 안에서 입예협이 결정</li><li>주관사 부담 · 공구단가에 영향 없음</li></ul></div></div>'
@@ -239,7 +239,7 @@ def apply(G):
     if not CASH:
         p_choice = _choice_pkg
     p_pack = ("std", dict(sec=S8 + " · 혜택 패키지", title="혜택 패키지 [[A · B · C]] 구성 항목",
-        lead=f"입예협이 필요한 항목을 골라 세대당 {fund}만원 상당 범위 (안)를 채웁니다 - 세대 혜택과 입예협 업무 지원 서비스만 담습니다.",
+        lead=f"아래는 예시 항목입니다 - 한 안을 고른다고 모두 제공하는 것이 아니라, 입예협이 필요한 항목을 골라 세대당 {fund}만원 상당 범위 (안) 안에서 항목 · 수량을 정합니다.",
         body='<div class="nb"><div class="pkx">' + pk("A", "입주민 특화서비스", "세대가 직접 받는 서비스", A, note="같은 15만원 상당 범위 안에서 배분(안) - 방문 선물 · 사은품 · 경품 · 정회원 혜택 / 업체 제공(안) - 박람회 상품권 · 현장 할인")
              + pk("B", "협의회 업무지원", "입예협 업무·하자 대응", Bk, True) + pk("C", "단지지원 컨설팅", "경관·공용부·커뮤니티 가치", C,
                                 note="C는 진단 · 개선안 · 자료 제공까지입니다. 설치 여부 · 범위 · 비용은 입예협 · 관리주체가 정합니다.") + "</div></div>",
@@ -682,7 +682,7 @@ def apply(G):
               '<div class="ceo"><i>㈜엣지컴퍼니</i><b>CEO</b><span>대표이사</span></div>'
               '<div class="gmr"><div class="gm"><i>주관사업</i><b>총괄 본부장</b></div></div>'
               f'<div class="tms">{tms0}</div>{_exb}</div></div>'),
-        kp=(f"임직원 [[{_n_in}명]](정규직 10 + 인턴 4) - 대표·본부장과 4개 팀이 나눠 맡고, 분야별 [[외부 전문 협력]]이 받칩니다.",
+        kp=(f"임직원 [[{_n_in}명]](정규직 13 + 인턴 1) - 대표·본부장과 4개 팀이 나눠 맡고, 분야별 [[외부 전문 협력]]이 받칩니다.",
             "박람회 현장 운영 인력 약 21명(행사 규모별 변동 · 안내·보안 등 외부 인력 포함) + 주관사 운영팀 상주(02장) · 명단은 협약 시 제출 · 외부 협력은 전문 업무(하도급 아님)")))
     B.CSS += (".org .tm h3 em{font-style:normal;font-size:15px;color:var(--ink);margin-left:4px}"
               ".org .tm p{font-size:12.5px;color:var(--sub);text-align:center;line-height:1.4;margin:0}"

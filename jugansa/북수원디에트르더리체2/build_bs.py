@@ -892,7 +892,7 @@ new("std", sec=S0, title=T_STAFF,
              "업체 부도 · 미시공은 동종업체 이관 · 비용 주관사 부담"])
          + '</div><div class="hflow"><span>입예협 요청</span><i>›</i><span>담당 팀 지정</span><i>›</i><span>기술 · 행정 검토</span><i>›</i>'
            '<span>시공사 · 기관 협의</span><i>›</i><span>회신 · 기록 · 보고</span></div></div>',
-    kp=("부서 이름이 아니라 [[누가 무엇을 맡는지]]로 답합니다.", "임직원 14명(정규직 10 + 인턴 4) 중 4개 팀 12명 · 명단은 협약 시 제출 · 현장 책임자 · 주요 협력업체 변경은 협의회 사전 동의(제13조 ③) · 외부 협력은 자문 · 촬영 등 전문 업무(도급 아님)"))
+    kp=("부서 이름이 아니라 [[누가 무엇을 맡는지]]로 답합니다.", "임직원 14명(정규직 13 + 인턴 1) 중 4개 팀 12명 · 명단은 협약 시 제출 · 현장 책임자 · 주요 협력업체 변경은 협의회 사전 동의(제13조 ③) · 외부 협력은 자문 · 촬영 등 전문 업무(도급 아님)"))
 B.CSS += (".dcx{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1;min-height:0}"
           ".dcd{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 40%);display:flex;flex-direction:column;gap:4px}"
           ".dcd i{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--gold2)}"

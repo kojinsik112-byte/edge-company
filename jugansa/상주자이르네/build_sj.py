@@ -921,7 +921,7 @@ new("std", sec=S0, title=T_STAFF,
              "건축 · 토목 · 기계설비 · 소방은 협력 전문가"])
          + '</div><div class="hflow"><span>협의회 요청</span><i>›</i><span>담당 팀 지정</span><i>›</i><span>기술 · 행정 검토</span><i>›</i>'
            '<span>시공사 · 기관 협의</span><i>›</i><span>회신 · 기록 · 보고</span></div></div>',
-    kp=("부서 이름이 아니라 [[누가 무엇을 맡는지]]로 답합니다.", "임직원 14명(정규직 10 + 인턴 4) 중 4개 팀 12명 · 명단은 협약 시 제출 · 인력 교체는 협의회와 사전 협의(별지2호) · 외부 전문가는 자문 협력 계약(일괄 도급 아님)"))
+    kp=("부서 이름이 아니라 [[누가 무엇을 맡는지]]로 답합니다.", "임직원 14명(정규직 13 + 인턴 1) 중 4개 팀 12명 · 명단은 협약 시 제출 · 인력 교체는 협의회와 사전 협의(별지2호) · 외부 전문가는 자문 협력 계약(일괄 도급 아님)"))
 B.CSS += (".dcx{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1;min-height:0}"
           ".dcd{border:1px solid var(--line);border-top:2px solid var(--gold2);border-radius:14px;padding:14px 18px;background:linear-gradient(180deg,rgba(235,203,143,.08),rgba(255,255,255,.01) 40%);display:flex;flex-direction:column;gap:4px}"
           ".dcd i{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--gold2)}"
