@@ -248,13 +248,16 @@ def apply(B, D, take, sub):
 
     # 숫자로 보는 엣지컴퍼니 — 아이콘 + 누적 스파크라인(5쪽 누적 단지 수 그대로)
     k = take("숫자로 보는 [[엣지컴퍼니]]")[1]
-    cum = [(y, nd) for y, _, _, nd, _ in D.cumulative()]
+    # 2023년 이후 누적(본부장 10-24 '2023년 이후 42곳') — 마지막 막대 = 카드 큰 숫자
+    _cm = D.cumulative()
+    cum = [(y, nd - _cm[1][3]) for y, _, _, nd, _ in _cm[2:]]
     mx = max(n for _, n in cum)
     spark = ('<div class="mbar">' + "".join(
-        f'<div class="{"g" if i == len(cum) - 1 else ""}"><b>{n}</b><i style="height:{100 * n / mx:.0f}%"></i><span>{"~" if i == 0 else ""}{y[2:]}</span></div>'
+        f'<div class="{"g" if i == len(cum) - 1 else ""}"><b>{n}</b><i style="height:{100 * n / mx:.0f}%"></i><span>{y[2:]}</span></div>'
         for i, (y, n) in enumerate(cum)) + '</div>')
     body = inject(k["body"], ["building", "door", "crown", None])
-    k["body"] = body.replace('<div class="card"><div class="lb">GROWTH</div>', '<div class="card">' + spark + '<div class="lb">GROWTH</div>')
+    k["body"] = body.replace('<div class="card"><div class="lb">SINCE 2023</div>', '<div class="card">' + spark + '<div class="lb">SINCE 2023</div>')
+    assert spark in k["body"]
 
     # 아이콘만 더하는 카드 장
     for title, names in [

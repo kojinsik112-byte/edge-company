@@ -62,7 +62,9 @@ def apply(G):
         dict(lb="HOUSEHOLDS", big=f"{_nh:,}", unit="세대", nm="누적 수임 세대",
              ds=f"2023년 이후 1,000세대 이상 {sum(1 for r in D.SUIM if r[1] >= 1000)}곳(입주 예정 포함)."),
         dict(lb="LARGEST", big="4,470", unit="세대", nm="최대 단지 규모", ds="레이카운티 단일 단지 주관."),
-        dict(lb="GROWTH", big=f"×{_nd / _c[0][3]:.1f}", unit="", nm="누적 단지 증가", ds=f"2021년 {_c[0][3]}곳 → 2027년 {_nd}곳(입주 예정 포함)."),
+        # 본부장 10-24: 증가 배수 → '2023년 이후 N곳'(SUIM 목록 = 2023 ~ 2027 입주 단지)
+        dict(lb="SINCE 2023", big=str(_nd - _c[1][3]), unit="곳", nm="최근 수임 단지",
+             ds=f"2023년 이후 입주 단지(예정 {sum(r[1] for r in _c if r[0] == '2027')}곳 포함) · 누적 {_c[1][3]}곳 → {_nd}곳."),
     ])
     k["kp"] = f"{_nd}개 단지·{_nh:,}세대 — 규모가 곧 운영 매뉴얼입니다."
     for _, k in P:  # 표지 띠
