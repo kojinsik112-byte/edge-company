@@ -161,7 +161,7 @@ def apply(G):
 .sumx.roomy .tbl.xs td.k{font-size:15.5px}
 .sumx.roomy{gap:26px 26px}
 .sumx.roomy h3{font-size:19px;margin-bottom:8px}
-.big small.mx{font-size:19px;margin:0 6px 0 0;font-weight:700}
+.big small.mxs{font-size:19px;margin:0 6px 0 0;font-weight:700}
 .sumx.tight .tbl.xs td{padding:3.4px 10px}
 .sumx .sb.wide{grid-column:1/-1}
 .sumx.mid .tbl.xs td{font-size:13.5px;padding:4px 10px}.sumx.mid .tbl.xs td.k{font-size:14px}.sumx.mid{gap:14px 24px}.sumx.mid .pr4>div{padding:8px 12px}.sumx.mid .pr4 span{font-size:12px}
@@ -394,7 +394,7 @@ def apply(G):
         dict(lb="A/S 한 창구", big="48", unit="시간", nm="방문 일정 확정", ds="24시간 안 1차 회신 · 업체가 24시간 무응답이면 주관사 개입 · 미루면 선보상"),
         dict(lb="최저가 보상", big="10", unit="배", nm="차액 보상 · 주관사 부담", ds="박람회 14일 전 가격 공개 · 계약 후 인근 매장이 더 싸면 차액 10배(1건당 최대 50만원 · 온라인 · 시공 품목 제외)"),
         dict(lb="하자 구분", big="2", unit="책임", nm="공구 = 주관사 · 건설 = 시공사", ds="공동구매 품목 = 콜센터 · 선보상 · 건설 하자 = 입예협 취합분 공문 전달 · 진행 추적(입주 지정기간)"),
-    ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"').replace("@@MX1", '<small class="mx">최대</small>1')
+    ], cols=3, rows_n=2).replace('class="tiles"', 'class="tiles lg"').replace("@@MX1", '<small class="mxs">최대</small>1')
     k["kp"] = ("확정된 약속은 [[협약서에 그대로 옮겨]] 끝까지 이행합니다.", "담보 방식 · 혜택 항목은 입예협과 협의 후 협약서로 확정")
 
     def p_closing(no, sec):
@@ -551,7 +551,7 @@ def apply(G):
     k["body"] = sub(k["body"], '<div class="lb">04</div>', '<div class="lb">03</div>')
     k["kp"] = "안전망은 [[계약서와 협약서]]에 그대로 적습니다."
     d04b = take("사고가 나도 [[입주민이 먼저]] 보상받습니다")[1]
-    d04b["bl"] = [{"이행보증보험 2년 10억": "계약이행 · 하자보증 24개월"}.get(x, x) for x in d04b["bl"] if "예치금" not in x]
+    d04b["bl"] = [("특약이행각서 · 클레임 보상 기준" if x.startswith("48시간") else {"이행보증보험 2년 10억": "계약이행 · 하자보증 24개월"}.get(x, x)) for x in d04b["bl"] if "예치금" not in x]  # 10-24: 04장에 없는 48시간 A/S 대신 실제 쪽(특약 · 클레임 기준)
 
     p_deposit = ("std", dict(sec="05. 주관 콜센터", title="선보상 재원 · 하자 예치금 [[최대 1억원]]",
         lead="콜센터가 먼저 보상할 수 있도록, 주관사가 예치금을 따로 둡니다.",
@@ -559,7 +559,7 @@ def apply(G):
             dict(lb="AMOUNT", big="@@MX1", unit="억원", nm="예치 규모", ds="단지 규모와 입예협 협의에 따라 예치 금액을 정합니다."),
             dict(lb="SOURCE", big="자산", nm="엣지컴퍼니 자산으로 예치", ds="참여 업체에게 걷은 돈이 아닙니다. 업체가 빠져도 예치금은 줄지 않습니다."),
             dict(lb="USE", big="선보상", nm="하자 시 입주민 먼저", ds="업체 사고·도산 시 입주민 선보상에 쓰고, 사용 내역을 공개합니다."),
-        ], cols=3).replace("@@MX1", '<small class="mx">최대</small>1'),
+        ], cols=3).replace("@@MX1", '<small class="mxs">최대</small>1'),
         kp="예치금은 콜센터 [[선보상]]이 실제로 돌아가게 하는 재원입니다."))
 
     k = take("이행보증보험 [[2년 · 10억]]")[1]
@@ -909,7 +909,7 @@ def apply(G):
     d04[1]["bl"] = [{"하자 예치금 현금 1억": "하자 예치금 최대 1억"}.get(x, x) for x in d04[1]["bl"] if "콜센터" not in x]
     d07 = T(G["T_DIV"])
     d07[1]["n"] = "07"
-    d07[1]["bl"] = ["약속 10가지 · 먼저 묻는 다섯 가지", "평가 요소 · 업무범위 1) ~ 8) 대응", "같은 기준 · 가격 공개 · 한 창구", "전문분야 · 커뮤니티 · 일정 · 참가자격 17"]
+    d07[1]["bl"] = ["약속 10가지 · 먼저 묻는 다섯 가지", "평가 요소 · 업무범위 1) ~ 8) 대응", "같은 기준 · 가격 공개 · 하자 · A/S", "전문분야 · 커뮤니티 · 일정 · 참가자격 17"]
 
     ch = [
         ("01. 회사소개", [d01] + [T(x) for x in [
@@ -986,7 +986,7 @@ def apply(G):
         [("01", "회사소개", ["숫자 · 연혁 · 법인 서류", "대표자 · 핵심 운영인력", "지사망 · 직영 운영", "주관 · 수임 실적", "추천 · 감사 · 현장 지원"]),
          ("06", "입주박람회", ["2 ~ 3일(안) · 대관", "배치 · 인원 · 안전관리", "편의시설 · 온라인", "박람회 현장"])],
         [("02", "마케팅전략", ["카페 홍보 콘텐츠", "사전점검 언박싱", "드론 · 검색 · 언론", "현수막 · 버스 광고"]),
-         ("07", f"{D.SITE['short']} 맞춤", ["약속 10 · 먼저 묻는 다섯 가지", "평가 요소 · 업무 1) ~ 8) 대응", "같은 기준 · 가격 공개 · 한 창구", "커뮤니티 · 경관 · 일정 · 자격 17"])],
+         ("07", f"{D.SITE['short']} 맞춤", ["약속 10 · 먼저 묻는 다섯 가지", "평가 요소 · 업무 1) ~ 8) 대응", "같은 기준 · 가격 공개 · 하자 · A/S", "커뮤니티 · 경관 · 일정 · 자격 17"])],
         [("03", "업체선정", ["공동구매 품목 · 수요조사", "4단계 공개 심사", "인근 지역업체 선정", "최저가 차액 10배", "계약·환불 규정 전문"]),
          ("08", "혜택안내", [f"{fund}만원 상당 범위 (안)", "A 입주민 특화서비스", "B 협의회 업무지원", "C 진단 · 컨설팅"])],
         [("04", "하자보증", ["보증보험 24개월", "업체 하자보증 · 특약각서", "클레임 보상 기준"]),

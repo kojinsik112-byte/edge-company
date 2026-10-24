@@ -112,7 +112,7 @@ B.CSS += r"""
 .hero3 b{display:block;font-size:52px;font-weight:800;color:var(--gold);line-height:1;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .hero3 .h1x b{font-size:84px}
 .hero3 b small{font-size:22px;margin-left:4px;font-weight:700}
-.hero3 b small.mx{font-size:17px;margin:0 7px 0 0;color:var(--gold2)}
+.hero3 b small.mxs{font-size:17px;margin:0 7px 0 0;color:var(--gold2)}
 .hero3 p{font-size:13.5px;color:var(--sub);margin-top:9px;line-height:1.5}
 .hero3 p em{color:var(--ink);font-weight:800}
 .lxband{margin-top:18px;display:flex;align-items:center;gap:16px;border:1px solid rgba(235,203,143,.55);border-radius:10px;padding:10px 18px;
@@ -151,6 +151,10 @@ B.CSS += r"""
 .cvart.cvx .credit{z-index:1;right:40px;bottom:122px;color:rgba(255,255,255,.55)}
 .cvart.cvx.osc img{object-position:69% 50%}
 .cv4>.cvart.cvx.day{width:60%}.cvart.cvx.day img{object-position:62% 45%}
+/* 본부장 10-24: 표지 · 마지막 장 사진을 줄여 단지 경관이 더 보이게(원본 1274px 확대로 흐림 → 축소 + 선명화본) */
+.cv4:not(.ctp)>.cvart.cvx.day{top:auto;height:620px;width:64%}.cv4:not(.ctp)>.cvart.cvx.day img{object-position:55% 60%}
+.ctp>.cvart.cvx{top:auto;height:610px;width:60%}
+.cv4:not(.ctp)>.cvart.cvx.day:after{background:linear-gradient(90deg,#0D1E33 0%,rgba(13,30,51,.78) 10%,rgba(13,30,51,.3) 24%,rgba(13,30,51,0) 38%),linear-gradient(180deg,#0D1E33 0%,rgba(13,30,51,.75) 9%,rgba(13,30,51,.25) 22%,rgba(13,30,51,0) 34%,rgba(13,30,51,0) 70%,rgba(13,30,51,.75) 88%,#0D1E33 100%)!important}
 .cvart.cvx.day:after{background:
   linear-gradient(90deg,#0D1E33 0%,rgba(13,30,51,.78) 10%,rgba(13,30,51,.3) 24%,rgba(13,30,51,0) 38%),
   linear-gradient(180deg,rgba(13,30,51,.6) 0%,rgba(13,30,51,0) 16%,rgba(13,30,51,0) 70%,rgba(13,30,51,.75) 88%,#0D1E33 100%)}
@@ -968,7 +972,7 @@ T_QUAL2 = "입찰 참가자격 17개 항목 대응 ② [[10) ~ 17)]]"
 T_LIMIT = "참가 제한 · 제안서 효력 · [[서약]], 그대로 지킵니다"
 
 new("divider", n="01", title=T_DIV,
-    bl=["약속 10가지 · 먼저 묻는 다섯 가지", "평가 요소 · 업무범위 1) ~ 8) 대응", "같은 기준 · 가격 공개 · 한 창구", "전문분야 · 커뮤니티 · 일정 · 참가자격 17"])
+    bl=["약속 10가지 · 먼저 묻는 다섯 가지", "평가 요소 · 업무범위 1) ~ 8) 대응", "같은 기준 · 가격 공개 · 하자 · A/S", "전문분야 · 커뮤니티 · 일정 · 참가자격 17"])
 
 # ------------------------------------------------------------ 07-01 약속 10가지
 PROM10 = [
@@ -1065,7 +1069,7 @@ def _work_tbl(rows):
 new("std", sec=S0, title=T_WORK1,
     lead="공고 4항 업무범위를 세 칸으로 나눴습니다 - 엣지컴퍼니가 직접 / 입예협 서면 승인을 받은 전문업체와 함께(결과 책임은 엣지컴퍼니) / 협의회 지정 법무법인 영역.",
     body=_work_tbl(WORK[:4]),
-    kp=("범위가 아니라 [[숫자 하나와 조건]]으로 약속합니다.", "제안서 = 계약서 효력(공고 8항 1) · 이 범위를 넘는 요청은 범위 · 비용을 협의해 서면으로 정합니다"))
+    kp=("공고 업무 1) ~ 4), [[누가 · 무엇을]] 하는지 먼저 정했습니다.", "제안서 = 계약서 효력(공고 8항 1) · 이 범위를 넘는 요청은 범위 · 비용을 협의해 서면으로 정합니다"))
 new("std", sec=S0, title=T_WORK2,
     lead="하자 점검 · A/S · 카페 · 기타 요청까지 - 주관사 업무는 하도급 · 재위탁하지 않고, 전문업체 활용은 입예협 사전 서면 승인을 받은 경우에만 합니다(공고 9항 6).",
     body=_work_tbl(WORK[4:]),
@@ -1147,7 +1151,7 @@ new("std", sec=S0, title=T_DESK,
               ("주관사 역할", "입주 지정기간 동안 입예협이 모은 건설 하자 목록 정리 · 보수 요청 공문 초안 · 시공사 전달 · 진행 추적 · 주 1회 보고."),
               ("하지 않는 일", "건설 하자의 판정 · 보수 · 보수 책임 · 소송 대리(법률 = 협의회 지정 법무법인)."),
           ], title_w=118) + '</div></div></div>'),
-    kp=("공동구매 하자는 [[주관사가 책임]], 건설 하자는 [[시공사 책임]] - 주관사는 정리 · 전달 · 추적을 돕습니다.", "공용부 점검은 선택 항목 · 법률 대리는 협의회 지정 법무법인 업무 · 이 범위를 넘는 요청은 서면 합의"))
+    kp=("공동구매 하자는 [[주관사가 책임]], 건설 하자는 [[시공사 책임]] - 주관사는 정리 · 전달 · 추적을 돕습니다.", "공용부 정밀 점검은 입예협 요청 시 · 법률 대리는 협의회 지정 법무법인 업무 · 이 범위를 넘는 요청은 서면 합의"))
 
 # ------------------------------------------------------------ 07-10 전문분야 지원 범위(업무 4 · 5)
 EXPERT6 = [  # (구분, 누가, 무엇을, 진행) - 본부장 10-24: 항목별 비용 표시 안 함(업무범위 전부 지원 · 세대 혜택 15만원 안에서) — 요약제안서도 이 값
@@ -1207,7 +1211,7 @@ def _fig(key, cap, sub_, pos="50% 50%"):
 
 # ------------------------------------------------------------ 07-13 외부 경관조명(우대 17 · 업무 4)
 new("std", sec=S0, title=T_LX,
-    lead="공고 업무 4) ‘경관’ - 전기공사업 등록 업체로서 단지의 밤 얼굴을 입주 전에 진단하고 개선안을 냅니다 - 입예협이 선택 항목으로 고르면 진행(아래 사진은 나리벡시티 경관조명 연출 시뮬레이션 · 실제와 다를 수 있음).",
+    lead="공고 업무 4) ‘경관’ - 전기공사업 등록 업체로서 단지의 밤 얼굴을 입주 전에 진단하고 개선안을 냅니다 - 입예협이 요청하시면 진행(아래 사진은 나리벡시티 경관조명 연출 시뮬레이션 · 실제와 다를 수 있음).",
     body=('<div class="nb"><div class="lxo"><div class="gal lxa">'
           + _fig("lx_front1", "① 동 파사드", "외벽 라인조명 · 도로변 경관 · 시뮬레이션", "50% 45%")
           + _fig("lx_front2", "② 단지 조감 야간", "동 간 통일된 색온도 · 산책로 동선 · 시뮬레이션", "50% 50%")
@@ -1220,7 +1224,7 @@ new("std", sec=S0, title=T_LX,
               ("결정은 입예협 · 관리주체", "설치 여부 · 범위 · 비용은 도면 검토 뒤 입예협 · 관리주체가 정합니다."),
           ])
           + '</div></div></div>'),
-    kp=("단지 가치는 [[밤의 첫인상]]에서 - 선택 항목으로 고르시면 커뮤니티와 같은 날 묶어 진단합니다.", D.LX_CAP + " · 전기공사업 등록 제 울산-00821호"))
+    kp=("단지 가치는 [[밤의 첫인상]]에서 - 입예협이 요청하시면 커뮤니티와 같은 날 묶어 진단합니다.", D.LX_CAP + " · 전기공사업 등록 제 울산-00821호"))
 B.CSS += (".lxo{display:grid;grid-template-columns:1.75fr 1fr;gap:18px;flex:1;min-height:0}"
           ".gal.lxa{grid-template-columns:1.25fr 1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:0}"
           ".gal.lxa figure:first-child{grid-row:span 2}"
@@ -1276,7 +1280,7 @@ new("std", sec=S0, title=T_MON1,
     lead="입주 2027년 11월 예정 기준 - 박람회는 입주 3 ~ 2개월 전, 날짜는 사전점검 일정 확정 뒤 입예협과 정합니다.",
     body=table(["시기", "주관사 업무", "입예협 보고 · 산출물"], "".join(
         f'<tr><td class="n" style="width:128px;white-space:nowrap">{a}</td><td>{t(b)}</td><td class="k">{t(c)}</td></tr>' for a, b, c in MON), "lgx mn8"),
-    kp=("협약부터 [[입주 후 12개월]]까지, 할 일과 보고 시점을 미리 정했습니다.", "일정은 공정 · 사전점검 일정에 따라 입예협과 조정 · 선택 항목은 입예협이 고른 시기에 진행"))
+    kp=("협약부터 [[입주 후 12개월]]까지, 할 일과 보고 시점을 미리 정했습니다.", "일정은 공정 · 사전점검 일정에 따라 입예협과 조정 · 자문 · 점검 · 진단은 입예협이 요청하신 시기에 진행"))
 B.CSS += ".tbl.mn8 td{padding:9px 13px;font-size:14.5px}.tbl.mn8 td.k{width:25%;font-size:14px;color:var(--gold)}"
 
 def ftable(head, widths, rows_html, cls=""):
@@ -1379,7 +1383,7 @@ new("std", sec=S0, title=T_MENU,
           + _mix("③", "서비스형", 0, "상품권 없이 B 항목 · 실측 · VR · 3D · 방문 선물로 구성")
           + '</div></div></div>'),
     kp=(f"고른 항목의 합계가 [[{_won(_MB)} 상당]] 안에 들어오도록 맞춥니다 - 사용 내역은 공개합니다.",
-        "‘협의 단가’ 항목은 협약 때 입예협과 단가 · 수량을 정함 · 할인으로 드리는 항목과 기본 약속은 차감하지 않음 · 업체 제공 혜택은 별도"))
+        "‘협의 단가’ 항목은 협약 때 입예협과 단가 · 수량을 정함 · 할인으로 드리는 항목은 차감하지 않음 · 업체 제공 혜택은 별도"))
 B.CSS += (".mnx{display:grid;grid-template-columns:1.62fr 1fr;gap:18px;flex:1;min-height:0}"
           ".tbl.mnu td{padding:7px 9px;font-size:13px;line-height:1.38}.tbl.mnu td.g{width:42px;text-align:center;font-weight:800}.tbl.mnu td.k{font-size:13.5px;width:33%}"
           ".tbl.mnu td.r{white-space:nowrap;color:var(--gold);font-weight:800;font-variant-numeric:tabular-nums}"
@@ -1939,7 +1943,7 @@ def p_pricing(no, sec):
     assert n == 3, n
     # 재검증 10-14: 14,500 → 9,450원(본부장 확정 가격)은 34.8% 할인 → '약 35%'(가격은 그대로)
     s = sub(s, '<div class="lb">STANDARD</div><div class="big">35<small>% 할인</small></div>',
-            '<div class="lb">STANDARD</div><div class="big"><small class="mx">약</small>35<small>% 할인</small></div>')
+            '<div class="lb">STANDARD</div><div class="big"><small class="mxs">약</small>35<small>% 할인</small></div>')
     return sub(s, '</div></div></div>\n<div class="kp">',
                '</div></div></div>\n<div class="notex" style="margin-top:14px">※ 평당 가격은 2026년 6월 기준 기본 소비자가이며, 변동될 수 있습니다.</div>\n<div class="kp">')
 
@@ -2153,7 +2157,8 @@ def finish(path, title):
                    ("단지 도면과 천장 사양에 맞춘 규격으로 직접 제작.", "단지 도면과 천장 사양에 맞춘 규격으로 OEM(사양 지정) 생산."),
                    ("선정 업체가 다른 업체에 하청 주는 행위를 계약으로 금지합니다.", "입예협 · 주관사 사전 승인 없는 재하도급을 계약으로 금지합니다."),
                    ("정비점검·육안점검·장비보고서", "장비점검·육안점검·장비보고서"),
-                   ("체크리스트는 기본 지원(주관사 부담) · ", "체크리스트는 모든 세대에 · ")]:  # 본부장 10-24: '기본 지원 · 주관사 부담' 류 표시 안 함
+                   ("체크리스트는 기본 지원(주관사 부담) · ", "체크리스트는 모든 세대에 · "),
+                   ("광고비는 주관사 부담(단가 미전가)", "광고비는 공동구매 단가에 넘기지 않음")]:  # 본부장 10-24: '기본 지원 · 주관사 부담' 류 표시 안 함
         doc = doc.replace(_a, _b)
     doc = doc.replace("<span>주식회사 엣지컴퍼니 · 대표이사 고진식</span>", "<span>주식회사 엣지컴퍼니</span>")
     # 본부장 10-15 밤: 조직 구성 쪽 KEY POINT — '박람회 현장 운영 인력 약 21명 …'은 줄을 바꿔 다음 문단으로(문구 그대로)
