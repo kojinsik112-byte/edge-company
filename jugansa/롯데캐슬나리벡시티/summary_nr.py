@@ -75,7 +75,7 @@ def emit_summary(G):
 <div><em>OPEN FIRST</em><h4>먼저 공개</h4><div class="bn">×10</div>
 <p>가격 비교자료를 박람회 14일 전에 카페에 먼저 올립니다. 인근 매장의 더 싼 판매가 영수증으로 확인되면 차액의 10배(1건당 최대 50만원 · 온라인 · 시공 품목 제외)를 보상하고, 계약금은 5%까지만 받습니다(맞춤 제작 품목 예외).</p></div>
 <div><em>ONE DESK</em><h4>한 창구</h4><div class="bn">48<small>시간</small></div>
-<p>하자 · A/S는 한 곳에서 받아 24시간 안에 1차 회신, 48시간 안에 방문 일정을 확정하고, 입주 후 12개월 동안 하자 처리 현황을 공개합니다.</p></div>
+<p>하자 · A/S는 한 곳에서 받아 24시간 안에 1차 회신, 48시간 안에 방문 일정을 확정하고, 입주 지정기간 동안 하자 처리 현황을 주 1회 공개합니다.</p></div>
 </div>
 <div class="ptq"><b>PT</b>{PT_LINE}</div>
 </div>"""
@@ -136,8 +136,8 @@ def emit_summary(G):
     p7 = f"""<div class="sx" style="grid-template-rows:auto 1fr auto">
 <div class="as5">{as5}</div>
 <div class="sn3">
-<div class="bx hl"><b class="n">12<small>개월</small></b><strong>하자 창구 하나</strong>
-<ul class="xl"><li>입주 지정기간 시작일부터 12개월</li><li>접수 · 취합 · 시공사 전달 · 처리 진행 관리</li><li>현황 보고 지정기간 주 1회 → 이후 월 1회</li></ul></div>
+<div class="bx hl"><b class="n">1<small>창구</small></b><strong>하자 창구 하나</strong>
+<ul class="xl"><li>입주 지정기간 동안 운영</li><li>접수 · 취합 · 시공사 전달 · 처리 진행 관리</li><li>현황 보고 주 1회 · 이후 콜센터 접수</li></ul></div>
 <div class="bx"><b class="n">24<small>개월</small></b><strong>계약이행 · 하자보증보험</strong>
 <ul class="xl"><li>피보험자 = 입예협 · 협약 후 발급</li><li>금액 · 기산일 · 보증 대상은 협약 때 확정</li><li>하자 예치금 최대 1억 · 엣지컴퍼니 자산 · 선보상 재원</li></ul></div>
 <div class="bx"><b class="n">2<small>년</small></b><strong>무상 A/S · 업체 이관</strong>
@@ -145,7 +145,7 @@ def emit_summary(G):
 </div>
 <div class="rs2">
 <div><b>업체 부담은 늘리지 않습니다</b><span>콜센터 운영비 · 하자 예치금 · 10배 보상금은 주관사 부담 - 업체 예치금 · 추가 보증금 없음(공고 우대 17)</span></div>
-<div><b>두 기간은 따로입니다</b><span>시공사({ST['builder']}) 하자 창구 = 12개월 · 공동구매 품목 A/S = 품목별 무상 기간(시공 품목 최소 2년) · 제안서 {pg('desk', 'as')}</span></div>
+<div><b>두 기간은 따로입니다</b><span>시공사({ST['builder']}) 하자 창구 = 입주 지정기간 · 공동구매 품목 A/S = 품목별 무상 기간(시공 품목 최소 2년) · 제안서 {pg('desk', 'as')}</span></div>
 </div></div>"""
 
     # ---------------------------------------------------------------- 8 · 사전점검 · 전문 지원 범위
@@ -153,7 +153,7 @@ def emit_summary(G):
         f'<tr><td class="k">{t(a)}</td><td>{t(b)}</td><td>{t(c)}</td><td>{t(d)}</td></tr>' for a, b, c, d in G["EXPERT6"]))
     p8 = f"""<div class="sx" style="grid-template-rows:auto 1fr">
 <div class="m3">
-<div><b>사전점검 2일 · 하루 6명</b><span>현장 안내 · 체크리스트 배포 · 점검 장비 대여 창구 · 모집공고 옵션표 대조 점검표</span></div>
+<div><b>사전점검 당일 부스 지원</b><span>현수막 · X배너 · 체크리스트 배포 · 도우미 · 모집공고 옵션표 대조 점검표</span></div>
 <div><b>세대 전문 점검</b><span>원하시는 세대는 ‘사전점검 대행 할인’(최대 50%)으로 - 할인형이라 15만원에서 차감하지 않습니다</span></div>
 <div><b>법정 감리 아님</b><span>자문 의견은 법정 감리 · 하자 판정 · 법률 의견이 아닙니다 · 법률은 지정 법무법인</span></div>
 </div>
