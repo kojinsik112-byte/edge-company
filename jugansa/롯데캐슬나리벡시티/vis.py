@@ -303,8 +303,8 @@ def apply(B, D, take, sub):
     _here = _os.path.dirname(_os.path.abspath(__file__))
     _im = next((x for x in (_own, _alt) if x and _os.path.exists(_os.path.join(_here, "assets_ins", x + ".jpg"))), None)
     _cap = "조감도 · 홍보용 이미지 · 실제와 다를 수 있음"  # 나리벡 site = 정면 투시도(130)
-    bnr = ('<div class="bnr" style="flex-basis:25%"><img src="assets_ins/' + _im + '.jpg" alt="" style="object-position:55% 45%">'
-           f'<b>{D.SITE["official"]} · {hh:,}세대 · {D.SITE["supply"]}</b><span>{_cap}</span></div>') if _im else ""
+    bnr = ('<div class="bnr" style="flex-basis:25%"><img src="assets_ins/' + _im + '.jpg" alt="" style="object-position:55% 36%">'
+           f'<b style="color:#F6E7C8">{D.SITE["official"]} · {hh:,}세대 · {D.SITE["supply"]}</b><span>{_cap}</span></div>') if _im else ""
     k["body"] = '<div class="nb">' + bnr + k["body"] + '</div>'
 
     # 최저가 차액 10배 — 막대 비교
@@ -600,8 +600,8 @@ def apply2(B, D, take, sub):
 
     # 3중 안전망 — 보호 기간 띠(카드 숫자 그대로 · 눈금은 비례 아님)
     k = take("입주민을 지키는 [[3중 안전망]]")[1]
-    band = ('<div class="pt3"><h5>보호 기간 한눈에<small>48시간 눈금은 비례하지 않습니다 · 무상 A/S 기간은 업체·품목별로 다를 수 있음</small></h5>'
-            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:50%">하자 예치금 · 선보상 재원</i></div></div>'
+    band = ('<div class="pt3"><h5>보호 기간 한눈에<small>48시간 눈금은 비례하지 않습니다 · 무상 A/S = 시공 품목 최소 2년 · 브랜드는 제조사 보증</small></h5>'
+            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:100%">계약이행 · 하자보증보험 24개월(금액 · 기산일은 협약 때)</i></div></div>'
             '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:17%">48시간 처리</i></div></div>'
             '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:50%">입주 후 1년 · 주관 창구 운영</i><i class="c" style="left:50%;width:50%">~ 2년 · 무상 A/S(업체별) · 보증 유지</i></div></div>'
             '<div class="tk"><span style="left:0">입주</span><span style="left:17%">48시간</span><span style="left:50%">1년</span><span style="left:100%">2년</span></div></div>')

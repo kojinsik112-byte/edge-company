@@ -213,8 +213,8 @@ STAFF_LEAD = 2  # 대표이사 · 주관사업 총괄 본부장
 # 대체 이미지는 타 단지 '연출 예시'라 캡션이 '예시'로 바뀐다. 지면에 '자리표시' 글자는 넣지 않는다(본부장 지시).
 IMG = {  # 10-24 본부장 사진: cover · site = 정면 투시도(130) · div · front2 = 조감 야경(132) · front1 = 정면 경관(131) · gate = 문주(133) · play = 포켓정원(135 · 글자 잘라냄) — 이전: 나리벡 단지 이미지 없음(10-23) — 본부장이 nr_*.jpg를 assets_ins/에 넣으면 다음 빌드에 반영 · 없으면 표지 · 간지 = 중립, 경관 = 브랜드 글자 없는 타 단지 '연출 예시'
     "cover": ("nr_cover_hd", None, "표지 오른쪽 · 단지 조감도"),
-    "site": ("nr_site", None, "07장 '이런 단지입니다' 위 띠 · 가로 5:1"),
-    "div07": ("nr_div", None, "07장 간지 오른쪽 배경"),
+    "site": ("nr_site_hd", None, "07장 '이런 단지입니다' 위 띠 · 가로 5:1"),
+    "div07": ("nr_div_hd", None, "07장 간지 오른쪽 배경"),
     "lx_front1": ("nr_lx_front1", "gy_lx_facade", "외부 경관 ① 동 파사드 · 4:3"),
     "lx_front2": ("nr_lx_front2", "tj_aerial_night", "외부 경관 ② 단지 조감 야간 · 4:3"),
     "lx_gate": ("nr_lx_gate", "tj_water_garden", "외부 경관 ③ 진입 광장 · 수경 · 4:3"),
