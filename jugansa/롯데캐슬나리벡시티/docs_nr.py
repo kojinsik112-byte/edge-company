@@ -661,7 +661,7 @@ def doc04():
 <tr><td class="k" style="text-align:center">당일 취소 가능</td><td class="l">사전 해피콜 미이행 시 모든 품목(공급사 귀책)</td></tr>
 </tbody></table>
 <p class="note">※ 품목 구성은 입주예정자협의회 수요조사 결과에 따라 확정되며, 추가 품목의 기한은 성격이 같은 품목의 기한을 따른다.</p>"""
-    summary = (f'<div class="box"><b>핵심 요약</b> &nbsp; 계약금 {D.DEPOSIT_MAX}% 이하(맞춤 제작 품목 예외) · 현금·카드 동일가 · 잔금은 시공·설치 확인 후 · '
+    summary = (f'<div class="box"><b>핵심 요약</b> &nbsp; 계약금 {D.DEPOSIT_MAX}% 이하(맞춤 제작 · 본사 규정 품목 예외) · 현금·카드 동일가 · 잔금은 시공·설치 확인 후 · '
                "품목별 취소 기한 안 전액 환불 · 환불 3영업일 이내 · 업체 불이행 시 주관사 선보상 · 최저가 차액 10배(주관사 부담)</div>")
     return doc("04 계약 취소 건 환불 규정", [head("제출서류 04", "계약 취소 건 환불 규정") + summary + "".join(out_) + table + sign()])
 

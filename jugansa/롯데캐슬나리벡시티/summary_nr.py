@@ -73,7 +73,7 @@ def emit_summary(G):
 <div><em>SAME STANDARD</em><h4>같은 기준</h4><div class="bn">15<small>만원 상당</small></div>
 <p>{hh}세대 모두, 계약 시기와 상관없이 세대당 15만원 상당(총 {ft} 상당)을 주관사가 직접 사서 드립니다. 참여업체 사은품 · 경품은 이와 별도입니다.</p></div>
 <div><em>OPEN FIRST</em><h4>먼저 공개</h4><div class="bn">×10</div>
-<p>가격 비교자료를 박람회 14일 전에 카페에 먼저 올립니다(입예협 승인 후). 인근 매장의 더 싼 판매가 영수증으로 확인되면 차액의 10배(1건당 최대 50만원 · 온라인 · 시공 품목 제외)를 보상하고, 계약금은 5%까지만 받습니다(맞춤 제작 품목 예외).</p></div>
+<p>가격 비교자료를 박람회 14일 전에 카페에 먼저 올립니다(입예협 승인 후). 인근 매장의 더 싼 판매가 영수증으로 확인되면 차액의 10배(1건당 최대 50만원 · 온라인 · 시공 품목 제외)를 보상하고, 계약금은 5%까지만 받습니다(맞춤 제작 · 본사 규정 품목 예외).</p></div>
 <div><em>ONE DESK</em><h4>한 창구</h4><div class="bn">48<small>시간</small></div>
 <p>공동구매 품목 A/S는 한 곳에서 받아 24시간 안에 1차 회신, 48시간 안에 방문 일정을 확정합니다. 건설 하자는 시공사 책임 - 입예협이 모은 목록을 전달 · 추적합니다.</p></div>
 </div>
@@ -112,7 +112,7 @@ def emit_summary(G):
 <div class="g4">
 <div><b>D-30</b><strong>단가표 검수</strong><span>모델명 · 출시연도 · 설치 · 배송 · A/S 포함 여부를 입예협과 확인 · 현장 가격 변경 없음</span></div>
 <div><b>D-14</b><strong>비교자료 공개</strong><span>같은 모델 · 같은 조건 총액으로 시중 매장 · 온라인과 비교해 카페에 먼저 공개(승인 후)</span></div>
-<div><b>{D.DEPOSIT_MAX}<small>%</small></b><strong>계약금 상한</strong><span>맞춤 제작 품목 예외 · 잔금은 시공 · 설치 확인 후</span></div>
+<div><b>{D.DEPOSIT_MAX}<small>%</small></b><strong>계약금 상한</strong><span>맞춤 제작 · 본사 규정 품목 예외 · 잔금은 시공 · 설치 확인 후</span></div>
 <div><b>동일</b><strong>현금 · 카드 같은 단가</strong><span>결제 방식에 따른 단가 차이 없음 · 업체 참가비는 정액 · 공구가 연동 없음</span></div>
 </div></div>
 <div class="bx"><h3><i>× 10</i>최저가 차액 10배 보상 (예시)<small>제안서 {pg('x10', 'rule2')}</small></h3>
@@ -201,7 +201,7 @@ def emit_summary(G):
 </div></div>
 </div>
 <div class="rec">
-<div><b>67<small>개 단지</small></b><span>누적 수임 56,361세대<br>(전신 실적 · 입주 예정 포함)</span></div>
+<div><b>{D.cumulative()[-1][3]}<small>개 단지</small></b><span>누적 수임 {D.cumulative()[-1][4]:,}세대<br>(전신 실적 · 입주 예정 포함)</span></div>
 <div><b>{r5_n}<small>개 단지</small></b><span>최근 3년 500세대 이상<br>{'주관' if r5_j == r5_n else f'그중 주관 {r5_j}'}</span></div>
 <div><b>4,470<small>세대</small></b><span>단일 단지 최대<br>레이카운티</span></div>
 <div><b>2<small>억원</small></b><span>자본금 · NICE BB-<br>현금흐름 A</span></div>

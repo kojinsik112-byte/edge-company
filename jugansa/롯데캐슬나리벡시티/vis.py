@@ -687,7 +687,7 @@ def apply2(B, D, take, sub):
     mny = ('<div class="mny"><div class="rl"><div class="ln"></div>'
            '<div class="zone" style="left:0;width:37%"><b>취소 기한 내 전액 환불</b></div>'
            '<div class="nd g" style="left:0"></div><div class="nd" style="left:37%"></div><div class="nd" style="left:70%"></div><div class="nd g" style="left:100%"></div>'
-           '<div class="lb2" style="left:5%">계약<small>계약금 5% 이하 · 맞춤 제작 예외</small></div>'
+           '<div class="lb2" style="left:5%">계약<small>계약금 5% 이하 · 맞춤 제작 · 본사 규정 품목 예외</small></div>'
            '<div class="lb2" style="left:37%">취소 기한<small>시공일 7일·15일 전 · 맞춤 제작은 출고 지시 전</small></div>'
            '<div class="lb2" style="left:70%">시공·설치<small>기한 뒤 취소는 실제 자재·제작비만 공제</small></div>'
            '<div class="lb2" style="left:94%">잔금 납부<small>시공·설치 후</small></div>'
