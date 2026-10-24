@@ -616,7 +616,7 @@ def apply2(B, D, take, sub):
     fl = ('<div class="fl5">'
           f'<div class="n">{ic("vault")}<b>엣지컴퍼니 자산</b><span>참여 업체 돈이 아님</span></div><em>›</em>'
           f'<div class="n">{ic("coins")}<b>예치금 최대 1억원</b><span>단지 규모·협의로 결정</span></div><em>›</em>'
-          f'<div class="n">{ic("headset")}<b>하자 접수</b><span>주관 콜센터</span></div><em>›</em>'
+          f'<div class="n">{ic("headset")}<b>공구 품목 하자</b><span>주관 콜센터 접수</span></div><em>›</em>'
           f'<div class="n g">{ic("house_shield")}<b>입주민 먼저 선보상</b><span>업체 사고·도산 시에도</span></div><em>›</em>'
           f'<div class="n">{ic("report")}<b>사용 내역 공개</b><span>업체와는 나중에 정산</span></div></div>')
     k["body"] = '<div class="nb">' + fl + k["body"] + '</div>'
@@ -696,7 +696,7 @@ def apply2(B, D, take, sub):
 
     # 사전점검 당일 현장 지원 — 위: 현수막·X배너 시안(HTML로 그린 예시) / 아래: 사진 카드 5칸
     k = take("사전점검 당일 [[현장 지원]]")[1]
-    banner = ('<div class="bnx"><div class="bl"><i>01 · 기본 지원</i><b>행사 물품</b>'
+    banner = ('<div class="bnx"><div class="bl"><i>01 · 부스 지원</i><b>행사 물품</b>'
               '<p>부스용 현수막·X배너·서면 자료 제작</p><small>시안 · 협의 후 확정</small></div>'
               f'<div class="hbw"><div class="hbn"><span class="t1">{D.SITE["name"]} 입주예정자협의회</span>'
               f'<b>{D.SITE["short"]} 입주민 여러분, <em>사전점검을 환영합니다</em></b>'
@@ -704,7 +704,7 @@ def apply2(B, D, take, sub):
               f'<div class="xbw"><div class="xbn"><div class="xh"><span>{D.SITE["short"]}</span><b>사전점검<br>안내</b></div>'
               '<ol><li>입예협 부스 방문 · 정회원 가입</li><li>라돈 측정 지원</li><li>하자 체크리스트 배포</li></ol>'
               f'<div class="xf">{D.SITE["short"]}<br>입주예정자협의회</div></div><span class="cp">X배너 시안</span></div></div>')
-    items = [("02 · 기본 지원", "입예협 도우미", "부스 운영 인력 지원(주관사 부담)", ("g09_helper_ai", "50% 30%")),
+    items = [("02 · 부스 지원", "입예협 도우미", "부스 운영 인력 지원", ("g09_helper_ai", "50% 30%")),
              ("03 · B 패키지", "라돈측정기 10대", "입주민이 내 집 라돈을 직접 측정", ("g09_radon_u", "50% 50%")),
              ("04 · B 패키지", "냉·난방용품", "점검 시기에 맞춰 부스용 준비", ("g09_heater_ai", "50% 50%")),
              ("05 · B 패키지", "커피차 지원", "점검 당일 입예협 부스에 커피차 지원", ("g09_coffee_u2", "50% 50%")),
@@ -713,8 +713,8 @@ def apply2(B, D, take, sub):
                                     f'<div class="lb">{no}</div><div class="nm">{nm}</div><div class="ds">{ds}</div></div>')
     k["body"] = (f'<div class="nb"><div class="r91">{banner}{tile(*items[0])}</div>'
                  f'<div class="tiles t5" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr">{"".join(tile(*x) for x in items[1:])}</div></div>')
-    k["lead"] = "행사 물품·도우미는 기본 지원(주관사 부담), 라돈측정기·냉난방용품·커피차·하자진단 보고서는 B 패키지로 더합니다."
-    k["kp"] = ("입예협은 [[입주민 응대에만]] 집중하시면 됩니다.", "01 · 02 = 기본 지원(주관사 부담 · 세대 혜택 패키지와 별도) · 03 ~ 06 = B 패키지 선택 항목")
+    k["lead"] = "현수막 · X배너 · 도우미로 부스를 꾸리고, 라돈측정기·냉난방용품·커피차·하자진단 보고서는 입예협이 고르시면 더합니다."
+    k["kp"] = ("입예협은 [[입주민 응대에만]] 집중하시면 됩니다.", "01 · 02 = 부스 구성 · 03 ~ 06 = 선택 항목")
     B.CSS += r"""
 .tile .tim+.lb{margin-top:0}
 .t5 .tile,.r91 .tile{justify-content:flex-start}.t5 .tile .nm{font-size:17px}.t5 .tile .ds{font-size:13.5px;line-height:1.45}.t5 .tim{height:136px}
