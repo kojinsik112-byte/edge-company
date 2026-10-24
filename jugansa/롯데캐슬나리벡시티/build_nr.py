@@ -152,7 +152,7 @@ B.CSS += r"""
 .cvart.cvx.osc img{object-position:69% 50%}
 .cv4>.cvart.cvx.day{width:60%}.cvart.cvx.day img{object-position:62% 45%}
 /* 본부장 10-24: 표지 · 마지막 장 사진을 줄여 단지 경관이 더 보이게(원본 1274px 확대로 흐림 → 축소 + 선명화본) */
-.cv4:not(.ctp)>.cvart.cvx.day{top:auto;height:620px;width:64%}.cv4:not(.ctp)>.cvart.cvx.day img{object-position:55% 60%}
+.cv4:not(.ctp)>.cvart.cvx.day{top:auto;bottom:56px;height:640px;width:64%}.cv4:not(.ctp)>.cvart.cvx.day .credit{bottom:66px}.cv4:not(.ctp)>.cvart.cvx.day img{object-position:55% 60%}
 .ctp>.cvart.cvx{top:auto;height:610px;width:60%}
 .cv4:not(.ctp)>.cvart.cvx.day:after{background:linear-gradient(90deg,#0D1E33 0%,rgba(13,30,51,.78) 10%,rgba(13,30,51,.3) 24%,rgba(13,30,51,0) 38%),linear-gradient(180deg,#0D1E33 0%,rgba(13,30,51,.75) 9%,rgba(13,30,51,.25) 22%,rgba(13,30,51,0) 34%,rgba(13,30,51,0) 70%,rgba(13,30,51,.75) 88%,#0D1E33 100%)!important}
 .cvart.cvx.day:after{background:
