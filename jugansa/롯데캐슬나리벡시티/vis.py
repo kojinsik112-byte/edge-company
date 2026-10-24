@@ -302,7 +302,7 @@ def apply(B, D, take, sub):
     _own, _alt, _ = D.IMG["site"]
     _here = _os.path.dirname(_os.path.abspath(__file__))
     _im = next((x for x in (_own, _alt) if x and _os.path.exists(_os.path.join(_here, "assets_ins", x + ".jpg"))), None)
-    _cap = D.LX_CAP if _im == _own else "조감도 · 홍보용 이미지 · 실제와 다를 수 있음"
+    _cap = "조감도 · 홍보용 이미지 · 실제와 다를 수 있음"  # 나리벡 site = 정면 투시도(130)
     bnr = ('<div class="bnr" style="flex-basis:25%"><img src="assets_ins/' + _im + '.jpg" alt="" style="object-position:55% 45%">'
            f'<b>{D.SITE["official"]} · {hh:,}세대 · {D.SITE["supply"]}</b><span>{_cap}</span></div>') if _im else ""
     k["body"] = '<div class="nb">' + bnr + k["body"] + '</div>'
@@ -640,11 +640,11 @@ def apply2(B, D, take, sub):
     _hv = lambda n: bool(n) and _os2.path.exists(_os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "assets_ins", n + ".jpg"))
     _gy = lambda key: D.IMG[key][0] if _hv(D.IMG[key][0]) else (D.IMG[key][1] if _hv(D.IMG[key][1]) else "gy_cover_aerial")  # 법정 10-23: 단지 사진 없으면 슬롯 대체(타 단지 예시)
     _own_lx = _hv(D.IMG["lx_front1"][0])
-    th = [(_gy("lx_front1"), "동 파사드 · 문주"), (_gy("lx_play"), "놀이터 (가상 연출)"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
+    th = [(_gy("lx_front1"), "동 파사드 · 문주"), (_gy("lx_play"), "포켓정원 · 산책로" if _own_lx else "놀이터 (가상 연출)"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
-           + (f'</div><div class="thc">01 = {D.SITE["name"]} 경관조명 제안 시뮬레이션 · 02 = 가상 연출(실제 단지 놀이터 아님) · 03 ~ 05 = 타 단지 현장 · 예시</div>' if _own_lx
+           + (f'</div><div class="thc">01 · 02 = {D.SITE["name"]} 경관조명 연출 시뮬레이션(실제와 다를 수 있음) · 03 ~ 05 = 타 단지 현장 · 예시</div>' if _own_lx
               else f'</div><div class="thc">01 · 02 = 타 단지 경관조명 연출 예시({D.SITE["short"]} 이미지 아님 · 02는 가상 연출) · 03 ~ 05 = 타 단지 현장 · 예시</div>'))
     k["body"] = sub(k["body"], "</li></ul></div></div></div>", "</li></ul>" + thm + "</div></div></div>")
 
@@ -658,7 +658,7 @@ def apply2(B, D, take, sub):
            '<figure><img src="assets_ins/n13_gx.jpg" alt=""><figcaption>커뮤니티 공간<small>예시 이미지</small></figcaption></figure>'
            '<figure><img src="assets_ins/n03_light.jpg" alt=""><figcaption>등기구 설치 현장<small>엣지컴퍼니 시공팀</small></figcaption></figure>'
            '<figure><img src="assets_ins/g14_light1c.jpg" alt=""><figcaption>입주 기념 점등식<small>타 단지 현장</small></figcaption></figure>'
-           f'<figure><img src="assets_ins/{_gy("lx_gate")}.jpg" alt="" style="object-position:50% 55%"><figcaption>{"동 파사드 · 문주 조명" if _own_lx else "진입부 · 수경 조명"}<small>외부 경관 진단 · ⟪pg:lx⟫ · {"시뮬레이션" if _own_lx else "타 단지 예시"}</small></figcaption></figure></div>')
+           f'<figure><img src="assets_ins/{_gy("lx_gate")}.jpg" alt="" style="object-position:50% 55%"><figcaption>{"문주 · 진입부 조명" if _own_lx else "진입부 · 수경 조명"}<small>외부 경관 진단 · ⟪pg:lx⟫ · {"시뮬레이션" if _own_lx else "타 단지 예시"}</small></figcaption></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
     # 조명 수직계열화 — 아이콘 체인
