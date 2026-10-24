@@ -266,7 +266,11 @@ def emit_summary(G):
         s = G["sub"](s, "<em>입주박람회 주관사 제안서</em>", "<em>입주박람회 주관사 요약제안서</em>")
         s = G["sub"](s, f'<span class="pill">{G["COVER"]["pill"]}</span>', '<span class="pill">요약제안서 · 제출서류 14</span>')
         s = G["sub"](s, f'<div class="tag2">{G["COVER"]["tag"]}</div>',
-                     '<div class="tag2">같은 기준 · 먼저 공개 · 한 창구 -<br>정회원이 한눈에 보시도록 10쪽에 담았습니다.</div>')
+                     '<div class="tag2">가격은 박람회 14일 전에 먼저 공개하고,<br>더 싸면 차액의 10배를 보상합니다<small style="font-size:.7em;opacity:.75"> (조건 6쪽)</small></div>')
+        # 본부장 10-24: 요약제안서 표지 = 항상 경관조명(야간 조감 · 마지막 장 동 파사드와 다른 컷) · 설치 약속으로 읽히지 않게 캡션
+        s = re.sub(r'src="assets_ins/nr_cover(_hd)?\.jpg"', 'src="assets_ins/nr_lx_front2.jpg"', s, count=1)
+        s = re.sub(r'(<div class="cvart cvx osc day">.*?<span class="credit">)[^<]*', lambda m: m.group(1) + "나리벡시티 경관조명 연출 시뮬레이션 · 실제와 다를 수 있음 · 설치 여부는 입예협 · 관리주체 결정", s, count=1, flags=re.S)
+        assert "nr_lx_front2" in s and "설치 여부는" in s
         return G["sub"](s, '<div class="bt"><span>입주박람회 주관사 제안서</span>', '<div class="bt"><span>입주박람회 주관사 요약제안서</span>')
 
     def contact_sum():
