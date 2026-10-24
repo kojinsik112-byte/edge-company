@@ -141,7 +141,7 @@ def emit_summary(G):
 <div class="bx"><b class="n">24<small>개월</small></b><strong>계약이행 · 하자보증보험</strong>
 <ul class="xl"><li>피보험자 = 입예협 · 협약 후 발급</li><li>금액 · 기산일 · 보증 대상은 협약 때 확정</li><li>하자 예치금 최대 1억 · 엣지컴퍼니 자산 · 선보상 재원</li></ul></div>
 <div class="bx"><b class="n">2<small>년</small></b><strong>무상 A/S · 업체 이관</strong>
-<ul class="xl"><li>시공 품목 최소 2년 · 브랜드는 제조사 보증</li><li>업체 도산 · 연락 두절 시 대체 업체 이관(계약자 동의)</li><li>무상 A/S 기간 안 이관 비용은 주관사 부담</li></ul></div>
+<ul class="xl"><li>시공 품목 최소 2년 · 브랜드는 제조사 보증</li><li>업체 도산 · 연락 두절 시 대체 업체 이관(입예협 승인 · 계약자 동의)</li><li>무상 A/S 기간 안 이관 비용은 주관사 부담</li></ul></div>
 </div>
 <div class="rs2">
 <div><b>업체 부담은 늘리지 않습니다</b><span>콜센터 운영비 · 하자 예치금 · 10배 보상금은 주관사 부담 - 업체 예치금 · 추가 보증금 없음(공고 우대 17)</span></div>
