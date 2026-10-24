@@ -608,7 +608,7 @@ def apply2(B, D, take, sub):
     b3 = sub(k["body"], '<div class="big">10<small>년</small></div><div class="nm">장기 사후관리</div>',
              '<div class="big">2<small>년</small></div><div class="nm">무상 A/S · 사후관리</div>')
     b3 = sub(b3, "최소 2년 무상 A/S, 최대 10년 장기 관리.",
-             "업체·품목별 상이. 입주 후 1년은 주관 창구 운영, 이후에도 규정 효력 유지(제10조).")
+             "시공 품목 최소 2년 · 브랜드는 제조사 보증. 입주 후 1년은 주관 창구 운영, 이후에도 규정 효력 유지(제10조).")
     k["body"] = '<div class="nb">' + band + b3 + '</div>'
 
     # 선보상 재원 — 돈의 흐름
