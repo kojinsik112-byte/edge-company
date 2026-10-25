@@ -195,7 +195,7 @@ def emit_summary(G):
 <div class="bx"><h3><i>PEOPLE</i>{ST['short']}{'을' if (ord(ST['short'][-1]) - 0xAC00) % 28 else '를'} 맡을 사람<small>제안서 {pg('people', 'pm')}</small></h3>
 <div class="ppl">
 <div><i>대표이사 · 결정권자</i><b>고진식</b><span><em>제안 조건을 PT 자리에서 확약</em><br>울산과학대 전기과 · 대한유화 → 엣지조명 대표 → <nobr>㈜엣지컴퍼니 창업(2022.02)</nobr> · 전기공사업 등록 대표자</span></div>
-<div><i>주관사업 총괄 본부장 · 책임자</i><b>총괄 본부장</b><span><em>입주예정자협의회 회장 3년 역임</em> - 계약 후 실제 업무를 맡을 책임자</span></div>
+<div><i>주관사업 총괄 본부장 · 책임자</i><b>{D.MANAGER[0]}</b><span><em>입주예정자협의회 회장 3년 역임</em> - 계약 후 실제 업무를 맡을 책임자</span></div>
 <div><i>핵심 운영인력</i><b>임직원 {G['_lead_n']}명</b><span>대표 · 본부장 + {stf} (이 중 단지 전담 PM 1명 지정 · 명단은 협약 시)</span>
 <div class="pro">{pro}</div></div>
 </div></div>
