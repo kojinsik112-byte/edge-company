@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>입주박람회 시공 단가표</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+  /* 종이 한 장 컨셉: 화면에서는 회색 책상 위 A4, 인쇄하면 A4 그대로. 단일 테마(종이). */
+  :root {
+    --navy:#12345e; --sky:#8fc0f0; --ink:#141414; --mute:#5b6676; --line:#b9c4d2; --zebra:#f6f8fb;
+    --desk:#e6e9ee; --paper:#ffffff; --tint:#e8f1fb;
+    --sans:'Noto Sans KR','맑은 고딕','Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+    color-scheme: light;
+  }
+  @page { size: A4 portrait; margin: 8mm; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--desk); color:var(--ink); font-family:var(--sans);
+         -webkit-print-color-adjust:exact; print-color-adjust:exact;
+         padding-block: 16px;
+         padding-left: max(16px, env(safe-area-inset-left, 0px));
+         padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .page { width:100%; max-width:198mm; margin:0 auto; background:var(--paper);
+          padding:6mm 6mm 5mm; box-shadow:0 4px 14px rgba(18,52,94,.14); }
+  .head { background:var(--navy); color:#fff; padding:12px 14px; border-radius:2px;
+          display:flex; flex-wrap:wrap; gap:8px 16px; align-items:flex-end; justify-content:space-between; }
+  .head h1 { margin:0; font-size:22px; font-weight:900; letter-spacing:-.4px; text-wrap:balance; }
+  .head p { margin:4px 0 0; font-size:12px; font-weight:500; opacity:.92; }
+  .box { background:#fff; color:var(--navy); font-weight:900; font-size:12px; padding:5px 10px;
+         border-radius:2px; white-space:nowrap; }
+  .box u { text-decoration:none; display:inline-block; min-width:90px; border-bottom:2px solid var(--navy); }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin:10px 2px 6px; font-size:11.5px; color:var(--mute); }
+  .legend b { color:var(--navy); }
+  .tw { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; min-width:520px; font-variant-numeric:tabular-nums; }
+  thead th { background:var(--navy); color:#fff; font-size:12.5px; font-weight:700; padding:7px 6px;
+             border:1px solid var(--navy); }
+  tr.grp th { background:var(--tint); color:var(--navy); text-align:left; font-size:12px; font-weight:900;
+              letter-spacing:.06em; padding:5px 8px; border:1px solid var(--line); }
+  td { border:1px solid var(--line); padding:6px 8px; vertical-align:middle; font-size:12.5px; line-height:1.45; }
+  td.item[rowspan] { background:var(--paper); }
+  td.item { width:15%; font-weight:900; font-size:13.5px; color:var(--navy); white-space:nowrap; }
+  td.scope { width:37%; }
+  td small { display:block; color:var(--mute); font-size:11px; margin-top:1px; }
+  td.pr { width:19%; text-align:center; }
+  td.prem { width:29%; }
+  td.pr .p b { font-size:17px; font-weight:900; }
+  td.pr .p i { font-style:normal; font-size:11.5px; font-weight:700; margin-left:1px; }
+  td.prem .p b { color:var(--navy); }
+  td.pr .txt { font-size:12.5px; font-weight:900; }
+  .tbd { font-size:12px; font-weight:700; color:var(--mute); }
+  .dash { color:var(--mute); }
+  .special { margin-top:10px; border:2px solid var(--navy); border-radius:2px; padding:9px 12px;
+             display:flex; flex-wrap:wrap; gap:4px 16px; align-items:center; }
+  .special strong { color:var(--navy); font-size:14px; font-weight:900; }
+  .special span { font-size:12.5px; }
+  .notes { margin:9px 2px 0; padding:0; list-style:none; font-size:11px; color:var(--mute); line-height:1.6; }
+  .foot { margin-top:8px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;
+          font-size:11px; color:var(--mute); border-top:1px solid var(--line); padding-top:6px; }
+  .foot b { color:var(--navy); }
+  @media (max-width:560px) {
+    .page { padding:12px 10px; }
+    .head h1 { font-size:19px; }
+    .tw { overflow:visible; }
+    table, tbody { display:block; min-width:0; }
+    thead { display:none; }
+    tbody tr { display:grid; grid-template-columns:1fr 1fr; gap:0 6px; border:1px solid var(--line); border-top:none; }
+    tr.grp { display:block; border:none; margin-top:8px; }
+    tr.grp th { display:block; border:1px solid var(--line); }
+    td { border:none; padding:5px 8px; width:auto !important; }
+    td.item, td.scope { grid-column:1 / -1; }
+    td.item { padding-bottom:0; font-size:15px; background:var(--paper); }
+    td.pr { background:var(--zebra); border-radius:2px; margin:0 0 8px; }
+    td.pr:first-of-type, td.pr:not(.prem) { margin-left:8px; }
+    td.prem { margin-right:8px; }
+    td.pr::before { content:"일반"; display:block; font-size:10.5px; font-weight:700; color:var(--mute); }
+    td.prem::before { content:"프리미엄"; }
+  }
+  @media print {
+    body { background:#fff; padding:0; }
+    .page { max-width:none; width:auto; box-shadow:none; padding:0; }
+    table { min-width:0; }
+    tr { break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="head">
+    <div>
+      <h1>입주박람회 시공 단가표</h1>
+      <p>전용 84㎡(34평) 기준 · 박람회 현장 계약가</p>
+    </div>
+    <div class="box">단지 <u>&nbsp;</u></div>
+  </header>
+  <div class="legend">
+    <span><b>일반</b> 기본 시공 범위</span>
+    <span><b>프리미엄</b> 상위 자재·범위 확장</span>
+    <span><b>줄눈</b> 일반 = 폴리우레아 · 프리미엄 = 케라폭시</span>
+  </div>
+  <div class="tw">
+  <table>
+    <thead><tr><th>품목</th><th>시공 범위</th><th>일반</th><th>프리미엄</th></tr></thead>
+    <tbody>
+<tr class="grp"><th colspan="4">마감 시공</th></tr>
+<tr><td class="item" rowspan="3">줄눈</td><td class="scope">현관, 욕실 2곳 바닥, 실리콘 오염방지 (3바닥)</td><td class="pr"><div class="p"><b>34</b><i>만원</i></div><small>폴리우레아</small></td><td class="pr prem"><div class="p"><b>55</b><i>만원</i></div><small>케라폭시</small></td></tr>
+<tr><td class="scope">3바닥 + 베란다·세탁실 바닥 (5바닥)</td><td class="pr"><div class="p"><b>45</b><i>만원</i></div><small>폴리우레아</small></td><td class="pr prem"><div class="p"><b>70</b><i>만원</i></div><small>케라폭시</small></td></tr>
+<tr><td class="scope">욕실 2곳 바닥+벽 전체, 현관, 베란다·세탁실 (전체)</td><td class="pr"><div class="p"><b>80</b><i>만원</i></div><small>폴리우레아</small></td><td class="pr prem"><div class="p"><b>120</b><i>만원</i></div><small>케라폭시</small></td></tr>
+<tr><td class="item">탄성코트</td><td class="scope">베란다, 다용도실 2곳<small>대피공간·실외기실 칸당 +5~10만원</small></td><td class="pr"><div class="p"><b>35</b><i>만원</i></div><small>세라믹(일반)</small></td><td class="pr prem"><div class="p"><b>45</b><i>만원</i></div><small>실리카·스톤 계열</small></td></tr>
+<tr><td class="item">나노코팅</td><td class="scope">욕실 2곳 (샤워부스 유리·거울·세면대·양변기)<small>마루 코팅 별도(34평 약 20만원)</small></td><td class="pr"><div class="p"><b>40</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>60</b><i>만원</i></div><small>욕실 2곳 + 주방 상판</small></td></tr>
+<tr><td class="item">창호 필름</td><td class="scope">거실 + 안방 창 단열·열차단 필름<small>기존 필름 제거 ㎡당 0.5~1.5만원</small></td><td class="pr"><div class="p"><b>50</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>90</b><i>만원</i></div><small>전체 창 (거실·방·발코니)</small></td></tr>
+<tr><td class="item">새집증후군</td><td class="scope">84㎡ 전체 광촉매 1회 + 피톤치드</td><td class="pr"><div class="p"><b>50</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>80</b><i>만원</i></div><small>+ 오존·베이크아웃, 입주 후 재시공 1회</small></td></tr>
+<tr><td class="item">입주청소</td><td class="scope">34평 기본 (바닥·주방·욕실·창틀·베란다)<small>곰팡이 제거 +10~20만원</small></td><td class="pr"><div class="p"><b>35</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>48</b><i>만원</i></div><small>+ 베란다 고압세척, 후드·환풍기·조명커버 탈거</small></td></tr>
+<tr class="grp"><th colspan="4">설치·수납</th></tr>
+<tr><td class="item">중문</td><td class="scope">3연동 슬림 중문 (투명·브론즈 유리), 설치 포함<small>표준 크기 초과 시 추가</small></td><td class="pr"><div class="p"><b>95</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>130</b><i>만원</i></div><small>스윙·원슬라이딩·포켓 또는 디자인 유리</small></td></tr>
+<tr><td class="item">커튼·블라인드</td><td class="scope">거실 쉬폰+암막 이중커튼, 안방 암막, 작은방 2곳 블라인드<small>원단 등급별 차이</small></td><td class="pr"><div class="p"><b>90</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>140</b><i>만원</i></div><small>+ 거실 전동커튼 (레일·모터)</small></td></tr>
+<tr><td class="item">붙박이장</td><td class="scope">안방 12자(3.6m) 여닫이, 행거·선반<small>자당 약 11만원</small></td><td class="pr"><div class="p"><b>130</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>175</b><i>만원</i></div><small>서랍·바지걸이 추가 중급형</small></td></tr>
+<tr><td class="item">냉장고장</td><td class="scope">4도어 + 김치냉장고 + 키큰장 맞춤</td><td class="pr"><div class="p"><b>180</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>240</b><i>만원</i></div><small>상위 자재·도어</small></td></tr>
+<tr><td class="item">팬트리 선반</td><td class="scope">팬트리 알루미늄 프레임 + 선반</td><td class="pr"><div class="p"><b>45</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>120</b><i>만원</i></div><small>드레스룸 시스템행거 (3~4평)</small></td></tr>
+<tr><td class="item">층간소음 매트</td><td class="scope">거실 + 복도 롤매트(PVC) 시공</td><td class="pr"><div class="p"><b>120</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>250</b><i>만원</i></div><small>거실 + 주방 시공매트(PU)</small></td></tr>
+<tr><td class="item">베란다 안전망</td><td class="scope">베란다 1면<small>방묘창 창당 5~7만원</small></td><td class="pr"><div class="p"><b>30</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>45</b><i>만원</i></div><small>베란다 둘레 전체</small></td></tr>
+<tr><td class="item">벽걸이TV</td><td class="scope">65인치 이하 타공 설치 (브라켓 포함)<small>70인치 이상 추가</small></td><td class="pr"><div class="p"><b>12</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>25</b><i>만원</i></div><small>무타공 + 선 정리</small></td></tr>
+<tr><td class="item">조명</td><td class="scope">LED 등기구 교체: 거실 1·방 3·주방<small>엣지컴퍼니 직영</small></td><td class="pr"><div class="p"><span class="tbd">현장 견적</span></div></td><td class="pr prem"><div class="p"></div><small>매입등·간접조명 + 아크로 실링팬</small></td></tr>
+<tr><td class="item">시스템에어컨</td><td class="scope">4대 (거실 + 방 3) 추가 설치<small>기본 배관 초과 시 m당 추가</small></td><td class="pr"><div class="p"><b>600</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>780</b><i>만원</i></div><small>5대 (주방 포함)</small></td></tr>
+<tr class="grp"><th colspan="4">주방</th></tr>
+<tr><td class="item">음식물처리기</td><td class="scope">싱크대 일체형 (미생물·분쇄), 설치 포함<small>렌탈 월 3.7~4만원 가능</small></td><td class="pr"><div class="p"><b>120</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>150</b><i>만원</i></div><small>상위 모델 (대용량·디스포저)</small></td></tr>
+<tr><td class="item">인덕션</td><td class="scope">3구 빌트인 교체 (가스 막음 포함)</td><td class="pr"><div class="p"><b>75</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>130</b><i>만원</i></div><small>삼성·LG 상위 모델 + 전용선 공사</small></td></tr>
+<tr><td class="item">사각싱크볼</td><td class="scope">스텐 사각볼 + 배수구 교체<small>상판 타공 확장 별도</small></td><td class="pr"><div class="p"><b>45</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>70</b><i>만원</i></div><small>엠보 900 + 올스텐 배수구</small></td></tr>
+<tr><td class="item">청정환기 필터</td><td class="scope">전열교환기 필터 교체 (방문)</td><td class="pr"><div class="p"><b>6</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>15</b><i>만원</i></div><small>연 2회 정기관리</small></td></tr>
+<tr class="grp"><th colspan="4">생활 서비스</th></tr>
+<tr><td class="item">포장이사</td><td class="scope">5톤, 34평 부산 시내<small>손없는날·월말 할증</small></td><td class="pr"><div class="p"><b>110</b><i>만원</i></div></td><td class="pr prem"><div class="p"><b>150</b><i>만원</i></div><small>포장이사 + 입주청소</small></td></tr>
+<tr><td class="item">인터넷+TV</td><td class="scope">500M + TV 기본 (3년 약정)<small>가입 사은품 별도</small></td><td class="pr"><div class="p"><span class="txt">월 4.5만원</span></div></td><td class="pr prem"><div class="p"><span class="txt">월 5.8만원</span></div><small>1G + TV</small></td></tr>
+<tr><td class="item">정수기 렌탈</td><td class="scope">냉온정 직수 정수기 (3년)</td><td class="pr"><div class="p"><span class="txt">월 3.5만원</span></div></td><td class="pr prem"><div class="p"><span class="txt">월 5만원</span></div><small>얼음정수기</small></td></tr>
+<tr><td class="item">인테리어</td><td class="scope">현장 실측 후 견적<small>상담 예약 특전</small></td><td class="pr"><div class="p"><span class="txt">현장 견적</span></div></td><td class="pr prem"><span class="dash">-</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <section class="special">
+    <strong>가전 · 가구 · 안마의자</strong>
+    <span>업체별 대표 특가 1~2개 사전 공개 · 그 외 전 품목은 박람회 현장 공개</span>
+  </section>
+  <ul class="notes">
+    <li>※ 표기 금액은 84㎡ 기준 대표 시공가이며 평형·현장 여건·자재에 따라 달라질 수 있습니다.</li>
+    <li>※ 최종 금액은 각 업체의 현장 견적서 기준입니다. 옵션(작은 글씨) 금액은 추가 비용입니다.</li>
+  </ul>
+  <div class="foot"><span>주관 <b>㈜엣지컴퍼니</b></span><span>v1 초안 · 2026.10</span></div>
+</div>
+</body>
+</html>
