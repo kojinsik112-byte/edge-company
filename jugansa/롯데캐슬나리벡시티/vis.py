@@ -665,7 +665,7 @@ def apply2(B, D, take, sub):
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
     # 조명 수직계열화 — 아이콘 체인
-    k = take("[[조명 수직계열화]] · 유통 단계 없는 공급")[1]
+    k = take("[[조명 수직계열화]] · 중간 유통을 줄인 공급")[1]
     b = inject(k["body"], ["ship", "factory", "kc", "ladder"])
     b = sub(b, '<div class="cards" style="grid-template-columns:repeat(4,1fr)">', '<div class="cards chain" style="grid-template-columns:repeat(4,1fr);gap:26px">')
     b = sub(b, "하자가 나도 다른 업체를 찾을 필요가 없습니다.</div>", '하자가 나도 다른 업체를 찾을 필요가 없습니다.<br><span class="chipx">전기공사업 등록 제 울산-00821호</span></div>')
