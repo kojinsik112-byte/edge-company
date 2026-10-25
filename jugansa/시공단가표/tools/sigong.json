@@ -1,0 +1,425 @@
+{
+ "note": "단위 만원. 84㎡(34평) 기준. basis: 제시=본부장님 제시가 / 확인=시세 출처 범위 안 대표가 / 추정=공개 시세 부족, AI 추정",
+ "groups": [
+  {
+   "name": "마감 시공",
+   "items": [
+    {
+     "item": "줄눈",
+     "cats": [
+      "줄눈"
+     ],
+     "scope": "현관, 욕실 2곳 바닥, 실리콘 오염방지",
+     "normal": 34,
+     "normal_desc": "폴리우레아",
+     "premium": 55,
+     "premium_desc": "케라폭시",
+     "option": "",
+     "ref": "폴리우레아·아스파틱 19~35 / 케라폭시 40~(VAT 별도), 폴리우레아의 약 1.5~2배",
+     "basis": "제시+확인",
+     "src": "daangn 줄눈을부탁해·참줄눈(부산), ohouse-ad 줄눈 패키지"
+    },
+    {
+     "item": "탄성코트",
+     "cats": [
+      "탄성코트"
+     ],
+     "scope": "베란다, 다용도실 2곳",
+     "normal": 35,
+     "premium": 45,
+     "premium_desc": "실리카·스톤 계열",
+     "option": "",
+     "ref": "2~3칸 28~50 / 고급 45~75",
+     "basis": "제시",
+     "src": "daangn 뉴스코트·코트앤케어, soomgo 평균 50(30~80)",
+     "normal_desc": "세라믹(일반)"
+    },
+    {
+     "item": "나노코팅",
+     "cats": [
+      "코팅"
+     ],
+     "scope": "욕실 2곳 (샤워부스 유리·거울·세면대·양변기)",
+     "normal": 40,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "욕실 약 40 / 욕실+주방 50~60",
+     "basis": "확인",
+     "src": "designin.co.kr 가격표, mcygclean 상판코팅",
+     "normal_desc": ""
+    },
+    {
+     "item": "창호 필름",
+     "cats": [
+      "필름"
+     ],
+     "scope": "거실 + 안방 창 단열·열차단 필름",
+     "normal": 50,
+     "premium": 85,
+     "premium_desc": "고급 필름(로이 대응)",
+     "option": "",
+     "ref": "㎡당 보급 2.5~4만 / 고급 5~8만(부산) · 주요 창 40~70(추정)",
+     "basis": "추정",
+     "src": "soomgo 단열필름 평균 65(18~150), miso 부산 ㎡당 2.5~8만",
+     "normal_desc": "보급형 필름"
+    },
+    {
+     "item": "새집증후군",
+     "cats": [
+      "새집증후군"
+     ],
+     "scope": "84㎡ 전체 광촉매 1회 + 피톤치드",
+     "normal": 50,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "1회 40~85 / 프리미엄 90~150",
+     "basis": "추정",
+     "src": "soomgo 평균 40(15~60), newhomeclean 30~40평 60~85",
+     "normal_desc": ""
+    },
+    {
+     "item": "입주청소",
+     "cats": [
+      "입주청소"
+     ],
+     "scope": "입주청소 기본 (바닥·주방·욕실·창틀·베란다)",
+     "normal": "평당 1.3~1.4만원",
+     "premium": "평당 2만원",
+     "premium_desc": "프리미엄 전문 업체",
+     "option": "",
+     "ref": "평당 일반 1.1~1.5만 / 신축 1.2~1.8만 (lifebase 2026)",
+     "basis": "제시",
+     "src": "lifebase 2026, houserecovery 34평, 브런치 34평 계약 후기",
+     "normal_desc": ""
+    }
+   ]
+  },
+  {
+   "name": "설치·수납",
+   "items": [
+    {
+     "item": "중문",
+     "cats": [
+      "중문"
+     ],
+     "scope": "3연동 슬림 중문, 설치 포함",
+     "normal": 95,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "일반 55~90 / 브랜드 100~150 / 스윙 90~160",
+     "basis": "확인",
+     "src": "ulmadna 중문, glasswallet 3연동 계산기, soomgo 평균 75",
+     "normal_desc": ""
+    },
+    {
+     "item": "커튼·블라인드",
+     "cats": [
+      "커튼"
+     ],
+     "scope": "거실 이중커튼(쉬폰+암막), 안방 암막, 작은방 2곳 블라인드",
+     "normal": 90,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "기본 80~100 / 전동 포함 110~160",
+     "basis": "확인",
+     "src": "dreamwindow 30평 커튼비용·전동커튼, glasswallet 방별 비용",
+     "normal_desc": ""
+    },
+    {
+     "item": "붙박이장",
+     "cats": [
+      "붙박이장·냉장고장"
+     ],
+     "scope": "안방 12자(3.6m) 여닫이, 행거·선반",
+     "normal": 130,
+     "premium": 175,
+     "premium_desc": "서랍·바지걸이 추가",
+     "option": "",
+     "ref": "실속 110~145 / 중급 155~195",
+     "basis": "확인",
+     "src": "ulmadna 붙박이장 크기별, soomgo 평균 102.8",
+     "normal_desc": ""
+    },
+    {
+     "item": "냉장고장",
+     "cats": [],
+     "scope": "4도어 + 김치냉장고 + 키큰장 맞춤",
+     "normal": 180,
+     "premium": 240,
+     "premium_desc": "상위 자재·도어",
+     "option": "",
+     "ref": "기본 150~200 / 중급 200~250",
+     "basis": "확인",
+     "src": "feeldesign 냉장고장 가이드 2026, daangn 업체 시작가",
+     "normal_desc": ""
+    },
+    {
+     "item": "팬트리 선반",
+     "cats": [
+      "선반"
+     ],
+     "scope": "팬트리 알루미늄 프레임 + 선반",
+     "normal": 45,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "팬트리 30~70(추정) / 드레스룸 100~200",
+     "basis": "추정",
+     "src": "ulmadna 시스템선반, soomgo 팬트리 사례 38",
+     "normal_desc": ""
+    },
+    {
+     "item": "층간소음 매트",
+     "cats": [
+      "매트"
+     ],
+     "scope": "거실 + 주방 시공매트",
+     "normal": 250,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "시공매트 거실+주방 200~300",
+     "basis": "확인",
+     "src": "soomgo 평균 205, daangn 메이매트",
+     "normal_desc": ""
+    },
+    {
+     "item": "베란다 안전망",
+     "cats": [
+      "안전망"
+     ],
+     "scope": "베란다 1면",
+     "normal": 10,
+     "premium": 30,
+     "premium_desc": "안전망",
+     "option": "",
+     "ref": "1면 20~50 / 전체 35~50",
+     "basis": "제시",
+     "src": "miso 창원·종로 안전그물망, soomgo 평균 55",
+     "normal_desc": "스텐"
+    },
+    {
+     "item": "벽걸이TV",
+     "cats": [
+      "벽걸이TV"
+     ],
+     "scope": "65인치 이하 타공 설치 (브라켓 포함)",
+     "normal": 12,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "타공 5~15 / 무타공 15~33",
+     "basis": "확인",
+     "src": "ulmadna 벽걸이TV, soomgo 평균 11, walltvpro 가격표",
+     "normal_desc": ""
+    },
+    {
+     "item": "조명",
+     "cats": [
+      "조명"
+     ],
+     "scope": "LED 등기구 교체: 거실 1·방 3·주방",
+     "normal": null,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "기본 43~104 / 프리미엄 100~200",
+     "basis": "본부장님 입력",
+     "src": "11st 32평 LED 교체, glasswallet LED 비용",
+     "normal_desc": ""
+    },
+    {
+     "item": "실링팬",
+     "cats": [],
+     "extra_vendors": [
+      {
+       "vendor": "엣지컴퍼니(아크로)"
+      }
+     ],
+     "scope": "실링팬",
+     "normal": 28,
+     "normal_desc": "자체브랜드",
+     "premium": 35,
+     "premium_desc": "제품별 상이",
+     "option": "",
+     "ref": "-",
+     "basis": "제시",
+     "src": ""
+    },
+    {
+     "item": "시스템에어컨",
+     "cats": [
+      "에어컨"
+     ],
+     "scope": "4대 (거실 + 방 3) 추가 설치",
+     "normal": 600,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "4대 530~850 / 5대 760~920",
+     "basis": "확인",
+     "src": "시스템에어컨.com 4대 비용, ulmadna 시스템에어컨",
+     "normal_desc": ""
+    }
+   ]
+  },
+  {
+   "name": "주방·욕실",
+   "items": [
+    {
+     "item": "음식물처리기",
+     "cats": [
+      "음식물처리기"
+     ],
+     "scope": "싱크대 일체형 (미생물·분쇄), 설치 포함",
+     "normal": 120,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "빌트인 89~156 + 설치 약 6",
+     "basis": "확인",
+     "src": "ulmadna 음식물처리기, ssg 싱크대음식물처리기",
+     "normal_desc": ""
+    },
+    {
+     "item": "인덕션",
+     "cats": [
+      "인덕션"
+     ],
+     "scope": "3구 빌트인 교체 (가스 막음 포함)",
+     "normal": 75,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "보급 67~75 / 브랜드 75~110 / 상위 120~150(추정)",
+     "basis": "추정",
+     "src": "miso 부산 인덕션 설치비, soomgo 인덕션 설치",
+     "normal_desc": ""
+    },
+    {
+     "item": "사각싱크볼",
+     "cats": [],
+     "scope": "스텐 사각볼 + 배수구 교체",
+     "normal": 45,
+     "premium": 70,
+     "premium_desc": "엠보 900 + 올스텐 배수구",
+     "option": "",
+     "ref": "기본 30~50 / 엠보·풀세트 55~100",
+     "basis": "확인",
+     "src": "glasswallet 싱크볼 비용, eliminterior",
+     "normal_desc": ""
+    },
+    {
+     "item": "욕실환기",
+     "cats": [],
+     "extra_vendors": [
+      {
+       "vendor": "휴젠뜨"
+      }
+     ],
+     "scope": "",
+     "normal": 28,
+     "normal_desc": "휴젠뜨2.5",
+     "premium": 35,
+     "premium_desc": "휴젠뜨3",
+     "option": "",
+     "ref": "-",
+     "basis": "제시",
+     "src": ""
+    },
+    {
+     "item": "청정환기 필터",
+     "cats": [
+      "청정환기"
+     ],
+     "scope": "전열교환기 필터 교체 (방문)",
+     "normal": 6,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "방문 5~7 / 연간 10~20 (추정)",
+     "basis": "추정",
+     "src": "widec 전열교환기 필터, myaptcare 필터세트",
+     "normal_desc": "",
+     "exclude_vendors": [
+      "휴젠트"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "생활 서비스",
+   "items": [
+    {
+     "item": "포장이사",
+     "cats": [
+      "이사"
+     ],
+     "scope": "5톤, 34평 부산 시내",
+     "normal": "현장 제시",
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "90~130 / 묶음 135~185(추정)",
+     "basis": "확인",
+     "src": "ajd 부산 포장이사, miso 34평 포장이사",
+     "normal_desc": ""
+    },
+    {
+     "item": "인터넷+TV",
+     "cats": [
+      "통신"
+     ],
+     "scope": "500M + TV 기본 (3년 약정)",
+     "normal": "현장 제시",
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "500M 월 4.3~4.6만 + 사은품 43~52",
+     "basis": "확인",
+     "src": "rentre 인터넷TV 결합, ajd 사은품 비교",
+     "normal_desc": ""
+    },
+    {
+     "item": "정수기 렌탈",
+     "cats": [
+      "렌탈"
+     ],
+     "scope": "냉온정 직수 정수기 (3년)",
+     "normal": "현장 제시",
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "냉온정 월 3.3~3.9만 / 얼음 월 4.7~5.4만",
+     "basis": "확인",
+     "src": "ajd 정수기 렌탈 비교, rentre LG 정수기",
+     "normal_desc": ""
+    },
+    {
+     "item": "인테리어",
+     "cats": [
+      "인테리어"
+     ],
+     "scope": "현장 실측 후 견적",
+     "normal": null,
+     "premium": null,
+     "premium_desc": "",
+     "option": "",
+     "ref": "범위 편차 커서 사전 단가 부적합",
+     "basis": "-",
+     "src": "",
+     "normal_desc": ""
+    }
+   ]
+  }
+ ],
+ "special": [
+  "가전",
+  "가구",
+  "안마의자"
+ ]
+}
