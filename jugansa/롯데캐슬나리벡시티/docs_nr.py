@@ -563,7 +563,7 @@ def doc03_form():
     rows = "".join(f'<tr><td>{e(nm)} <span style="color:#555">({m})</span></td><td class="c">{n:,}</td><td class="c" style="font-size:8.6pt">{_expo(nm)[0]}</td><td class="c">{_expo(nm)[1]}</td></tr>'
                    for m, nm, n, j in rs)
     tot = sum(r[2] for r in rs)
-    body = f"""<style>.b2 th,.b2 td{{padding:1.6pt 5pt!important;font-size:8.8pt!important;line-height:1.28!important}}</style>
+    body = f"""<style>.b2 th,.b2 td{{border:.7pt solid #333;padding:1.6pt 5pt!important;font-size:8.8pt!important;line-height:1.28!important;vertical-align:middle}}.b2 th{{background:#F2F2F2;font-weight:700;text-align:center;white-space:nowrap}}.b2 td.c{{text-align:center}}</style>
 {head("제출서류 03", "최근 3년간 입주박람회 주관 실적 증명서")}
 <table class="ft r2 b2" style="margin-top:8pt;width:100%;border-collapse:collapse"><thead><tr><th>아파트명 (입주 연월)</th><th style="width:10%">세대수</th><th style="width:34%">박람회 일정(입주박람회 · 공동구매)</th><th style="width:20%">행사 장소</th></tr></thead>
 <tbody>{rows}<tr><th>합계 {len(rs)}개 단지 · 모두 당사 주관</th><th>{tot:,}</th><th colspan="2"></th></tr></tbody></table>
