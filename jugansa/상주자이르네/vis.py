@@ -275,15 +275,15 @@ def apply(B, D, take, sub):
     # 역할은 제안서에 이미 있는 업무만(조경 = 단지 조경 · 야간 경관 진단).
     k = take("공인된 [[자격과 신뢰]]")[1]
     pro = [("전기", 3, "경관·공용부 조명 점검 · 전기 하자 확인"), ("도장", 2, "사전점검 도장 하자 확인"),
-           ("타일", 1, "타일 들뜸·줄눈 하자 확인"), ("조경", 1, "임원 직접 · 단지 조경 · 야간 경관 점검·자문"),
+           ("조경", 1, "임원 직접 · 단지 조경 · 야간 경관 점검·자문"),  # 타일 1 = 4대보험 명부에 없어 뺌(본부장 10-26)
            ("간호사", 1, "대한간호사협회 · 박람회 현장 응급 대응 지원")]
     k["body"] = ('<div class="nb">' + k["body"] + '<div class="pro"><div class="h"><i>PROFESSIONALS</i>'
-                 '<b>자격 · 협회 등록<br><em>5개 분야</em> 전문 인력</b><span>보유 현황 · 2026.10 기준</span></div>'
+                 '<b>자격 · 협회 등록<br><em>4개 분야</em> 전문 인력</b><span>보유 현황 · 2026.10 기준</span></div>'
                  + "".join(f'<div class="c"><b>{n}<small>명</small></b><div>{f}</div><p>{r}</p></div>' for f, n, r in pro)
                  + '</div></div>')
     k["lead"] = "재무·제휴·인증은 서류로 증명하고, 전문 인력은 보유 현황으로 적었습니다."
     k["kp"] = "재무·제휴·인증은 [[원본 증빙]]을 함께 제출합니다."
-    B.CSS += (".pro{flex:0 0 auto;display:grid;grid-template-columns:190px repeat(5,1fr);gap:12px;padding:14px 18px;"
+    B.CSS += (".pro{flex:0 0 auto;display:grid;grid-template-columns:190px repeat(4,1fr);gap:12px;padding:14px 18px;"
               "border:1px solid rgba(200,168,106,.45);border-radius:14px;background:rgba(235,203,143,.05)}"
               ".pro .h{display:flex;flex-direction:column;justify-content:center}"
               ".pro .h i{font-style:normal;font-size:10.5px;letter-spacing:.2em;color:var(--gold);font-weight:700}"
