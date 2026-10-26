@@ -272,8 +272,8 @@ function draw(now){
 function drawBoard(now){
   const B = BOARD.box; let y = B[1] + 44;
   ctx.font = "11px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#6e5f45";
-  ctx.fillText("마감", B[0]+96, y-8); ctx.fillText("D-day", B[0]+170, y-8);
-  ORDER.forEach((k,i)=>{ ctx.fillText(STATIONS[k].name, B[0] + 236 + i*44, y - 8); });
+  ctx.fillText("마감", B[0]+100, y-8); ctx.fillText("D-day", B[0]+192, y-8);
+  ORDER.forEach((k,i)=>{ ctx.fillText(STATIONS[k].name.slice(0,4), B[0] + 250 + i*42, y - 8); });
   // 행 = 현황판 단지(마감 순) + 현황판에 없는데 신호만 있는 단지
   const rows = boardRows.map(r => ({...r})); const seen = new Set(rows.map(r=>r.site));
   for (const n in sites) if (!seen.has(n)) rows.push({site:n, name:n, due:"", dday:null, done:false});
@@ -282,16 +282,18 @@ function drawBoard(now){
     const urgent = r.dday !== null && r.dday <= 2 && !r.done;
     ctx.fillStyle = r.done ? "#d9d3c4" : cur ? "#fff3b0" : urgent ? "#ffd6c8" : "#e4dcc8"; ctx.fillRect(B[0]+10, y, B[2]-B[0]-20, 40);
     ctx.fillStyle = r.done ? "#8a7a56" : "#1e1813"; ctx.font = "bold 13px 'Malgun Gothic', sans-serif"; ctx.fillText(r.site, B[0]+18, y+18);
-    ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#6e5f45"; ctx.fillText(clip(r.name, 14), B[0]+18, y+33);
-    ctx.font = "11px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#3a2a18"; ctx.fillText(clip(r.due || "—", 14), B[0]+96, y+18);
-    if (r.pt){ ctx.fillStyle = "#6e5f45"; ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillText("PT " + clip(r.pt, 12) + (r.pt_dday !== null && r.pt_dday >= 0 ? " (D-" + r.pt_dday + ")" : ""), B[0]+96, y+33); }
+    ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#6e5f45"; ctx.fillText(clip(r.name, 9), B[0]+18, y+33);
+    const dueShort = (r.due || "—").replace(/\s*\(.*$/, "").slice(0, 6) + (r.time ? " " + r.time : "");
+    ctx.font = "11px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#3a2a18"; ctx.fillText(dueShort, B[0]+100, y+18);
+    if (r.pt){ const ptm = (r.pt.match(/\d{1,2}\.\d{1,2}/) || [""])[0]; ctx.fillStyle = "#6e5f45"; ctx.font = "10px 'Malgun Gothic', sans-serif";
+      ctx.fillText(ptm ? "PT " + ptm + (r.pt_dday !== null && r.pt_dday >= 0 ? " (D-" + r.pt_dday + ")" : "") : "PT " + clip(r.pt, 8), B[0]+100, y+33); }
     // D-day 칸
-    let dtxt = r.done ? "제출 완료" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";
-    ctx.font = "bold 13px monospace"; ctx.fillStyle = r.done ? "#5a8a5a" : urgent ? "#b4322a" : "#1e1813"; ctx.fillText(dtxt, B[0]+170, y+22);
-    if (urgent && !r.done && (Math.floor(now/500)%2)){ ctx.strokeStyle = "#b4322a"; ctx.lineWidth = 2; ctx.strokeRect(B[0]+164, y+6, 60, 24); }
+    let dtxt = r.done ? "제출완료" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";
+    ctx.font = "bold 13px monospace"; ctx.fillStyle = r.done ? "#5a8a5a" : urgent ? "#b4322a" : "#1e1813"; ctx.fillText(dtxt, B[0]+190, y+22);
+    if (urgent && !r.done && (Math.floor(now/500)%2)){ ctx.strokeStyle = "#b4322a"; ctx.lineWidth = 2; ctx.strokeRect(B[0]+184, y+6, 58, 24); }
     // 단계 점
-    ORDER.forEach((k,i)=>{ const x = B[0] + 248 + i*44, on = s.stage === k; ctx.beginPath(); ctx.arc(x, y+20, on ? 9 : 5, 0, Math.PI*2); ctx.fillStyle = on ? STATIONS[k].color : "#c9bfa6"; ctx.fill(); if (on && !stale && (Math.floor(now/400)%2)){ ctx.strokeStyle = "#1e1813"; ctx.lineWidth = 2; ctx.stroke(); } });
-    if (s.teams && s.teams.length){ ctx.fillStyle = "#6e5f45"; ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillText(clip(s.teams.slice(-2).join(" · "), 26), B[0]+236, y+36); }
+    ORDER.forEach((k,i)=>{ const x = B[0] + 262 + i*42, on = s.stage === k; ctx.beginPath(); ctx.arc(x, y+20, on ? 9 : 5, 0, Math.PI*2); ctx.fillStyle = on ? STATIONS[k].color : "#c9bfa6"; ctx.fill(); if (on && !stale && (Math.floor(now/400)%2)){ ctx.strokeStyle = "#1e1813"; ctx.lineWidth = 2; ctx.stroke(); } });
+    if (s.teams && s.teams.length){ ctx.fillStyle = "#6e5f45"; ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillText(clip(s.teams.slice(-2).join(" · "), 26), B[0]+250, y+37); }
     y += 46; });
 }
 function tag(cx, by, text, fg, bgc){ ctx.font = "bold 12px monospace"; const t = clip(text, 24), w = ctx.measureText(t).width + 14, x = Math.min(1200-w-4, Math.max(4, cx - w/2)), y = by - 20;
