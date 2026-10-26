@@ -7,7 +7,7 @@
 방(=업무 단계)은 '어느 팀이 일하나(agent_type)'로 먼저 정하고,
 팀 이름이 없으면(본부장 직접 작업) 만지는 파일 경로로 단계를 추정한다.
 """
-import json, os, re, sys, time, threading
+import json, os, re, sys, time, threading, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
@@ -54,6 +54,52 @@ def site_for(h):
         if v in h: return v
     m = re.search(r"jugansa[\\/]([^\\/]+)", h)
     return m.group(1)[:5] if m and not m.group(1).endswith((".py", ".md")) else ""
+# ── 단지 보드: jugansa/입찰현황판.md 의 '진행 중' 표에서 마감 · PT · 제출 여부를 읽는다 ──
+BOARD_FILE = [None]          # 찾은 현황판 경로 (SessionStart 의 cwd · 환경변수 JUGANSA_DIR · 이 폴더 위쪽 순으로 찾음)
+def find_board(start=None):
+    cands = []
+    if os.environ.get("JUGANSA_DIR"): cands.append(os.path.join(os.environ["JUGANSA_DIR"], "입찰현황판.md"))
+    for base in [start, HERE]:
+        if not base: continue
+        d = os.path.abspath(base)
+        for _ in range(6):
+            cands.append(os.path.join(d, "입찰현황판.md")); cands.append(os.path.join(d, "jugansa", "입찰현황판.md")); d = os.path.dirname(d)
+    for c in cands:
+        if os.path.isfile(c): BOARD_FILE[0] = c; return c
+    return BOARD_FILE[0]
+
+def parse_date(txt, today):
+    m = re.search(r"(\d{1,2})\.(\d{1,2})(?:\([^)]*\))?(?:\s*(\d{1,2}):(\d{2}))?", txt or "")
+    if not m: return None, ""
+    mo, da = int(m.group(1)), int(m.group(2)); yr = today.year
+    if mo < today.month - 6: yr += 1
+    try: d = datetime.date(yr, mo, da)
+    except ValueError: return None, ""
+    return d, (f"{m.group(3)}:{m.group(4)}" if m.group(3) else "")
+
+def board():
+    f = find_board()
+    if not f: return {"file": "", "sites": []}
+    today = datetime.date.today(); rows = []; on = False
+    try: lines = open(f, encoding="utf-8").read().splitlines()
+    except OSError: return {"file": f, "sites": []}
+    for ln in lines:
+        if ln.startswith("| 단지 |") and "제출 마감" in ln: on = True; continue
+        if on and not ln.startswith("|"): on = False
+        if not on or ln.startswith("|---") or ln.startswith("| ---"): continue
+        c = [x.strip() for x in ln.strip().strip("|").split("|")]
+        if len(c) < 7: continue
+        name, hh, q, due, pt, status, rest = c[0], c[1], c[2], c[3], c[5], c[6], " ".join(c[7:])
+        short = site_for(name) or name[:4]
+        d, tm = parse_date(due, today)
+        done = "✅" in status or "✅" in rest or "제출 완료" in status
+        dday = (d - today).days if d else None
+        ptd, _ = parse_date(pt, today)
+        rows.append({"site": short, "name": name, "hh": hh, "due": re.sub(r"\*", "", due), "dday": dday, "time": tm,
+                     "pt": re.sub(r"\*", "", pt)[:28], "pt_dday": (ptd - today).days if ptd else None, "done": done})
+    rows.sort(key=lambda r: (r["done"], r["dday"] if r["dday"] is not None else 999))
+    return {"file": f, "today": today.isoformat(), "sites": rows}
+
 BOSS = "boss"            # 본부장 캐릭터 id
 ROOM_OF_CHAR = {"boss": "office", "scout": "scout", "analyst": "analysis", "builder": "build",
                 "auditor": "audit", "mailer": "mail", "coach": "pt", "retro": "retro", "pmo": "retro"}
@@ -131,6 +177,7 @@ def translate(h):
     if name in ("Stop", "SessionEnd"):
         return {"kind": "rest", "reason": name}
     if name == "SessionStart":
+        find_board(h.get("cwd"))
         return {"kind": "start", "source": h.get("source", ""), "model": h.get("model", ""), "cwd": os.path.basename(h.get("cwd", "") or "")}
     if name == "UserPromptSubmit":
         return {"kind": "prompt", "label": short(h.get("prompt", ""), 40), "site": site_for(str(h.get("prompt", "")) + " " + str(h.get("cwd", "")))}
@@ -158,6 +205,7 @@ class H(BaseHTTPRequestHandler):
             with LOCK: evs = [e for e in EVENTS if e["id"] > since]; seq = SEQ[0]
             return self._send(200, json.dumps({"seq": seq, "events": evs}, ensure_ascii=False).encode(), MIME[".json"])
         if u.path == "/health": return self._send(200, b"ok")
+        if u.path == "/sites": return self._send(200, json.dumps(board(), ensure_ascii=False).encode(), MIME[".json"])
         self._send(404, b"not found")
     def do_POST(self):
         u = urlparse(self.path); n = int(self.headers.get("Content-Length") or 0); raw = self.rfile.read(n) if n else b""

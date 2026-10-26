@@ -68,9 +68,11 @@ for (const c of SPRITES) assets.push([c+"_stand",`static/c_${c}_stand.png`],[c+"
 // ───────── 상태 ─────────
 const chars = {};                                     // id → 캐릭터 (boss 는 고정, 팀은 agent_id 로 생겼다 사라짐)
 function mk(id, sprite, name, x, y){ return chars[id] = {id, sprite, name, x, y, path:[], state:"idle", face:1, label:"", tag:"", bubble:null, bubbleUntil:0, hop:0, after:null, at:"lounge", leaveAt:0}; }
-mk("boss", "boss", "본부장", BOSS_DESK.x, BOSS_DESK.y); chars.boss.at = "boss";
+mk("boss", "boss", "총괄 본부장", BOSS_DESK.x, BOSS_DESK.y); chars.boss.at = "boss";
 let firstPoll = true, activeStation = null, memos = [], lastSeq = 0, simTimer = null, connected = null, curSite = "";
 const sites = {};                                     // 단지 약칭 → {stage, t, teams}
+let boardRows = (typeof BOARD_SNAPSHOT !== "undefined") ? BOARD_SNAPSHOT : [];   // 현황판에서 읽은 마감 · PT (서버 /sites)
+async function loadBoard(){ try{ const r = await fetch("/sites", {cache:"no-store"}); if (r.ok){ const j = await r.json(); if (j.sites && j.sites.length) boardRows = j.sites; } }catch(e){} setTimeout(loadBoard, 60000); }
 
 function freeSeat(){ const used = new Set(Object.values(chars).map(c=>c.seatIdx)); for (let i=0;i<LOUNGE.seats.length;i++) if (!used.has(i)) return i; return LOUNGE.seats.length-1; }
 function slot(st){ // 작업대 앞에 여러 명이 서는 자리 (왼쪽부터)
@@ -111,7 +113,7 @@ function handle(ev){
       touchSite(ev.site || curSite, st || "", ch.tag);
     }
     memos = memos.filter(m => m.type !== "notice");
-    setLog(`${st ? STATIONS[st].name : "본부장석"} · ${ev.team_kr || "본부장"} · ${ev.tool || ""}${ev.label ? " · " + ev.label : ""}${ev.site ? " · [" + ev.site + "]" : ""}`);
+    setLog(`${st ? STATIONS[st].name : "본부장석"} · ${ev.team_kr || "총괄 본부장"} · ${ev.tool || ""}${ev.label ? " · " + ev.label : ""}${ev.site ? " · [" + ev.site + "]" : ""}`);
   } else if (k === "done"){
     const ch = ev.who === "boss" ? chars.boss : null; if (ch && ch.state === "working") ch.label = "";
   } else if (k === "team_stop"){
@@ -211,7 +213,7 @@ function drawBackground(){
   px(g,BOSS_DESK.x-56,BOSS_DESK.y-62,112,50,"#5a4630"); px(g,BOSS_DESK.x-56,BOSS_DESK.y-62,112,4,"#8a7440");
   px(g,BOSS_DESK.x-16,BOSS_DESK.y-86,32,22,"#1c2430"); px(g,BOSS_DESK.x-13,BOSS_DESK.y-83,26,16,"#2d4a6a");
   px(g,BOSS_DESK.x-56,BOSS_DESK.y-124,112,36,"#1e1813"); px(g,BOSS_DESK.x-56,BOSS_DESK.y-124,4,36,"#c8a35a");
-  g.fillStyle = "#f3ead8"; g.font = "bold 13px 'Malgun Gothic', sans-serif"; g.fillText("본부장석", BOSS_DESK.x-46, BOSS_DESK.y-109);
+  g.fillStyle = "#f3ead8"; g.font = "bold 13px 'Malgun Gothic', sans-serif"; g.fillText("총괄 본부장석", BOSS_DESK.x-50, BOSS_DESK.y-109);
   g.fillStyle = "#b7ab96"; g.font = "10px 'Malgun Gothic', sans-serif"; g.fillText("총괄 · 결정 · 팀 호출", BOSS_DESK.x-46, BOSS_DESK.y-95);
   // 대기 · 휴게
   const L = LOUNGE.box; px(g,L[0],L[1],L[2]-L[0],L[3]-L[1],"#7f9a6a"); px(g,L[0]+4,L[1]+4,L[2]-L[0]-8,L[3]-L[1]-8,"#93ad7a");
@@ -220,7 +222,7 @@ function drawBackground(){
   for (const [x,y] of [[L[0]+10,L[3]-30],[L[2]-26,L[3]-30]]){ px(g,x,y+14,16,10,"#7a5a3c"); px(g,x+2,y,12,16,"#3f7a3a"); px(g,x-3,y+4,9,9,"#4f9448"); }
   // 단지 보드 틀
   const B = BOARD.box; px(g,B[0],B[1],B[2]-B[0],B[3]-B[1],"#2a2621"); px(g,B[0]+4,B[1]+4,B[2]-B[0]-8,B[3]-B[1]-8,"#efe8d6");
-  g.fillStyle = "#1e1813"; g.font = "bold 13px 'Malgun Gothic', sans-serif"; g.fillText("진행 중 단지 보드 — 단지마다 지금 어느 단계인지", B[0]+14, B[1]+24);
+  g.fillStyle = "#1e1813"; g.font = "bold 13px 'Malgun Gothic', sans-serif"; g.fillText("진행 중 단지 보드 — 마감 D-day · 지금 어느 단계인지", B[0]+14, B[1]+24);
 }
 
 // ───────── 그리기 루프 ─────────
@@ -263,21 +265,34 @@ function draw(now){
     let ty = y - 4;
     if (ch.state==="working" && ch.label && !walking){ tag(ch.x, ty, ch.label, "#222", "#f5f0e4"); ty -= 22; }
     if (ch.bubble && now < ch.bubbleUntil){ tag(ch.x, ty, ch.bubble, "#fff", "#1d1a16"); ty -= 22; }
-    nameplate(ch.x, y + h - 2, ch.id === "boss" ? "본부장" : ch.tag || ch.name, ch.id === "boss" ? "#c8a35a" : (STATIONS[ch.at] ? STATIONS[ch.at].color : "#bbb"));
+    nameplate(ch.x, y + h - 2, ch.id === "boss" ? "총괄 본부장" : ch.tag || ch.name, ch.id === "boss" ? "#c8a35a" : (STATIONS[ch.at] ? STATIONS[ch.at].color : "#bbb"));
     ch._box = [x, y, w, h];
   }
 }
 function drawBoard(now){
-  const B = BOARD.box; const names = Object.keys(sites); let y = B[1] + 44;
+  const B = BOARD.box; let y = B[1] + 44;
   ctx.font = "11px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#6e5f45";
-  ORDER.forEach((k,i)=>{ ctx.fillText(STATIONS[k].name, B[0] + 150 + i*56, y - 8); });
-  if (!names.length){ ctx.fillStyle = "#8a7a56"; ctx.font = "12px 'Malgun Gothic', sans-serif"; ctx.fillText("아직 신호 없음 — 단지 폴더 안 파일을 만지면 여기 줄이 생깁니다", B[0]+14, y+16); return; }
-  names.slice(-8).forEach(n=>{ const s = sites[n], stale = Date.now() - s.t > SITE_STALE_MS, cur = n === curSite;
-    ctx.fillStyle = cur ? "#fff3b0" : "#e4dcc8"; ctx.fillRect(B[0]+10, y, B[2]-B[0]-20, 36);
-    ctx.fillStyle = stale ? "#8a7a56" : "#1e1813"; ctx.font = "bold 13px 'Malgun Gothic', sans-serif"; ctx.fillText(n, B[0]+18, y+23);
-    ORDER.forEach((k,i)=>{ const x = B[0] + 162 + i*56, on = s.stage === k; ctx.beginPath(); ctx.arc(x, y+18, on ? 9 : 5, 0, Math.PI*2); ctx.fillStyle = on ? STATIONS[k].color : "#c9bfa6"; ctx.fill(); if (on && !stale && (Math.floor(now/400)%2)){ ctx.strokeStyle = "#1e1813"; ctx.lineWidth = 2; ctx.stroke(); } });
-    ctx.fillStyle = "#6e5f45"; ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillText(stale ? "쉬는 중" : (s.teams.length ? s.teams.slice(-2).join(" · ") : "본부장"), B[0]+18, y+34);
-    y += 44; });
+  ctx.fillText("마감", B[0]+96, y-8); ctx.fillText("D-day", B[0]+170, y-8);
+  ORDER.forEach((k,i)=>{ ctx.fillText(STATIONS[k].name, B[0] + 236 + i*44, y - 8); });
+  // 행 = 현황판 단지(마감 순) + 현황판에 없는데 신호만 있는 단지
+  const rows = boardRows.map(r => ({...r})); const seen = new Set(rows.map(r=>r.site));
+  for (const n in sites) if (!seen.has(n)) rows.push({site:n, name:n, due:"", dday:null, done:false});
+  if (!rows.length){ ctx.fillStyle = "#8a7a56"; ctx.font = "12px 'Malgun Gothic', sans-serif"; ctx.fillText("현황판(jugansa/입찰현황판.md)을 아직 못 찾음 — 세션을 시작하면 읽습니다", B[0]+14, y+16); return; }
+  rows.slice(0, 8).forEach(r=>{ const s = sites[r.site] || {stage:"", t:0, teams:[]}, stale = !s.t || Date.now() - s.t > SITE_STALE_MS, cur = r.site === curSite;
+    const urgent = r.dday !== null && r.dday <= 2 && !r.done;
+    ctx.fillStyle = r.done ? "#d9d3c4" : cur ? "#fff3b0" : urgent ? "#ffd6c8" : "#e4dcc8"; ctx.fillRect(B[0]+10, y, B[2]-B[0]-20, 40);
+    ctx.fillStyle = r.done ? "#8a7a56" : "#1e1813"; ctx.font = "bold 13px 'Malgun Gothic', sans-serif"; ctx.fillText(r.site, B[0]+18, y+18);
+    ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#6e5f45"; ctx.fillText(clip(r.name, 14), B[0]+18, y+33);
+    ctx.font = "11px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#3a2a18"; ctx.fillText(clip(r.due || "—", 14), B[0]+96, y+18);
+    if (r.pt){ ctx.fillStyle = "#6e5f45"; ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillText("PT " + clip(r.pt, 12) + (r.pt_dday !== null && r.pt_dday >= 0 ? " (D-" + r.pt_dday + ")" : ""), B[0]+96, y+33); }
+    // D-day 칸
+    let dtxt = r.done ? "제출 완료" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";
+    ctx.font = "bold 13px monospace"; ctx.fillStyle = r.done ? "#5a8a5a" : urgent ? "#b4322a" : "#1e1813"; ctx.fillText(dtxt, B[0]+170, y+22);
+    if (urgent && !r.done && (Math.floor(now/500)%2)){ ctx.strokeStyle = "#b4322a"; ctx.lineWidth = 2; ctx.strokeRect(B[0]+164, y+6, 60, 24); }
+    // 단계 점
+    ORDER.forEach((k,i)=>{ const x = B[0] + 248 + i*44, on = s.stage === k; ctx.beginPath(); ctx.arc(x, y+20, on ? 9 : 5, 0, Math.PI*2); ctx.fillStyle = on ? STATIONS[k].color : "#c9bfa6"; ctx.fill(); if (on && !stale && (Math.floor(now/400)%2)){ ctx.strokeStyle = "#1e1813"; ctx.lineWidth = 2; ctx.stroke(); } });
+    if (s.teams && s.teams.length){ ctx.fillStyle = "#6e5f45"; ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillText(clip(s.teams.slice(-2).join(" · "), 26), B[0]+236, y+36); }
+    y += 46; });
 }
 function tag(cx, by, text, fg, bgc){ ctx.font = "bold 12px monospace"; const t = clip(text, 24), w = ctx.measureText(t).width + 14, x = Math.min(1200-w-4, Math.max(4, cx - w/2)), y = by - 20;
   ctx.fillStyle = bgc; ctx.fillRect(x, y, w, 19); ctx.strokeStyle="#444"; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,w-1,18); ctx.fillStyle = fg; ctx.fillText(t, x+7, y+13); }
@@ -288,7 +303,7 @@ cv.addEventListener("click", e => { const r = cv.getBoundingClientRect(), pxx = 
     say(ch, ch.state==="working" ? "[작업 중] " + (ch.label || ch.tag || "") : ch.state==="reporting" ? "[보고 중]" : ch.state==="resting" ? "[휴식 중]" : ch.state==="leaving" ? "[퇴근]" : "[대기 중]"); return; } } });
 
 drawBackground();
-Promise.all(assets.map(a=>load(a[0],a[1]))).then(()=>{ requestAnimationFrame(tick); poll(); });
+Promise.all(assets.map(a=>load(a[0],a[1]))).then(()=>{ requestAnimationFrame(tick); poll(); loadBoard(); });
 </script>
 </body>
 </html>
