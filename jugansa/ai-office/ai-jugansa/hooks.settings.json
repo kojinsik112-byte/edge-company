@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "SessionStart":     [{"hooks": [{"type": "http", "url": "http://127.0.0.1:8790/event", "timeout": 2, "onFailure": "continue"}]}],
+    "UserPromptSubmit": [{"hooks": [{"type": "http", "url": "http://127.0.0.1:8790/event", "timeout": 2, "onFailure": "continue"}]}],
+    "PreToolUse":       [{"matcher": "*", "hooks": [{"type": "http", "url": "http://127.0.0.1:8790/event", "timeout": 2, "onFailure": "continue"}]}],
+    "PostToolUse":      [{"matcher": "*", "hooks": [{"type": "http", "url": "http://127.0.0.1:8790/event", "timeout": 2, "onFailure": "continue"}]}],
+    "SubagentStart":    [{"hooks": [{"type": "http", "url": "http://127.0.0.1:8790/event", "timeout": 2, "onFailure": "continue"}]}],
+    "SubagentStop":     [{"hooks": [{"type": "http", "url": "http://127.0.0.1:8790/event", "timeout": 2, "onFailure": "continue"}]}],
+    "Notification":     [{"hooks": [{"type": "http", "url": "http://127.0.0.1:8790/event", "timeout": 2, "onFailure": "continue"}]}],
+    "Stop":             [{"hooks": [{"type": "http", "url": "http://127.0.0.1:8790/event", "timeout": 2, "onFailure": "continue"}]}]
+  }
+}
