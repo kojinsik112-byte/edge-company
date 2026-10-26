@@ -702,7 +702,7 @@ def doc14_bond():
 <table class="t" style="margin-top:10pt"><tbody>
 <tr><td class="k" style="width:22%">증권</td><td class="l">서울보증보험 계약보증보험증권 · 2026.09.07 발급 · 울주대리점</td></tr>
 <tr><td class="k">주계약</td><td class="l">광고대행 용역(공공 발주) — <b>입주박람회 협약 이행보증이 아닙니다</b></td></tr>
-<tr><td class="k">이 협약</td><td class="l">공고 참가자격 12) · 13) — 협약 후 입예협을 피보험자로 계약이행증권 · 하자보증보험증권을 보증기간 24개월로 발급 · 금액 · 기산일 · 보증 대상은 협약 때 확정</td></tr>
+<tr><td class="k">이 협약</td><td class="l">공고 참가자격 12) · 13) — 협약 후 입예협을 피보험자로 계약이행 · 하자보증보험을 보증기간 24개월로 발급 · 금액 · 기산일 · 보증 대상은 협약 때 확정</td></tr>
 <tr><td class="k">가림</td><td class="l">상대방 · 보험료 · 증권번호 뒷자리 · 가입금액은 상대방 계약 정보라 가렸습니다(원본은 PT 때 열람 가능).</td></tr>
 </tbody></table>
 <div style="margin-top:10pt;text-align:center"><img src="{pathlib.Path(img).as_uri()}" style="max-width:100%;max-height:165mm;border:.6pt solid #C9CED6"></div>"""
