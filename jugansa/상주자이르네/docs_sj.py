@@ -232,8 +232,9 @@ def form2():
     m = D.MANAGER
     rows = ""
     for i, (f_, kind, nm, lic, org) in enumerate(D.EXPERTS, 1):
-        if kind == "없음":  # 본부장 10-26 B안: 해당 분야 전문가 없음 → 양식 주석대로 빈칸
-            rows += (f'<tr><td>{i}</td><td>{f_}</td><td></td><td></td><td></td>'
+        if kind in ("없음", "협의중"):  # 본부장 10-26: 계약 전 → 성명 · 자격 빈칸 · 고용 형태 체크 안 함
+            org_ = '<span style="font-size:8.6pt">감리 전문회사<br>(협력 계약 추진 중)</span>' if kind == "협의중" else ""
+            rows += (f'<tr><td>{i}</td><td>{f_}</td><td></td><td></td><td>{org_}</td>'
                      '<td style="white-space:nowrap">□ 직접 &nbsp;□ 협력</td></tr>')
             continue
         pv = PRIV.get("experts_sj", {}).get(f_, {})
