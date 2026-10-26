@@ -115,7 +115,8 @@ function handle(ev){
   } else if (k === "done"){
     const ch = ev.who === "boss" ? chars.boss : null; if (ch && ch.state === "working") ch.label = "";
   } else if (k === "team_stop"){
-    const ch = chars[ev.agent_id]; if (ch){ ch.state = "idle"; ch.label = ""; ch.hop = 1; say(ch, "보고 완료", 1600); ch.leaveAt = performance.now() + 1800; }
+    const ch = chars[ev.agent_id]; if (ch){ ch.state = "reporting"; ch.label = ""; const b = chars.boss; go(ch, [b.x - 36 - (Object.values(chars).filter(c=>c.state==="reporting").length*22), b.y + 4], "report");
+      ch.after = ()=>{ say(ch, "보고 드립니다", 1800); say(b, "확인", 1200); ch.leaveAt = performance.now() + 2200; }; }
     setLog(`${st ? STATIONS[st].name : ""} · ${ch ? ch.tag : ev.team} 작업 끝`);
   } else if (k === "memo"){
     memos.push({text:(ev.memo_type==="permission_prompt"?"승인 요청 · ":ev.memo_type==="idle_prompt"?"대기 · ":"알림 · ")+ev.label, type:"notice"}); memos = memos.slice(-4);
@@ -227,7 +228,7 @@ const cv = document.getElementById("c"), ctx = cv.getContext("2d"); ctx.imageSmo
 let last = performance.now();
 function tick(now){ const dt = Math.min(0.05,(now-last)/1000); last = now;
   for (const id in chars){ const ch = chars[id]; move(ch, dt);
-    if (id !== "boss" && ch.leaveAt && now > ch.leaveAt && ch.state !== "leaving"){ ch.state = "leaving"; ch.tag = ch.tag; go(ch, [ch.x < 600 ? 30 : 1170, 700], "exit"); ch.after = ()=>{ delete chars[id]; }; }
+    if (id !== "boss" && ch.leaveAt && now > ch.leaveAt && ch.state !== "leaving" && !ch.path.length){ ch.state = "leaving"; ch.tag = ch.tag; go(ch, [ch.x < 600 ? 30 : 1170, 700], "exit"); ch.after = ()=>{ delete chars[id]; }; }
   }
   draw(now); requestAnimationFrame(tick); }
 function move(ch, dt){
@@ -237,8 +238,12 @@ function move(ch, dt){
     else { ch.x += dx/d*step; ch.y += dy/d*step; } }
   if (ch.hop > 0) ch.hop = Math.max(0, ch.hop - dt*2.2);
 }
+let lastChat = 0;
 function draw(now){
   ctx.drawImage(bg, 0, 0);
+  if (now - lastChat > 2600){ lastChat = now; const groups = {};
+    for (const id in chars){ const c = chars[id]; if (c.state === "working" && STATIONS[c.at] && !c.path.length) (groups[c.at] = groups[c.at] || []).push(c); }
+    for (const k in groups){ const g = groups[k]; if (g.length >= 2){ const a = g[Math.floor(Math.random()*g.length)]; if (!a.bubble || now > a.bubbleUntil) say(a, ["같이 볼까요", "이 부분 확인", "근거 쪽은?", "제 쪽은 끝", "숫자 맞춰요"][Math.floor(Math.random()*5)], 1600); } } }
   if (activeStation){ const s = STATIONS[activeStation]; ctx.strokeStyle = s.color; ctx.lineWidth = 3; ctx.globalAlpha = 0.45 + 0.3*Math.sin(now/300); ctx.strokeRect(s.x-58, s.y-128, 116, 160); ctx.globalAlpha = 1; }
   // 메모(작업 라인 아래 통로)
   memos.forEach((m,i)=>{ const x = 40 + i*150, y = 252, w = 140, h = 30;
@@ -253,7 +258,7 @@ function draw(now){
     const hop = ch.hop > 0 ? Math.sin(ch.hop*Math.PI)*7 : 0;
     const x = ch.x - w/2, y = ch.y - h + 10 - bob - hop;
     ctx.save(); if (ch.face < 0){ ctx.translate(ch.x,0); ctx.scale(-1,1); ctx.translate(-ch.x,0); } ctx.drawImage(img, x, y, w, h); ctx.restore();
-    const col = ch.state==="working" ? "#6fd37a" : ch.state==="resting" ? "#8fb4e8" : ch.state==="leaving" ? "#aaa" : "#ddd";
+    const col = ch.state==="working" ? "#6fd37a" : ch.state==="reporting" ? "#f2c14e" : ch.state==="resting" ? "#8fb4e8" : ch.state==="leaving" ? "#aaa" : "#ddd";
     ctx.fillStyle = col; ctx.beginPath(); ctx.arc(ch.x + w/2 - 4, y + 6, 5, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle="#222"; ctx.lineWidth=1.5; ctx.stroke();
     let ty = y - 4;
     if (ch.state==="working" && ch.label && !walking){ tag(ch.x, ty, ch.label, "#222", "#f5f0e4"); ty -= 22; }
@@ -280,7 +285,7 @@ function nameplate(cx, by, text, col){ ctx.font = "11px 'Malgun Gothic', sans-se
 function clip(s, n){ s = String(s); return s.length > n ? s.slice(0, n-1) + "…" : s; }
 cv.addEventListener("click", e => { const r = cv.getBoundingClientRect(), pxx = (e.clientX - r.left) * 1200 / r.width, pyy = (e.clientY - r.top) * 720 / r.height;
   for (const id in chars){ const ch = chars[id], b = ch._box; if (!b) continue; if (pxx >= b[0] && pxx <= b[0]+b[2] && pyy >= b[1] && pyy <= b[1]+b[3]){
-    say(ch, ch.state==="working" ? "[작업 중] " + (ch.label || ch.tag || "") : ch.state==="resting" ? "[휴식 중]" : ch.state==="leaving" ? "[퇴근]" : "[대기 중]"); return; } } });
+    say(ch, ch.state==="working" ? "[작업 중] " + (ch.label || ch.tag || "") : ch.state==="reporting" ? "[보고 중]" : ch.state==="resting" ? "[휴식 중]" : ch.state==="leaving" ? "[퇴근]" : "[대기 중]"); return; } } });
 
 drawBackground();
 Promise.all(assets.map(a=>load(a[0],a[1]))).then(()=>{ requestAnimationFrame(tick); poll(); });
