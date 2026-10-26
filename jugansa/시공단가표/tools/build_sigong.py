@@ -168,7 +168,8 @@ for grp in data["groups"]:
                         cs(w, r, col, link(src), lf, al, fmt=PRICE if col in (5, 7) else None)
                 note = o.get("note") or ("직전 행사 무상 참가 — 참가 여부 확인" if v["status"] != "유료" else None)
                 cs(w, r, 9, note, f_input, left)
-                cs(w, r, 10, "본부장님 입력" if o else "미확인", f_input, center, None if o else fill_yel)
+                ok = bool(o) or it.get("confirmed")
+                cs(w, r, 10, "본부장님 입력" if ok else "미확인", f_input, center, None if ok else fill_yel)
                 w.row_dimensions[r].height = 30
                 r += 1
 W1 = r - 1

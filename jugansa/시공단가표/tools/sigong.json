@@ -222,15 +222,16 @@
      "cats": [
       "조명"
      ],
-     "scope": "LED 등기구 교체: 거실 1·방 3·주방",
-     "normal": null,
-     "premium": null,
-     "premium_desc": "",
+     "scope": "간접조명 기본 패키지 (10구 또는 6구+커튼박스), 스위치 별도",
+     "normal": 25,
+     "premium": 30,
+     "premium_desc": "우물 간접조명 PVC (목공+필름 45만원)",
      "option": "",
-     "ref": "기본 43~104 / 프리미엄 100~200",
-     "basis": "본부장님 입력",
+     "ref": "엣지컴퍼니 입주박람회 견적 안내(VAT 포함)",
+     "basis": "제시",
      "src": "11st 32평 LED 교체, glasswallet LED 비용",
-     "normal_desc": ""
+     "normal_desc": "기본 패키지",
+     "confirmed": true
     },
     {
      "item": "실링팬",
@@ -240,15 +241,16 @@
        "vendor": "엣지컴퍼니(아크로)"
       }
      ],
-     "scope": "실링팬",
-     "normal": 28,
-     "normal_desc": "자체브랜드",
-     "premium": 35,
-     "premium_desc": "제품별 상이",
+     "scope": "실링팬 설치 포함 · 도배·보강 별도(현금 20만+10만원)",
+     "normal": 22,
+     "normal_desc": "아크로 · 블루투스",
+     "premium": 42,
+     "premium_desc": "팬엔코 (루씨에어 55만원)",
      "option": "",
-     "ref": "-",
+     "ref": "엣지컴퍼니 견적 안내: 정상가 30.5만 → 박람회가 22만",
      "basis": "제시",
-     "src": ""
+     "src": "",
+     "confirmed": true
     },
     {
      "item": "시스템에어컨",
@@ -329,7 +331,8 @@
      "option": "",
      "ref": "-",
      "basis": "제시",
-     "src": ""
+     "src": "",
+     "confirmed": true
     },
     {
      "item": "청정환기 필터",
