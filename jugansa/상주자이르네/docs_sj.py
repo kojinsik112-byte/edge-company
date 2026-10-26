@@ -54,6 +54,7 @@ EXPERT_DIR = f"{SP}/sangju/experts"   # 별지2호 증빙(자격증 사본 · �
 WORK = os.path.join(HERE, "작업")
 SUBMIT = os.path.join(HERE, "제출본")
 P09 = os.path.join(HERE, "엣지컴퍼니_상주자이르네_입주박람회_주관사_업무수행제안서_밝은시안.pdf")  # 본부장 10-21: 제출본 = 밝은 버전(tools/light_build.py)
+C01 = os.path.join(HERE, "엣지컴퍼니_상주자이르네_회사소개원본_밝은시안.pdf")  # 01장 전체(회사소개서 = 제출서류 8) — 제출 제안서 01장은 1쪽 요약(본부장 10-26)
 SEAL_SCAN = getattr(D, "SEAL_SCAN", None) or f"{SP}/seal_scan/상주_사용인감계_날인.pdf"   # 별지4호 사용인감계 법인인감 실물 날인 스캔(1쪽)
 
 
@@ -676,7 +677,7 @@ def main():
     a7 = relabel(R500_DOC, out("7_3_증빙A_주관사협약서.pdf"), "제출서류 9 · 별첨 3", "제출서류 7 · 증빙 A-{k} (협약일 순)", "공식 입주박람회 주관 실적 — 주관사 협약서 사본")
     b7 = fit(render("7_4_증빙B_행사일정_카페공지", doc07_caps()), 1, 2)
     n7 = stamped(annex_nice(NICE_SRC, out("7_5_증빙C_NICE연혁발췌.pdf")))
-    ch = ch01_pages(P09)
+    ch = ch01_pages(C01)
     c8 = fit(render("8_1_회사소개서_표지", doc08_cover(f"표지 + 회사소개 {len(ch)}쪽(숫자 · 연혁 · 법인 서류 · 인증 · 대표자 · 조직 · 본사 관리 · 현장 체계 · 실적 · 추천과 협약 · 연락처)")), 1)
     ex6 = sorted(os.path.join(EXPERT_DIR, f) for f in (os.listdir(EXPERT_DIR) if os.path.isdir(EXPERT_DIR) else []) if f.lower().endswith(".pdf"))
     emp_html = doc06_emp()
@@ -699,7 +700,7 @@ def main():
          + [(p, None, "자격증 · 경력증 사본 " + os.path.splitext(os.path.basename(p))[0].replace("_", " · ", 2).split("_")[0]) for p in ex6]),
         ("7", "[별지3호] 입주박람회 주관 실적 증명서", f"{len(D.SJ_REC)}건 · {sum(r[2] for r in D.SJ_REC):,}세대 · 증빙 A 협약서 3 · B 행사일정 · 카페 공지 4 · C NICE 연혁",
          [(f3, None, "별지3호 실적 증명서"), (c7, None, "증빙 안내"), (a7, None, "증빙 A 주관사 협약서"), (b7, None, "증빙 B 행사일정 · 카페 공지"), (n7, None, "증빙 C NICE 연혁 발췌")]),
-        ("8", "회사소개서", f"표지 + 업무 수행 제안서 01장 회사소개 {len(ch)}쪽", [(c8, None, "표지"), (P09, ch, "회사소개")]),
+        ("8", "회사소개서", f"표지 + 회사소개 {len(ch)}쪽(제안서 01장 상세본 · 제안서에는 1쪽 요약)", [(c8, None, "표지"), (C01, ch, "회사소개")]),
         ("9", "업무 수행 제안서", f"{len(fitz.open(P09))}쪽 · ① 시공 단계 품질 · 하자 예방 ② 입주 준비 ③ 박람회(업체 선정 · 가격 검증) ④ A/S · 민원 ⑤ 협의회 지원",
          [(P09, None, None)]),
     ]

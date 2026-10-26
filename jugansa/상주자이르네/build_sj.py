@@ -1331,6 +1331,11 @@ PGREF = {
     "venue": "행사장 대관과 [[운영 준비]]", "floor": "박람회장 배치와 [[인원 운영]] (안)", "cafe": "입예협 카페 [[홍보 콘텐츠]] 제작", "online": "못 오셔도 [[괜찮습니다]]",
 }
 PGNO = {}
+# 본부장 10-26(법정 1차 · 운영진 '01장 19쪽 = 회사소개서와 중복'): 제출 제안서 01장 = 간지 + 1쪽 요약 · 전체 01장은 회사소개서(제출서류 8) 원본으로만
+SHORT01 = {"on": False}
+CH01_KEYS = {"num", "hist", "succ", "people", "docs", "ev", "cert", "rec"}
+FIX_HIT = {}
+T_CH01S = "엣지컴퍼니 [[한 장 요약]]"
 
 
 # ============================================================ 기존 장 고치기
@@ -2207,8 +2212,6 @@ FIX_SJ = [
      "보증기간 24개월로 발급합니다(금액 · 기산일 · 보증 대상은 협약 때 확정)."),
     ("보증보험 발급과 예치금 약정, <em>두 방식 모두 실제로 이행</em>해 왔습니다.", "보증보험증권 발급과 예치금 약정을 <em>다른 계약에서 실제로 해 봤습니다</em>."),
     ("이행을 담보하는 두 가지 방식을 모두 실제로 해 왔습니다.", "이행을 담보하는 두 수단을 다른 계약에서 실제로 써 봤습니다(입주박람회 이행보증 가입 이력은 아님)."),
-    ("공정 7개마다 <em>최소 1회</em> - 협의회가 요청하면 그 공정에 수시 자문을 더합니다.",
-     "7개 공정의 은폐 전 시점을 <em>자문 캘린더</em>로 미리 알려 드리고, 협의회가 요청하면 그 공정을 자문합니다."),
     ("4개 팀 12명을 상주 자이르네 전담으로 배치합니다(안).", "4개 팀 12명이 상주 자이르네 업무를 나눠 맡습니다(겸임 · 단계별 투입 명단은 협약 시 제출)."),
     ("입예협 <em>전담 체계</em> - 운영 인원 12명", "협의회 <em>담당 체계</em> - 운영 인원 12명"),
     ("동종업체로 이관 · 그 A/S 비용은 주관사가 전액 부담", "동종업체로 이관 · 무상 A/S 기간 안 이관 비용은 주관사 부담"),
@@ -2226,9 +2229,8 @@ FIX_SJ = [
     ("전 타입 도면 분석 보고서는 08장 선택 항목 B(세대당 12만원 상당 범위)에서 협의회가 선택", "전 타입 도면 분석 보고서도 협의회 요청 시 진행"),
     ("박람회 14일 전 가격 공개 · 계약 후", "박람회 전 가격 공개 · 계약 후"),
     # 10-26 법정 1차(검사 B 허위 · 약속 · 검사 C 운영진) 반영
-    ("7개 공정마다 <em>은폐 전</em> 1회 이상 - 숨기기 전에 봅니다", "7개 공정마다 <em>은폐 전</em> 시점에 먼저 연락 - 협의회가 정한 공정을 숨기기 전에 봅니다"),
-    ("시공 단계 자문은 <em>협의회가 요청하면</em> 공정 일정에 맞춰 진행합니다.", "공정마다 <em>은폐 전에 먼저 연락</em>드리고, 협의회가 정한 공정을 자문합니다."),
-    ("<td>협약 직후 · 7개 공정 은폐 전 자문 · 10영업일 서면 회신</td>", "<td>협약 직후 · 7개 공정 은폐 전 연락 · 협의회가 정한 공정 자문 · 10영업일 서면 회신</td>"),
+    ("시공 단계 자문은 <em>협의회가 요청하면</em> 공정 일정에 맞춰 진행합니다.", "협약 직후부터 <em>7개 공정마다 은폐 전 1회 이상</em> 자문합니다 - 그 밖의 공정 · 사안은 협의회가 요청하면 수시로."),  # 본부장 10-26: 1회 이상 확정
+    ("<td>협약 직후 · 7개 공정 은폐 전 자문 · 10영업일 서면 회신</td>", "<td>협약 직후 · 7개 공정마다 은폐 전 1회 이상 자문 · 10영업일 서면 회신</td>"),
     ("<em>10영업일 안에 서면 회신</em>(현장 확인이 필요하면 일정 협의)", "<em>10영업일 안에 서면 회신</em>(외부 전문가 분야는 협의회 승인 뒤 10영업일 · 현장 확인이 필요하면 일정 협의)"),
     ("정례회의 · 임원회의 · 시공 단계 자문 회의에 책임자 직접 참석", "정례회의 · 시공 단계 자문 회의에 책임자 참석(대면 · 화상은 협의회와 협의)"),
     ("협의회 정례회의 · 공정 자문일 · PT · 박람회 · 사전점검에 본부장 · 분야 전문가가 현장 참석", "협의회 정례회의 · 공정 자문일 · PT · 박람회 · 사전점검에 본부장 참석 · 분야 전문가는 해당 안건이 있을 때"),
@@ -2259,6 +2261,8 @@ FIX_SJ = [
     ("세대당 12만원 상당 범위 - 입예협 업무 지원 서비스(B)와 진단 · 자료 제공 컨설팅(C)입니다.",
      "세대당 12만원 상당 범위의 선택 항목 B · C - 공고 업무 ①(공정 자문 · 기술 검토 · 질의서 · 협의 동석)은 이와 별개로 기본 지원합니다."),
     ("협상 미팅 동석", "외부 전문가 협상 동석"),
+    ('<div class="tt">전담 PM</div><div class="dd">단지 전담 1명 지정 · 전담 PM 성명 · 연락처는 협약 시 제출',
+     '<div class="tt">현장 실무 담당</div><div class="dd">단지 담당 1명 지정(선정 후 30일 안) · 성명 · 연락처는 협약 시 제출'),
     # 검사 A 3 · 4 — 실적 증빙 표현(협약서 3 · 행사일정 · 공지 · NICE 연혁, 실적 확약서 없음)
     ("공식 입주박람회 주관 <em>8건 · 13,381세대</em> - 모두 증빙을 붙였습니다.", "공식 입주박람회 주관 <em>8건 · 13,381세대</em> - 실적마다 증빙을 붙였습니다."),
     ("NICE 기업신용평가 연혁 · 실적 확약서 · 허위 기재 시", "NICE 기업신용평가 연혁(협약서 3건 · 나머지는 공식 일정 · 공지 · 연혁) · 허위 기재 시"),
@@ -2270,7 +2274,8 @@ def fix_sj(doc):
     for a_, b_ in FIX_SJ:
         pat = re.escape(a_).replace("\\ ·\\ ", S).replace("\\ ", "[\\s\u00a0]+")
         doc, k = re.subn(pat, lambda m: b_, doc)
-        assert k >= 1, ("상주 검수 문구를 찾지 못함", a_)
+        FIX_HIT[a_] = FIX_HIT.get(a_, 0) + k
+        assert k >= 1 or SHORT01["on"], ("상주 검수 문구를 찾지 못함", a_)
     return doc
 
 
@@ -2310,7 +2315,7 @@ def finish(path, title):
         doc = doc.replace(_a, _b)
     doc = doc.replace("<span>주식회사 엣지컴퍼니 · 대표이사 고진식</span>", "<span>주식회사 엣지컴퍼니</span>")
     # 본부장 10-15 밤: 조직 구성 쪽 KEY POINT — '박람회 현장 운영 인력 약 21명 …'은 줄을 바꿔 다음 문단으로(문구 그대로)
-    assert doc.count("<small>박람회 현장 운영 인력 약 21명") == (0 if "요약제안서" in path else 1), "조직 구성 쪽 KEY POINT 소문구를 찾지 못함"
+    assert doc.count("<small>박람회 현장 운영 인력 약 21명") == (0 if "요약제안서" in path or SHORT01["on"] else 1), "조직 구성 쪽 KEY POINT 소문구를 찾지 못함"
     doc = doc.replace("<small>박람회 현장 운영 인력 약 21명", '<small class="kpbr">박람회 현장 운영 인력 약 21명')
     doc = doc.replace("</style>", ".kp small.kpbr{display:block;margin-left:0;margin-top:3px}</style>", 1)
     if D.FUND != 15:  # 상주 · 북수원: 패키지 · 08장 문구의 '15만원'(고양 · 탕정 값)을 세대당 지원액으로
@@ -2350,8 +2355,14 @@ def finish(path, title):
                       r"발전기금|단지발전|입예협 지정|공용물품|커뮤니티 집기|bd_|os_|gy_|화재 ·|배상책임보험 개최|입주 후 1년|공고 주요내용|참가자격 \d|별지 6|별지 5 서약|북수원|이목|더리체|1,744|theriche|대방건설|수원|화성권|지침서|별지 [1-5]|적격심사|제안참여규정|보증 만료|협약 범위|운영계획서).{0,10}", _txt)
     assert not left, left
     # 대응표 쪽 번호(⟪pg:키⟫) — emit()에서 재배치가 끝난 B.PAGES로 계산
-    doc = re.sub(r"⟪pg:(\w+)⟫", lambda m: f"p.{PGNO[m.group(1)]:02d}", doc)
-    doc = re.sub(r"⟪pgs:([\w,]+)⟫", lambda m: "p." + " · ".join(f"{n:02d}" for n in sorted({PGNO[k] for k in m.group(1).split(",")})), doc)
+    def _pg(n):
+        return f"p.{n:02d}" if n else "제출서류 8"
+
+    def _pgs(keys):
+        ns = sorted({PGNO[k] for k in keys if PGNO[k]})
+        return " · ".join(([("p." + " · ".join(f"{n:02d}" for n in ns))] if ns else []) + (["제출서류 8"] if any(not PGNO[k] for k in keys) else []))
+    doc = re.sub(r"⟪pg:(\w+)⟫", lambda m: _pg(PGNO[m.group(1)]), doc)
+    doc = re.sub(r"⟪pgs:([\w,]+)⟫", lambda m: _pgs(m.group(1).split(",")), doc)
     assert "⟪" not in doc
     doc = re.sub(r"⟦(.*?)⟧", r'<mark class="todo">\1</mark>', doc)
     _todo = re.findall(r'<mark class="todo">(.*?)</mark>', doc)
@@ -2371,12 +2382,36 @@ PH_LABEL = {"bd_cover": "조감도 자리", "bd_gate_night": "문주 경관조�
 PH_MISSING = set()
 
 
+def ch01_summary():
+    """제출 제안서 01장 1쪽 요약 — 숫자는 회사소개서(제출서류 8) · 별지3호와 같은 값(data에서 계산)."""
+    cum = D.cumulative()[-1]
+    n8, hh8 = len(D.SJ_REC), sum(r[2] for r in D.SJ_REC)
+    staff = getattr(D, "STAFF_LEAD", 2) + sum(c for _, c, _ in D.STAFF)
+    yj = next(r for r in D.SJ_REC if r[0].startswith("영주"))
+    body = ('<div class="nb">' + B.cards([
+        dict(lb="설립 · 자본금", big="2022", unit=".02", nm="자본금 2억", ds="전시 · 박람회 · 행사 대행 · 광고대행 · 전기공사"),
+        dict(lb="신용 · 재무", big="BB-", nm="NICE 기업신용평가(2026.06)", ds="현금흐름 등급 A"),
+        dict(lb="면허 · 인증", big="ISO", unit="3종", nm="9001 · 14001 · 45001", ds=f"{D.ELEC_LICENSE}"),
+        dict(lb="인력", big=str(staff), unit="명", nm="임직원(정규직 13 + 인턴 1)", ds="사내 자격 인력 건축 2 · 조경 1 · 전기 3(별지2호)"),
+        dict(lb="공식 주관 실적", big=str(n8), unit="건", nm=f"{hh8:,}세대(별지3호)", ds="협의회와 협약한 공식 입주박람회 · 증빙 = 제출서류 7", hl=True),
+        dict(lb="경북 실적", big=f"{yj[2]:,}", unit="세대", nm="영주자이 시그니처", ds=f"{yj[3]} 입주박람회 주관"),
+        dict(lb="누적 수임", big=str(cum[3]), unit="개 단지", nm=f"{cum[4]:,}세대", ds="공동구매 · 박람회 업무 수임(전신 실적 · 입주 예정 포함)"),
+        dict(lb="관리 거점", big="울산", unit="본사", nm="본사 · 쇼룸 · 콜센터", ds=f"{D.SITE['short']} = 울산 본사 직접 관리 · 단지 인근 참여 업체 출동"),
+    ], cols=4) + '</div>')
+    return ("std", dict(sec="01. 회사소개", title=T_CH01S,
+        lead="회사소개 상세(연혁 · 법인 서류 · 재무 · 자격 · 조직 · 실적 · 협약)는 제출서류 8 회사소개서에 실었습니다 - 이 쪽에는 심사에 필요한 숫자만 모았습니다.",
+        body=body, kp=("회사소개 상세는 [[제출서류 8 회사소개서]]에 있습니다.", "중복을 줄여 07장 업무 수행 제안을 먼저 보시도록 정리 · 숫자는 회사소개서 · 별지3호와 같음")))
+
+
 def emit(pages, out_html, title):
     keep = list(B.PAGES)
     B.PAGES[:] = pages
     PGNO.clear()
     for k, tt in PGREF.items():
         hits = [i for i, (_, kw) in enumerate(pages) if kw.get("title") == tt]
+        if not hits and SHORT01["on"] and k in CH01_KEYS:
+            PGNO[k] = 0
+            continue
         assert len(hits) == 1, ("대응표 쪽 번호 — 제목을 찾지 못함", k, tt, hits)
         PGNO[k] = hits[0] + 1
     B.OUT_HTML, B.OUT_PDF = out_html, out_html[:-5] + ".pdf"
@@ -2395,8 +2430,27 @@ def build():
     # 전체본(기본) = NAME.html/.pdf(메일용 mail_lite.py도 이 파일 기준) · 압축본(--compact) = NAME_압축본.html/.pdf
     # 기본(약 120쪽) = NAME.html/.pdf(메일용 · 제출서류 기준) · --full = NAME_전체본 · --compact = NAME_압축본
     out = (os.path.join(HERE, NAME + "_압축본.html") if COMPACT else os.path.join(HERE, NAME + "_전체본.html") if FULL else B.OUT_HTML)
-    emit(list(B.PAGES), out, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
-    print(f"상주 업무 수행 제안서 {len(B.PAGES)}쪽 → {out}")
+    full = list(B.PAGES)
+    if COMPACT or FULL:
+        emit(full, out, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
+        print(f"상주 업무 수행 제안서 {len(full)}쪽 → {out}")
+        return
+    src01 = os.path.join(HERE, f"엣지컴퍼니_상주자이르네_회사소개원본.html")
+    emit(full, src01, f"엣지컴퍼니 {D.SITE['name']} 회사소개서")
+    print(f"회사소개서 원본(01장 전체 · 제출서류 8에서 발췌) {len(full)}쪽 → {src01}")
+    i01 = [i for i, (k, kw) in enumerate(full) if kw.get("sec") == "01. 회사소개" and k not in ("divider", "divider_lx")]
+    assert i01 and i01 == list(range(i01[0], i01[-1] + 1)), i01
+    short = full[:i01[0]] + [ch01_summary()] + full[i01[-1] + 1:]
+    for row in TOC4:
+        for j, it in enumerate(row):
+            if it[0] == "01":
+                row[j] = ("01", "회사소개", ["한 장 요약 · 숫자", "상세 = 제출서류 8 회사소개서", "연혁 · 법인 서류 · 재무", "자격 · 조직 · 실적 · 협약"])
+    SHORT01["on"] = True
+    emit(short, out, f"엣지컴퍼니 {D.SITE['name']} 입주박람회 주관사 제안서")
+    SHORT01["on"] = False
+    miss = [a for a, _ in FIX_SJ if not FIX_HIT.get(a)]
+    assert not miss, ("상주 검수 문구를 찾지 못함(두 본 모두)", miss)
+    print(f"상주 업무 수행 제안서 {len(short)}쪽(01장 = 간지 + 요약 1쪽) → {out}")
     # 요약제안서 — 상주 공고 제출서류(5항 1 ~ 9)에 없음 → PT 참고용으로만 만든다(통합 PDF에 넣지 않음). 숫자 · 문구는 위 제안서와 같은 D · ST 값(summary_sj.py)
     if "--summary" in sys.argv and not COMPACT and not FULL:  # 상주: 요약제안서는 제출서류 밖 → 요청 시만
         import summary_sj  # noqa: E402
