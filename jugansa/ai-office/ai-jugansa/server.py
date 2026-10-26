@@ -44,6 +44,16 @@ PATH_RULES = [
     ("build",    r"build_[a-z]+\.py|docs_[a-z]+\.py|data\.py|reorg|polish|vis\.py|pages21|light_build|제안서|summary_|tjlight|card_fit"),
     ("scout",    r"watch/|개척|outreach|notice_watch|공고"),
 ]
+SITES = {"상주자이르네": "상주", "엘리프한신더휴수원": "엘리프", "롯데캐슬나리벡시티": "나리벡", "북수원디에트르더리체2": "북수원",
+         "고양창릉S5": "고양", "경산상방공원호반써밋1단지": "경산", "탕정푸르지오센터파크": "탕정", "오산세교아테라": "오산",
+         "분당퍼스트빌리지": "분당", "지웰엘리움양주덕계역": "지웰", "철산역자이": "철산", "판교테크노밸리중흥S": "판교", "동탄파라곤3차": "동탄"}
+def site_for(h):
+    for k, v in SITES.items():
+        if k in h: return v
+    for v in SITES.values():              # 약칭만 적혀 있어도 잡는다 ("상주 올려줘")
+        if v in h: return v
+    m = re.search(r"jugansa[\\/]([^\\/]+)", h)
+    return m.group(1)[:5] if m and not m.group(1).endswith((".py", ".md")) else ""
 BOSS = "boss"            # 본부장 캐릭터 id
 ROOM_OF_CHAR = {"boss": "office", "scout": "scout", "analyst": "analysis", "builder": "build",
                 "auditor": "audit", "mailer": "mail", "coach": "pt", "retro": "retro", "pmo": "retro"}
@@ -59,7 +69,7 @@ def label_for(tool, ti):
     if tool == "Skill":                 return "/" + str(ti.get("skill", ""))
     if tool == "Agent":                 return str(ti.get("subagent_type") or ti.get("description") or "팀 호출")
     for k in ("file_path", "notebook_path"):
-        if k in ti: return os.path.basename(str(ti[k]))
+        if k in ti: return re.split(r"[\\/]", str(ti[k]))[-1]      # 윈도우 · 리눅스 경로 모두
     if "command" in ti:                 return short(ti["command"], 34)
     if "pattern" in ti:                 return short(ti["pattern"], 28)
     if "query" in ti:                   return short(ti["query"], 28)
@@ -70,7 +80,7 @@ def label_for(tool, ti):
 def haystack(tool, ti):
     ti = ti or {}
     parts = [tool]
-    for k in ("file_path", "notebook_path", "command", "pattern", "path", "skill", "subagent_type", "description", "prompt", "subject"):
+    for k in ("file_path", "notebook_path", "command", "pattern", "path", "skill", "args", "subagent_type", "description", "prompt", "subject"):
         if k in ti: parts.append(str(ti[k])[:400])
     return " ".join(parts)
 
@@ -103,16 +113,16 @@ def translate(h):
     team = agent if agent in TEAM_ROOM or agent in TEAM_KR else ""
     if name == "SubagentStart":
         a = h.get("agent_type", "")
-        return {"kind": "team_start", "team": a, "team_kr": TEAM_KR.get(a, a), "room": TEAM_ROOM.get(a, "analysis"), "agent_id": h.get("agent_id", "")}
+        return {"kind": "team_start", "team": a, "team_kr": TEAM_KR.get(a, a), "room": TEAM_ROOM.get(a, "analysis"), "agent_id": h.get("agent_id", ""), "site": site_for(str(h.get("cwd", "")))}
     if name == "SubagentStop":
         a = h.get("agent_type", "")
         return {"kind": "team_stop", "team": a, "room": TEAM_ROOM.get(a, "analysis"), "agent_id": h.get("agent_id", "")}
     if name == "PreToolUse":
         if team:
             return {"kind": "work", "who": CHAR_OF_ROOM[TEAM_ROOM.get(team, "analysis")], "room": TEAM_ROOM.get(team, "analysis"),
-                    "team": team, "team_kr": TEAM_KR.get(team, team), "tool": tool, "label": label_for(tool, ti)}
+                    "team": team, "team_kr": TEAM_KR.get(team, team), "tool": tool, "label": label_for(tool, ti), "agent_id": h.get("agent_id", ""), "site": site_for(haystack(tool, ti))}
         room = stage_for(tool, ti)
-        return {"kind": "work", "who": BOSS, "room": room, "team": "", "team_kr": "본부장", "tool": tool, "label": label_for(tool, ti),
+        return {"kind": "work", "who": BOSS, "room": room, "team": "", "team_kr": "본부장", "tool": tool, "label": label_for(tool, ti), "site": site_for(haystack(tool, ti)),
                 "call": str(ti.get("subagent_type", "")) if tool == "Agent" else ""}
     if name == "PostToolUse":
         return {"kind": "done", "who": CHAR_OF_ROOM[TEAM_ROOM.get(team, "analysis")] if team else BOSS, "tool": tool}
@@ -123,7 +133,7 @@ def translate(h):
     if name == "SessionStart":
         return {"kind": "start", "source": h.get("source", ""), "model": h.get("model", ""), "cwd": os.path.basename(h.get("cwd", "") or "")}
     if name == "UserPromptSubmit":
-        return {"kind": "prompt", "label": short(h.get("prompt", ""), 40)}
+        return {"kind": "prompt", "label": short(h.get("prompt", ""), 40), "site": site_for(str(h.get("prompt", "")) + " " + str(h.get("cwd", "")))}
     return None
 
 MIME = {".html": "text/html; charset=utf-8", ".png": "image/png", ".js": "text/javascript", ".json": "application/json"}
