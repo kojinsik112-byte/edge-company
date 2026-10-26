@@ -478,7 +478,9 @@ _EXW = {"건축": "골조 · 방수 · 창호 · 외벽 · 마감", "토목": "�
         "조경": "조경 · 식재 · 산책로 · 수목 하자", "전기": "배선 · 조명 · 지하주차장 LED · 디밍 · 사전점검 전기 항목",
         "기계설비": "급배수 · 환기 · 냉난방 배관 · 최상층 설비", "소방": "소방 설비 · 배관 · 감지기 · 피난 동선"}
 for f_, kind, nm, lic, org in D.EXPERTS:
-    if nm:
+    if f_ in getattr(D, "EXPERT_SUM", {}):
+        who = D.EXPERT_SUM[f_]
+    elif nm:
         who = f"{nm} · {lic or ''} · {org or ''}"
     elif kind == "직접":
         who = {"전기": f"사내 전기 기술자 3명 · {D.ELEC_LICENSE}", "조경": "사내 조경 전문 인력(임원)"}.get(f_, "사내 인력")

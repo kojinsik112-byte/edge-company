@@ -38,6 +38,11 @@ e = html.escape
 PFX = "엣지컴퍼니_상주자이르네_"
 SITE = D.SITE["name"]
 FORM_TO = "상주 자이르네 입주예정자협의회 회장 귀하"   # 양식 원문 표기
+try:  # 별지2호 전문가 성명 · 자격번호 · 재직증명서 대상 — org_private.json(깃 제외 · 본부장 10-26)
+    import json as _json
+    PRIV = _json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "org_private.json")))
+except (OSError, ValueError):
+    PRIV = {}
 TODOS = []
 
 SP = "/tmp/claude-0/-home-user-edge-company/a96d9eb6-5244-5d3f-9f1b-6f379ac2a82c/scratchpad"
@@ -227,6 +232,8 @@ def form2():
     m = D.MANAGER
     rows = ""
     for i, (f_, kind, nm, lic, org) in enumerate(D.EXPERTS, 1):
+        pv = PRIV.get("experts_sj", {}).get(f_, {})
+        nm, lic = nm or pv.get("nm"), lic or pv.get("lic")
         if kind == "직접":
             nm_ = e(nm) if nm else todo("성명 — 본부장 확인")
             lic_ = e(lic) if lic else todo("자격 · 등록번호")
@@ -249,6 +256,29 @@ def form2():
 {date_line().replace('margin-top:20pt', '')}
 {sign_box()}</div>"""
     return doc("6 별지2호 전담 책임자 및 분야별 전문가 명단", [body])
+
+
+def doc06_emp():
+    """별지2호 사내 전문가 재직증명서 — 1인 1쪽 · 재직 시작 = 4대보험 명부 자격취득일."""
+    yy, mm, dd = ymd()
+    pages = []
+    for nm, birth, field, lic, since in PRIV.get("emp_sj", []):
+        pages.append(f"""<div class="top"><div class="lb">제출서류 6 · 별지2호 증빙</div><div class="co">{D.COMPANY}</div></div>
+<h1 class="c" style="letter-spacing:.6em;font-size:24pt;margin-top:26pt">재 직 증 명 서</h1>
+<table class="info" style="margin-top:26pt;font-size:10.6pt">
+<tr><th>성 &nbsp; &nbsp; 명</th><td>{e(nm)}</td><th>생년월일</th><td>{e(birth)}</td></tr>
+<tr><th>소 &nbsp; &nbsp; 속</th><td>{D.COMPANY}</td><th>분 &nbsp; &nbsp; 야</th><td>{e(field)}</td></tr>
+<tr><th>자 &nbsp; &nbsp; 격</th><td colspan="3">{e(lic)}</td></tr>
+<tr><th>재직 기간</th><td colspan="3">{e(since)} ~ 현재</td></tr>
+<tr><th>용 &nbsp; &nbsp; 도</th><td colspan="3">상주 자이르네 입주박람회 주관사 선정 입찰 · 별지2호 분야별 전문가 증빙</td></tr>
+</table>
+<p class="body" style="text-align:center;margin-top:34pt;font-size:12pt">위 사람은 현재 당사에 재직하고 있음을 증명합니다.</p>
+<div class="sign" style="margin-top:40pt"><div class="d">{yy}년 {mm}월 {dd}일</div>
+<div class="who" style="margin-top:14pt">{D.COMPANY}</div>
+<div class="who" style="font-weight:400;font-size:11pt">{D.ADDRESS}</div>
+<div class="who">대표이사 &nbsp; {D.CEO}<span class="seal">(인)</span></div></div>
+<p class="note" style="margin-top:40pt">※ 재직 시작일 = 4대보험 사업장 가입자 명부(2026.10.23 발급 · 앞 쪽)의 자격취득일 · 자격증 사본은 뒤에 붙임</p>""")
+    return doc("6 재직증명서", pages) if pages else None
 
 
 # ================================================================== 7 · [별지3호] 입주박람회 주관 실적 증명서
@@ -616,6 +646,8 @@ def main():
     ch = ch01_pages(P09)
     c8 = fit(render("8_1_회사소개서_표지", doc08_cover(f"표지 + 회사소개 {len(ch)}쪽(숫자 · 연혁 · 법인 서류 · 인증 · 대표자 · 조직 · 본사 관리 · 현장 체계 · 실적 · 추천과 협약 · 연락처)")), 1)
     ex6 = sorted(os.path.join(EXPERT_DIR, f) for f in (os.listdir(EXPERT_DIR) if os.path.isdir(EXPERT_DIR) else []) if f.lower().endswith(".pdf"))
+    emp_html = doc06_emp()
+    emp6 = stamped(fit(render("6_4_재직증명서_전문가", emp_html), len(PRIV["emp_sj"])), len(PRIV["emp_sj"])) if emp_html else None
 
     items = [  # (번호, 이름, 내용, [(pdf, 쪽 목록 또는 None, 책갈피)])
         ("1", "입찰참가신청서 (협의회 소정 양식)", "사용인감 날인", [(f_app, None, None)]),
@@ -628,8 +660,9 @@ def main():
          + ("(법인인감 날인)" if have_scan else " — " + todo("법인인감 실물 날인 스캔 교체 전")),
          [(f"{EV}/법인인감증명서.pdf", None, "법인인감증명서"), (gam, None, "별지4호 사용인감계")]),
         ("6", "[별지2호] 전담 책임자 및 분야별 전문가 명단", "전담 책임자 · 6개 분야 · 증빙: 전기공사업 등록증 · 4대보험 가입자 명부"
-         + (f" · 자격증 · 계약서 {len(ex6)}건" if ex6 else " — " + todo("자격증 사본 · 협력 계약서 첨부 대기")),
+         + (f" · 재직증명서 {len(PRIV.get('emp_sj', []))} · 자격증 사본 {len(ex6)}건" if ex6 else " — " + todo("자격증 사본 · 협력 계약서 첨부 대기")),
          [(f2, None, "별지2호 명단"), (f"{EV}/전기공사업_등록증.pdf", None, "전기공사업 등록증(전기 · 직접)"), (ROSTER, None, "4대보험 사업장 가입자 명부(재직 · 가림)")]
+         + ([(emp6, None, "재직증명서(사내 전문가)")] if emp6 else [])
          + [(p, None, os.path.splitext(os.path.basename(p))[0]) for p in ex6]),
         ("7", "[별지3호] 입주박람회 주관 실적 증명서", f"{len(D.SJ_REC)}건 · {sum(r[2] for r in D.SJ_REC):,}세대 · 증빙 A 협약서 3 · B 행사일정 · 카페 공지 4 · C NICE 연혁",
          [(f3, None, "별지3호 실적 증명서"), (c7, None, "증빙 안내"), (a7, None, "증빙 A 주관사 협약서"), (b7, None, "증빙 B 행사일정 · 카페 공지"), (n7, None, "증빙 C NICE 연혁 발췌")]),
