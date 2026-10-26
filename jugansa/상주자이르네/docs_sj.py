@@ -266,7 +266,7 @@ def doc06_emp():
         pages.append(f"""<div class="top"><div class="lb">제출서류 6 · 별지2호 증빙</div><div class="co">{D.COMPANY}</div></div>
 <h1 class="c" style="letter-spacing:.6em;font-size:24pt;margin-top:26pt">재 직 증 명 서</h1>
 <table class="info" style="margin-top:26pt;font-size:10.6pt">
-<tr><th>성 &nbsp; &nbsp; 명</th><td>{e(nm)}</td><th>생년월일</th><td>{e(birth)}</td></tr>
+<tr><th>성 &nbsp; &nbsp; 명</th><td>{e(nm)}</td><th>출생 연도</th><td>{e(birth)}</td></tr>
 <tr><th>소 &nbsp; &nbsp; 속</th><td>{D.COMPANY}</td><th>분 &nbsp; &nbsp; 야</th><td>{e(field)}</td></tr>
 <tr><th>자 &nbsp; &nbsp; 격</th><td colspan="3">{e(lic)}</td></tr>
 <tr><th>재직 기간</th><td colspan="3">{e(since)} ~ 현재</td></tr>
