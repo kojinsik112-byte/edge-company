@@ -326,7 +326,7 @@ def form4():
 <div class="dt" style="margin-top:14pt">{yy}년 &nbsp; {mm}월 &nbsp; {dd}일</div>
 <div class="sgr">신 고 인<br>상 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 호 : {D.COMPANY}<br>대 표 자 : 대표이사 {D.CEO} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (인)</div>
 <div class="to2" style="margin-top:12pt">상주 자이르네 입주예정자협의회 귀중</div>
-<p class="nt" style="margin-top:10pt">※ 작성 안내 1. 사용인감 칸에는 입찰참가신청서 및 별지 서식에 날인한 인감을 날인합니다. 2. 법인인감 칸에는 인감증명서상의 인감을 날인하고, 대표자 (인) 란에도 같은 인감을 날인합니다. 4. 인감증명서(제출일 기준 3개월 이내 발급분)를 함께 제출합니다.</p></div>"""
+<p class="nt" style="margin-top:10pt">※ 작성 안내 1. 사용인감 칸에는 입찰참가신청서 및 별지 서식에 날인한 인감을 날인합니다. 2. 법인인감 칸에는 인감증명서상의 인감을 날인하고, 대표자 (인) 란에도 같은 인감을 날인합니다. 3. 개인사업자는 법인인감 칸에 대표자 본인의 인감을 날인하며, 법인등록번호는 적지 않습니다. 4. 인감증명서(제출일 기준 3개월 이내 발급분)를 함께 제출합니다.</p></div>"""
     return doc("5 별지4호 사용인감계", [body])
 
 

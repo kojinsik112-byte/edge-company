@@ -239,7 +239,13 @@ def nr_final(doc):
     return doc
 
 
-FINAL = {"롯데캐슬나리벡시티": nr_final}
+def sj_final(doc):
+    """본부장 10-26: 상주도 나리벡 마무리 규칙(선택 항목 · 공구가 문구 · 2차 법정) — 공고 번호만 상주(업무 ① ~ ⑤)."""
+    doc = nr_final(doc)
+    return doc.replace("공고 업무 범위 1) ~ 8)도 빠짐없이 지원합니다.", "공고 업무 ① ~ ⑤도 빠짐없이 지원합니다.")
+
+
+FINAL = {"롯데캐슬나리벡시티": nr_final, "상주자이르네": sj_final}
 
 
 def main():
