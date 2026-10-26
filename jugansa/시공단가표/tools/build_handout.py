@@ -1,5 +1,5 @@
 """입주민 배포용 A4 시공 단가표 HTML. 같은 데이터(sigong.json)로 artifact용(본문만)과 인쇄용(완전한 문서) 두 벌 생성."""
-import json, sys, html
+import json, sys, html, re
 
 DATA, OUT_ART, OUT_FULL = sys.argv[1], sys.argv[2], sys.argv[3]
 data = json.load(open(DATA))
@@ -11,6 +11,10 @@ def price(v):
         return '<span class="tbd">현장 제시</span>'
     if isinstance(v, (int, float)):
         return f'<b>{int(v):,}</b><i>만원</i>'
+    if isinstance(v, str) and re.fullmatch(r"[\d,]+(~[\d,]+)?", v):
+        return f'<b>{v}</b><i>만원</i>'
+    if isinstance(v, str) and v.strip() == "-":
+        return '<span class="dash">-</span>'
     return f'<span class="txt">{E(v)}</span>'
 
 
@@ -148,10 +152,10 @@ BODY = f"""
     <span>업체별 대표 특가 1~2개 사전 공개 · 그 외 전 품목은 박람회 현장 공개</span>
   </section>
   <ul class="notes">
-    <li>※ 표기 금액은 84㎡ 기준 대표 시공가이며 평형·현장 여건·자재에 따라 달라질 수 있습니다.</li>
+    <li>※ 금액은 참여 업체별 84㎡ 기준 시공가의 범위(최저~최고)이며 평형·현장 여건·자재에 따라 달라질 수 있습니다.</li>
     <li>※ 추가 범위·옵션과 '현장 제시' 항목은 박람회 현장에서 업체별로 안내합니다. 최종 금액은 업체 견적서 기준입니다.</li>
   </ul>
-  <div class="foot"><span>주관 <b>㈜엣지컴퍼니</b></span><span>v1 초안 · 2026.10</span></div>
+  <div class="foot"><span>주관 <b>㈜엣지컴퍼니</b></span><span>2026.10 기준</span></div>
 </div>
 """
 

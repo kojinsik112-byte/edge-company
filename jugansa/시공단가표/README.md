@@ -9,9 +9,9 @@
 | `입주박람회_시공단가표.html` / `.pdf` | 품목별 대표가 1줄 (A4) | 공개 가능 |
 | `입주박람회_시공단가표_업체별.html` / `.pdf` | 업체별 줄눈A·B·C… (코드만, A4) | 공개 가능 |
 | `tools/` | 생성 도구 (엑셀 → 페이지) | — |
-| 엑셀 `입주박람회_시공단가표_v1.4.xlsx` | 업체명 포함 원본 — **저장소에 올리지 않음**(공개 저장소). 본부장님 보관 | 비공개 |
+| 엑셀 `입주박람회_시공단가표_v1.5.xlsx` | 업체명 포함 원본 — **저장소에 올리지 않음**(공개 저장소). 본부장님 보관 | 비공개 |
 
-## 엑셀 구조 (v1.4)
+## 엑셀 구조 (v1.5)
 - `시공단가표` = 품목 대표가(파란 글씨 입력) → `업체별_작성용`에 자동 연결(초록)
 - `업체별_작성용` = 업체명 포함. 가격이 다른 업체만 덮어쓰기(파란 글씨 = 본부장님 입력)
 - `업체별_공개용` = 업체명 대신 품목+A·B·C 자동. **여기에 직접 입력하지 않는다**(연결이 끊김)
@@ -31,7 +31,8 @@
 ## 다시 만들기
 ```bash
 # 엑셀 수정 후 → 수식 재계산(LibreOffice) → 업체별 페이지 생성
-python tools/build_vendor_page.py 입주박람회_시공단가표_v1.4.xlsx tools/sigong.json <출력폴더>
-python tools/build_handout.py tools/sigong.json <출력>/sigong_handout.html <출력>/입주박람회_시공단가표.html
+python tools/build_vendor_page.py 입주박람회_시공단가표_v1.5.xlsx tools/sigong.json <출력폴더>
+python tools/build_summary_json.py 입주박람회_시공단가표_v1.5.xlsx tools/sigong.json summary.json   # 품목별 범위
+python tools/build_handout.py summary.json <출력>/sigong_handout.html <출력>/입주박람회_시공단가표.html
 node tools/shot.js <html> <png·pdf 접두어>   # 화면 확인 + A4 PDF
 ```

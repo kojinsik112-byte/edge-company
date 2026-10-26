@@ -36,6 +36,8 @@ def price(v):
         return '<span class="tbd">현장 제시</span>'
     if isinstance(v, (int, float)):
         return f'<b>{int(v):,}</b><i>만원</i>'
+    if str(v).strip() == "-":
+        return '<span class="dash">-</span>'
     return f'<span class="txt">{E(str(v))}</span>'
 
 
@@ -196,7 +198,7 @@ def page(show_names):
     <li>※ 표기 금액은 84㎡ 기준이며 평형·현장 여건·자재에 따라 달라질 수 있습니다. 최종 금액은 업체 현장 견적서 기준입니다.</li>
     <li>※ 추가 범위·옵션과 '현장 제시' 항목은 박람회 현장에서 업체별로 안내합니다.</li>
   </ul>
-  <div class="foot"><span>주관 <b>㈜엣지컴퍼니</b></span><span>v1 초안 · 2026.10</span></div>
+  <div class="foot"><span>주관 <b>㈜엣지컴퍼니</b></span><span>{"검토본 v1.5 · 2026.10" if show_names else "2026.10 기준"}</span></div>
 </div>
 """
     return title, body
