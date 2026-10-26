@@ -247,7 +247,7 @@ def form2():
             nm_ = e(nm) if nm else todo("협력 계약 후 기재")
             lic_ = e(lic) if lic else todo("자격 · 등록번호")
             org_ = e(org) if org else todo("협력 법인")
-        rows += (f'<tr><td>{i}</td><td>{f_}</td><td>{nm_}</td><td style="font-size:9.4pt">{lic_}</td><td style="font-size:9.4pt">{org_}</td>'
+        rows += (f'<tr><td>{i}</td><td>{"건축<br>(마감 · 도장)" if f_ == "건축" else f_}</td><td>{nm_}</td><td style="font-size:9.4pt">{lic_}</td><td style="font-size:9.4pt">{org_}</td>'
                  f'<td style="white-space:nowrap">{chk(0 if kind == "직접" else 1, "직접", "협력")}</td></tr>')
     rows += '<tr><td>7</td><td></td><td></td><td></td><td></td><td style="white-space:nowrap">□ 직접 &nbsp;□ 협력</td></tr>'
     body = f"""<div class="sf"><div class="no">[별지2호]</div><h1 style="letter-spacing:.1em;font-size:18pt">전담 책임자 및 분야별 전문가 명단</h1>
@@ -327,7 +327,7 @@ def doc07_cover():
 <li class="sm">증빙 B. 공식 행사일정 · 입주자 카페 공지 캡처 — {" · ".join(f"B-{k} {e(c[0])}" for k, c in enumerate(CAPS7, 1))} · 주최 · 주관란 또는 공지 작성자 = 엣지컴퍼니</li>
 <li class="sm">증빙 C. NICE디앤비 기업신용평가보고서(평가 {D.NICE_DATE}) ‘연혁’ 발췌 — 레이카운티 · 두산위브더제니스 오션시티 · 창원 센트럴 아이파크 주관 기재</li></ol>
 <p class="note">※ 세대수 = NICE 연혁 기재값 · 단지 공식 세대수 · 레이카운티는 2차(2023.10.21 ~ 22) 행사. 협의회가 요청하면 협약서 원본 · 정산 자료 등을 지체 없이 추가 제출합니다.</p>
-<p class="body" style="font-size:9.8pt;margin-top:8pt;line-height:1.65">위 증빙은 원본과 같으며, 실적이 사실과 다르면 공고 7항에 따라 선정 이후라도 협약 해지를 이의 없이 받아들이겠습니다.</p>
+<p class="body" style="font-size:9.8pt;margin-top:8pt;line-height:1.65">위 증빙은 원본에서 발췌한 사본(협약서 = 첫 쪽 · 서명 쪽 등)이며, 실적이 사실과 다르면 공고 7항에 따라 선정 이후라도 협약 해지를 이의 없이 받아들이겠습니다.</p>
 <div class="sign" style="margin-top:8pt"><div class="d">{ymd()[0]}년 {ymd()[1]}월 {ymd()[2]}일</div><div class="who">{D.COMPANY} &nbsp; 대표이사 &nbsp; {D.CEO}<span class="seal">(인)</span></div></div>"""
     return doc("7 증빙 안내", [body])
 
@@ -395,6 +395,7 @@ def doc00(spans):
 <tr><th>접수</th><td colspan="3">{D.SUBMIT_TO} · 마감 {D.DEADLINE} · 제목 “{e(D.MAIL_TITLE)}”</td></tr></table>
 <table class="t" style="margin-top:10pt"><thead><tr><th style="width:6%">No</th><th style="width:36%">제출 서류(공고 5항)</th><th>내용 · 발급일</th><th style="width:13%">이 파일 쪽</th></tr></thead><tbody>{rows}</tbody></table>
 <p class="note" style="margin-top:8pt">※ 공고 5항 번호 순서대로 PDF 1개로 병합했습니다(PDF 책갈피 = 번호별). 납세증명서는 마감일 현재 유효기간 안, 법인인감증명서는 제출일 기준 3개월 안 발급분입니다.</p>
+<p class="note">※ 업무 수행 제안서 안의 쪽 표시(p.xx)는 제안서 자체 쪽입니다 - 이 파일 쪽 = 제안서 쪽 + {next((a for no, _t, _n, a, _b in spans if no == "9"), 1) - 1}.</p>
 <p class="note">※ 입찰참가신청서 · 별지1 ~ 3호의 날인은 사용인감이며, 별지4호 사용인감계에 법인인감과 함께 신고했습니다. 4대보험 명부 · 인감증명서의 개인정보는 가렸습니다.</p>
 <div class="sign" style="margin-top:14pt"><div class="d">{yy}년 {mm}월 {dd}일</div><div class="who">{D.COMPANY}</div></div>"""
     return doc("00 제출서류 목록", [body])
@@ -541,6 +542,8 @@ def annex_nice(nice_path, out_path):
     y = hist.y1 + 4
     text((L + R) / 2, y + 9, "··· (이하 생략: 관계회사) ···", 8, "r", GRAY, "c")
     y += 16
+    text((L + R) / 2, y + 6, "※ 2026/07/01 창원 센트럴아이파크 = NICE 원문 기재값(평가 당시 예정 일정) · 실제 개최 2026.07.03 ~ 05(증빙 B-2)", 7.6, "r", GRAY, "c")
+    y += 14
     foot = put(CLIP_FOOT, y)
     pg.draw_rect(fitz.Rect(L, box_top, R, foot.y1 + 6), color=LINE, width=0.6)
     y = foot.y1 + 40
@@ -556,6 +559,17 @@ def annex_nice(nice_path, out_path):
     return out_path
 
 
+def rejpeg(pg, q=85):
+    """화소 가림(apply_redactions PIXELS) 뒤 PNG로 다시 저장돼 커진 이미지를 JPEG로 되돌림 — 더 작아질 때만(10-26)."""
+    for x in {im[0] for im in pg.get_images(full=True)}:
+        pm = fitz.Pixmap(pg.parent, x)
+        if pm.alpha or pm.n > 3:
+            pm = fitz.Pixmap(fitz.csRGB, pm)
+        jb = pm.tobytes("jpeg", jpg_quality=q)
+        if len(jb) < len(pg.parent.xref_stream_raw(x)) * 0.8:
+            pg.replace_image(x, stream=jb)
+
+
 def relabel(src, dst, old, new, title=None):
     """협약서 사본 머리글(고양 '제출서류 9 · 별첨 3-k') → 상주 '제출서류 7 · 증빙 A-k' — 머리글 글자만 지우고 새로 쓴다(본문 이미지는 그대로)."""
     d = fitz.open(src)
@@ -567,12 +581,14 @@ def relabel(src, dst, old, new, title=None):
         full = pg.search_for(old + f"-{i + 1} (협약일 순)")
         rr = full[0] if full else r
         pg.add_redact_annot(fitz.Rect(rr.x0 - 1, rr.y0 - 1, rr.x1 + 1, rr.y1 + 1), fill=(1, 1, 1))
-        pg.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
+        if title:
+            pg.add_redact_annot(fitz.Rect(40, 52.5, 560, 76.5), fill=(1, 1, 1))
+        pg.apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
+        rejpeg(pg)
         tw = fitz.TextWriter(pg.rect)
         tw.append((rr.x0, rr.y1 - 2.2), new.format(k=i + 1), font=F, fontsize=round(rr.height * 0.72, 1))
         tw.write_text(pg, color=(0.6, 0.48, 0.25))
         if title:  # 제목은 이미지에 박혀 있음(고양 '최근 3년 500세대 이상 …') → 흰 판으로 덮고 상주 제목을 쓴다(아래 금선은 그대로)
-            pg.draw_rect(fitz.Rect(40, 52.5, 560, 76.5), color=None, fill=(1, 1, 1), overlay=True)
             tw = fitz.TextWriter(pg.rect)
             tw.append((43, 71), title, font=F, fontsize=16)
             tw.write_text(pg, color=(0.051, 0.118, 0.2))
@@ -643,6 +659,18 @@ def main():
         for a in list(pg_.annots()):  # 발급 뒤 덧붙인 스탬프 주석이 원본 칸을 가리지 않게
             pg_.delete_annot(a)
     biz_p = out("2_1_사업자등록증.pdf")
+    def masked(src, name, rects):  # {쪽: [Rect]} — 화소까지 지움(원본 이미지를 꺼내도 안 보임)
+        d_ = fitz.open(src)
+        for pno, rs in rects.items():
+            for r_ in rs:
+                d_[pno].add_redact_annot(fitz.Rect(*r_), fill=(0.6, 0.6, 0.6))
+            d_[pno].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
+            rejpeg(d_[pno])
+        o_ = out(name)
+        d_.save(o_, garbage=GARBAGE, deflate=True)
+        return o_
+    reg_p = masked(f"{EV}/법인등기부등본.pdf", "2_2_법인등기부등본_가림.pdf", {1: [(203, 163, 556, 177), (30, 176, 50, 187)]})
+    ltax_p = masked(f"{EV}/지방세_납세증명서.pdf", "3_2_지방세_납세증명서_가림.pdf", {0: [(118, 229, 194, 242)]})
     biz.save(biz_p, garbage=GARBAGE, deflate=True)
     c7 = stamped(fit(render("7_2_증빙안내", doc07_cover()), 1))
     a7 = relabel(R500_DOC, out("7_3_증빙A_주관사협약서.pdf"), "제출서류 9 · 별첨 3", "제출서류 7 · 증빙 A-{k} (협약일 순)", "공식 입주박람회 주관 실적 — 주관사 협약서 사본")
@@ -657,18 +685,18 @@ def main():
     items = [  # (번호, 이름, 내용, [(pdf, 쪽 목록 또는 None, 책갈피)])
         ("1", "입찰참가신청서 (협의회 소정 양식)", "사용인감 날인", [(f_app, None, None)]),
         ("2", "사업자등록증 사본 · 법인등기부등본", f"사업자등록증 {D.ISSUE['biz']} · 등기부등본 {D.ISSUE['reg']} 발급",
-         [(biz_p, None, "사업자등록증"), (f"{EV}/법인등기부등본.pdf", None, "법인등기부등본")]),
+         [(biz_p, None, "사업자등록증"), (reg_p, None, "법인등기부등본(대표 주소 가림)")]),
         ("3", "국세 · 지방세 납세증명서", f"국세 {D.ISSUE['tax']} · 지방세 {D.ISSUE['ltax']} 발급 · 유효 ~2026.11.13(마감일 현재 유효)",
-         [(f"{EV}/국세_납세증명서.pdf", None, "국세 납세증명서"), (f"{EV}/지방세_납세증명서.pdf", None, "지방세 납세증명서")]),
+         [(f"{EV}/국세_납세증명서.pdf", None, "국세 납세증명서"), (ltax_p, None, "지방세 납세증명서(휴대번호 가림)")]),
         ("4", "[별지1호] 이해관계 신고 및 청렴 서약서", "1 · 2항 없음 · 사용인감 날인", [(f1, None, None)]),
         ("5", "인감증명서 · [별지4호] 사용인감계", f"법인인감증명서 {D.INGAM_DATE} 발급(주민번호 뒷자리 가림) · 사용인감계"
          + ("(법인인감 날인)" if have_scan else " — " + todo("법인인감 실물 날인 스캔 교체 전")),
          [(f"{EV}/법인인감증명서.pdf", None, "법인인감증명서"), (gam, None, "별지4호 사용인감계")]),
-        ("6", "[별지2호] 전담 책임자 및 분야별 전문가 명단", "전담 책임자 · 6개 분야 · 증빙: 전기공사업 등록증 · 4대보험 가입자 명부"
+        ("6", "[별지2호] 전담 책임자 및 분야별 전문가 명단", "전담 책임자 · 사내 3개 분야(건축 · 조경 · 전기) · 토목 · 기계설비 · 소방 = 협력 계약 추진 중 · 증빙: 전기공사업 등록증 · 4대보험 가입자 명부"
          + (f" · 재직증명서 {len(PRIV.get('emp_sj', []))} · 자격증 사본 {len(ex6)}건" if ex6 else " — " + todo("자격증 사본 · 협력 계약서 첨부 대기")),
          [(f2, None, "별지2호 명단"), (f"{EV}/전기공사업_등록증.pdf", None, "전기공사업 등록증(전기 · 직접)"), (ROSTER, None, "4대보험 사업장 가입자 명부(재직 · 가림)")]
          + ([(emp6, None, "재직증명서(사내 전문가)")] if emp6 else [])
-         + [(p, None, os.path.splitext(os.path.basename(p))[0]) for p in ex6]),
+         + [(p, None, "자격증 · 경력증 사본 " + os.path.splitext(os.path.basename(p))[0].replace("_", " · ", 2).split("_")[0]) for p in ex6]),
         ("7", "[별지3호] 입주박람회 주관 실적 증명서", f"{len(D.SJ_REC)}건 · {sum(r[2] for r in D.SJ_REC):,}세대 · 증빙 A 협약서 3 · B 행사일정 · 카페 공지 4 · C NICE 연혁",
          [(f3, None, "별지3호 실적 증명서"), (c7, None, "증빙 안내"), (a7, None, "증빙 A 주관사 협약서"), (b7, None, "증빙 B 행사일정 · 카페 공지"), (n7, None, "증빙 C NICE 연혁 발췌")]),
         ("8", "회사소개서", f"표지 + 업무 수행 제안서 01장 회사소개 {len(ch)}쪽", [(c8, None, "표지"), (P09, ch, "회사소개")]),
