@@ -278,7 +278,7 @@ def apply(B, D, take, sub):
            ("조경", 1, "사내 직접 · 단지 조경 · 야간 경관 점검·자문"),  # 타일 1 = 4대보험 명부에 없어 뺌(본부장 10-26)
            ("간호사", 1, "대한간호사협회 · 박람회 현장 응급 대응 지원")]
     k["body"] = ('<div class="nb">' + k["body"] + '<div class="pro"><div class="h"><i>PROFESSIONALS</i>'
-                 '<b>자격 · 협회 등록<br><em>4개 분야</em> 전문 인력</b><span>보유 현황 · 2026.10 기준</span></div>'
+                 '<b>자격 보유 인력<br><em>공고 3개 분야</em> + 간호사</b><span>전기 3 · 건축(도장) 2 · 조경 1 · 간호사 1 · 2026.10 기준</span></div>'
                  + "".join(f'<div class="c"><b>{n}<small>명</small></b><div>{f}</div><p>{r}</p></div>' for f, n, r in pro)
                  + '</div></div>')
     k["lead"] = "재무·제휴·인증은 서류로 증명하고, 전문 인력은 보유 현황으로 적었습니다."

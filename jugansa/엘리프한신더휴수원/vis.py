@@ -605,13 +605,13 @@ def apply2(B, D, take, sub):
     k = take("입주민을 지키는 [[3중 안전망]]")[1]
     band = ('<div class="pt3"><h5>보호 기간 한눈에<small>48시간 눈금은 비례하지 않습니다 · 무상 A/S = 시공 품목 최소 2년 · 브랜드는 제조사 보증</small></h5>'
             '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:100%">계약이행 · 하자보증보험 24개월(금액 · 기산일은 협약 때)</i></div></div>'
-            '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:17%">48시간 처리</i></div></div>'
-            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:50%">입주 후 1년 · 주관 창구 운영</i><i class="c" style="left:50%;width:50%">~ 2년 · 무상 A/S(업체별) · 보증 유지</i></div></div>'
-            '<div class="tk"><span style="left:0">입주</span><span style="left:17%">48시간</span><span style="left:50%">1년</span><span style="left:100%">2년</span></div></div>')
+            '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:17%">48시간 방문 일정 확정</i></div></div>'
+            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:100%">주관 창구 · 무상 A/S(시공 품목 최소 2년) - 협약 종료일(블록별 무상 A/S 만료일)까지</i></div></div>'
+            '<div class="tk"><span style="left:0">입주</span><span style="left:17%">48시간</span><span style="left:100%">2년</span></div></div>')
     b3 = sub(k["body"], '<div class="big">10<small>년</small></div><div class="nm">장기 사후관리</div>',
              '<div class="big">2<small>년</small></div><div class="nm">무상 A/S · 사후관리</div>')
     b3 = sub(b3, "최소 2년 무상 A/S, 최대 10년 장기 관리.",
-             "시공 품목 최소 2년 · 브랜드는 제조사 보증. 입주 후 1년은 주관 창구 운영, 이후에도 규정 효력 유지(제10조).")
+             "시공 품목 최소 2년 · 브랜드는 제조사 보증. 주관 창구는 협약 종료일(블록별 무상 A/S 만료일)까지 운영(공고 2-(1)).")
     k["body"] = '<div class="nb">' + band + b3 + '</div>'
 
     # 선보상 재원 — 돈의 흐름
