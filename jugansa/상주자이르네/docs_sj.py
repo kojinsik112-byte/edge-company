@@ -277,7 +277,7 @@ def doc06_emp():
 <div class="who" style="margin-top:14pt">{D.COMPANY}</div>
 <div class="who" style="font-weight:400;font-size:11pt">{D.ADDRESS}</div>
 <div class="who">대표이사 &nbsp; {D.CEO}<span class="seal">(인)</span></div></div>
-<p class="note" style="margin-top:40pt">※ 재직 시작일 = 4대보험 사업장 가입자 명부(2026.10.23 발급 · 앞 쪽)의 자격취득일 · 자격증 사본은 뒤에 붙임</p>""")
+<p class="note" style="margin-top:40pt">※ 재직 시작일 = 4대보험 사업장 가입자 명부(2026.10.23 발급 · 앞 쪽)의 자격취득일 · 자격증 · 경력증 사본은 뒤에 붙임 · 대표이사는 법인등기부(제출서류 2)로 갈음</p>""")
     return doc("6 재직증명서", pages) if pages else None
 
 
