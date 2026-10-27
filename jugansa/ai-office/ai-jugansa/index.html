@@ -300,7 +300,20 @@ function enter(m, x, y){ const ch = mk(m.id, m.look, m.role, x ?? DOOR[0] + rand
 function chatty(){ const now = performance.now(); return Object.values(chars).filter(c => c.bubble && now < c.bubbleUntil).length < 4; }
 function goHome(ch, wait, hello){ ch.away = false; go(ch, homeSpot(ch.team), "lane");
   ch.after = () => { ch.nextAt = performance.now() + (wait || rand(4000, 11000)); if (hello && chatty()) say(ch, pickOne(hello), 1600); }; }
+let lastWorkAt = -Infinity;
+const BUSY_MS = 90000;                                // 마지막 작업 신호 후 이 시간까지는 '일하는 중' — 팀원이 바쁘게 오간다
+const busyNow = () => performance.now() - lastWorkAt < BUSY_MS;
 function errand(ch){  // 대기 중인 팀원이 볼일 하나를 보러 갔다가(away) 다음 차례에 통로로 돌아온다
+  const now = performance.now();
+  if (!busyNow()){   // 일이 없을 때: 제자리에 있고, 가끔 한 명씩만 휴게 코너 · 커피 바에 다녀온다
+    if (ch.away) return goHome(ch, rand(25000, 50000));
+    const out = Object.values(chars).some(c => c.member && c.away);
+    if (out || Math.random() < 0.6){ ch.nextAt = now + rand(15000, 40000); return; }
+    ch.away = true; const coffee = Math.random() < 0.4;
+    go(ch, coffee ? [rand(1086, 1136), rand(528, 538)] : [rand(880, 1140), rand(558, 586)], coffee ? "coffee" : "lounge");
+    ch.after = () => { if (chatty() && Math.random() < 0.5) say(ch, pickOne(coffee ? ["커피 한 잔", "아아 하나요"] : ["잠깐 쉬어요", "점심 뭐 먹지"]), 1800); ch.nextAt = performance.now() + rand(8000, 16000); };
+    return;
+  }
   if (ch.away) return goHome(ch);
   const r = Math.random(), b = chars.boss, i = ORDER.indexOf(ch.team);
   const there = (spot, at, lines, wait, reply) => { ch.away = true; go(ch, spot, at); ch.after = () => {
@@ -360,12 +373,14 @@ function touchSite(site, stage, team){ if (!site) return; const s = sites[site] 
 function handle(ev){
   const k = ev.kind, st = STATIONS[ev.room] ? ev.room : null;
   if (k === "team_start"){
+    lastWorkAt = performance.now();
     const id = ev.agent_id || ev.team + Date.now(); const stn = st || "analysis";
     const ch = mk(id, pickLook(ev.team || ev.team_kr || stn), ev.team_kr || ev.team, DOOR[0] - 30 + Math.random()*60, DOOR[1]); ch.tag = ev.team_kr || ev.team;
     go(ch, slot(stn), stn); ch.state = "working"; activeStation = stn;
     say(chars.boss, "팀 호출 → " + (ev.team_kr || ev.team)); touchSite(ev.site || curSite, stn, ev.team_kr || ev.team);
     setLog(`${STATIONS[stn].name} 작업대 · ${ev.team_kr || ev.team} 투입`);
   } else if (k === "work"){
+    lastWorkAt = performance.now();
     if (ev.agent_id && !chars[ev.agent_id] && ev.who !== "boss") handle({...ev, kind:"team_start"});   // 시작 신호를 놓친 팀도 첫 작업 때 출근
     if (ev.who === "boss" || !ev.agent_id || !chars[ev.agent_id]){
       // 본부장은 자리에서 지시하고, 그 단계 담당 직원이 출입구로 들어와 작업대에서 일한다
@@ -393,6 +408,7 @@ function handle(ev){
   } else if (k === "rest"){
     // 일한 직원은 보고하고 퇴근, 본부장은 보고를 받은 뒤 휴게 코너로 (다른 세션이 계속 일하면 담당 직원이 다시 출근한다)
     activeStation = null; const b = chars.boss, now = performance.now(); let n = 0;
+    lastWorkAt = -Infinity;                         // 일이 끝나면 팀원도 바로 차분해진다
     for (const id in chars){ const c = chars[id]; if (id !== "boss" && c.state === "working"){ report(c); n++; } }
     b.label = ""; b.state = "idle"; b.restAt = now + (n ? 5200 : 300);
     memos = memos.filter(m => m.type !== "notice"); setLog("작업 끝 · 보고 후 본부장 휴식");
@@ -613,7 +629,7 @@ function tick(now){ const dt = Math.min(0.05,(now-last)/1000); last = now;
     if (ch.member && ch.state === "working" && now - ch.lastWork > CREW_IDLE && !ch.path.length) report(ch);
     if (ch.member && ch.state === "idle" && !ch.leaveAt && !ch.path.length && now > ch.nextAt) errand(ch);
   }
-  if (now > shiftAt){ shiftAt = now + rand(12000, 24000); shift(); }
+  if (now > shiftAt){ shiftAt = now + rand(12000, 24000); if (busyNow()) shift(); }   // 교대 · 외근도 일할 때만
   const b = chars.boss;
   if (b.restAt && now > b.restAt && !Object.values(chars).some(c => c.state === "reporting")){ b.restAt = 0; b.state = "resting"; go(b, LOUNGE.seats[0], "lounge"); b.after = ()=>{ b.hop = 1; }; }
   draw(now); requestAnimationFrame(tick); }
