@@ -507,7 +507,8 @@ function renderBoard(){
   box.innerHTML = rows.map(r => {
     const s = sites[r.site] || {stage:"", t:0, teams:[]}, stale = !s.t || Date.now() - s.t > SITE_STALE_MS, cur = r.site === curSite;
     // 불 켜지는 칸 = 마지막 단계 (방금 신호가 온 단계 → 없으면 현황판 '단계' 표)
-    const live = !stale && s.stage, stage = live ? s.stage : (r.stage || s.stage), si = ORDER.indexOf(stage);
+    // PT 는 서류심사를 통과해 PT 업체로 뽑혔을 때만(현황판 단계 = PT) — 미리 PT 자료를 손봐도 PT 칸은 켜지 않는다
+    const live = !stale && s.stage && s.stage !== "pt", stage = live ? s.stage : (r.stage || (s.stage !== "pt" ? s.stage : "")), si = ORDER.indexOf(stage);
     const urgent = r.dday !== null && r.dday <= 2 && !r.done, soon = r.dday !== null && r.dday <= 7 && !r.done && !urgent;
     const short = String(r.site).replace(/\s*\(.*$/, "").trim() || r.site;
     const full = String(r.name || "").replace(/\s*\(.*$/, "");
