@@ -79,7 +79,7 @@ def parse_date(txt, today):
     except ValueError: return None, ""
     return d, (f"{m.group(3)}:{m.group(4)}" if m.group(3) else "")
 
-STAGE_KEY = {"개척": "scout", "착수": "analysis", "착수분석": "analysis", "제작": "build", "검증": "audit",
+STAGE_KEY = {"발송대기": "ready", "개척": "scout", "착수": "analysis", "착수분석": "analysis", "제작": "build", "검증": "audit",
              "발송": "mail", "PT": "pt", "관제": "retro", "결과": "retro", "결과·관제": "retro"}
 
 def board():

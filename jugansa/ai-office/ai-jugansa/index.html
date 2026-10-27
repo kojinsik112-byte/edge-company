@@ -27,7 +27,7 @@
   #board .bh b{font-size:calc(14px*var(--k));letter-spacing:.3px}
   #board .bh span{color:var(--mut);font-size:calc(11px*var(--k))}
   #board .bh i{margin-left:auto;font-style:normal;color:var(--mut);font-size:calc(10.5px*var(--k))}
-  #board .row{display:grid;grid-template-columns:2.3fr 1.35fr .95fr 2.6fr 1.15fr;align-items:center;column-gap:calc(6px*var(--k));height:calc(25px*var(--k));padding:0 calc(8px*var(--k));border-radius:calc(6px*var(--k));white-space:nowrap}
+  #board .row{display:grid;grid-template-columns:2.1fr 1.3fr .9fr 3.1fr 1.1fr;align-items:center;column-gap:calc(6px*var(--k));height:calc(25px*var(--k));padding:0 calc(8px*var(--k));border-radius:calc(6px*var(--k));white-space:nowrap}
   #board .row>span{overflow:hidden;text-overflow:ellipsis}
   #board .head{height:calc(20px*var(--k));color:var(--mut);font-size:calc(10.5px*var(--k));border-bottom:1px solid var(--line);border-radius:0;margin-right:calc(10px*var(--k))}
   #rows{flex:1;overflow-y:auto;scrollbar-gutter:stable;padding-top:calc(3px*var(--k));display:flex;flex-direction:column;gap:calc(2px*var(--k))}
@@ -48,12 +48,13 @@
   .dd.done{background:#163828;color:var(--ok)}
   .dd.soon{background:rgba(200,163,90,.18);color:#f0d49a}
   @keyframes blink{to{background:#8a2a1f}}
-  .dots{display:grid;grid-template-columns:repeat(7,1fr);justify-items:center;align-items:center}
+  .dots{display:grid;grid-template-columns:repeat(8,1fr);justify-items:center;align-items:center}
   .dots i{display:block;width:calc(6px*var(--k));height:calc(6px*var(--k));border-radius:50%;background:#3a4558}
   .dots i.on{width:calc(11px*var(--k));height:calc(11px*var(--k));box-shadow:0 0 calc(8px*var(--k)) currentColor}
   .dots i.live{animation:pulse 1s ease-in-out infinite}
   @keyframes pulse{50%{transform:scale(1.35)}}
   .head .dots span{font-size:calc(9.5px*var(--k))}
+  .head .dots span.tight{font-size:calc(8.5px*var(--k));letter-spacing:-.04em}
   #rows .pt{color:var(--mut);font-size:calc(11px*var(--k))}
   #rows .empty{color:var(--mut);padding:calc(10px*var(--k))}
 </style>
@@ -496,8 +497,11 @@ function drawBackground(){
 }
 
 // ───────── 단지 보드 (HTML · 한 줄 행 · 오른쪽 스크롤) ─────────
-const STAGE_SHORT = {scout:"개척", analysis:"착수", build:"제작", audit:"검증", mail:"발송", pt:"PT", retro:"관제"};
-document.getElementById("dhead").innerHTML = ORDER.map(k => `<span>${STAGE_SHORT[k]}</span>`).join("");
+// 단지 보드 단계 = 작업대 7개 + 발송대기(작업대 · 팀 없음, 검증 끝 · 메일 보내기 전)
+const BOARD_ORDER = ["scout","analysis","build","audit","ready","mail","pt","retro"];
+const BSTAGE = k => k === "ready" ? {name:"발송대기", color:"#f08a3c"} : STATIONS[k];
+const STAGE_SHORT = {scout:"개척", analysis:"착수", build:"제작", audit:"검증", ready:"발송대기", mail:"발송", pt:"PT", retro:"관제"};
+document.getElementById("dhead").innerHTML = BOARD_ORDER.map(k => `<span${k === "ready" ? ' class="tight"' : ""}>${STAGE_SHORT[k]}</span>`).join("");
 function renderBoard(){
   const rows = boardRows.map(r => ({...r})); const seen = new Set(rows.map(r => r.site));
   for (const n in sites) if (!seen.has(n)) rows.push({site:n, name:n, due:"", dday:null, done:false});
@@ -508,7 +512,9 @@ function renderBoard(){
     const s = sites[r.site] || {stage:"", t:0, teams:[]}, stale = !s.t || Date.now() - s.t > SITE_STALE_MS, cur = r.site === curSite;
     // 불 켜지는 칸 = 마지막 단계 (방금 신호가 온 단계 → 없으면 현황판 '단계' 표)
     // PT 는 서류심사를 통과해 PT 업체로 뽑혔을 때만(현황판 단계 = PT) — 미리 PT 자료를 손봐도 PT 칸은 켜지 않는다
-    const live = !stale && s.stage && s.stage !== "pt", stage = live ? s.stage : (r.stage || (s.stage !== "pt" ? s.stage : "")), si = ORDER.indexOf(stage);
+    // 메일 · 보관함 작업은 실제로 보내기(현황판 ✅ · 단계 발송) 전까지 발송대기로 본다
+    const live = !stale && s.stage && s.stage !== "pt", lv = live && s.stage === "mail" && !r.done && r.stage !== "mail" ? "ready" : s.stage;
+    const stage = live ? lv : (r.stage || (s.stage !== "pt" ? s.stage : "")), si = BOARD_ORDER.indexOf(stage);
     const urgent = r.dday !== null && r.dday <= 2 && !r.done, soon = r.dday !== null && r.dday <= 7 && !r.done && !urgent;
     const short = String(r.site).replace(/\s*\(.*$/, "").trim() || r.site;
     const full = String(r.name || "").replace(/\s*\(.*$/, "");
@@ -516,8 +522,8 @@ function renderBoard(){
     const dtxt = r.done ? "제출" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";
     const ptm = r.pt ? (r.pt.match(/\d{1,2}\.\d{1,2}/) || [""])[0] : "";
     const pt = ptm ? ptm + (r.pt_dday !== null && r.pt_dday >= 0 ? ` · D-${r.pt_dday}` : "") : "—";
-    const dots = ORDER.map((k,i) => { const on = i === si;
-      return `<i class="${on ? "on" + (live ? " live" : "") : ""}" style="${on ? `background:${STATIONS[k].color};color:${STATIONS[k].color}` : ""}" title="${STATIONS[k].name}"></i>`; }).join("");
+    const dots = BOARD_ORDER.map((k,i) => { const on = i === si, c = BSTAGE(k);
+      return `<i class="${on ? "on" + (live ? " live" : "") : ""}" style="${on ? `background:${c.color};color:${c.color}` : ""}" title="${c.name}"></i>`; }).join("");
     const title = `${r.name || r.site}${r.due ? " · 마감 " + r.due : ""}${r.pt ? " · PT " + r.pt : ""}${s.teams.length ? " · " + s.teams.join(", ") : ""}`;
     return `<div class="row${r.done ? " done" : ""}${cur ? " cur" : ""}${urgent ? " urgent" : ""}" title="${esc(title)}">`
       + `<span class="nm"><b>${esc(short)}</b><small>${esc(full !== short ? full : "")}</small></span>`
