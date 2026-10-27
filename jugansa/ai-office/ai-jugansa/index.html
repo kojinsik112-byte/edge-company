@@ -274,8 +274,8 @@ function go(ch, target, at){
   pts.push(target); ch.path = pts.map(p=>[p[0],p[1]]); ch.at = at;
 }
 
-// ───────── 팀원 — 팀마다 4~8명. 평소엔 2~3명이 작업대 아래 통로에서 대기하며 자료 전달 · 커피 · 현황판 확인으로 오가고,
-//            나머지는 외근 · 교대로 출입구를 드나든다. 일이 오면 묶음(지시 1개 × 작업대)마다 맞는 담당 1명이 작업대로 간다 ─────────
+// ───────── 팀원 — 팀마다 4~8명(35명). 화면에는 10명 안팎만: 출입구로 들어와 휴게 코너 · 작업 라인을 자유롭게 오가다 나가고,
+//            밖에 있던 팀원이 또 들어온다. 일이 오면 묶음(지시 1개 × 작업대)마다 맞는 담당 1명이 작업대로, 그 파트 팀원은 작업대 아래로 ─────────
 const CREW = {
   scout:   [["공고 확인", /공고|notice|hwp/i], ["상권 분석", /상권|입지/], ["단지 분석", /단지|아파트|realestate|청약/i], ["카페 분석", /카페|cafe/i]],
   analysis:[["착수 보고", /착수|kickoff/i], ["손익 분석", /손익|economist|지원금/i], ["사업성 평가", /사업성|점수/], ["행사장 조사", /행사장|venue/i], ["질의 정리", /질의|문의/]],
@@ -286,71 +286,55 @@ const CREW = {
   pt:      [["PT 대본", /대본|script/i], ["예상 질문", /질문|\bqa\b|Q&A/i], ["리허설", /리허설|rehearsal/i], ["슬라이드", /슬라이드|slide|ppt/i]],
   retro:   [["마감 관제", /마감|pmo|d-?day/i], ["현황판", /현황판/], ["결과 분석", /결과|retro/i], ["회고", /회고|learn/i]],
 };
-const ON_FLOOR = {scout:2, analysis:2, build:3, audit:2, mail:2, pt:2, retro:2};   // 평소 사무실에 있는 인원
-const CREW_IDLE = 20000;                              // 작업대에서 이 시간 동안 일이 없으면 보고하고 통로로
+const CREW_IDLE = 20000;                              // 작업대에서 이 시간 동안 일이 없으면 보고하고 다시 자유롭게
 const LANE_Y = 292;                                   // 대기 통로 (작업대 줄 아래)
 const MEMBERS = {};
 for (const st in CREW) MEMBERS[st] = CREW[st].map(([role, re], i) => ({id:`m-${st}-${i}`, st, role, re, look: genLook(`crew:${st}#${i}`), used:0}));
-let BATCH = 0, shiftAt = performance.now() + 15000, strollAt = performance.now() + 20000, wasBusy = false;
+let BATCH = 0, flowAt = 0, target = 10, targetAt = 0;
 const rand = (a, b) => a + Math.random()*(b - a), pickOne = a => a[Math.floor(Math.random()*a.length)];
-const SMALL = ["다음 단지는?", "자료 정리 중", "숫자 다시 볼게요", "마감 언제죠?"];
-// 대기 자리: 일할 때는 작업대 아래 대기 통로, 일이 없으면 휴게 코너
-const loungeSpot = () => [rand(866, 1142), rand(498, 600)];
-function homeSpot(st){ if (!busyNow()) return loungeSpot(); const s = STATIONS[st]; return [s.x + rand(-48, 48), LANE_Y + rand(-5, 5)]; }
-function enter(m, x, y){ const ch = mk(m.id, m.look, m.role, x ?? DOOR[0] + rand(-30, 30), y ?? DOOR[1]);
-  ch.tag = m.role; ch.member = m; ch.team = m.st; ch.nextAt = performance.now() + rand(2000, 12000); return ch; }
-function chatty(){ const now = performance.now(); return Object.values(chars).filter(c => c.bubble && now < c.bubbleUntil).length < 4; }
-function goHome(ch, wait, hello){ ch.away = false; go(ch, homeSpot(ch.team), busyNow() ? "lane" : "lounge");
-  ch.after = () => { ch.nextAt = performance.now() + (wait || rand(4000, 11000)); if (hello && chatty()) say(ch, pickOne(hello), 1600); }; }
 let lastWorkAt = -Infinity;
-const BUSY_MS = 90000;                                // 마지막 작업 신호 후 이 시간까지는 '일하는 중' — 팀원이 바쁘게 오간다
+const BUSY_MS = 90000;                                // 마지막 작업 신호 후 이 시간까지는 '일하는 중'
 const busyNow = () => performance.now() - lastWorkAt < BUSY_MS;
-function errand(ch){  // 대기 중인 팀원이 볼일 하나를 보러 갔다가(away) 다음 차례에 통로로 돌아온다
-  const now = performance.now();
-  if (!busyNow()){   // 일이 없을 때: 휴게 코너에 모여 있고, 가끔 자리를 옮기거나 커피 바에 들른다 (대기 통로 산책은 stroll)
-    if (ch.away) return goHome(ch, rand(10000, 30000));
-    if (Math.random() < 0.7){ ch.nextAt = now + rand(10000, 30000); return; }
-    const coffee = Math.random() < 0.4;
-    go(ch, coffee ? [rand(1086, 1136), rand(528, 538)] : loungeSpot(), "lounge");
-    ch.after = () => { if (chatty() && Math.random() < 0.4) say(ch, pickOne(coffee ? ["커피 한 잔", "아아 하나요"] : ["잠깐 쉬어요", "점심 뭐 먹지", "어제 그 단지요"]), 1800); ch.nextAt = performance.now() + rand(12000, 30000); };
-    return;
-  }
-  if (ch.away) return goHome(ch);
-  const r = Math.random(), b = chars.boss, i = ORDER.indexOf(ch.team);
-  const there = (spot, at, lines, wait, reply) => { ch.away = true; go(ch, spot, at); ch.after = () => {
-    if (lines && chatty() && Math.random() < 0.6){ say(ch, pickOne(lines), 1800); if (reply) reply(); }
+const SPOT = {
+  lane:   st => { const s = STATIONS[st || pickOne(ORDER)]; return [s.x + rand(-48, 48), LANE_Y + rand(-5, 5)]; },
+  lounge: () => [rand(866, 1142), rand(498, 600)],
+  coffee: () => [rand(1086, 1136), rand(528, 538)],
+  corr:   () => [CORR_X + rand(-4, 4), rand(460, 660)],
+};
+const onScreen = () => Object.values(chars).filter(c => c.member && c.state !== "leaving" && !c.leaveAt);
+function enter(m, x, y){ const now = performance.now(), ch = mk(m.id, m.look, m.role, x ?? DOOR[0] + rand(-30, 30), y ?? DOOR[1]);
+  ch.tag = m.role; ch.member = m; ch.team = m.st; ch.nextAt = now; ch.stayUntil = now + rand(35000, 90000); return ch; }
+function chatty(){ const now = performance.now(); return Object.values(chars).filter(c => c.bubble && now < c.bubbleUntil).length < 4; }
+function errand(ch){  // 일 없는 팀원: 머물 시간이 끝나면 출입구로 나가고, 아니면 다음 갈 곳으로
+  const now = performance.now(), b = chars.boss, busy = busyNow();
+  if (now > ch.stayUntil){ if (chatty() && Math.random() < 0.3) say(ch, pickOne(["먼저 갈게요", "외근 갑니다", "현장 다녀올게요"]), 1600); ch.leaveAt = now; return; }
+  const there = (spot, at, lines, wait, reply) => { go(ch, spot, at); ch.after = () => {
+    if (lines && chatty() && Math.random() < 0.45){ say(ch, pickOne(lines), 1800); if (reply) reply(); }
     ch.nextAt = performance.now() + wait; }; };
-  if (r < 0.28){ go(ch, homeSpot(ch.team), "lane"); ch.after = () => { ch.nextAt = performance.now() + rand(3000, 9000); };
-    if (chatty() && Math.random() < 0.25) say(ch, pickOne(SMALL), 1600); }
-  else if (r < 0.48){ const nb = ORDER[Math.max(0, Math.min(ORDER.length - 1, i + (Math.random() < 0.7 ? 1 : -1)))], s = STATIONS[nb];
-    there([s.x + rand(-34, 34), LANE_Y + rand(-4, 6)], "lane", ["자료 넘겨요", "검토 부탁해요", "이거 봐 주세요"], rand(1800, 3200), () => {
+  // 일할 때 그 파트 팀원은 자기 작업대 아래에서 대기
+  if (busy && MEMBERS[ch.team].some(m => chars[m.id] && chars[m.id].state === "working") && Math.random() < 0.75)
+    return there(SPOT.lane(ch.team), "lane", ["필요하면 불러요", "자료 준비됐어요"], rand(4000, 9000));
+  const r = Math.random(), i = ORDER.indexOf(ch.team);
+  if (r < 0.32) there(SPOT.lane(Math.random() < 0.5 ? ch.team : null), "lane", ["자료 정리 중", "다음 단지는?", "마감 언제죠?"], rand(4000, 10000));
+  else if (r < 0.55) there(SPOT.lounge(), "lounge", ["잠깐 쉬어요", "점심 뭐 먹지", "어제 그 단지요"], rand(5000, 12000));
+  else if (r < 0.70) there(SPOT.coffee(), "coffee", ["커피 한 잔", "아아 하나요", "당 충전"], rand(4000, 8000));
+  else if (r < 0.80) there(SPOT.corr(), "corr", ["마감 확인", "D-day 체크", "현황판 보자"], rand(2500, 5000));
+  else if (r < 0.92){ const nb = ORDER[Math.max(0, Math.min(ORDER.length - 1, i + (Math.random() < 0.7 ? 1 : -1)))];
+    there(SPOT.lane(nb), "lane", ["자료 넘겨요", "검토 부탁해요", "이거 봐 주세요"], rand(2000, 4000), () => {
       const mate = Object.values(chars).find(c => c.team === nb && c !== ch && c.state === "idle" && !c.path.length);
       if (mate) setTimeout(() => say(mate, pickOne(["받았어요", "확인할게요", "고마워요"]), 1500), 700); }); }
-  else if (r < 0.64) there([rand(1086, 1136), rand(528, 538)], "coffee", ["커피 한 잔", "아아 하나요", "당 충전"], rand(4000, 8000));
-  else if (r < 0.76) there([rand(880, 1140), rand(558, 586)], "lounge", ["잠깐 쉬어요", "점심 뭐 먹지", "어제 그 단지요"], rand(4000, 9000));
-  else if (r < 0.88) there([CORR_X + rand(-4, 4), rand(460, 660)], "corr", ["마감 확인", "D-day 체크", "현황판 보자"], rand(2500, 4500));
   else if (b.at === "boss" && b.state !== "resting")
     there([BOSS_DESK.x + rand(44, 62), BOSS_DESK.y + rand(22, 34)], "visit", ["결재 부탁드려요", "잠깐 여쭤볼게요"], rand(2200, 3500),
       () => setTimeout(() => say(b, pickOne(["좋아요", "그렇게 해요", "OK"]), 1300), 800));
-  else there([rand(880, 1140), rand(558, 586)], "lounge", null, rand(3000, 6000));
+  else there(SPOT.lounge(), "lounge", null, rand(4000, 9000));
 }
-function stroll(){  // 일 없을 때 가끔 5~8명이 휴게 코너에서 나와 대기 통로를 한 번 오가고 돌아간다
-  const idle = Object.values(chars).filter(c => c.member && c.state === "idle" && !c.path.length && !c.leaveAt).sort(() => Math.random() - 0.5);
-  idle.slice(0, 5 + Math.floor(Math.random()*4)).forEach((ch, k) => setTimeout(() => {
-    if (!chars[ch.id] || ch.state !== "idle" || ch.path.length || busyNow()) return;
-    const x1 = rand(80, 860), x2 = Math.max(60, Math.min(900, x1 + (Math.random() < 0.5 ? -1 : 1)*rand(150, 320)));
-    ch.away = true; go(ch, [x1, LANE_Y + rand(-5, 5)], "lane"); ch.path.push([x2, LANE_Y + rand(-5, 5)]);
-    ch.after = () => { ch.nextAt = performance.now() + rand(1000, 3500); };
-    if (k === 0 && chatty()) say(ch, pickOne(["한 바퀴 돌죠", "스트레칭 좀", "자료 보러 가요"]), 1600);
-  }, k * 700));
-}
-function shift(){  // 교대: 대기 중인 팀원 1명이 외근 나가고, 밖에 있던 팀원 1명이 들어온다
-  const st = pickOne(ORDER), out = MEMBERS[st].filter(m => !chars[m.id]);
-  if (!out.length) return;
-  const idle = MEMBERS[st].map(m => chars[m.id]).filter(c => c && c.state === "idle" && !c.path.length && !c.leaveAt);
-  if (idle.length){ const c = pickOne(idle); if (chatty()) say(c, pickOne(["현장 다녀올게요", "외근 갑니다", "자료 받으러 가요"]), 1800); c.leaveAt = performance.now() + 1200; }
-  else if (MEMBERS[st].filter(m => chars[m.id]).length >= ON_FLOOR[st]) return;
-  setTimeout(() => { const m = pickOne(out); if (!chars[m.id]) goHome(enter(m), rand(2000, 5000), ["다녀왔습니다", "출근했습니다"]); }, rand(1500, 4000));
+function flow(now){  // 화면 인원을 10명 안팎으로: 모자라면 밖에 있던 팀원이 출입구로 들어오고, 넘치면 오래 있던 사람부터 나간다
+  if (now > targetAt){ targetAt = now + rand(40000, 80000); target = 8 + Math.floor(Math.random()*5); }
+  const here = onScreen(), n = here.length;
+  if (n < target){ const out = Object.values(MEMBERS).flat().filter(m => !chars[m.id]);
+    if (out.length) enter(pickOne(out)); }
+  else if (n > target + 1){ const c = here.filter(c => c.state === "idle").sort((a, c) => a.stayUntil - c.stayUntil)[0]; if (c) c.stayUntil = now; }
+  return n < target - 3 ? rand(1200, 2200) : rand(3000, 6500);
 }
 function assign(st, text){
   // 묶음마다 담당 1명: 할 일에 맞는 담당 → 없으면 이번 묶음 담당이 이어서 → 새 묶음이면 가장 오래 쉰 사람 (자리에 있는 사람 먼저)
@@ -364,7 +348,7 @@ function assign(st, text){
   if (ch.state !== "working"){
     const others = busy.filter(c => c !== ch);
     if (others.length >= 3) report(others.sort((a, c) => a.lastWork - c.lastWork)[0]);   // 작업대 앞은 3명까지
-    ch.state = "working"; ch.leaveAt = 0; ch.away = false; go(ch, slot(st), st); ch.after = null;
+    ch.state = "working"; ch.leaveAt = 0; go(ch, slot(st), st); ch.after = null;
     say(b, clip(m.role + " 부탁해요", 14), 1500);
   }
   ch.batch = BATCH; ch.lastWork = now; m.used = now; return ch;
@@ -373,7 +357,7 @@ function report(ch){
   const b = chars.boss; ch.state = "reporting"; ch.label = "";
   go(ch, [b.x - 36 - (Object.values(chars).filter(c=>c.state==="reporting").length*22), b.y + 4], "report");
   ch.after = ()=>{ say(ch, "보고 드립니다", 1800); say(b, "확인", 1200);
-    if (ch.member){ ch.state = "idle"; ch.away = true; ch.nextAt = performance.now() + 1800; }   // 팀원은 보고 후 대기 통로로
+    if (ch.member){ ch.state = "idle"; ch.nextAt = performance.now() + 1800; ch.stayUntil = Math.max(ch.stayUntil, performance.now() + 15000); }   // 팀원은 보고 후 잠시 머물다 나간다
     else ch.leaveAt = performance.now() + 2200; };
 }
 function say(ch, text, ms=2400){ ch.bubble = text; ch.bubbleUntil = performance.now()+ms; }
@@ -511,7 +495,7 @@ function drawBackground(){
   g.fillStyle="rgba(255,255,255,.028)"; rr(g,22,30,1156,352,16); g.fill(); g.strokeStyle="rgba(200,163,90,.22)"; g.lineWidth=1; rr(g,22.5,30.5,1155,351,16); g.stroke();
   // 대기 통로 (작업대 아래 · 대기 팀원이 서는 줄)
   g.fillStyle="rgba(255,255,255,.022)"; rr(g,34,LANE_Y-34,1132,56,12); g.fill();
-  g.fillStyle="#7d889c"; g.font="11px 'Malgun Gothic', sans-serif"; g.fillText("작업 라인 — 왼쪽에서 오른쪽으로 일이 흐릅니다 · 작업대 앞 = 지금 일하는 사람 · 아래 통로 = 대기 중인 팀원", 40, 372);
+  g.fillStyle="#7d889c"; g.font="11px 'Malgun Gothic', sans-serif"; g.fillText("작업 라인 — 왼쪽에서 오른쪽으로 일이 흐릅니다 · 작업대 앞 = 지금 일하는 사람 · 아래 통로 = 오가는 팀원", 40, 372);
   // 작업대 7개
   ORDER.forEach((k,i)=>{ const s = STATIONS[k], x = s.x, y = s.y;
     const pool = g.createRadialGradient(x,y-40,4,x,y-40,80); pool.addColorStop(0, s.color+"22"); pool.addColorStop(1, s.color+"00"); g.fillStyle=pool; g.fillRect(x-80,y-120,160,160);
@@ -559,7 +543,7 @@ function drawBackground(){
   const L = LOUNGE.box;
   g.fillStyle="rgba(255,255,255,.03)"; rr(g,L[0],L[1],L[2]-L[0],L[3]-L[1],16); g.fill(); g.strokeStyle="rgba(255,255,255,.07)"; rr(g,L[0]+.5,L[1]+.5,L[2]-L[0]-1,L[3]-L[1]-1,16); g.stroke();
   g.fillStyle="#ece5d6"; g.font="700 13px 'Malgun Gothic', sans-serif"; g.fillText("휴게 코너", L[0]+16, L[1]+24);
-  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; fitText(g, "일 없을 땐 팀원 대기 · 본부장 휴식", L[0]+86, L[1]+24, L[2]-L[0]-100, 10.5);
+  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; fitText(g, "팀원 휴식 · 커피 · 본부장 휴식", L[0]+86, L[1]+24, L[2]-L[0]-100, 10.5);
   const rug = g.createLinearGradient(0,L[1]+38,0,L[3]); rug.addColorStop(0,"#1d3534"); rug.addColorStop(1,"#162a29"); g.fillStyle=rug; rr(g,L[0]+14,L[1]+38,L[2]-L[0]-28,L[3]-L[1]-50,12); g.fill();
   g.strokeStyle="rgba(200,163,90,.22)"; g.lineWidth=1; rr(g,L[0]+20,L[1]+44,L[2]-L[0]-40,L[3]-L[1]-62,9); g.stroke();
   // 커피 바
@@ -580,7 +564,7 @@ function drawBackground(){
   const E = ENTRY.box;
   g.fillStyle="rgba(255,255,255,.02)"; rr(g,E[0],E[1],E[2]-E[0],E[3]-E[1]+12,16); g.fill(); g.strokeStyle="rgba(255,255,255,.06)"; rr(g,E[0]+.5,E[1]+.5,E[2]-E[0]-1,E[3]-E[1]+11,16); g.stroke();
   g.fillStyle="#ece5d6"; g.font="700 13px 'Malgun Gothic', sans-serif"; g.fillText("출입구", E[0]+16, E[1]+24);
-  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; fitText(g, "팀원 교대 · 외근 출입 · 호출된 팀 출근", E[0]+62, E[1]+24, E[2]-E[0]-78, 10.5);
+  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; fitText(g, "팀원 출근 · 외근 · 퇴근이 드나드는 곳", E[0]+62, E[1]+24, E[2]-E[0]-78, 10.5);
   g.fillStyle="#232a37"; rr(g,DOOR[0]-62,DOOR[1]-52,124,40,9); g.fill(); g.strokeStyle="rgba(200,163,90,.35)"; rr(g,DOOR[0]-58,DOOR[1]-48,116,32,7); g.stroke();
   g.fillStyle="rgba(200,163,90,.5)"; g.font="600 10px 'Malgun Gothic', sans-serif"; g.textAlign="center"; g.fillText("WELCOME · EDGE COMPANY", DOOR[0], DOOR[1]-28); g.textAlign="left";
   const gd = g.createLinearGradient(0,DOOR[1]-8,0,DOOR[1]+12); gd.addColorStop(0,"rgba(140,190,230,.35)"); gd.addColorStop(1,"rgba(140,190,230,.08)"); g.fillStyle=gd; rr(g,DOOR[0]-56,DOOR[1]-6,112,20,3); g.fill();
@@ -640,11 +624,7 @@ function tick(now){ const dt = Math.min(0.05,(now-last)/1000); last = now;
     if (ch.member && ch.state === "working" && now - ch.lastWork > CREW_IDLE && !ch.path.length) report(ch);
     if (ch.member && ch.state === "idle" && !ch.leaveAt && !ch.path.length && now > ch.nextAt) errand(ch);
   }
-  if (now > shiftAt){ shiftAt = now + rand(12000, 24000); if (busyNow()) shift(); }   // 교대 · 외근도 일할 때만
-  const busy = busyNow();
-  if (busy !== wasBusy){ wasBusy = busy;   // 일이 시작되면 대기 통로로, 끝나면 휴게 코너로 자리를 옮긴다
-    for (const c of Object.values(chars)) if (c.member && c.state === "idle" && !c.leaveAt){ c.away = true; c.nextAt = now + rand(0, busy ? 2500 : 6000); } }
-  if (!busy && now > strollAt){ strollAt = now + rand(35000, 70000); stroll(); }
+  if (now > flowAt) flowAt = now + flow(now);
   const b = chars.boss;
   if (b.restAt && now > b.restAt && !Object.values(chars).some(c => c.state === "reporting")){ b.restAt = 0; b.state = "resting"; go(b, LOUNGE.seats[0], "lounge"); b.after = ()=>{ b.hop = 1; }; }
   draw(now); requestAnimationFrame(tick); }
@@ -700,8 +680,8 @@ cv.addEventListener("click", e => { const r = cv.getBoundingClientRect(), pxx = 
   for (const id in chars){ const ch = chars[id], b = ch._box; if (!b) continue; if (pxx >= b[0] && pxx <= b[0]+b[2] && pyy >= b[1] && pyy <= b[1]+b[3]){
     say(ch, ch.state==="working" ? "[작업 중] " + (ch.label || ch.tag || "") : ch.state==="reporting" ? "[보고 중]" : ch.state==="resting" ? "[휴식 중]" : ch.state==="leaving" ? "[외근 · 퇴근]" : ch.team ? `[대기] ${STATIONS[ch.team].name} · ${ch.tag}` : "[대기 중]"); return; } } });
 
-// 처음 열면 팀마다 평소 인원이 휴게 코너에 모여 있다 (일이 들어오면 대기 통로로)
-for (const st of ORDER) MEMBERS[st].slice().sort(() => Math.random() - 0.5).slice(0, ON_FLOOR[st]).forEach(m => { const [x, y] = homeSpot(st); enter(m, x, y).at = "lounge"; });
+// 처음 열면 몇 명은 이미 안에 있고, 나머지는 출입구로 차례로 들어온다
+Object.values(MEMBERS).flat().sort(() => Math.random() - 0.5).slice(0, 4).forEach((m, k) => { const [x, y] = k % 2 ? SPOT.lounge() : SPOT.lane(); enter(m, x, y).at = k % 2 ? "lounge" : "lane"; });
 drawBackground(); renderBoard();
 setInterval(renderBoard, 5000);
 requestAnimationFrame(tick); poll(); loadBoard();
