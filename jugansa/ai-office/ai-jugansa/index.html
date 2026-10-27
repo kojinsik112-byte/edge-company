@@ -138,8 +138,9 @@ function genLook(seed){
     glasses: R() < 0.3, glassesColor: pick(["#2b2b33","#7a5230","#9aa3ad","#c8a35a"]), headset: R() < 0.12,
     lanyard: R() < 0.45 ? pick(LANYARD) : null, prop: pick([null,null,"laptop","tablet","docs","coffee"]), acc: pick(ACC)};
 }
-const BOSS_LOOK = {key:"boss", skin:"#f2cfb3", hair:"#1d1b22", hs:1, ts:1, top:"#14223a", inner:"#ffffff", tie:"#c8a35a", pants:"#14223a", skirt:false,
-  legs:"#14223a", shoes:"#1c1c22", glasses:true, glassesColor:"#c8a35a", headset:false, lanyard:null, prop:"tablet", acc:"#c8a35a"};
+// 총괄 본부장: 안경 없음 · 볼륨 가르마 · 네이비 수트 + 노타이 흰 셔츠 · 브라운 구두
+const BOSS_LOOK = {key:"boss3", boss:true, skin:"#f1cdb0", hair:"#1a1820", hs:9, ts:1, top:"#1b2436", inner:"#ffffff", tie:null, pants:"#1b2436", skirt:false,
+  legs:"#1b2436", shoes:"#4a2e1e", glasses:false, headset:false, lanyard:null, prop:"tablet", acc:"#c8a35a"};
 const ROSTERS = {};
 function pickLook(team){
   const roster = ROSTERS[team] || (ROSTERS[team] = Array.from({length:5}, (_,i) => genLook(team + "#" + i)));
@@ -161,8 +162,16 @@ function hairFront(g,P){
     case 6: cap([[46,24],[39,22],[32,24.5],[25,22],[18,24]]); for (let a=Math.PI*0.95; a<=Math.PI*2.05; a+=Math.PI/8){ ell(g,32+19.5*Math.cos(a),27+18*Math.sin(a),5,5); g.fill(); } break;
     case 7: g.beginPath(); g.moveTo(13.2,27); g.bezierCurveTo(11,2,53,2,50.8,27); g.lineTo(46,20.5); g.lineTo(18,20.5); g.closePath(); g.fill(); break;
     case 8: ell(g,31,10,16,7.5,-0.08); g.fill(); cap([[49,22],[40,20.5],[30,22],[20,21],[15.5,26]]); break;
+    case 9: // 볼륨 가르마: 왼쪽 가르마 · 앞머리를 위 · 오른쪽으로 넘기고 옆은 짧게
+      cap([[50.8,28],[48.5,23.5],[43,21],[36,21.2],[30,23.2],[26.4,21.4],[21,23.6],[15.2,28.5]]);
+      ell(g,36,11.5,15.5,7,-0.12); g.fill();
+      g.strokeStyle = "rgba(255,255,255,.13)"; g.lineWidth = 0.8; g.lineCap = "round";
+      g.beginPath(); g.moveTo(25.8,9); g.quadraticCurveTo(24.4,15,26.2,21); g.stroke();
+      for (const [a,b,c,d,e,f] of [[28,17,34,9,45,10],[31,20,38,13,48,16]]){ g.beginPath(); g.moveTo(a,b); g.quadraticCurveTo(c,d,e,f); g.stroke(); }
+      break;
   }
-  g.strokeStyle = "rgba(255,255,255,.26)"; g.lineWidth = 1.6; g.lineCap = "round"; g.beginPath(); g.arc(30,22,12,Math.PI*1.18,Math.PI*1.42); g.stroke();
+  g.strokeStyle = "rgba(255,255,255,.26)"; g.lineWidth = 1.6; g.lineCap = "round"; g.beginPath();
+  if (P.hs === 9) g.arc(37,13,10,Math.PI*1.12,Math.PI*1.4); else g.arc(30,22,12,Math.PI*1.18,Math.PI*1.42); g.stroke();
 }
 function drawProp(g,P){
   switch (P.prop){
@@ -200,6 +209,7 @@ function drawPerson(g, P, f){
     g.fillStyle=shade(T,-0.15); rr(g,24,61,16,6,3); g.fill(); }
   else if (P.ts===3){ g.fillStyle="#fbfaf7"; tri(g,27,48,32,52.5,30,46.5); tri(g,37,48,32,52.5,34,46.5); g.strokeStyle=shade(T,0.2); g.lineWidth=0.8; for (const y of [55,59,63]) line(g,21,y,43,y); }
   else { g.fillStyle=P.inner; rr(g,27.5,48,9,22,2); g.fill(); g.fillStyle=shade(T,-0.35); for (const y of [55,60,65]){ ell(g,27,y,0.8,0.8); g.fill(); } }
+  if (P.boss){ g.fillStyle="#f6f3ec"; tri(g,26.5,48,31.6,53,29.6,46); tri(g,37.5,48,32.4,53,34.4,46); }   // 노타이 흰 셔츠 깃
   if (P.lanyard){ g.strokeStyle=P.lanyard; g.lineWidth=1; g.beginPath(); g.moveTo(27,48); g.lineTo(32,58); g.lineTo(37,48); g.stroke(); g.fillStyle="#fff"; rr(g,29.5,58,5,6.5,1); g.fill(); g.fillStyle=P.lanyard; g.fillRect(29.5,58,5,1.6); }
   // 팔 (손에 든 물건이 있으면 오른팔로 받친다)
   const aw = s*0.32;
@@ -208,15 +218,28 @@ function drawPerson(g, P, f){
   // 머리
   g.fillStyle=P.skin; ell(g,13.5,32,3.2,3.6); g.fill(); ell(g,50.5,32,3.2,3.6); g.fill();
   ell(g,32,29,19,18.5); g.fill();
-  g.fillStyle="rgba(0,0,0,.06)"; ell(g,32,42,13,4); g.fill();
+  if (!P.boss){ g.fillStyle="rgba(0,0,0,.06)"; ell(g,32,42,13,4); g.fill(); }
   hairFront(g,P);
   // 얼굴
-  const ey = 33.5;
-  g.fillStyle="#2b2433"; ell(g,25,ey,2.5,3.2); g.fill(); ell(g,39,ey,2.5,3.2); g.fill();
-  g.fillStyle="#fff"; ell(g,25.9,ey-1.3,0.95,0.95); g.fill(); ell(g,39.9,ey-1.3,0.95,0.95); g.fill();
-  g.strokeStyle=shade(P.hair,-0.1); g.lineWidth=1.1; line(g,22,28.3,27.5,27.6); line(g,36.5,27.6,42,28.3);
-  g.fillStyle="rgba(255,120,120,.28)"; ell(g,21.5,38.5,3,1.7); g.fill(); ell(g,42.5,38.5,3,1.7); g.fill();
-  g.strokeStyle="#9a5246"; g.lineWidth=1; g.beginPath(); g.arc(32,38,2.3,0.2*Math.PI,0.8*Math.PI); g.stroke();
+  const ey = 33.5, brow = (x1,y1,cx,cy,x2,y2) => { g.beginPath(); g.moveTo(x1,y1); g.quadraticCurveTo(cx,cy,x2,y2); g.stroke(); };
+  g.lineCap = "round";
+  if (P.boss){
+    // 또렷한 눈 + 윗눈꺼풀 선 · 반듯하게 올라간 눈썹 · 자신 있는 미소
+    g.fillStyle="#221c26"; ell(g,25,ey,2.3,2.9); g.fill(); ell(g,39,ey,2.3,2.9); g.fill();
+    g.fillStyle="#fff"; ell(g,25.8,ey-1.2,0.9,0.9); g.fill(); ell(g,39.8,ey-1.2,0.9,0.9); g.fill();
+    g.strokeStyle="#221c26"; g.lineWidth=1.1; brow(21.9,31.6,25,29.6,28,31.2); brow(36,31.2,39,29.6,42.1,31.6);
+    g.strokeStyle=P.hair; g.lineWidth=1.9; brow(21.2,28.3,23.6,26.5,28.4,28.6); brow(35.6,28.6,40.4,26.5,42.8,28.3);
+    g.strokeStyle=shade(P.skin,-0.22); g.lineWidth=0.9; line(g,32.7,34.6,31.9,36.3);
+    g.fillStyle="rgba(240,130,110,.16)"; ell(g,21.5,38.5,2.8,1.5); g.fill(); ell(g,42.5,38.5,2.8,1.5); g.fill();
+    g.strokeStyle="#8a4638"; g.lineWidth=1.1; g.beginPath(); g.moveTo(29.2,38.6); g.quadraticCurveTo(32.4,40.9,35.6,38.1); g.stroke();
+  } else {
+    g.fillStyle="#2b2433"; ell(g,25,ey,2.5,3.2); g.fill(); ell(g,39,ey,2.5,3.2); g.fill();
+    g.fillStyle="#fff"; ell(g,25.9,ey-1.3,0.95,0.95); g.fill(); ell(g,39.9,ey-1.3,0.95,0.95); g.fill();
+    // 눈썹: 안쪽 끝이 바깥보다 올라가면 울상이 되므로 같은 높이로 두고 가운데만 살짝 둥글게
+    g.strokeStyle=shade(P.hair,-0.1); g.lineWidth=1.2; brow(21.8,28.1,24.4,26.6,27.7,28.1); brow(36.3,28.1,39.6,26.6,42.2,28.1);
+    g.fillStyle="rgba(255,120,120,.28)"; ell(g,21.5,38.5,3,1.7); g.fill(); ell(g,42.5,38.5,3,1.7); g.fill();
+    g.strokeStyle="#9a5246"; g.lineWidth=1; g.beginPath(); g.arc(32,38,2.3,0.2*Math.PI,0.8*Math.PI); g.stroke();
+  }
   if (P.glasses){ g.strokeStyle=P.glassesColor; g.lineWidth=1.1; rr(g,20.3,29.8,9.4,7.2,2.6); g.stroke(); rr(g,34.3,29.8,9.4,7.2,2.6); g.stroke(); line(g,29.7,32.5,34.3,32.5); }
   if (P.headset){ g.strokeStyle="#2b2f3a"; g.lineWidth=2; g.beginPath(); g.arc(32,29,20.5,Math.PI*1.05,Math.PI*1.95); g.stroke(); g.fillStyle="#2b2f3a"; rr(g,9.5,28,5,9,2); g.fill(); rr(g,49.5,28,5,9,2); g.fill();
     g.lineWidth=1.2; g.beginPath(); g.moveTo(12,36); g.quadraticCurveTo(14,42,22,41.5); g.stroke(); }
@@ -248,6 +271,20 @@ function go(ch, target, at){
   else if (!fromTop && !toTop && (ch.x < CORR_X) !== (target[0] < CORR_X)) pts.push([CORR_X, ch.y], [CORR_X, target[1]]);
   pts.push(target); ch.path = pts.map(p=>[p[0],p[1]]); ch.at = at;
 }
+const HELP_IDLE = 45000;                              // 담당 직원: 이 시간 동안 그 작업대 일이 없으면 보고 후 퇴근
+function helper(st){
+  const now = performance.now();
+  let ch = Object.values(chars).find(c => c.helper === st && c.state === "working" && !c.leaveAt);
+  if (!ch){ const name = STATIONS[st].name + " 담당";
+    ch = mk("h-" + st + "-" + Math.round(now), pickLook(st), name, DOOR[0] - 30 + Math.random()*60, DOOR[1]); ch.tag = name; ch.helper = st;
+    go(ch, slot(st), st); ch.state = "working"; say(chars.boss, STATIONS[st].name + " 부탁해요", 1600); }
+  ch.lastWork = now; return ch;
+}
+function report(ch){
+  const b = chars.boss; ch.state = "reporting"; ch.label = "";
+  go(ch, [b.x - 36 - (Object.values(chars).filter(c=>c.state==="reporting").length*22), b.y + 4], "report");
+  ch.after = ()=>{ say(ch, "보고 드립니다", 1800); say(b, "확인", 1200); ch.leaveAt = performance.now() + 2200; };
+}
 function say(ch, text, ms=2400){ ch.bubble = text; ch.bubbleUntil = performance.now()+ms; }
 function setLog(t){ document.getElementById("log").textContent = t; }
 function touchSite(site, stage, team){ if (!site) return; const s = sites[site] || (sites[site] = {stage:"", t:0, teams:[]}); if (stage) s.stage = stage; s.t = Date.now(); if (team && !s.teams.includes(team)){ s.teams.push(team); s.teams = s.teams.slice(-4); } curSite = site; renderBoard(); }
@@ -262,11 +299,14 @@ function handle(ev){
     say(chars.boss, "팀 호출 → " + (ev.team_kr || ev.team)); touchSite(ev.site || curSite, stn, ev.team_kr || ev.team);
     setLog(`${STATIONS[stn].name} 작업대 · ${ev.team_kr || ev.team} 투입`);
   } else if (k === "work"){
+    if (ev.agent_id && !chars[ev.agent_id] && ev.who !== "boss") handle({...ev, kind:"team_start"});   // 시작 신호를 놓친 팀도 첫 작업 때 출근
     if (ev.who === "boss" || !ev.agent_id || !chars[ev.agent_id]){
-      const ch = chars.boss;
-      if (st){ if (ch.at !== st) go(ch, [STATIONS[st].x + 46, STATIONS[st].y + 6], st); activeStation = st; }
-      else if (ch.at !== "boss") go(ch, [BOSS_DESK.x, BOSS_DESK.y], "boss");
-      ch.state = "working"; ch.label = ev.label || ev.tool || "";
+      // 본부장은 자리에서 지시하고, 그 단계 담당 직원이 출입구로 들어와 작업대에서 일한다
+      const ch = chars.boss; ch.restAt = 0;
+      if (ch.at !== "boss") go(ch, [BOSS_DESK.x, BOSS_DESK.y], "boss");
+      ch.state = "working";
+      if (st){ const h = helper(st); h.label = ev.label || ev.tool || ""; ch.label = "지시 → " + STATIONS[st].name; activeStation = st; }
+      else ch.label = ev.label || ev.tool || "";
       if (ev.call) say(ch, "팀 호출 → " + ev.call);
       touchSite(ev.site, st || "", "");
     } else {
@@ -278,16 +318,17 @@ function handle(ev){
   } else if (k === "done"){
     const ch = ev.who === "boss" ? chars.boss : null; if (ch && ch.state === "working") ch.label = "";
   } else if (k === "team_stop"){
-    const ch = chars[ev.agent_id]; if (ch){ ch.state = "reporting"; ch.label = ""; const b = chars.boss; go(ch, [b.x - 36 - (Object.values(chars).filter(c=>c.state==="reporting").length*22), b.y + 4], "report");
-      ch.after = ()=>{ say(ch, "보고 드립니다", 1800); say(b, "확인", 1200); ch.leaveAt = performance.now() + 2200; }; }
+    const ch = chars[ev.agent_id]; if (ch) report(ch);
     setLog(`${st ? STATIONS[st].name : ""} · ${ch ? ch.tag : ev.team} 작업 끝`);
   } else if (k === "memo"){
     memos.push({text:(ev.memo_type==="permission_prompt"?"승인 요청 · ":ev.memo_type==="idle_prompt"?"대기 · ":"알림 · ")+ev.label, type:"notice"}); memos = memos.slice(-4);
     setLog("메모: " + ev.label);
   } else if (k === "rest"){
-    activeStation = null; const b = chars.boss; b.state = "resting"; b.label = ""; const seat = LOUNGE.seats[0]; go(b, seat, "lounge"); b.after = ()=>{ b.hop = 1; };
-    for (const id in chars){ if (id !== "boss") chars[id].leaveAt = performance.now() + 600; }
-    memos = memos.filter(m => m.type !== "notice"); setLog("작업 끝 · 본부장 휴게실 · 팀 퇴근");
+    // 일한 직원은 보고하고 퇴근, 본부장은 보고를 받은 뒤 휴게 코너로 (다른 세션이 계속 일하면 담당 직원이 다시 출근한다)
+    activeStation = null; const b = chars.boss, now = performance.now(); let n = 0;
+    for (const id in chars){ const c = chars[id]; if (id !== "boss" && c.state === "working"){ report(c); n++; } }
+    b.label = ""; b.state = "idle"; b.restAt = now + (n ? 5200 : 300);
+    memos = memos.filter(m => m.type !== "notice"); setLog("작업 끝 · 보고 후 본부장 휴식");
   } else if (k === "start" || k === "prompt"){
     const b = chars.boss; if (b.at !== "boss") go(b, [BOSS_DESK.x, BOSS_DESK.y], "boss"); b.state = "idle"; b.label = "";
     if (k === "start"){ memos = []; setLog("세션 시작" + (ev.cwd ? " · " + ev.cwd : "")); } else { touchSite(ev.site, "", ""); setLog("본부장 지시 · " + (ev.label || "")); }
@@ -493,7 +534,10 @@ let last = performance.now();
 function tick(now){ const dt = Math.min(0.05,(now-last)/1000); last = now;
   for (const id in chars){ const ch = chars[id]; move(ch, dt);
     if (id !== "boss" && ch.leaveAt && now > ch.leaveAt && ch.state !== "leaving" && !ch.path.length){ ch.state = "leaving"; go(ch, [DOOR[0] - 20 + Math.random()*40, DOOR[1] + 6], "exit"); ch.after = ()=>{ delete chars[id]; }; }
+    if (ch.helper && ch.state === "working" && now - ch.lastWork > HELP_IDLE) report(ch);
   }
+  const b = chars.boss;
+  if (b.restAt && now > b.restAt && !Object.values(chars).some(c => c.state === "reporting")){ b.restAt = 0; b.state = "resting"; go(b, LOUNGE.seats[0], "lounge"); b.after = ()=>{ b.hop = 1; }; }
   draw(now); requestAnimationFrame(tick); }
 function move(ch, dt){
   if (ch.path.length){ const [tx,ty] = ch.path[0]; const dx=tx-ch.x, dy=ty-ch.y, d=Math.hypot(dx,dy), step=WALK_SPEED*dt;

@@ -52,7 +52,7 @@ def site_for(h):
         if k in h: return v
     for v in SITES.values():              # 약칭만 적혀 있어도 잡는다 ("상주 올려줘")
         if v in h: return v
-    m = re.search(r"jugansa[\\/]([^\\/]+)", h)
+    m = re.search(r"(?<![-\w])jugansa[\\/]([^\\/\"'\s&|;<>]+)", h)     # ai-jugansa(스킬 폴더) · 따옴표 · 명령 기호는 단지가 아니다
     return m.group(1)[:5] if m and not m.group(1).endswith((".py", ".md")) and not m.group(1).startswith(("ai-office", "tools")) else ""
 # ── 단지 보드: jugansa/입찰현황판.md 의 '진행 중' 표에서 마감 · PT · 제출 여부를 읽는다 ──
 BOARD_FILE = [None]          # 찾은 현황판 경로 (SessionStart 의 cwd · 환경변수 JUGANSA_DIR · 이 폴더 위쪽 순으로 찾음)
@@ -155,7 +155,7 @@ def stage_for(tool, ti):
         if re.search(rx, h, re.I): return room
     return "office"
 
-LOCK = threading.Lock(); EVENTS = []; SEQ = [0]
+LOCK = threading.Lock(); EVENTS = []; SEQ = [0]; SEEN = set()
 LOG_PATH = os.path.join(HERE, "events.log")
 
 def push(ev):
@@ -167,18 +167,24 @@ def push(ev):
 
 def translate(h):
     name = h.get("hook_event_name", ""); tool = h.get("tool_name", ""); ti = h.get("tool_input") or {}
-    agent = h.get("agent_type") or ""           # 서브에이전트(팀) 안에서 온 신호면 팀 이름이 붙어 있다
-    team = agent if agent in TEAM_ROOM or agent in TEAM_KR else ""
+    aid = h.get("agent_id") or ""                # 서브에이전트(팀) 안에서 온 신호면 agent_id · agent_type 이 붙어 있다
+    agent = h.get("agent_type") or ""
+    team = agent or ("팀" if aid else "")
     if name == "SubagentStart":
-        a = h.get("agent_type", "")
-        return {"kind": "team_start", "team": a, "team_kr": TEAM_KR.get(a, a), "room": TEAM_ROOM.get(a, "analysis"), "agent_id": h.get("agent_id", ""), "site": site_for(str(h.get("cwd", "")))}
+        SEEN.add(aid)
+        return {"kind": "team_start", "team": agent, "team_kr": TEAM_KR.get(agent, agent), "room": TEAM_ROOM.get(agent, "analysis"), "agent_id": aid, "site": site_for(str(h.get("cwd", "")))}
     if name == "SubagentStop":
-        a = h.get("agent_type", "")
-        return {"kind": "team_stop", "team": a, "room": TEAM_ROOM.get(a, "analysis"), "agent_id": h.get("agent_id", "")}
+        SEEN.discard(aid)
+        return {"kind": "team_stop", "team": agent, "room": TEAM_ROOM.get(agent, "analysis"), "agent_id": aid}
     if name == "PreToolUse":
-        if team:
-            return {"kind": "work", "who": CHAR_OF_ROOM[TEAM_ROOM.get(team, "analysis")], "room": TEAM_ROOM.get(team, "analysis"),
-                    "team": team, "team_kr": TEAM_KR.get(team, team), "tool": tool, "label": label_for(tool, ti), "agent_id": h.get("agent_id", ""), "site": site_for(haystack(tool, ti))}
+        if aid:
+            guess = stage_for(tool, ti)
+            room = TEAM_ROOM.get(agent) or (guess if guess != "office" else "analysis")
+            ev = {"kind": "work", "who": CHAR_OF_ROOM.get(room, "analyst"), "room": room,
+                  "team": team, "team_kr": TEAM_KR.get(agent, agent or "지원팀"), "tool": tool, "label": label_for(tool, ti), "agent_id": aid, "site": site_for(haystack(tool, ti))}
+            if aid not in SEEN:                  # 시작 신호(SubagentStart)를 못 받은 팀도 첫 작업 때 출근시킨다
+                SEEN.add(aid); push({**ev, "kind": "team_start"})
+            return ev
         room = stage_for(tool, ti)
         return {"kind": "work", "who": BOSS, "room": room, "team": "", "team_kr": "본부장", "tool": tool, "label": label_for(tool, ti), "site": site_for(haystack(tool, ti)),
                 "call": str(ti.get("subagent_type", "")) if tool == "Agent" else ""}
