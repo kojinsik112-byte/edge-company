@@ -55,7 +55,9 @@ def site_for(h):
     for v in SITES.values():              # 약칭만 적혀 있어도 잡는다 ("상주 올려줘")
         if v in h: return v
     m = re.search(r"(?<![-\w])jugansa[\\/]([^\\/\"'\s&|;<>]+)", h)     # ai-jugansa(스킬 폴더) · 따옴표 · 명령 기호는 단지가 아니다
-    return m.group(1)[:5] if m and not m.group(1).endswith((".py", ".md")) and not m.group(1).startswith(("ai-office", "tools")) else ""
+    n = m.group(1) if m else ""                # 파일 · 공용 폴더(_fonts · 양식 · 착수 …)는 단지가 아니다
+    return n[:5] if n and "." not in n and not n.startswith("_") and n not in NOT_SITE else ""
+NOT_SITE = {"ai-office", "tools", "watch", "개척", "매뉴얼", "양식", "요약제안서", "착수", "통합제안서", "행사장비용", "협력사실적"}
 # ── 단지 보드: jugansa/입찰현황판.md 의 '진행 중' 표에서 마감 · PT · 제출 여부를 읽는다 ──
 BOARD_FILE = [None]          # 찾은 현황판 경로 (SessionStart 의 cwd · 환경변수 JUGANSA_DIR · 이 폴더 위쪽 순으로 찾음)
 def find_board(start=None):

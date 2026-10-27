@@ -17,12 +17,12 @@
   .sp{flex:1}
   button{background:transparent;color:var(--gold);border:1px solid rgba(200,163,90,.55);border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
   button:hover{background:rgba(200,163,90,.12)}
-  #wrap{--k:1;width:100%;max-width:1200px;aspect-ratio:1200/720;position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 1px var(--line)}
+  #wrap{--k:1;width:100%;max-width:1200px;aspect-ratio:1200/860;position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 1px var(--line)}
   canvas{width:100%;height:100%;display:block}
   #log{width:100%;max-width:1200px;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* 단지 보드 — 캔버스 위 HTML (오른쪽 스크롤 · 한 줄 행) */
-  #board{position:absolute;left:4.333%;top:41.944%;width:59.667%;height:53.611%;display:flex;flex-direction:column;font-size:calc(12px*var(--k));color:#e9e3d6}
+  #board{position:absolute;left:4.333%;top:50%;width:59.667%;height:47.674%;display:flex;flex-direction:column;font-size:calc(12px*var(--k));color:#e9e3d6}
   #board .bh{display:flex;align-items:baseline;gap:calc(8px*var(--k));padding:0 calc(6px*var(--k)) calc(6px*var(--k))}
   #board .bh b{font-size:calc(14px*var(--k));letter-spacing:.3px}
   #board .bh span{color:var(--mut);font-size:calc(11px*var(--k))}
@@ -68,7 +68,7 @@
   <button id="restBtn">모두 휴게실로</button>
 </header>
 <div id="wrap">
-  <canvas id="c" width="2400" height="1440"></canvas>
+  <canvas id="c" width="2400" height="1720"></canvas>
   <section id="board" aria-label="진행 중 단지 보드">
     <div class="bh"><b>진행 중 단지</b><span>마감 D-day · 지금 단계</span><i id="bcount"></i></div>
     <div class="row head"><span>단지</span><span>마감</span><span>D-day</span><span class="dots" id="dhead"></span><span>PT 일정</span></div>
@@ -93,10 +93,11 @@ const ORDER = ["scout","analysis","build","audit","mail","pt","retro"];
 const ST_Y = 150, ST_X0 = 60, ST_GAP = 136;          // 작업대 줄 (y = 캐릭터 발 위치)
 ORDER.forEach((k,i)=>{ STATIONS[k].x = ST_X0 + i*ST_GAP; STATIONS[k].y = ST_Y; });
 const BOSS_DESK = {x:1085, y:150};                     // 본부장 책상
-const BOARD = {box:[40,290,780,700]};                 // 단지 보드 (내용은 HTML #board)
-const LOUNGE = {box:[840,290,1160,520], seats:[[930,478],[1000,478],[1070,478]]};   // 휴게 코너 (본부장 휴식)
-const ENTRY = {box:[840,540,1160,700]}, DOOR = [1000, 700];   // 출입구: 팀은 여기로 들어와 작업대로 가고, 끝나면 여기로 나간다
-const WALK_Y = 240, CORR_X = 810;                     // 작업대 ↔ 아래 영역 통로 · 보드와 휴게 코너 사이 복도
+const BOARD = {box:[40,430,780,840]};                 // 단지 보드 (내용은 HTML #board)
+const LOUNGE = {box:[840,430,1160,660], seats:[[930,618],[1000,618],[1070,618]]};   // 휴게 코너 (본부장 휴식)
+const ENTRY = {box:[840,680,1160,840]}, DOOR = [1000, 840];   // 출입구: 팀은 여기로 들어와 작업대로 가고, 끝나면 여기로 나간다
+const FH = 860, TOP_Y = 430;                          // 바닥 높이 · 위 구역(작업 라인) 아래 끝
+const WALK_Y = 345, CORR_X = 810;                     // 작업 라인 ↔ 아래 영역 통로 · 보드와 휴게 코너 사이 복도
 const PS = 0.9, WALK_SPEED = 150;                     // 사람 그림 배율
 const SITE_STALE_MS = 30*60*1000;
 
@@ -264,27 +265,92 @@ function slot(st){ // 작업대 앞에 여러 명이 서는 자리 (왼쪽부터
   return [s.x - 36 + (here%3)*36, s.y + 8 + Math.floor(here/3)*14];
 }
 function go(ch, target, at){
-  // 작업대 줄(y 150) ↔ 아래 영역은 통로(y 240) → 복도(x 810)를 거쳐 간다. 같은 줄이면 직진.
-  const pts = [];
-  const fromTop = ch.y < 200, toTop = target[1] < 200;
-  if (fromTop && !toTop) pts.push([ch.x, WALK_Y], [CORR_X, WALK_Y], [CORR_X, target[1]]);
-  else if (!fromTop && toTop) pts.push([CORR_X, ch.y], [CORR_X, WALK_Y], [target[0], WALK_Y]);
+  // 위 구역(작업대 줄 + 대기 통로, y < TOP_Y) ↔ 아래 구역은 통로 → 복도(x 810)를 거쳐 간다. 같은 구역이면 직진.
+  const pts = [], up = y => y < TOP_Y;
+  const fromTop = up(ch.y), toTop = up(target[1]);
+  if (fromTop && !toTop){ const Y = Math.max(WALK_Y, ch.y); pts.push([ch.x, Y], [CORR_X, Y], [CORR_X, target[1]]); }
+  else if (!fromTop && toTop){ const Y = Math.max(WALK_Y, target[1]); pts.push([CORR_X, ch.y], [CORR_X, Y], [target[0], Y]); }
   else if (!fromTop && !toTop && (ch.x < CORR_X) !== (target[0] < CORR_X)) pts.push([CORR_X, ch.y], [CORR_X, target[1]]);
   pts.push(target); ch.path = pts.map(p=>[p[0],p[1]]); ch.at = at;
 }
-const HELP_IDLE = 45000;                              // 담당 직원: 이 시간 동안 그 작업대 일이 없으면 보고 후 퇴근
-function helper(st){
-  const now = performance.now();
-  let ch = Object.values(chars).find(c => c.helper === st && c.state === "working" && !c.leaveAt);
-  if (!ch){ const name = STATIONS[st].name + " 담당";
-    ch = mk("h-" + st + "-" + Math.round(now), pickLook(st), name, DOOR[0] - 30 + Math.random()*60, DOOR[1]); ch.tag = name; ch.helper = st;
-    go(ch, slot(st), st); ch.state = "working"; say(chars.boss, STATIONS[st].name + " 부탁해요", 1600); }
-  ch.lastWork = now; return ch;
+
+// ───────── 팀원 — 팀마다 4~8명. 평소엔 2~3명이 작업대 아래 통로에서 대기하며 자료 전달 · 커피 · 현황판 확인으로 오가고,
+//            나머지는 외근 · 교대로 출입구를 드나든다. 일이 오면 묶음(지시 1개 × 작업대)마다 맞는 담당 1명이 작업대로 간다 ─────────
+const CREW = {
+  scout:   [["공고 확인", /공고|notice|hwp/i], ["상권 분석", /상권|입지/], ["단지 분석", /단지|아파트|realestate|청약/i], ["카페 분석", /카페|cafe/i]],
+  analysis:[["착수 보고", /착수|kickoff/i], ["손익 분석", /손익|economist|지원금/i], ["사업성 평가", /사업성|점수/], ["행사장 조사", /행사장|venue/i], ["질의 정리", /질의|문의/]],
+  build:   [["제안서 본문", /제안서|proposal|summary_/i], ["데이터", /data\.py|데이터|\.csv|\.json/i], ["레이아웃", /reorg|polish|pages|card_fit|layout|light_build/i], ["비주얼", /vis\.py|visual|비주얼|\.png|\.svg|이미지/i],
+            ["제출서류", /제출서류|docs_|서류/], ["증빙", /증빙|명부|보험|seal|stamp|인감/i], ["패치", /patch|fix_|덧패치|mask|merge_/i], ["빌드", /build_|\.py\b/i]],
+  audit:   [["형식 검사", /형식|format|규격/i], ["허위·과장 검사", /허위|과장|약속/], ["운영진 검사", /운영진|인력/], ["판사", /court|판결|판사|법정/i], ["대조 검수", /대조|compare|diff|before_|after_|gpt/i], ["페이지 검수", /page_audit|overlap|페이지|verify|audit/i]],
+  mail:    [["메일 작성", /메일|mail/i], ["보관함", /보관함|assemble|archive/i], ["GIF", /gif/i], ["첨부 정리", /첨부|\.pdf|\.zip/i]],
+  pt:      [["PT 대본", /대본|script/i], ["예상 질문", /질문|\bqa\b|Q&A/i], ["리허설", /리허설|rehearsal/i], ["슬라이드", /슬라이드|slide|ppt/i]],
+  retro:   [["마감 관제", /마감|pmo|d-?day/i], ["현황판", /현황판/], ["결과 분석", /결과|retro/i], ["회고", /회고|learn/i]],
+};
+const ON_FLOOR = {scout:2, analysis:2, build:3, audit:2, mail:2, pt:2, retro:2};   // 평소 사무실에 있는 인원
+const CREW_IDLE = 20000;                              // 작업대에서 이 시간 동안 일이 없으면 보고하고 통로로
+const LANE_Y = 292;                                   // 대기 통로 (작업대 줄 아래)
+const MEMBERS = {};
+for (const st in CREW) MEMBERS[st] = CREW[st].map(([role, re], i) => ({id:`m-${st}-${i}`, st, role, re, look: genLook(`crew:${st}#${i}`), used:0}));
+let BATCH = 0, shiftAt = performance.now() + 15000;
+const rand = (a, b) => a + Math.random()*(b - a), pickOne = a => a[Math.floor(Math.random()*a.length)];
+const SMALL = ["다음 단지는?", "자료 정리 중", "숫자 다시 볼게요", "마감 언제죠?"];
+function homeSpot(st){ const s = STATIONS[st]; return [s.x + rand(-48, 48), LANE_Y + rand(-5, 5)]; }
+function enter(m, x, y){ const ch = mk(m.id, m.look, m.role, x ?? DOOR[0] + rand(-30, 30), y ?? DOOR[1]);
+  ch.tag = m.role; ch.member = m; ch.team = m.st; ch.nextAt = performance.now() + rand(2000, 12000); return ch; }
+function chatty(){ const now = performance.now(); return Object.values(chars).filter(c => c.bubble && now < c.bubbleUntil).length < 4; }
+function goHome(ch, wait, hello){ ch.away = false; go(ch, homeSpot(ch.team), "lane");
+  ch.after = () => { ch.nextAt = performance.now() + (wait || rand(4000, 11000)); if (hello && chatty()) say(ch, pickOne(hello), 1600); }; }
+function errand(ch){  // 대기 중인 팀원이 볼일 하나를 보러 갔다가(away) 다음 차례에 통로로 돌아온다
+  if (ch.away) return goHome(ch);
+  const r = Math.random(), b = chars.boss, i = ORDER.indexOf(ch.team);
+  const there = (spot, at, lines, wait, reply) => { ch.away = true; go(ch, spot, at); ch.after = () => {
+    if (lines && chatty() && Math.random() < 0.6){ say(ch, pickOne(lines), 1800); if (reply) reply(); }
+    ch.nextAt = performance.now() + wait; }; };
+  if (r < 0.28){ go(ch, homeSpot(ch.team), "lane"); ch.after = () => { ch.nextAt = performance.now() + rand(3000, 9000); };
+    if (chatty() && Math.random() < 0.25) say(ch, pickOne(SMALL), 1600); }
+  else if (r < 0.48){ const nb = ORDER[Math.max(0, Math.min(ORDER.length - 1, i + (Math.random() < 0.7 ? 1 : -1)))], s = STATIONS[nb];
+    there([s.x + rand(-34, 34), LANE_Y + rand(-4, 6)], "lane", ["자료 넘겨요", "검토 부탁해요", "이거 봐 주세요"], rand(1800, 3200), () => {
+      const mate = Object.values(chars).find(c => c.team === nb && c !== ch && c.state === "idle" && !c.path.length);
+      if (mate) setTimeout(() => say(mate, pickOne(["받았어요", "확인할게요", "고마워요"]), 1500), 700); }); }
+  else if (r < 0.64) there([rand(1086, 1136), rand(528, 538)], "coffee", ["커피 한 잔", "아아 하나요", "당 충전"], rand(4000, 8000));
+  else if (r < 0.76) there([rand(880, 1140), rand(558, 586)], "lounge", ["잠깐 쉬어요", "점심 뭐 먹지", "어제 그 단지요"], rand(4000, 9000));
+  else if (r < 0.88) there([CORR_X + rand(-4, 4), rand(460, 660)], "corr", ["마감 확인", "D-day 체크", "현황판 보자"], rand(2500, 4500));
+  else if (b.at === "boss" && b.state !== "resting")
+    there([BOSS_DESK.x + rand(44, 62), BOSS_DESK.y + rand(22, 34)], "visit", ["결재 부탁드려요", "잠깐 여쭤볼게요"], rand(2200, 3500),
+      () => setTimeout(() => say(b, pickOne(["좋아요", "그렇게 해요", "OK"]), 1300), 800));
+  else there([rand(880, 1140), rand(558, 586)], "lounge", null, rand(3000, 6000));
+}
+function shift(){  // 교대: 대기 중인 팀원 1명이 외근 나가고, 밖에 있던 팀원 1명이 들어온다
+  const st = pickOne(ORDER), out = MEMBERS[st].filter(m => !chars[m.id]);
+  if (!out.length) return;
+  const idle = MEMBERS[st].map(m => chars[m.id]).filter(c => c && c.state === "idle" && !c.path.length && !c.leaveAt);
+  if (idle.length){ const c = pickOne(idle); if (chatty()) say(c, pickOne(["현장 다녀올게요", "외근 갑니다", "자료 받으러 가요"]), 1800); c.leaveAt = performance.now() + 1200; }
+  else if (MEMBERS[st].filter(m => chars[m.id]).length >= ON_FLOOR[st]) return;
+  setTimeout(() => { const m = pickOne(out); if (!chars[m.id]) goHome(enter(m), rand(2000, 5000), ["다녀왔습니다", "출근했습니다"]); }, rand(1500, 4000));
+}
+function assign(st, text){
+  // 묶음마다 담당 1명: 할 일에 맞는 담당 → 없으면 이번 묶음 담당이 이어서 → 새 묶음이면 가장 오래 쉰 사람 (자리에 있는 사람 먼저)
+  const now = performance.now(), crew = MEMBERS[st], b = chars.boss;
+  const busy = crew.map(m => chars[m.id]).filter(c => c && c.state === "working");
+  let m = crew.find(m => m.re.test(text));
+  if (!m){ const cur = busy.filter(c => c.batch === BATCH).sort((a, c) => c.lastWork - a.lastWork)[0];
+    const rank = m => { const c = chars[m.id]; return !c ? 1 : c.state === "working" ? 2 : 0; };
+    m = cur ? cur.member : crew.slice().sort((a, c) => rank(a) - rank(c) || a.used - c.used)[0]; }
+  const ch = chars[m.id] || enter(m);
+  if (ch.state !== "working"){
+    const others = busy.filter(c => c !== ch);
+    if (others.length >= 3) report(others.sort((a, c) => a.lastWork - c.lastWork)[0]);   // 작업대 앞은 3명까지
+    ch.state = "working"; ch.leaveAt = 0; ch.away = false; go(ch, slot(st), st); ch.after = null;
+    say(b, clip(m.role + " 부탁해요", 14), 1500);
+  }
+  ch.batch = BATCH; ch.lastWork = now; m.used = now; return ch;
 }
 function report(ch){
   const b = chars.boss; ch.state = "reporting"; ch.label = "";
   go(ch, [b.x - 36 - (Object.values(chars).filter(c=>c.state==="reporting").length*22), b.y + 4], "report");
-  ch.after = ()=>{ say(ch, "보고 드립니다", 1800); say(b, "확인", 1200); ch.leaveAt = performance.now() + 2200; };
+  ch.after = ()=>{ say(ch, "보고 드립니다", 1800); say(b, "확인", 1200);
+    if (ch.member){ ch.state = "idle"; ch.away = true; ch.nextAt = performance.now() + 1800; }   // 팀원은 보고 후 대기 통로로
+    else ch.leaveAt = performance.now() + 2200; };
 }
 function say(ch, text, ms=2400){ ch.bubble = text; ch.bubbleUntil = performance.now()+ms; }
 function setLog(t){ document.getElementById("log").textContent = t; }
@@ -306,7 +372,7 @@ function handle(ev){
       const ch = chars.boss; ch.restAt = 0;
       if (ch.at !== "boss") go(ch, [BOSS_DESK.x, BOSS_DESK.y], "boss");
       ch.state = "working";
-      if (st){ const h = helper(st); h.label = ev.label || ev.tool || ""; ch.label = "지시 → " + STATIONS[st].name; activeStation = st; }
+      if (st){ const h = assign(st, ev.label || ev.tool || ""); h.label = ev.label || ev.tool || ""; ch.label = "지시 → " + STATIONS[st].name; activeStation = st; }
       else ch.label = ev.label || ev.tool || "";
       if (ev.call) say(ch, "팀 호출 → " + ev.call);
       touchSite(ev.site, st || "", "");
@@ -331,6 +397,7 @@ function handle(ev){
     b.label = ""; b.state = "idle"; b.restAt = now + (n ? 5200 : 300);
     memos = memos.filter(m => m.type !== "notice"); setLog("작업 끝 · 보고 후 본부장 휴식");
   } else if (k === "start" || k === "prompt"){
+    BATCH++;                                          // 새 지시 = 새 묶음 → 다음 일은 다른 팀원이 받는다
     const b = chars.boss; if (b.at !== "boss") go(b, [BOSS_DESK.x, BOSS_DESK.y], "boss"); b.state = "idle"; b.label = "";
     if (k === "start"){ memos = []; setLog("세션 시작" + (ev.cwd ? " · " + ev.cwd : "")); } else { touchSite(ev.site, "", ""); setLog("본부장 지시 · " + (ev.label || "")); }
   }
@@ -392,7 +459,7 @@ document.getElementById("simBtn").onclick = runSim;
 document.getElementById("restBtn").onclick = () => handle({kind:"rest"});
 
 // ───────── 배경 (2배 해상도로 한 번 그려 둔다) ─────────
-const bg = document.createElement("canvas"); bg.width = 2400; bg.height = 1440;
+const bg = document.createElement("canvas"); bg.width = 2400; bg.height = FH*2;
 function plant(g, x, y, s=1){
   g.fillStyle="rgba(0,0,0,.3)"; ell(g,x,y+2,12*s,3.5*s); g.fill();
   const pot = g.createLinearGradient(x-9*s,0,x+9*s,0); pot.addColorStop(0,"#d9d2c4"); pot.addColorStop(1,"#a9a193");
@@ -406,16 +473,18 @@ function card(g, x, y, w, h, accent){ g.save(); g.shadowColor="rgba(0,0,0,.45)";
 function drawBackground(){
   const g = bg.getContext("2d"); g.scale(2,2);
   // 바닥: 어두운 네이비 + 은은한 타일 + 조명 반사
-  const fl = g.createLinearGradient(0,0,0,720); fl.addColorStop(0,"#1a2436"); fl.addColorStop(1,"#121a28"); g.fillStyle=fl; g.fillRect(0,0,1200,720);
-  g.strokeStyle="rgba(255,255,255,.025)"; g.lineWidth=1; for (let x=0;x<=1200;x+=60) line(g,x,0,x,720); for (let y=0;y<=720;y+=60) line(g,0,y,1200,y);
-  for (const [x,y,r] of [[300,120,360],[1000,140,260],[300,500,320],[880,500,360]]){ const rg=g.createRadialGradient(x,y,0,x,y,r); rg.addColorStop(0,"rgba(255,214,150,.06)"); rg.addColorStop(1,"rgba(255,214,150,0)"); g.fillStyle=rg; g.fillRect(0,0,1200,720); }
+  const fl = g.createLinearGradient(0,0,0,FH); fl.addColorStop(0,"#1a2436"); fl.addColorStop(1,"#121a28"); g.fillStyle=fl; g.fillRect(0,0,1200,FH);
+  g.strokeStyle="rgba(255,255,255,.025)"; g.lineWidth=1; for (let x=0;x<=1200;x+=60) line(g,x,0,x,FH); for (let y=0;y<=FH;y+=60) line(g,0,y,1200,y);
+  for (const [x,y,r] of [[300,170,400],[1000,140,260],[300,640,320],[880,640,360]]){ const rg=g.createRadialGradient(x,y,0,x,y,r); rg.addColorStop(0,"rgba(255,214,150,.06)"); rg.addColorStop(1,"rgba(255,214,150,0)"); g.fillStyle=rg; g.fillRect(0,0,1200,FH); }
   // 뒤 벽: 창밖 야경
   const wall = g.createLinearGradient(0,0,0,22); wall.addColorStop(0,"#0b1220"); wall.addColorStop(1,"#141e30"); g.fillStyle=wall; g.fillRect(0,0,1200,22);
   const R = rng("skyline"); for (let x=0;x<1200;x+=14){ const h=4+R()*14; g.fillStyle="#0e1726"; g.fillRect(x,22-h,12,h); for (let i=0;i<3;i++) if (R()<0.35){ g.fillStyle=`rgba(255,${200+R()*40|0},120,${.35+R()*.4})`; g.fillRect(x+2+R()*7,22-h+2+R()*(h-3),1.5,1.5); } }
   g.fillStyle="rgba(200,163,90,.35)"; g.fillRect(0,22,1200,1);
   // 작업 라인 무대
-  g.fillStyle="rgba(255,255,255,.028)"; rr(g,22,30,1156,212,16); g.fill(); g.strokeStyle="rgba(200,163,90,.22)"; g.lineWidth=1; rr(g,22.5,30.5,1155,211,16); g.stroke();
-  g.fillStyle="#7d889c"; g.font="11px 'Malgun Gothic', sans-serif"; g.fillText("작업 라인 — 왼쪽에서 오른쪽으로 일이 흐릅니다 · 작업대 앞에 선 사람 = 지금 일하는 팀", 40, 232);
+  g.fillStyle="rgba(255,255,255,.028)"; rr(g,22,30,1156,352,16); g.fill(); g.strokeStyle="rgba(200,163,90,.22)"; g.lineWidth=1; rr(g,22.5,30.5,1155,351,16); g.stroke();
+  // 대기 통로 (작업대 아래 · 대기 팀원이 서는 줄)
+  g.fillStyle="rgba(255,255,255,.022)"; rr(g,34,LANE_Y-34,1132,56,12); g.fill();
+  g.fillStyle="#7d889c"; g.font="11px 'Malgun Gothic', sans-serif"; g.fillText("작업 라인 — 왼쪽에서 오른쪽으로 일이 흐릅니다 · 작업대 앞 = 지금 일하는 사람 · 아래 통로 = 대기 중인 팀원", 40, 372);
   // 작업대 7개
   ORDER.forEach((k,i)=>{ const s = STATIONS[k], x = s.x, y = s.y;
     const pool = g.createRadialGradient(x,y-40,4,x,y-40,80); pool.addColorStop(0, s.color+"22"); pool.addColorStop(1, s.color+"00"); g.fillStyle=pool; g.fillRect(x-80,y-120,160,160);
@@ -458,7 +527,7 @@ function drawBackground(){
   g.fillStyle="#f2ece0"; fitText(g,"총괄 본부장석", BX-29, BY-112, 84, 13, "700"); g.fillStyle="#8f9bb0"; fitText(g,"총괄 · 결정 · 팀 호출", BX-29, BY-99, 84, 9.5);
   plant(g, 1155, 226, 1.1);
   // 복도(보드 ↔ 휴게 코너 사이)
-  g.fillStyle="rgba(255,255,255,.025)"; rr(g,CORR_X-14,250,28,452,12); g.fill();
+  g.fillStyle="rgba(255,255,255,.025)"; rr(g,CORR_X-14,390,28,452,12); g.fill();
   // 휴게 코너 (작게)
   const L = LOUNGE.box;
   g.fillStyle="rgba(255,255,255,.03)"; rr(g,L[0],L[1],L[2]-L[0],L[3]-L[1],16); g.fill(); g.strokeStyle="rgba(255,255,255,.07)"; rr(g,L[0]+.5,L[1]+.5,L[2]-L[0]-1,L[3]-L[1]-1,16); g.stroke();
@@ -467,9 +536,9 @@ function drawBackground(){
   const rug = g.createLinearGradient(0,L[1]+38,0,L[3]); rug.addColorStop(0,"#1d3534"); rug.addColorStop(1,"#162a29"); g.fillStyle=rug; rr(g,L[0]+14,L[1]+38,L[2]-L[0]-28,L[3]-L[1]-50,12); g.fill();
   g.strokeStyle="rgba(200,163,90,.22)"; g.lineWidth=1; rr(g,L[0]+20,L[1]+44,L[2]-L[0]-40,L[3]-L[1]-62,9); g.stroke();
   // 커피 바
-  g.fillStyle="#4e3322"; rr(g,1076,342,68,26,5); g.fill(); g.fillStyle="#6b4a32"; rr(g,1076,342,68,6,3); g.fill();
-  g.fillStyle="#1c2230"; rr(g,1086,318,24,26,4); g.fill(); g.fillStyle="#c8a35a"; ell(g,1098,326,3,3); g.fill(); g.fillStyle="#3a3f4a"; g.fillRect(1094,336,8,6);
-  g.fillStyle="#f4efe6"; rr(g,1118,334,7,8,1.5); g.fill(); rr(g,1128,334,7,8,1.5); g.fill();
+  g.fillStyle="#4e3322"; rr(g,1076,482,68,26,5); g.fill(); g.fillStyle="#6b4a32"; rr(g,1076,482,68,6,3); g.fill();
+  g.fillStyle="#1c2230"; rr(g,1086,458,24,26,4); g.fill(); g.fillStyle="#c8a35a"; ell(g,1098,466,3,3); g.fill(); g.fillStyle="#3a3f4a"; g.fillRect(1094,476,8,6);
+  g.fillStyle="#f4efe6"; rr(g,1118,474,7,8,1.5); g.fill(); rr(g,1128,474,7,8,1.5); g.fill();
   // 소파 (3인) · 테이블
   { const fy = LOUNGE.seats[0][1];
     g.fillStyle="rgba(0,0,0,.3)"; ell(g,1000,fy-2,118,6); g.fill();
@@ -484,7 +553,7 @@ function drawBackground(){
   const E = ENTRY.box;
   g.fillStyle="rgba(255,255,255,.02)"; rr(g,E[0],E[1],E[2]-E[0],E[3]-E[1]+12,16); g.fill(); g.strokeStyle="rgba(255,255,255,.06)"; rr(g,E[0]+.5,E[1]+.5,E[2]-E[0]-1,E[3]-E[1]+11,16); g.stroke();
   g.fillStyle="#ece5d6"; g.font="700 13px 'Malgun Gothic', sans-serif"; g.fillText("출입구", E[0]+16, E[1]+24);
-  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; fitText(g, "호출된 팀은 여기로 출근 → 작업대 → 보고 후 퇴근", E[0]+62, E[1]+24, E[2]-E[0]-78, 10.5);
+  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; fitText(g, "팀원 교대 · 외근 출입 · 호출된 팀 출근", E[0]+62, E[1]+24, E[2]-E[0]-78, 10.5);
   g.fillStyle="#232a37"; rr(g,DOOR[0]-62,DOOR[1]-52,124,40,9); g.fill(); g.strokeStyle="rgba(200,163,90,.35)"; rr(g,DOOR[0]-58,DOOR[1]-48,116,32,7); g.stroke();
   g.fillStyle="rgba(200,163,90,.5)"; g.font="600 10px 'Malgun Gothic', sans-serif"; g.textAlign="center"; g.fillText("WELCOME · EDGE COMPANY", DOOR[0], DOOR[1]-28); g.textAlign="left";
   const gd = g.createLinearGradient(0,DOOR[1]-8,0,DOOR[1]+12); gd.addColorStop(0,"rgba(140,190,230,.35)"); gd.addColorStop(1,"rgba(140,190,230,.08)"); g.fillStyle=gd; rr(g,DOOR[0]-56,DOOR[1]-6,112,20,3); g.fill();
@@ -541,8 +610,10 @@ let last = performance.now();
 function tick(now){ const dt = Math.min(0.05,(now-last)/1000); last = now;
   for (const id in chars){ const ch = chars[id]; move(ch, dt);
     if (id !== "boss" && ch.leaveAt && now > ch.leaveAt && ch.state !== "leaving" && !ch.path.length){ ch.state = "leaving"; go(ch, [DOOR[0] - 20 + Math.random()*40, DOOR[1] + 6], "exit"); ch.after = ()=>{ delete chars[id]; }; }
-    if (ch.helper && ch.state === "working" && now - ch.lastWork > HELP_IDLE) report(ch);
+    if (ch.member && ch.state === "working" && now - ch.lastWork > CREW_IDLE && !ch.path.length) report(ch);
+    if (ch.member && ch.state === "idle" && !ch.leaveAt && !ch.path.length && now > ch.nextAt) errand(ch);
   }
+  if (now > shiftAt){ shiftAt = now + rand(12000, 24000); shift(); }
   const b = chars.boss;
   if (b.restAt && now > b.restAt && !Object.values(chars).some(c => c.state === "reporting")){ b.restAt = 0; b.state = "resting"; go(b, LOUNGE.seats[0], "lounge"); b.after = ()=>{ b.hop = 1; }; }
   draw(now); requestAnimationFrame(tick); }
@@ -556,13 +627,13 @@ function move(ch, dt){
 let lastChat = 0;
 function draw(now){
   ctx.setTransform(2,0,0,2,0,0); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(bg, 0, 0, 1200, 720);
+  ctx.drawImage(bg, 0, 0, 1200, FH);
   if (now - lastChat > 2600){ lastChat = now; const groups = {};
     for (const id in chars){ const c = chars[id]; if (c.state === "working" && STATIONS[c.at] && !c.path.length) (groups[c.at] = groups[c.at] || []).push(c); }
     for (const k in groups){ const g = groups[k]; if (g.length >= 2){ const a = g[Math.floor(Math.random()*g.length)]; if (!a.bubble || now > a.bubbleUntil) say(a, ["같이 볼까요", "이 부분 확인", "근거 쪽은?", "제 쪽은 끝", "숫자 맞춰요"][Math.floor(Math.random()*5)], 1600); } } }
   if (activeStation){ const s = STATIONS[activeStation]; ctx.save(); ctx.shadowColor = s.color; ctx.shadowBlur = 18; ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.globalAlpha = 0.55 + 0.3*Math.sin(now/300); rr(ctx, s.x-64, s.y-136, 128, 172, 14); ctx.stroke(); ctx.restore(); }
-  // 메모(작업 라인 아래 통로)
-  memos.forEach((m,i)=>{ const x = 40 + i*150, y = 250, w = 140, h = 28;
+  // 메모(작업 라인과 단지 보드 사이)
+  memos.forEach((m,i)=>{ const x = 40 + i*150, y = 392, w = 140, h = 28;
     ctx.save(); ctx.shadowColor="rgba(0,0,0,.4)"; ctx.shadowBlur=8; ctx.fillStyle = "#2b2414"; rr(ctx,x,y,w,h,8); ctx.fill(); ctx.restore();
     ctx.strokeStyle="rgba(240,195,92,.6)"; ctx.lineWidth=1; rr(ctx,x+.5,y+.5,w-1,h-1,8); ctx.stroke();
     ctx.fillStyle="#f0c35c"; ell(ctx,x+12,y+14,3,3); ctx.fill();
@@ -582,7 +653,7 @@ function draw(now){
     let ty = y + 2;
     if (ch.state==="working" && ch.label && !walking) ty = pill(ch.x, ty, ch.label, "#e9e3d6", "rgba(12,18,28,.92)", "rgba(255,255,255,.14)") - 3;
     if (ch.bubble && now < ch.bubbleUntil) pill(ch.x, ty, ch.bubble, "#16202e", "#fbf7ee", null, true);
-    nameplate(ch.x, ch.y + 15, ch.id === "boss" ? "총괄 본부장" : ch.tag || ch.name, ch.id === "boss" ? "#c8a35a" : (STATIONS[ch.at] ? STATIONS[ch.at].color : "#9aa3b2"));
+    nameplate(ch.x, ch.y + 15, ch.id === "boss" ? "총괄 본부장" : ch.tag || ch.name, ch.id === "boss" ? "#c8a35a" : (STATIONS[ch.team || ch.at] ? STATIONS[ch.team || ch.at].color : "#9aa3b2"));
     ch._box = [x, y, W, H];
   }
 }
@@ -594,10 +665,12 @@ function pill(cx, by, text, fg, bgc, border, tail){ ctx.font = "600 11.5px 'Malg
 function nameplate(cx, by, text, col){ ctx.font = "600 10.5px 'Malgun Gothic', sans-serif"; const t = clip(text, 12), w = ctx.measureText(t).width + 18, x = cx - w/2;
   ctx.fillStyle = "rgba(10,15,24,.86)"; rr(ctx, x, by, w, 15, 7.5); ctx.fill(); ctx.fillStyle = col; ell(ctx, x + 7, by + 7.5, 2.6, 2.6); ctx.fill();
   ctx.fillStyle = "#ece5d6"; ctx.fillText(t, x + 12, by + 11); }
-cv.addEventListener("click", e => { const r = cv.getBoundingClientRect(), pxx = (e.clientX - r.left) * 1200 / r.width, pyy = (e.clientY - r.top) * 720 / r.height;
+cv.addEventListener("click", e => { const r = cv.getBoundingClientRect(), pxx = (e.clientX - r.left) * 1200 / r.width, pyy = (e.clientY - r.top) * FH / r.height;
   for (const id in chars){ const ch = chars[id], b = ch._box; if (!b) continue; if (pxx >= b[0] && pxx <= b[0]+b[2] && pyy >= b[1] && pyy <= b[1]+b[3]){
-    say(ch, ch.state==="working" ? "[작업 중] " + (ch.label || ch.tag || "") : ch.state==="reporting" ? "[보고 중]" : ch.state==="resting" ? "[휴식 중]" : ch.state==="leaving" ? "[퇴근]" : "[대기 중]"); return; } } });
+    say(ch, ch.state==="working" ? "[작업 중] " + (ch.label || ch.tag || "") : ch.state==="reporting" ? "[보고 중]" : ch.state==="resting" ? "[휴식 중]" : ch.state==="leaving" ? "[외근 · 퇴근]" : ch.team ? `[대기] ${STATIONS[ch.team].name} · ${ch.tag}` : "[대기 중]"); return; } } });
 
+// 처음 열면 팀마다 평소 인원이 대기 통로에 서 있다
+for (const st of ORDER) MEMBERS[st].slice().sort(() => Math.random() - 0.5).slice(0, ON_FLOOR[st]).forEach(m => { const [x, y] = homeSpot(st); enter(m, x, y).at = "lane"; });
 drawBackground(); renderBoard();
 setInterval(renderBoard, 5000);
 requestAnimationFrame(tick); poll(); loadBoard();
