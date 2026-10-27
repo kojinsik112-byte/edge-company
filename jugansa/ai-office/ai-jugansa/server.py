@@ -16,8 +16,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ── 팀(서브에이전트 agent_type) → 방 ────────────────────────────────
 TEAM_ROOM = {
+    # 개척 = 새 단지 첫 확인(공고 · 상권 · 아파트 · 카페) / 착수분석 = 그 결과로 참여 여부 · 손익 · 착수 보고
     "bid_watch": "scout", "bid_outreach": "scout",
-    "bid_notice_analyst": "analysis", "realestate_analyst": "analysis", "cafe_insight": "analysis",
+    "bid_notice_analyst": "scout", "realestate_analyst": "scout", "cafe_insight": "scout",
     "bid_economist": "analysis", "bid_venue": "analysis", "jugansa_scholar": "analysis",
     "pt_builder": "build", "bid_docs": "build", "bid_visual": "build",
     "auditor": "audit", "legal": "audit", "visual_qa": "audit",
@@ -36,13 +37,14 @@ TEAM_KR = {
 }
 # 팀 이름이 없을 때(본부장 직접 작업) 경로 · 스킬 · 명령어로 단계를 추정 — 위에서부터 먼저 맞는 것
 PATH_RULES = [
-    ("audit",    r"court|검증|법정|GPT_검증|검수|verify|audit|gpt2"),
+    ("audit",    r"court|검증|법정|GPT_검증|검수|verify|audit|gpt2|after_p|before_p|ctx_p|대조|page_audit|overlap_audit|compare|diff"),
     ("mail",     r"mail_|메일|GIF|lx_gif|align_pair|assemble_|_dl/|보관함|제출본"),
     ("pt",       r"(?<![a-z])PT_|pt_coach|PT용|발표"),     # 'javascript_tool' 같은 도구 이름에 걸리지 않게
     ("retro",    r"입찰_결과분석|입찰현황판|scorecard|결과분석|retro"),
-    ("analysis", r"착수|kickoff|notice\.txt|분석|analysis|hwp2txt|mask_notice|손익"),
-    ("build",    r"build_[a-z]+\.py|docs_[a-z]+\.py|data\.py|reorg|polish|vis\.py|pages21|light_build|제안서|summary_|tjlight|card_fit"),
-    ("scout",    r"watch/|개척|outreach|notice_watch|공고"),
+    ("build",    r"build_[a-z]+\.py|docs_[a-z]+\.py|data\.py|reorg|polish|vis\.py|pages21|light_build|제안서|summary_|tjlight|card_fit|patch|fix_|merge_|stamp|mask_rect|seal|덧패치|ctx_[a-z]+\.py|find_[a-z]+\.py"),
+    # 폴더 이름 '05주관사 입찰공고'에 걸리지 않게 '공고' 한 단어는 쓰지 않는다
+    ("scout",    r"watch/|개척|outreach|notice_watch|notice\.txt|hwp2txt|mask_notice|공고 ?(감시|확인|분석|원문)|공고문|새 공고|상권|입지|카페|cafe|청약|realestate|단지 ?분석|아파트 ?분석"),
+    ("analysis", r"착수|kickoff|분석|analysis|손익|사업성|economist|venue|행사장"),
 ]
 SITES = {"상주자이르네": "상주", "엘리프한신더휴수원": "엘리프", "롯데캐슬나리벡시티": "나리벡", "북수원디에트르더리체2": "북수원",
          "고양창릉S5": "고양", "경산상방공원호반써밋1단지": "경산", "탕정푸르지오센터파크": "탕정", "오산세교아테라": "오산",
@@ -156,6 +158,8 @@ def stage_for(tool, ti):
     return "office"
 
 LOCK = threading.Lock(); EVENTS = []; SEQ = [0]; SEEN = set()
+STICKY = {}                                      # 세션 → (직전 단계, 시각)
+WORK_TOOLS = {"Edit", "Write", "MultiEdit", "Read", "Bash", "PowerShell", "Grep", "Glob", "NotebookEdit"}
 LOG_PATH = os.path.join(HERE, "events.log")
 
 def push(ev):
@@ -185,7 +189,9 @@ def translate(h):
             if aid not in SEEN:                  # 시작 신호(SubagentStart)를 못 받은 팀도 첫 작업 때 출근시킨다
                 SEEN.add(aid); push({**ev, "kind": "team_start"})
             return ev
-        room = stage_for(tool, ti)
+        room = stage_for(tool, ti); sid = h.get("session_id", "")
+        if room != "office": STICKY[sid] = (room, time.time())
+        elif tool in WORK_TOOLS and sid in STICKY and time.time() - STICKY[sid][1] < 300: room = STICKY[sid][0]   # 단계가 안 보이는 잔손질은 그 세션의 직전 단계로
         return {"kind": "work", "who": BOSS, "room": room, "team": "", "team_kr": "본부장", "tool": tool, "label": label_for(tool, ti), "site": site_for(haystack(tool, ti)),
                 "call": str(ti.get("subagent_type", "")) if tool == "Agent" else ""}
     if name == "PostToolUse":

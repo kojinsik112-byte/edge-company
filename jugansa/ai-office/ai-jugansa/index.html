@@ -80,8 +80,8 @@
 // ───────── 오픈 플로어 배치 ─────────
 // 위 = 작업대 7개(일이 흐르는 순서) · 오른쪽 = 본부장 책상 · 왼쪽 아래 = 단지 보드 · 오른쪽 아래 = 휴게 코너 · 출입구
 const STATIONS = {
-  scout:   {n:1, name:"개척",     sub:"공고 감시 · 신규 개척",   color:"#e0b04a"},
-  analysis:{n:2, name:"착수분석", sub:"공고 · 단지 · 카페 · 손익", color:"#6fa3e8"},
+  scout:   {n:1, name:"개척",     sub:"공고 · 상권 · 단지 · 카페", color:"#e0b04a"},
+  analysis:{n:2, name:"착수분석", sub:"착수 보고 · 손익 · 사업성", color:"#6fa3e8"},
   build:   {n:3, name:"제작",     sub:"제안서 · 제출서류",       color:"#7fd38a"},
   audit:   {n:4, name:"검증",     sub:"법정 · 독립 검수",        color:"#ef8f7c"},
   mail:    {n:5, name:"발송",     sub:"메일 · 보관함 · GIF",     color:"#c39ae8"},
@@ -353,15 +353,15 @@ function setStatus(t, cls){ const s=document.getElementById("st"); s.textContent
 const SIM = [
   {kind:"start", cwd:"jugansa"},
   {kind:"prompt", label:"/kickoff 엘리프 한신더휴 수원", site:"엘리프"},
-  {kind:"team_start", team:"bid_notice_analyst", team_kr:"공고 분석관", room:"analysis", agent_id:"a1", site:"엘리프"},
-  {kind:"team_start", team:"realestate_analyst", team_kr:"단지 분석팀", room:"analysis", agent_id:"a2", site:"엘리프"},
-  {kind:"team_start", team:"cafe_insight", team_kr:"카페 인사이트팀", room:"analysis", agent_id:"a3", site:"엘리프"},
+  {kind:"team_start", team:"bid_notice_analyst", team_kr:"공고 분석관", room:"scout", agent_id:"a1", site:"엘리프"},
+  {kind:"team_start", team:"realestate_analyst", team_kr:"단지 분석팀", room:"scout", agent_id:"a2", site:"엘리프"},
+  {kind:"team_start", team:"cafe_insight", team_kr:"카페 인사이트팀", room:"scout", agent_id:"a3", site:"엘리프"},
   {kind:"team_start", team:"bid_economist", team_kr:"손익 분석관", room:"analysis", agent_id:"a4", site:"엘리프"},
   {kind:"team_start", team:"bid_visual", team_kr:"단지 비주얼팀", room:"build", agent_id:"a5", site:"엘리프"},
-  {kind:"work", who:"analyst", agent_id:"a1", room:"analysis", team_kr:"공고 분석관", tool:"Read", label:"notice.txt", site:"엘리프"},
-  {kind:"team_stop", team:"bid_notice_analyst", room:"analysis", agent_id:"a1"},
-  {kind:"team_stop", team:"realestate_analyst", room:"analysis", agent_id:"a2"},
-  {kind:"team_stop", team:"cafe_insight", room:"analysis", agent_id:"a3"},
+  {kind:"work", who:"analyst", agent_id:"a1", room:"scout", team_kr:"공고 분석관", tool:"Read", label:"notice.txt", site:"엘리프"},
+  {kind:"team_stop", team:"bid_notice_analyst", room:"scout", agent_id:"a1"},
+  {kind:"team_stop", team:"realestate_analyst", room:"scout", agent_id:"a2"},
+  {kind:"team_stop", team:"cafe_insight", room:"scout", agent_id:"a3"},
   {kind:"team_stop", team:"bid_economist", room:"analysis", agent_id:"a4"},
   {kind:"team_stop", team:"bid_visual", room:"build", agent_id:"a5"},
   {kind:"work", who:"boss", room:"build", tool:"Bash", label:"python3 build_el.py --no-pdf", site:"엘리프"},
