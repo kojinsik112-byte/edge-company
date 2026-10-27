@@ -51,6 +51,7 @@
   .dots{display:grid;grid-template-columns:repeat(7,1fr);justify-items:center;align-items:center}
   .dots i{display:block;width:calc(6px*var(--k));height:calc(6px*var(--k));border-radius:50%;background:#3a4558}
   .dots i.on{width:calc(11px*var(--k));height:calc(11px*var(--k));box-shadow:0 0 calc(8px*var(--k)) currentColor}
+  .dots i.past{opacity:.45}
   .dots i.live{animation:pulse 1s ease-in-out infinite}
   @keyframes pulse{50%{transform:scale(1.35)}}
   .head .dots span{font-size:calc(9.5px*var(--k))}
@@ -238,7 +239,7 @@ async function loadBoard(){ try{ const r = await fetch("/sites", {cache:"no-stor
 function freeSeat(){ const used = new Set(Object.values(chars).map(c=>c.seatIdx)); for (let i=0;i<LOUNGE.seats.length;i++) if (!used.has(i)) return i; return LOUNGE.seats.length-1; }
 function slot(st){ // 작업대 앞에 여러 명이 서는 자리 (왼쪽부터)
   const s = STATIONS[st], here = Object.values(chars).filter(c=>c.at===st && c.id!=="boss").length;
-  return [s.x - 28 + (here%3)*28, s.y + 8 + Math.floor(here/3)*14];
+  return [s.x - 36 + (here%3)*36, s.y + 8 + Math.floor(here/3)*14];
 }
 function go(ch, target, at){
   // 작업대 줄(y 150) ↔ 아래 영역은 통로(y 240)를 거쳐 간다. 같은 줄이면 직진.
@@ -286,7 +287,7 @@ function handle(ev){
     setLog("메모: " + ev.label);
   } else if (k === "rest"){
     activeStation = null; const b = chars.boss; b.state = "resting"; b.label = ""; const seat = LOUNGE.seats[0]; go(b, seat, "lounge"); b.after = ()=>{ b.hop = 1; };
-    for (const id in chars){ if (id !== "boss") chars[id].leaveAt = performance.now() + 600; }
+    for (const id in chars){ if (id !== "boss" && !chars[id].resident) chars[id].leaveAt = performance.now() + 600; }
     memos = memos.filter(m => m.type !== "notice"); setLog("작업 끝 · 본부장 휴게실 · 팀 퇴근");
   } else if (k === "start" || k === "prompt"){
     const b = chars.boss; if (b.at !== "boss") go(b, [BOSS_DESK.x, BOSS_DESK.y], "boss"); b.state = "idle"; b.label = "";
@@ -441,14 +442,29 @@ function drawBackground(){
 // ───────── 단지 보드 (HTML · 한 줄 행 · 오른쪽 스크롤) ─────────
 const STAGE_SHORT = {scout:"개척", analysis:"착수", build:"제작", audit:"검증", mail:"발송", pt:"PT", retro:"관제"};
 document.getElementById("dhead").innerHTML = ORDER.map(k => `<span>${STAGE_SHORT[k]}</span>`).join("");
+// 단지 담당자: 현황판 '단계' 표대로 단지마다 한 명이 그 작업대에 서 있다 (팀 호출과 별개로 늘 보임)
+function syncResidents(list){
+  const want = new Map(list.filter(x => STATIONS[x.stage]).map(x => ["site:" + x.site, x]));
+  for (const id in chars) if (chars[id].resident && !want.has(id) && !chars[id].leaveAt) chars[id].leaveAt = performance.now();
+  for (const [id, x] of want){
+    let ch = chars[id];
+    if (!ch){ const seat = LOUNGE.seats[freeSeat()]; ch = mk(id, genLook(id), x.site, seat[0], seat[1]); ch.seatIdx = LOUNGE.seats.indexOf(seat); ch.resident = true; }
+    ch.tag = x.site + (x.done ? " ✓" : ""); ch.label = ""; if (ch.state !== "leaving"){ ch.state = x.done ? "idle" : "working"; ch.leaveAt = 0; }
+    ch.info = `${x.site} · ${STATIONS[x.stage].name}${x.done ? " 완료" : " 진행 중"}`;
+    if (ch.at !== x.stage && ch.state !== "leaving") go(ch, slot(x.stage), x.stage);
+  }
+}
 function renderBoard(){
-  const rows = boardRows.map(r => ({...r})); const seen = new Set(rows.map(r => r.site));
+  const rows = boardRows.map(r => ({...r, fromBoard:true})); const seen = new Set(rows.map(r => r.site));
   for (const n in sites) if (!seen.has(n)) rows.push({site:n, name:n, due:"", dday:null, done:false});
   const box = document.getElementById("rows");
   document.getElementById("bcount").textContent = rows.length ? `${rows.filter(r=>!r.done).length}곳 진행 · ${rows.filter(r=>r.done).length}곳 제출` : "";
   if (!rows.length){ box.innerHTML = `<div class="empty">현황판(jugansa/입찰현황판.md)을 아직 못 찾음 — 세션을 시작하면 읽습니다</div>`; return; }
+  const staff = [];
   box.innerHTML = rows.map(r => {
     const s = sites[r.site] || {stage:"", t:0, teams:[]}, stale = !s.t || Date.now() - s.t > SITE_STALE_MS, cur = r.site === curSite;
+    const live = !stale && s.stage, stage = live ? s.stage : (r.stage || s.stage), si = ORDER.indexOf(stage);
+    if (r.fromBoard) staff.push({site: String(r.site).replace(/\s*\(.*$/, "").trim() || r.site, stage, done: r.done});
     const urgent = r.dday !== null && r.dday <= 2 && !r.done, soon = r.dday !== null && r.dday <= 7 && !r.done && !urgent;
     const short = String(r.site).replace(/\s*\(.*$/, "").trim() || r.site;
     const full = String(r.name || "").replace(/\s*\(.*$/, "");
@@ -456,7 +472,8 @@ function renderBoard(){
     const dtxt = r.done ? "제출" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";
     const ptm = r.pt ? (r.pt.match(/\d{1,2}\.\d{1,2}/) || [""])[0] : "";
     const pt = ptm ? ptm + (r.pt_dday !== null && r.pt_dday >= 0 ? ` · D-${r.pt_dday}` : "") : "—";
-    const dots = ORDER.map(k => { const on = s.stage === k; return `<i class="${on ? "on" + (!stale ? " live" : "") : ""}" style="${on ? `background:${STATIONS[k].color};color:${STATIONS[k].color}` : ""}"></i>`; }).join("");
+    const dots = ORDER.map((k,i) => { const on = i === si, past = si >= 0 && i < si;
+      return `<i class="${on ? "on" + (live ? " live" : "") : past ? "past" : ""}" style="${on || past ? `background:${STATIONS[k].color};color:${STATIONS[k].color}` : ""}" title="${STATIONS[k].name}"></i>`; }).join("");
     const title = `${r.name || r.site}${r.due ? " · 마감 " + r.due : ""}${r.pt ? " · PT " + r.pt : ""}${s.teams.length ? " · " + s.teams.join(", ") : ""}`;
     return `<div class="row${r.done ? " done" : ""}${cur ? " cur" : ""}${urgent ? " urgent" : ""}" title="${esc(title)}">`
       + `<span class="nm"><b>${esc(short)}</b><small>${esc(full !== short ? full : "")}</small></span>`
@@ -464,6 +481,7 @@ function renderBoard(){
       + `<span><em class="dd${r.done ? " done" : urgent ? " urgent" : soon ? " soon" : ""}" style="font-style:normal">${dtxt}</em></span>`
       + `<span class="dots">${dots}</span><span class="pt">${esc(pt)}</span></div>`;
   }).join("");
+  syncResidents(staff);
 }
 const wrapEl = document.getElementById("wrap");
 new ResizeObserver(() => wrapEl.style.setProperty("--k", wrapEl.clientWidth / 1200)).observe(wrapEl);
@@ -526,7 +544,7 @@ function nameplate(cx, by, text, col){ ctx.font = "600 10.5px 'Malgun Gothic', s
   ctx.fillStyle = "#ece5d6"; ctx.fillText(t, x + 12, by + 11); }
 cv.addEventListener("click", e => { const r = cv.getBoundingClientRect(), pxx = (e.clientX - r.left) * 1200 / r.width, pyy = (e.clientY - r.top) * 720 / r.height;
   for (const id in chars){ const ch = chars[id], b = ch._box; if (!b) continue; if (pxx >= b[0] && pxx <= b[0]+b[2] && pyy >= b[1] && pyy <= b[1]+b[3]){
-    say(ch, ch.state==="working" ? "[작업 중] " + (ch.label || ch.tag || "") : ch.state==="reporting" ? "[보고 중]" : ch.state==="resting" ? "[휴식 중]" : ch.state==="leaving" ? "[퇴근]" : "[대기 중]"); return; } } });
+    say(ch, ch.info ? ch.info : ch.state==="working" ? "[작업 중] " + (ch.label || ch.tag || "") : ch.state==="reporting" ? "[보고 중]" : ch.state==="resting" ? "[휴식 중]" : ch.state==="leaving" ? "[퇴근]" : "[대기 중]"); return; } } });
 
 drawBackground(); renderBoard();
 setInterval(renderBoard, 5000);

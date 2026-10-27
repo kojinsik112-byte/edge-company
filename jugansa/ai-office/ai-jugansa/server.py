@@ -38,7 +38,7 @@ TEAM_KR = {
 PATH_RULES = [
     ("audit",    r"court|검증|법정|GPT_검증|검수|verify|audit|gpt2"),
     ("mail",     r"mail_|메일|GIF|lx_gif|align_pair|assemble_|_dl/|보관함|제출본"),
-    ("pt",       r"PT_|pt_coach|PT용|발표"),
+    ("pt",       r"(?<![a-z])PT_|pt_coach|PT용|발표"),     # 'javascript_tool' 같은 도구 이름에 걸리지 않게
     ("retro",    r"입찰_결과분석|입찰현황판|scorecard|결과분석|retro"),
     ("analysis", r"착수|kickoff|notice\.txt|분석|analysis|hwp2txt|mask_notice|손익"),
     ("build",    r"build_[a-z]+\.py|docs_[a-z]+\.py|data\.py|reorg|polish|vis\.py|pages21|light_build|제안서|summary_|tjlight|card_fit"),
@@ -77,12 +77,23 @@ def parse_date(txt, today):
     except ValueError: return None, ""
     return d, (f"{m.group(3)}:{m.group(4)}" if m.group(3) else "")
 
+STAGE_KEY = {"개척": "scout", "착수": "analysis", "착수분석": "analysis", "제작": "build", "검증": "audit",
+             "발송": "mail", "PT": "pt", "관제": "retro", "결과": "retro", "결과·관제": "retro"}
+
 def board():
     f = find_board()
     if not f: return {"file": "", "sites": []}
     today = datetime.date.today(); rows = []; on = False
     try: lines = open(f, encoding="utf-8").read().splitlines()
     except OSError: return {"file": f, "sites": []}
+    # '1-1. 단계' 표: | 단지 | 단계 | 근거 | → 단지 이름 → 작업대 키
+    stage_of, son = {}, False
+    for ln in lines:
+        if ln.startswith("| 단지 | 단계 |"): son = True; continue
+        if son and not ln.startswith("|"): son = False
+        if not son or ln.startswith("|---") or ln.startswith("| ---"): continue
+        c = [x.strip() for x in ln.strip().strip("|").split("|")]
+        if len(c) >= 2 and STAGE_KEY.get(c[1].replace(" ", "")): stage_of[c[0]] = STAGE_KEY[c[1].replace(" ", "")]
     for ln in lines:
         if ln.startswith("| 단지 |") and "제출 마감" in ln: on = True; continue
         if on and not ln.startswith("|"): on = False
@@ -90,13 +101,14 @@ def board():
         c = [x.strip() for x in ln.strip().strip("|").split("|")]
         if len(c) < 7: continue
         name, hh, q, due, pt, status, rest = c[0], c[1], c[2], c[3], c[5], c[6], " ".join(c[7:])
-        short = site_for(name) or name[:4]
+        short = site_for(name) or re.sub(r"\s*\(.*$", "", name)[:4].strip()
         d, tm = parse_date(due, today)
         done = "✅" in status or "✅" in rest or "제출 완료" in status
         dday = (d - today).days if d else None
         ptd, _ = parse_date(pt, today)
         rows.append({"site": short, "name": name, "hh": hh, "due": re.sub(r"\*", "", due), "dday": dday, "time": tm,
-                     "pt": re.sub(r"\*", "", pt)[:28], "pt_dday": (ptd - today).days if ptd else None, "done": done})
+                     "pt": re.sub(r"\*", "", pt)[:28], "pt_dday": (ptd - today).days if ptd else None, "done": done,
+                     "stage": stage_of.get(name, "")})
     rows.sort(key=lambda r: (r["done"], r["dday"] if r["dday"] is not None else 999))
     return {"file": f, "today": today.isoformat(), "sites": rows}
 
