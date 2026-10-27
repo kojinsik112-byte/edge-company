@@ -22,7 +22,7 @@
   #log{width:100%;max-width:1200px;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* 단지 보드 — 캔버스 위 HTML (오른쪽 스크롤 · 한 줄 행) */
-  #board{position:absolute;left:51%;top:43.333%;width:44.667%;height:50.833%;display:flex;flex-direction:column;font-size:calc(12px*var(--k));color:#e9e3d6}
+  #board{position:absolute;left:4.333%;top:41.944%;width:59.667%;height:53.611%;display:flex;flex-direction:column;font-size:calc(12px*var(--k));color:#e9e3d6}
   #board .bh{display:flex;align-items:baseline;gap:calc(8px*var(--k));padding:0 calc(6px*var(--k)) calc(6px*var(--k))}
   #board .bh b{font-size:calc(14px*var(--k));letter-spacing:.3px}
   #board .bh span{color:var(--mut);font-size:calc(11px*var(--k))}
@@ -78,7 +78,7 @@
 
 <script>
 // ───────── 오픈 플로어 배치 ─────────
-// 위 = 작업대 7개(일이 흐르는 순서) · 오른쪽 = 본부장 책상 · 왼쪽 아래 = 대기 · 휴게 · 오른쪽 아래 = 단지 보드
+// 위 = 작업대 7개(일이 흐르는 순서) · 오른쪽 = 본부장 책상 · 왼쪽 아래 = 단지 보드 · 오른쪽 아래 = 휴게 코너 · 출입구
 const STATIONS = {
   scout:   {n:1, name:"개척",     sub:"공고 감시 · 신규 개척",   color:"#e0b04a"},
   analysis:{n:2, name:"착수분석", sub:"공고 · 단지 · 카페 · 손익", color:"#6fa3e8"},
@@ -92,11 +92,11 @@ const ORDER = ["scout","analysis","build","audit","mail","pt","retro"];
 const ST_Y = 150, ST_X0 = 60, ST_GAP = 136;          // 작업대 줄 (y = 캐릭터 발 위치)
 ORDER.forEach((k,i)=>{ STATIONS[k].x = ST_X0 + i*ST_GAP; STATIONS[k].y = ST_Y; });
 const BOSS_DESK = {x:1085, y:150};                     // 본부장 책상
-const LOUNGE = {box:[40,300,560,690], seats:[]};     // 대기 · 휴게 (일 없는 사람은 여기)
-for (let r=0;r<3;r++) for (let c=0;c<6;c++) LOUNGE.seats.push([90 + c*80, 420 + r*110]);
-const BOARD = {box:[600,300,1160,690]};               // 단지 보드 (내용은 HTML #board)
-const WALK_Y = 240;                                   // 작업대 ↔ 아래 영역 사이 통로
-const PS = 0.9, WALK_SPEED = 100;                     // 사람 그림 배율
+const BOARD = {box:[40,290,780,700]};                 // 단지 보드 (내용은 HTML #board)
+const LOUNGE = {box:[840,290,1160,520], seats:[[930,478],[1000,478],[1070,478]]};   // 휴게 코너 (본부장 휴식)
+const ENTRY = {box:[840,540,1160,700]}, DOOR = [1000, 700];   // 출입구: 팀은 여기로 들어와 작업대로 가고, 끝나면 여기로 나간다
+const WALK_Y = 240, CORR_X = 810;                     // 작업대 ↔ 아래 영역 통로 · 보드와 휴게 코너 사이 복도
+const PS = 0.9, WALK_SPEED = 150;                     // 사람 그림 배율
 const SITE_STALE_MS = 30*60*1000;
 
 // ───────── 도우미 ─────────
@@ -235,16 +235,17 @@ const sites = {};                                     // 단지 약칭 → {stag
 let boardRows = (typeof BOARD_SNAPSHOT !== "undefined") ? BOARD_SNAPSHOT : [];   // 현황판에서 읽은 마감 · PT (서버 /sites)
 async function loadBoard(){ try{ const r = await fetch("/sites", {cache:"no-store"}); if (r.ok){ const j = await r.json(); if (j.sites && j.sites.length) boardRows = j.sites; renderBoard(); } }catch(e){} setTimeout(loadBoard, 60000); }
 
-function freeSeat(){ const used = new Set(Object.values(chars).map(c=>c.seatIdx)); for (let i=0;i<LOUNGE.seats.length;i++) if (!used.has(i)) return i; return LOUNGE.seats.length-1; }
 function slot(st){ // 작업대 앞에 여러 명이 서는 자리 (왼쪽부터)
   const s = STATIONS[st], here = Object.values(chars).filter(c=>c.at===st && c.id!=="boss").length;
   return [s.x - 36 + (here%3)*36, s.y + 8 + Math.floor(here/3)*14];
 }
 function go(ch, target, at){
-  // 작업대 줄(y 150) ↔ 아래 영역은 통로(y 240)를 거쳐 간다. 같은 줄이면 직진.
+  // 작업대 줄(y 150) ↔ 아래 영역은 통로(y 240) → 복도(x 810)를 거쳐 간다. 같은 줄이면 직진.
   const pts = [];
   const fromTop = ch.y < 200, toTop = target[1] < 200;
-  if (fromTop !== toTop){ pts.push([ch.x, WALK_Y], [target[0], WALK_Y]); }
+  if (fromTop && !toTop) pts.push([ch.x, WALK_Y], [CORR_X, WALK_Y], [CORR_X, target[1]]);
+  else if (!fromTop && toTop) pts.push([CORR_X, ch.y], [CORR_X, WALK_Y], [target[0], WALK_Y]);
+  else if (!fromTop && !toTop && (ch.x < CORR_X) !== (target[0] < CORR_X)) pts.push([CORR_X, ch.y], [CORR_X, target[1]]);
   pts.push(target); ch.path = pts.map(p=>[p[0],p[1]]); ch.at = at;
 }
 function say(ch, text, ms=2400){ ch.bubble = text; ch.bubbleUntil = performance.now()+ms; }
@@ -256,8 +257,7 @@ function handle(ev){
   const k = ev.kind, st = STATIONS[ev.room] ? ev.room : null;
   if (k === "team_start"){
     const id = ev.agent_id || ev.team + Date.now(); const stn = st || "analysis";
-    const seat = LOUNGE.seats[freeSeat()];
-    const ch = mk(id, pickLook(ev.team || ev.team_kr || stn), ev.team_kr || ev.team, seat[0], seat[1]); ch.seatIdx = LOUNGE.seats.indexOf(seat); ch.tag = ev.team_kr || ev.team;
+    const ch = mk(id, pickLook(ev.team || ev.team_kr || stn), ev.team_kr || ev.team, DOOR[0] - 30 + Math.random()*60, DOOR[1]); ch.tag = ev.team_kr || ev.team;
     go(ch, slot(stn), stn); ch.state = "working"; activeStation = stn;
     say(chars.boss, "팀 호출 → " + (ev.team_kr || ev.team)); touchSite(ev.site || curSite, stn, ev.team_kr || ev.team);
     setLog(`${STATIONS[stn].name} 작업대 · ${ev.team_kr || ev.team} 투입`);
@@ -415,23 +415,39 @@ function drawBackground(){
   g.fillStyle="#c8a35a"; ell(g,BX-43,BY-111,9,9); g.fill(); g.fillStyle="#0d131e"; g.font="700 11px 'Malgun Gothic', sans-serif"; g.textAlign="center"; g.fillText("★", BX-43, BY-107); g.textAlign="left";
   g.fillStyle="#f2ece0"; fitText(g,"총괄 본부장석", BX-29, BY-112, 84, 13, "700"); g.fillStyle="#8f9bb0"; fitText(g,"총괄 · 결정 · 팀 호출", BX-29, BY-99, 84, 9.5);
   plant(g, 1155, 226, 1.1);
-  // 대기 · 휴게
+  // 복도(보드 ↔ 휴게 코너 사이)
+  g.fillStyle="rgba(255,255,255,.025)"; rr(g,CORR_X-14,250,28,452,12); g.fill();
+  // 휴게 코너 (작게)
   const L = LOUNGE.box;
-  g.fillStyle="rgba(255,255,255,.03)"; rr(g,L[0],L[1],L[2]-L[0],L[3]-L[1],18); g.fill(); g.strokeStyle="rgba(255,255,255,.07)"; rr(g,L[0]+.5,L[1]+.5,L[2]-L[0]-1,L[3]-L[1]-1,18); g.stroke();
-  g.fillStyle="#ece5d6"; g.font="700 13px 'Malgun Gothic', sans-serif"; g.fillText("대기 · 휴게", L[0]+18, L[1]+24);
-  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; g.fillText("호출된 팀은 여기서 출발 → 작업대 → 본부장 보고 → 퇴근", L[0]+96, L[1]+24);
-  const rug = g.createLinearGradient(0,L[1]+40,0,L[3]); rug.addColorStop(0,"#1d3534"); rug.addColorStop(1,"#162a29"); g.fillStyle=rug; rr(g,L[0]+16,L[1]+40,L[2]-L[0]-32,L[3]-L[1]-54,14); g.fill();
-  g.strokeStyle="rgba(200,163,90,.22)"; g.lineWidth=1; rr(g,L[0]+24,L[1]+48,L[2]-L[0]-48,L[3]-L[1]-70,10); g.stroke();
-  g.strokeStyle="rgba(255,255,255,.035)"; for (let x=L[0]+40;x<L[2]-30;x+=26) for (let y=L[1]+64;y<L[3]-30;y+=26){ g.beginPath(); g.moveTo(x,y-6); g.lineTo(x+6,y); g.lineTo(x,y+6); g.lineTo(x-6,y); g.closePath(); g.stroke(); }
-  for (let r=0;r<3;r++){ const fy = 420 + r*110;
-    g.fillStyle="rgba(0,0,0,.3)"; ell(g,290,fy-2,240,7); g.fill();
-    const back = g.createLinearGradient(0,fy-38,0,fy-22); back.addColorStop(0,"#a87650"); back.addColorStop(1,"#8a5d3d"); g.fillStyle=back; rr(g,54,fy-38,472,18,8); g.fill();
-    const seat = g.createLinearGradient(0,fy-24,0,fy-6); seat.addColorStop(0,"#c48c5e"); seat.addColorStop(1,"#9c6a44"); g.fillStyle=seat; rr(g,58,fy-24,464,17,6); g.fill();
-    g.strokeStyle="rgba(0,0,0,.18)"; for (let c=1;c<6;c++){ const sx = 50 + c*80; line(g,sx,fy-22,sx,fy-9); }
-    g.fillStyle="#7a4f33"; rr(g,48,fy-30,12,24,5); g.fill(); rr(g,520,fy-30,12,24,5); g.fill();
-    g.fillStyle="rgba(255,255,255,.12)"; g.fillRect(60,fy-36,460,1);
-  }
-  plant(g, L[0]+26, L[3]-14, 1.15); plant(g, L[2]-26, L[3]-14, 1.15);
+  g.fillStyle="rgba(255,255,255,.03)"; rr(g,L[0],L[1],L[2]-L[0],L[3]-L[1],16); g.fill(); g.strokeStyle="rgba(255,255,255,.07)"; rr(g,L[0]+.5,L[1]+.5,L[2]-L[0]-1,L[3]-L[1]-1,16); g.stroke();
+  g.fillStyle="#ece5d6"; g.font="700 13px 'Malgun Gothic', sans-serif"; g.fillText("휴게 코너", L[0]+16, L[1]+24);
+  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; fitText(g, "일 끝나면 본부장 휴식", L[0]+86, L[1]+24, L[2]-L[0]-100, 10.5);
+  const rug = g.createLinearGradient(0,L[1]+38,0,L[3]); rug.addColorStop(0,"#1d3534"); rug.addColorStop(1,"#162a29"); g.fillStyle=rug; rr(g,L[0]+14,L[1]+38,L[2]-L[0]-28,L[3]-L[1]-50,12); g.fill();
+  g.strokeStyle="rgba(200,163,90,.22)"; g.lineWidth=1; rr(g,L[0]+20,L[1]+44,L[2]-L[0]-40,L[3]-L[1]-62,9); g.stroke();
+  // 커피 바
+  g.fillStyle="#4e3322"; rr(g,1076,342,68,26,5); g.fill(); g.fillStyle="#6b4a32"; rr(g,1076,342,68,6,3); g.fill();
+  g.fillStyle="#1c2230"; rr(g,1086,318,24,26,4); g.fill(); g.fillStyle="#c8a35a"; ell(g,1098,326,3,3); g.fill(); g.fillStyle="#3a3f4a"; g.fillRect(1094,336,8,6);
+  g.fillStyle="#f4efe6"; rr(g,1118,334,7,8,1.5); g.fill(); rr(g,1128,334,7,8,1.5); g.fill();
+  // 소파 (3인) · 테이블
+  { const fy = LOUNGE.seats[0][1];
+    g.fillStyle="rgba(0,0,0,.3)"; ell(g,1000,fy-2,118,6); g.fill();
+    const back = g.createLinearGradient(0,fy-38,0,fy-22); back.addColorStop(0,"#a87650"); back.addColorStop(1,"#8a5d3d"); g.fillStyle=back; rr(g,892,fy-38,216,18,8); g.fill();
+    const seat = g.createLinearGradient(0,fy-24,0,fy-6); seat.addColorStop(0,"#c48c5e"); seat.addColorStop(1,"#9c6a44"); g.fillStyle=seat; rr(g,896,fy-24,208,17,6); g.fill();
+    g.strokeStyle="rgba(0,0,0,.18)"; line(g,965,fy-22,965,fy-9); line(g,1035,fy-22,1035,fy-9);
+    g.fillStyle="#7a4f33"; rr(g,886,fy-30,12,24,5); g.fill(); rr(g,1102,fy-30,12,24,5); g.fill();
+    g.fillStyle="rgba(255,255,255,.12)"; g.fillRect(898,fy-36,204,1);
+    g.fillStyle="#3a2a20"; rr(g,955,fy+12,90,12,6); g.fill(); g.fillStyle="#f4efe6"; rr(g,985,fy+8,7,7,1.5); g.fill(); }
+  plant(g, L[0]+30, L[3]-14, 1.0);
+  // 출입구
+  const E = ENTRY.box;
+  g.fillStyle="rgba(255,255,255,.02)"; rr(g,E[0],E[1],E[2]-E[0],E[3]-E[1]+12,16); g.fill(); g.strokeStyle="rgba(255,255,255,.06)"; rr(g,E[0]+.5,E[1]+.5,E[2]-E[0]-1,E[3]-E[1]+11,16); g.stroke();
+  g.fillStyle="#ece5d6"; g.font="700 13px 'Malgun Gothic', sans-serif"; g.fillText("출입구", E[0]+16, E[1]+24);
+  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; fitText(g, "호출된 팀은 여기로 출근 → 작업대 → 보고 후 퇴근", E[0]+62, E[1]+24, E[2]-E[0]-78, 10.5);
+  g.fillStyle="#232a37"; rr(g,DOOR[0]-62,DOOR[1]-52,124,40,9); g.fill(); g.strokeStyle="rgba(200,163,90,.35)"; rr(g,DOOR[0]-58,DOOR[1]-48,116,32,7); g.stroke();
+  g.fillStyle="rgba(200,163,90,.5)"; g.font="600 10px 'Malgun Gothic', sans-serif"; g.textAlign="center"; g.fillText("WELCOME · EDGE COMPANY", DOOR[0], DOOR[1]-28); g.textAlign="left";
+  const gd = g.createLinearGradient(0,DOOR[1]-8,0,DOOR[1]+12); gd.addColorStop(0,"rgba(140,190,230,.35)"); gd.addColorStop(1,"rgba(140,190,230,.08)"); g.fillStyle=gd; rr(g,DOOR[0]-56,DOOR[1]-6,112,20,3); g.fill();
+  g.fillStyle="#c8a35a"; g.fillRect(DOOR[0]-58,DOOR[1]-7,116,2); g.fillRect(DOOR[0]-1,DOOR[1]-6,2,20);
+  plant(g, E[2]-26, E[3]-6, 1.0);
   // 단지 보드 판넬 (내용은 HTML)
   const B = BOARD.box;
   g.save(); g.shadowColor="rgba(0,0,0,.5)"; g.shadowBlur=18; g.fillStyle="rgba(10,15,24,.9)"; rr(g,B[0],B[1],B[2]-B[0],B[3]-B[1],18); g.fill(); g.restore();
@@ -476,7 +492,7 @@ const cv = document.getElementById("c"), ctx = cv.getContext("2d");
 let last = performance.now();
 function tick(now){ const dt = Math.min(0.05,(now-last)/1000); last = now;
   for (const id in chars){ const ch = chars[id]; move(ch, dt);
-    if (id !== "boss" && ch.leaveAt && now > ch.leaveAt && ch.state !== "leaving" && !ch.path.length){ ch.state = "leaving"; go(ch, [ch.x < 600 ? 30 : 1170, 700], "exit"); ch.after = ()=>{ delete chars[id]; }; }
+    if (id !== "boss" && ch.leaveAt && now > ch.leaveAt && ch.state !== "leaving" && !ch.path.length){ ch.state = "leaving"; go(ch, [DOOR[0] - 20 + Math.random()*40, DOOR[1] + 6], "exit"); ch.after = ()=>{ delete chars[id]; }; }
   }
   draw(now); requestAnimationFrame(tick); }
 function move(ch, dt){
