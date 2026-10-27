@@ -5,41 +5,85 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI 주관사업부 오피스</title>
 <style>
-  :root{--bg:#1b1916;--fg:#f1e9d8;--mut:#b7ab96;--ok:#82cc8c;--bad:#e3876f;--card:#2a2621}
-  html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 "Pretendard","Malgun Gothic",system-ui,sans-serif}
-  body{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 16px;box-sizing:border-box}
+  :root{--bg:#0b111b;--panel:#121a27;--fg:#ece5d6;--mut:#8f9bb0;--gold:#c8a35a;--ok:#7fd3a0;--bad:#ef8f7c;--line:rgba(255,255,255,.08)}
+  html,body{height:100%;margin:0;background:radial-gradient(1200px 600px at 50% -10%,#18243a 0%,var(--bg) 60%);color:var(--fg);font:14px/1.5 "Pretendard","Malgun Gothic",system-ui,sans-serif}
+  body{display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 16px;box-sizing:border-box}
   header{width:100%;max-width:1200px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  header h1{font-size:16px;margin:0;letter-spacing:1px}
-  header h1 small{color:var(--mut);font-weight:normal;margin-left:8px;font-size:12px}
-  .st{padding:3px 10px;border-radius:999px;background:var(--card);color:var(--mut);font-size:12px}
+  header h1{font-size:17px;margin:0;letter-spacing:.5px;font-weight:700}
+  header h1 em{font-style:normal;color:var(--gold)}
+  header h1 small{color:var(--mut);font-weight:400;margin-left:10px;font-size:12px}
+  .st{padding:3px 11px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:12px}
   .st.ok{color:var(--ok)} .st.bad{color:var(--bad)}
   .sp{flex:1}
-  button{background:var(--card);color:var(--fg);border:1px solid #4a4238;border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
-  button:hover{background:#3a342c}
-  #wrap{width:100%;max-width:1200px;aspect-ratio:1200/720;position:relative}
-  canvas{width:100%;height:100%;display:block;border-radius:6px;image-rendering:pixelated}
+  button{background:transparent;color:var(--gold);border:1px solid rgba(200,163,90,.55);border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+  button:hover{background:rgba(200,163,90,.12)}
+  #wrap{--k:1;width:100%;max-width:1200px;aspect-ratio:1200/720;position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 1px var(--line)}
+  canvas{width:100%;height:100%;display:block}
   #log{width:100%;max-width:1200px;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* 단지 보드 — 캔버스 위 HTML (오른쪽 스크롤 · 한 줄 행) */
+  #board{position:absolute;left:51%;top:43.333%;width:44.667%;height:50.833%;display:flex;flex-direction:column;font-size:calc(12px*var(--k));color:#e9e3d6}
+  #board .bh{display:flex;align-items:baseline;gap:calc(8px*var(--k));padding:0 calc(6px*var(--k)) calc(6px*var(--k))}
+  #board .bh b{font-size:calc(14px*var(--k));letter-spacing:.3px}
+  #board .bh span{color:var(--mut);font-size:calc(11px*var(--k))}
+  #board .bh i{margin-left:auto;font-style:normal;color:var(--mut);font-size:calc(10.5px*var(--k))}
+  #board .row{display:grid;grid-template-columns:2.3fr 1.35fr .95fr 2.6fr 1.15fr;align-items:center;column-gap:calc(6px*var(--k));height:calc(25px*var(--k));padding:0 calc(8px*var(--k));border-radius:calc(6px*var(--k));white-space:nowrap}
+  #board .row>span{overflow:hidden;text-overflow:ellipsis}
+  #board .head{height:calc(20px*var(--k));color:var(--mut);font-size:calc(10.5px*var(--k));border-bottom:1px solid var(--line);border-radius:0;margin-right:calc(10px*var(--k))}
+  #rows{flex:1;overflow-y:auto;scrollbar-gutter:stable;padding-top:calc(3px*var(--k));display:flex;flex-direction:column;gap:calc(2px*var(--k))}
+  #rows::-webkit-scrollbar{width:calc(8px*var(--k))}
+  #rows::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:99px}
+  #rows::-webkit-scrollbar-thumb{background:rgba(200,163,90,.55);border-radius:99px}
+  #rows{scrollbar-color:rgba(200,163,90,.55) rgba(255,255,255,.04);scrollbar-width:thin}
+  #rows .row{background:rgba(255,255,255,.035)}
+  #rows .row:hover{background:rgba(255,255,255,.07)}
+  #rows .row.urgent{background:rgba(239,143,124,.11)}
+  #rows .row.cur{background:rgba(200,163,90,.13);box-shadow:inset calc(3px*var(--k)) 0 0 var(--gold)}
+  #rows .row.done{opacity:.5}
+  #rows .nm b{font-weight:700;margin-right:calc(5px*var(--k))}
+  #rows .nm small{color:var(--mut);font-size:calc(10.5px*var(--k))}
+  #rows .due{font-variant-numeric:tabular-nums;color:#d8d0c0}
+  .dd{display:inline-block;min-width:calc(42px*var(--k));text-align:center;font:700 calc(11px*var(--k))/1.6 ui-monospace,Consolas,monospace;border-radius:99px;background:rgba(255,255,255,.07)}
+  .dd.urgent{background:#5b2019;color:#ffb3a3;animation:blink 1s steps(2,start) infinite}
+  .dd.done{background:#163828;color:var(--ok)}
+  .dd.soon{background:rgba(200,163,90,.18);color:#f0d49a}
+  @keyframes blink{to{background:#8a2a1f}}
+  .dots{display:grid;grid-template-columns:repeat(7,1fr);justify-items:center;align-items:center}
+  .dots i{display:block;width:calc(6px*var(--k));height:calc(6px*var(--k));border-radius:50%;background:#3a4558}
+  .dots i.on{width:calc(11px*var(--k));height:calc(11px*var(--k));box-shadow:0 0 calc(8px*var(--k)) currentColor}
+  .dots i.live{animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{50%{transform:scale(1.35)}}
+  .head .dots span{font-size:calc(9.5px*var(--k))}
+  #rows .pt{color:var(--mut);font-size:calc(11px*var(--k))}
+  #rows .empty{color:var(--mut);padding:calc(10px*var(--k))}
 </style>
 </head>
 <body>
 <header>
-  <h1>AI 주관사업부 오피스 <small>엣지컴퍼니 · 입주박람회 주관사 입찰 · 오픈 플로어</small></h1>
+  <h1><em>AI</em> 주관사업부 오피스 <small>엣지컴퍼니 · 입주박람회 주관사 입찰 · 오픈 플로어</small></h1>
   <span id="st" class="st">서버 확인 중</span>
   <span class="sp"></span>
   <button id="simBtn">시뮬레이션 시작</button>
   <button id="restBtn">모두 휴게실로</button>
 </header>
-<div id="wrap"><canvas id="c" width="1200" height="720"></canvas></div>
+<div id="wrap">
+  <canvas id="c" width="2400" height="1440"></canvas>
+  <section id="board" aria-label="진행 중 단지 보드">
+    <div class="bh"><b>진행 중 단지</b><span>마감 D-day · 지금 단계</span><i id="bcount"></i></div>
+    <div class="row head"><span>단지</span><span>마감</span><span>D-day</span><span class="dots" id="dhead"></span><span>PT 일정</span></div>
+    <div id="rows"></div>
+  </section>
+</div>
 <div id="log">·</div>
 
 <script>
 // ───────── 오픈 플로어 배치 ─────────
 // 위 = 작업대 7개(일이 흐르는 순서) · 오른쪽 = 본부장 책상 · 왼쪽 아래 = 대기 · 휴게 · 오른쪽 아래 = 단지 보드
 const STATIONS = {
-  scout:   {n:1, name:"개척",     sub:"공고 감시 · 신규 개척",   color:"#d9a53b"},
+  scout:   {n:1, name:"개척",     sub:"공고 감시 · 신규 개척",   color:"#e0b04a"},
   analysis:{n:2, name:"착수분석", sub:"공고 · 단지 · 카페 · 손익", color:"#6fa3e8"},
   build:   {n:3, name:"제작",     sub:"제안서 · 제출서류",       color:"#7fd38a"},
-  audit:   {n:4, name:"검증",     sub:"법정 · 독립 검수",        color:"#ee8d7a"},
+  audit:   {n:4, name:"검증",     sub:"법정 · 독립 검수",        color:"#ef8f7c"},
   mail:    {n:5, name:"발송",     sub:"메일 · 보관함 · GIF",     color:"#c39ae8"},
   pt:      {n:6, name:"PT",       sub:"대본 · 예상 질문",        color:"#f0c35c"},
   retro:   {n:7, name:"결과·관제", sub:"결과 분석 · 마감",        color:"#6fd0c8"},
@@ -50,29 +94,146 @@ ORDER.forEach((k,i)=>{ STATIONS[k].x = ST_X0 + i*ST_GAP; STATIONS[k].y = ST_Y; }
 const BOSS_DESK = {x:1085, y:150};                     // 본부장 책상
 const LOUNGE = {box:[40,300,560,690], seats:[]};     // 대기 · 휴게 (일 없는 사람은 여기)
 for (let r=0;r<3;r++) for (let c=0;c<6;c++) LOUNGE.seats.push([90 + c*80, 420 + r*110]);
-const BOARD = {box:[600,300,1160,690]};               // 단지 보드
+const BOARD = {box:[600,300,1160,690]};               // 단지 보드 (내용은 HTML #board)
 const WALK_Y = 240;                                   // 작업대 ↔ 아래 영역 사이 통로
-const SCALE = 0.5, WALK_SPEED = 100;
+const PS = 0.9, WALK_SPEED = 100;                     // 사람 그림 배율
 const SITE_STALE_MS = 30*60*1000;
 
-// 팀 스프라이트: 작업대(단계)별로 다른 사람 그림을 쓴다 — 팀은 호출될 때 생기고 끝나면 퇴근한다
-const SPRITE_OF = {scout:"scout", analysis:"analyst", build:"builder", audit:"auditor", mail:"mailer", pt:"coach", retro:"retro", office:"pmo"};
-const SPRITES = ["boss","scout","analyst","builder","auditor","mailer","coach","retro","pmo"];
+// ───────── 도우미 ─────────
+function rr(g,x,y,w,h,r){ r=Math.min(r,w/2,h/2); g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+function ell(g,x,y,rx,ry,rot=0){ g.beginPath(); g.ellipse(x,y,rx,ry,rot,0,Math.PI*2); }
+function tri(g,a,b,c,d,e,f){ g.beginPath(); g.moveTo(a,b); g.lineTo(c,d); g.lineTo(e,f); g.closePath(); g.fill(); }
+function line(g,a,b,c,d){ g.beginPath(); g.moveTo(a,b); g.lineTo(c,d); g.stroke(); }
+function shade(hex,a){ const n=parseInt(hex.slice(1),16); let r=n>>16,gg=n>>8&255,b=n&255; const t=a<0?0:255,p=Math.abs(a); r=Math.round(r+(t-r)*p); gg=Math.round(gg+(t-gg)*p); b=Math.round(b+(t-b)*p); return `rgb(${r},${gg},${b})`; }
+function hash(s){ let h=2166136261; for (const ch of String(s)) { h^=ch.codePointAt(0); h=Math.imul(h,16777619); } return h>>>0; }
+function rng(seed){ let a=hash(seed); return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function fitText(g,text,x,y,maxW,size,weight="400"){ let s=size; do { g.font=`${weight} ${s}px 'Malgun Gothic', sans-serif`; } while (g.measureText(text).width > maxW && (s-=0.5) > 7); g.fillText(text,x,y); }
+function clip(s, n){ s = String(s); return s.length > n ? s.slice(0, n-1) + "…" : s; }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
-// ───────── 이미지 ─────────
-const IMG = {};
-function load(name, src){ return new Promise(r=>{ const i=new Image(); i.onload=()=>{IMG[name]=i;r();}; i.onerror=()=>r(); i.src=src; }); }
-const assets = [];
-for (const c of SPRITES) assets.push([c+"_stand",`static/c_${c}_stand.png`],[c+"_walk",`static/c_${c}_walk.png`]);
+// ───────── 사람(캐릭터) — 팀마다 여러 명이 있고, 호출될 때마다 그중 한 명이 나온다 ─────────
+const SKIN = ["#f8dfca","#f2cfb3","#ebc19f","#ddab84","#c98f66","#a8704c"];
+const HAIR_N = ["#1d1b22","#2c221d","#3f2c21","#5b3c27","#7a5134","#a07446","#4a4a52"];
+const HAIR_D = ["#c9b08a","#8a3b3b","#3a5f8f","#6b4e9b","#d8d2c8","#b06a4a"];
+const SHIRT = ["#f6f7f9","#dfe9f5","#f3ece0","#e8eef0"];
+const BLAZER = ["#1f2a44","#2f3b52","#3b2f2f","#4a4a52","#24423c","#5a2e3a","#6b5a48","#c9c3b6"];
+const HOODIE = ["#e2a03f","#5f8fd6","#6fbf9a","#d97a8b","#8e7cc3","#3b3f4a","#e9e4d8"];
+const KNIT = ["#c96f53","#e8d3a9","#6d8b74","#9c8bd6","#384a6b","#b8574f","#d9c7e8"];
+const CARD = ["#8b6f5a","#2f4858","#b5651d","#6c757d","#7a8b5a"];
+const TIE = ["#c8a35a","#a33a2a","#2e5aa8","#4a7d4f","#6a3a8a","#1f2a44"];
+const PANTS = ["#2b2f3a","#3a3f4b","#4a3b2f","#1f2533","#6b6f78","#3d4a5c","#c8b89a","#5a4a3a"];
+const SKIRT = ["#2b2f3a","#5a3a4a","#3d4a5c","#8a6a4a","#6b4e9b","#c8b89a"];
+const SHOES = ["#1c1c22","#5a3b28","#ecebe8","#3a3a42","#7a2e2e"];
+const LANYARD = ["#c8a35a","#2e5aa8","#a33a2a","#2f7a5a"];
+const ACC = ["#c8a35a","#e07a7a","#6fa3e8","#7fd38a","#c39ae8"];
+function genLook(seed){
+  const R = rng(seed), pick = a => a[Math.floor(R()*a.length)];
+  const hs = pick([0,0,1,1,2,3,3,4,5,6,7,8]), long = [2,3,4,5].includes(hs);
+  const ts = pick([0,1,1,2,3,4]);
+  const top = ts===0 ? pick(SHIRT) : ts===1 ? pick(BLAZER) : ts===2 ? pick(HOODIE) : ts===3 ? pick(KNIT) : pick(CARD);
+  const skin = pick(SKIN), skirt = long && R() < 0.5;
+  return {key:seed, skin, hair: pick(R()<0.78 ? HAIR_N : HAIR_D), hs, ts, top,
+    inner: pick(["#ffffff","#ffffff","#f3ece0","#dfe9f5","#1f2533"]), tie: (ts===0 || (ts===1 && R()<0.45)) ? pick(TIE) : null,
+    pants: skirt ? pick(SKIRT) : pick(PANTS), skirt, legs: pick(["#2b2b33", skin, "#3a3340"]), shoes: pick(SHOES),
+    glasses: R() < 0.3, glassesColor: pick(["#2b2b33","#7a5230","#9aa3ad","#c8a35a"]), headset: R() < 0.12,
+    lanyard: R() < 0.45 ? pick(LANYARD) : null, prop: pick([null,null,"laptop","tablet","docs","coffee"]), acc: pick(ACC)};
+}
+const BOSS_LOOK = {key:"boss", skin:"#f2cfb3", hair:"#1d1b22", hs:1, ts:1, top:"#14223a", inner:"#ffffff", tie:"#c8a35a", pants:"#14223a", skirt:false,
+  legs:"#14223a", shoes:"#1c1c22", glasses:true, glassesColor:"#c8a35a", headset:false, lanyard:null, prop:"tablet", acc:"#c8a35a"};
+const ROSTERS = {};
+function pickLook(team){
+  const roster = ROSTERS[team] || (ROSTERS[team] = Array.from({length:5}, (_,i) => genLook(team + "#" + i)));
+  const used = new Set(Object.values(chars).map(c => c.look.key));
+  const free = roster.filter(l => !used.has(l.key));
+  return free.length ? free[Math.floor(Math.random()*free.length)] : genLook(team + "#" + Math.random());
+}
+function arm(g,x,y,a,c,skin){ g.save(); g.translate(x,y); g.rotate(a); g.fillStyle=c; rr(g,-3.6,-1,7.2,17,3.6); g.fill(); g.fillStyle=shade(c,-0.12); rr(g,-3.6,12.5,7.2,3,1.5); g.fill(); g.fillStyle=skin; ell(g,0,17.6,3.4,3.4); g.fill(); g.restore(); }
+function hairFront(g,P){
+  g.fillStyle = P.hair;
+  const cap = pts => { g.beginPath(); g.moveTo(12.6,31); g.bezierCurveTo(10,-1,54,-1,51.4,31); for (const [x,y] of pts) g.lineTo(x,y); g.closePath(); g.fill(); };
+  switch (P.hs){
+    case 0: cap([[48,22],[43,25.5],[38,21.5],[32,25.5],[26,21.5],[21,25.5],[16,22]]); break;
+    case 1: cap([[49.5,21],[42,22.5],[33,19.5],[24,23.5],[17.5,29.5]]); break;
+    case 2: cap([[48.5,23.5],[15.5,23.5]]); rr(g,11,24,7.5,22,3.5); g.fill(); rr(g,45.5,24,7.5,22,3.5); g.fill(); break;
+    case 3: cap([[47,21],[38,20],[28,22.5],[18,27]]); rr(g,10.8,24,6.5,33,3.2); g.fill(); rr(g,46.7,24,6.5,33,3.2); g.fill(); break;
+    case 4: cap([[47,21.5],[36,19.5],[25,22],[16,25.5]]); break;
+    case 5: cap([[47,22.5],[40,24],[32,21.5],[24,24],[17,22.5]]); break;
+    case 6: cap([[46,24],[39,22],[32,24.5],[25,22],[18,24]]); for (let a=Math.PI*0.95; a<=Math.PI*2.05; a+=Math.PI/8){ ell(g,32+19.5*Math.cos(a),27+18*Math.sin(a),5,5); g.fill(); } break;
+    case 7: g.beginPath(); g.moveTo(13.2,27); g.bezierCurveTo(11,2,53,2,50.8,27); g.lineTo(46,20.5); g.lineTo(18,20.5); g.closePath(); g.fill(); break;
+    case 8: ell(g,31,10,16,7.5,-0.08); g.fill(); cap([[49,22],[40,20.5],[30,22],[20,21],[15.5,26]]); break;
+  }
+  g.strokeStyle = "rgba(255,255,255,.26)"; g.lineWidth = 1.6; g.lineCap = "round"; g.beginPath(); g.arc(30,22,12,Math.PI*1.18,Math.PI*1.42); g.stroke();
+}
+function drawProp(g,P){
+  switch (P.prop){
+    case "laptop": g.fillStyle="#cfd4dc"; rr(g,33.5,57,15,10,1.6); g.fill(); g.fillStyle="#aeb4be"; g.fillRect(33.5,65.5,15,1.5); g.fillStyle="#fff"; ell(g,41,61.5,1.3,1.3); g.fill(); break;
+    case "tablet": g.fillStyle="#232833"; rr(g,35,54,11,15,2); g.fill(); g.fillStyle="#7fb2e6"; rr(g,36.2,55.4,8.6,12,1.2); g.fill(); g.fillStyle="rgba(255,255,255,.65)"; g.fillRect(37.5,57.5,5,1); g.fillRect(37.5,60,6,1); break;
+    case "docs": g.fillStyle="#e9e2d0"; rr(g,34,55.5,12,15,1.2); g.fill(); g.fillStyle="#fffdf8"; rr(g,35,54.5,12,15,1.2); g.fill(); g.fillStyle="#b9b2a2"; for (let i=0;i<4;i++) g.fillRect(37,58+i*2.6,7.5,0.8); g.fillStyle=P.acc; g.fillRect(39,53.5,4,2); break;
+    case "coffee": g.fillStyle="#f4efe6"; rr(g,38.5,58,7,9.5,1.5); g.fill(); g.fillStyle="#8a5a3a"; g.fillRect(38.5,61,7,3.2); g.fillStyle="#3b3f4a"; rr(g,38,57,8,2,1); g.fill(); break;
+  }
+}
+function drawPerson(g, P, f){
+  const s = f===0 ? 0 : (f===1 ? 1 : -1);
+  // 뒷머리
+  if (P.hs===3){ g.fillStyle=P.hair; rr(g,12.5,22,39,42,14); g.fill(); }
+  if (P.hs===4){ g.fillStyle=P.hair; ell(g,50,38,5.5,12,0.35); g.fill(); g.fillStyle=P.acc; ell(g,47.5,27.5,2.6,2.6); g.fill(); }
+  if (P.hs===5){ g.fillStyle=P.hair; ell(g,32,7.5,7.5,7); g.fill(); }
+  // 다리 · 신발
+  const lx = 24.5 + s*2.4, rx = 32.5 - s*2.4, ly = 70, lhL = 20 - (s<0?1.6:0), lhR = 20 - (s>0?1.6:0);
+  g.fillStyle = P.skirt ? P.legs : P.pants; rr(g,lx,ly,7,lhL,3); g.fill(); rr(g,rx,ly,7,lhR,3); g.fill();
+  if (!P.skirt){ g.fillStyle = shade(P.pants,-0.18); g.fillRect(lx+3.2,ly+3,0.7,lhL-6); g.fillRect(rx+3.2,ly+3,0.7,lhR-6); }
+  g.fillStyle = P.shoes; ell(g,lx+3,ly+lhL,5,2.8); g.fill(); ell(g,rx+4,ly+lhR,5,2.8); g.fill();
+  // 목 · 몸통
+  g.fillStyle = shade(P.skin,-0.1); rr(g,28.5,44,7,7,2); g.fill();
+  g.fillStyle = P.top; rr(g,19,48,26,25,9); g.fill();
+  g.fillStyle = "rgba(255,255,255,.08)"; rr(g,21,49,9,20,5); g.fill();
+  if (P.skirt){ g.fillStyle=P.pants; g.beginPath(); g.moveTo(20,65); g.lineTo(44,65); g.lineTo(47.5,80); g.lineTo(16.5,80); g.closePath(); g.fill(); g.fillStyle=shade(P.pants,-0.2); g.fillRect(20,65,24,1.6); }
+  else { g.fillStyle=P.pants; rr(g,19.5,66,25,8,3); g.fill(); g.fillStyle=shade(P.pants,-0.35); g.fillRect(19.5,66,25,1.8); }
+  // 옷 디테일
+  const T = P.top, tie = (y2) => { g.fillStyle=P.tie; ell(g,32,50.8,2,1.7); g.fill(); rr(g,30.7,51.5,2.6,y2-51.5,1); g.fill(); tri(g,30.7,y2,33.3,y2,32,y2+2); };
+  g.lineCap = "round";
+  if (P.ts===0){ g.fillStyle="#ffffff"; tri(g,26,48,32,53,30,46); tri(g,38,48,32,53,34,46); if (P.tie) tie(62); }
+  else if (P.ts===1){ g.fillStyle=P.inner; tri(g,26.5,48,37.5,48,32,63); if (P.tie) tie(60);
+    g.strokeStyle=shade(T,-0.35); g.lineWidth=1.2; line(g,26.5,48,31,62); line(g,37.5,48,33,62);
+    g.fillStyle=shade(T,-0.4); ell(g,32,66,0.9,0.9); g.fill(); g.fillStyle=P.acc; rr(g,22,55,4,1.6,0.6); g.fill(); }
+  else if (P.ts===2){ g.fillStyle=shade(T,0.14); rr(g,23,45.5,18,7,3.5); g.fill(); g.strokeStyle="#f4f1ea"; g.lineWidth=0.9; line(g,29,52,29,58); line(g,35,52,35,58);
+    g.fillStyle=shade(T,-0.15); rr(g,24,61,16,6,3); g.fill(); }
+  else if (P.ts===3){ g.fillStyle="#fbfaf7"; tri(g,27,48,32,52.5,30,46.5); tri(g,37,48,32,52.5,34,46.5); g.strokeStyle=shade(T,0.2); g.lineWidth=0.8; for (const y of [55,59,63]) line(g,21,y,43,y); }
+  else { g.fillStyle=P.inner; rr(g,27.5,48,9,22,2); g.fill(); g.fillStyle=shade(T,-0.35); for (const y of [55,60,65]){ ell(g,27,y,0.8,0.8); g.fill(); } }
+  if (P.lanyard){ g.strokeStyle=P.lanyard; g.lineWidth=1; g.beginPath(); g.moveTo(27,48); g.lineTo(32,58); g.lineTo(37,48); g.stroke(); g.fillStyle="#fff"; rr(g,29.5,58,5,6.5,1); g.fill(); g.fillStyle=P.lanyard; g.fillRect(29.5,58,5,1.6); }
+  // 팔 (손에 든 물건이 있으면 오른팔로 받친다)
+  const aw = s*0.32;
+  arm(g,20.5,51, P.prop ? aw*0.6 : aw, T, P.skin);
+  if (P.prop){ drawProp(g,P); arm(g,43.5,51,0.32,T,P.skin); } else arm(g,43.5,51,-aw,T,P.skin);
+  // 머리
+  g.fillStyle=P.skin; ell(g,13.5,32,3.2,3.6); g.fill(); ell(g,50.5,32,3.2,3.6); g.fill();
+  ell(g,32,29,19,18.5); g.fill();
+  g.fillStyle="rgba(0,0,0,.06)"; ell(g,32,42,13,4); g.fill();
+  hairFront(g,P);
+  // 얼굴
+  const ey = 33.5;
+  g.fillStyle="#2b2433"; ell(g,25,ey,2.5,3.2); g.fill(); ell(g,39,ey,2.5,3.2); g.fill();
+  g.fillStyle="#fff"; ell(g,25.9,ey-1.3,0.95,0.95); g.fill(); ell(g,39.9,ey-1.3,0.95,0.95); g.fill();
+  g.strokeStyle=shade(P.hair,-0.1); g.lineWidth=1.1; line(g,22,28.3,27.5,27.6); line(g,36.5,27.6,42,28.3);
+  g.fillStyle="rgba(255,120,120,.28)"; ell(g,21.5,38.5,3,1.7); g.fill(); ell(g,42.5,38.5,3,1.7); g.fill();
+  g.strokeStyle="#9a5246"; g.lineWidth=1; g.beginPath(); g.arc(32,38,2.3,0.2*Math.PI,0.8*Math.PI); g.stroke();
+  if (P.glasses){ g.strokeStyle=P.glassesColor; g.lineWidth=1.1; rr(g,20.3,29.8,9.4,7.2,2.6); g.stroke(); rr(g,34.3,29.8,9.4,7.2,2.6); g.stroke(); line(g,29.7,32.5,34.3,32.5); }
+  if (P.headset){ g.strokeStyle="#2b2f3a"; g.lineWidth=2; g.beginPath(); g.arc(32,29,20.5,Math.PI*1.05,Math.PI*1.95); g.stroke(); g.fillStyle="#2b2f3a"; rr(g,9.5,28,5,9,2); g.fill(); rr(g,49.5,28,5,9,2); g.fill();
+    g.lineWidth=1.2; g.beginPath(); g.moveTo(12,36); g.quadraticCurveTo(14,42,22,41.5); g.stroke(); }
+}
+const FRAMES = new Map();
+function frames(look){ let f = FRAMES.get(look.key); if (f) return f;
+  f = [0,1,2].map(i => { const c = document.createElement("canvas"); c.width = 64*3; c.height = 100*3; const g = c.getContext("2d"); g.scale(3,3); drawPerson(g, look, i); return c; });
+  FRAMES.set(look.key, f); return f; }
 
 // ───────── 상태 ─────────
 const chars = {};                                     // id → 캐릭터 (boss 는 고정, 팀은 agent_id 로 생겼다 사라짐)
-function mk(id, sprite, name, x, y){ return chars[id] = {id, sprite, name, x, y, path:[], state:"idle", face:1, label:"", tag:"", bubble:null, bubbleUntil:0, hop:0, after:null, at:"lounge", leaveAt:0}; }
-mk("boss", "boss", "총괄 본부장", BOSS_DESK.x, BOSS_DESK.y); chars.boss.at = "boss";
+function mk(id, look, name, x, y){ return chars[id] = {id, look, name, x, y, path:[], state:"idle", face:1, label:"", tag:"", bubble:null, bubbleUntil:0, hop:0, after:null, at:"lounge", leaveAt:0}; }
+mk("boss", BOSS_LOOK, "총괄 본부장", BOSS_DESK.x, BOSS_DESK.y); chars.boss.at = "boss";
 let firstPoll = true, activeStation = null, memos = [], lastSeq = 0, simTimer = null, connected = null, curSite = "";
 const sites = {};                                     // 단지 약칭 → {stage, t, teams}
 let boardRows = (typeof BOARD_SNAPSHOT !== "undefined") ? BOARD_SNAPSHOT : [];   // 현황판에서 읽은 마감 · PT (서버 /sites)
-async function loadBoard(){ try{ const r = await fetch("/sites", {cache:"no-store"}); if (r.ok){ const j = await r.json(); if (j.sites && j.sites.length) boardRows = j.sites; } }catch(e){} setTimeout(loadBoard, 60000); }
+async function loadBoard(){ try{ const r = await fetch("/sites", {cache:"no-store"}); if (r.ok){ const j = await r.json(); if (j.sites && j.sites.length) boardRows = j.sites; renderBoard(); } }catch(e){} setTimeout(loadBoard, 60000); }
 
 function freeSeat(){ const used = new Set(Object.values(chars).map(c=>c.seatIdx)); for (let i=0;i<LOUNGE.seats.length;i++) if (!used.has(i)) return i; return LOUNGE.seats.length-1; }
 function slot(st){ // 작업대 앞에 여러 명이 서는 자리 (왼쪽부터)
@@ -88,7 +249,7 @@ function go(ch, target, at){
 }
 function say(ch, text, ms=2400){ ch.bubble = text; ch.bubbleUntil = performance.now()+ms; }
 function setLog(t){ document.getElementById("log").textContent = t; }
-function touchSite(site, stage, team){ if (!site) return; const s = sites[site] || (sites[site] = {stage:"", t:0, teams:[]}); if (stage) s.stage = stage; s.t = Date.now(); if (team && !s.teams.includes(team)){ s.teams.push(team); s.teams = s.teams.slice(-4); } curSite = site; }
+function touchSite(site, stage, team){ if (!site) return; const s = sites[site] || (sites[site] = {stage:"", t:0, teams:[]}); if (stage) s.stage = stage; s.t = Date.now(); if (team && !s.teams.includes(team)){ s.teams.push(team); s.teams = s.teams.slice(-4); } curSite = site; renderBoard(); }
 
 // ───────── 이벤트 처리 ─────────
 function handle(ev){
@@ -96,7 +257,7 @@ function handle(ev){
   if (k === "team_start"){
     const id = ev.agent_id || ev.team + Date.now(); const stn = st || "analysis";
     const seat = LOUNGE.seats[freeSeat()];
-    const ch = mk(id, SPRITE_OF[stn], ev.team_kr || ev.team, seat[0], seat[1]); ch.seatIdx = LOUNGE.seats.indexOf(seat); ch.tag = ev.team_kr || ev.team;
+    const ch = mk(id, pickLook(ev.team || ev.team_kr || stn), ev.team_kr || ev.team, seat[0], seat[1]); ch.seatIdx = LOUNGE.seats.indexOf(seat); ch.tag = ev.team_kr || ev.team;
     go(ch, slot(stn), stn); ch.state = "working"; activeStation = stn;
     say(chars.boss, "팀 호출 → " + (ev.team_kr || ev.team)); touchSite(ev.site || curSite, stn, ev.team_kr || ev.team);
     setLog(`${STATIONS[stn].name} 작업대 · ${ev.team_kr || ev.team} 투입`);
@@ -188,49 +349,131 @@ function runSim(){
 document.getElementById("simBtn").onclick = runSim;
 document.getElementById("restBtn").onclick = () => handle({kind:"rest"});
 
-// ───────── 배경 ─────────
-const bg = document.createElement("canvas"); bg.width = 1200; bg.height = 720;
-function px(g, x, y, w, h, c){ g.fillStyle = c; g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); }
+// ───────── 배경 (2배 해상도로 한 번 그려 둔다) ─────────
+const bg = document.createElement("canvas"); bg.width = 2400; bg.height = 1440;
+function plant(g, x, y, s=1){
+  g.fillStyle="rgba(0,0,0,.3)"; ell(g,x,y+2,12*s,3.5*s); g.fill();
+  const pot = g.createLinearGradient(x-9*s,0,x+9*s,0); pot.addColorStop(0,"#d9d2c4"); pot.addColorStop(1,"#a9a193");
+  g.fillStyle=pot; rr(g,x-8*s,y-14*s,16*s,15*s,3*s); g.fill();
+  const leaves=[[-9,-26,7,14,-0.6],[9,-27,7,14,0.6],[0,-34,7,16,0],[-5,-38,5,12,-0.25],[6,-38,5,12,0.3],[-12,-18,6,10,-1]];
+  leaves.forEach(([dx,dy,rx,ry,rot],i)=>{ g.fillStyle = i%2 ? "#3f8a5a" : "#2f6e47"; ell(g,x+dx*s,y+dy*s,rx*s,ry*s,rot); g.fill(); });
+  g.strokeStyle="rgba(255,255,255,.12)"; g.lineWidth=1; line(g,x,y-14*s,x,y-40*s);
+}
+function card(g, x, y, w, h, accent){ g.save(); g.shadowColor="rgba(0,0,0,.45)"; g.shadowBlur=10; g.shadowOffsetY=3; g.fillStyle="rgba(13,19,30,.94)"; rr(g,x,y,w,h,9); g.fill(); g.restore();
+  g.strokeStyle="rgba(255,255,255,.08)"; g.lineWidth=1; rr(g,x+.5,y+.5,w-1,h-1,9); g.stroke(); g.fillStyle=accent; rr(g,x,y+8,3,h-16,1.5); g.fill(); }
 function drawBackground(){
-  const g = bg.getContext("2d");
-  // 바닥: 한 공간(오픈 플로어)
-  for (let y=0; y<720; y+=16) for (let x=0; x<1200; x+=16) px(g,x,y,16,16,((x/16+y/16)%2)?"#d2c3a0":"#c8b994");
-  px(g,0,0,1200,8,"#3a2f24"); px(g,0,712,1200,8,"#3a2f24"); px(g,0,0,8,720,"#3a2f24"); px(g,1192,0,8,720,"#3a2f24");
-  // 작업 라인 띠(위쪽 작업대 줄)
-  px(g,24,40,1150,200,"#bfae88"); px(g,24,40,1150,4,"#8a7a56");
-  g.fillStyle = "#5a4a30"; g.font = "bold 12px 'Malgun Gothic', sans-serif"; g.fillText("작업 라인 · 왼쪽에서 오른쪽으로 일이 흐릅니다 · 작업대 앞에 선 사람 = 지금 일하는 팀", 36, 230);
+  const g = bg.getContext("2d"); g.scale(2,2);
+  // 바닥: 어두운 네이비 + 은은한 타일 + 조명 반사
+  const fl = g.createLinearGradient(0,0,0,720); fl.addColorStop(0,"#1a2436"); fl.addColorStop(1,"#121a28"); g.fillStyle=fl; g.fillRect(0,0,1200,720);
+  g.strokeStyle="rgba(255,255,255,.025)"; g.lineWidth=1; for (let x=0;x<=1200;x+=60) line(g,x,0,x,720); for (let y=0;y<=720;y+=60) line(g,0,y,1200,y);
+  for (const [x,y,r] of [[300,120,360],[1000,140,260],[300,500,320],[880,500,360]]){ const rg=g.createRadialGradient(x,y,0,x,y,r); rg.addColorStop(0,"rgba(255,214,150,.06)"); rg.addColorStop(1,"rgba(255,214,150,0)"); g.fillStyle=rg; g.fillRect(0,0,1200,720); }
+  // 뒤 벽: 창밖 야경
+  const wall = g.createLinearGradient(0,0,0,22); wall.addColorStop(0,"#0b1220"); wall.addColorStop(1,"#141e30"); g.fillStyle=wall; g.fillRect(0,0,1200,22);
+  const R = rng("skyline"); for (let x=0;x<1200;x+=14){ const h=4+R()*14; g.fillStyle="#0e1726"; g.fillRect(x,22-h,12,h); for (let i=0;i<3;i++) if (R()<0.35){ g.fillStyle=`rgba(255,${200+R()*40|0},120,${.35+R()*.4})`; g.fillRect(x+2+R()*7,22-h+2+R()*(h-3),1.5,1.5); } }
+  g.fillStyle="rgba(200,163,90,.35)"; g.fillRect(0,22,1200,1);
+  // 작업 라인 무대
+  g.fillStyle="rgba(255,255,255,.028)"; rr(g,22,30,1156,212,16); g.fill(); g.strokeStyle="rgba(200,163,90,.22)"; g.lineWidth=1; rr(g,22.5,30.5,1155,211,16); g.stroke();
+  g.fillStyle="#7d889c"; g.font="11px 'Malgun Gothic', sans-serif"; g.fillText("작업 라인 — 왼쪽에서 오른쪽으로 일이 흐릅니다 · 작업대 앞에 선 사람 = 지금 일하는 팀", 40, 232);
   // 작업대 7개
-  ORDER.forEach(k=>{ const s = STATIONS[k];
-    px(g,s.x-50,s.y-60,100,46,"#8b6a46"); px(g,s.x-50,s.y-60,100,4,"#a98a5e");       // 책상
-    px(g,s.x-14,s.y-82,28,20,"#1c2430"); px(g,s.x-11,s.y-79,22,14,"#3b6f8f");       // 모니터
-    px(g,s.x-44,s.y-50,22,14,"#e5dfcf"); px(g,s.x+20,s.y-52,24,16,"#d8d0bd");       // 서류
-    px(g,s.x-54,s.y-124,108,36,"#1e1813"); px(g,s.x-54,s.y-124,4,36,s.color);       // 명패 2줄
-    g.fillStyle = "#f3ead8"; g.font = "bold 13px 'Malgun Gothic', sans-serif"; g.fillText(`${s.n} ${s.name}`, s.x-46, s.y-109);
-    g.fillStyle = "#b7ab96"; g.font = "10px 'Malgun Gothic', sans-serif"; g.fillText(s.sub, s.x-46, s.y-95);
-    if (s.n < 7){ g.fillStyle = "#8a7a56"; g.fillText("▶", s.x+56, s.y-36); }
+  ORDER.forEach((k,i)=>{ const s = STATIONS[k], x = s.x, y = s.y;
+    const pool = g.createRadialGradient(x,y-40,4,x,y-40,80); pool.addColorStop(0, s.color+"22"); pool.addColorStop(1, s.color+"00"); g.fillStyle=pool; g.fillRect(x-80,y-120,160,160);
+    g.fillStyle="rgba(0,0,0,.35)"; ell(g,x,y-18,56,7); g.fill();
+    // 의자(책상 뒤)
+    g.fillStyle="#2a3346"; rr(g,x-13,y-80,26,16,6); g.fill();
+    // 책상
+    const top = g.createLinearGradient(0,y-62,0,y-38); top.addColorStop(0,"#f4f1ea"); top.addColorStop(1,"#d9d3c6"); g.fillStyle=top; rr(g,x-52,y-62,104,26,6); g.fill();
+    g.fillStyle="#9b917f"; rr(g,x-52,y-38,104,16,4); g.fill(); g.fillStyle="rgba(255,255,255,.35)"; g.fillRect(x-48,y-62,96,1);
+    g.fillStyle=s.color; g.fillRect(x-52,y-25,104,2);
+    // 모니터
+    g.fillStyle="#3a3f4a"; rr(g,x-3,y-66,6,6,1); g.fill(); rr(g,x-9,y-62,18,3,1.5); g.fill();
+    g.fillStyle="#0f141c"; rr(g,x-21,y-90,42,26,3.5); g.fill();
+    const scr = g.createLinearGradient(0,y-88,0,y-66); scr.addColorStop(0, s.color+"cc"); scr.addColorStop(1,"#1b2638"); g.fillStyle=scr; rr(g,x-19,y-88,38,22,2); g.fill();
+    g.fillStyle="rgba(255,255,255,.7)"; g.fillRect(x-15,y-84,14,1.6); g.fillStyle="rgba(255,255,255,.35)"; for (let j=0;j<3;j++) g.fillRect(x-15,y-80+j*3.5,22-j*5,1.2);
+    // 키보드 · 서류 · 머그 · 소품
+    g.fillStyle="#e9e6df"; rr(g,x-14,y-57,28,5,1.5); g.fill(); g.strokeStyle="rgba(0,0,0,.12)"; rr(g,x-14,y-57,28,5,1.5); g.stroke();
+    g.save(); g.translate(x-38,y-52); g.rotate(-0.12); g.fillStyle="#fffdf8"; rr(g,-8,-6,16,11,1.5); g.fill(); g.fillStyle="#cfc8b8"; for (let j=0;j<3;j++) g.fillRect(-5,-3+j*3,10,0.8); g.restore();
+    if (i%2===0){ g.fillStyle="#f4efe6"; rr(g,x+30,y-58,7,8,1.5); g.fill(); g.fillStyle=s.color; g.fillRect(x+30,y-55,7,2.5); }
+    else { g.fillStyle="#dcd4c4"; rr(g,x+28,y-56,9,6,1.5); g.fill(); g.fillStyle="#3f8a5a"; ell(g,x+32.5,y-60,5,4); g.fill(); }
+    // 명패
+    card(g, x-58, y-130, 116, 38, s.color);
+    g.fillStyle=s.color; ell(g,x-41,y-111,9,9); g.fill(); g.fillStyle="#0d131e"; g.font="700 11px 'Malgun Gothic', sans-serif"; g.textAlign="center"; g.fillText(String(s.n), x-41, y-107); g.textAlign="left";
+    g.fillStyle="#f2ece0"; fitText(g, s.name, x-27, y-112, 80, 13, "700");
+    g.fillStyle="#8f9bb0"; fitText(g, s.sub, x-27, y-99, 80, 9.5);
+    if (s.n < 7){ g.strokeStyle="rgba(200,163,90,.55)"; g.lineWidth=1.6; g.lineCap="round"; g.beginPath(); g.moveTo(x+63,y-48); g.lineTo(x+68,y-43); g.lineTo(x+63,y-38); g.stroke(); }
   });
   // 본부장 책상
-  px(g,BOSS_DESK.x-56,BOSS_DESK.y-62,112,50,"#5a4630"); px(g,BOSS_DESK.x-56,BOSS_DESK.y-62,112,4,"#8a7440");
-  px(g,BOSS_DESK.x-16,BOSS_DESK.y-86,32,22,"#1c2430"); px(g,BOSS_DESK.x-13,BOSS_DESK.y-83,26,16,"#2d4a6a");
-  px(g,BOSS_DESK.x-56,BOSS_DESK.y-124,112,36,"#1e1813"); px(g,BOSS_DESK.x-56,BOSS_DESK.y-124,4,36,"#c8a35a");
-  g.fillStyle = "#f3ead8"; g.font = "bold 13px 'Malgun Gothic', sans-serif"; g.fillText("총괄 본부장석", BOSS_DESK.x-50, BOSS_DESK.y-109);
-  g.fillStyle = "#b7ab96"; g.font = "10px 'Malgun Gothic', sans-serif"; g.fillText("총괄 · 결정 · 팀 호출", BOSS_DESK.x-46, BOSS_DESK.y-95);
+  const BX = BOSS_DESK.x, BY = BOSS_DESK.y;
+  const gl = g.createRadialGradient(BX,BY-50,4,BX,BY-50,95); gl.addColorStop(0,"rgba(200,163,90,.16)"); gl.addColorStop(1,"rgba(200,163,90,0)"); g.fillStyle=gl; g.fillRect(BX-100,BY-150,200,180);
+  g.fillStyle="rgba(0,0,0,.4)"; ell(g,BX,BY-16,64,8); g.fill();
+  g.fillStyle="#3a2a20"; rr(g,BX-15,BY-86,30,20,8); g.fill();
+  const wd = g.createLinearGradient(0,BY-66,0,BY-38); wd.addColorStop(0,"#7a5438"); wd.addColorStop(1,"#4e3322"); g.fillStyle=wd; rr(g,BX-62,BY-66,124,30,7); g.fill();
+  g.fillStyle="#36231a"; rr(g,BX-62,BY-38,124,20,5); g.fill(); g.fillStyle="#c8a35a"; g.fillRect(BX-62,BY-24,124,1.6); g.fillStyle="rgba(255,255,255,.18)"; g.fillRect(BX-58,BY-66,116,1);
+  for (const dx of [-17,17]){ g.fillStyle="#0f141c"; rr(g,BX+dx-16,BY-92,32,22,3); g.fill(); const sc=g.createLinearGradient(0,BY-90,0,BY-72); sc.addColorStop(0,"#3d6a9a"); sc.addColorStop(1,"#1b2638"); g.fillStyle=sc; rr(g,BX+dx-14,BY-90,28,18,2); g.fill(); g.fillStyle="#3a3f4a"; g.fillRect(BX+dx-2,BY-70,4,5); }
+  g.fillStyle="rgba(255,255,255,.55)"; g.fillRect(BX-27,BY-86,12,1.4); g.fillRect(BX+7,BY-86,16,1.4);
+  g.fillStyle="#c8a35a"; rr(g,BX+36,BY-62,4,14,1); g.fill(); ell(g,BX+38,BY-63,7,3); g.fill();
+  card(g, BX-60, BY-130, 120, 38, "#c8a35a");
+  g.fillStyle="#c8a35a"; ell(g,BX-43,BY-111,9,9); g.fill(); g.fillStyle="#0d131e"; g.font="700 11px 'Malgun Gothic', sans-serif"; g.textAlign="center"; g.fillText("★", BX-43, BY-107); g.textAlign="left";
+  g.fillStyle="#f2ece0"; fitText(g,"총괄 본부장석", BX-29, BY-112, 84, 13, "700"); g.fillStyle="#8f9bb0"; fitText(g,"총괄 · 결정 · 팀 호출", BX-29, BY-99, 84, 9.5);
+  plant(g, 1155, 226, 1.1);
   // 대기 · 휴게
-  const L = LOUNGE.box; px(g,L[0],L[1],L[2]-L[0],L[3]-L[1],"#7f9a6a"); px(g,L[0]+4,L[1]+4,L[2]-L[0]-8,L[3]-L[1]-8,"#93ad7a");
-  g.fillStyle = "#2f3d28"; g.font = "bold 12px 'Malgun Gothic', sans-serif"; g.fillText("대기 · 휴게  — 호출된 팀은 여기서 출발해 작업대로 가고, 끝나면 퇴근합니다", L[0]+12, L[1]+20);
-  for (let r=0;r<3;r++) for (let c=0;c<6;c++){ const x = 90 + c*80, y = 420 + r*110; px(g,x-26,y-10,52,18,"#c9b58a"); }  // 소파
-  for (const [x,y] of [[L[0]+10,L[3]-30],[L[2]-26,L[3]-30]]){ px(g,x,y+14,16,10,"#7a5a3c"); px(g,x+2,y,12,16,"#3f7a3a"); px(g,x-3,y+4,9,9,"#4f9448"); }
-  // 단지 보드 틀
-  const B = BOARD.box; px(g,B[0],B[1],B[2]-B[0],B[3]-B[1],"#2a2621"); px(g,B[0]+4,B[1]+4,B[2]-B[0]-8,B[3]-B[1]-8,"#efe8d6");
-  g.fillStyle = "#1e1813"; g.font = "bold 13px 'Malgun Gothic', sans-serif"; g.fillText("진행 중 단지 보드 — 마감 D-day · 지금 어느 단계인지", B[0]+14, B[1]+24);
+  const L = LOUNGE.box;
+  g.fillStyle="rgba(255,255,255,.03)"; rr(g,L[0],L[1],L[2]-L[0],L[3]-L[1],18); g.fill(); g.strokeStyle="rgba(255,255,255,.07)"; rr(g,L[0]+.5,L[1]+.5,L[2]-L[0]-1,L[3]-L[1]-1,18); g.stroke();
+  g.fillStyle="#ece5d6"; g.font="700 13px 'Malgun Gothic', sans-serif"; g.fillText("대기 · 휴게", L[0]+18, L[1]+24);
+  g.fillStyle="#7d889c"; g.font="10.5px 'Malgun Gothic', sans-serif"; g.fillText("호출된 팀은 여기서 출발 → 작업대 → 본부장 보고 → 퇴근", L[0]+96, L[1]+24);
+  const rug = g.createLinearGradient(0,L[1]+40,0,L[3]); rug.addColorStop(0,"#1d3534"); rug.addColorStop(1,"#162a29"); g.fillStyle=rug; rr(g,L[0]+16,L[1]+40,L[2]-L[0]-32,L[3]-L[1]-54,14); g.fill();
+  g.strokeStyle="rgba(200,163,90,.22)"; g.lineWidth=1; rr(g,L[0]+24,L[1]+48,L[2]-L[0]-48,L[3]-L[1]-70,10); g.stroke();
+  g.strokeStyle="rgba(255,255,255,.035)"; for (let x=L[0]+40;x<L[2]-30;x+=26) for (let y=L[1]+64;y<L[3]-30;y+=26){ g.beginPath(); g.moveTo(x,y-6); g.lineTo(x+6,y); g.lineTo(x,y+6); g.lineTo(x-6,y); g.closePath(); g.stroke(); }
+  for (let r=0;r<3;r++){ const fy = 420 + r*110;
+    g.fillStyle="rgba(0,0,0,.3)"; ell(g,290,fy-2,240,7); g.fill();
+    const back = g.createLinearGradient(0,fy-38,0,fy-22); back.addColorStop(0,"#a87650"); back.addColorStop(1,"#8a5d3d"); g.fillStyle=back; rr(g,54,fy-38,472,18,8); g.fill();
+    const seat = g.createLinearGradient(0,fy-24,0,fy-6); seat.addColorStop(0,"#c48c5e"); seat.addColorStop(1,"#9c6a44"); g.fillStyle=seat; rr(g,58,fy-24,464,17,6); g.fill();
+    g.strokeStyle="rgba(0,0,0,.18)"; for (let c=1;c<6;c++){ const sx = 50 + c*80; line(g,sx,fy-22,sx,fy-9); }
+    g.fillStyle="#7a4f33"; rr(g,48,fy-30,12,24,5); g.fill(); rr(g,520,fy-30,12,24,5); g.fill();
+    g.fillStyle="rgba(255,255,255,.12)"; g.fillRect(60,fy-36,460,1);
+  }
+  plant(g, L[0]+26, L[3]-14, 1.15); plant(g, L[2]-26, L[3]-14, 1.15);
+  // 단지 보드 판넬 (내용은 HTML)
+  const B = BOARD.box;
+  g.save(); g.shadowColor="rgba(0,0,0,.5)"; g.shadowBlur=18; g.fillStyle="rgba(10,15,24,.9)"; rr(g,B[0],B[1],B[2]-B[0],B[3]-B[1],18); g.fill(); g.restore();
+  g.strokeStyle="rgba(200,163,90,.35)"; g.lineWidth=1; rr(g,B[0]+.5,B[1]+.5,B[2]-B[0]-1,B[3]-B[1]-1,18); g.stroke();
 }
 
+// ───────── 단지 보드 (HTML · 한 줄 행 · 오른쪽 스크롤) ─────────
+const STAGE_SHORT = {scout:"개척", analysis:"착수", build:"제작", audit:"검증", mail:"발송", pt:"PT", retro:"관제"};
+document.getElementById("dhead").innerHTML = ORDER.map(k => `<span>${STAGE_SHORT[k]}</span>`).join("");
+function renderBoard(){
+  const rows = boardRows.map(r => ({...r})); const seen = new Set(rows.map(r => r.site));
+  for (const n in sites) if (!seen.has(n)) rows.push({site:n, name:n, due:"", dday:null, done:false});
+  const box = document.getElementById("rows");
+  document.getElementById("bcount").textContent = rows.length ? `${rows.filter(r=>!r.done).length}곳 진행 · ${rows.filter(r=>r.done).length}곳 제출` : "";
+  if (!rows.length){ box.innerHTML = `<div class="empty">현황판(jugansa/입찰현황판.md)을 아직 못 찾음 — 세션을 시작하면 읽습니다</div>`; return; }
+  box.innerHTML = rows.map(r => {
+    const s = sites[r.site] || {stage:"", t:0, teams:[]}, stale = !s.t || Date.now() - s.t > SITE_STALE_MS, cur = r.site === curSite;
+    const urgent = r.dday !== null && r.dday <= 2 && !r.done, soon = r.dday !== null && r.dday <= 7 && !r.done && !urgent;
+    const short = String(r.site).replace(/\s*\(.*$/, "").trim() || r.site;
+    const full = String(r.name || "").replace(/\s*\(.*$/, "");
+    const due = (r.due || "—").replace(/\s*\(.*$/, "") + (r.time ? " " + r.time : "");
+    const dtxt = r.done ? "제출" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";
+    const ptm = r.pt ? (r.pt.match(/\d{1,2}\.\d{1,2}/) || [""])[0] : "";
+    const pt = ptm ? ptm + (r.pt_dday !== null && r.pt_dday >= 0 ? ` · D-${r.pt_dday}` : "") : "—";
+    const dots = ORDER.map(k => { const on = s.stage === k; return `<i class="${on ? "on" + (!stale ? " live" : "") : ""}" style="${on ? `background:${STATIONS[k].color};color:${STATIONS[k].color}` : ""}"></i>`; }).join("");
+    const title = `${r.name || r.site}${r.due ? " · 마감 " + r.due : ""}${r.pt ? " · PT " + r.pt : ""}${s.teams.length ? " · " + s.teams.join(", ") : ""}`;
+    return `<div class="row${r.done ? " done" : ""}${cur ? " cur" : ""}${urgent ? " urgent" : ""}" title="${esc(title)}">`
+      + `<span class="nm"><b>${esc(short)}</b><small>${esc(full !== short ? full : "")}</small></span>`
+      + `<span class="due">${esc(due)}</span>`
+      + `<span><em class="dd${r.done ? " done" : urgent ? " urgent" : soon ? " soon" : ""}" style="font-style:normal">${dtxt}</em></span>`
+      + `<span class="dots">${dots}</span><span class="pt">${esc(pt)}</span></div>`;
+  }).join("");
+}
+const wrapEl = document.getElementById("wrap");
+new ResizeObserver(() => wrapEl.style.setProperty("--k", wrapEl.clientWidth / 1200)).observe(wrapEl);
+
 // ───────── 그리기 루프 ─────────
-const cv = document.getElementById("c"), ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = false;
+const cv = document.getElementById("c"), ctx = cv.getContext("2d");
 let last = performance.now();
 function tick(now){ const dt = Math.min(0.05,(now-last)/1000); last = now;
   for (const id in chars){ const ch = chars[id]; move(ch, dt);
-    if (id !== "boss" && ch.leaveAt && now > ch.leaveAt && ch.state !== "leaving" && !ch.path.length){ ch.state = "leaving"; ch.tag = ch.tag; go(ch, [ch.x < 600 ? 30 : 1170, 700], "exit"); ch.after = ()=>{ delete chars[id]; }; }
+    if (id !== "boss" && ch.leaveAt && now > ch.leaveAt && ch.state !== "leaving" && !ch.path.length){ ch.state = "leaving"; go(ch, [ch.x < 600 ? 30 : 1170, 700], "exit"); ch.after = ()=>{ delete chars[id]; }; }
   }
   draw(now); requestAnimationFrame(tick); }
 function move(ch, dt){
@@ -242,70 +485,52 @@ function move(ch, dt){
 }
 let lastChat = 0;
 function draw(now){
-  ctx.drawImage(bg, 0, 0);
+  ctx.setTransform(2,0,0,2,0,0); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(bg, 0, 0, 1200, 720);
   if (now - lastChat > 2600){ lastChat = now; const groups = {};
     for (const id in chars){ const c = chars[id]; if (c.state === "working" && STATIONS[c.at] && !c.path.length) (groups[c.at] = groups[c.at] || []).push(c); }
     for (const k in groups){ const g = groups[k]; if (g.length >= 2){ const a = g[Math.floor(Math.random()*g.length)]; if (!a.bubble || now > a.bubbleUntil) say(a, ["같이 볼까요", "이 부분 확인", "근거 쪽은?", "제 쪽은 끝", "숫자 맞춰요"][Math.floor(Math.random()*5)], 1600); } } }
-  if (activeStation){ const s = STATIONS[activeStation]; ctx.strokeStyle = s.color; ctx.lineWidth = 3; ctx.globalAlpha = 0.45 + 0.3*Math.sin(now/300); ctx.strokeRect(s.x-58, s.y-128, 116, 160); ctx.globalAlpha = 1; }
+  if (activeStation){ const s = STATIONS[activeStation]; ctx.save(); ctx.shadowColor = s.color; ctx.shadowBlur = 18; ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.globalAlpha = 0.55 + 0.3*Math.sin(now/300); rr(ctx, s.x-64, s.y-136, 128, 172, 14); ctx.stroke(); ctx.restore(); }
   // 메모(작업 라인 아래 통로)
-  memos.forEach((m,i)=>{ const x = 40 + i*150, y = 252, w = 140, h = 30;
-    ctx.fillStyle = "#ffd6c8"; ctx.fillRect(x,y,w,h); ctx.strokeStyle="#5a4630"; ctx.lineWidth=2; ctx.setLineDash([4,3]); ctx.strokeRect(x+1,y+1,w-2,h-2); ctx.setLineDash([]);
-    ctx.fillStyle="#3a2a18"; ctx.font="bold 12px monospace"; ctx.fillText(clip(m.text, 17), x+8, y+20); });
-  drawBoard(now);
-  // 캐릭터
+  memos.forEach((m,i)=>{ const x = 40 + i*150, y = 250, w = 140, h = 28;
+    ctx.save(); ctx.shadowColor="rgba(0,0,0,.4)"; ctx.shadowBlur=8; ctx.fillStyle = "#2b2414"; rr(ctx,x,y,w,h,8); ctx.fill(); ctx.restore();
+    ctx.strokeStyle="rgba(240,195,92,.6)"; ctx.lineWidth=1; rr(ctx,x+.5,y+.5,w-1,h-1,8); ctx.stroke();
+    ctx.fillStyle="#f0c35c"; ell(ctx,x+12,y+14,3,3); ctx.fill();
+    ctx.fillStyle="#f3dfb0"; ctx.font="600 11.5px 'Malgun Gothic', sans-serif"; ctx.fillText(clip(m.text, 15), x+22, y+18); });
+  // 사람
   const list = Object.values(chars).sort((a,b)=>a.y-b.y);
-  for (const ch of list){ const walking = ch.path.length>0, img = IMG[ch.sprite + (walking ? "_walk" : "_stand")]; if (!img) continue;
-    const w = img.width*SCALE, h = img.height*SCALE;
-    const bob = walking ? Math.abs(Math.sin(now/140))*2 : (ch.state==="working" ? Math.sin(now/260)*1.5 : 0);
+  const W = 64*PS, H = 100*PS;
+  for (const ch of list){ const walking = ch.path.length>0, fr = frames(ch.look), img = walking ? fr[Math.floor(now/170)%2 ? 1 : 2] : fr[0];
+    const bob = walking ? Math.abs(Math.sin(now/170*Math.PI/2))*1.5 : (ch.state==="working" ? Math.sin(now/260)*1.2 : 0);
     const hop = ch.hop > 0 ? Math.sin(ch.hop*Math.PI)*7 : 0;
-    const x = ch.x - w/2, y = ch.y - h + 10 - bob - hop;
-    ctx.save(); if (ch.face < 0){ ctx.translate(ch.x,0); ctx.scale(-1,1); ctx.translate(-ch.x,0); } ctx.drawImage(img, x, y, w, h); ctx.restore();
-    const col = ch.state==="working" ? "#6fd37a" : ch.state==="reporting" ? "#f2c14e" : ch.state==="resting" ? "#8fb4e8" : ch.state==="leaving" ? "#aaa" : "#ddd";
-    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(ch.x + w/2 - 4, y + 6, 5, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle="#222"; ctx.lineWidth=1.5; ctx.stroke();
-    let ty = y - 4;
-    if (ch.state==="working" && ch.label && !walking){ tag(ch.x, ty, ch.label, "#222", "#f5f0e4"); ty -= 22; }
-    if (ch.bubble && now < ch.bubbleUntil){ tag(ch.x, ty, ch.bubble, "#fff", "#1d1a16"); ty -= 22; }
-    nameplate(ch.x, y + h - 2, ch.id === "boss" ? "총괄 본부장" : ch.tag || ch.name, ch.id === "boss" ? "#c8a35a" : (STATIONS[ch.at] ? STATIONS[ch.at].color : "#bbb"));
-    ch._box = [x, y, w, h];
+    const x = ch.x - W/2, y = ch.y + 12 - H - bob - hop;
+    ctx.fillStyle = "rgba(0,0,0,.32)"; ell(ctx, ch.x, ch.y + 10, 14 - hop*0.6, 4); ctx.fill();
+    ctx.save(); if (ch.face < 0){ ctx.translate(ch.x,0); ctx.scale(-1,1); ctx.translate(-ch.x,0); } ctx.drawImage(img, x, y, W, H); ctx.restore();
+    const col = ch.state==="working" ? "#6fd37a" : ch.state==="reporting" ? "#f2c14e" : ch.state==="resting" ? "#8fb4e8" : ch.state==="leaving" ? "#8a93a3" : "#d8d2c4";
+    ctx.save(); if (ch.state==="working"){ ctx.shadowColor = col; ctx.shadowBlur = 8; } ctx.fillStyle = col; ell(ctx, ch.x + 15, y + 9, 4, 4); ctx.fill(); ctx.restore();
+    ctx.strokeStyle="rgba(10,15,24,.9)"; ctx.lineWidth=1.2; ell(ctx, ch.x + 15, y + 9, 4, 4); ctx.stroke();
+    let ty = y + 2;
+    if (ch.state==="working" && ch.label && !walking) ty = pill(ch.x, ty, ch.label, "#e9e3d6", "rgba(12,18,28,.92)", "rgba(255,255,255,.14)") - 3;
+    if (ch.bubble && now < ch.bubbleUntil) pill(ch.x, ty, ch.bubble, "#16202e", "#fbf7ee", null, true);
+    nameplate(ch.x, ch.y + 15, ch.id === "boss" ? "총괄 본부장" : ch.tag || ch.name, ch.id === "boss" ? "#c8a35a" : (STATIONS[ch.at] ? STATIONS[ch.at].color : "#9aa3b2"));
+    ch._box = [x, y, W, H];
   }
 }
-function drawBoard(now){
-  const B = BOARD.box; let y = B[1] + 44;
-  ctx.font = "11px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#6e5f45";
-  ctx.fillText("마감", B[0]+100, y-8); ctx.fillText("D-day", B[0]+192, y-8);
-  ORDER.forEach((k,i)=>{ ctx.fillText(STATIONS[k].name.slice(0,4), B[0] + 250 + i*42, y - 8); });
-  // 행 = 현황판 단지(마감 순) + 현황판에 없는데 신호만 있는 단지
-  const rows = boardRows.map(r => ({...r})); const seen = new Set(rows.map(r=>r.site));
-  for (const n in sites) if (!seen.has(n)) rows.push({site:n, name:n, due:"", dday:null, done:false});
-  if (!rows.length){ ctx.fillStyle = "#8a7a56"; ctx.font = "12px 'Malgun Gothic', sans-serif"; ctx.fillText("현황판(jugansa/입찰현황판.md)을 아직 못 찾음 — 세션을 시작하면 읽습니다", B[0]+14, y+16); return; }
-  rows.slice(0, 8).forEach(r=>{ const s = sites[r.site] || {stage:"", t:0, teams:[]}, stale = !s.t || Date.now() - s.t > SITE_STALE_MS, cur = r.site === curSite;
-    const urgent = r.dday !== null && r.dday <= 2 && !r.done;
-    ctx.fillStyle = r.done ? "#d9d3c4" : cur ? "#fff3b0" : urgent ? "#ffd6c8" : "#e4dcc8"; ctx.fillRect(B[0]+10, y, B[2]-B[0]-20, 40);
-    ctx.fillStyle = r.done ? "#8a7a56" : "#1e1813"; ctx.font = "bold 13px 'Malgun Gothic', sans-serif"; ctx.fillText(r.site, B[0]+18, y+18);
-    ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#6e5f45"; ctx.fillText(clip(r.name, 9), B[0]+18, y+33);
-    const dueShort = (r.due || "—").replace(/\s*\(.*$/, "").slice(0, 6) + (r.time ? " " + r.time : "");
-    ctx.font = "11px 'Malgun Gothic', sans-serif"; ctx.fillStyle = "#3a2a18"; ctx.fillText(dueShort, B[0]+100, y+18);
-    if (r.pt){ const ptm = (r.pt.match(/\d{1,2}\.\d{1,2}/) || [""])[0]; ctx.fillStyle = "#6e5f45"; ctx.font = "10px 'Malgun Gothic', sans-serif";
-      ctx.fillText(ptm ? "PT " + ptm + (r.pt_dday !== null && r.pt_dday >= 0 ? " (D-" + r.pt_dday + ")" : "") : "PT " + clip(r.pt, 8), B[0]+100, y+33); }
-    // D-day 칸
-    let dtxt = r.done ? "제출완료" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";
-    ctx.font = "bold 13px monospace"; ctx.fillStyle = r.done ? "#5a8a5a" : urgent ? "#b4322a" : "#1e1813"; ctx.fillText(dtxt, B[0]+190, y+22);
-    if (urgent && !r.done && (Math.floor(now/500)%2)){ ctx.strokeStyle = "#b4322a"; ctx.lineWidth = 2; ctx.strokeRect(B[0]+184, y+6, 58, 24); }
-    // 단계 점
-    ORDER.forEach((k,i)=>{ const x = B[0] + 262 + i*42, on = s.stage === k; ctx.beginPath(); ctx.arc(x, y+20, on ? 9 : 5, 0, Math.PI*2); ctx.fillStyle = on ? STATIONS[k].color : "#c9bfa6"; ctx.fill(); if (on && !stale && (Math.floor(now/400)%2)){ ctx.strokeStyle = "#1e1813"; ctx.lineWidth = 2; ctx.stroke(); } });
-    if (s.teams && s.teams.length){ ctx.fillStyle = "#6e5f45"; ctx.font = "10px 'Malgun Gothic', sans-serif"; ctx.fillText(clip(s.teams.slice(-2).join(" · "), 26), B[0]+250, y+37); }
-    y += 46; });
-}
-function tag(cx, by, text, fg, bgc){ ctx.font = "bold 12px monospace"; const t = clip(text, 24), w = ctx.measureText(t).width + 14, x = Math.min(1200-w-4, Math.max(4, cx - w/2)), y = by - 20;
-  ctx.fillStyle = bgc; ctx.fillRect(x, y, w, 19); ctx.strokeStyle="#444"; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,w-1,18); ctx.fillStyle = fg; ctx.fillText(t, x+7, y+13); }
-function nameplate(cx, by, text, col){ ctx.font = "11px 'Malgun Gothic', sans-serif"; const w = ctx.measureText(text).width + 10; ctx.fillStyle = "rgba(20,16,12,.8)"; ctx.fillRect(cx - w/2, by, w, 15); ctx.fillStyle = col; ctx.fillRect(cx - w/2, by, 3, 15); ctx.fillStyle = "#f3ead8"; ctx.fillText(text, cx - w/2 + 6, by + 11); }
-function clip(s, n){ s = String(s); return s.length > n ? s.slice(0, n-1) + "…" : s; }
+function pill(cx, by, text, fg, bgc, border, tail){ ctx.font = "600 11.5px 'Malgun Gothic', sans-serif"; const t = clip(text, 24), w = ctx.measureText(t).width + 16, h = 19, x = Math.min(1200-w-4, Math.max(4, cx - w/2)), y = by - h - (tail ? 4 : 0);
+  ctx.save(); ctx.shadowColor = "rgba(0,0,0,.35)"; ctx.shadowBlur = 6; ctx.fillStyle = bgc; rr(ctx, x, y, w, h, 9.5); ctx.fill();
+  if (tail){ ctx.beginPath(); ctx.moveTo(cx-4, y+h-1); ctx.lineTo(cx, y+h+4); ctx.lineTo(cx+4, y+h-1); ctx.closePath(); ctx.fill(); } ctx.restore();
+  if (border){ ctx.strokeStyle = border; ctx.lineWidth = 1; rr(ctx, x+.5, y+.5, w-1, h-1, 9); ctx.stroke(); }
+  ctx.fillStyle = fg; ctx.fillText(t, x+8, y+13.5); return y; }
+function nameplate(cx, by, text, col){ ctx.font = "600 10.5px 'Malgun Gothic', sans-serif"; const t = clip(text, 12), w = ctx.measureText(t).width + 18, x = cx - w/2;
+  ctx.fillStyle = "rgba(10,15,24,.86)"; rr(ctx, x, by, w, 15, 7.5); ctx.fill(); ctx.fillStyle = col; ell(ctx, x + 7, by + 7.5, 2.6, 2.6); ctx.fill();
+  ctx.fillStyle = "#ece5d6"; ctx.fillText(t, x + 12, by + 11); }
 cv.addEventListener("click", e => { const r = cv.getBoundingClientRect(), pxx = (e.clientX - r.left) * 1200 / r.width, pyy = (e.clientY - r.top) * 720 / r.height;
   for (const id in chars){ const ch = chars[id], b = ch._box; if (!b) continue; if (pxx >= b[0] && pxx <= b[0]+b[2] && pyy >= b[1] && pyy <= b[1]+b[3]){
     say(ch, ch.state==="working" ? "[작업 중] " + (ch.label || ch.tag || "") : ch.state==="reporting" ? "[보고 중]" : ch.state==="resting" ? "[휴식 중]" : ch.state==="leaving" ? "[퇴근]" : "[대기 중]"); return; } } });
 
-drawBackground();
-Promise.all(assets.map(a=>load(a[0],a[1]))).then(()=>{ requestAnimationFrame(tick); poll(); loadBoard(); });
+drawBackground(); renderBoard();
+setInterval(renderBoard, 5000);
+requestAnimationFrame(tick); poll(); loadBoard();
 </script>
 </body>
 </html>

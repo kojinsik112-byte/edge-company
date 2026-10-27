@@ -53,7 +53,7 @@ def site_for(h):
     for v in SITES.values():              # 약칭만 적혀 있어도 잡는다 ("상주 올려줘")
         if v in h: return v
     m = re.search(r"jugansa[\\/]([^\\/]+)", h)
-    return m.group(1)[:5] if m and not m.group(1).endswith((".py", ".md")) else ""
+    return m.group(1)[:5] if m and not m.group(1).endswith((".py", ".md")) and not m.group(1).startswith(("ai-office", "tools")) else ""
 # ── 단지 보드: jugansa/입찰현황판.md 의 '진행 중' 표에서 마감 · PT · 제출 여부를 읽는다 ──
 BOARD_FILE = [None]          # 찾은 현황판 경로 (SessionStart 의 cwd · 환경변수 JUGANSA_DIR · 이 폴더 위쪽 순으로 찾음)
 def find_board(start=None):
