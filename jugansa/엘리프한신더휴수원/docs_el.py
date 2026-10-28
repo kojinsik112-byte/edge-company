@@ -610,7 +610,7 @@ def doc09():
 <tr><td class="k">공동구매 품목 하자 · A/S</td><td class="l">주관사 · 참여업체(박람회 1 · 2회차 계약 전체)</td><td class="l">접수 · 기한 관리 · 선보상 · 이관 · 보고</td></tr>
 <tr><td class="k">건설 하자(세대 · 공용부)</td><td class="l">시공사 — 접수는 시공사 하자 접수 창구</td><td class="l">협의회가 모은 목록 정리 · 공문 초안 · 전달 · 진행 추적(판정 · 보수 · 소송 대리 아님)</td></tr>
 <tr><td class="k">법률 판단 · 분쟁</td><td class="l">협의회 법률 자문사</td><td class="l">필요한 자료 정리 · 전달</td></tr>
-<tr><td class="k">건설 하자 기술 검토</td><td class="l">시공사(보수 책임) · {e(DNB_NAME)}</td><td class="l">협의회 요청 시 자문 의견 전달 · 현장 확인 동행 · 자문 대가 주관사 부담</td></tr>
+<tr><td class="k">건설 하자 기술 검토</td><td class="l">시공사(보수 책임) · {e(DNB_NAME)}</td><td class="l">협의회 요청 시 자문 의견 전달 · 현장 확인 동행</td></tr>
 </tbody></table>
 <h2>2. 기간 — 블록 · 품목별 만료일</h2>
 <table class="t"><thead><tr><th style="width:22%">구분</th><th>1회차 · C3 블록</th><th>2회차 · D3 블록</th></tr></thead><tbody>
