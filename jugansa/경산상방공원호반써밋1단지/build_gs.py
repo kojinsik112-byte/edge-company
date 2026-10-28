@@ -969,7 +969,7 @@ new("std", sec=S0, title=T_EXPO,
     body=B.tiles([
         dict(lb="WHEN", nm=f"{ST['expo']} 2 ~ 3일 (안)", ds="입주(2029.01) 2 ~ 3개월 전 주말 포함 · 일수 · 날짜는 입주일 · 사전점검 일정에 맞춰 협의회와 확정"),
         dict(lb="WHERE", nm="행사장 후보 3곳", ds="① " + ST["venues"][0] + " ② " + ST["venues"][1] + " ③ " + ST["venues"][2] + " - 협의회와 답사 후 확정"),
-        dict(lb="SAFETY", nm="안전계획 · 행사주최자배상책임보험", ds=f"동선 · 대피 · 전기 점검 · 미아 방지 · 응급 대응({PG('safe')}). 행사주최자배상책임보험은 박람회 확정 시 가입."),
+        dict(lb="SAFETY", nm="안전계획 · 행사배상책임보험", ds=f"동선 · 대피 · 전기 점검 · 미아 방지 · 응급 대응({PG('safe')}). 행사배상책임보험은 박람회 기간에 맞춰 가입."),
         dict(lb="FAMILY", nm="놀이방 · 휴게 · 수유실", ds="어린이 놀이방 · 수유실 · 유모차 대여와 입구 안내데스크 · 카페테리아를 둡니다."),
         dict(lb="ONLINE", nm="온라인 박람회 · 사전 예약", ds="단지 입주민만 들어오는 폐쇄몰(인증 · 안내는 협의회 명의 · 사전 동의 범위) · 사전 예약 상담. 박람회와 같은 공동구매가."),
         dict(lb="PR", nm="카페 · 공지채널 콘텐츠", ds="카드뉴스 · 영상 · 현수막 · 알림톡 - 게시 전 협의회 사전 승인을 받습니다."),
@@ -983,7 +983,7 @@ SAFE = [  # (구분, 기준)
     ("응급 · 질병", "응급 키트 · AED 위치 안내 · 간호사 자격 인력 배치(보유 현황 · 2026.10 기준) · 인근 병원 연락 체계"),
     ("인원 · 주차", "현장 운영 약 21명(주차 3 · 체크인 · 안내 5 포함) · 혼잡 시간 입장 조절 · 주차 안내"),
     ("업체 반입 · 철수", "부스 반입 · 철수 시간표 · 부스별 책임자 명찰 · 매일 개장 전 [[안전 점검표]] 서명"),
-    ("보험 · 시설 기준", "행사주최자배상책임보험 박람회 확정 시 가입 · 증권 사본 협의회 제출 · 체육관 등 공공시설은 바닥 보호 · 난방 · 상업행사 사용 기준 확인"),
+    ("보험 · 시설 기준", "행사배상책임보험 박람회 기간 가입 · 증권 사본 협의회 제출 · 체육관 등 공공시설은 바닥 보호 · 난방 · 상업행사 사용 기준 확인"),
 ]
 new("std", sec=S0, title=T_SAFE,
     lead="공고 2항 ③ 박람회 운영 - 행사장 안전과 현장관리 기준을 미리 정하고, 행사장이 확정되면 그 시설 기준에 맞춰 협의회와 최종 확정합니다.",
@@ -1120,7 +1120,7 @@ new("std", sec=S0, title=T_HIST,
 _lead_n = getattr(D, "STAFF_LEAD", 2) + sum(c for _, c, _ in D.STAFF)
 PRO5 = [("전기", 3), ("건축(도장)", 2), ("조경", 1), ("간호사", 1)]  # 본부장 10-26: 타일 보유자는 4대보험 명부에 없어 뺌
 new("std", sec=S0, title=T_PEOPLE,
-    lead=f"공고 6항 PT · 별지2호 전담 책임자 - 대표자와 핵심 운영인력이 맡아 온 실적과, {ST['short']}에서 맡을 역할입니다.",  # 본부장 10-15 밤: 이 쪽 단지 표기 = 정식 명칭
+    lead=f"전담 책임자 - 대표자와 핵심 운영인력이 맡아 온 실적과, {ST['short']}에서 맡을 역할입니다.",  # 본부장 10-15 밤: 이 쪽 단지 표기 = 정식 명칭
     # 대표 개인 경력(본부장 10-15) — NICE 기업신용평가보고서(제출서류 14 ③ 발췌) 13쪽 '대표자1' 약력 · 전기공사업 등록증 · ISO 인증서(3종 모두 최초 2025.08.12)로
     # 확인되는 사실만. 현장 총괄 문구는 본부장 10-15 확인. 경영경력 8년 8개월 = NICE 평가 당시(2026.05) 기재값.
     body=('<div class="nb"><div class="ppx">'
@@ -2436,12 +2436,43 @@ def emit(pages, out_html, title):
         B.build_pdf()
 
 
+COMPANY_HTML = os.path.join(HERE, "엣지컴퍼니_경산상방공원호반써밋1단지_회사소개서.html")
+
+
+def emit_company(full):
+    """제출서류 1 회사소개서 원본(본부장 10-28 · 상주 '회사소개원본'과 같은 방식) — gs.py 재배치 전 01장 회사소개 전체 + 표지 · 연락처.
+    제안서 다른 장을 가리키는 쪽 번호(⟪pg:키⟫)는 '사업 제안서'로 바꾼다."""
+    global TITLE_H1
+    pages = [p for p in full if p[0] == "cover"] + [p for p in full if p[1].get("sec") == "01. 회사소개"] + [p for p in full if p[0] == "contact"]
+    keep, keep_h1, keep_pill = list(B.PAGES), TITLE_H1, COVER["pill"]
+    TITLE_H1, COVER["pill"] = f"{D.SITE['name']}<br><em>회사소개서</em>", "입주박람회 주관사 선정 · 제출서류 1 회사소개서"
+    B.PAGES[:] = pages
+    PGNO.clear()
+    for k, tt in PGREF.items():
+        hits = [i for i, (_, kw) in enumerate(pages) if kw.get("title") == tt]
+        if len(hits) == 1:
+            PGNO[k] = hits[0] + 1
+    B.OUT_HTML, B.OUT_PDF = COMPANY_HTML, COMPANY_HTML[:-5] + ".pdf"
+    B.build_html()
+    B.PAGES[:] = keep
+    TITLE_H1, COVER["pill"] = keep_h1, keep_pill
+    with open(COMPANY_HTML, encoding="utf-8") as f:
+        doc = f.read()
+    doc = re.sub(r"⟪pgs?:([\w,]+)⟫", lambda m: m.group(0) if all(k in PGNO for k in m.group(1).split(",")) else "사업 제안서", doc)
+    with open(COMPANY_HTML, "w", encoding="utf-8") as f:
+        f.write(doc)
+    finish(COMPANY_HTML, f"엣지컴퍼니 회사소개서 · {D.SITE['name']}")
+    print(f"회사소개서 원본(제출서류 1) {len(pages)}쪽 → {COMPANY_HTML}")
+
+
 def build():
     src = sys.argv[sys.argv.index("--src") + 1] if "--src" in sys.argv else None
     render_full_pages(src)
     # 전체본(기본) = NAME.html/.pdf(메일용 mail_lite.py도 이 파일 기준) · 압축본(--compact) = NAME_압축본.html/.pdf
     # 기본(약 120쪽) = NAME.html/.pdf(메일용 · 제출서류 기준) · --full = NAME_전체본 · --compact = NAME_압축본
     out = (os.path.join(HERE, NAME + "_압축본.html") if COMPACT else os.path.join(HERE, NAME + "_전체본.html") if FULL else B.OUT_HTML)
+    if not COMPACT and not FULL:
+        emit_company(list(B.PAGES))
     import gs  # noqa: E402  (경산: 평가표 순서로 장 고르기 · 새 장 · 견본 서식)
     gs.apply(globals())
     emit(list(B.PAGES), out, f"엣지컴퍼니 {D.SITE['name']} 입주업무 주관사 사업 제안서")
