@@ -48,7 +48,7 @@ PATH_RULES = [
 ]
 SITES = {"상주자이르네": "상주", "엘리프한신더휴수원": "엘리프", "롯데캐슬나리벡시티": "나리벡", "북수원디에트르더리체2": "북수원",
          "고양창릉S5": "고양", "경산상방공원호반써밋1단지": "경산", "탕정푸르지오센터파크": "탕정", "오산세교아테라": "오산",
-         "분당퍼스트빌리지": "분당", "지웰엘리움양주덕계역": "지웰", "철산역자이": "철산", "판교테크노밸리중흥S": "판교", "동탄파라곤3차": "동탄"}
+         "분당퍼스트빌리지": "분당", "지웰엘리움양주덕계역": "지웰", "철산역자이": "철산", "판교테크노밸리중흥S": "판교", "동탄파라곤3차": "동탄", "군포대야미A2": "군포"}
 def site_for(h):
     for k, v in SITES.items():
         if k in h: return v
@@ -59,7 +59,8 @@ def site_for(h):
     return n[:5] if n and "." not in n and not n.startswith("_") and n not in NOT_SITE else ""
 NOT_SITE = {"ai-office", "tools", "watch", "개척", "매뉴얼", "양식", "요약제안서", "착수", "통합제안서", "행사장비용", "협력사실적"}
 # ── 단지 보드: jugansa/입찰현황판.md 의 '진행 중' 표에서 마감 · PT · 제출 여부를 읽는다 ──
-BOARD_FILE = [None]          # 찾은 현황판 경로 (SessionStart 의 cwd · 환경변수 JUGANSA_DIR · 이 폴더 위쪽 순으로 찾음)
+BOARD_FILE = [None]          # 찾은 현황판 경로 (SessionStart 의 cwd · 환경변수 JUGANSA_DIR · 이 폴더 위쪽 · 기본 경로 순으로 찾음)
+DEFAULT_JUGANSA = r"C:\본부장\Claude_Code\edge-company\jugansa"   # 스킬 폴더에서 켜거나 C:\본부장 에서 세션을 열어도 보드가 뜨게
 def find_board(start=None):
     cands = []
     if os.environ.get("JUGANSA_DIR"): cands.append(os.path.join(os.environ["JUGANSA_DIR"], "입찰현황판.md"))
@@ -68,6 +69,7 @@ def find_board(start=None):
         d = os.path.abspath(base)
         for _ in range(6):
             cands.append(os.path.join(d, "입찰현황판.md")); cands.append(os.path.join(d, "jugansa", "입찰현황판.md")); d = os.path.dirname(d)
+    cands.append(os.path.join(DEFAULT_JUGANSA, "입찰현황판.md"))
     for c in cands:
         if os.path.isfile(c): BOARD_FILE[0] = c; return c
     return BOARD_FILE[0]
