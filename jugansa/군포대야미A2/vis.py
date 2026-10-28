@@ -322,9 +322,9 @@ def apply(B, D, take, sub):
 
     # 한 단지가 아니라 한 신도시 — 도넛 + 단지별 막대(쪽에 있던 단지·세대수 그대로)
     k = take("한 단지가 아니라 [[한 신도시]]를 맡습니다")[1]
-    city = [("양산 사송신도시", 88, "입주 세대 기준 88% 주관",
+    city = [("양산 사송신도시", 88, "입주 세대 기준 88% 수임 · 운영",
              [("데시앙 1차", 1712), ("데시앙 3차", 533), ("우미린", 688), ("LH 신혼희망타운 2차", 479), ("제일풍경채", 452)]),
-            ("부산 강서 에코델타시티", 89.6, "현재 입주 완료 단지 기준 89.6% 주관",
+            ("부산 강서 에코델타시티", 89.6, "현재 입주 완료 단지 기준 89.6% 수임 · 운영",
              [("대성베르힐", 1120), ("디에트르 더 퍼스트", 972), ("e편한세상 센터포인트", 953), ("푸르지오 린", 886), ("강서자이", 856)])]
     cmx = max(n for c in city for _, n in c[3])
     blocks = ""
@@ -690,7 +690,7 @@ def apply2(B, D, take, sub):
     mny = ('<div class="mny"><div class="rl"><div class="ln"></div>'
            '<div class="zone" style="left:0;width:37%"><b>취소 기한 내 전액 환불</b></div>'
            '<div class="nd g" style="left:0"></div><div class="nd" style="left:37%"></div><div class="nd" style="left:70%"></div><div class="nd g" style="left:100%"></div>'
-           '<div class="lb2" style="left:5%">계약<small>계약금 5% 이하 · 맞춤 제작 · 본사 규정 품목 예외</small></div>'
+           f'<div class="lb2" style="left:5%">계약<small>계약금 {D.DEPOSIT_MAX}% 이하 · 맞춤 제작 · 본사 규정 품목 예외</small></div>'
            '<div class="lb2" style="left:37%">취소 기한<small>시공일 7일·15일 전 · 맞춤 제작은 출고 지시 전</small></div>'
            '<div class="lb2" style="left:70%">시공·설치<small>기한 뒤 취소는 실제 자재·제작비만 공제</small></div>'
            '<div class="lb2" style="left:94%">잔금 납부<small>시공·설치 후</small></div>'
