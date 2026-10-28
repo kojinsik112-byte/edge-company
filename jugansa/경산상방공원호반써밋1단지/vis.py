@@ -248,13 +248,16 @@ def apply(B, D, take, sub):
 
     # 숫자로 보는 엣지컴퍼니 — 아이콘 + 누적 스파크라인(5쪽 누적 단지 수 그대로)
     k = take("숫자로 보는 [[엣지컴퍼니]]")[1]
-    cum = [(y, nd) for y, _, _, nd, _ in D.cumulative()]
+    # 2023년 이후 누적(본부장 10-24 '2023년 이후 42곳') — 마지막 막대 = 카드 큰 숫자
+    _cm = D.cumulative()
+    cum = [(y, nd - _cm[1][3]) for y, _, _, nd, _ in _cm[2:]]
     mx = max(n for _, n in cum)
     spark = ('<div class="mbar">' + "".join(
-        f'<div class="{"g" if i == len(cum) - 1 else ""}"><b>{n}</b><i style="height:{100 * n / mx:.0f}%"></i><span>{"~" if i == 0 else ""}{y[2:]}</span></div>'
+        f'<div class="{"g" if i == len(cum) - 1 else ""}"><b>{n}</b><i style="height:{100 * n / mx:.0f}%"></i><span>{y[2:]}</span></div>'
         for i, (y, n) in enumerate(cum)) + '</div>')
     body = inject(k["body"], ["building", "door", "crown", None])
-    k["body"] = body.replace('<div class="card"><div class="lb">GROWTH</div>', '<div class="card">' + spark + '<div class="lb">GROWTH</div>')
+    k["body"] = body.replace('<div class="card"><div class="lb">SINCE 2023</div>', '<div class="card">' + spark + '<div class="lb">SINCE 2023</div>')
+    assert spark in k["body"]
 
     # 아이콘만 더하는 카드 장
     for title, names in [
@@ -271,16 +274,16 @@ def apply(B, D, take, sub):
     # 공인된 자격과 신뢰 — 카드 아래 자격·협회 등록 전문 인력 띠(본부장 10-12 제공 인원 · 증빙 제출 문구 없음).
     # 역할은 제안서에 이미 있는 업무만(조경 = 단지 조경 · 야간 경관 진단).
     k = take("공인된 [[자격과 신뢰]]")[1]
-    pro = [("전기", 3, "경관·공용부 조명 점검 · 전기 하자 확인"), ("도장", 2, "사전점검 도장 하자 확인"),
-           ("타일", 1, "타일 들뜸·줄눈 하자 확인"), ("조경", 1, "임원 직접 · 단지 조경 · 야간 경관 점검·자문"),
+    pro = [("전기", 3, "경관·공용부 조명 점검 · 전기 하자 확인"), ("건축(도장)", 2, "사전점검 마감 · 도장 하자 확인"),
+           ("조경", 1, "사내 직접 · 단지 조경 · 야간 경관 점검·자문"),  # 타일 1 = 4대보험 명부에 없어 뺌(본부장 10-26)
            ("간호사", 1, "대한간호사협회 · 박람회 현장 응급 대응 지원")]
     k["body"] = ('<div class="nb">' + k["body"] + '<div class="pro"><div class="h"><i>PROFESSIONALS</i>'
-                 '<b>자격 · 협회 등록<br><em>5개 분야</em> 전문 인력</b><span>보유 현황 · 2026.10 기준</span></div>'
+                 '<b>자격 보유 인력<br><em>3개 분야</em> + 간호사</b><span>전기 3 · 건축(도장) 2 · 조경 1 · 간호사 1 · 2026.10 기준</span></div>'
                  + "".join(f'<div class="c"><b>{n}<small>명</small></b><div>{f}</div><p>{r}</p></div>' for f, n, r in pro)
                  + '</div></div>')
     k["lead"] = "재무·제휴·인증은 서류로 증명하고, 전문 인력은 보유 현황으로 적었습니다."
     k["kp"] = "재무·제휴·인증은 [[원본 증빙]]을 함께 제출합니다."
-    B.CSS += (".pro{flex:0 0 auto;display:grid;grid-template-columns:190px repeat(5,1fr);gap:12px;padding:14px 18px;"
+    B.CSS += (".pro{flex:0 0 auto;display:grid;grid-template-columns:190px repeat(4,1fr);gap:12px;padding:14px 18px;"
               "border:1px solid rgba(200,168,106,.45);border-radius:14px;background:rgba(235,203,143,.05)}"
               ".pro .h{display:flex;flex-direction:column;justify-content:center}"
               ".pro .h i{font-style:normal;font-size:10.5px;letter-spacing:.2em;color:var(--gold);font-weight:700}"
@@ -363,7 +366,7 @@ def apply(B, D, take, sub):
 
     # 4단계 공개 심사 — 깔때기
     k = take("[[4단계]] 공개 심사 프로세스")[1]
-    fn = [("STEP 01", "megaphone", "자율경쟁 입찰공고", "공식 카페·협력업체 밴드·홈페이지에 공개 모집. 입찰서류는 주관사·협의회 이메일 동시 접수."),
+    fn = [("STEP 01", "megaphone", "자율경쟁 입찰공고", "공식 카페·참여업체 밴드·홈페이지에 공개 모집. 입찰서류는 주관사·협의회 이메일 동시 접수."),
           ("STEP 02", "report", "1차 서류심사", "사업개시 2년 경과 · 근거리 · 타단지 공구이력 20회 이상 · 국세·지방세 완납 · 사후관리 체계."),
           ("STEP 03", "search", "2차 세부심사", "시공물량 소화 · A/S 대책 · 입주민 평가 확인. 브랜드 품목은 제조사 공식 대리점, 시공 품목은 인근 업체 우선(엣지컴퍼니 직영 품목 가점 없음)."),
           ("STEP 04", "stamp", "협의회 최종 컨펌", "후보업체 서류 최종 검토 후 협의회 승인으로 확정.")]
@@ -602,15 +605,15 @@ def apply2(B, D, take, sub):
 
     # 3중 안전망 — 보호 기간 띠(카드 숫자 그대로 · 눈금은 비례 아님)
     k = take("입주민을 지키는 [[3중 안전망]]")[1]
-    band = ('<div class="pt3"><h5>보호 기간 한눈에<small>48시간 눈금은 비례하지 않습니다 · 무상 A/S 기간은 업체·품목별로 다를 수 있음</small></h5>'
-            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:50%">하자 예치금 · 선보상 재원</i></div></div>'
+    band = ('<div class="pt3"><h5>보호 기간 한눈에<small>48시간 눈금은 비례하지 않습니다 · 무상 A/S = 시공 품목 최소 2년 · 브랜드는 제조사 보증</small></h5>'
+            '<div class="ln"><b>01</b><div class="tr"><i class="a" style="left:0;width:100%">계약이행 · 하자보증보험 24개월(금액 · 기산일은 협약 때)</i></div></div>'
             '<div class="ln"><b>02</b><div class="tr"><i class="a" style="left:0;width:17%">48시간 처리</i></div></div>'
-            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:100%">주관 창구 운영 · 무상 A/S(최소 2년 · 업체별) - 협약 기간 = 공동구매 품목 A/S 종결까지</i></div></div>'
+            '<div class="ln"><b>03</b><div class="tr"><i class="b" style="left:0;width:100%">주관 창구 운영 · 무상 A/S(시공 품목 최소 2년) - 협약 기간 = 공동구매 품목 A/S 종결까지</i></div></div>'
             '<div class="tk"><span style="left:0">입주</span><span style="left:17%">48시간</span><span style="left:50%">1년</span><span style="left:100%">2년</span></div></div>')
     b3 = sub(k["body"], '<div class="big">10<small>년</small></div><div class="nm">장기 사후관리</div>',
              '<div class="big">2<small>년</small></div><div class="nm">무상 A/S · 사후관리</div>')
     b3 = sub(b3, "최소 2년 무상 A/S, 최대 10년 장기 관리.",
-             "업체·품목별 상이. A/S 종결까지 주관 창구 운영(협약 기간), 규정 효력 유지(제10조).")
+             "시공 품목 최소 2년 · 브랜드는 제조사 보증. A/S 종결까지 주관 창구 운영(협약 기간), 규정 효력 유지(제10조).")
     k["body"] = '<div class="nb">' + band + b3 + '</div>'
 
     # 선보상 재원 — 돈의 흐름
@@ -618,7 +621,7 @@ def apply2(B, D, take, sub):
     fl = ('<div class="fl5">'
           f'<div class="n">{ic("vault")}<b>엣지컴퍼니 자산</b><span>참여 업체 돈이 아님</span></div><em>›</em>'
           f'<div class="n">{ic("coins")}<b>예치금 최대 1억원</b><span>단지 규모·협의로 결정</span></div><em>›</em>'
-          f'<div class="n">{ic("headset")}<b>하자 접수</b><span>주관 콜센터</span></div><em>›</em>'
+          f'<div class="n">{ic("headset")}<b>공구 품목 하자</b><span>주관 콜센터 접수</span></div><em>›</em>'
           f'<div class="n g">{ic("house_shield")}<b>입주민 먼저 선보상</b><span>업체 사고·도산 시에도</span></div><em>›</em>'
           f'<div class="n">{ic("report")}<b>사용 내역 공개</b><span>업체와는 나중에 정산</span></div></div>')
     k["body"] = '<div class="nb">' + fl + k["body"] + '</div>'
@@ -639,12 +642,15 @@ def apply2(B, D, take, sub):
 
     # C 패키지 — 항목 썸네일
     k = take("C 패키지 · [[단지지원 컨설팅]]")[1]
-    _gy = lambda key: next(x for x in (D.IMG[key][0], D.IMG[key][1], "tj_aerial_night") if x and _os2.path.exists(_os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "assets_ins", x + ".jpg")))
-    th = [(_gy("lx_front1"), "동 파사드 · 문주"), (_gy("lx_play"), "물놀이터 · 산책로"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
+    _hv = lambda n: bool(n) and _os2.path.exists(_os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "assets_ins", n + ".jpg"))
+    _gy = lambda key: D.IMG[key][0] if _hv(D.IMG[key][0]) else (D.IMG[key][1] if _hv(D.IMG[key][1]) else "gy_cover_aerial")  # 법정 10-23: 단지 사진 없으면 슬롯 대체(타 단지 예시)
+    _own_lx = _hv(D.IMG["lx_front1"][0])
+    th = [(_gy("lx_front1"), "동 파사드 · 문주"), (_gy("lx_play"), "포켓정원 · 산책로" if _own_lx else "놀이터 (가상 연출)"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
-           + '</div><div class="thc">01 · 02 = ' + ("경산 상방공원 호반써밋 1단지 경관조명 연출 시뮬레이션" if _gy("lx_front1") == D.IMG["lx_front1"][0] else "타 단지 경관조명 연출 예시(실제 단지 아님)") + ' · 03 ~ 05 = 타 단지 현장 · 예시</div>')
+           + (f'</div><div class="thc">01 · 02 = {D.SITE["name"]} 경관조명 연출 시뮬레이션(실제와 다를 수 있음) · 03 ~ 05 = 타 단지 현장 · 예시</div>' if _own_lx
+              else f'</div><div class="thc">01 · 02 = 타 단지 경관조명 연출 예시({D.SITE["short"]} 이미지 아님 · 02는 가상 연출) · 03 ~ 05 = 타 단지 현장 · 예시</div>'))
     k["body"] = sub(k["body"], "</li></ul></div></div></div>", "</li></ul>" + thm + "</div></div></div>")
 
     # 커뮤니티·공용부 조명 개선 — 목록 + 2×2
@@ -657,11 +663,11 @@ def apply2(B, D, take, sub):
            '<figure><img src="assets_ins/n13_gx.jpg" alt=""><figcaption>커뮤니티 공간<small>예시 이미지</small></figcaption></figure>'
            '<figure><img src="assets_ins/n03_light.jpg" alt=""><figcaption>등기구 설치 현장<small>엣지컴퍼니 시공팀</small></figcaption></figure>'
            '<figure><img src="assets_ins/g14_light1c.jpg" alt=""><figcaption>입주 기념 점등식<small>타 단지 현장</small></figcaption></figure>'
-           f'<figure><img src="assets_ins/{_gy("lx_gate")}.jpg" alt="" style="object-position:50% 55%"><figcaption>문주 · 진입부 조명<small>외부 경관 진단 · ⟪pg:lx⟫ · 연출 시뮬레이션</small></figcaption></figure></div>')
+           f'<figure><img src="assets_ins/{_gy("lx_gate")}.jpg" alt="" style="object-position:50% 55%"><figcaption>{"문주 · 진입부 조명" if _own_lx else "진입부 · 수경 조명"}<small>외부 경관 진단 · ⟪pg:lx⟫ · {"시뮬레이션" if _own_lx else "타 단지 예시"}</small></figcaption></figure></div>')
     k["body"] = f'<div class="nb"><div class="r2">{rows}{gal}</div></div>'
 
     # 조명 수직계열화 — 아이콘 체인
-    k = take("[[조명 수직계열화]] · 유통 단계 없는 공급")[1]
+    k = take("[[조명 수직계열화]] · 중간 유통을 줄인 공급")[1]
     b = inject(k["body"], ["ship", "factory", "kc", "ladder"])
     b = sub(b, '<div class="cards" style="grid-template-columns:repeat(4,1fr)">', '<div class="cards chain" style="grid-template-columns:repeat(4,1fr);gap:26px">')
     b = sub(b, "하자가 나도 다른 업체를 찾을 필요가 없습니다.</div>", '하자가 나도 다른 업체를 찾을 필요가 없습니다.<br><span class="chipx">전기공사업 등록 제 울산-00821호</span></div>')
@@ -722,7 +728,7 @@ def apply2(B, D, take, sub):
     mny = ('<div class="mny"><div class="rl"><div class="ln"></div>'
            '<div class="zone" style="left:0;width:37%"><b>취소 기한 내 전액 환불</b></div>'
            '<div class="nd g" style="left:0"></div><div class="nd" style="left:37%"></div><div class="nd" style="left:70%"></div><div class="nd g" style="left:100%"></div>'
-           '<div class="lb2" style="left:5%">계약<small>계약금 10% 이하</small></div>'
+           '<div class="lb2" style="left:5%">계약<small>계약금 10% 이하 · 맞춤 제작 · 본사 규정 품목 예외</small></div>'
            '<div class="lb2" style="left:37%">취소 기한<small>시공일 7일·15일 전 · 맞춤 제작은 출고 지시 전</small></div>'
            '<div class="lb2" style="left:70%">시공·설치<small>기한 뒤 취소는 실제 자재·제작비만 공제</small></div>'
            '<div class="lb2" style="left:94%">잔금 납부<small>시공·설치 후</small></div>'
@@ -731,7 +737,7 @@ def apply2(B, D, take, sub):
 
     # 사전점검 당일 현장 지원 — 위: 현수막·X배너 시안(HTML로 그린 예시) / 아래: 사진 카드 5칸
     k = take("사전점검 당일 [[현장 지원]]")[1]
-    banner = ('<div class="bnx"><div class="bl"><i>01 · 기본 지원</i><b>행사 물품</b>'
+    banner = ('<div class="bnx"><div class="bl"><i>01 · 부스 지원</i><b>행사 물품</b>'
               '<p>부스용 현수막·X배너·서면 자료 제작</p><small>시안 · 협의 후 확정</small></div>'
               f'<div class="hbw"><div class="hbn"><span class="t1">{D.SITE["name"]} 입주예정자협의회</span>'
               f'<b>{D.SITE["short"]} 입주민 여러분, <em>사전점검을 환영합니다</em></b>'
@@ -739,7 +745,7 @@ def apply2(B, D, take, sub):
               f'<div class="xbw"><div class="xbn"><div class="xh"><span>{D.SITE["short"]}</span><b>사전점검<br>안내</b></div>'
               '<ol><li>입예협 부스 방문 · 정회원 가입</li><li>라돈 측정 지원</li><li>하자 체크리스트 배포</li></ol>'
               f'<div class="xf">{D.SITE["short"]}<br>입주예정자협의회</div></div><span class="cp">X배너 시안</span></div></div>')
-    items = [("02 · 기본 지원", "입예협 도우미", "부스 운영 인력 지원(주관사 부담)", ("g09_helper_ai", "50% 30%")),
+    items = [("02 · 부스 지원", "입예협 도우미", "부스 운영 인력 지원", ("g09_helper_ai", "50% 30%")),
              ("03 · B 패키지", "라돈측정기 10대", "입주민이 내 집 라돈을 직접 측정", ("g09_radon_u", "50% 50%")),
              ("04 · B 패키지", "냉·난방용품", "점검 시기에 맞춰 부스용 준비", ("g09_heater_ai", "50% 50%")),
              ("05 · B 패키지", "커피차 지원", "점검 당일 입예협 부스에 커피차 지원", ("g09_coffee_u2", "50% 50%")),
@@ -748,8 +754,8 @@ def apply2(B, D, take, sub):
                                     f'<div class="lb">{no}</div><div class="nm">{nm}</div><div class="ds">{ds}</div></div>')
     k["body"] = (f'<div class="nb"><div class="r91">{banner}{tile(*items[0])}</div>'
                  f'<div class="tiles t5" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr">{"".join(tile(*x) for x in items[1:])}</div></div>')
-    k["lead"] = "행사 물품·도우미는 기본 지원(주관사 부담), 라돈측정기·냉난방용품·커피차·하자진단 보고서는 B 패키지로 더합니다."
-    k["kp"] = ("입예협은 [[입주민 응대에만]] 집중하시면 됩니다.", "01 · 02 = 기본 지원(주관사 부담 · 세대 혜택 패키지와 별도) · 03 ~ 06 = B 패키지 선택 항목")
+    k["lead"] = "현수막 · X배너 · 도우미로 부스를 꾸리고, 라돈측정기·냉난방용품·커피차·하자진단 보고서는 입예협이 고르시면 더합니다."
+    k["kp"] = ("입예협은 [[입주민 응대에만]] 집중하시면 됩니다.", "01 · 02 = 부스 구성 · 03 ~ 06 = 선택 항목")
     B.CSS += r"""
 .tile .tim+.lb{margin-top:0}
 .t5 .tile,.r91 .tile{justify-content:flex-start}.t5 .tile .nm{font-size:17px}.t5 .tile .ds{font-size:13.5px;line-height:1.45}.t5 .tim{height:136px}
