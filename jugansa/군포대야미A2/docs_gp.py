@@ -14,7 +14,7 @@
   선택 자료(필수 아님): NICE 기업신용평가 전문(가림) · 전기공사업 등록증 · ISO 인증서 · 건축 기술 자문 업무협약서(을 정보 가림)
 
 증빙 원본: 나리벡 최종 제출본(2026.10.26 · 가림 · 검증 끝)의 쪽을 그대로 쓰고, 나리벡 건명이 박힌 표지 · 안내 쪽은 군포용으로 새로 만들거나 글자만 바꾼다.
-날인: 법인인감은 디지털로 만들지 않는다(규칙 4) — 사용인감계는 '작업/…_사용인감계_날인출력용.pdf'를 출력 → 직인(사용인감) · 법인인감 실물 날인 → 스캔 →
+날인: 법인인감은 디지털로 만들지 않는다(규칙 4) — 사용인감계는 사용인감 칸만 디지털 직인 · '작업/…_사용인감계_날인출력용.pdf'를 출력 → 법인인감 칸 · 대표자 (인) 실물 날인 → 스캔 →
       SEAL_SCAN 경로에 두고 다시 실행. 스캔이 없으면 출력용을 넣은 '_날인전' 통합본만 만든다(제출 금지).
 출력: 작업/(중간 · 번호별 · 출력용) · 제출본/(통합 PDF 1개 · 메일용 저용량본 없음)
 사용: python docs_gp.py <투명 직인.png> [--final]
@@ -169,11 +169,11 @@ def f13(seal):
     return page("제출서류 13 · 서류 미반환 · 이의 미제기 서약서(자유 양식)", body)
 
 
-def f_gam():
-    """사용인감계 — 사용인감(직인) · 법인인감 칸 모두 비워 두고 본부장이 실물로 찍는다(법인인감 디지털 금지 · 규칙 4)."""
+def f_gam(seal_uri):
+    """사용인감계 — 사용인감 칸 = 디지털 직인(철산 · 탕정 · 분당과 같음) · 법인인감 칸 · 대표자 (인)은 비워 두고 본부장이 실물 법인인감으로 찍는다(규칙 4)."""
     rows = [("상호(법인명)", D.COMPANY), ("사업자등록번호", D.BIZ_NO), ("법인등록번호", D.CORP_NO), ("본점(사업장) 소재지", D.ADDRESS), ("대표자 성명", D.CEO)]
     body = ('<h1 style="margin:0 0 7mm">사용인감계</h1><table class="f" style="margin-bottom:6mm">' + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in rows) + "</table>"
-            '<div class="gam"><div><b>사 용 인 감</b><span></span></div><div><b>법 인 인 감</b><span></span></div></div>'
+            '<div class="gam"><div><b>사 용 인 감</b><span style="display:flex;align-items:center;justify-content:center"><img src="' + seal_uri + '" style="width:26mm;height:26mm;opacity:.92" alt=""></span></div><div><b>법 인 인 감</b><span></span></div></div>'
             f'<p class="b">위 사용인감은 당사가 {e(TO)}의 「입주박람회 주관사 선정 입찰」에 참가함에 있어 입찰참가신청서 · 이행각서 · 서약서 등 입찰 관련 서류와 협약 체결에 관한 서류에 사용하는 인감임을 신고합니다.</p>'
             '<p class="b">당사는 위 사용인감을 날인하여 행한 모든 행위에 대하여 법인인감을 날인하여 행한 것과 동일하게 일체의 책임을 지겠습니다.</p>'
             f'<div class="dt" style="margin:6mm 0 5mm">{ymd()}</div><div class="sg">신고인<br>상 호 : {e(D.COMPANY)}<br>대표자 : 대표이사 {e(D.CEO)} (인)</div>'
@@ -324,7 +324,7 @@ def main():
     r11 = render("11_청렴계약_이행각서", doc("청렴 계약 이행각서", [f11(seal_uri)]))
     r12 = render("12_비밀유지_서약서", doc("비밀 유지 서약서", [f12(seal_uri)]))
     r13 = render("13_서류미반환_이의미제기_서약서", doc("서약서", [f13(seal_uri)]))
-    rgam = render(f"{D.FILE_TITLE.split(' 입주')[0]}_사용인감계_날인출력용", doc("사용인감계", [f_gam()]))
+    rgam = render(f"{D.FILE_TITLE.split(' 입주')[0]}_사용인감계_날인출력용", doc("사용인감계", [f_gam(seal_uri)]))
     have_scan = os.path.exists(SEAL_SCAN)
     if final:
         assert have_scan, f"사용인감계 실물 날인 스캔이 없음: {SEAL_SCAN}"
