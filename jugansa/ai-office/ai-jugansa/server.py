@@ -109,12 +109,46 @@ def board():
         d, tm = parse_date(due, today)
         done = "✅" in status or "✅" in rest or "제출 완료" in status
         dday = (d - today).days if d else None
-        ptd, _ = parse_date(pt, today)
+        ptx = re.sub(r"\*", "", pt); ptd, ptt = parse_date(ptx, today)
+        # PT 확정 = 현황판 '단계' 표가 PT(서류심사 통과 · 일정 통보) + PT 칸에 날짜 → 보드 맨 위 강조 · D-3 ~ D-1 알림
+        head, _, more = ptx.partition(" · ")
+        place = re.sub(r"^.*?\d{1,2}\.\d{1,2}(?:\([^)]*\))?(?:\s*\d{1,2}:\d{2})?\s*", "", head).strip()
         rows.append({"site": short, "name": name, "hh": hh, "due": re.sub(r"\*", "", due), "dday": dday, "time": tm,
-                     "pt": re.sub(r"\*", "", pt)[:28], "pt_dday": (ptd - today).days if ptd else None, "done": done,
-                     "stage": stage_of.get(name, "")})
-    rows.sort(key=lambda r: (r["done"], r["dday"] if r["dday"] is not None else 999))
+                     "pt": ptx[:28], "pt_dday": (ptd - today).days if ptd else None, "done": done,
+                     "stage": stage_of.get(name, ""), "pt_ok": bool(ptd) and stage_of.get(name) == "pt",
+                     "pt_date": ptd.isoformat() if ptd else "", "pt_time": ptt, "pt_place": place, "pt_more": more})
+    rows.sort(key=lambda r: (not (r["pt_ok"] and r["pt_dday"] >= 0), r["pt_dday"] if r["pt_ok"] else 0,
+                             r["done"], r["dday"] if r["dday"] is not None else 999))
     return {"file": f, "today": today.isoformat(), "sites": rows}
+
+# ── PT 확정 알림: PT 3일 전 · 2일 전 · 1일 전 × 10:00 · 16:00 (작업 스케줄러가 --pt-alert 로 부름 → 윈도우 알림) ──
+PT_ALERT_DAYS, PT_ALERT_HOURS = (3, 2, 1), (10, 16)
+WD = "월화수목금토일"
+def pt_line(r):
+    d = datetime.date.fromisoformat(r["pt_date"])
+    when = f"{d.month}.{d.day:02d}({WD[d.weekday()]})" + (f" {r['pt_time']}" if r["pt_time"] else "")
+    return f"{r['name']} 2차 PT · {when}" + (f" · {r['pt_place']}" if r["pt_place"] else "") + (f" · {r['pt_more']}" if r["pt_more"] else "")
+def pt_alerts():
+    return [(r["pt_dday"], pt_line(r)) for r in board()["sites"] if r["pt_ok"] and r["pt_dday"] in PT_ALERT_DAYS]
+def toast(title, body):
+    import subprocess                              # 윈도우 기본 알림 (PowerShell · 외부 전송 없음)
+    ps = ("[Windows.UI.Notifications.ToastNotificationManager,Windows.UI.Notifications,ContentType=WindowsRuntime]>$null;"
+          "$x=[Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02);"
+          "$t=$x.GetElementsByTagName('text');$t.Item(0).AppendChild($x.CreateTextNode($env:PT_T))>$null;$t.Item(1).AppendChild($x.CreateTextNode($env:PT_B))>$null;"
+          "$a='{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\\WindowsPowerShell\\v1.0\\powershell.exe';"
+          "[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($a).Show([Windows.UI.Notifications.ToastNotification]::new($x))")
+    subprocess.run(["powershell", "-NoProfile", "-WindowStyle", "Hidden", "-Command", ps],
+                   env={**os.environ, "PT_T": title, "PT_B": body}, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+def pt_alert_main(force=False):
+    al = pt_alerts()
+    if not al and force: al = [(0, "(시험) PT 확정 단지가 D-3 ~ D-1 이 아니어도 알림이 뜨는지 확인")]
+    for dd, line in al:
+        toast(f"🎤 PT D-{dd} · 2차 PT 확정" if dd else "🎤 PT 알림 시험", line)
+        try:                                        # 오피스가 켜져 있으면 메모로도 띄운다
+            import urllib.request
+            urllib.request.urlopen(urllib.request.Request(f"http://{HOST}:{PORT}/sim", json.dumps({"kind": "memo", "memo_type": "pt", "label": f"PT D-{dd} · " + line}, ensure_ascii=False).encode(), {"Content-Type": "application/json"}), timeout=2)
+        except OSError: pass
+    print("\n".join(f"D-{d} {l}" for d, l in al) or "알림 없음")
 
 BOSS = "boss"            # 본부장 캐릭터 id
 ROOM_OF_CHAR = {"boss": "office", "scout": "scout", "analyst": "analysis", "builder": "build",
@@ -256,4 +290,5 @@ def main():
     except KeyboardInterrupt: pass
 
 if __name__ == "__main__":
-    main()
+    if "--pt-alert" in sys.argv: pt_alert_main(force="--test" in sys.argv)
+    else: main()

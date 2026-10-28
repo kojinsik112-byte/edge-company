@@ -27,7 +27,7 @@
   #board .bh b{font-size:calc(14px*var(--k));letter-spacing:.3px}
   #board .bh span{color:var(--mut);font-size:calc(11px*var(--k))}
   #board .bh i{margin-left:auto;font-style:normal;color:var(--mut);font-size:calc(10.5px*var(--k))}
-  #board .row{display:grid;grid-template-columns:2.1fr 1.3fr .9fr 3.1fr 1.1fr;align-items:center;column-gap:calc(6px*var(--k));height:calc(25px*var(--k));padding:0 calc(8px*var(--k));border-radius:calc(6px*var(--k));white-space:nowrap}
+  #board .row{display:grid;grid-template-columns:2.1fr 1.3fr .9fr 2.8fr 1.4fr;align-items:center;column-gap:calc(6px*var(--k));height:calc(25px*var(--k));padding:0 calc(8px*var(--k));border-radius:calc(6px*var(--k));white-space:nowrap}
   #board .row>span{overflow:hidden;text-overflow:ellipsis}
   #board .head{height:calc(20px*var(--k));color:var(--mut);font-size:calc(10.5px*var(--k));border-bottom:1px solid var(--line);border-radius:0;margin-right:calc(10px*var(--k))}
   #rows{flex:1;overflow-y:auto;scrollbar-gutter:stable;padding-top:calc(3px*var(--k));display:flex;flex-direction:column;gap:calc(2px*var(--k))}
@@ -57,6 +57,31 @@
   .head .dots span.tight{font-size:calc(8.5px*var(--k));letter-spacing:-.04em}
   #rows .pt{color:var(--mut);font-size:calc(11px*var(--k))}
   #rows .empty{color:var(--mut);padding:calc(10px*var(--k))}
+  /* PT 확정 = 서류심사 통과 후 2차 PT · 보드 맨 위 띠 · 날짜 · 시간 · 장소 크게 */
+  #ptbar{display:flex;flex-direction:column;gap:calc(4px*var(--k));margin:0 calc(10px*var(--k)) calc(6px*var(--k)) 0}
+  #ptbar:empty{display:none}
+  .ptc{display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:calc(10px*var(--k));padding:calc(6px*var(--k)) calc(10px*var(--k));border-radius:calc(9px*var(--k));
+    background:linear-gradient(90deg,rgba(240,195,92,.22),rgba(240,195,92,.06));box-shadow:inset 0 0 0 1px rgba(240,195,92,.55),0 0 calc(14px*var(--k)) rgba(240,195,92,.18)}
+  .ptc .tag{font:800 calc(10.5px*var(--k))/1 'Malgun Gothic',sans-serif;color:#1d1608;background:#f0c35c;border-radius:99px;padding:calc(4px*var(--k)) calc(8px*var(--k));letter-spacing:.2px}
+  .ptc .what{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .ptc .what b{font-size:calc(13px*var(--k));margin-right:calc(8px*var(--k))}
+  .ptc .what strong{font-size:calc(15px*var(--k));color:#ffd77a;font-variant-numeric:tabular-nums;margin-right:calc(8px*var(--k))}
+  .ptc .what span{color:#f3dfb0}
+  .ptc .what small{color:var(--mut);margin-left:calc(6px*var(--k));font-size:calc(10.5px*var(--k))}
+  .ptc .pd{font:800 calc(15px*var(--k))/1.3 ui-monospace,Consolas,monospace;color:#1d1608;background:#f0c35c;border-radius:calc(7px*var(--k));padding:0 calc(9px*var(--k))}
+  .ptc.near{background:linear-gradient(90deg,rgba(239,143,124,.28),rgba(240,195,92,.1));box-shadow:inset 0 0 0 1px #ef8f7c,0 0 calc(16px*var(--k)) rgba(239,143,124,.35)}
+  .ptc.near .pd{background:#ef8f7c;animation:ptb 1.2s ease-in-out infinite}
+  @keyframes ptb{50%{transform:scale(1.08)}}
+  #rows .row.ptok{opacity:1;box-shadow:inset calc(3px*var(--k)) 0 0 #f0c35c}
+  #rows .row.ptok .pt{color:#ffd77a;font-weight:700}
+  /* PT 알림 (D-3 · D-2 · D-1 × 10:00 · 16:00) */
+  #ptalert{position:absolute;left:50%;top:6%;transform:translateX(-50%);z-index:5;min-width:52%;max-width:86%;padding:calc(14px*var(--k)) calc(18px*var(--k));border-radius:calc(14px*var(--k));
+    background:rgba(29,22,8,.96);box-shadow:0 0 0 2px #f0c35c,0 calc(18px*var(--k)) calc(50px*var(--k)) rgba(0,0,0,.6);color:#f3dfb0;font-size:calc(13px*var(--k));display:none;animation:pta .5s ease-out}
+  #ptalert.on{display:block}
+  #ptalert h2{margin:0 0 calc(6px*var(--k));font-size:calc(20px*var(--k));color:#ffd77a}
+  #ptalert p{margin:calc(2px*var(--k)) 0}
+  #ptalert button{margin-top:calc(10px*var(--k));font-size:calc(12px*var(--k))}
+  @keyframes pta{from{transform:translate(-50%,-20px);opacity:0}}
 </style>
 </head>
 <body>
@@ -71,9 +96,11 @@
   <canvas id="c" width="2400" height="1720"></canvas>
   <section id="board" aria-label="진행 중 단지 보드">
     <div class="bh"><b>진행 중 단지</b><span>마감 D-day · 지금 단계</span><i id="bcount"></i></div>
+    <div id="ptbar"></div>
     <div class="row head"><span>단지</span><span>마감</span><span>D-day</span><span class="dots" id="dhead"></span><span>PT 일정</span></div>
     <div id="rows"></div>
   </section>
+  <div id="ptalert" role="alert"></div>
 </div>
 <div id="log">·</div>
 
@@ -258,7 +285,7 @@ mk("boss", BOSS_LOOK, "총괄 본부장", BOSS_DESK.x, BOSS_DESK.y); chars.boss.
 let firstPoll = true, activeStation = null, memos = [], lastSeq = 0, simTimer = null, connected = null, curSite = "";
 const sites = {};                                     // 단지 약칭 → {stage, t, teams}
 let boardRows = (typeof BOARD_SNAPSHOT !== "undefined") ? BOARD_SNAPSHOT : [];   // 현황판에서 읽은 마감 · PT (서버 /sites)
-async function loadBoard(){ try{ const r = await fetch("/sites", {cache:"no-store"}); if (r.ok){ const j = await r.json(); if (j.sites && j.sites.length) boardRows = j.sites; renderBoard(); } }catch(e){} setTimeout(loadBoard, 60000); }
+async function loadBoard(once){ try{ const r = await fetch("/sites", {cache:"no-store"}); if (r.ok){ const j = await r.json(); if (j.sites && j.sites.length) boardRows = j.sites; renderBoard(); } }catch(e){} if (once !== true) setTimeout(loadBoard, 60000); }
 
 function slot(st){ // 작업대 앞에 여러 명이 서는 자리 (왼쪽부터)
   const s = STATIONS[st], here = Object.values(chars).filter(c=>c.at===st && c.id!=="boss").length;
@@ -398,7 +425,8 @@ function handle(ev){
     const ch = chars[ev.agent_id]; if (ch) report(ch);
     setLog(`${st ? STATIONS[st].name : ""} · ${ch ? ch.tag : ev.team} 작업 끝`);
   } else if (k === "memo"){
-    memos.push({text:(ev.memo_type==="permission_prompt"?"승인 요청 · ":ev.memo_type==="idle_prompt"?"대기 · ":"알림 · ")+ev.label, type:"notice"}); memos = memos.slice(-4);
+    if (ev.memo_type === "pt") loadBoard(true);       // 작업 스케줄러의 PT 알림 → 보드를 새로 읽고 그 회차 알림 창
+    else { memos.push({text:(ev.memo_type==="permission_prompt"?"승인 요청 · ":ev.memo_type==="idle_prompt"?"대기 · ":"알림 · ")+ev.label, type:"notice"}); memos = memos.slice(-4); }
     setLog("메모: " + ev.label);
   } else if (k === "rest"){
     // 일한 직원은 보고하고 퇴근, 본부장은 보고를 받은 뒤 휴게 코너로 (다른 세션이 계속 일하면 담당 직원이 다시 출근한다)
@@ -601,16 +629,52 @@ function renderBoard(){
     const due = (r.due || "—").replace(/\s*\(.*$/, "") + (r.time ? " " + r.time : "");
     const dtxt = r.done ? "제출" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";
     const ptm = r.pt ? (r.pt.match(/\d{1,2}\.\d{1,2}/) || [""])[0] : "";
-    const pt = ptm ? ptm + (r.pt_dday !== null && r.pt_dday >= 0 ? ` · D-${r.pt_dday}` : "") : "—";
+    const ptok = r.pt_ok && r.pt_dday >= 0;
+    const pt = ptm ? ptm +(ptok && r.pt_time ? " " + r.pt_time : "") + (r.pt_dday !== null && r.pt_dday >= 0 ? ` · D-${r.pt_dday}` : "") : "—";
     const dots = BOARD_ORDER.map((k,i) => { const on = i === si, c = BSTAGE(k);
       return `<i class="${on ? "on" + (live ? " live" : "") : ""}" style="${on ? `background:${c.color};color:${c.color}` : ""}" title="${c.name}"></i>`; }).join("");
     const title = `${r.name || r.site}${r.due ? " · 마감 " + r.due : ""}${r.pt ? " · PT " + r.pt : ""}${s.teams.length ? " · " + s.teams.join(", ") : ""}`;
-    return `<div class="row${r.done ? " done" : ""}${cur ? " cur" : ""}${urgent ? " urgent" : ""}" title="${esc(title)}">`
+    return `<div class="row${r.done ? " done" : ""}${ptok ? " ptok" : ""}${cur ? " cur" : ""}${urgent ? " urgent" : ""}" title="${esc(title)}">`
       + `<span class="nm"><b>${esc(short)}</b><small>${esc(full !== short ? full : "")}</small></span>`
       + `<span class="due">${esc(due)}</span>`
       + `<span><em class="dd${r.done ? " done" : urgent ? " urgent" : soon ? " soon" : ""}" style="font-style:normal">${dtxt}</em></span>`
       + `<span class="dots">${dots}</span><span class="pt">${esc(pt)}</span></div>`;
   }).join("");
+  renderPT(rows);
+}
+// ───────── PT 확정 (서류심사 통과 → 2차 PT) · 보드 맨 위 띠 + D-3 · D-2 · D-1 × 10:00 · 16:00 알림 ─────────
+const WD = "일월화수목금토";
+const ptWhen = r => { const [y,m,d] = r.pt_date.split("-").map(Number), dt = new Date(y, m-1, d); return `${m}.${String(d).padStart(2,"0")}(${WD[dt.getDay()]})${r.pt_time ? " " + r.pt_time : ""}`; };
+function renderPT(rows){
+  const pts = rows.filter(r => r.pt_ok && r.pt_dday >= 0);
+  document.getElementById("ptbar").innerHTML = pts.map(r => {
+    const dtxt = r.pt_dday === 0 ? "오늘 PT" : "D-" + r.pt_dday;
+    return `<div class="ptc${r.pt_dday <= 3 ? " near" : ""}" title="${esc(r.name + " · 2차 PT " + r.pt)}"><span class="tag">2차 PT 확정</span>`
+      + `<span class="what"><b>${esc(r.name)}</b><strong>${esc(ptWhen(r))}</strong><span>${esc(r.pt_place || "")}</span>${r.pt_more ? `<small>${esc(r.pt_more)}</small>` : ""}</span>`
+      + `<span class="pd">${dtxt}</span></div>`; }).join("");
+  ptCheck(pts);
+}
+// 알림 시각이 지난 뒤 오피스를 열어도 그날 그 회차 알림은 한 번 띄운다 (단지 · PT 날짜 · 오늘 · 회차 = 한 번)
+const PT_DAYS = [3,2,1], ptShown = new Set();
+function ptCheck(pts){
+  const now = new Date(), h = now.getHours(), slot = h >= 16 ? 16 : h >= 10 ? 10 : 0; if (!slot) return;
+  const today = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+  const due = pts.filter(r => PT_DAYS.includes(r.pt_dday)).filter(r => { const k = `pt:${r.site}:${r.pt_date}:${today}:${slot}`;
+    if (ptShown.has(k)) return false; ptShown.add(k);
+    try { if (localStorage.getItem(k)) return false; localStorage.setItem(k, "1"); } catch(e){} return true; });
+  if (due.length) ptAlert(due);
+}
+function ptAlert(due){
+  const el = document.getElementById("ptalert");
+  el.innerHTML = `<h2>🎤 2차 PT ${due.map(r => "D-" + r.pt_dday).join(" · ")}</h2>`
+    + due.map(r => `<p><b>${esc(r.name)}</b> · <strong style="color:#ffd77a">${esc(ptWhen(r))}</strong> · ${esc(r.pt_place || "")}${r.pt_more ? " · " + esc(r.pt_more) : ""}</p>`).join("")
+    + `<button type="button">확인</button>`;
+  el.classList.add("on"); el.querySelector("button").onclick = () => el.classList.remove("on");
+  for (const r of due){ memos = memos.filter(m => m.site !== r.site); memos.push({text:`PT D-${r.pt_dday} ${r.site} ${ptWhen(r).replace(/\(.\).*/, "")}`, type:"pt", site:r.site}); } memos = memos.slice(-4);
+  try { const a = new AudioContext(), t = a.currentTime; [784, 988, 1175].forEach((f,i) => { const o = a.createOscillator(), g = a.createGain(); o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t + i*0.18); g.gain.exponentialRampToValueAtTime(0.18, t + i*0.18 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + i*0.18 + 0.5);
+    o.connect(g).connect(a.destination); o.start(t + i*0.18); o.stop(t + i*0.18 + 0.55); }); } catch(e){}
+  setLog("PT 알림 · " + due.map(r => `${r.name} ${ptWhen(r)}`).join(" · "));
 }
 const wrapEl = document.getElementById("wrap");
 new ResizeObserver(() => wrapEl.style.setProperty("--k", wrapEl.clientWidth / 1200)).observe(wrapEl);
