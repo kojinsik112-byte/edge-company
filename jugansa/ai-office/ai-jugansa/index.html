@@ -621,7 +621,8 @@ function renderBoard(){
     // 불 켜지는 칸 = 마지막 단계 (방금 신호가 온 단계 → 없으면 현황판 '단계' 표)
     // PT 는 서류심사를 통과해 PT 업체로 뽑혔을 때만(현황판 단계 = PT) — 미리 PT 자료를 손봐도 PT 칸은 켜지 않는다
     // 메일 · 보관함 작업은 실제로 보내기(현황판 ✅ · 단계 발송) 전까지 발송대기로 본다
-    const live = !stale && s.stage && s.stage !== "pt", lv = live && s.stage === "mail" && !r.done && r.stage !== "mail" ? "ready" : s.stage;
+    // 제출 완료 단지는 현황판 단계만 따른다 — 다른 단지 빌드가 그 단지 빌더를 복제 · 참고해도 '제작'으로 돌아가지 않게
+    const live = !r.done && !stale && s.stage && s.stage !== "pt", lv = live && s.stage === "mail" && !r.done && r.stage !== "mail" ? "ready" : s.stage;
     const stage = live ? lv : (r.stage || (s.stage !== "pt" ? s.stage : "")), si = BOARD_ORDER.indexOf(stage);
     const urgent = r.dday !== null && r.dday <= 2 && !r.done, soon = r.dday !== null && r.dday <= 7 && !r.done && !urgent;
     const short = String(r.site).replace(/\s*\(.*$/, "").trim() || r.site;
