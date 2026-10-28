@@ -1412,7 +1412,7 @@ DOCS13 = [  # (번호, 서류, 엣지컴퍼니 제출 내용)
     ("1", "입찰참가신청서(자유 양식)", "작성 · 사용인감 날인"),
     ("2", "사업자등록증 사본", f"{D.ISSUE['biz']} 발급"),
     ("3", "법인 등기부등본(최근 1개월)", f"{D.ISSUE['reg']} 발급 · 자본금 2억원"),
-    ("4", "인감증명서 / 사용인감계(최근 1개월)", f"인감증명서 {D.INGAM_DATE} 발급 · 사용인감계 법인인감 날인"),
+    ("4", "인감증명서 / 사용인감계(최근 1개월)", f"인감증명서 {D.INGAM_DATE} 발급 · 가림" + (" · 사용인감계 법인인감 날인" if D.GAM_SUBMIT else "")),
     ("5", "법인 사업자 통장 사본", "법인 명의 계좌"),
     ("6", "국세 · 지방세 완납 증명서(유효기한 내)", f"{D.ISSUE['tax']} 발급 · 유효기한 안"),
     ("7", "4대 사회보험 가입자 명부(최근 1개월)", f"{D.ROSTER_DATE} 발급 · 13명 · 개인정보 가림"),
@@ -1436,7 +1436,7 @@ new("std", sec=S0, title=T_DOCS,
     body=('<div class="nb"><div class="d17x">' + _dtb(DOCS13[:_dh]) + _dtb(DOCS13[_dh:]) + '</div>'
           '<div class="itr" style="margin-top:12px"><b>선택 자료(필수 아님)</b><span>NICE 기업신용평가(연 1회 정기 평가 · 재무제표 기준 · 유효기간 안 최근 평가본) · 전기공사업 등록증 · ISO 인증서 · '
           f'{D.ADVISOR} 건축 기술 자문 업무협약서(2026.10.28 · 상대방 정보 가림)</span></div></div>'),
-    kp=("13종 모두 [[기한 안 발급본]]으로 냅니다 - 서류마다 발급일을 적었습니다.", "사용인감계 = 법인인감 실물 날인 · 자유 양식 = 사용인감(사용인감계 첨부) · 개인정보는 가림본 · 참고사항 8"))
+    kp=("13종 모두 [[기한 안 발급본]]으로 냅니다 - 서류마다 발급일을 적었습니다.", ("사용인감계 = 법인인감 실물 날인 · 자유 양식 = 사용인감(사용인감계 첨부)" if D.GAM_SUBMIT else "자유 양식 = 대표이사 직인 · 인감증명서 = 법인인감") + " · 개인정보는 가림본 · 참고사항 8"))
 B.CSS += (".d17x{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;min-height:0;align-items:start}"
           ".tbl.d17 td{padding:10px 10px;font-size:14.5px;line-height:1.4}.tbl.d17 td.n{font-weight:800;color:var(--gold);text-align:center}.tbl.d17 td.k{font-size:14px}")
 

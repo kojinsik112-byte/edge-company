@@ -56,32 +56,32 @@ GARBAGE = 1   # 크롬 PDF끼리 합칠 때 2 이상이면 글꼴이 섞여 글�
 CSS = r"""
 @page{size:A4;margin:0}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic','맑은 고딕',sans-serif;color:#111;font-size:12.5pt;line-height:1.65}
-.pg{width:210mm;height:297mm;padding:24mm 22mm 20mm;position:relative;page-break-after:always;overflow:hidden}
+body{font-family:'Malgun Gothic','맑은 고딕',sans-serif;color:#111;font-size:12.5pt;line-height:1.6}
+.pg{width:210mm;height:297mm;padding:20mm 22mm 16mm;position:relative;page-break-after:always;overflow:hidden}
 .pg:last-child{page-break-after:auto}
-.lb{font-size:9.5pt;color:#9a7a40;font-weight:700;letter-spacing:.06em;border-bottom:1.2px solid #c8a86a;padding-bottom:4px;margin-bottom:14mm;display:flex;justify-content:space-between}
-h1{font-size:22pt;text-align:center;letter-spacing:.5em;margin:4mm 0 12mm;font-weight:800}
+.lb{font-size:9.5pt;color:#9a7a40;font-weight:700;letter-spacing:.06em;border-bottom:1.2px solid #c8a86a;padding-bottom:4px;margin-bottom:9mm;display:flex;justify-content:space-between}
+h1{font-size:22pt;text-align:center;letter-spacing:.5em;margin:2mm 0 8mm;font-weight:800}
 h2{font-size:15pt;margin:2mm 0 4mm;font-weight:800}
 table.f{width:100%;border-collapse:collapse;margin-bottom:9mm}
 table.f th,table.f td{border:1px solid #333;padding:7px 10px;font-size:11.5pt;vertical-align:middle}
 table.f th{background:#f3efe6;width:30%;text-align:center;font-weight:700}
 ol.c{margin:0 0 0 1.4em}ol.c li{margin:0 0 3.2mm;padding-left:2px}
 p.b{text-indent:.6em;margin-bottom:5mm}
-.dt{text-align:center;font-size:13pt;margin:12mm 0 8mm;letter-spacing:.1em}
+.dt{text-align:center;font-size:13pt;margin:8mm 0 6mm;letter-spacing:.1em}
 .sg{margin-left:auto;width:96mm;font-size:12.5pt;line-height:2.1;position:relative}
 .sg .in{position:relative;display:inline-block}
 .sg .seal{position:absolute;width:21mm;height:21mm;right:-17mm;top:-7.5mm;opacity:.92}
-.to{text-align:center;font-size:15pt;font-weight:800;margin-top:12mm;letter-spacing:.06em}
+.to{text-align:center;font-size:15pt;font-weight:800;margin-top:8mm;letter-spacing:.06em}
 .nt{position:absolute;left:22mm;right:22mm;bottom:14mm;font-size:9pt;color:#555;line-height:1.5}
-table.l{width:100%;border-collapse:collapse;font-size:10.5pt}
-table.l th,table.l td{border-bottom:1px solid #bbb;padding:5.5px 6px;text-align:left;vertical-align:top}
+table.l{width:100%;border-collapse:collapse;font-size:10pt;line-height:1.45}
+table.l th,table.l td{border-bottom:1px solid #bbb;padding:4px 6px;text-align:left;vertical-align:top}
 table.l th{border-bottom:1.5px solid #9a7a40;color:#7a5c25;font-size:9.5pt}
 table.l td.n{width:9mm;font-weight:800;color:#9a7a40;text-align:center}
 table.l td.r{text-align:right;white-space:nowrap}
 .gam{display:grid;grid-template-columns:1fr 1fr;border:1px solid #333;margin:0 0 7mm}
 .gam div{border-right:1px solid #333}.gam div:last-child{border-right:0}
 .gam b{display:block;text-align:center;background:#f3efe6;border-bottom:1px solid #333;padding:6px;font-size:11.5pt}
-.gam span{display:block;height:32mm}
+.gam span{display:block;height:28mm}
 .box{border:1.2px solid #c8a86a;border-radius:6px;padding:5mm 6mm;background:#fbf8f1;font-size:11pt;margin-bottom:6mm}
 .cv{display:flex;flex-direction:column;justify-content:center;height:100%}
 .cv .no{font-size:13pt;color:#9a7a40;font-weight:800;letter-spacing:.2em}
@@ -173,12 +173,13 @@ def f_gam(seal_uri):
     """사용인감계 — 사용인감 칸 = 디지털 직인(철산 · 탕정 · 분당과 같음) · 법인인감 칸 · 대표자 (인)은 비워 두고 본부장이 실물 법인인감으로 찍는다(규칙 4)."""
     rows = [("상호(법인명)", D.COMPANY), ("사업자등록번호", D.BIZ_NO), ("법인등록번호", D.CORP_NO), ("본점(사업장) 소재지", D.ADDRESS), ("대표자 성명", D.CEO)]
     body = ('<h1 style="margin:0 0 7mm">사용인감계</h1><table class="f" style="margin-bottom:6mm">' + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in rows) + "</table>"
-            '<div class="gam"><div><b>사 용 인 감</b><span style="display:flex;align-items:center;justify-content:center"><img src="' + seal_uri + '" style="width:26mm;height:26mm;opacity:.92" alt=""></span></div><div><b>법 인 인 감</b><span></span></div></div>'
+            '<div class="gam"><div><b>사 용 인 감</b><span style="display:flex;align-items:center;justify-content:center">'
+            + (f'<img src="{seal_uri}" style="width:26mm;height:26mm;opacity:.92" alt="">' if seal_uri else '') + '</span></div><div><b>법 인 인 감</b><span></span></div></div>'
             f'<p class="b">위 사용인감은 당사가 {e(TO)}의 「입주박람회 주관사 선정 입찰」에 참가함에 있어 입찰참가신청서 · 이행각서 · 서약서 등 입찰 관련 서류와 협약 체결에 관한 서류에 사용하는 인감임을 신고합니다.</p>'
             '<p class="b">당사는 위 사용인감을 날인하여 행한 모든 행위에 대하여 법인인감을 날인하여 행한 것과 동일하게 일체의 책임을 지겠습니다.</p>'
             f'<div class="dt" style="margin:6mm 0 5mm">{ymd()}</div><div class="sg">신고인<br>상 호 : {e(D.COMPANY)}<br>대표자 : 대표이사 {e(D.CEO)} (인)</div>'
             f'<div class="to">{e(TO)} 귀중</div>'
-            '<p style="font-size:9pt;color:#555;margin-top:8mm;line-height:1.5">' + NOTE_GAM + '</p>')
+            '<p style="font-size:9pt;color:#555;margin-top:5mm;line-height:1.45">' + NOTE_GAM + '</p>')
     return page("제출서류 4 · 사용인감계", body)
 
 
@@ -325,7 +326,9 @@ def main():
     r12 = render("12_비밀유지_서약서", doc("비밀 유지 서약서", [f12(seal_uri)]))
     r13 = render("13_서류미반환_이의미제기_서약서", doc("서약서", [f13(seal_uri)]))
     rgam = render(f"{D.FILE_TITLE.split(' 입주')[0]}_사용인감계_날인출력용", doc("사용인감계", [f_gam(seal_uri)]))
-    have_scan = os.path.exists(SEAL_SCAN)
+    # 본부장 10-28 '직인 찍을 거 먼저 올려줘' — 직인 · 법인인감을 모두 실물로 찍을 수 있게 빈 칸 5쪽(1 · 11 · 12 · 13 · 사용인감계)
+    rprint = render(f"{D.FILE_TITLE.split(' 입주')[0]}_날인출력용_5쪽", doc("날인 출력용", [f01(None), f11(None), f12(None), f13(None), f_gam(None)]))
+    have_scan = os.path.exists(SEAL_SCAN) or not D.GAM_SUBMIT   # 사용인감계를 내지 않으면(본부장 10-28) 날인 대기 없음
     if final:
         assert have_scan, f"사용인감계 실물 날인 스캔이 없음: {SEAL_SCAN}"
 
@@ -341,12 +344,14 @@ def main():
             d.insert_pdf(src, from_page=p - 1, to_page=p - 1)
         return d
 
-    parts.append(("1", "입찰참가신청서(자유 양식)", f"작성 {ymd()} · 사용인감", fitz.open(r01)))
+    parts.append(("1", "입찰참가신청서(자유 양식)", f"작성 {ymd()} · " + ("사용인감" if D.GAM_SUBMIT else "대표이사 직인"), fitz.open(r01)))
     parts.append(("2", "사업자등록증 사본", f"{D.ISSUE['biz']} 발급", take(nr("05_사업자등록증.pdf"), [1])))
     parts.append(("3", "법인 등기부등본(최근 1개월)", f"{D.ISSUE['reg']} 발급 · 대표 주소 가림", take(nr("06_법인등기부등본_법인인감증명서.pdf"), [1, 2])))
     d4 = take(nr("06_법인등기부등본_법인인감증명서.pdf"), [3])
-    d4.insert_pdf(fitz.open(SEAL_SCAN) if have_scan else fitz.open(rgam))
-    parts.append(("4", "인감증명서 / 사용인감계(최근 1개월)", f"인감증명서 {D.INGAM_DATE} 발급 · 가림 + 사용인감계" + ("" if have_scan else "(날인 전)"), d4))
+    if D.GAM_SUBMIT:
+        d4.insert_pdf(fitz.open(SEAL_SCAN) if os.path.exists(SEAL_SCAN) else fitz.open(rgam))
+    parts.append(("4", "인감증명서(최근 1개월)" if not D.GAM_SUBMIT else "인감증명서 / 사용인감계(최근 1개월)",
+                  f"인감증명서 {D.INGAM_DATE} 발급 · 가림" + ("" if not D.GAM_SUBMIT else " + 사용인감계" + ("" if os.path.exists(SEAL_SCAN) else "(날인 전)")), d4))
     parts.append(("5", "법인 사업자 통장 사본", "법인 명의 계좌", fitz.open(BANK)))
     parts.append(("6", "국세 · 지방세 완납 증명서(유효기한 내)", f"{D.ISSUE['tax']} 발급", take(nr("07_국세_지방세_완납증명서.pdf"), [1, 2])))
     parts.append(("7", "4대 사회보험 가입자 명부(최근 1개월)", f"{D.ROSTER_DATE} 발급 · 13명 · 개인정보 가림", take(nr("08_4대보험_가입자명부_완납증명서.pdf"), [1, 2])))
@@ -361,9 +366,9 @@ def main():
     for _l, a, _b in ranges:
         d10.insert_pdf(prop, from_page=a - 1, to_page=a - 1)
     parts.append(("10", "컴플레인 · A/S 관리 프로세스(취소 · 환불 포함)", "표지 + 제안서 해당 쪽", d10))
-    parts.append(("11", "청렴 계약 이행각서(자유 양식)", "사용인감", fitz.open(r11)))
-    parts.append(("12", "비밀 유지 서약서(자유 양식)", "사용인감", fitz.open(r12)))
-    parts.append(("13", "서류 미반환 · 이의 미제기 서약서(자유 양식)", "사용인감", fitz.open(r13)))
+    parts.append(("11", "청렴 계약 이행각서(자유 양식)", "사용인감" if D.GAM_SUBMIT else "대표이사 직인", fitz.open(r11)))
+    parts.append(("12", "비밀 유지 서약서(자유 양식)", "사용인감" if D.GAM_SUBMIT else "대표이사 직인", fitz.open(r12)))
+    parts.append(("13", "서류 미반환 · 이의 미제기 서약서(자유 양식)", "사용인감" if D.GAM_SUBMIT else "대표이사 직인", fitz.open(r13)))
     # 선택 자료
     sel = fitz.open()
     sel.insert_pdf(nr("09_기업신용평가서.pdf"), from_page=1)
@@ -386,6 +391,7 @@ def main():
     out.save(path, garbage=GARBAGE, deflate=True)
     print(f"{'제출본' if have_scan else '날인 전 확인본'} {out.page_count}쪽 · {os.path.getsize(path) / 1e6:.1f}MB → {path}")
     print(f"사용인감계 출력용 → {rgam}")
+    print(f"날인 출력용 5쪽(빈 칸) → {rprint}")
     for n, t, s, a, b in spans:
         print(f"  {n:>3} {t} · p.{a}{'' if a == b else f'~{b}'} · {s}")
 
