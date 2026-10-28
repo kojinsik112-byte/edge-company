@@ -351,12 +351,12 @@ def apply(G):
             return ""
         return f'<figure><img src="assets_ins/{img}.jpg" alt="" style="object-position:{pos}"><figcaption>{cap}<small>{sub_}</small></figcaption></figure>'
     p_lx5 = ("std", dict(sec="09. 차별화 포인트", title="경관조명 [[진단 · 제안]], 이렇게 합니다",
-        lead="동 파사드 → 진입부 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다 - 아래 사진은 타 단지 경관조명 연출 예시입니다(엘리프 한신더휴 수원 실제 모습 아님).",
+        lead="동 파사드 → 진입부 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다 - 아래 사진은 엘리프 한신더휴 수원 경관조명 연출 시뮬레이션 · 실제와 다를 수 있음 · 설치 여부는 협의회 · 관리주체 결정.",
         body=('<div class="nb"><div class="gal lx5">'
-              + _lf("lx_front1", "동 파사드 라인조명", "타 단지 연출 예시 · 야간 인지성 · 눈부심 없는 상향광")
-              + _lf("lx_front2", "단지 조감 야간 경관", "타 단지 연출 예시 · 동 간 통일된 색온도 · 산책로 동선")
-              + _lf("lx_gate", "문주 · 진입부 조명", "타 단지 연출 예시 · 진입부 첫인상 · 간접광")
-              + _lf("lx_play", "놀이터 · 산책로", "타 단지 연출 예시 · 보행 밝기 · 타이머")
+              + _lf("lx_front1", "동 파사드 라인조명", "D3 미스티포레 · 시뮬레이션 · 야간 인지성 · 눈부심 없는 상향광")
+              + _lf("lx_front2", "단지 조감 야간 경관", "통합 조감 · 시뮬레이션 · 동 간 통일된 색온도 · 산책로 동선")
+              + _lf("lx_gate", "문주 · 진입부 조명", "C3 문주 · 시뮬레이션 · 진입부 첫인상 · 간접광")
+              + _lf("lx_play", "정원 · 산책로", "C3 센트럴필드 · 시뮬레이션 · 보행 밝기 · 타이머")
               + '</div><div class="lxstep">'
               '<div><i>STEP 01</i><b>진단</b><span>현황 조도 · 눈부심 · 사각지대 측정</span></div><em>›</em>'
               '<div><i>STEP 02</i><b>설계</b><span>조도 · 색온도 · 배광을 도면으로</span></div><em>›</em>'
@@ -364,7 +364,7 @@ def apply(G):
               '<div><i>STEP 04</i><b>시공 · A/S</b><span>전기공사업 등록 업체 직접 시공</span></div>'
               '</div></div>'),
         kp=("진단 · 개선안 · 자료 제공까지가 제안 범위입니다 - [[설치 여부 · 비용은 입예협 · 관리주체]]가 정합니다.",
-            f"{D.ELEC_LICENSE} · 사진은 타 단지 경관조명 연출 예시(엘리프 한신더휴 수원 실제 모습 아님)")))
+            f"{D.ELEC_LICENSE} · 사진은 " + D.LX_CAP)))
     B.CSS += r"""
 .gal.lx5{grid-template-columns:repeat(6,1fr);grid-template-rows:1.15fr 1fr;gap:12px}
 .gal.lx5 figure:nth-child(1),.gal.lx5 figure:nth-child(2){grid-column:span 3}

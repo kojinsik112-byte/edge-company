@@ -43,7 +43,7 @@ FORM_TO = "엘리프 한신더휴 수원 입주예정자협의회"   # 별지 �
 CASE = "엘리프 한신더휴 수원 입주박람회 주관사 선정"   # 별지 2 · 3 건명
 TODOS = []
 
-SP = "/tmp/claude-0/-home-user-edge-company/a96d9eb6-5244-5d3f-9f1b-6f379ac2a82c/scratchpad"
+SP = D.SP   # 증빙 · 직인 · 스캔 폴더 — 본부장 PC = C:\본부장 안 빌드자료(10-28) · 없으면 클라우드 스크래치패드
 EV = f"{SP}/evidence"                 # 증빙 원본(깃 제외) — 2026.10.23 발급본(사업자등록증 · 등기부 · 국세 · 지방세)
 EVN = f"{SP}/evidence_nr"             # 2026.10.23 · 10.26 발급본(나리벡 때 받은 것)
 NICE_SRC = f"{EV}/NICE_기업신용평가.pdf"

@@ -643,7 +643,7 @@ def apply2(B, D, take, sub):
     _hv = lambda n: bool(n) and _os2.path.exists(_os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "assets_ins", n + ".jpg"))
     _gy = lambda key: D.IMG[key][0] if _hv(D.IMG[key][0]) else (D.IMG[key][1] if _hv(D.IMG[key][1]) else "gy_cover_aerial")  # 법정 10-23: 단지 사진 없으면 슬롯 대체(타 단지 예시)
     _own_lx = _hv(D.IMG["lx_front1"][0])
-    th = [(_gy("lx_front1"), "동 파사드 · 문주"), (_gy("lx_play"), "포켓정원 · 산책로" if _own_lx else "놀이터 (가상 연출)"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
+    th = [(_gy("lx_front1"), "동 파사드 · 문주"), (_gy("lx_play"), "정원 · 산책로" if _own_lx else "놀이터 (가상 연출)"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
