@@ -1538,7 +1538,7 @@ new("std", sec=S0, title=T_MENU,
           + _mix("③", "서비스형", 0, "상품권 없이 B 항목 · 실측 · VR · 3D · 방문 선물로 구성")
           + '</div></div></div>'),
     kp=("고른 항목의 합계가 [[세대당 15만원 상당 × 계약 세대]] 안에 들어오도록 맞춥니다 - 사용 내역은 공개합니다.",
-        f"금액 = 1,149세대 모두 계약 시({_won(_MB)} 상당 = {D.fund_split()}) · 단가 · 수량 미정 항목은 협약 때 협의회와 정함 · 할인 항목은 15만원에서 빼지 않음"))
+        f"금액 = 모두 계약 시 {_won(_MB)} 상당({D.fund_split()}) · 할인 항목은 15만원에서 빼지 않음"))
 B.CSS += (".mnx{display:grid;grid-template-columns:1.62fr 1fr;gap:18px;flex:1;min-height:0}"
           ".tbl.mnu td{padding:7px 9px;font-size:13px;line-height:1.38}.tbl.mnu td.g{width:42px;text-align:center;font-weight:800}.tbl.mnu td.k{font-size:13.5px;width:33%}"
           ".tbl.mnu td.r{white-space:nowrap;color:var(--gold);font-weight:800;font-variant-numeric:tabular-nums}"
