@@ -257,7 +257,7 @@ EXPO_CAPS = [c for c in EXPO_CAPS_ALL if _os.path.exists(_os.path.join(_AI, c[1]
 assert len(RECENT3_500) == 20 and sum(1 for r in RECENT3_500 if r[3]) == 20 and all(any(r[1] == k for r in RECENT3_500) for k in JUGWAN_ADD) and all(any(r[1] == k for r in RECENT3_500) for k in R500_HAVE), len(RECENT3_500)
 
 # ------------------------------------------------------------ 제출서류(docs_gy.py) — 공고 ◆필수 제출서류 · 별지 6 서류 제출 목록표 순서
-GAM_SUBMIT = False                # 본부장 10-28 '사용인감계 굳이 안 해도 됨' — 별첨 1 · 4) '인감증명서/사용인감계' 중 인감증명서만 냄(법인인감 11.03까지 없음)
+GAM_SUBMIT = True                 # 본부장 10-29 도장안: 법인인감 확보 → 사용인감계 날인 스캔(작업/사용인감계_날인스캔.pdf · 10.29) 넣음. 기본안(False · 180쪽)은 작업/기본안_사용인감계없음/
 SIGN_DATE = (2026, 10, 30)        # 자유 양식 · 사용인감계 작성일 — 내부 발송 11.01(일) 18:00 전 · 바뀌면 이 한 줄만
 ISSUE = dict(biz="2026.10.23", reg="2026.10.23", tax="2026.10.23", ltax="2026.10.23")  # 10.23 발급본(등기부 1개월 = ~11.22 · 국세 · 지방세 유효기한 안)
 INGAM_DATE = "2026.10.26"         # 법인 인감증명서(10.26 발급 · 주민번호 뒷자리 가림본 · 11.02 기준 1개월 안)
