@@ -315,6 +315,9 @@ def gs_final(doc):
     _t = re.sub(r"[\s ⁠]+", " ", _t)
     for bad in ("확정 원칙", "창구(협의)", "다음 영업일)", "공고 업무 범위 1) ~ 8)", "신청 기한까지", "최대 10억", "공정 7개", "7개 공정"):
         assert bad not in _t, ("경산 마무리 문구 남음", bad, re.findall(r".{0,20}" + re.escape(bad) + r".{0,10}", _t)[:3])
+    import gs_fix  # 10-29 최종 검수 문구(경산 폴더)
+    doc = gs_fix.fix(doc)
+    gs_fix.report()
     return doc
 
 
