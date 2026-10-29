@@ -291,7 +291,7 @@ def ev8_pages(seal_uri):
             ("평가완료일", f"{D.NICE_DATE} · 연 1회 정기 평가(재무제표 기준) · 유효기간 안 최근 평가본"), ("발췌 범위", "원본 9쪽 ‘04 영업 현황(기업개요)’ 중 ‘연혁’ · 전문은 선택 자료")]
     pa = ('<h2>붙임 A · NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌</h2><table class="f" style="margin-bottom:4mm">'
           + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in info) + "</table>"
-          f'<img src="{pathlib.Path(nfn).as_uri()}" style="display:block;width:118mm;margin:0 auto;border:1px solid #bbb">'
+          f'<img src="{pathlib.Path(nfn).as_uri()}" style="display:block;width:106mm;margin:0 auto;border:1px solid #bbb">'
           '<p style="font-size:10pt;margin-top:3mm">연혁의 2023/11 ~ 2026/07 주관 6행이 최근 3년 1,000세대 이상 주관 실적입니다. 위 발췌는 원본과 같습니다.</p>')
     pages = [page("제출서류 8 · 붙임 A", pa)]
     for i in range(0, len(B_CAPS), 2):
