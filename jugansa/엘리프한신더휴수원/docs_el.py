@@ -49,7 +49,7 @@ EVN = f"{SP}/evidence_nr"             # 2026.10.23 · 10.26 발급본(나리벡 
 NICE_SRC = f"{EV}/NICE_기업신용평가.pdf"
 ROSTER = f"{SP}/cs_sub/엣지컴퍼니_4대보험_사업장가입자명부_20261023_가림.pdf"   # 2026.10.23 발급 13명 · 성명 가운데 글자 · 주민번호 뒷자리 가림
 INGAM = f"{EVN}/법인인감증명서.pdf"   # 2026.10.26 발급 · 주민번호 뒷자리 가림본(나리벡 06과 같은 파일)
-DNB = f"{EV}/건축자문_협약서_가림.pdf"   # 건축 분야 기술 자문 업무협약서(2026.10.28 · 양측 날인 · 을 상호 · 사업자번호 · 주소 · 대표 · 도장 가림) 2쪽 = ⑨ 붙임
+DNB = f"{EV}/건축자문_협약서_가림.pdf"   # 건축 분야 기술 자문 업무협약서(2026.10.28 · 양측 날인 · 본부장 10-29 v2 = 1쪽 상호 보임 · 2쪽 을 칸만 모자이크) 2쪽 = ⑨ 붙임
 DNB_CO = "주식회사 디엔비파트너스건축사사무소"   # 협약서 원문 상호(본부장 10-29 '상단 업체명은 가림 안 해도 돼')
 DNB_NAME = "디엔비파트너스건축사사무소 · 건축 분야 기술 자문 협력사(업무협약 2026.10.28 · 사본 붙임)"   # 본부장 결정 10-28 표기
 SGI_IMG = os.path.join(HERE, "assets_ins", "os_sgi_bond_masked.png")   # SGI 계약보증보험증권 1쪽(가림)
@@ -639,6 +639,7 @@ def doc09():
 <table class="t"><tbody>
 <tr><td class="k" style="width:28%">관리 거점</td><td class="l">경인 지사(경기도 평택시 비전동 866-3 · 상설 쇼룸) — 시공 · A/S 관리 · 출동 · 계약과 책임은 울산 본사</td></tr>
 <tr><td class="k">출동</td><td class="l">경인 지사 + 공개 입찰로 뽑은 {ST['local']}권 참여 시공업체 · 직영 품목(조명 · 실링팬 · 커튼)은 본사 시공팀</td></tr>
+<tr><td class="k">지사 확장</td><td class="l">{D.BRANCH7_TAG} — {D.BRANCH7} · 엘리프 한신더휴 관리 · 출동은 지금처럼 경인 지사(평택)</td></tr>
 </tbody></table>
 <h2>6. 이행 담보</h2>
 <table class="t"><tbody>
@@ -678,39 +679,10 @@ def doc09_annex():
 <table class="t" style="margin-top:10pt"><tbody>
 {"".join(f'<tr><td class="k" style="width:20%">{a}</td><td class="l">{b}</td></tr>' for a, b in rows)}
 </tbody></table>
-<p class="note" style="margin-top:8pt">※ 사본의 을 사업자등록번호 · 주소 · 대표자 · 날인은 가렸습니다(가림 없는 원본은 요청 시 열람). 자문인 성명 · 자격증 사본은 협의회가 요청하면 제출합니다(제9조 ①).</p>
+<p class="note" style="margin-top:8pt">※ 사본 2쪽의 을 칸(상호 · 사업자등록번호 · 주소 · 대표자 · 날인)은 가렸습니다 — 을 상호는 1쪽 첫 줄과 이 쪽에 적었고, 가림 없는 원본은 요청 시 열람합니다. 자문인 성명 · 자격증 사본은 협의회가 요청하면 제출합니다(제9조 ①).</p>
 {sign()}"""
     return doc("⑨ 붙임 건축 자문 협약 요지", [body])
 
-
-def clean_scan(src, dst):
-    """사본 스캔 보정(본부장 10-29 'A안'): 회색 바탕 → 흰색 · 기울기만 바로잡음(글자 · 가림 · 날인은 그대로)."""
-    import io
-    from PIL import Image, ImageOps
-    d, o = fitz.open(src), fitz.open()
-    for pg in d:
-        im = Image.open(io.BytesIO(d.extract_image(pg.get_images()[0][0])["image"])).convert("RGB")
-        g = ImageOps.invert(im.convert("L").point(lambda v: 255 if v > 200 else v))
-        best = max((_rowvar(g.rotate(a / 10)), a / 10) for a in range(-15, 16))[1]   # -1.5° ~ +1.5° · 0.1° 단위
-        if best:
-            im = im.rotate(best, resample=Image.BICUBIC, fillcolor=(255, 255, 255))
-        im = im.point(lambda v: 255 if v >= 214 else round(v * 255 / 214))   # 바탕 214 이상 = 흰색 · 나머지는 같은 비율로 밝힘
-        buf = io.BytesIO(); im.save(buf, "JPEG", quality=88)
-        np_ = o.new_page(width=pg.rect.width, height=pg.rect.height)
-        np_.insert_image(np_.rect, stream=buf.getvalue())
-        print(f"  사본 보정 {pg.number + 1}쪽 · 기울기 {best:+.1f}°")
-    o.save(dst, garbage=GARBAGE, deflate=True)
-    return dst
-
-
-def _rowvar(g):
-    """가로 줄 투영의 분산 — 글줄이 수평일 때 가장 큼(기울기 찾기)."""
-    s = g.resize((g.width // 6, g.height // 6))
-    w, h = s.size
-    px = s.load()
-    rows = [sum(px[x, y] for x in range(w)) for y in range(h)]
-    m = sum(rows) / h
-    return sum((r - m) ** 2 for r in rows)
 
 
 # ================================================================== ⑮ 하자 보수 이행각서(자유 양식)
@@ -979,8 +951,7 @@ def main():
     r08 = stamped(fit(render("08_3_계약취소_환불규정", doc08_rule()), 2, 3))
     d09 = stamped(fit(render("09_AS_사후관리_계획서", doc09()), 2))
     a09 = stamped(fit(render("09_2_붙임_건축자문_협약_요지", doc09_annex()), 1))
-    n09 = annex_label(clean_scan(DNB, out("09_3_건축자문_협약서_보정.pdf")), out("09_3_붙임_건축자문_협약서_가림.pdf"),
-                      "제출서류 ⑨ · 붙임 — 건축 분야 기술 자문 업무협약서 사본(2026.10.28 · 을 정보 가림)")
+    n09 = annex_label(DNB, out("09_3_붙임_건축자문_협약서_가림.pdf"), "제출서류 ⑨ · 붙임 — 건축 분야 기술 자문 업무협약서 사본(2026.10.28 · 2쪽 을 정보 가림)")
     d15 = stamped(fit(render("15_하자보수_이행각서", doc15()), 1))
     d16 = stamped(fit(render("16_비밀유지_서약서", doc16()), 1))
     d17 = stamped(fit(render("17_이의제기_금지_서약서", doc17()), 1))
