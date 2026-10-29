@@ -327,7 +327,7 @@ def gp_final(doc):
     디자인 레이어 증서(tjdesign.cert_html)는 전체 세대수(1,511)로 그리므로 여기서 공공분양 기준으로 바꾼다."""
     doc = nr_final(doc)
     for a_, b_ in [("공고 업무 범위 1) ~ 8)도", "공고 별첨 9) · 10)의 업무도"),
-                   ("<b>전 세대 1,511세대</b><small>전 세대 동일 기준</small>", "<b>공공분양 1,003세대</b><small>행복주택은 협의 후 박람회 참여</small>"),
+                   ("<b>전 세대 1,511세대</b><small>전 세대 동일 기준</small>", "<b>공공분양 1,003세대</b><small>행복주택은 혜택 대상 아님 · 박람회만 협의 후</small>"),
                    ("<b>2억 2,665만원 상당</b><small>1,511세대 × 15만원", "<b>1억 5,045만원 상당</b><small>1,003세대 × 15만원")]:
         doc = _loose(doc, a_, b_)
     _t = re.sub(r"<[^>]+>", " ", re.sub(r"<style.*?</style>|<script.*?</script>", "", doc, flags=re.S))
