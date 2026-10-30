@@ -927,9 +927,9 @@ def elbaf_hair_back(lk):
         H = f'fill="url(#hair§)" stroke="#3d2820" stroke-width="2" stroke-linejoin="round"'
         g = ""
         for sx in (-1, 1):
-            for x, y, r in ((58, -40, 15), (70, -26, 17), (78, -6, 17), (76, 16, 16), (66, 34, 14), (54, 46, 11), (62, -6, 18), (60, 18, 16)):
+            for x, y, r in ((58, -40, 15), (70, -26, 17), (78, -6, 17), (74, 12, 15), (62, -8, 17), (60, 10, 13)):
                 g += f'<circle cx="{sx * x}" cy="{y}" r="{r}" {H}/>'
-            g += "".join(f'<path d="M {sx * x},{y} a 5,5 0 1 1 {sx * 6},3" stroke="#4a3a34" stroke-width="1.4" fill="none" opacity=".8"/>' for x, y in ((70, -24), (78, -2), (74, 20), (62, 36)))
+            g += "".join(f'<path d="M {sx * x},{y} a 5,5 0 1 1 {sx * 6},3" stroke="#4a3a34" stroke-width="1.4" fill="none" opacity=".8"/>' for x, y in ((70, -24), (78, -2), (72, 14)))
         return g
     if lk.get("nami_braids"):      # 양옆으로 늘어뜨린 가는 땋은 머리
         return "".join(f'<ellipse cx="{sx * (40 - k * 0.5):.1f}" cy="{14 + k * 9}" rx="5" ry="5.5" fill="url(#hair§)" stroke="#3d2820" stroke-width="1.2"/>' for sx in (-1, 1) for k in range(6))
@@ -960,8 +960,8 @@ def elbaf_hat(lk):
         return G + horns + dome("#24222c") + strip() + band()
     if h == "viking_usopp":       # 얼굴을 감싼 분홍 두건(이마 · 양옆) + 옆 헤드폰 · 그 위에 금 투구(줄무늬는 투구 안에만) · 금 뿔 위로
         yb = -34
-        hood = (f'<path d="M -58,-30 C -62,-74 62,-74 58,-30 Q 66,16 50,56 L 36,50 Q 46,16 44,-12 Q 0,-30 -44,-12 Q -46,16 -36,50 L -50,56 Q -66,16 -58,-30 Z" fill="#e06a9a" {S}/>'
-                '<path d="M -52,-6 Q -56,22 -44,48 M 52,-6 Q 56,22 44,48 M -40,-18 Q 0,-32 40,-18" stroke="#b84a78" stroke-width="1.6" fill="none"/>'
+        hood = (f'<path d="M -58,-30 C -62,-74 62,-74 58,-30 Q 62,2 56,22 L 44,20 Q 48,2 44,-12 Q 0,-30 -44,-12 Q -48,2 -44,20 L -56,22 Q -62,2 -58,-30 Z" fill="#e06a9a" {S}/>'      # 귀 바로 아래까지만 (본부장 10-31)
+                '<path d="M -52,-6 Q -54,8 -50,18 M 52,-6 Q 54,8 50,18 M -40,-18 Q 0,-32 40,-18" stroke="#b84a78" stroke-width="1.6" fill="none"/>'
                 f'<circle cx="58" cy="10" r="10.5" fill="{gold}" {S}/><circle cx="58" cy="10" r="5.4" fill="#9aa0aa" stroke="#5a5f6a" stroke-width="1"/><path d="M 52,4 L 64,16 M 64,4 L 52,16" stroke="#5a5f6a" stroke-width="1"/>')
         horns = "".join(f'<path d="M {sx * 40},-80 Q {sx * 72},-100 {sx * 54},-146 Q {sx * 50},-112 {sx * 30},-92 Z" fill="{gold}" {S}/>' + ridge(sx, ((44, -94), (52, -110), (54, -126)), "#a8761e") for sx in (-1, 1))
         dpath = f"M -54,{yb} C -56,-120 56,-120 54,{yb} Z"
