@@ -727,6 +727,7 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
         bk, bkx = (0.92, 1.55) if "huge" in ex_ else (0.82, 1.24) if "burly" in ex_ else (0.94, 0.92) if "tall" in ex_ else (0.76, 1.0)     # 2.2등신 (본부장 10-31)
         hs_ = HEAD_SCALE * (1.1 if "huge" in ex_ else 1.2 if "burly" in ex_ else 1.24)
         hdy = (205 - 44) * (1 - bk) * (0.6 if view else 1)
+        hs_ *= lk.get("head_k", 1)
     hsx = hs_ * (1.14 if "wide_head" in lk["ex"] else 1)
     HG = f'<g transform="translate(0,{HEAD_PIVOT + hdy:.1f}) scale({hsx:.3f},{hs_:.3f}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
     BG = f'<g transform="translate(0,205) scale({bkx},{bk}) translate(0,-205)">'
@@ -1077,26 +1078,29 @@ def _shine(): return '<path d="M -34,-36 Q -22,-52 -4,-55" stroke="#ffffff" stro
 MV_HATS = {"m_spidey", "m_iron", "m_warmachine", "m_deadpool", "m_venom", "m_panther", "m_antman", "m_cap", "m_wolverine", "m_loki", "m_magneto", "m_falcon", "m_wanda", "m_starlord"}
 def mv_hat(lk):
     h = lk["hat"]; S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
-    if h == "m_spidey":
-        web = "".join(f'<path d="M 0,6 L {70 * math.cos(math.radians(a)):.1f},{6 + 70 * math.sin(math.radians(a)):.1f}" stroke="#2a0a0e" stroke-width="1" opacity=".75"/>' for a in range(-180, 180, 30))
-        web += "".join(f'<ellipse cx="0" cy="6" rx="{r}" ry="{r * 0.92:.1f}" fill="none" stroke="#2a0a0e" stroke-width="1" opacity=".75"/>' for r in (14, 27, 40, 53))
-        eyes = "".join(f'<path d="M {sx * 5},2 Q {sx * 8},-16 {sx * 30},-13 Q {sx * 38},2 {sx * 22},13 Q {sx * 9},14 {sx * 5},2 Z" fill="#f4f8fb" stroke="#121218" stroke-width="3.6" stroke-linejoin="round"/>' for sx in (-1, 1))
-        return _g("ms", "#d42430") + _clip("mk", MASKP) + f'<path d="{MASKP}" fill="url(#ms§)" {S}/><g clip-path="url(#mk§)">{web}</g>' + eyes + _shine()
+    if h == "m_spidey":      # 달걀형 마스크 · 턱이 좁아짐 · 크고 각진 흰 눈 (본부장 10-31 '너무 땡그래')
+        SPM = "M -47,0 C -52,-78 52,-78 47,0 C 45,24 30,44 0,52 C -30,44 -45,24 -47,0 Z"
+        web = "".join(f'<path d="M 0,8 L {80 * math.cos(math.radians(a_)):.1f},{8 + 80 * math.sin(math.radians(a_)):.1f}" stroke="#2a0a0e" stroke-width="1" opacity=".75"/>' for a_ in range(-180, 180, 30))
+        web += "".join(f'<ellipse cx="0" cy="8" rx="{r}" ry="{r * 1.04:.1f}" fill="none" stroke="#2a0a0e" stroke-width="1" opacity=".75"/>' for r in (13, 25, 37, 49))
+        eyes = "".join(f'<path d="M {sx * 5},4 Q {sx * 6},-14 {sx * 24},-18 Q {sx * 40},-14 {sx * 36},4 Q {sx * 26},16 {sx * 10},14 Q {sx * 4},12 {sx * 5},4 Z" fill="#f4f8fb" stroke="#121218" stroke-width="3.8" stroke-linejoin="round"/>'
+                       f'<path d="M {sx * 12},-6 Q {sx * 20},-12 {sx * 28},-10" stroke="#ffffff" stroke-width="2" fill="none" opacity=".9"/>' for sx in (-1, 1))
+        neck = '<path d="M -12,44 L 12,44 L 12,60 L -12,60 Z" fill="#c41e2a" stroke="#3d2820" stroke-width="1.6"/>'
+        return neck + _g("ms", "#d42430") + _clip("mk", SPM) + f'<path d="{SPM}" fill="url(#ms§)" {S}/><g clip-path="url(#mk§)">{web}</g>' + eyes + '<path d="M -32,-34 Q -20,-50 -2,-53" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".45"/>'
     if h in ("m_iron", "m_warmachine"):
         iron = h == "m_iron"
         hc, pc, gl = ("#c8202a", "#e8b43a", "#9af4ff") if iron else ("#5a606c", "#9aa0aa", "#cfefff")
-        helm = "M -52,8 C -56,-72 56,-72 52,8 C 52,30 38,48 0,52 C -38,48 -52,30 -52,8 Z"
-        plate = "M -37,-28 L -7,-31 L 0,-25 L 7,-31 L 37,-28 L 38,2 Q 37,12 31,17 L 27,34 Q 17,46 0,49 Q -17,46 -27,34 L -31,17 Q -37,12 -38,2 Z"
+        helm = "M -47,14 L -50,-26 C -50,-60 -28,-72 0,-72 C 28,-72 50,-60 50,-26 L 47,14 L 40,36 L 22,54 L 0,58 L -22,54 L -40,36 Z"     # 각진 방패형 (본부장 10-31)
+        plate = "M -36,-30 L -7,-33 L 0,-26 L 7,-33 L 36,-30 L 37,4 L 32,18 L 28,38 L 16,50 L 0,54 L -16,50 L -28,38 L -32,18 L -37,4 Z"
         D = (f'<defs><radialGradient id="ih§" cx=".35" cy=".25" r=".9"><stop offset="0" stop-color="{mix(hc, "#ffffff", .38)}"/><stop offset=".5" stop-color="{hc}"/><stop offset="1" stop-color="{mix(hc, "#000000", .45)}"/></radialGradient>'
              f'<linearGradient id="ip§" x1="0" y1="0" x2=".2" y2="1"><stop offset="0" stop-color="{mix(pc, "#ffffff", .4)}"/><stop offset=".45" stop-color="{pc}"/><stop offset="1" stop-color="{mix(pc, "#000000", .35)}"/></linearGradient>'
              f'<radialGradient id="ig§"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="{gl}"/><stop offset="1" stop-color="{gl}" stop-opacity="0"/></radialGradient></defs>')
         s = D + f'<path d="{helm}" fill="url(#ih§)" {S}/>'
-        s += _clip("ic", helm) + f'<g clip-path="url(#ic§)"><path d="M 0,-60 L 0,-32 M -22,-50 Q -38,-36 -42,-12 M 22,-50 Q 38,-36 42,-12" stroke="{mix(hc, "#000000", .5)}" stroke-width="1.6" fill="none"/></g>'      # 투구 판 이음선 (투구 안에만)
-        s += "".join(f'<circle cx="{sx * 49}" cy="6" r="8.5" fill="{mix(hc, "#000000", .2)}" stroke="{INK}" stroke-width="1.8"/><circle cx="{sx * 49}" cy="6" r="4" fill="{pc}" stroke="{INK}" stroke-width="1"/>' for sx in (-1, 1))   # 귀 원판
+        s += _clip("ic", helm) + f'<g clip-path="url(#ic§)"><path d="M 0,-72 L 0,-34 M -24,-62 L -42,-34 L -44,-6 M 24,-62 L 42,-34 L 44,-6" stroke="{mix(hc, "#000000", .5)}" stroke-width="1.6" fill="none"/></g>'      # 투구 판 이음선 (투구 안에만)
+        s += "".join(f'<path d="M {sx * 44},-6 L {sx * 52},-4 L {sx * 52},14 L {sx * 44},18 Z" fill="{mix(hc, "#000000", .2)}" stroke="{INK}" stroke-width="1.8" stroke-linejoin="round"/><rect x="{sx * 48 - 2.5}" y="0" width="5" height="10" rx="1.5" fill="{pc}"/>' for sx in (-1, 1))   # 귀 판(각진)
         s += f'<path d="{plate}" fill="url(#ip§)" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
         s += f'<path d="M -37,-28 L -7,-31 L 0,-25 L 7,-31 L 37,-28 L 36,-20 L 7,-23 L 0,-17 L -7,-23 L -36,-20 Z" fill="{mix(pc, "#000000", .18)}"/>'                # 이마 턱(그늘)
-        s += "".join(f'<path d="M {sx * 31},17 L {sx * 22},14 L {sx * 18},34 M {sx * 38},2 L {sx * 31},17" stroke="{mix(pc, "#000000", .45)}" stroke-width="1.6" fill="none"/>' for sx in (-1, 1))   # 광대 · 볼 판 선
-        s += f'<path d="M -11,33 L 11,33" stroke="{INK}" stroke-width="2.2" stroke-linecap="round"/><path d="M -7,39 L 7,39" stroke="{mix(pc, "#000000", .45)}" stroke-width="1.4"/>'   # 입 슬릿
+        s += "".join(f'<path d="M {sx * 32},18 L {sx * 21},15 L {sx * 17},38 L {sx * 16},50 M {sx * 37},4 L {sx * 32},18" stroke="{mix(pc, "#000000", .45)}" stroke-width="1.6" fill="none"/>' for sx in (-1, 1))   # 광대 · 볼 판 선
+        s += f'<path d="M -11,36 L 11,36" stroke="{INK}" stroke-width="2.4" stroke-linecap="round"/><path d="M -7,43 L 7,43" stroke="{mix(pc, "#000000", .45)}" stroke-width="1.4"/>'   # 입 슬릿
         s += "".join(f'<ellipse cx="{sx * 19}" cy="-6" rx="17" ry="7" fill="url(#ig§)" opacity=".75"/><path d="M {sx * 31},-10 L {sx * 8},-8 L {sx * 10},-1 L {sx * 29},-3 Z" fill="#ffffff" stroke="{gl}" stroke-width="1.6" stroke-linejoin="round"/>' for sx in (-1, 1))   # 빛나는 눈
         s += f'<path d="M -22,-26 Q -10,-28 -4,-27" stroke="#ffffff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".6"/><path d="M -36,-34 Q -24,-56 -4,-60" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".45"/>'
         return s
@@ -1347,7 +1351,7 @@ DK, BR, PL = "#8a5a3a", "#7a4a2a", "#f2e2c8"
 BOSS_LOOK = M("아이언맨", hs="bald", suit="#c8202a", hat="m_iron", mv_top="iron", glove="#c8202a", legs="#c8202a", boots="#c8202a", boot_top=176, iron_arms=True, iron_legs=True, mvp=["repulsor"], ex=["no_ears", "burly"])
 ROSTER = {
     "scout": [
-        M("스파이더맨", hs="bald", suit="#d42430", hat="m_spidey", mv_top="spidey", legs="#2a4fb0", boots="#d42430", boot_top=150, glove="#d42430", ex=["no_ears"]),
+        M("스파이더맨", hs="bald", suit="#d42430", hat="m_spidey", head_k=0.86, mv_top="spidey", legs="#2a4fb0", boots="#d42430", boot_top=150, glove="#d42430", ex=["no_ears"]),
         M("블랙위도우", hs="long", hair="#c8442a", suit="#1a1a22", mv_top="widow", legs="#1a1a22", boots="#1a1a22", boot_top=150, girl=True, vibe="glam", mouth="lips", mvp=["batons"], eyec="#3a6a5a"),
         M("호크아이", hs="short", hair="#8a6a3a", suit="#2a2a34", mv_top="hawkeye", legs="#2a2a34", boots="#1a1a22", glove="#3a2a4a", mvp=["bow"], mvb=["quiver"], eyec="#3a5a7a"),
         M("앤트맨", hs="bald", suit="#c8202a", hat="m_antman", mv_top="antman", legs="#c8202a", boots="#1a1a22", glove="#1a1a22", ex=["no_ears"]),
