@@ -20,43 +20,43 @@ def C(name, hs, hair, out, c1, c2="#ffffff", c3="#24304a", skin=SK, hat=None, ey
                 ex=list(ex), eyec=eyec, legs=legs, girl=girl, shoes=shoes, pose=pose, props=list(props), vibe=vibe, shorts=shorts)
 
 BOSS_LOOK = C("루피", "messy", "#1f1d26", "vest_open", "#d8352e", "#f2c94c", hat="straw", eyes="round", mouth="laugh", vibe="fun",
-              ex=["scar_luffy", "x_scar", "sash_yellow"], eyec="#3a2a22", legs="#3f6fb5", shorts=True, shoes="sandal", pose="fist")
+              ex=["fur_cuffs", "scar_luffy", "x_scar", "sash_yellow"], eyec="#3a2a22", legs="#3f6fb5", shorts=True, shoes="sandal", pose="fist")
 ROSTER = {
     "scout": [
-        C("나미", "long_wavy", "#f68a3c", "stripe", "#ffffff", "#4f8fe0", eyec="#b5652e", girl=True, vibe="glam", legs="#4f6fb0", pose="hold", props=["climatact"], ex=["earrings_gold"]),
+        C("나미", "long_wavy", "#f68a3c", "stripe", "#ffffff", "#4f8fe0", eyec="#b5652e", girl=True, vibe="glam", legs="#4f6fb0", pose="hold", props=["climatact"], ex=["nami_tattoo", "log_pose", "earrings_gold"]),
         C("우솝", "curly", "#2b2220", "overalls", "#c58a4a", "#fff8ee", skin=SK3, vibe="fun", legs="#c58a4a", pose="fist", props=["slingshot"], ex=["long_nose", "goggles_head"]),
-        C("캐럿", "bunny", "#fbf6ee", "dress", "#8fd0f2", "#ffffff", eyec="#e0484a", girl=True, vibe="cute", pose="wave", ex=["bunny_ears"], legs="#fbf6ee"),
+        C("캐럿", "bunny", "#f6dd8a", "dress", "#8fd0f2", "#ffffff", eyec="#e0484a", girl=True, vibe="cute", pose="wave", ex=["bunny_ears"], legs="#fbf6ee"),
         C("비비", "pony", "#5aaef0", "dress", "#ffffff", "#5aaef0", eyec="#3a5a8a", girl=True, vibe="cute", pose="wave", ex=["earrings_gold"], legs="#f0e6d8"),
     ],
     "analysis": [
-        C("로빈", "blunt", "#2b2a38", "coat", "#7b5aa6", "#f4efe6", eyec="#3a6aa8", girl=True, vibe="glam", pose="cross", ex=["sunglasses_head"], legs="#3a3448"),
-        C("로우", "short", "#23222c", "hoodie", "#f2c94c", "#23222c", hat="law", vibe="cool", pose="shoulder", props=["nodachi"], ex=["goatee", "earrings_gold", "eyebags"], eyec="#6a5a3a", legs="#3a3a40"),
-        C("징베", "topknot", "#23222c", "kimono", "#ec8b3c", "#ffffff", "#2a5ea8", skin="#86b6dc", vibe="cool", pose="cross", eyec="#3a3a4a", legs="#2a5ea8"),
-        C("마르코", "pineapple", "#f4d35a", "vest_open", "#8a6ac0", "#8a6ac0", vibe="cool", eyes="sleepy", pose="cross", props=["blue_flame"], ex=["beads_blue"], eyec="#4a5a7a"),
+        C("로빈", "blunt", "#2b2a38", "coat", "#7b5aa6", "#f4efe6", eyec="#3a6aa8", girl=True, vibe="glam", pose="cross", ex=["hana_arms", "sunglasses_head"], legs="#3a3448"),
+        C("로우", "short", "#23222c", "hoodie", "#f2c94c", "#23222c", hat="law", vibe="cool", pose="shoulder", props=["nodachi"], ex=["heart_jolly", "sideburns", "goatee", "earrings_gold", "eyebags"], eyec="#6a5a3a", legs="#3a3a40"),
+        C("징베", "topknot", "#23222c", "kimono", "#ec8b3c", "#ffffff", "#2a5ea8", skin="#86b6dc", vibe="cool", mouth="flat", pose="cross", eyec="#3a3a4a", legs="#2a5ea8", ex=["tusks"]),
+        C("마르코", "pineapple", "#f4d35a", "vest_open", "#8a6ac0", "#8a6ac0", vibe="cool", eyes="sleepy", pose="cross", props=["blue_flame"], ex=["wb_tattoo", "beads_blue"], eyec="#4a5a7a"),
         C("베가펑크", "big_round", "#c89ae6", "labcoat", "#ffffff", "#6ab0e6", vibe="fun", pose="hold", props=["tablet"], eyec="#5a4a8a", ex=["goggles_head"]),
     ],
     "build": [
-        C("프랑키", "pompadour", "#3aa6ec", "hawaii", "#e64a4a", "#ffd34d", skin=SK2, eyes="shades", mouth="grin", vibe="fun", pose="cheer"),
-        C("상디", "sanji", "#f6d260", "suit", "#232633", "#5a8fe0", "#232633", eyec="#3a5a8a", vibe="cool", pose="pockets", ex=["curly_brow", "goatee_blond"]),
+        C("프랑키", "pompadour", "#3aa6ec", "hawaii", "#e64a4a", "#ffd34d", skin=SK2, eyes="shades", mouth="grin", vibe="fun", pose="cheer", ex=["star_tattoo", "metal_nose"]),
+        C("상디", "sanji", "#f6d260", "suit", "#232633", "#5a8fe0", "#232633", eyec="#3a5a8a", vibe="cool", pose="pockets", ex=["cigarette", "curly_brow", "goatee_blond"]),
         C("쵸파", "chopper_fur", "#a8693a", "fur", "#a8693a", "#f2d6b0", skin="#f7e2c4", hat="chopper", eyec="#3a2a22", vibe="cute", pose="wave", ex=["blue_nose"], legs="#e88aa8", shorts=True, shoes="hoof"),
         C("브룩", "afro", "#1f1d26", "suit", "#1f1d26", "#ffffff", "#c9483b", skin="#f6f2ea", hat="tophat", eyes="skull", mouth="skull", vibe="fun", pose="hold", props=["cane"]),
-        C("에이스", "messy", "#1f1d26", "shirtless", SK2, skin=SK2, hat="ace", mouth="grin", vibe="cool", pose="fist", props=["flame"], ex=["freckles", "beads_red"], eyec="#3a2a22", legs="#2b3a5a", shorts=True),
+        C("에이스", "messy", "#1f1d26", "shirtless", SK2, skin=SK2, hat="ace", mouth="grin", vibe="cool", pose="fist", props=["flame"], ex=["asce", "ace_belt", "freckles", "beads_red"], eyec="#3a2a22", legs="#2b3a5a", shorts=True),
         C("사보", "wavy", "#f6d260", "coat", "#2f4f8a", "#ffffff", hat="sabo", eyec="#3a4a7a", vibe="cool", pose="shoulder", props=["pipe"], ex=["scar_sabo", "cravat"]),
-        C("키드", "flame", "#e0402c", "fur_coat", "#c0392b", "#f2a6a0", mouth="grin", vibe="cool", pose="cross", ex=["goggles_head"], eyec="#c9a23a", legs="#2b2a38"),
-        C("야마토", "pony", "#f6f6f6", "kimono", "#ffffff", "#e05a5a", "#8c4bd0", hair2="#6ad8cc", eyec="#e0584a", girl=True, vibe="cool", pose="shoulder", props=["club"], ex=["horns"], legs="#ffffff"),
+        C("키드", "flame", "#e0402c", "fur_coat", "#c0392b", "#f2a6a0", mouth="kid", vibe="cool", pose="cross", ex=["metal_arm", "stitch_scar", "goggles_head"], eyec="#c9a23a", legs="#2b2a38"),
+        C("야마토", "pony", "#f6f6f6", "kimono", "#ffffff", "#e05a5a", "#8c4bd0", hair2="#6ad8cc", eyec="#e0584a", girl=True, vibe="cool", pose="shoulder", props=["club"], ex=["wrist_cuffs", "horns"], legs="#ffffff"),
     ],
     "audit": [
-        C("조로", "short", "#47a05a", "kimono", "#3f7d4f", "#2b5a3a", "#d9493b", skin=SK2, eyes="zoro", mouth="smirk", vibe="cool", pose="cross", props=["swords3"], ex=["earrings3"], eyec="#3a2a22", legs="#2b3a2e"),
+        C("조로", "short", "#47a05a", "kimono", "#3f7d4f", "#2b5a3a", "#d9493b", skin=SK2, eyes="zoro", mouth="smirk", vibe="cool", pose="cross", props=["swords3"], ex=["arm_bandana", "earrings3"], eyec="#3a2a22", legs="#2b3a2e"),
         C("미호크", "short", "#1f1d26", "mihawk", "#24161c", "#8a1f2c", hat="mihawk", eyes="hawk", mouth="flat", vibe="cool", pose="cross", props=["yoru"],
           ex=["mustache_thin", "sideburns", "gold_sleeves", "cross_necklace"], legs="#efeae0", shoes="#1f1d26"),
-        C("스모커", "slick", "#eeeef2", "coat", "#f4f4f6", "#3a5f9a", mouth="flat", vibe="cool", pose="cross", props=["jitte"], ex=["fur_collar"], eyec="#5a5a6a"),
+        C("스모커", "slick", "#eeeef2", "coat", "#f4f4f6", "#3a5f9a", mouth="flat", vibe="cool", pose="cross", props=["jitte"], ex=["cigars3", "fur_collar"], eyec="#5a5a6a"),
         C("타시기", "bob", "#2c2c5a", "tshirt", "#f6a8bc", "#f6a8bc", eyec="#3a3a6a", girl=True, vibe="cute", pose="hold", props=["katana_up"], ex=["glasses_square"], legs="#4a5a8a"),
         C("가프", "short", "#c4c4c8", "marine", "#ffffff", "#3a5f9a", hat="marine", mouth="grin", vibe="fun", pose="fist", ex=["beard_white", "scar_garp"], eyec="#3a2a22"),
         C("코비", "side", "#f6a8c8", "marine", "#ffffff", "#3a5f9a", hat="marine", eyec="#7a4a8a", vibe="cute", pose="wave"),
     ],
     "mail": [
-        C("바르톨로메오", "mohawk", "#3aaa6a", "coat", "#2b2a38", "#ffffff", mouth="teeth", vibe="fun", pose="fist", ex=["nose_ring"]),   # 봉쿠레 대신 (본부장 10-31)
-        C("버기", "messy", "#3a86e0", "coat", "#d03a32", "#f4d35a", hat="captain", mouth="grin", vibe="fun", pose="fist", props=["knife"], ex=["red_nose", "clown_paint"], eyec="#3a2a22"),
+        C("바르톨로메오", "mohawk", "#3aaa6a", "coat", "#2b2a38", "#ffffff", mouth="wild", vibe="fun", pose="fist", ex=["nose_ring"]),   # 봉쿠레 대신 (본부장 10-31)
+        C("버기", "messy", "#3a86e0", "coat", "#d03a32", "#f4d35a", hat="captain", mouth="laugh", vibe="fun", pose="fist", props=["knife"], ex=["red_nose", "clown_paint"], eyec="#3a2a22"),
         C("페로나", "drills", "#f6a0c6", "dress", "#2b2a38", "#e0484a", hat="crown", eyec="#6a3a5a", girl=True, vibe="cute", pose="wave", props=["ghost"], ex=["star_cheek"], legs="#2b2a38"),
         C("오키쿠", "pony", "#2b2230", "kimono", "#f4b6c4", "#ffffff", "#7a3a8a", eyec="#4a2a3a", girl=True, vibe="glam", mouth="lips", pose="hold", props=["sword_hip"], legs="#f4b6c4"),   # 바르톨로메오 대신 (본부장 10-31)
     ],
@@ -67,7 +67,7 @@ ROSTER = {
         C("히요리", "blunt", "#1f1d26", "kimono", "#ec6a84", "#ffffff", "#f4d35a", eyec="#4a2a3a", girl=True, vibe="glam", pose="hold", props=["fan"], ex=["kanzashi"], legs="#ec6a84"),
     ],
     "retro": [
-        C("샹크스", "messy", "#c8352c", "cloak", "#1f1d26", "#ffffff", vibe="cool", pose="onearm", props=["sword_hip"], ex=["scar_shanks", "stubble", "no_left_arm"], eyec="#3a2a22", legs="#5a4a3a"),
+        C("샹크스", "messy", "#c8352c", "cloak", "#1f1d26", "#ffffff", vibe="cool", pose="onearm", props=["sword_hip"], ex=["open_shirt_white", "scar_shanks", "stubble", "no_left_arm"], eyec="#3a2a22", legs="#5a4a3a"),
         C("흰수염", "short", "#f4f4f4", "coat", "#f6f2e8", "#8a6ac0", skin=SK2, hat="bandana", mouth="flat", vibe="cool", pose="hold", props=["bisento"], ex=["mustache_crescent"], eyec="#4a4a5a"),
         C("레베카", "long", "#f6a0c6", "dress", "#ec6a94", "#f6d36b", eyec="#3a6aa8", girl=True, vibe="cute", pose="hold", props=["katana_up"], ex=["headband_flower"], legs="#f6e0d0"),   # 레일리 대신 (본부장 10-31)
         C("크로커다일", "slick", "#1f1d26", "fur_coat", "#3a2f2a", "#6a5a4a", mouth="smirk", vibe="cool", pose="hip", ex=["scar_croc", "hook"], eyec="#4a3a2a"),
@@ -246,7 +246,15 @@ def mouth(lk):
     if m == "open":
         return f'<path d="M -8,23 Q 0,35 8,23 Q 0,25 -8,23 Z" fill="#a8404a" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/><path d="M -4,30 Q 0,33 4,30 Q 0,28 -4,30 Z" fill="#f48a9a"/>'
     if m == "grin":
-        return f'<path d="M -13,22 Q 0,38 13,22 Z" fill="#ffffff" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/><path d="M -12,25 L 12,25" stroke="#d8c8c0" stroke-width="1.2"/>'
+        return (f'<path d="M -13,22 Q 0,40 13,22 Q 0,25 -13,22 Z" fill="#8a2f36" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
+                '<path d="M -11.5,23 Q 0,26 11.5,23 L 10.5,26.5 Q 0,29.5 -10.5,26.5 Z" fill="#ffffff"/><path d="M -6,32.5 Q 0,37.5 6,32.5 Q 0,29.5 -6,32.5 Z" fill="#f48a9a"/>')
+    if m == "wild":         # 바르톨로메오: 크게 벌린 입 + 들쭉날쭉한 이
+        return (f'<path d="M -17,21 Q 0,44 17,21 Q 0,26 -17,21 Z" fill="#7a2430" stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"/>'
+                '<path d="M -15,22.5 L -11,28 L -8,23.6 L -4,29 L 0,24.2 L 4,29 L 8,23.6 L 11,28 L 15,22.5 Q 0,26 -15,22.5 Z" fill="#ffffff"/>'
+                '<path d="M -8,36 Q 0,42 8,36 Q 0,32 -8,36 Z" fill="#f48a9a"/>')
+    if m == "kid":
+        return (f'<path d="M -15,21 Q 0,40 15,21 Z" fill="#ffffff" stroke="#4a1a3a" stroke-width="3.6" stroke-linejoin="round"/><path d="M -13,25 L 13,25" stroke="#d8c8c0" stroke-width="1.2"/>'
+                '<path d="M -15,21 Q 0,17 15,21" stroke="#4a1a3a" stroke-width="3" fill="none" stroke-linecap="round"/>')
     if m == "skull":
         return f'<rect x="-13" y="25" width="26" height="10" rx="3" fill="#ffffff" stroke="#24222c" stroke-width="2"/>' + "".join(f'<path d="M {x},25 L {x},35" stroke="#24222c" stroke-width="1.5"/>' for x in (-6, 0, 6))
     if m == "teeth":
@@ -264,14 +272,14 @@ def face_extras(lk):
         s += f'<path d="M -1,17 Q 1,19 2,17" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
     if "scar_luffy" in ex: s += '<path d="M -31,24 L -15,24 M -28,21 L -28,27 M -22,21 L -22,27 M -18,21 L -18,27" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>'
     if "long_nose" in ex: s += f'<path d="M -2,12 C 10,12 30,14 40,18 C 42,22 38,24 34,23 C 22,22 8,22 -2,22 Z" fill="url(#skin§)" stroke="{INK}" stroke-width="2"/>'
-    if "red_nose" in ex: s += f'<circle cx="0" cy="18" r="8" fill="#e0302a" stroke="{INK}" stroke-width="2"/><circle cx="-3" cy="15" r="2.4" fill="#ffffff" opacity=".8"/>'
+    if "red_nose" in ex: s += f'<circle cx="0" cy="13" r="7.5" fill="#e0302a" stroke="{INK}" stroke-width="2"/><circle cx="-2.6" cy="10" r="2.2" fill="#ffffff" opacity=".8"/>'
     if "blue_nose" in ex: s += f'<ellipse cx="0" cy="18" rx="7" ry="5" fill="#3a86e0" stroke="{INK}" stroke-width="1.8"/><circle cx="-2" cy="16.5" r="1.8" fill="#ffffff"/>'
     if "freckles" in ex: s += "".join(f'<circle cx="{sx * x}" cy="{y}" r="1.5" fill="#c07a50"/>' for sx in (-1, 1) for x, y in ((24, 18), (29, 21), (21, 22)))
     if "curly_brow" in ex: s += '<path d="M 9,-14 Q 17,-20 25,-14 Q 28,-8 22,-8 Q 18,-10 21,-13" stroke="#c9a23a" stroke-width="2.2" fill="none" stroke-linecap="round"/>'
     if "goatee" in ex: s += '<path d="M -4,34 L 4,34 L 2,42 L -2,42 Z" fill="#23222c"/>'
     if "goatee_blond" in ex: s += '<path d="M -3,35 L 3,35 L 1,41 L -1,41 Z" fill="#e0b84a"/>'
     if "eyebags" in ex: s += f'<path d="M -24,22 Q -17,25 -10,22 M 10,22 Q 17,25 24,22" stroke="{mix(sk, INK, 0.3)}" stroke-width="1.5" fill="none"/>'
-    if "scar_sabo" in ex: s += '<ellipse cx="-17" cy="8" rx="15" ry="16" fill="#e07a6a" opacity=".22"/>'
+    if "scar_sabo" in ex: s += '<path d="M -31,-4 Q -24,-10 -14,-6 Q -4,0 -6,12 Q -8,22 -18,24 Q -30,22 -32,10 Z" fill="#d88a7a" opacity=".16"/>'
     if "scar_shanks" in ex: s += "".join(f'<path d="M {-24 + k * 5},-8 L {-18 + k * 5},22" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>' for k in range(3))
     if "scar_croc" in ex: s += '<path d="M -34,16 L 34,14" stroke="#b0604e" stroke-width="2" stroke-linecap="round"/>' + "".join(f'<path d="M {x},11 L {x},19" stroke="#b0604e" stroke-width="1.4"/>' for x in (-20, -6, 8, 22))
     if "scar_garp" in ex: s += '<path d="M -30,-8 L -10,10" stroke="#b0604e" stroke-width="1.8" stroke-linecap="round"/>'
@@ -284,6 +292,18 @@ def face_extras(lk):
     if "mustache_thin" in ex:
         s += '<path d="M -1,21 Q -8,19 -14,22 Q -19,24 -21,18 Q -17,23 -12,20 Q -6,17 -1,19 Z M 1,21 Q 8,19 14,22 Q 19,24 21,18 Q 17,23 12,20 Q 6,17 1,19 Z" fill="#23222c"/>'
         s += '<path d="M -1.6,33 L 1.6,33 L 1,47 L 0,50 L -1,47 Z" fill="#23222c"/>'
+    smoke = lambda x, y: "".join(f'<circle cx="{x + dx_}" cy="{y + dy_}" r="{r_}" fill="#e4e7ec" stroke="#c3c8d0" stroke-width="1" opacity=".9"/>' for dx_, dy_, r_ in ((0, 0, 3), (4, -7, 4), (1, -15, 5)))
+    if "cigarette" in ex: s += '<path d="M 5,28 L 33,21" stroke="#3d2820" stroke-width="6" stroke-linecap="round"/><path d="M 5,28 L 32,21.3" stroke="#ffffff" stroke-width="3.8" stroke-linecap="round"/><path d="M 10,26.8 L 14,25.8" stroke="#e8a23a" stroke-width="3.8"/><path d="M 30,21.8 L 33,21" stroke="#ff7a3a" stroke-width="3.8" stroke-linecap="round"/>' + smoke(37, 15)
+    if "cigar" in ex: s += '<path d="M 6,29 L 30,27" stroke="#3d2820" stroke-width="7.4" stroke-linecap="round"/><path d="M 6,29 L 29,27.1" stroke="#7a4a2a" stroke-width="5" stroke-linecap="round"/><path d="M 12,28.5 L 15,28.2" stroke="#d9a63a" stroke-width="5"/><path d="M 28,27.2 L 31,27" stroke="#9a9aa2" stroke-width="5" stroke-linecap="round"/>' + smoke(36, 18)
+    if "cigars3" in ex:     # 스모커: 입 오른쪽으로 시가 3개 (본부장 10-31)
+        for ex_, ey_ in ((30, 19), (32, 27), (30, 35)):
+            s += (f'<path d="M 4,28 L {ex_},{ey_}" stroke="#3d2820" stroke-width="7.4" stroke-linecap="round"/><path d="M 4,28 L {ex_ - 1},{ey_}" stroke="#7a4a2a" stroke-width="4.8" stroke-linecap="round"/>'
+                  f'<path d="M {4 + (ex_ - 4) * 0.25:.1f},{28 + (ey_ - 28) * 0.25:.1f} L {4 + (ex_ - 4) * 0.36:.1f},{28 + (ey_ - 28) * 0.36:.1f}" stroke="#d9a63a" stroke-width="4.8"/>'
+                  f'<path d="M {ex_ - 2},{ey_} L {ex_ + 1},{ey_}" stroke="#ff7a3a" stroke-width="4.8" stroke-linecap="round"/>')
+        s += smoke(38, 16)
+    if "tusks" in ex: s += "".join(f'<path d="M {sx * 12},31 L {sx * 9},18 L {sx * 6},31 Z" fill="#fbfaf4" stroke="{INK}" stroke-width="1.6" stroke-linejoin="round"/>' for sx in (-1, 1))
+    if "stitch_scar" in ex: s += '<path d="M -27,-12 L -12,26" stroke="#9a4a3e" stroke-width="2" stroke-linecap="round"/>' + "".join(f'<path d="M {-27 + k * 3.75 - 3},{-12 + k * 9.5 + 1} l 6,-2.4" stroke="#9a4a3e" stroke-width="1.6" stroke-linecap="round"/>' for k in range(1, 5))
+    if "metal_nose" in ex: s += f'<rect x="-5" y="13" width="10" height="8" rx="3" fill="#c9ced6" stroke="{INK}" stroke-width="1.6"/><circle cx="-2" cy="15.5" r="1.3" fill="#ffffff"/>'
     if "sideburns" in ex: s += "".join(f'<path d="M {sx * 45},-6 Q {sx * 47},10 {sx * 41},26 L {sx * 37},24 Q {sx * 41},10 {sx * 40},-6 Z" fill="#1f1d26"/>' for sx in (-1, 1))
     if "glasses_round" in ex: s += "".join(f'<circle cx="{sx * 17}" cy="8" r="13" fill="none" stroke="#c9a45c" stroke-width="2.2"/>' for sx in (-1, 1)) + '<path d="M -4,6 L 4,6" stroke="#c9a45c" stroke-width="2"/>'
     if "glasses_square" in ex: s += "".join(f'<rect x="{sx * 17 - 13}" y="-3" width="26" height="22" rx="5" fill="none" stroke="#d03a32" stroke-width="2.4"/>' for sx in (-1, 1)) + '<path d="M -4,6 L 4,6" stroke="#d03a32" stroke-width="2"/>'
@@ -314,7 +334,9 @@ def hat(lk):
     if h == "ace":
         return (f'<path d="M -78,-48 C -60,-64 -40,-58 0,-58 C 40,-58 60,-64 78,-48 C 60,-40 40,-44 0,-44 C -40,-44 -60,-40 -78,-48 Z" fill="#f08c2c" {S}/>'
                 f'<path d="M -38,-54 C -40,-98 -10,-96 0,-86 C 10,-96 40,-98 38,-54 Z" fill="#f59a3a" {S}/><path d="M -38,-62 L 38,-62 L 38,-54 L -38,-54 Z" fill="#3a2a22"/>'
-                f'<circle cx="-14" cy="-70" r="7" fill="#5aaef0" {S}/><circle cx="14" cy="-70" r="7" fill="#f0484a" {S}/>')
+                f'<circle cx="-14" cy="-70" r="7" fill="#5aaef0" {S}/><circle cx="14" cy="-70" r="7" fill="#f0484a" {S}/>'
+                '<path d="M -17,-72 L -16,-71 M -12,-72 L -11,-71 M -17,-66 Q -14,-69 -11,-66" stroke="#1f1d26" stroke-width="1.4" fill="none" stroke-linecap="round"/>'
+                '<path d="M 11,-72 L 12,-71 M 16,-72 L 17,-71 M 11,-68 Q 14,-64 17,-68" stroke="#1f1d26" stroke-width="1.4" fill="none" stroke-linecap="round"/>')
     if h in ("tophat", "sabo"):
         c = "#1f1d26" if h == "tophat" else "#2f4f8a"
         g = "".join(f'<circle cx="{sx * 14}" cy="-86" r="10" fill="#a8dcf6" stroke="#5a4232" stroke-width="3.5"/>' for sx in (-1, 1)) if h == "sabo" else ""
@@ -326,7 +348,8 @@ def hat(lk):
                 '<path d="M -16,-108 L 16,-74 M 16,-108 L -16,-74" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/><path d="M -36,-70 Q 0,-76 36,-70 L 36,-62 Q 0,-66 -36,-62 Z" fill="#3a86e0"/>')
     if h == "law":
         spots = "".join(f'<circle cx="{x}" cy="{y}" r="{r}" fill="#6a5040"/>' for x, y, r in ((-28, -58, 6), (-6, -74, 7), (20, -64, 6), (36, -44, 5), (-40, -36, 5), (6, -50, 5)))
-        return f'<path d="M -58,10 C -66,-70 66,-70 58,10 C 54,0 52,-14 48,-24 C 30,-40 -30,-40 -48,-24 C -52,-14 -54,0 -58,10 Z" fill="#fbf8f2" {S}/>' + spots
+        return (f'<path d="M -57,6 C -66,-84 66,-84 57,6 Q 54,-8 47,-15 Q 0,-26 -47,-15 Q -54,-8 -57,6 Z" fill="#fbf8f2" {S}/>'
+                '<path d="M -47,-15 Q 0,-26 47,-15" stroke="#e6dfd2" stroke-width="5" fill="none" stroke-linecap="round"/>' + spots)
     if h == "mihawk":
         return (f'<path d="M 18,-92 C 50,-134 104,-112 92,-78 C 74,-96 46,-96 18,-86 Z" fill="#fbf8f2" stroke="#cfcfd4" stroke-width="2"/>'
                 f'<ellipse cx="0" cy="-58" rx="86" ry="16" fill="#1f1d26" {S}/><path d="M -36,-60 C -38,-104 38,-104 36,-60 Z" fill="#26242e" {S}/>')
@@ -463,6 +486,21 @@ def outfit(lk, team):
           f'<path d="{TORSO}" transform="translate(-6,-2)" fill="none" stroke="#000000" stroke-width="9" opacity=".13"/></g>')
     if "beads_red" in lk["ex"]: s += "".join(f'<circle cx="{19 * math.cos(a):.1f}" cy="{44 + 13 * math.sin(a):.1f}" r="3.8" fill="#e0302a" stroke="{INK}" stroke-width="1"/>' for a in [math.pi * (0.1 + k * 0.1) for k in range(9)])
     if "beads_blue" in lk["ex"]: s += "".join(f'<circle cx="{17 * math.cos(a):.1f}" cy="{46 + 11 * math.sin(a):.1f}" r="3.4" fill="#3a86e0" stroke="{INK}" stroke-width="1"/>' for a in [math.pi * (0.1 + k * 0.1) for k in range(9)])
+    if "open_shirt_white" in lk["ex"]:
+        s += f'<path d="{TORSO}" fill="#f6f4ee" {S}/><path d="M -13,43 L 13,43 L 0,86 Z" fill="url(#skin§)"/><path d="M -13,43 L 0,86 L 13,43" stroke="#cfcac0" stroke-width="2" fill="none"/>'
+    if "wb_tattoo" in lk["ex"]:
+        s += '<path d="M -8,64 L 8,80 M 8,64 L -8,80" stroke="#3a4a9a" stroke-width="3" stroke-linecap="round"/><path d="M -12,70 Q 0,82 12,70 Q 0,77 -12,70 Z" fill="#3a4a9a"/>'
+    if "heart_jolly" in lk["ex"]:
+        s += '<circle cx="0" cy="72" r="9" fill="#1f1d26"/><path d="M -5,72 Q 0,78 5,72" stroke="#f2c94c" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="-3.4" cy="68.5" r="1.4" fill="#f2c94c"/><circle cx="3.4" cy="68.5" r="1.4" fill="#f2c94c"/>'
+        s += '<path d="M -14,62 L -9,67 M 14,62 L 9,67 M -14,82 L -9,77 M 14,82 L 9,77" stroke="#1f1d26" stroke-width="3" stroke-linecap="round"/>'
+    if "ace_belt" in lk["ex"]:
+        s += f'<path d="M -27,110 L 27,110 L 27,119 L -27,119 Z" fill="#5a3a22" {S}/><rect x="-7" y="108.5" width="14" height="12" rx="2" fill="#e8a23a" stroke="{INK}" stroke-width="1.4"/>'
+        s += '<text x="0" y="118" font-family="Arial, sans-serif" font-size="9" font-weight="900" fill="#5a3a22" text-anchor="middle">A</text>'
+    if "hana_arms" in lk["ex"]:
+        for sx in (-1, 1):
+            s += f'<path d="M {sx * 30},52 Q {sx * 40},40 {sx * 46},28" stroke="{INK}" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M {sx * 30},52 Q {sx * 40},40 {sx * 46},28" stroke="url(#skin§)" stroke-width="5.6" fill="none" stroke-linecap="round"/>'
+            s += f'<circle cx="{sx * 47}" cy="26" r="4.6" fill="url(#skin§)" stroke="{INK}" stroke-width="1.6"/>'
+            s += "".join(f'<ellipse cx="{sx * 30 + 5 * math.cos(a):.1f}" cy="{53 + 5 * math.sin(a):.1f}" rx="3.6" ry="2.2" fill="#f6a6c8" stroke="#d0607e" stroke-width=".7" transform="rotate({math.degrees(a):.0f} {sx * 30 + 5 * math.cos(a):.1f} {53 + 5 * math.sin(a):.1f})"/>' for a in [k * 1.2566 for k in range(5)])
     if "cross_necklace" in lk["ex"]:
         s += '<path d="M -10,44 Q -4,58 0,62 Q 4,58 10,44" stroke="#d9a63a" stroke-width="1.3" fill="none"/>'
         s += f'<path d="M -1.8,61 L 1.8,61 L 1.8,65 L 6,65 L 6,68.5 L 1.8,68.5 L 1.8,78 L -1.8,78 L -1.8,68.5 L -6,68.5 L -6,65 L -1.8,65 Z" fill="#e6b84a" stroke="{INK}" stroke-width="1.1"/>'
@@ -496,6 +534,7 @@ def legs(lk):
         leg = lambda top, bot, w0, w1: f"M {cx_ - w0},{top} Q {cx_ - w0 - 1},{(top + bot) / 2} {cx_ - w1},{bot} L {cx_ + w1},{bot} Q {cx_ + w0 + 1},{(top + bot) / 2} {cx_ + w0},{top} Z"
         if lk["shorts"]:
             s += f'<path d="{leg(146, 202, 7.5, 6)}" fill="url(#skin§)" {S}/><path d="{leg(118, 158, 10.5, 10)}" fill="{L}" {S}/>'
+            if "fur_cuffs" in lk["ex"]: s += "".join(f'<circle cx="{cx_ + d}" cy="157" r="3.6" fill="#fbf8f2" stroke="#cfcac0" stroke-width=".9"/>' for d in (-8, -3, 2, 7))
             s += f'<path d="M {cx_ + 3.5},124 L {cx_ + 3.5},154" stroke="#000000" stroke-width="4" opacity=".12" stroke-linecap="round"/>'
         else:
             s += f'<path d="{leg(118, 202, 10.5, 7.5)}" fill="{L}" {S}/>'
@@ -511,26 +550,48 @@ def body(lk, team, pose=None):
     pose = pose or lk["pose"]; Lp, Rp = POSES[pose]
     bare = lk["out"] in ("vest_open", "shirtless", "stripe", "dress", "hawaii", "tshirt")
     col = "url(#skin§)" if bare else "url(#gold§)" if "gold_sleeves" in lk["ex"] else "url(#cloth§)"
-    def deco(pts):          # 금색 소매 무늬 (소용돌이)
-        if "gold_sleeves" not in lk["ex"] or not pts: return ""
-        out_ = ""
-        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
-            for t in (0.3, 0.72):
-                cx_, cy_ = ax + (bx - ax) * t, ay + (by - ay) * t
-                out_ += f'<path d="M {cx_ - 3},{cy_} a 3,3 0 1 1 3,3" stroke="#8a5a14" stroke-width="1.3" fill="none"/>'
+    def deco(pts, side="R"):  # 팔에 붙는 캐릭터 표시 (금색 소매 무늬 · 두건 · 별 · ASCE · 어깨 문신 · 로그 포스 · 수갑)
+        if not pts: return ""
+        ex, out_ = lk["ex"], ""
+        def at(seg, t):
+            (ax, ay), (bx, by) = pts[seg], pts[seg + 1]; L_ = math.hypot(bx - ax, by - ay) or 1
+            return ax + (bx - ax) * t, ay + (by - ay) * t, (bx - ax) / L_, (by - ay) / L_
+        def band(seg, t, col, w=5, edge=INK):
+            x, y, dx, dy = at(seg, t); px_, py_ = -dy * 7.6, dx * 7.6
+            return (f'<path d="M {x - px_:.1f},{y - py_:.1f} L {x + px_:.1f},{y + py_:.1f}" stroke="{edge}" stroke-width="{w + 2.4}" stroke-linecap="round"/>'
+                    f'<path d="M {x - px_:.1f},{y - py_:.1f} L {x + px_:.1f},{y + py_:.1f}" stroke="{col}" stroke-width="{w}" stroke-linecap="round"/>')
+        if "gold_sleeves" in ex:
+            for seg in range(len(pts) - 1):
+                for t in (0.3, 0.72):
+                    x, y, _, _ = at(seg, t); out_ += f'<path d="M {x - 3:.1f},{y:.1f} a 3,3 0 1 1 3,3" stroke="#8a5a14" stroke-width="1.3" fill="none"/>'
+        if "arm_bandana" in ex and side == "L":
+            out_ += band(0, 0.45, "#1f1d26", 6); x, y, _, _ = at(0, 0.45); out_ += f'<path d="M {x - 6:.1f},{y:.1f} l -7,5 l 3,-8 Z" fill="#1f1d26"/>'
+        if "star_tattoo" in ex:
+            x, y, _, _ = at(1, 0.5); out_ += f'<path d="M {x:.1f},{y - 5:.1f} l 1.5,3.4 l 3.7,.4 l -2.8,2.5 l .8,3.6 l -3.2,-1.9 l -3.2,1.9 l .8,-3.6 l -2.8,-2.5 l 3.7,-.4 Z" fill="#3a86e0"/>'
+        if "asce" in ex and side == "L":
+            x, y, dx, dy = at(0, 0.55); ang = math.degrees(math.atan2(dy, dx))
+            out_ += f'<text x="{x:.1f}" y="{y + 2.4:.1f}" font-family="Arial, sans-serif" font-size="6.4" font-weight="900" fill="#2a2a5a" text-anchor="middle" transform="rotate({ang - 90:.0f} {x:.1f} {y:.1f})">ASCE</text>'
+        if "nami_tattoo" in ex and side == "R":
+            x, y, _, _ = at(0, 0.35); out_ += f'<path d="M {x - 3:.1f},{y:.1f} a 3,3 0 1 1 3,3 a 5,5 0 1 1 -5,-5" stroke="#3a86e0" stroke-width="1.5" fill="none"/><circle cx="{x + 3:.1f}" cy="{y + 4:.1f}" r="1.8" fill="#f68a3c"/>'
+        if "log_pose" in ex and side == "R":
+            out_ += band(1, 0.82, "#8a5a30", 4); x, y, dx, dy = at(1, 0.82)
+            out_ += f'<circle cx="{x - dy * 9:.1f}" cy="{y + dx * 9:.1f}" r="4.2" fill="#cfeefb" stroke="{INK}" stroke-width="1.2"/><path d="M {x - dy * 9 - 2:.1f},{y + dx * 9:.1f} L {x - dy * 9 + 2:.1f},{y + dx * 9:.1f}" stroke="#e0484a" stroke-width="1.2"/>'
+        if "wrist_cuffs" in ex: out_ += band(len(pts) - 2, 0.84, "#8a93a3", 5)
         return out_
     out = {"behind": "", "front": "", "after_head": ""}
     out["behind"] += props_behind(lk, Rp) + legs(lk)
     arms_b, arms_f, hands = "", "", ""
     if Lp and "no_left_arm" not in lk["ex"]:
-        a, h = arm(Lp, col, hand="hook" not in lk["ex"]); a += deco(Lp)
+        metal = "metal_arm" in lk["ex"]
+        a, h = arm(Lp, "url(#steel§)" if metal else col, hand="hook" not in lk["ex"], skin="url(#steel§)" if metal else "url(#skin§)"); a += deco(Lp, "L")
+        if metal: a += "".join(f'<circle cx="{Lp[0][0] + (Lp[-1][0] - Lp[0][0]) * t:.1f}" cy="{Lp[0][1] + (Lp[-1][1] - Lp[0][1]) * t:.1f}" r="1.8" fill="#5a606a"/>' for t in (0.25, 0.5, 0.75))
         if pose in IN_FRONT: arms_f += a
         else: arms_b += a
         hands += h
         if "hook" in lk["ex"]:
             hx, hy = Lp[-1]; hands += f'<path d="M {hx},{hy - 4} L {hx},{hy + 6} Q {hx},{hy + 22} {hx - 14},{hy + 18}" stroke="{INK}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M {hx},{hy - 4} L {hx},{hy + 6} Q {hx},{hy + 22} {hx - 14},{hy + 18}" stroke="#e6c25a" stroke-width="4" fill="none" stroke-linecap="round"/>'
     if Rp:
-        a, h = arm(Rp, col, fist=pose in ("fist", "shoulder", "hold", "sing"), hand=pose != "pockets"); a += deco(Rp)
+        a, h = arm(Rp, col, fist=pose in ("fist", "shoulder", "hold", "sing"), hand=pose != "pockets"); a += deco(Rp, "R")
         if pose in IN_FRONT: arms_f += a
         elif pose == "sing": out["after_head"] += a
         else: arms_b += a
@@ -556,6 +617,7 @@ def defs(lk, n):
             f'<linearGradient id="cloth{n}" x1="0" y1="0" x2=".45" y2="1">{cel(c1, dark(c1, 0.18), ".6")}</linearGradient>'
             f'<linearGradient id="iris{n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{mix(ic, "#000000", 0.55)}"/><stop offset=".5" stop-color="{ic}"/><stop offset="1" stop-color="{mix(ic, "#ffffff", 0.45)}"/></linearGradient>'
             f'<linearGradient id="gold{n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6d27a"/><stop offset=".55" stop-color="#d9a63a"/><stop offset="1" stop-color="#a8761e"/></linearGradient>'
+            f'<linearGradient id="steel{n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e4e8ee"/><stop offset=".5" stop-color="#9aa3ad"/><stop offset="1" stop-color="#5a606a"/></linearGradient>'
             f'<radialGradient id="hawkiris{n}" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#ffe27a"/><stop offset=".6" stop-color="#e8a52a"/><stop offset="1" stop-color="#9a5a12"/></radialGradient>'
             f'<linearGradient id="straw{n}" x1="0" y1="0" x2=".3" y2="1">{cel("#ffe39a", "#e9b456")}</linearGradient>'
             f'<radialGradient id="blush{n}"><stop offset="0" stop-color="#ff7f86" stop-opacity=".9"/><stop offset="1" stop-color="#ff7f86" stop-opacity="0"/></radialGradient>'
