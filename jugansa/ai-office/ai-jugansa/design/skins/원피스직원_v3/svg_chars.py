@@ -923,6 +923,14 @@ def elbaf_top(lk):        # 이마 띠 (조로)
             + "".join(f'<rect x="{x}" y="-30" width="4" height="9" fill="#e6c25a" opacity=".8"/>' for x in (-30, -14, 2, 18)) + f'<path d="M 50,-22 L 62,-10 L 56,-8 Z M 50,-20 L 60,-2 L 54,0 Z" fill="{c}" stroke="{INK}" stroke-width="1.2"/>')
 
 def elbaf_hair_back(lk):
+    if lk.get("side_afro"):       # 우솝: 투구 아래 양옆으로 풍성하게 삐져나온 곱슬머리 (위로는 안 보임)
+        H = f'fill="url(#hair§)" stroke="#3d2820" stroke-width="2" stroke-linejoin="round"'
+        g = ""
+        for sx in (-1, 1):
+            for x, y, r in ((58, -40, 15), (70, -26, 17), (78, -6, 17), (76, 16, 16), (66, 34, 14), (54, 46, 11), (62, -6, 18), (60, 18, 16)):
+                g += f'<circle cx="{sx * x}" cy="{y}" r="{r}" {H}/>'
+            g += "".join(f'<path d="M {sx * x},{y} a 5,5 0 1 1 {sx * 6},3" stroke="#4a3a34" stroke-width="1.4" fill="none" opacity=".8"/>' for x, y in ((70, -24), (78, -2), (74, 20), (62, 36)))
+        return g
     if lk.get("nami_braids"):      # 양옆으로 늘어뜨린 가는 땋은 머리
         return "".join(f'<ellipse cx="{sx * (40 - k * 0.5):.1f}" cy="{14 + k * 9}" rx="5" ry="5.5" fill="url(#hair§)" stroke="#3d2820" stroke-width="1.2"/>' for sx in (-1, 1) for k in range(6))
     if not lk.get("braids"): return ""
@@ -959,7 +967,7 @@ def elbaf_hat(lk):
         dpath = f"M -54,{yb} C -56,-120 56,-120 54,{yb} Z"
         stripes = (f'<defs><clipPath id="uc§"><path d="{dpath}"/></clipPath></defs><g clip-path="url(#uc§)">'
                    + "".join(f'<path d="M {x},-122 Q {x * 1.12},-80 {x * 1.2},{yb}" stroke="#b8862a" stroke-width="3.6" fill="none"/>' for x in (-30, -11, 11, 30)) + '</g>')
-        return G + hood + horns + dome("#e6b84a", top=-120, w=54, yb=yb) + stripes + band(yb=yb, w=55, hgt=12)
+        return G + hood + horns + dome("#e6b84a", top=-120, w=54, yb=yb) + band(yb=yb, w=55, hgt=12)      # 투구는 맨들하게 (줄무늬 없음 · 본부장 10-31)
     if h == "viking_franky":      # 검정 큰 뿔 · 짙은 투구 · 금 테두리 + 코 보호대
         horns = "".join(f'<path d="M {sx * 46},-78 C {sx * 88},-82 {sx * 110},-104 {sx * 110},-150 C {sx * 100},-100 {sx * 84},-56 {sx * 52},-46 Z" fill="url(#hk§)" {S}/>'
                         f'<path d="M {sx * 56},-62 Q {sx * 96},-66 {sx * 98},-128" stroke="#8a8f9a" stroke-width="2.2" fill="none" opacity=".6"/>' for sx in (-1, 1))
@@ -989,7 +997,7 @@ ELBAF = {   # 이름 → 엘바프 편 차림 (공식 설정화 기준)
                 boots="#1f1d26", boot_top=190, goggles_y=True, headband="#8a2a4a"),
     "로빈": dict(out="crop", top="tank", shawl="#c9a0e8", belt=("#8a5a3a", "#c9a45c"), kilt=("#4a2a6a", 176, "long_side"), bare_legs=True, boots="#2a3a7a", boot_top=150, ex_del=["sunglasses_head", "hana_arms"]),
     "쵸파": dict(hat="chopper_elbaf", cape="#efeaf6", cape_len=176, collar="#efeaf6", collar_r=8, stripes=("#e86aa0", "#5a8ae0"), baggy=True, hoof_legs=True, belt=("#8a5a3a", "#e6c25a")),
-    "우솝": dict(hat="viking_usopp", hs="afro", out="shirtless", pose="hip", suspenders="#5a3aa0", belt=("#1f1d26", "#e6c25a"), stripes=("#e05a7a", "#5a3aa0"), baggy=True,
+    "우솝": dict(hat="viking_usopp", hs="short", side_afro=True, out="shirtless", pose="hip", suspenders="#5a3aa0", belt=("#1f1d26", "#e6c25a"), stripes=("#e05a7a", "#5a3aa0"), baggy=True,
                 boots="#8a5a3a", cuff="#c9a878", boot_top=172, pouch="#d0402c", beard="usopp", props=[], ex_del=["goggles_head"]),
     "징베": dict(out="crop", top="tunic_orange", pose="side", cape="#c8407a", cape_w=70, collar="#c8407a", collar_w=40, collar_r=9, strap="#8a5a30", strap_wide=True, belt=("#e8b830", "#3a3f4a", "dragon"),
                 kilt=("#8a6a3a", 178, "fur"), braids=True, legs="#86b6dc", boots="#7a4a2a", boot_top=192, back="axe_jinbe", ex_del=["haori", "sun_tattoo", "curly_rim"]),
