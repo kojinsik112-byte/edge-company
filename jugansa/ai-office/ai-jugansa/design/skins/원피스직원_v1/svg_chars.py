@@ -182,6 +182,7 @@ def eyes(lk, working):
     if e == "skull":
         for sx in (-1, 1): s += f'<ellipse cx="{sx * 17}" cy="6" rx="12" ry="13" fill="#24222c"/><circle cx="{sx * 17 + 4}" cy="1" r="3" fill="#ffffff" opacity=".9"/>'
         return s + '<path d="M -4,22 L 4,22 L 0,15 Z" fill="#24222c"/>'
+    if e == "hawk": return hawk_eyes(working)
     for sx in (-1, 1):
         x = sx * 17
         if e == "zoro" and sx == 1:
@@ -216,6 +217,26 @@ def eyes(lk, working):
                 s += f'<path d="M {x + sx * 10},{2 - ry * 0.4} q {sx * 6},-2 {sx * 8},-7" stroke="#2b1d18" stroke-width="2.6" fill="none" stroke-linecap="round"/>'
     return s
 
+def hawk_eyes(working):
+    """미호크: 가늘고 끝이 올라간 매의 눈 · 금빛 홍채를 윗눈꺼풀이 덮음 · 작은 눈동자 · 미간으로 내려오는 굵은 눈썹"""
+    s, D = "", "#1e1612"
+    for sx in (-1, 1):
+        x = sx * 17; ix, ox = x - sx * 11, x + sx * 12          # 눈 안쪽 · 바깥쪽 끝 (바깥이 더 높음)
+        brow = f'<path d="M {ox + sx * 2},-11 Q {x},-11 {ix - sx * 1},0 L {ix},3.5 Q {x},-5 {ox + sx * 1},-6.5 Z" fill="{D}"/>'
+        if not working:                                           # 눈 감음: 일자 눈꺼풀 + 같은 눈썹
+            s += brow + f'<path d="M {ix},10 Q {x},12 {ox},6" stroke="{D}" stroke-width="3" fill="none" stroke-linecap="round"/>'
+            continue
+        eye = f"M {ix},10 Q {x - sx * 1},1 {ox},5 Q {x},15 {ix},10 Z"
+        s += f'<defs><clipPath id="hk§{sx + 1}"><path d="{eye}"/></clipPath></defs>'
+        s += f'<path d="{eye}" fill="#fbf7ee"/>'
+        s += (f'<g clip-path="url(#hk§{sx + 1})"><circle cx="{x + sx * 0.5}" cy="9" r="6" fill="url(#hawkiris§)" stroke="#6a4210" stroke-width="1.2"/>'
+              f'<circle cx="{x + sx * 0.5}" cy="9" r="2.3" fill="{D}"/><circle cx="{x + sx * 0.5 + 2}" cy="7" r="1.2" fill="#ffffff"/>'
+              f'<path d="M {ix},3 Q {x},-2 {ox},0 L {ox},5 Q {x - sx * 1},1 {ix},10 Z" fill="#000000" opacity=".25"/></g>')    # 윗눈꺼풀 그늘
+        s += f'<path d="M {ix - sx * 1},10.5 Q {x - sx * 1},0.5 {ox + sx * 3},4" stroke="{D}" stroke-width="3.6" fill="none" stroke-linecap="round"/>'   # 굵은 윗눈꺼풀 + 꼬리
+        s += f'<path d="M {x - sx * 2},14 Q {x + sx * 5},13.5 {ox - sx * 1},8" stroke="{D}" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>'
+        s += brow
+    return s + f'<path d="M -3,-4 L -2,2 M 3,-4 L 2,2" stroke="{D}" stroke-width="1.2" opacity=".45" stroke-linecap="round"/>'   # 미간 주름
+
 def mouth(lk):
     m = lk["mouth"]
     if m == "laugh":
@@ -237,7 +258,7 @@ def mouth(lk):
 def face_extras(lk):
     ex, s, sk = lk["ex"], "", lk["skin"]
     op = {"cute": .5, "glam": .4, "cool": .18, "fun": .32}.get(lk["vibe"], .38)
-    if lk["eyes"] != "skull": s += f'<ellipse cx="-27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/><ellipse cx="27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/>'
+    if lk["eyes"] not in ("skull", "hawk"): s += f'<ellipse cx="-27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/><ellipse cx="27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/>'
     if not any(k in ex for k in ("long_nose", "red_nose", "blue_nose")) and lk["eyes"] != "skull":
         s += f'<path d="M -1,17 Q 1,19 2,17" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
     if "scar_luffy" in ex: s += '<path d="M -31,24 L -15,24 M -28,21 L -28,27 M -22,21 L -22,27 M -18,21 L -18,27" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>'
@@ -509,6 +530,7 @@ def defs(lk, n):
             f'<radialGradient id="skin{n}" cx=".4" cy=".32" r=".85"><stop offset="0" stop-color="{sk}"/><stop offset=".84" stop-color="{sk}"/><stop offset=".84" stop-color="{mix(sk, "#c08060", 0.22)}"/><stop offset="1" stop-color="{mix(sk, "#c08060", 0.22)}"/></radialGradient>'
             f'<linearGradient id="cloth{n}" x1="0" y1="0" x2=".45" y2="1">{cel(c1, dark(c1, 0.18), ".6")}</linearGradient>'
             f'<linearGradient id="iris{n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{mix(ic, "#000000", 0.55)}"/><stop offset=".5" stop-color="{ic}"/><stop offset="1" stop-color="{mix(ic, "#ffffff", 0.45)}"/></linearGradient>'
+            f'<radialGradient id="hawkiris{n}" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#ffe27a"/><stop offset=".6" stop-color="#e8a52a"/><stop offset="1" stop-color="#9a5a12"/></radialGradient>'
             f'<linearGradient id="straw{n}" x1="0" y1="0" x2=".3" y2="1">{cel("#ffe39a", "#e9b456")}</linearGradient>'
             f'<radialGradient id="blush{n}"><stop offset="0" stop-color="#ff7f86" stop-opacity=".9"/><stop offset="1" stop-color="#ff7f86" stop-opacity="0"/></radialGradient>'
             f'<clipPath id="face{n}"><path d="{FACE}"/></clipPath><clipPath id="torso{n}"><path d="{TORSO}"/></clipPath></defs>')
