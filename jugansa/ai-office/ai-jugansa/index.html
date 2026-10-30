@@ -127,7 +127,7 @@ async function init(){
   L = await (await fetch("/v4/layout.json", {cache:"no-store"})).json();
   $("stage").style.height = $("bg").style.height = px(L.H); $("bg").src = "/v4/bg.svg"; document.body.style.background = L.bg;
   $("hd").style.background = `linear-gradient(${L.header},${L.header2})`;
-  $("sub").textContent = `EDGE COMPANY · ${L.office_name} · 원피스직원`;
+  $("sub").textContent = `EDGE COMPANY · ${L.office_name} · ${(L.skin || "").replace("_", " ")}`;
   const b = L.board; Object.assign($("board").style, {left:px(b.x), top:px(b.y), width:px(b.w), height:px(b.h)});
   for (const team in L.seats) L.seats[team].forEach(s => {
     const row = s.fy - L.rooms[s.team].y > 280 ? 2 : 1;      // 1 = 뒷줄 · 2 = 앞줄 (앞줄이 위에 그려짐)

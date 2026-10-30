@@ -31,7 +31,7 @@ body{{margin:0;background:#f3ede2;font-family:"Malgun Gothic",sans-serif;width:{
 .card.boss{{background:#fff4d6;border:3px solid #c9a45c}}
 .fig{{width:226px;height:300px;margin-top:4px}} .fig svg{{width:100%;height:100%}}
 .nm{{font-weight:700;font-size:17px;color:#2b2018;margin-top:4px}} .tg{{color:#fff;font-weight:700;font-size:12px;border-radius:10px;padding:2px 10px;margin-top:5px}}
-</style></head><body><div class="hd"><b>원피스직원 v1 · {html.escape(title)}</b><span>본부장 1 + 팀원 {len(cells) - 1}명 · 팀 완장 색 = 사무실 색 · 본부장 PC 전용</span></div>
+</style></head><body><div class="hd"><b>{A.skin.replace("_", " ")} · {html.escape(title)}</b><span>본부장 1 + 팀원 {len(cells) - 1}명 · 팀 완장 색 = 사무실 색 · 본부장 PC 전용</span></div>
 <div class="grid">{"".join(cards)}</div></body></html>'''
 rows = (len(cells) + cols - 1) // cols
 H = 90 + rows * 384 + 30
