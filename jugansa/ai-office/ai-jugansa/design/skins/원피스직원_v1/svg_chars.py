@@ -197,7 +197,10 @@ def eyes(lk, working):
             s += f'<ellipse cx="{x}" cy="8" rx="9" ry="{ry}" fill="#f6d260" stroke="#2b1d18" stroke-width="1.5"/><ellipse cx="{x}" cy="8" rx="2.2" ry="{ry - 2}" fill="#2b1d18"/>'
         else:
             s += (f'<ellipse cx="{x}" cy="8" rx="10" ry="{ry}" fill="#ffffff"/><ellipse cx="{x}" cy="9" rx="8.6" ry="{ry - 1}" fill="url(#iris§)"/>'
+                  f'<ellipse cx="{x}" cy="{9 - ry * 0.55:.1f}" rx="8.6" ry="{ry * 0.42:.1f}" fill="#1e1612" opacity=".38"/>'
+                  f'<ellipse cx="{x}" cy="9" rx="8.6" ry="{ry - 1}" fill="none" stroke="{mix(lk["eyec"], "#000000", 0.55)}" stroke-width="1.1"/>'
                   f'<ellipse cx="{x}" cy="10" rx="4" ry="{ry * 0.45}" fill="#1e1612"/>'
+                  f'<ellipse cx="{x}" cy="{9 + ry * 0.55:.1f}" rx="5" ry="{ry * 0.22:.1f}" fill="#ffffff" opacity=".28"/>'
                   f'<circle cx="{x + 3.5}" cy="{8 - ry * 0.35}" r="{4 if e == "cute" else (2.4 if e == "cool" else 3.2)}" fill="#ffffff"/>'
                   f'<circle cx="{x - 3.2}" cy="{8 + ry * 0.45}" r="1.6" fill="#ffffff" opacity=".9"/>')
             if e == "cute": s += f'<path d="M {x - 4},2 l 1.2,-3 l 1.2,3 l 3,1.2 l -3,1.2 l -1.2,3 l -1.2,-3 l -3,-1.2 Z" fill="#ffffff"/>'
@@ -234,7 +237,7 @@ def mouth(lk):
 def face_extras(lk):
     ex, s, sk = lk["ex"], "", lk["skin"]
     op = {"cute": .5, "glam": .4, "cool": .18, "fun": .32}.get(lk["vibe"], .38)
-    if lk["eyes"] != "skull": s += f'<ellipse cx="-27" cy="22" rx="8" ry="4.5" fill="#ff8c8c" opacity="{op}"/><ellipse cx="27" cy="22" rx="8" ry="4.5" fill="#ff8c8c" opacity="{op}"/>'
+    if lk["eyes"] != "skull": s += f'<ellipse cx="-27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/><ellipse cx="27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/>'
     if not any(k in ex for k in ("long_nose", "red_nose", "blue_nose")) and lk["eyes"] != "skull":
         s += f'<path d="M -1,17 Q 1,19 2,17" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
     if "scar_luffy" in ex: s += '<path d="M -31,24 L -15,24 M -28,21 L -28,27 M -22,21 L -22,27 M -18,21 L -18,27" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>'
@@ -334,7 +337,8 @@ IN_FRONT = {"cross", "type"}
 def arm(pts, color, fist=False, hand=True, skin="url(#skin§)"):
     d = "M " + " L ".join(f"{x},{y}" for x, y in pts); hx, hy = pts[-1]
     a = (f'<path d="{d}" stroke="{INK}" stroke-width="17" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-         f'<path d="{d}" stroke="{color}" stroke-width="12.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>')
+         f'<path d="{d}" stroke="{color}" stroke-width="12.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+         f'<path d="{d}" transform="translate(-2.6,-1)" stroke="#ffffff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".28"/>')
     h = f'<circle cx="{hx}" cy="{hy}" r="{10 if fist else 8.5}" fill="{skin}" stroke="{INK}" stroke-width="2.2"/>' if hand else ""
     return a, h
 
@@ -422,6 +426,8 @@ def outfit(lk, team):
     elif o == "swan":
         s += "".join(f'<path d="M {sx * 26},48 q {sx * 4},-24 {sx * 16},-20 q {sx * 6},2 {sx * 2},9" stroke="#ffffff" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M {sx * 42},-6 l {sx * 9},2 l {-sx * 9},3 Z" fill="#f29a3a"/>' for sx in (-1, 1))
         s += f'<path d="M -31,92 L 31,92 L 30,100 L -30,100 Z" fill="{c2}"/>'
+    s += (f'<g clip-path="url(#torso§)"><path d="{TORSO}" transform="translate(4,3)" fill="none" stroke="#ffffff" stroke-width="5" opacity=".3"/>'
+          f'<path d="{TORSO}" transform="translate(-6,-2)" fill="none" stroke="#000000" stroke-width="9" opacity=".13"/></g>')
     if "beads_red" in lk["ex"]: s += "".join(f'<circle cx="{19 * math.cos(a):.1f}" cy="{44 + 13 * math.sin(a):.1f}" r="3.8" fill="#e0302a" stroke="{INK}" stroke-width="1"/>' for a in [math.pi * (0.1 + k * 0.1) for k in range(9)])
     if "beads_blue" in lk["ex"]: s += "".join(f'<circle cx="{17 * math.cos(a):.1f}" cy="{46 + 11 * math.sin(a):.1f}" r="3.4" fill="#3a86e0" stroke="{INK}" stroke-width="1"/>' for a in [math.pi * (0.1 + k * 0.1) for k in range(9)])
     if "cravat" in lk["ex"]: s += f'<path d="M -9,42 Q 0,60 9,42 Q 0,48 -9,42 Z" fill="#ffffff" stroke="{INK}" stroke-width="1.5"/>'
@@ -440,14 +446,19 @@ def legs(lk):
     S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'; L = lk["legs"]; s = ""
     for sx in (-1, 1):
         x0 = -23 if sx == -1 else 3
+        cx_ = x0 + 10
+        leg = lambda top, bot, w0, w1: f"M {cx_ - w0},{top} Q {cx_ - w0 - 1},{(top + bot) / 2} {cx_ - w1},{bot} L {cx_ + w1},{bot} Q {cx_ + w0 + 1},{(top + bot) / 2} {cx_ + w0},{top} Z"
         if lk["shorts"]:
-            s += f'<rect x="{x0 + 3}" y="146" width="14" height="56" rx="6" fill="url(#skin§)" {S}/><rect x="{x0}" y="118" width="20" height="40" rx="7" fill="{L}" {S}/>'
+            s += f'<path d="{leg(146, 202, 7.5, 6)}" fill="url(#skin§)" {S}/><path d="{leg(118, 158, 10.5, 10)}" fill="{L}" {S}/>'
+            s += f'<path d="M {cx_ + 3.5},124 L {cx_ + 3.5},154" stroke="#000000" stroke-width="4" opacity=".12" stroke-linecap="round"/>'
         else:
-            s += f'<rect x="{x0}" y="118" width="20" height="84" rx="8" fill="{L}" {S}/>'
+            s += f'<path d="{leg(118, 202, 10.5, 7.5)}" fill="{L}" {S}/>'
+            s += f'<path d="M {cx_ + 4},124 Q {cx_ + 5},160 {cx_ + 3},196" stroke="#000000" stroke-width="4.5" fill="none" opacity=".14" stroke-linecap="round"/>'
+            s += f'<path d="M {cx_ - 5},126 Q {cx_ - 6},150 {cx_ - 5},170" stroke="#ffffff" stroke-width="2" fill="none" opacity=".22" stroke-linecap="round"/>'
         fx = sx * 13
         if lk["shoes"] == "sandal": s += f'<ellipse cx="{fx}" cy="205" rx="13" ry="6.5" fill="url(#skin§)" {S}/><path d="M {fx - 8},202 Q {fx},198 {fx + 8},202" stroke="#c9a23a" stroke-width="3" fill="none"/>'
         elif lk["shoes"] == "hoof": s += f'<ellipse cx="{fx}" cy="205" rx="11" ry="6" fill="#6a4228" {S}/>'
-        else: s += f'<ellipse cx="{fx}" cy="205" rx="14" ry="7" fill="{lk["shoes"]}" {S}/>'
+        else: s += f'<ellipse cx="{fx}" cy="205" rx="14" ry="7" fill="{lk["shoes"]}" {S}/><ellipse cx="{fx - 4}" cy="202.5" rx="5" ry="2" fill="#ffffff" opacity=".35"/>'
     return s
 
 def body(lk, team, pose=None):
@@ -482,25 +493,34 @@ def body(lk, team, pose=None):
 
 def defs(lk, n):
     hc, h2 = lk["hair"], lk["hair2"]; sk = lk["skin"]; c1 = lk["c1"] if lk["out"] != "shirtless" else sk; ic = lk["eyec"]
-    def cel(top, bot, at=".58"): return f'<stop offset="0" stop-color="{top}"/><stop offset="{at}" stop-color="{top}"/><stop offset="{at}" stop-color="{bot}"/><stop offset="1" stop-color="{bot}"/>'
+    def cel(top, bot, at=".58"):
+        hi = mix(top, "#ffffff", 0.16)
+        return (f'<stop offset="0" stop-color="{hi}"/><stop offset=".16" stop-color="{hi}"/><stop offset=".16" stop-color="{top}"/>'
+                f'<stop offset="{at}" stop-color="{top}"/><stop offset="{at}" stop-color="{bot}"/><stop offset="1" stop-color="{mix(bot, "#000000", 0.08)}"/>')
     return (f'<defs><linearGradient id="hair{n}" x1="0" y1="0" x2=".35" y2="1">{cel(hc, dark(h2, 0.2))}</linearGradient>'
             f'<radialGradient id="skin{n}" cx=".4" cy=".32" r=".85"><stop offset="0" stop-color="{sk}"/><stop offset=".84" stop-color="{sk}"/><stop offset=".84" stop-color="{mix(sk, "#c08060", 0.22)}"/><stop offset="1" stop-color="{mix(sk, "#c08060", 0.22)}"/></radialGradient>'
             f'<linearGradient id="cloth{n}" x1="0" y1="0" x2=".45" y2="1">{cel(c1, dark(c1, 0.18), ".6")}</linearGradient>'
             f'<linearGradient id="iris{n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{mix(ic, "#000000", 0.55)}"/><stop offset=".5" stop-color="{ic}"/><stop offset="1" stop-color="{mix(ic, "#ffffff", 0.45)}"/></linearGradient>'
             f'<linearGradient id="straw{n}" x1="0" y1="0" x2=".3" y2="1">{cel("#ffe39a", "#e9b456")}</linearGradient>'
-            f'<clipPath id="face{n}"><path d="{FACE}"/></clipPath></defs>')
+            f'<radialGradient id="blush{n}"><stop offset="0" stop-color="#ff7f86" stop-opacity=".9"/><stop offset="1" stop-color="#ff7f86" stop-opacity="0"/></radialGradient>'
+            f'<clipPath id="face{n}"><path d="{FACE}"/></clipPath><clipPath id="torso{n}"><path d="{TORSO}"/></clipPath></defs>')
 
 def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
     sk = lk["skin"]; front, extra = hair_front(lk)
     S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
     b = body(lk, team, pose)
-    g = hair_back(lk) + b["behind"] + b["front"]
+    g = '<ellipse cx="0" cy="208" rx="42" ry="7" fill="#000000" opacity=".16"/>' + hair_back(lk) + b["behind"] + b["front"]
     g += f'<path d="M -10,34 L 10,34 L 9,46 Q 0,50 -9,46 Z" fill="{mix(sk, "#c08060", 0.22)}"/>'      # 목
     g += "".join(f'<ellipse cx="{sx * 45}" cy="8" rx="7" ry="10" fill="url(#skin§)" {S}/>' for sx in (-1, 1))
     g += f'<path d="{FACE}" fill="url(#skin§)" {S}/>'
+    g += f'<g clip-path="url(#face§)"><path d="{FACE}" transform="translate(3.5,2.5)" fill="none" stroke="#ffffff" stroke-width="3.4" opacity=".45"/></g>'
     g += f'<g clip-path="url(#face§)"><path d="{front}" transform="translate(0,6)" fill="{mix(sk, "#b06a50", 0.3)}" opacity=".5"/></g>'   # 앞머리 그림자
     g += eyes(lk, working) + mouth(lk) + face_extras(lk)
     g += f'<path d="{front}" fill="url(#hair§)" {S}/>' + extra
+    if not lk["hat"] or lk["hat"] in ("crown", "bandana"):                        # 머리 광택 링 (앞머리 모양 안에서만)
+        g += (f'<defs><clipPath id="hf§"><path d="{front}"/></clipPath></defs><g clip-path="url(#hf§)">'
+              f'<path d="M -40,-36 Q -20,-52 0,-53 Q 20,-52 40,-36" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".32"/>'
+              f'<path d="M -34,-41 Q -16,-53 0,-54" stroke="#ffffff" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".55"/></g>')
     g += top_extras(lk) + hat(lk) + b["after_head"]
     g = g.replace("§", str(n))
     vb = view or "-120 -180 240 400"
