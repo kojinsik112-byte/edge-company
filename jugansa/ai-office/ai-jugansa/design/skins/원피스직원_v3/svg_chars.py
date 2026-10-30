@@ -725,7 +725,7 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
         g += (f'<defs><clipPath id="hf§"><path d="{front}"/></clipPath></defs><g clip-path="url(#hf§)">'
               f'<path d="M -40,-36 Q -20,-52 0,-53 Q 20,-52 40,-36" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".32"/>'
               f'<path d="M -34,-41 Q -16,-53 0,-54" stroke="#ffffff" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".55"/></g>')
-    g += top_extras(lk) + hat(lk) + "</g>" + BG + b["after_head"] + "</g>"
+    g += top_extras(lk) + hat(lk) + "</g>" + BG + b["after_head"] + (elbaf_neck(lk) if lk.get("elbaf") else "") + "</g>"
     if "giant" in lk["ex"]: g = f'<g transform="translate(0,205) scale(1.2) translate(0,-205)">{g}</g>'     # 흰수염: 거인 1.2배 (본부장 10-31)
     g = g.replace("§", str(n))
     vb = view or "-120 -180 240 400"
@@ -740,12 +740,39 @@ def _fur_ring(col, pts, r):
     dk = mix(col, "#000000", 0.28)
     return "".join(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{col}" stroke="{dk}" stroke-width="1.2"/>' for x, y in pts)
 
+import random as _rnd
+def _fur(pts, w, col, seed=1, dens=4.2):
+    """털 띠: 중심선을 따라 바깥은 뾰족한 털 뭉치 · 안에는 털 결 · 밝은 결 (구슬 줄 대신)"""
+    R = _rnd.Random(seed); smp = []
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        L = math.hypot(bx - ax, by - ay) or 1; n = max(1, int(L / dens))
+        smp += [(ax + (bx - ax) * i / n, ay + (by - ay) * i / n, (bx - ax) / L, (by - ay) / L) for i in range(n)]
+    smp.append((pts[-1][0], pts[-1][1], smp[-1][2], smp[-1][3]))
+    out, inn = [], []
+    for k, (x, y, dx, dy) in enumerate(smp):
+        nx, ny = -dy, dx; t = k % 2 == 0
+        ro = w / 2 + (R.uniform(2.6, 5.2) if t else R.uniform(-0.6, 0.8)); ri = w / 2 + (R.uniform(1.6, 3.4) if t else R.uniform(-0.6, 0.4))
+        out.append((x + nx * ro, y + ny * ro)); inn.append((x - nx * ri, y - ny * ri))
+    for i in (0, -1):        # 양 끝도 털 뭉치로
+        x, y, dx, dy = smp[i]; sg = -1 if i == 0 else 1
+        (out.insert(0, (x - dx * (w / 2 + 3), y - dy * (w / 2 + 3))) if i == 0 else out.append((x + dx * (w / 2 + 3), y + dy * (w / 2 + 3))))
+    dk, lt = mix(col, "#000000", 0.32), mix(col, "#ffffff", 0.35)
+    g = f'<path d="M {" L ".join(f"{a:.1f},{b:.1f}" for a, b in out + inn[::-1])} Z" fill="{col}" stroke="{dk}" stroke-width="1.5" stroke-linejoin="round"/>'
+    for k, (x, y, dx, dy) in enumerate(smp):
+        if k % 3: continue
+        nx, ny = -dy, dx; o = R.uniform(-w * 0.28, w * 0.28)
+        x0, y0 = x + nx * o, y + ny * o
+        g += f'<path d="M {x0 - dx * 2:.1f},{y0 - dy * 2:.1f} q {nx * 3 + dx * 2:.1f},{ny * 3 + dy * 2:.1f} {dx * 4 + nx * 4:.1f},{dy * 4 + ny * 4:.1f}" stroke="{dk}" stroke-width="1.1" fill="none" opacity=".55"/>'
+        if k % 6 == 0: g += f'<path d="M {x + nx * w * 0.3:.1f},{y + ny * w * 0.3:.1f} l {dx * 4:.1f},{dy * 4:.1f}" stroke="{lt}" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>'
+    return g
+
 def _collar(col, spread=38, y0=46, drop=9, r=7.5, n=9):
-    return _fur_ring(col, [((-1 + 2 * k / (n - 1)) * spread, y0 + drop * (1 - (-1 + 2 * k / (n - 1)) ** 2)) for k in range(n)], r)
+    pts = [((-1 + 2 * k / 8) * spread * 1.05, y0 + 2 + drop * (1 - (-1 + 2 * k / 8) ** 2) - abs(-1 + 2 * k / 8) * 2) for k in range(9)]
+    return _fur(pts, r * 2.1, col, seed=int(spread * 7 + r))
 
 def _shawl(col):        # 어깨 · 위팔까지 덮는 털 숄 (나미 · 로빈)
-    pts = [(sx * x, y) for sx in (-1, 1) for x, y in ((14, 46), (24, 44), (34, 48), (42, 56), (46, 66), (44, 76))] + [(0, 50)]
-    return _fur_ring(col, pts, 9.5)
+    return (_fur([(-44, 84), (-46, 64), (-38, 50), (-20, 44), (0, 47), (20, 44), (38, 50), (46, 64), (44, 84)], 22, col, seed=7)
+            + _fur([(-30, 56), (-14, 52), (0, 55), (14, 52), (30, 56)], 12, mix(col, "#ffffff", 0.12), seed=9))
 
 def _belt(spec):
     col, buckle, kind = (list(spec) + ["", ""])[:3]; S = f'stroke="{INK}" stroke-width="1.8"'; y = 103
@@ -780,10 +807,14 @@ def elbaf_behind(lk):
     s = ""
     if lk.get("cape"):
         col = lk["cape"]; L = lk.get("cape_len", 188); w = lk.get("cape_w", 60); dk = mix(col, "#000000", 0.3)
-        s += f'<path d="M -24,44 Q {-w},54 {-w - 4},{L} ' + _zig(-w - 4, w + 4, L, 8) + f' Q {w},54 24,44 Z" fill="{col}" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
-        s += "".join(f'<path d="M {sx * (w - 6)},{L - 8} Q {sx * (w - 10)},100 {sx * 26},56" stroke="{dk}" stroke-width="2.2" fill="none" opacity=".55"/>' for sx in (-1, 1))
-        edge = lambda y: 24 + (w + 4 - 24) * min(1, ((y - 44) / (L - 44)) ** 0.55)      # 망토 바깥선의 대략 x
-        s += "".join(f'<path d="M {sx * (edge(y) - 8):.1f},{y} l {sx * 5},4 l {-sx * 4},4" stroke="{dk}" stroke-width="1.4" fill="none" opacity=".6"/>' for sx in (-1, 1) for y in range(76, L - 12, 16))
+        lt = mix(col, "#ffffff", 0.18); lin = lk.get("lining", mix(col, "#000000", 0.38))
+        s += (f'<defs><linearGradient id="cp§" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{dk}"/><stop offset=".3" stop-color="{col}"/><stop offset=".5" stop-color="{lt}"/><stop offset=".7" stop-color="{col}"/><stop offset="1" stop-color="{dk}"/></linearGradient></defs>'
+              f'<path d="M -22,44 C {-w * 0.8},54 {-w},100 {-w - 2},{L} L {w + 2},{L} C {w},100 {w * 0.8},54 22,44 Z" fill="url(#cp§)" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
+              f'<path d="M -22,46 C -34,60 -38,110 -36,{L - 6} L 36,{L - 6} C 38,110 34,60 22,46 Z" fill="{lin}" opacity=".55"/>'
+              + "".join(f'<path d="M {sx * x},{L - 4} Q {sx * (x - 4)},{(L + 60) / 2} {sx * 24},58" stroke="{dk}" stroke-width="1.6" fill="none" opacity=".45"/>' for sx in (-1, 1) for x in (w * 0.55, w * 0.85)))
+        fc = lk.get("cape_fur", mix(col, "#ffffff", 0.08))
+        s += _fur([(-24, 46), (-w * 0.7, 62), (-w * 0.95, 110), (-w - 2, L - 4), (-w * 0.4, L + 1), (w * 0.4, L + 1), (w + 2, L - 4), (w * 0.95, 110), (w * 0.7, 62), (24, 46)], 11, fc, seed=len(col) * 3 + w)
+
     b = lk.get("back")
     if b == "axe_luffy":
         s += stick(-50, -34, 40, 132, 7, "#8a5a30") + f'<path d="M 26,108 Q 70,92 76,136 Q 60,128 46,140 Z" fill="#f2f0ea" stroke="{INK}" stroke-width="2"/><path d="M 30,112 Q 56,104 64,128 Q 52,124 44,132 Z" fill="#f08c2c"/>'
@@ -811,6 +842,10 @@ def elbaf_torso(lk):
         s += f'<path d="{TORSO}" fill="#e8862a" {S}/><path d="M -12,43 L 12,43 L 0,64 Z" fill="url(#skin§)"/>' + "".join(f'<path d="M {x},70 q 4,10 0,24" stroke="#c0661a" stroke-width="1.4" fill="none"/>' for x in (-18, 16))
     elif top == "check":
         s += f'<g clip-path="url(#torso§)"><rect x="-40" y="40" width="80" height="90" fill="#a8c8e8"/>' + "".join(f'<path d="M {x},40 L {x},130" stroke="#7aa0cc" stroke-width="1.6"/>' for x in range(-36, 40, 8)) + "".join(f'<path d="M -40,{y} L 40,{y}" stroke="#7aa0cc" stroke-width="1.6"/>' for y in range(44, 130, 8)) + '</g>'
+    if lk["out"] == "shirtless":
+        m = mix(lk["skin"], INK, 0.3)
+        s += f'<path d="M -22,60 Q -12,70 -2,64 M 2,64 Q 12,70 22,60" stroke="{m}" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
+        s += f'<path d="M 0,70 L 0,98 M -8,78 Q -4,80 -1,78 M 1,78 Q 4,80 8,78 M -8,88 Q -4,90 -1,88 M 1,88 Q 4,90 8,88" stroke="{m}" stroke-width="1.2" fill="none" opacity=".75"/>'
     if "x_scar" in ex and lk["out"] == "shirtless": s += '<path d="M -8,62 L 8,82 M 8,62 L -8,82" stroke="#d07a6a" stroke-width="2.4" stroke-linecap="round"/>'
     if lk.get("suspenders"): s += "".join(f'<path d="M {sx * 16},46 L {sx * 14},104" stroke="{INK}" stroke-width="8"/><path d="M {sx * 16},46 L {sx * 14},104" stroke="{lk["suspenders"]}" stroke-width="5"/>' for sx in (-1, 1))
     if lk.get("coat_panels"):
@@ -822,7 +857,7 @@ def elbaf_torso(lk):
     if lk.get("pouch"): s += f'<path d="M 20,104 L 36,116" stroke="#8a8f9a" stroke-width="2.4"/><ellipse cx="38" cy="126" rx="11" ry="12" fill="{lk["pouch"]}" {S}/><path d="M 30,120 Q 38,116 46,120" stroke="#8a2a1a" stroke-width="1.6" fill="none"/>'
     if lk.get("collar"):
         c = lk["collar"]; s += _collar(c, spread=lk.get("collar_w", 38), r=lk.get("collar_r", 7.5))
-    if lk.get("scarf_tail"): s += _fur_ring(lk["scarf_tail"], [(-22, 64), (-24, 76), (-22, 88)], 8)
+    if lk.get("scarf_tail"): s += _fur([(-20, 56), (-24, 72), (-22, 92)], 15, lk["scarf_tail"], seed=17)
     if lk.get("pads"): s += "".join(f'<circle cx="{sx * 34}" cy="50" r="10" fill="#1f1d26" stroke="#3a3a44" stroke-width="1.4"/><circle cx="{sx * 31}" cy="47" r="3" fill="#4a4a54"/>' for sx in (-1, 1))
     if lk.get("shawl"): s += _shawl(lk["shawl"])
     if lk.get("robo_arms"):        # 프랑키: 거대한 쇠 팔 (어깨 공 + 빨간 별 · 파란 팔뚝 + 금 고리 · 큰 주먹)
@@ -847,16 +882,25 @@ def elbaf_legs(lk):
         else:
             s += f'<path d="{leg(118, 202, 10.5 if not lk.get("thin_legs") else 6, 7.5 if not lk.get("thin_legs") else 4.5)}" fill="{pant}" {S}/>'
         if lk.get("warmers"):
-            wc = lk["warmers"]; s += f'<rect x="{cx_ - 11}" y="150" width="22" height="44" rx="7" fill="{wc}" {S}/>' + _fur_ring(wc, [(cx_ + d, 151) for d in (-8, -3, 2, 7)], 4)
+            wc = lk["warmers"]; s += _fur([(cx_, 150), (cx_, 194)], 20, wc, seed=31 + sx) + _fur([(cx_ - 11, 151), (cx_ + 11, 151)], 8, mix(wc, "#ffffff", 0.15), seed=41 + sx)
             if lk.get("warmer_straps"): s += f'<path d="M {cx_ - 10},158 L {cx_ + 10},170 M {cx_ + 10},158 L {cx_ - 10},170 M {cx_ - 10},174 L {cx_ + 10},186 M {cx_ + 10},174 L {cx_ - 10},186" stroke="#1f3a3a" stroke-width="1.6"/>'
         fx = sx * 13
         if lk.get("boots"):
             bt = lk.get("boot_top", 168); bc = lk["boots"]
-            s += f'<path d="M {cx_ - 9},{bt} L {cx_ + 9},{bt} L {cx_ + 9},202 L {cx_ - 9},202 Z" fill="{bc}" {S}/>'
-            if lk.get("cuff"): s += _fur_ring(lk["cuff"], [(cx_ + d, bt) for d in (-8, -3, 2, 7)], 4.2)
+            s += f'<path d="M {cx_ - 9},{bt} Q {cx_ - 11},{(bt + 200) / 2} {cx_ - 9},200 L {cx_ + 9},200 Q {cx_ + 11},{(bt + 200) / 2} {cx_ + 9},{bt} Z" fill="{bc}" {S}/><path d="M {cx_ - 5},{bt + 4} L {cx_ - 5},196" stroke="#ffffff" stroke-width="2" opacity=".18"/>'
+            if lk.get("cuff"): s += _fur([(cx_ - 10, bt), (cx_ + 10, bt)], 9, lk["cuff"], seed=bt + sx)
             s += f'<ellipse cx="{fx}" cy="205" rx="14" ry="7" fill="{bc}" {S}/><ellipse cx="{fx - 4}" cy="202.5" rx="5" ry="2" fill="#ffffff" opacity=".3"/>'
         elif lk["shoes"] == "hoof": s += f'<ellipse cx="{fx}" cy="205" rx="11" ry="6" fill="#6a4228" {S}/>'
         else: s += f'<ellipse cx="{fx}" cy="205" rx="14" ry="7" fill="{lk["shoes"]}" {S}/>'
+    return s
+
+def elbaf_neck(lk):       # 머리보다 앞에 오는 목도리 (몸 좌표)
+    s = ""
+    if lk.get("scarf"):       # 상디: 목을 두 겹으로 감은 두툼한 털 목도리 + 앞으로 늘어진 끝
+        c = lk["scarf"]
+        s += _fur([(-20, 58), (-24, 78), (-21, 98)], 15, mix(c, "#000000", 0.08), seed=17)
+        s += _fur([(-30, 56), (-16, 50), (0, 52), (16, 50), (30, 56)], 18, c, seed=21)
+        s += _fur([(-24, 46), (-10, 40), (0, 41), (10, 40), (24, 46)], 14, mix(c, "#ffffff", 0.14), seed=23)
     return s
 
 def elbaf_face(lk):
@@ -886,39 +930,57 @@ def elbaf_hair_back(lk):
 
 ELBAF_HATS = {"viking_luffy", "viking_usopp", "viking_franky", "viking_brook", "chopper_elbaf"}
 def elbaf_hat(lk):
-    h = lk["hat"]; S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'; gold = "#e6b84a"
-    dome = lambda col: f'<path d="M -42,-58 C -44,-112 44,-112 42,-58 Z" fill="{col}" {S}/>'
-    rivets = lambda y: "".join(f'<circle cx="{x}" cy="{y}" r="2" fill="#8a6a1a"/>' for x in (-32, -16, 16, 32))
-    if h == "viking_luffy":
-        horns = "".join(f'<path d="M {sx * 34},-72 Q {sx * 76},-74 {sx * 80},-124 Q {sx * 70},-102 {sx * 38},-92 Z" fill="#ece8e0" {S}/><path d="M {sx * 80},-124 Q {sx * 78},-110 {sx * 72},-104 L {sx * 76},-118 Z" fill="#1f1d26"/>' for sx in (-1, 1))
-        return horns + dome("#24222c") + f'<rect x="-5" y="-104" width="10" height="46" fill="{gold}" {S}/><path d="M -43,-70 Q 0,-78 43,-70 L 43,-56 Q 0,-64 -43,-56 Z" fill="{gold}" {S}/>' + rivets(-63)
-    if h == "viking_usopp":
-        hood = "".join(f'<path d="M {sx * 40},-58 Q {sx * 62},-20 {sx * 52},40 L {sx * 42},36 Q {sx * 50},-14 {sx * 34},-50 Z" fill="#e06a9a" {S}/>' for sx in (-1, 1))
-        hood += f'<circle cx="54" cy="6" r="9" fill="#e6c25a" {S}/><circle cx="54" cy="6" r="4" fill="#8a8f9a"/>'
-        horns = "".join(f'<path d="M {sx * 26},-92 Q {sx * 52},-110 {sx * 40},-146 Q {sx * 36},-118 {sx * 18},-102 Z" fill="{gold}" {S}/>' for sx in (-1, 1))
-        return hood + horns + dome(gold) + "".join(f'<path d="M {x},-104 L {x * 1.2},-60" stroke="#c9952a" stroke-width="3"/>' for x in (-20, -7, 7, 20)) + f'<ellipse cx="0" cy="-58" rx="46" ry="7" fill="{gold}" {S}/>'
-    if h == "viking_franky":
-        horns = "".join(f'<path d="M {sx * 36},-76 Q {sx * 96},-80 {sx * 92},-140 Q {sx * 82},-104 {sx * 40},-96 Z" fill="#4a4e5a" {S}/>' for sx in (-1, 1))
-        return horns + dome("#2a2e3a") + f'<rect x="-5" y="-106" width="10" height="60" fill="{gold}" {S}/><path d="M -43,-70 Q 0,-78 43,-70 L 43,-58 Q 0,-66 -43,-58 Z" fill="{gold}" {S}/>' + rivets(-64)
-    if h == "viking_brook":
-        horns = "".join(f'<path d="M {sx * 34},-82 L {sx * 76},-104 L {sx * 40},-70 Z" fill="#e6d9a8" {S}/>' for sx in (-1, 1))
-        return horns + dome("#2f3a7a") + "".join(f'<circle cx="{sx * 13}" cy="-74" r="9" fill="#8ad0f0" stroke="{gold}" stroke-width="3"/>' for sx in (-1, 1)) + f'<ellipse cx="0" cy="-58" rx="46" ry="7" fill="#2f3a7a" {S}/>'
-    if h == "chopper_elbaf":
+    """엘바프 투구: 머리를 깊게 덮고(띠 = 이마 위) 뿔은 띠 옆에 붙음 · 금속 광택 · 리벳"""
+    h = lk["hat"]; S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'; gold = "url(#hg§)"
+    G = (f'<defs><linearGradient id="hg§" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe7a8"/><stop offset=".45" stop-color="#e6b84a"/><stop offset="1" stop-color="#a8761e"/></linearGradient>'
+         '<linearGradient id="hh§" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#bdb6a4"/><stop offset=".55" stop-color="#f2eee4"/><stop offset="1" stop-color="#ffffff"/></linearGradient>'
+         '<linearGradient id="hk§" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2a2e38"/><stop offset=".6" stop-color="#4a4f5c"/><stop offset="1" stop-color="#6a707e"/></linearGradient></defs>')
+    def dome(col, top=-118, w=52, yb=-42):
+        hi, lo = mix(col, "#ffffff", 0.34), mix(col, "#000000", 0.38)
+        return (f'<defs><radialGradient id="hd§" cx=".34" cy=".26" r=".9"><stop offset="0" stop-color="{hi}"/><stop offset=".5" stop-color="{col}"/><stop offset="1" stop-color="{lo}"/></radialGradient></defs>'
+                f'<path d="M {-w},{yb} C {-w - 2},{top} {w + 2},{top} {w},{yb} Z" fill="url(#hd§)" {S}/>'
+                f'<path d="M {-w * 0.62:.0f},{yb - 40} Q {-w * 0.4:.0f},{top + 20} {-w * 0.05:.0f},{top + 14}" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".42"/>')
+    def band(col=gold, yb=-42, w=53, hgt=13):
+        rv = "".join(f'<circle cx="{x}" cy="{yb - hgt / 2 - 3:.1f}" r="2.5" fill="#7a5a14"/><circle cx="{x - .8}" cy="{yb - hgt / 2 - 3.9:.1f}" r="1" fill="#fff6d0"/>' for x in (-40, -26, -12, 12, 26, 40))
+        return f'<path d="M {-w},{yb - hgt} Q 0,{yb - hgt - 9} {w},{yb - hgt} L {w},{yb} Q 0,{yb - 9} {-w},{yb} Z" fill="{col}" {S}/>' + rv
+    def strip(top=-114, yb=-50, wd=10):
+        return f'<path d="M {-wd / 2},{top} L {wd / 2},{top} L {wd / 2 + 1},{yb} L {-wd / 2 - 1},{yb} Z" fill="{gold}" {S}/>' + "".join(f'<circle cx="0" cy="{y}" r="1.8" fill="#7a5a14"/>' for y in range(top + 10, yb - 4, 14))
+    ridge = lambda sx, pts, c="#9a9488": "".join(f'<path d="M {sx * a},{b} q {sx * 3},-3 {sx * 7},1" stroke="{c}" stroke-width="1.3" fill="none" opacity=".85"/>' for a, b in pts)
+    if h == "viking_luffy":       # 흰 뿔(끝 검정) · 검정 투구 · 금 띠 + 세로 띠
+        horns = "".join(f'<path d="M {sx * 46},-78 C {sx * 78},-82 {sx * 98},-96 {sx * 100},-136 C {sx * 92},-92 {sx * 78},-54 {sx * 52},-46 Z" fill="url(#hh§)" {S}/>'
+                        f'<path d="M {sx * 100},-136 Q {sx * 101},-116 {sx * 97},-106 Q {sx * 90},-114 {sx * 91},-122 Z" fill="#1f1d26"/>' + ridge(sx, ((58, -62), (72, -68), (82, -80), (88, -94))) for sx in (-1, 1))
+        return G + horns + dome("#24222c") + strip() + band()
+    if h == "viking_usopp":       # 분홍 두건 + 옆 헤드폰 · 금 투구(줄무늬) · 금 뿔 위로
+        hood = (f'<path d="M -56,-40 Q -66,14 -46,56 L -34,50 Q -50,10 -44,-36 Z M 56,-40 Q 66,14 46,56 L 34,50 Q 50,10 44,-36 Z" fill="#e06a9a" {S}/>'
+                '<path d="M -50,-20 Q -54,14 -42,44 M 50,-20 Q 54,14 42,44" stroke="#b84a78" stroke-width="1.6" fill="none"/>'
+                f'<circle cx="57" cy="8" r="10" fill="{gold}" {S}/><circle cx="57" cy="8" r="5" fill="#8a8f9a" stroke="#5a5f6a" stroke-width="1"/>')
+        horns = "".join(f'<path d="M {sx * 36},-96 Q {sx * 66},-112 {sx * 50},-150 Q {sx * 46},-120 {sx * 26},-104 Z" fill="{gold}" {S}/>' + ridge(sx, ((40, -108), (48, -122), (50, -136)), "#a8761e") for sx in (-1, 1))
+        stripes = "".join(f'<path d="M {x},-112 Q {x * 1.15},-80 {x * 1.25},-48" stroke="#b8862a" stroke-width="3.4" fill="none"/>' for x in (-26, -9, 9, 26))
+        return G + hood + horns + dome("#e6b84a") + stripes + band()
+    if h == "viking_franky":      # 검정 큰 뿔 · 짙은 투구 · 금 테두리 + 코 보호대
+        horns = "".join(f'<path d="M {sx * 46},-78 C {sx * 88},-82 {sx * 110},-104 {sx * 110},-150 C {sx * 100},-100 {sx * 84},-56 {sx * 52},-46 Z" fill="url(#hk§)" {S}/>'
+                        f'<path d="M {sx * 56},-62 Q {sx * 96},-66 {sx * 98},-128" stroke="#8a8f9a" stroke-width="2.2" fill="none" opacity=".6"/>' for sx in (-1, 1))
+        return G + horns + dome("#2a2e3a") + strip() + band() + f'<path d="M -5,-42 L 5,-42 L 4,-8 Q 0,-4 -4,-8 Z" fill="{gold}" {S}/>'
+    if h == "viking_brook":       # 남색 투구 · 상아색 원뿔 뿔 · 앞 고글
+        horns = "".join(f'<path d="M {sx * 44},-82 L {sx * 92},-108 L {sx * 50},-62 Z" fill="#efe2b8" {S}/><path d="M {sx * 56},-80 L {sx * 84},-102" stroke="#c9b884" stroke-width="1.6"/>' for sx in (-1, 1))
+        gog = "".join(f'<circle cx="{sx * 15}" cy="-66" r="11" fill="#9ad8f4" stroke="{gold}" stroke-width="3.4"/><circle cx="{sx * 15 - 3}" cy="-69" r="3" fill="#ffffff" opacity=".8"/>' for sx in (-1, 1))
+        return G + horns + dome("#2f3a7a", top=-122, w=54, yb=-46) + band("#2a3268", yb=-46, w=55) + gog + '<rect x="-4" y="-69" width="8" height="5" rx="1.5" fill="#c9ced6"/>'
+    if h == "chopper_elbaf":      # 분홍 모자 위 빨간 큰 투구 · 손바닥에서 솟은 금빛 손가락 뿔
         ant = ""
         for sx in (-1, 1):
-            for k in range(4):
-                x = sx * (44 + k * 8); top = -112 + abs(k - 1.5) * 4
-                ant += f'<rect x="{x - 3.5}" y="{top}" width="7" height="{-62 - top}" rx="3.5" fill="#d9c070" {S}/><rect x="{x - 3.5}" y="-86" width="7" height="24" rx="3" fill="#8a5530"/>'
-        return (ant + f'<ellipse cx="0" cy="-58" rx="56" ry="11" fill="#f6a0c0" {S}/><path d="M -48,-60 C -52,-120 52,-120 48,-60 Z" fill="#b02a3a" {S}/>'
-                f'<path d="M -6,-116 L 6,-116 L 6,-60 L -6,-60 Z M -48,-66 Q 0,-74 48,-66 L 48,-58 Q 0,-66 -48,-58 Z" fill="#d9b860" {S}/>'
-                + "".join(f'<circle cx="0" cy="{y}" r="2.2" fill="#8a6a1a"/>' for y in (-106, -94, -82, -70)) + '<path d="M -26,-100 Q -20,-108 -12,-104" stroke="#ffffff" stroke-width="3" opacity=".5" fill="none"/>')
+            px = sx * 60
+            ant += "".join(f'<rect x="{px + sx * (k * 8 - 12) - 3.6:.1f}" y="{-124 + abs(k - 1.5) * 5:.1f}" width="7.2" height="{50 - abs(k - 1.5) * 5:.1f}" rx="3.6" fill="#e0c878" {S}/>' for k in range(4))
+            ant += f'<path d="M {px - 18},-92 L {px + 18},-92 L {px + 14},-70 L {px - 14},-70 Z" fill="#8a5530" {S}/>'
+            ant += "".join(f'<rect x="{px + sx * (k * 8 - 12) - 3.6:.1f}" y="-96" width="7.2" height="6" fill="#8a5530"/>' for k in range(4))
+        return (G + ant + f'<ellipse cx="0" cy="-52" rx="58" ry="11" fill="#f6a0c0" {S}/>' + dome("#b02a3a", top=-130, w=50, yb=-56)
+                + strip(top=-126, yb=-60) + band(yb=-56, w=51, hgt=10))
     return ""
 
 ELBAF = {   # 이름 → 엘바프 편 차림 (공식 설정화 기준)
     "루피": dict(hat="viking_luffy", out="shirtless", pose="side", cape="#d8352e", collar="#d8352e", collar_r=9.5, collar_w=40, strap="#c98a3a", belt=("#f2c230", "#e6b84a", "blocks"),
                 kilt=("#8a5a3a", 146, "buttons"), shorts_col="#2a2626", boots="#2a2626", cuff="#8a6a4a", back="axe_luffy", ex_del=["sash_yellow", "fur_cuffs"]),
     "나미": dict(out="crop", top="bra", nami_braids=True, ct_col="#c0306a", shawl="#f2b830", belt=("#1f1d26", "#c9a45c"), kilt=("#7a4a32", 134), bare_legs=True, warmers="#c9a878", boots="#8a5a3a", boot_top=186, back="sword_nami"),
-    "상디": dict(out="armor", c1="#5ab0e8", top="armor", pose="side", cape="#2f5fc0", collar="#3a6ad0", collar_w=26, collar_r=13, scarf_tail="#3a6ad0", strap="#e8962a", belt=("#8a6a3a", "#e6c25a", "medal"),
+    "상디": dict(out="armor", c1="#5ab0e8", top="armor", pose="side", cape="#2f5fc0", scarf="#3a6ad0", strap="#e8962a", belt=("#8a6a3a", "#e6c25a", "medal"),
                 kilt=("#8a86a8", 148, "scale"), legs="#5ab0e8", boots="#3a3aa0", cuff="#8a6a4a", back="sword_sanji"),
     "조로": dict(out="tunic", c1="#3a5a3a", top="tunic", cape="#8ab858", collar="#8ab858", pads=True, belt=("#1f1d26", "#e6b84a"), legs="#2a2a2e", warmers="#2a8a8a", warmer_straps=True,
                 boots="#1f1d26", boot_top=190, goggles_y=True, headband="#8a2a4a"),
