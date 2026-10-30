@@ -101,10 +101,10 @@ def src_pages(key):
     return d, [i - 1 for i in pages] if pages else list(range(d.page_count))
 
 
-def band(page, text):
+def band(page, text, fontname="mg"):
     """가져온 증빙 쪽 위 여백에 '제출서류 N · 항목' 머리글(원본 내용은 건드리지 않음)."""
     r = page.rect
-    page.insert_textbox(fitz.Rect(18, 6, r.width - 18, 20), text, fontsize=7.5, fontname="mg", fontfile=FONT, color=(0.54, 0.43, 0.17))
+    page.insert_textbox(fitz.Rect(18, 6, r.width - 18, 20), text, fontsize=7.5, fontname=fontname, fontfile=FONT, color=(0.54, 0.43, 0.17))
 
 
 # ------------------------------------------------------------ 자체 양식
@@ -174,7 +174,7 @@ def form_appeal():
             ("③ ISO 9001 · 14001 · 45001 인증서", "글로벌시스템인증원 · 2025.08.12 인증", "6쪽"),
             ("④ 영업배상책임보험 증권(KB)", "시설소유관리자 · 본사 기준 · 행사배상책임보험은 박람회 기간 행사장 기준으로 별도 가입", "1쪽"),
             ("⑤ 서울보증보험 계약보증보험증권 발급 이력", "광고대행 용역 계약보증(입주박람회 이행보증 아님) · 금액 · 상대방 정보 가림 · 이 단지 계약이행 · 하자보증보험은 협약 후 협의회를 피보험자로 발급(금액 · 기산일은 협약 때)", "1쪽"),
-            ("⑥ 건축 분야 기술 자문 업무협약서 사본", "디엔비파트너스건축사사무소 · 건축 분야 기술 자문 협력사(업무협약 2026.10.26) · 양측 날인 · 2쪽 을 정보 가림", "2쪽")]
+            ("⑥ 건축 분야 기술 자문 업무협약서 사본", "디엔비파트너스건축사사무소 · 건축 분야 기술 자문 협력사(업무협약 2026.10.26) · 양측 날인 · 을 정보 가림 · 원본 2쪽을 가로 한 장에 나란히", "1쪽")]
     body = (hd("10", "그 외 어필 서류") + "<h1>그 외 어필 서류</h1>" + GUN
             + "<table><tr><th style='width:30%'>서류</th><th>내용</th><th style='width:9%'>쪽</th></tr>"
             + "".join(f'<tr><td class="k">{a}</td><td>{_h.escape(b)}</td><td class="c">{c}</td></tr>' for a, b, c in rows) + "</table>"
@@ -242,9 +242,21 @@ def main():
                     # 본부장 10-30: 2쪽 제12조(기타) · '각 1부씩 보관한다' 아래 · 서명 표 위 빈칸에 체결일
                     one[n0 + 1].insert_textbox(fitz.Rect(0, 456, one[n0 + 1].rect.width, 476), DNB_DATE, fontsize=11,
                                                fontname="mg", fontfile=FONT, color=(0.1, 0.1, 0.1), align=fitz.TEXT_ALIGN_CENTER)
+                    # 본부장 10-30 '한 장으로': 2쪽을 가로 한 장에 나란히(내용 · 날인 · 가림 그대로 · 배치만 바꿈)
+                    two = fitz.open()
+                    two.insert_pdf(one, from_page=n0, to_page=n0 + 1)
+                    one.delete_pages(from_page=n0, to_page=n0 + 1)
+                    _w, _h = two[0].rect.width, two[0].rect.height
+                    pg = one.new_page(pno=n0, width=_h, height=_w)
+                    _m, _top = 14, 22  # 위 22pt = 머리글 자리
+                    _cw = (_h - 3 * _m) / 2
+                    _sc = min(_cw / _w, (_w - _top - _m) / _h)
+                    for k in range(2):
+                        _x = _m + k * (_cw + _m) + (_cw - _w * _sc) / 2
+                        pg.show_pdf_page(fitz.Rect(_x, _top, _x + _w * _sc, _top + _h * _sc), two, k)
                 if mark:
                     for k in range(n0, one.page_count):
-                        band(one[k], f"제출서류 {no} · {title}")
+                        band(one[k], f"제출서류 {no} · {title}", "mgw" if s == "dnb" else "mg")  # 모아 찍은 쪽은 글꼴 이름을 따로(같은 이름이면 subset 때 글자 깨짐)
         one.subset_fonts()  # 머리글 글꼴(맑은 고딕)은 쓴 글자만 남김
         per.append((no, title, one))
         toc.append((no, title, desc, start, start + one.page_count - 1))
