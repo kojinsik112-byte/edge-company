@@ -210,11 +210,11 @@ def ev8_pages(seal_uri):
     os.makedirs(os.path.dirname(nfn), exist_ok=True)
     s09[9].get_pixmap(dpi=150).save(nfn)   # NICE 원본 9쪽(기업개요 · 연혁) — 09 = 표지 1쪽 + 원본 24쪽
     info = [("보고서명", "CLIP 기업신용평가보고서"), ("발행 기관", "NICE디앤비(dun & bradstreet)"), ("평가 대상", f"{D.COMPANY}({D.BIZ_NO})"),
-            ("평가완료일", f"{D.NICE_DATE} · 연 1회 정기 평가(재무제표 기준) · 유효기간 안 최근 평가본"), ("발췌 범위", "원본 9쪽 ‘04 영업 현황(기업개요)’ 중 ‘연혁’ · 전문은 선택 자료")]
+            ("평가완료일", f"{D.NICE_DATE} · 연 1회 정기 평가(재무제표 기준) · 유효기간 안 최근 평가본"), ("발췌 범위", "원본 9쪽 ‘04 영업 현황(기업개요)’ 중 ‘연혁’ · 전문 = 제출 ③(같은 보고서)")]
     pa = ('<h2>붙임 A · NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌</h2><table class="f" style="margin-bottom:4mm">'
           + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in info) + "</table>"
           f'<img src="{pathlib.Path(nfn).as_uri()}" style="display:block;width:106mm;margin:0 auto;border:1px solid #bbb">'
-          '<p style="font-size:10pt;margin-top:3mm">연혁의 2023/11 ~ 2026/07 주관 6행이 최근 3년 1,000세대 이상 주관 실적입니다. 위 발췌는 원본과 같습니다.</p>')
+          '<p style="font-size:10pt;margin-top:3mm">연혁의 2023/11 ~ 2026/07 주관 6행이 최근 3년 1,000세대 이상 주관 실적입니다. 연혁 일자는 주관 협약(보통 박람회 1 ~ 2년 전) 뒤 확정된 일정 기준이라, 창원 센트럴 아이파크(2026/07)는 평가 당시 이미 일정이 확정된 단지이며 2026.07.03 ~ 05 CECO에서 개최했습니다(붙임 B-4). 위 발췌는 원본과 같습니다.</p>')
     pages = [page("제출 ⑧ · 붙임 A", pa)]
     for i in range(0, len(B_CAPS), 2):
         body = ""
@@ -314,7 +314,7 @@ def p03_cover():
 def p07_guide(parts):
     rows = "".join(f'<tr><td class="n">{i}</td><td>{e(a)}</td><td>{e(b)}</td></tr>' for i, (a, b) in enumerate(parts, 1))
     body = ('<h2>4대 보험 사업장 가입증명서 및 조직도 - 안내</h2>'
-            '<p class="b">공고 제출 서류 ⑦ ‘4대 보험 사업장 가입증명서 및 조직도(최근 1개월 이내)’입니다. 개인정보(성명 가운데 글자 · 주민등록번호)는 가렸습니다.</p>'
+            '<p class="b">공고 제출 서류 ⑦ ‘4대 보험 사업장 가입증명서 및 조직도(최근 1개월 이내)’입니다. 개인정보(성명 가운데 글자 · 주민등록번호 뒷자리)는 가렸습니다.</p>'
             '<table class="l"><tr><th>No</th><th>서류</th><th>발급 · 내용</th></tr>' + rows + '</table>'
             '<p style="font-size:10pt;color:#555;margin-top:5mm">가림 없는 원본은 협의회가 요청하시면 열람할 수 있습니다.</p>')
     return page("제출 ⑦ · 4대 보험 사업장 가입증명서 및 조직도", body)
@@ -338,7 +338,7 @@ def p08_guide():
             '<div class="box" style="margin-top:6mm"><b>붙임 구성</b><br>A · NICE디앤비 기업신용평가보고서 ‘연혁’ 발췌(1,000세대 이상 주관 단지 · 시기)<br>'
             'B · 박람회장 공식 행사일정 · 단지 카페 공지 캡처(주최 / 주관 엣지컴퍼니)<br>'
             'C · 주관사 협약서 3건(500 ~ 999세대 단지 · 협약일 순 · 상대방 개인정보 가림)</div>'
-            f'<p style="font-size:10pt;color:#555">500세대 이상 주관 단지 전체 목록 · 단지별 일정 · 장소는 제출 ① 제안서에 있습니다. 누적 수임 단지(전신 실적 포함)는 ‘수임’으로 적습니다.</p>')
+            f'<p style="font-size:10pt;color:#555">500세대 이상 주관 단지 전체 목록은 제출 ① 제안서 p.17, 1,000세대 이상 단지별 일정 · 장소는 p.66에 있습니다. 누적 수임 단지(전신 실적 포함)는 ‘수임’으로 적습니다.</p>')
     return page("제출 ⑧ · 입주박람회 행사 수행 경험 이력 및 증빙", body)
 
 

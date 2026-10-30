@@ -371,6 +371,9 @@ def cj_final(doc):
     bad = ["업무 범위 1) ~ 8)", "빚에 기대지 않고"] + (["2억 4,270만원", "전 세대 1,618세대", "1,618세대 × 15만원"] if D.FUND_TARGET == "sale" else [])
     for b in bad:
         assert b not in _t, ("청주 세대 혜택 대상 · 마무리 문구 반영 전 남음", b)
+    import cj_fix  # 10-30 법정 정밀판 문구(청주 폴더)
+    doc = cj_fix.fix(doc, sale=D.FUND_TARGET == "sale")
+    cj_fix.report(sale=D.FUND_TARGET == "sale")
     return doc
 
 
