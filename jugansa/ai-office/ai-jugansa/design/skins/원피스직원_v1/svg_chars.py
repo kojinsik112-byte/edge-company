@@ -638,9 +638,10 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
     S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
     b = body(lk, team, pose)
     tiny = "tiny_body" in lk["ex"]          # 쵸파: 몸은 작게 (발 기준) · 머리는 그대로 크게 → 몸 위로 내려 붙임
-    bk = 0.72 if tiny else 1; hdy = ((14 if view else (205 - 44) * (1 - bk)) if tiny else 0)     # 앉으면 책상 위로 눈이 보이게 조금만 내림
-    HG = f'<g transform="translate(0,{HEAD_PIVOT + hdy:.1f}) scale({HEAD_SCALE}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
-    BG = f'<g transform="translate(0,205) scale({bk}) translate(0,-205)">'
+    bk, bkx = (0.6, 0.9) if tiny else (1, 1)        # 쵸파: 2등신 — 몸은 짧고 통통하게 (본부장 10-31)
+    hs_ = HEAD_SCALE * (1.2 if tiny else 1); hdy = ((14 if view else (205 - 44) * (1 - bk)) if tiny else 0)     # 앉으면 책상 위로 눈이 보이게 조금만 내림
+    HG = f'<g transform="translate(0,{HEAD_PIVOT + hdy:.1f}) scale({hs_:.3f}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
+    BG = f'<g transform="translate(0,205) scale({bkx},{bk}) translate(0,-205)">'
     g = '<ellipse cx="0" cy="208" rx="42" ry="7" fill="#000000" opacity=".16"/>' + HG + hair_back(lk) + "</g>" + BG + b["behind"] + b["front"]
     g += f'<path d="M -10,34 L 10,34 L 9,46 Q 0,50 -9,46 Z" fill="{mix(sk, "#c08060", 0.22)}"/>' + "</g>"     # 목 (몸 그룹 끝)
     g += HG + "".join(f'<ellipse cx="{sx * 45}" cy="8" rx="7" ry="10" fill="url(#skin§)" {S}/>' for sx in (-1, 1))
