@@ -651,6 +651,9 @@ def body(lk, team, pose=None):
             out_ += band(1, 0.82, "#8a5a30", 4); x, y, dx, dy = at(1, 0.82)
             out_ += f'<circle cx="{x - dy * 9:.1f}" cy="{y + dx * 9:.1f}" r="4.2" fill="#cfeefb" stroke="{INK}" stroke-width="1.2"/><path d="M {x - dy * 9 - 2:.1f},{y + dx * 9:.1f} L {x - dy * 9 + 2:.1f},{y + dx * 9:.1f}" stroke="#e0484a" stroke-width="1.2"/>'
         if "wrist_cuffs" in ex: out_ += band(len(pts) - 2, 0.84, "#8a93a3", 5)
+        if lk.get("iron_arms"):
+            out_ += band(len(pts) - 2, 0.5, "#e2b03a", 11) + band(0, 0.15, "#e2b03a", 6)
+            x, y, dx, dy = at(len(pts) - 2, 0.5); out_ += f'<path d="M {x - dy * 4:.1f},{y + dx * 4:.1f} l {dx * 6:.1f},{dy * 6:.1f}" stroke="#fff6d0" stroke-width="1.4" opacity=".7"/>'
         if lk.get("stud_cuffs"):
             out_ += band(len(pts) - 2, 0.8, "#1f1d26", 6); x, y, dx, dy = at(len(pts) - 2, 0.8)
             out_ += "".join(f'<circle cx="{x - dy * d:.1f}" cy="{y + dx * d:.1f}" r="1.3" fill="#c9ced6"/>' for d in (-5, 0, 5))
@@ -709,7 +712,7 @@ def defs(lk, n):
             f'<linearGradient id="straw{n}" x1="0" y1="0" x2=".3" y2="1">{cel("#ffe39a", "#e9b456")}</linearGradient>'
             f'<radialGradient id="blush{n}"><stop offset="0" stop-color="#ff7f86" stop-opacity=".9"/><stop offset="1" stop-color="#ff7f86" stop-opacity="0"/></radialGradient>'
             + (f'<pattern id="stripe{n}" width="12" height="10" patternUnits="userSpaceOnUse"><rect width="6" height="10" fill="{lk["stripes"][0]}"/><rect x="6" width="6" height="10" fill="{lk["stripes"][1]}"/></pattern>' if lk.get("stripes") else "") +
-            f'<clipPath id="face{n}"><path d="{FACE}"/></clipPath><clipPath id="torso{n}"><path d="{TORSO}"/></clipPath></defs>')
+            f'<clipPath id="face{n}"><path d="{lk.get("face_d", FACE)}"/></clipPath><clipPath id="torso{n}"><path d="{TORSO}"/></clipPath></defs>')
 
 HEAD_SCALE, HEAD_PIVOT = 1.10, 44      # 머리 10% 키움 (본부장 10-31)
 def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
@@ -730,8 +733,9 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
     g = '<ellipse cx="0" cy="208" rx="42" ry="7" fill="#000000" opacity=".16"/>' + HG + hair_back(lk) + "</g>" + BG + b["behind"] + b["front"]
     g += f'<path d="M -10,34 L 10,34 L 9,46 Q 0,50 -9,46 Z" fill="{mix(sk, "#c08060", 0.22)}"/>' + "</g>"     # 목 (몸 그룹 끝)
     g += HG + ("" if "no_ears" in lk["ex"] else "".join(f'<ellipse cx="{sx * 45}" cy="8" rx="7" ry="10" fill="url(#skin§)" {S}/>' for sx in (-1, 1)))
-    g += f'<path d="{FACE}" fill="url(#skin§)" {S}/>'
-    g += f'<g clip-path="url(#face§)"><path d="{FACE}" transform="translate(3.5,2.5)" fill="none" stroke="#ffffff" stroke-width="3.4" opacity=".45"/></g>'
+    FD = lk.get("face_d", FACE)
+    g += f'<path d="{FD}" fill="url(#skin§)" {S}/>'
+    g += f'<g clip-path="url(#face§)"><path d="{FD}" transform="translate(3.5,2.5)" fill="none" stroke="#ffffff" stroke-width="3.4" opacity=".45"/></g>'
     g += f'<g clip-path="url(#face§)"><path d="{front}" transform="translate(0,6)" fill="{mix(sk, "#b06a50", 0.3)}" opacity=".5"/></g>'   # 앞머리 그림자
     g += eyes(lk, working) + mouth(lk) + face_extras(lk)
     g += f'<path d="{front}" fill="url(#hair§)" {S}/>' + extra
@@ -905,6 +909,9 @@ def elbaf_legs(lk):
             bt = lk.get("boot_top", 168); bc = lk["boots"]
             s += f'<path d="M {cx_ - 9},{bt} Q {cx_ - 11},{(bt + 200) / 2} {cx_ - 9},200 L {cx_ + 9},200 Q {cx_ + 11},{(bt + 200) / 2} {cx_ + 9},{bt} Z" fill="{bc}" {S}/><path d="M {cx_ - 5},{bt + 4} L {cx_ - 5},196" stroke="#ffffff" stroke-width="2" opacity=".18"/>'
             if lk.get("cuff"): s += _fur([(cx_ - 10, bt), (cx_ + 10, bt)], 9, lk["cuff"], seed=bt + sx)
+        if lk.get("iron_legs"):      # 금색 무릎 · 정강이 판 + 허벅지 판 선
+            s += f'<path d="M {cx_ - 10},150 Q {cx_},144 {cx_ + 10},150 L {cx_ + 9},176 L {cx_ - 9},176 Z" fill="#e2b03a" stroke="{INK}" stroke-width="1.8"/><ellipse cx="{cx_}" cy="152" rx="7" ry="4" fill="#f6d27a" stroke="{INK}" stroke-width="1.2"/>'
+            s += f'<path d="M {cx_ - 8},126 L {cx_ + 8},126 M {cx_ - 9},138 L {cx_ + 9},138" stroke="#7a0a14" stroke-width="1.4"/><path d="M {cx_ - 5},158 L {cx_ - 5},172" stroke="#fff6d0" stroke-width="1.6" opacity=".6"/>'
             s += f'<ellipse cx="{fx}" cy="205" rx="14" ry="7" fill="{bc}" {S}/><ellipse cx="{fx - 4}" cy="202.5" rx="5" ry="2" fill="#ffffff" opacity=".3"/>'
         elif lk["shoes"] == "hoof": s += f'<ellipse cx="{fx}" cy="205" rx="11" ry="6" fill="#6a4228" {S}/>'
         else: s += f'<ellipse cx="{fx}" cy="205" rx="14" ry="7" fill="{lk["shoes"]}" {S}/>'
@@ -1076,12 +1083,23 @@ def mv_hat(lk):
         eyes = "".join(f'<path d="M {sx * 5},2 Q {sx * 8},-16 {sx * 30},-13 Q {sx * 38},2 {sx * 22},13 Q {sx * 9},14 {sx * 5},2 Z" fill="#f4f8fb" stroke="#121218" stroke-width="3.6" stroke-linejoin="round"/>' for sx in (-1, 1))
         return _g("ms", "#d42430") + _clip("mk", MASKP) + f'<path d="{MASKP}" fill="url(#ms§)" {S}/><g clip-path="url(#mk§)">{web}</g>' + eyes + _shine()
     if h in ("m_iron", "m_warmachine"):
-        hc, pc = ("#c8202a", "#f2c24a") if h == "m_iron" else ("#5a606c", "#8a909c")
-        plate = "M -36,-24 Q 0,-34 36,-24 L 35,8 Q 30,34 0,42 Q -30,34 -35,8 Z"
-        eyes = "".join(f'<path d="M {sx * 8},2 L {sx * 30},-2 L {sx * 28},6 L {sx * 10},8 Z" fill="#eaffff" stroke="#7ad8f0" stroke-width="1.6"/>' for sx in (-1, 1))
-        return (_g("mh", hc) + _g("mp", pc, .25) + f'<path d="{MASKP}" fill="url(#mh§)" {S}/><path d="{plate}" fill="url(#mp§)" stroke="{INK}" stroke-width="1.8"/>'
-                + f'<ellipse cx="0" cy="3" rx="34" ry="10" fill="#bff6ff" opacity=".18"/>' + eyes
-                + f'<path d="M -12,30 L 12,30 M -24,14 L -18,32 M 24,14 L 18,32 M -36,-24 L -44,-6 M 36,-24 L 44,-6" stroke="{INK}" stroke-width="1.6" fill="none"/>' + _shine())
+        iron = h == "m_iron"
+        hc, pc, gl = ("#c8202a", "#e8b43a", "#9af4ff") if iron else ("#5a606c", "#9aa0aa", "#cfefff")
+        helm = "M -52,8 C -56,-72 56,-72 52,8 C 52,30 38,48 0,52 C -38,48 -52,30 -52,8 Z"
+        plate = "M -37,-28 L -7,-31 L 0,-25 L 7,-31 L 37,-28 L 38,2 Q 37,12 31,17 L 27,34 Q 17,46 0,49 Q -17,46 -27,34 L -31,17 Q -37,12 -38,2 Z"
+        D = (f'<defs><radialGradient id="ih§" cx=".35" cy=".25" r=".9"><stop offset="0" stop-color="{mix(hc, "#ffffff", .38)}"/><stop offset=".5" stop-color="{hc}"/><stop offset="1" stop-color="{mix(hc, "#000000", .45)}"/></radialGradient>'
+             f'<linearGradient id="ip§" x1="0" y1="0" x2=".2" y2="1"><stop offset="0" stop-color="{mix(pc, "#ffffff", .4)}"/><stop offset=".45" stop-color="{pc}"/><stop offset="1" stop-color="{mix(pc, "#000000", .35)}"/></linearGradient>'
+             f'<radialGradient id="ig§"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="{gl}"/><stop offset="1" stop-color="{gl}" stop-opacity="0"/></radialGradient></defs>')
+        s = D + f'<path d="{helm}" fill="url(#ih§)" {S}/>'
+        s += _clip("ic", helm) + f'<g clip-path="url(#ic§)"><path d="M 0,-60 L 0,-32 M -22,-50 Q -38,-36 -42,-12 M 22,-50 Q 38,-36 42,-12" stroke="{mix(hc, "#000000", .5)}" stroke-width="1.6" fill="none"/></g>'      # 투구 판 이음선 (투구 안에만)
+        s += "".join(f'<circle cx="{sx * 49}" cy="6" r="8.5" fill="{mix(hc, "#000000", .2)}" stroke="{INK}" stroke-width="1.8"/><circle cx="{sx * 49}" cy="6" r="4" fill="{pc}" stroke="{INK}" stroke-width="1"/>' for sx in (-1, 1))   # 귀 원판
+        s += f'<path d="{plate}" fill="url(#ip§)" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
+        s += f'<path d="M -37,-28 L -7,-31 L 0,-25 L 7,-31 L 37,-28 L 36,-20 L 7,-23 L 0,-17 L -7,-23 L -36,-20 Z" fill="{mix(pc, "#000000", .18)}"/>'                # 이마 턱(그늘)
+        s += "".join(f'<path d="M {sx * 31},17 L {sx * 22},14 L {sx * 18},34 M {sx * 38},2 L {sx * 31},17" stroke="{mix(pc, "#000000", .45)}" stroke-width="1.6" fill="none"/>' for sx in (-1, 1))   # 광대 · 볼 판 선
+        s += f'<path d="M -11,33 L 11,33" stroke="{INK}" stroke-width="2.2" stroke-linecap="round"/><path d="M -7,39 L 7,39" stroke="{mix(pc, "#000000", .45)}" stroke-width="1.4"/>'   # 입 슬릿
+        s += "".join(f'<ellipse cx="{sx * 19}" cy="-6" rx="17" ry="7" fill="url(#ig§)" opacity=".75"/><path d="M {sx * 31},-10 L {sx * 8},-8 L {sx * 10},-1 L {sx * 29},-3 Z" fill="#ffffff" stroke="{gl}" stroke-width="1.6" stroke-linejoin="round"/>' for sx in (-1, 1))   # 빛나는 눈
+        s += f'<path d="M -22,-26 Q -10,-28 -4,-27" stroke="#ffffff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".6"/><path d="M -36,-34 Q -24,-56 -4,-60" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".45"/>'
+        return s
     if h == "m_deadpool":
         eyes = "".join(f'<ellipse cx="{sx * 19}" cy="2" rx="17" ry="14" fill="#141418" transform="rotate({sx * -12} {sx * 19} 2)"/><path d="M {sx * 9},4 Q {sx * 18},-6 {sx * 28},0 Q {sx * 20},6 {sx * 9},4 Z" fill="#ffffff"/>' for sx in (-1, 1))
         return _g("md", "#c8202a") + f'<path d="{MASKP}" fill="url(#md§)" {S}/>' + eyes + '<path d="M 0,-50 L 0,-26" stroke="#5a0a10" stroke-width="2"/>' + _shine()
@@ -1130,7 +1148,8 @@ def mv_face(lk):
     ex, s = lk["ex"], ""
     if "lids" in ex:
         sk = lk["skin"]
-        s += "".join(f'<path d="M {sx * 4},-14 L {sx * 31},-14 L {sx * 30},2 Q {sx * 17},-6 {sx * 5},4 Z" fill="{sk}"/><path d="M {sx * 5},4 Q {sx * 17},-6 {sx * 30},2" stroke="#1f1d26" stroke-width="2.6" fill="none" stroke-linecap="round"/>' for sx in (-1, 1))
+        s += "".join(f'<path d="M {sx * 4},-16 L {sx * 32},-16 L {sx * 31},5 Q {sx * 17},-1 {sx * 5},8 Z" fill="{sk}"/><path d="M {sx * 5},8 Q {sx * 17},-1 {sx * 31},5" stroke="#1f1d26" stroke-width="3" fill="none" stroke-linecap="round"/>' for sx in (-1, 1))
+        if "angry_brows" in ex: s += "".join(f'<path d="M {sx * 3},-6 L {sx * 31},-20 L {sx * 32},-12 L {sx * 5},1 Z" fill="{lk.get("brow", "#1f1d26")}"/>' for sx in (-1, 1))   # 눈꺼풀 위 사나운 눈썹
     if "eyepatch" in ex: s += '<path d="M -50,-20 L 46,-30" stroke="#1a1a1a" stroke-width="2.6"/><ellipse cx="-17" cy="8" rx="14" ry="12" fill="#121216" stroke="#000" stroke-width="1.6"/>'
     if "goatee_dark" in ex: s += '<path d="M -10,32 Q 0,44 10,32 L 6,46 Q 0,50 -6,46 Z" fill="#2a2420"/><path d="M -14,24 Q 0,20 14,24" stroke="#2a2420" stroke-width="2.4" fill="none"/>'
     if "goatee_strange" in ex: s += '<path d="M -8,34 Q 0,46 8,34 L 4,50 Q 0,53 -4,50 Z" fill="#2a2420"/><path d="M -16,24 Q -8,20 0,23 Q 8,20 16,24 L 14,28 Q 0,24 -14,28 Z" fill="#2a2420"/>'
@@ -1165,8 +1184,17 @@ def mv_torso(lk):
         s += clip('<path d="M -40,40 L -16,40 L -12,130 L -40,130 Z M 40,40 L 16,40 L 12,130 L 40,130 Z" fill="#2a4fb0"/>' + "".join(f'<path d="M {x},40 L {x * 0.8:.1f},100" stroke="#2a0a0e" stroke-width=".9" opacity=".7"/>' for x in (-12, -4, 4, 12)) + "".join(f'<path d="M -16,{y} Q 0,{y + 4} 16,{y}" stroke="#2a0a0e" stroke-width=".9" fill="none" opacity=".7"/>' for y in (56, 70, 84, 98)))
         s += '<path d="M 0,58 L 0,78 M -3,64 L -10,58 M 3,64 L 10,58 M -3,70 L -11,74 M 3,70 L 11,74 M -2,74 L -8,84 M 2,74 L 8,84" stroke="#121218" stroke-width="2.2" stroke-linecap="round"/><ellipse cx="0" cy="66" rx="3" ry="6" fill="#121218"/>'
     elif t == "iron":
-        s += clip('<path d="M -40,92 L 40,92 L 40,130 L -40,130 Z" fill="#e2b03a"/>' + "".join(f'<path d="M -40,{y} L 40,{y}" stroke="#8a1018" stroke-width="1.6"/>' for y in (100, 110, 120)))
-        s += '<path d="M -26,46 L -10,62 M 26,46 L 10,62" stroke="#e2b03a" stroke-width="5"/><circle cx="0" cy="66" r="11" fill="#bff6ff" stroke="#c9ced6" stroke-width="3"/><circle cx="0" cy="66" r="6" fill="#ffffff"/><circle cx="0" cy="66" r="16" fill="#9aecff" opacity=".25"/>'
+        gd = "#e2b03a"
+        s += clip(f'<path d="M -40,88 L 40,88 L 40,130 L -40,130 Z" fill="{gd}"/>' + "".join(f'<path d="M -40,{y} Q 0,{y + 4} 40,{y}" stroke="#8a5a14" stroke-width="1.6" fill="none"/>' for y in (96, 106, 116))
+                  + '<path d="M 0,88 L 0,124" stroke="#8a5a14" stroke-width="1.4"/>'
+                  + '<path d="M -40,40 L -40,60 Q -22,56 -12,84 L 12,84 Q 22,56 40,60 L 40,40 Z" fill="#000000" opacity=".0"/>')
+        s += f'<path d="M -30,52 Q -18,46 -6,52 L -8,82 Q -20,80 -28,72 Z M 30,52 Q 18,46 6,52 L 8,82 Q 20,80 28,72 Z" fill="none" stroke="#7a0a14" stroke-width="1.6"/>'   # 가슴 판
+        s += f'<path d="M -16,44 L -6,58 M 16,44 L 6,58" stroke="{gd}" stroke-width="4" stroke-linecap="round"/>'
+        s += (f'<defs><radialGradient id="ar§"><stop offset="0" stop-color="#ffffff"/><stop offset=".4" stop-color="#bff6ff"/><stop offset="1" stop-color="#5ad8f0" stop-opacity="0"/></radialGradient></defs>'
+              f'<circle cx="0" cy="68" r="19" fill="url(#ar§)" opacity=".7"/><circle cx="0" cy="68" r="11.5" fill="#d8dee6" stroke="{INK}" stroke-width="1.8"/>'
+              f'<circle cx="0" cy="68" r="8" fill="#bff6ff" stroke="#7ad8f0" stroke-width="1.2"/>' + "".join(f'<path d="M {8 * math.cos(math.radians(a_)):.1f},{68 + 8 * math.sin(math.radians(a_)):.1f} L {11 * math.cos(math.radians(a_)):.1f},{68 + 11 * math.sin(math.radians(a_)):.1f}" stroke="#8a909c" stroke-width="1.2"/>' for a_ in range(0, 360, 30))
+              + '<circle cx="0" cy="68" r="3.6" fill="#ffffff"/>')                                                                                   # 아크 원자로
+        s += "".join(f'<path d="M {sx * 30},42 Q {sx * 48},40 {sx * 50},58 Q {sx * 44},64 {sx * 34},60 Z" fill="#c8202a" stroke="{INK}" stroke-width="1.8"/><path d="M {sx * 34},46 Q {sx * 44},46 {sx * 46},54" stroke="#ff8a8a" stroke-width="1.6" fill="none" opacity=".6"/>' for sx in (-1, 1))   # 어깨 판
     elif t == "warmachine":
         s += clip("".join(f'<path d="M -40,{y} L 40,{y}" stroke="#3a3f4a" stroke-width="1.8"/>' for y in (58, 78, 98, 114)) + "".join(f'<circle cx="{x}" cy="{y}" r="1.6" fill="#2a2e38"/>' for x in (-24, 24) for y in (62, 84, 104)))
         s += '<circle cx="0" cy="68" r="9" fill="#bff6ff" stroke="#8a909c" stroke-width="3"/><circle cx="0" cy="68" r="4.6" fill="#ffffff"/>'
@@ -1316,7 +1344,7 @@ def M(name, skin=SK, hs="short", hair="#2a2420", suit="#2a4fb0", **kw):
 
 # ── 명단 (인기순 매핑 · 본부장 확정) ──
 DK, BR, PL = "#8a5a3a", "#7a4a2a", "#f2e2c8"
-BOSS_LOOK = M("아이언맨", hs="bald", suit="#c8202a", hat="m_iron", mv_top="iron", glove="#c8202a", legs="#c8202a", boots="#e2b03a", boot_top=158, mvp=["repulsor"], ex=["no_ears", "burly"])
+BOSS_LOOK = M("아이언맨", hs="bald", suit="#c8202a", hat="m_iron", mv_top="iron", glove="#c8202a", legs="#c8202a", boots="#c8202a", boot_top=176, iron_arms=True, iron_legs=True, mvp=["repulsor"], ex=["no_ears", "burly"])
 ROSTER = {
     "scout": [
         M("스파이더맨", hs="bald", suit="#d42430", hat="m_spidey", mv_top="spidey", legs="#2a4fb0", boots="#d42430", boot_top=150, glove="#d42430", ex=["no_ears"]),
@@ -1371,3 +1399,17 @@ ROSTER = {
 for _lk in [BOSS_LOOK] + [l for _l in ROSTER.values() for l in _l]:
     if _lk["name"] in ("헐크", "드랙스"): _lk["out"] = "shirtless"
     _defaults(_lk)
+
+FACES = {   # 캐릭터 얼굴형 (본부장 10-31 '다 동글동글 안 해도 돼 · 캐릭터 얼굴에 맞게')
+    "square": "M -47,-6 C -48,-40 -26,-56 0,-56 C 26,-56 48,-40 47,-6 L 46,16 Q 43,34 26,42 L 12,46 L -12,46 L -26,42 Q -43,34 -46,16 Z",
+    "jaw":    "M -48,-12 C -50,-48 -26,-58 0,-58 C 26,-58 50,-48 48,-12 L 51,20 Q 50,42 34,50 L 16,56 L -16,56 L -34,50 Q -50,42 -51,20 Z",
+    "heavy":  "M -45,-12 C -47,-48 -24,-57 0,-57 C 24,-57 47,-48 45,-12 L 53,16 Q 52,40 30,48 L 12,50 L -12,50 L -30,48 Q -52,40 -53,16 Z",
+    "slim":   "M -44,-6 C -45,-40 -24,-56 0,-56 C 24,-56 45,-40 44,-6 C 43,16 30,36 12,45 Q 0,50 -12,45 C -30,36 -43,16 -44,-6 Z",
+    "long":   "M -43,-8 C -44,-42 -24,-57 0,-57 C 24,-57 44,-42 43,-8 C 42,18 28,40 10,50 Q 0,54 -10,50 C -28,40 -42,18 -43,-8 Z",
+}
+FACE_OF = {"토르": "square", "캡틴 아메리카": "square", "울버린": "square", "드랙스": "square", "닉 퓨리": "square", "윈터솔저": "square", "스타로드": "square",
+           "호크아이": "square", "프로페서 X": "square", "샹치": "square", "팔콘": "square", "타노스": "jaw", "헐크": "heavy",
+           "닥터 스트레인지": "long", "로키": "long", "비전": "long",
+           "블랙위도우": "slim", "가모라": "slim", "네뷸라": "slim", "완다": "slim", "캡틴 마블": "slim", "스톰": "slim", "진 그레이": "slim", "슈리": "slim", "맨티스": "slim", "와스프": "slim"}
+for _lk in [BOSS_LOOK] + [l for _l in ROSTER.values() for l in _l]:
+    if _lk["name"] in FACE_OF: _lk["face_d"] = FACES[FACE_OF[_lk["name"]]]
