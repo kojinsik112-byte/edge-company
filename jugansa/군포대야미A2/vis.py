@@ -305,7 +305,7 @@ def apply(B, D, take, sub):
     _own, _alt, _ = D.IMG["site"]
     _here = _os.path.dirname(_os.path.abspath(__file__))
     _im = next((x for x in (_own, _alt) if x and _os.path.exists(_os.path.join(_here, "assets_ins", x + ".jpg"))), None)
-    _cap = "조감도 · 홍보용 이미지 · 실제와 다를 수 있음"  # 나리벡 site = 정면 투시도(130)
+    _cap = "투시도 · 홍보용 이미지 · 실제와 다를 수 있음"  # 본부장 10-30 군포 낮 투시도(광고 문구 잘라냄)
     bnr = ('<div class="bnr" style="flex-basis:25%"><img src="assets_ins/' + _im + '.jpg" alt="" style="object-position:55% 36%">'
            f'<b style="color:#F6E7C8">{D.SITE["official"]} · {hh:,}세대 · {D.SITE["supply"]}</b><span>{_cap}</span></div>') if _im else ""
     k["body"] = '<div class="nb">' + bnr + k["body"] + '</div>'
@@ -448,7 +448,7 @@ CSS2 = r"""
 .fl5 em{display:flex;align-items:center;justify-content:center;width:26px;flex:none;color:var(--gold);font-style:normal;font-size:20px;font-weight:800}
 /* 자금 흐름 띠 */
 .mny{position:relative;border:1px solid var(--line);border-radius:14px;padding:10px 26px 4px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01))}
-.mny .rl{position:relative;height:78px}
+.mny .rl{position:relative;height:94px}
 .mny .ln{position:absolute;left:0;right:0;top:30px;height:2px;background:rgba(255,255,255,.25)}
 .mny .zone{position:absolute;top:18px;height:26px;border-radius:6px;background:rgba(235,203,143,.2);border:1px dashed rgba(235,203,143,.7)}
 .mny .zone b{position:absolute;left:50%;top:-19px;transform:translateX(-50%);font-size:13.5px;color:var(--gold);white-space:nowrap}
@@ -643,7 +643,7 @@ def apply2(B, D, take, sub):
     _hv = lambda n: bool(n) and _os2.path.exists(_os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "assets_ins", n + ".jpg"))
     _gy = lambda key: D.IMG[key][0] if _hv(D.IMG[key][0]) else (D.IMG[key][1] if _hv(D.IMG[key][1]) else "gy_cover_aerial")  # 법정 10-23: 단지 사진 없으면 슬롯 대체(타 단지 예시)
     _own_lx = _hv(D.IMG["lx_front1"][0])
-    th = [(_gy("lx_front1"), "동 파사드 · 문주"), ((_gy("lx_play"), "포켓정원 · 산책로") if _own_lx else ("gp_lx_walk", "조경 · 산책로 조명")), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
+    th = [(_gy("lx_front1"), "동 파사드 · 문주"), ((_gy("lx_play"), "조경 · 산책로") if _own_lx else ("gp_lx_walk", "조경 · 산책로 조명")), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
@@ -690,10 +690,10 @@ def apply2(B, D, take, sub):
     mny = ('<div class="mny"><div class="rl"><div class="ln"></div>'
            '<div class="zone" style="left:0;width:37%"><b>취소 기한 내 전액 환불</b></div>'
            '<div class="nd g" style="left:0"></div><div class="nd" style="left:37%"></div><div class="nd" style="left:70%"></div><div class="nd g" style="left:100%"></div>'
-           f'<div class="lb2" style="left:5%">계약<small>계약금 {D.DEPOSIT_MAX}% 이하 · 맞춤 제작 · 본사 규정 품목 예외</small></div>'
+           f'<div class="lb2" style="left:0;transform:none;text-align:left">계약<small>계약금 {D.DEPOSIT_MAX}% 이하<br>맞춤 제작 · 본사 규정 품목 예외</small></div>'  # 본부장 10-30 '34쪽 맞춰줘': 왼쪽 끝 글자가 쪽 밖으로 나가 → 왼쪽 맞춤 · 두 줄
            '<div class="lb2" style="left:37%">취소 기한<small>시공일 7일·15일 전 · 맞춤 제작은 출고 지시 전</small></div>'
            '<div class="lb2" style="left:70%">시공·설치<small>기한 뒤 취소는 실제 자재·제작비만 공제</small></div>'
-           '<div class="lb2" style="left:94%">잔금 납부<small>시공·설치 후</small></div>'
+           '<div class="lb2" style="left:auto;right:0;transform:none;text-align:right">잔금 납부<small>시공·설치 후</small></div>'
            '</div></div>')
     k["body"] = '<div class="nb">' + mny + k["body"] + '</div>'
 

@@ -350,17 +350,19 @@ def apply(G):
         if not img:
             return ""
         return f'<figure><img src="assets_ins/{img}.jpg" alt="" style="object-position:{pos}"><figcaption>{cap}<small>{sub_}</small></figcaption></figure>'
-    _lx5g = (_lf("lx_front1", "동 파사드 라인조명", "타 단지 연출 예시 · 야간 인지성 · 눈부심 없는 상향광")
-             + _lf("lx_front2", "단지 조감 야간 경관", "타 단지 연출 예시 · 동 간 통일된 색온도 · 산책로 동선")
-             + _lf("lx_gate", "문주 · 진입부 조명", "타 단지 연출 예시 · 진입부 첫인상 · 간접광")
-             + _lf("lx_play", "놀이터 · 산책로", "타 단지 연출 예시 · 보행 밝기 · 타이머"))
+    _lxo = G["slot"]("lx_front1")[1]  # 본부장 10-30: 군포 단지 시뮬레이션(gp_lx_*)
+    _lxx = "시뮬레이션" if _lxo else "타 단지 연출 예시"
+    _lx5g = (_lf("lx_front1", "동 파사드 라인조명", f"{_lxx} · 야간 인지성 · 눈부심 없는 상향광")
+             + _lf("lx_front2", "단지 조감 야간 경관", f"{_lxx} · 동 간 통일된 색온도 · 산책로 동선")
+             + _lf("lx_gate", "문주 · 진입부 조명", f"{_lxx} · 진입부 첫인상 · 간접광")
+             + _lf("lx_play", "조경 · 산책로" if _lxo else "놀이터 · 산책로", f"{_lxx} · 보행 밝기 · 타이머"))
     _lx5t = [("동 파사드 라인조명", "야간 인지성 · 눈부심 없는 상향광 · 기존 도면 · 배선 · 타이머 확인"),
              ("단지 조감 야간 경관", "동 간 통일된 색온도 · 산책로 동선 · 유지관리비 비교"),
              ("문주 · 진입부 조명", "진입부 첫인상 · 간접광 · 보행 안전 밝기"),
              ("놀이터 · 산책로", "보행 밝기 · 눈부심 · 타이머 · 사각지대")]
     p_lx5 = ("std", dict(sec="09. 차별화 포인트", title="경관조명 [[진단 · 제안]], 이렇게 합니다",
         lead=("동 파사드 → 진입부 → 놀이터 · 산책로 순서로 진단해 개선안을 냅니다"
-              + (f" - 아래 사진은 타 단지 경관조명 연출 예시입니다({D.SITE['name']} 실제 모습 아님)." if _lx5g else ".")),
+              + ((f" - 아래 사진은 {D.SITE['name']} 경관조명 연출 시뮬레이션입니다(실제와 다를 수 있음)." if _lxo else f" - 아래 사진은 타 단지 경관조명 연출 예시입니다({D.SITE['name']} 실제 모습 아님).") if _lx5g else ".")),
         body=('<div class="nb">' + (f'<div class="gal lx5">{_lx5g}</div>' if _lx5g else
                                     '<div class="lxt">' + "".join(f'<div><i>{k:02d}</i><b>{x}</b><p>{_h.escape(y)}</p></div>' for k, (x, y) in enumerate(_lx5t, 1)) + '</div>')
               + '<div class="lxstep">'
@@ -370,7 +372,7 @@ def apply(G):
               '<div><i>STEP 04</i><b>시공 · A/S</b><span>전기공사업 등록 업체 직접 시공</span></div>'
               '</div></div>'),
         kp=("진단 · 개선안 · 자료 제공까지가 제안 범위입니다 - [[설치 여부 · 비용은 입예협 · 관리주체]]가 정합니다.",
-            D.ELEC_LICENSE + (f" · 사진은 타 단지 경관조명 연출 예시({D.SITE['name']} 실제 모습 아님)" if _lx5g else ""))))
+            D.ELEC_LICENSE + ((" · 사진은 연출 시뮬레이션(실제와 다를 수 있음)" if _lxo else f" · 사진은 타 단지 경관조명 연출 예시({D.SITE['name']} 실제 모습 아님)") if _lx5g else ""))))
     B.CSS += r"""
 .gal.lx5{grid-template-columns:repeat(6,1fr);grid-template-rows:1.15fr 1fr;gap:12px}
 .gal.lx5 figure:nth-child(1),.gal.lx5 figure:nth-child(2){grid-column:span 3}
