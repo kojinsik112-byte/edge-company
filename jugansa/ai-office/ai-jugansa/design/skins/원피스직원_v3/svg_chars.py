@@ -903,6 +903,20 @@ def elbaf_neck(lk):       # 머리보다 앞에 오는 목도리 (몸 좌표)
         s += _fur([(-24, 46), (-10, 40), (0, 41), (10, 40), (24, 46)], 14, mix(c, "#ffffff", 0.14), seed=23)
     return s
 
+def long_nose_v(sk, v):
+    lo, hi = mix(sk, "#8a4a2a", 0.3), mix(sk, "#ffffff", 0.28)
+    gd = (f'<defs><linearGradient id="ns§" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{hi}"/><stop offset=".5" stop-color="{sk}"/><stop offset="1" stop-color="{lo}"/></linearGradient></defs>')
+    if v == "A":      # 애니 원작처럼 굵기 일정한 긴 원통 · 끝 둥글게 · 살짝 위로
+        body = "M -2,9 L 33,6 A 6.5,6.5 0 0 1 34,19 L -2,21 Z"
+        return gd + f'<path d="{body}" fill="url(#ns§)" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/><path d="M -2,9.6 L -2,20.4" stroke="url(#ns§)" stroke-width="3"/><path d="M 4,10.5 L 31,8.2" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>'
+    if v == "B":      # 길고 곧게 앞으로 · 끝이 살짝 굵은 막대
+        body = "M -2,10 L 30,10 Q 40,10 40,15.5 Q 40,21 30,21 L -2,21 Z"
+        return gd + f'<path d="{body}" fill="url(#ns§)" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/><path d="M -2,10.6 L -2,20.4" stroke="url(#ns§)" stroke-width="3"/><path d="M 4,12.4 L 32,12.4" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>'
+    if v == "C":      # 조금 짧고 통통한 원통 · 끝 둥글게
+        body = "M -2,8 L 22,8 Q 32,8 32,15 Q 32,22 22,22 L -2,22 Z"
+        return gd + f'<path d="{body}" fill="url(#ns§)" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/><path d="M -2,8.6 L -2,21.4" stroke="url(#ns§)" stroke-width="3"/><path d="M 4,10.6 L 24,10.6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>'
+    return long_nose(sk)
+
 def long_nose(sk):
     """우솝 코: 얼굴에서 자연스럽게 뻗어 나와 끝이 둥글게 · 밑면 그늘 · 윗면 하이라이트 · 얼굴에 드리운 그림자 (붙은 쪽엔 선 없음)"""
     lo, hi = mix(sk, "#8a4a2a", 0.32), mix(sk, "#ffffff", 0.3)
@@ -923,7 +937,7 @@ def elbaf_face(lk):
         s += ('<path d="M -42,4 Q -46,40 -24,58 Q -12,68 0,70 Q 12,68 24,58 Q 46,40 42,4 L 34,8 Q 30,30 18,38 Q 0,46 -18,38 Q -30,30 -34,8 Z" fill="#d9822b" stroke="#8a4a1a" stroke-width="1.8" stroke-linejoin="round"/>'
               '<path d="M -2,22 Q -14,18 -24,26 Q -30,30 -28,22 Q -16,14 -2,18 Z M 2,22 Q 14,18 24,26 Q 30,30 28,22 Q 16,14 2,18 Z" fill="#c9701f" stroke="#8a4a1a" stroke-width="1.2"/>'
               + "".join(f'<path d="M {x},{y} q 2,6 0,10" stroke="#b0601a" stroke-width="1.3" fill="none"/>' for x, y in ((-30, 34), (-16, 52), (0, 56), (16, 52), (30, 34))))
-    if "long_nose" in lk["ex"]: s += long_nose(lk["skin"])        # 수염보다 앞에
+    if "long_nose" in lk["ex"]: s += long_nose_v(lk["skin"], lk.get("nose_style", "A"))        # 수염보다 앞에
     if b == "franky":
         s += ('<path d="M -36,14 Q -40,60 -24,92 Q -14,104 -6,96 Q 0,108 6,96 Q 14,104 24,92 Q 40,60 36,14 L 28,20 Q 24,36 12,40 Q 0,44 -12,40 Q -24,36 -28,20 Z" fill="#7ad0e8" stroke="#3a8ab0" stroke-width="1.8" stroke-linejoin="round"/>'
               + "".join(f'<path d="M {x},{y} q 3,10 -1,22" stroke="#4aa8c8" stroke-width="1.4" fill="none"/>' for x, y in ((-24, 48), (-10, 56), (8, 56), (22, 48))))
@@ -938,14 +952,13 @@ def elbaf_top(lk):        # 이마 띠 (조로)
             + "".join(f'<rect x="{x}" y="-30" width="4" height="9" fill="#e6c25a" opacity=".8"/>' for x in (-30, -14, 2, 18)) + f'<path d="M 50,-22 L 62,-10 L 56,-8 Z M 50,-20 L 60,-2 L 54,0 Z" fill="{c}" stroke="{INK}" stroke-width="1.2"/>')
 
 def elbaf_hair_back(lk):
-    if lk.get("side_afro"):       # 우솝: 투구 뒤로 동그랗게 부푼 곱슬머리 — 위로 살짝 솟고 옆은 둥글게 · 귀를 살짝 덮을 정도까지 (본부장 10-31)
+    if lk.get("side_afro"):       # 우솝: 투구 아래 양옆으로 풍성하게 삐져나온 곱슬머리 (위로는 안 보임)
         H = f'fill="url(#hair§)" stroke="#3d2820" stroke-width="2" stroke-linejoin="round"'
-        cx0, cy0, rx, ry = 0, -30, 80, 62
-        bumps = [(cx0 + rx * math.cos(math.radians(a_)), cy0 + ry * math.sin(math.radians(a_))) for a_ in range(-200, 25, 15)]
-        bumps += [(-x, y) for x, y in bumps]
-        g = "".join(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="15" {H}/>' for x, y in bumps)
-        g += f'<ellipse cx="{cx0}" cy="{cy0}" rx="{rx}" ry="{ry}" fill="url(#hair§)"/>'
-        g += "".join(f'<path d="M {sx * x},{y} a 5,5 0 1 1 {sx * 6},3" stroke="#4a3a34" stroke-width="1.4" fill="none" opacity=".75"/>' for sx in (-1, 1) for x, y in ((56, -66), (68, -42), (66, -18), (50, -2), (38, -84)))
+        g = ""
+        for sx in (-1, 1):
+            for x, y, r in ((58, -40, 15), (70, -26, 17), (78, -6, 17), (74, 12, 15), (62, -8, 17), (60, 10, 13)):
+                g += f'<circle cx="{sx * x}" cy="{y}" r="{r}" {H}/>'
+            g += "".join(f'<path d="M {sx * x},{y} a 5,5 0 1 1 {sx * 6},3" stroke="#4a3a34" stroke-width="1.4" fill="none" opacity=".8"/>' for x, y in ((70, -24), (78, -2), (72, 14)))
         return g
     if lk.get("nami_braids"):      # 양옆으로 늘어뜨린 가는 땋은 머리
         return "".join(f'<ellipse cx="{sx * (40 - k * 0.5):.1f}" cy="{14 + k * 9}" rx="5" ry="5.5" fill="url(#hair§)" stroke="#3d2820" stroke-width="1.2"/>' for sx in (-1, 1) for k in range(6))
@@ -976,9 +989,9 @@ def elbaf_hat(lk):
         return G + horns + dome("#24222c") + strip() + band()
     if h == "viking_usopp":       # 얼굴을 감싼 분홍 두건(이마 · 양옆) + 옆 헤드폰 · 그 위에 금 투구(줄무늬는 투구 안에만) · 금 뿔 위로
         yb = -34
-        hood = (f'<path d="M -58,-30 C -62,-74 62,-74 58,-30 Q 62,2 56,22 L 44,20 Q 48,2 44,-12 Q 0,-30 -44,-12 Q -48,2 -44,20 L -56,22 Q -62,2 -58,-30 Z" fill="#e06a9a" {S}/>'      # 귀 바로 아래까지만 (본부장 10-31)
-                '<path d="M -52,-6 Q -54,8 -50,18 M 52,-6 Q 54,8 50,18 M -40,-18 Q 0,-32 40,-18" stroke="#b84a78" stroke-width="1.6" fill="none"/>'
-                f'<circle cx="58" cy="10" r="10.5" fill="{gold}" {S}/><circle cx="58" cy="10" r="5.4" fill="#9aa0aa" stroke="#5a5f6a" stroke-width="1"/><path d="M 52,4 L 64,16 M 64,4 L 52,16" stroke="#5a5f6a" stroke-width="1"/>')
+        hood = (f'<path d="M -54,-30 C -58,-72 58,-72 54,-30 Q 57,2 52,20 L 45,19 Q 48,2 45,-16 Q 0,-34 -45,-16 Q -48,2 -45,19 L -52,20 Q -57,2 -54,-30 Z" fill="#e06a9a" {S}/>'      # 귀 바로 아래까지만 (본부장 10-31)
+                '<path d="M -49,-6 Q -51,8 -48,17 M 49,-6 Q 51,8 48,17" stroke="#b84a78" stroke-width="1.4" fill="none"/>'
+                f'<circle cx="54" cy="8" r="9.5" fill="{gold}" {S}/><circle cx="54" cy="8" r="5" fill="#9aa0aa" stroke="#5a5f6a" stroke-width="1"/><path d="M 49,3 L 59,13 M 59,3 L 49,13" stroke="#5a5f6a" stroke-width="1"/>')
         horns = "".join(f'<path d="M {sx * 40},-80 Q {sx * 72},-100 {sx * 54},-146 Q {sx * 50},-112 {sx * 30},-92 Z" fill="{gold}" {S}/>' + ridge(sx, ((44, -94), (52, -110), (54, -126)), "#a8761e") for sx in (-1, 1))
         dpath = f"M -54,{yb} C -56,-120 56,-120 54,{yb} Z"
         stripes = (f'<defs><clipPath id="uc§"><path d="{dpath}"/></clipPath></defs><g clip-path="url(#uc§)">'
