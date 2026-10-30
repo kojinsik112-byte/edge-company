@@ -513,13 +513,15 @@ def defs(lk, n):
             f'<radialGradient id="blush{n}"><stop offset="0" stop-color="#ff7f86" stop-opacity=".9"/><stop offset="1" stop-color="#ff7f86" stop-opacity="0"/></radialGradient>'
             f'<clipPath id="face{n}"><path d="{FACE}"/></clipPath><clipPath id="torso{n}"><path d="{TORSO}"/></clipPath></defs>')
 
+HEAD_SCALE, HEAD_PIVOT = 1.10, 44      # 머리 10% 키움 (본부장 10-31)
 def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
     sk = lk["skin"]; front, extra = hair_front(lk)
     S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
     b = body(lk, team, pose)
-    g = '<ellipse cx="0" cy="208" rx="42" ry="7" fill="#000000" opacity=".16"/>' + hair_back(lk) + b["behind"] + b["front"]
+    HG = f'<g transform="translate(0,{HEAD_PIVOT}) scale({HEAD_SCALE}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
+    g = '<ellipse cx="0" cy="208" rx="42" ry="7" fill="#000000" opacity=".16"/>' + HG + hair_back(lk) + "</g>" + b["behind"] + b["front"]
     g += f'<path d="M -10,34 L 10,34 L 9,46 Q 0,50 -9,46 Z" fill="{mix(sk, "#c08060", 0.22)}"/>'      # 목
-    g += "".join(f'<ellipse cx="{sx * 45}" cy="8" rx="7" ry="10" fill="url(#skin§)" {S}/>' for sx in (-1, 1))
+    g += HG + "".join(f'<ellipse cx="{sx * 45}" cy="8" rx="7" ry="10" fill="url(#skin§)" {S}/>' for sx in (-1, 1))
     g += f'<path d="{FACE}" fill="url(#skin§)" {S}/>'
     g += f'<g clip-path="url(#face§)"><path d="{FACE}" transform="translate(3.5,2.5)" fill="none" stroke="#ffffff" stroke-width="3.4" opacity=".45"/></g>'
     g += f'<g clip-path="url(#face§)"><path d="{front}" transform="translate(0,6)" fill="{mix(sk, "#b06a50", 0.3)}" opacity=".5"/></g>'   # 앞머리 그림자
@@ -529,7 +531,7 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
         g += (f'<defs><clipPath id="hf§"><path d="{front}"/></clipPath></defs><g clip-path="url(#hf§)">'
               f'<path d="M -40,-36 Q -20,-52 0,-53 Q 20,-52 40,-36" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".32"/>'
               f'<path d="M -34,-41 Q -16,-53 0,-54" stroke="#ffffff" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".55"/></g>')
-    g += top_extras(lk) + hat(lk) + b["after_head"]
+    g += top_extras(lk) + hat(lk) + "</g>" + b["after_head"]
     g = g.replace("§", str(n))
     vb = view or "-120 -180 240 400"
     wh = f' width="{size[0]}" height="{size[1]}"' if size else ""
