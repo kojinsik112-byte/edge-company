@@ -38,7 +38,7 @@ ROSTER = {
     "build": [
         C("프랑키", "pompadour", "#3aa6ec", "hawaii", "#e64a4a", "#ffd34d", skin=SK2, eyes="shades", mouth="grin", vibe="fun", pose="cheer", ex=["star_tattoo", "metal_nose"]),
         C("상디", "sanji", "#f6d260", "suit", "#232633", "#5a8fe0", "#232633", eyec="#3a5a8a", vibe="cool", pose="pockets", ex=["cigarette", "curly_brow", "goatee_blond"]),
-        C("쵸파", "chopper_fur", "#a8693a", "fur", "#a8693a", "#f2d6b0", skin="#f7e2c4", hat="chopper", eyec="#3a2a22", vibe="cute", pose="wave", ex=["blue_nose"], legs="#e88aa8", shorts=True, shoes="hoof"),
+        C("쵸파", "chopper_fur", "#a8693a", "fur", "#a8693a", "#f2d6b0", skin="#f7e2c4", hat="chopper", eyec="#3a2a22", vibe="cute", pose="wave", ex=["blue_nose", "tiny_body"], legs="#e88aa8", shorts=True, shoes="hoof"),
         C("브룩", "afro", "#1f1d26", "suit", "#1f1d26", "#ffffff", "#c9483b", skin="#f6f2ea", hat="tophat", eyes="skull", mouth="skull", vibe="fun", pose="hold", props=["cane"]),
         C("에이스", "messy", "#1f1d26", "shirtless", SK2, skin=SK2, hat="ace", mouth="grin", vibe="cool", pose="fist", props=["flame"], ex=["asce", "ace_belt", "freckles", "beads_red"], eyec="#3a2a22", legs="#2b3a5a", shorts=True),
         C("사보", "wavy", "#f6d260", "coat", "#2f4f8a", "#ffffff", hat="sabo", eyec="#3a4a7a", vibe="cool", pose="shoulder", props=["pipe"], ex=["scar_sabo", "cravat"]),
@@ -68,7 +68,7 @@ ROSTER = {
     ],
     "retro": [
         C("샹크스", "messy", "#c8352c", "cloak", "#1f1d26", "#ffffff", vibe="cool", pose="onearm", props=["sword_hip"], ex=["open_shirt_white", "scar_shanks", "stubble", "no_left_arm"], eyec="#3a2a22", legs="#5a4a3a"),
-        C("흰수염", "short", "#f4f4f4", "coat", "#f6f2e8", "#8a6ac0", skin=SK2, hat="bandana", mouth="flat", vibe="cool", pose="hold", props=["bisento"], ex=["mustache_crescent"], eyec="#4a4a5a"),
+        C("흰수염", "short", "#f4f4f4", "coat", "#f6f2e8", "#8a6ac0", skin=SK2, hat="bandana", mouth="flat", vibe="cool", pose="hold", props=["bisento"], ex=["mustache_crescent", "giant"], eyec="#4a4a5a"),
         C("레베카", "long", "#f6a0c6", "dress", "#ec6a94", "#f6d36b", eyec="#3a6aa8", girl=True, vibe="cute", pose="hold", props=["katana_up"], ex=["headband_flower"], legs="#f6e0d0"),   # 레일리 대신 (본부장 10-31)
         C("크로커다일", "slick", "#1f1d26", "fur_coat", "#3a2f2a", "#6a5a4a", mouth="smirk", vibe="cool", pose="hip", ex=["scar_croc", "hook"], eyec="#4a3a2a"),
     ],
@@ -541,7 +541,7 @@ def legs(lk):
         cx_ = x0 + 10
         leg = lambda top, bot, w0, w1: f"M {cx_ - w0},{top} Q {cx_ - w0 - 1},{(top + bot) / 2} {cx_ - w1},{bot} L {cx_ + w1},{bot} Q {cx_ + w0 + 1},{(top + bot) / 2} {cx_ + w0},{top} Z"
         if lk["shorts"]:
-            s += f'<path d="{leg(146, 202, 7.5, 6)}" fill="url(#skin§)" {S}/><path d="{leg(118, 158, 10.5, 10)}" fill="{L}" {S}/>'
+            s += f'<path d="{leg(146, 202, 7.5, 6)}" fill="{lk["c1"] if "tiny_body" in lk["ex"] else "url(#skin§)"}" {S}/><path d="{leg(118, 158, 10.5, 10)}" fill="{L}" {S}/>'
             if "fur_cuffs" in lk["ex"]: s += "".join(f'<circle cx="{cx_ + d}" cy="157" r="3.6" fill="#fbf8f2" stroke="#cfcac0" stroke-width=".9"/>' for d in (-8, -3, 2, 7))
             s += f'<path d="M {cx_ + 3.5},124 L {cx_ + 3.5},154" stroke="#000000" stroke-width="4" opacity=".12" stroke-linecap="round"/>'
         else:
@@ -637,9 +637,12 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
     sk = lk["skin"]; front, extra = hair_front(lk)
     S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
     b = body(lk, team, pose)
-    HG = f'<g transform="translate(0,{HEAD_PIVOT}) scale({HEAD_SCALE}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
-    g = '<ellipse cx="0" cy="208" rx="42" ry="7" fill="#000000" opacity=".16"/>' + HG + hair_back(lk) + "</g>" + b["behind"] + b["front"]
-    g += f'<path d="M -10,34 L 10,34 L 9,46 Q 0,50 -9,46 Z" fill="{mix(sk, "#c08060", 0.22)}"/>'      # 목
+    tiny = "tiny_body" in lk["ex"]          # 쵸파: 몸은 작게 (발 기준) · 머리는 그대로 크게 → 몸 위로 내려 붙임
+    bk = 0.72 if tiny else 1; hdy = ((14 if view else (205 - 44) * (1 - bk)) if tiny else 0)     # 앉으면 책상 위로 눈이 보이게 조금만 내림
+    HG = f'<g transform="translate(0,{HEAD_PIVOT + hdy:.1f}) scale({HEAD_SCALE}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
+    BG = f'<g transform="translate(0,205) scale({bk}) translate(0,-205)">'
+    g = '<ellipse cx="0" cy="208" rx="42" ry="7" fill="#000000" opacity=".16"/>' + HG + hair_back(lk) + "</g>" + BG + b["behind"] + b["front"]
+    g += f'<path d="M -10,34 L 10,34 L 9,46 Q 0,50 -9,46 Z" fill="{mix(sk, "#c08060", 0.22)}"/>' + "</g>"     # 목 (몸 그룹 끝)
     g += HG + "".join(f'<ellipse cx="{sx * 45}" cy="8" rx="7" ry="10" fill="url(#skin§)" {S}/>' for sx in (-1, 1))
     g += f'<path d="{FACE}" fill="url(#skin§)" {S}/>'
     g += f'<g clip-path="url(#face§)"><path d="{FACE}" transform="translate(3.5,2.5)" fill="none" stroke="#ffffff" stroke-width="3.4" opacity=".45"/></g>'
@@ -650,7 +653,8 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
         g += (f'<defs><clipPath id="hf§"><path d="{front}"/></clipPath></defs><g clip-path="url(#hf§)">'
               f'<path d="M -40,-36 Q -20,-52 0,-53 Q 20,-52 40,-36" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".32"/>'
               f'<path d="M -34,-41 Q -16,-53 0,-54" stroke="#ffffff" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".55"/></g>')
-    g += top_extras(lk) + hat(lk) + "</g>" + b["after_head"]
+    g += top_extras(lk) + hat(lk) + "</g>" + BG + b["after_head"] + "</g>"
+    if "giant" in lk["ex"]: g = f'<g transform="translate(0,205) scale(1.2) translate(0,-205)">{g}</g>'     # 흰수염: 거인 1.2배 (본부장 10-31)
     g = g.replace("§", str(n))
     vb = view or "-120 -180 240 400"
     wh = f' width="{size[0]}" height="{size[1]}"' if size else ""
