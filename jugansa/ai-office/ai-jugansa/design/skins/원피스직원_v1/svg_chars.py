@@ -54,7 +54,7 @@ ROSTER = {
         C("코비", "side", "#f6a8c8", "marine", "#ffffff", "#3a5f9a", hat="marine", eyec="#7a4a8a", vibe="cute", pose="wave"),
     ],
     "mail": [
-        C("봉쿠레", "bun", "#1f1d26", "swan", "#ffffff", "#f6a0c6", eyes="makeup", mouth="lips", vibe="fun", pose="cheer", eyec="#3a2a3a", legs="#f6a0c6"),
+        C("바르톨로메오", "mohawk", "#3aaa6a", "coat", "#2b2a38", "#ffffff", mouth="teeth", vibe="fun", pose="fist", ex=["nose_ring"]),   # 봉쿠레 대신 (본부장 10-31)
         C("버기", "messy", "#3a86e0", "coat", "#d03a32", "#f4d35a", hat="captain", mouth="grin", vibe="fun", pose="fist", props=["knife"], ex=["red_nose", "clown_paint"], eyec="#3a2a22"),
         C("페로나", "drills", "#f6a0c6", "dress", "#2b2a38", "#e0484a", hat="crown", eyec="#6a3a5a", girl=True, vibe="cute", pose="wave", props=["ghost"], ex=["star_cheek"], legs="#2b2a38"),
         C("오키쿠", "pony", "#2b2230", "kimono", "#f4b6c4", "#ffffff", "#7a3a8a", eyec="#4a2a3a", girl=True, vibe="glam", mouth="lips", pose="hold", props=["sword_hip"], legs="#f4b6c4"),   # 바르톨로메오 대신 (본부장 10-31)
@@ -68,7 +68,7 @@ ROSTER = {
     "retro": [
         C("샹크스", "messy", "#c8352c", "cloak", "#1f1d26", "#ffffff", vibe="cool", pose="onearm", props=["sword_hip"], ex=["scar_shanks", "stubble", "no_left_arm"], eyec="#3a2a22", legs="#5a4a3a"),
         C("흰수염", "short", "#f4f4f4", "coat", "#f6f2e8", "#8a6ac0", skin=SK2, hat="bandana", mouth="flat", vibe="cool", pose="hold", props=["bisento"], ex=["mustache_crescent"], eyec="#4a4a5a"),
-        C("레일리", "slick", "#f4f4f4", "tshirt", "#f6f2e8", "#f6f2e8", vibe="cool", pose="cross", props=["sword_hip"], ex=["glasses_round", "beard_white"], eyec="#4a5a7a", legs="#6a6a74"),
+        C("레베카", "long", "#f6a0c6", "dress", "#ec6a94", "#f6d36b", eyec="#3a6aa8", girl=True, vibe="cute", pose="hold", props=["katana_up"], ex=["headband_flower"], legs="#f6e0d0"),   # 레일리 대신 (본부장 10-31)
         C("크로커다일", "slick", "#1f1d26", "fur_coat", "#3a2f2a", "#6a5a4a", mouth="smirk", vibe="cool", pose="hip", ex=["scar_croc", "hook"], eyec="#4a3a2a"),
     ],
 }
