@@ -239,6 +239,9 @@ def main():
                     _w = one[n0].rect.width
                     one[n0].insert_textbox(fitz.Rect(_w - 300, 14, _w - 30, 30), f"업무협약 체결일 : {DNB_DATE}", fontsize=9.5,
                                            fontname="mg", fontfile=FONT, color=(0.25, 0.25, 0.25), align=fitz.TEXT_ALIGN_RIGHT)
+                    # 본부장 10-30: 2쪽 제12조(기타) · '각 1부씩 보관한다' 아래 · 서명 표 위 빈칸에 체결일
+                    one[n0 + 1].insert_textbox(fitz.Rect(0, 456, one[n0 + 1].rect.width, 476), DNB_DATE, fontsize=11,
+                                               fontname="mg", fontfile=FONT, color=(0.1, 0.1, 0.1), align=fitz.TEXT_ALIGN_CENTER)
                 if mark:
                     for k in range(n0, one.page_count):
                         band(one[k], f"제출서류 {no} · {title}")
