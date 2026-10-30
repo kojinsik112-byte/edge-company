@@ -156,7 +156,7 @@ function bubble(owner, x, y, text, cls, ms){
   owner.bub = el("div", "bub" + (cls ? " " + cls : ""), {left:px(x), top:px(y)}); owner.bub.textContent = clip(text, 40);
   if (ms){ const b = owner.bub; setTimeout(() => { if (owner.bub === b){ b.remove(); owner.bub = null; } }, ms); }
 }
-function bossSay(t, ms=2600){ bubble(boss, L.boss.hx + 40, L.boss.hy - 10, t, "boss", ms); }
+function bossSay(t, ms=2600){ if (meeting) return; bubble(boss, L.boss.hx + 40, L.boss.hy - 10, t, "boss", ms); }   // 회의 중엔 책상 자리가 비어 있다
 function render(){
   // 방마다 말풍선은 가장 최근에 일한 1명만 (나머지는 초록 점)
   for (const team in L.rooms){
@@ -192,43 +192,66 @@ function tickIdle(){
 }
 
 // ───────── 본부장실로 걸어가서 보고 → 자리로 돌아오기 ─────────
-const walkers = [];
+const walkers = []; let meeting = false;
 // 자리 → 통로(문 쪽) → 앞 유리문 → 아래 복도(작게 보임) → 본부장실 앞문 → 보고 자리 (door 두 점 사이 = 문을 지남)
 function pathTo(s){
-  const r = L.rooms[s.team], d = r.door, bd = L.boss.door, k = walkers.filter(w => w.phase !== "back").length;
+  const r = L.rooms[s.team], d = r.door, bd = L.boss.door, k = walkers.filter(w => w.kind === "rep" && !w.leaving).length;
   const pts = [{x:s.fx, y:s.fy}, {x:d.in[0], y:s.fy}, {x:d.in[0], y:d.in[1], door:true}, {x:d.out[0], y:d.out[1], door:true}];
   if (r.row === 0) pts.push({x:L.vX, y:d.out[1]}, {x:L.vX, y:bd.out[1]});
   pts.push({x:bd.out[0], y:bd.out[1], door:true}, {x:bd.in[0], y:bd.in[1], door:true}, {x:L.boss.spot[0] - k * 26, y:L.boss.spot[1]});
   return pts;
 }
+function mkWalker(st, x, y, kind){
+  const o = {img: el("img", "walker", {width:px(st.w), height:px(st.h)}), sw: st.w, sh: st.h, feet: st.feet, x, y, pts: [], i: 0, cb: null, small: false, flip: false, hold: 0, bub: null, kind};
+  o.img.src = "/v4/" + st.file; walkers.push(o); place(o); return o;
+}
+function walk(o, pts, cb){ o.pts = [{x:o.x, y:o.y}, ...pts]; o.i = 0; o.cb = cb || null; }
+function killWalker(o){ o.img.remove(); if (o.bub) o.bub.remove(); walkers.splice(walkers.indexOf(o), 1); }
+function wsay(o, t, ms){ bubble(o, o.x, o.y - o.sh * 0.92 * (o.small ? 0.6 : 1), t, o.kind === "boss" ? "boss" : "", ms); }
+function place(o){ const moving = o.pts.length && o.i < o.pts.length - 1, bob = moving ? Math.abs(Math.sin(performance.now() / 120)) * 3 : 0;
+  o.img.style.left = px(o.x - o.sw / 2); o.img.style.top = px(o.y - o.sh * o.feet - bob);
+  o.img.style.transform = `scale(${o.flip ? -1 : 1}, 1) scale(${o.small ? 0.6 : 1})`;     // 복도에서는 작게 (방 그림을 덮지 않게)
+  if (o.bub){ o.bub.style.left = px(o.x); o.bub.style.top = px(o.y - o.sh * 0.92 * (o.small ? 0.6 : 1)); } }
+// 팀 작업 끝 → 본부장실로 걸어가 보고 → (본부장이 비어 있으면) 원탁에서 잠깐 회의 → 자리로 복귀
 function report(s){
   if (!s || s.state === "away" || s.state === "walk") return;
   if (s.bub){ s.bub.remove(); s.bub = null; }
-  setState(s, "away"); doneN++;
-  const w = {s, pts: pathTo(s), i: 0, x: s.fx, y: s.fy, phase: "go", wait: 0, img: el("img", "walker", {width:px(s.stand.w), height:px(s.stand.h)}), bub:null};
-  w.img.src = "/v4/" + s.stand.file; walkers.push(w); place(w); render();
+  setState(s, "away"); doneN++; render();
+  const there = pathTo(s), o = mkWalker(s.stand, s.fx, s.fy, "rep");
+  walk(o, there.slice(1), () => {
+    o.flip = true; place(o); wsay(o, "보고 드립니다", 2000); setTimeout(() => bossSay("확인! 수고했어!", 1800), 600);
+    const home = () => { o.leaving = true; walk(o, there.slice(0, -1).reverse(), () => { killWalker(o); setState(s, "idle", ""); }); };
+    setTimeout(() => meeting ? setTimeout(home, 600) : meet(o, home), 2200);
+  });
 }
-function place(w){ const bob = w.phase === "wait" ? 0 : Math.abs(Math.sin(performance.now() / 120)) * 3;
-  w.img.style.left = px(w.x - w.s.stand.w / 2); w.img.style.top = px(w.y - w.s.stand.h * w.s.stand.feet - bob);
-  w.img.style.transform = `scale(${w.flip ? -1 : 1}, 1) scale(${w.small ? 0.6 : 1})`;     // 복도에서는 작게 (방 그림을 덮지 않게)
-  if (w.bub){ w.bub.style.left = px(w.x); w.bub.style.top = px(w.y - w.s.stand.h * 0.92 * (w.small ? 0.6 : 1)); } }
+function meet(o, done){
+  meeting = true; const M = L.boss.meet, B = L.boss;
+  boss.img.style.visibility = "hidden"; if (boss.bub){ boss.bub.remove(); boss.bub = null; }
+  const b = mkWalker(B.stand, B.standAt[0], B.standAt[1], "boss");
+  let n = 0;
+  const both = () => { if (++n < 2) return;
+    b.flip = false; o.flip = true; place(b); place(o);
+    const lines = [[o, "이번 건 진행 상황 공유드립니다"], [b, "좋아, 일정 맞춰서 가자!"], [o, "네, 바로 반영하겠습니다"], [b, "고생했어 👍"]];
+    lines.forEach(([w, t], i) => setTimeout(() => wsay(w, t, 1500), i * 1600));
+    setTimeout(() => {
+      walk(b, [{x:B.standAt[0], y:B.standAt[1]}], () => { killWalker(b); boss.img.style.visibility = "visible"; meeting = false; });
+      walk(o, [{x:B.spot[0], y:B.spot[1]}], done);
+    }, lines.length * 1600 + 300);
+  };
+  walk(o, [{x:M.rep[0], y:M.rep[1]}], both); walk(b, [{x:M.boss[0], y:M.boss[1]}], both);
+}
 let last = performance.now();
 function frame(now){
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  for (const w of walkers.slice()){
-    if (w.hold){ if (now < w.hold) continue; w.hold = 0; w.img.style.opacity = 1; }
-    if (w.phase === "wait"){ if (now > w.wait){ w.phase = "back"; w.pts = w.pts.slice().reverse(); w.i = 0; if (w.bub){ w.bub.remove(); w.bub = null; } } place(w); continue; }
-    const t = w.pts[w.i + 1];
-    if (!t){
-      if (w.phase === "go"){ w.phase = "wait"; w.wait = now + 2600; bubble(w, w.x, w.y - w.s.stand.h * 0.92, "보고 드립니다", "", 0); setTimeout(() => bossSay("확인! 수고했어!"), 700); }
-      else { w.img.remove(); walkers.splice(walkers.indexOf(w), 1); setState(w.s, "idle", ""); }
-      continue;
-    }
-    const dx = t.x - w.x, dy = t.y - w.y, d = Math.hypot(dx, dy), step = WALK * dt;
-    if (d <= step){ w.x = t.x; w.y = t.y; w.i++; const nx = w.pts[w.i + 1];
-      if (t.door && nx && nx.door){ w.img.style.opacity = 0; w.hold = now + 350; w.x = nx.x; w.y = nx.y; w.i++; w.small = !w.small; place(w); continue; } }
-    else { w.x += dx / d * step; w.y += dy / d * step; }
-    w.flip = dx < -0.5; place(w);
+  for (const o of walkers.slice()){
+    if (o.hold){ if (now < o.hold) continue; o.hold = 0; o.img.style.opacity = 1; }
+    const t = o.pts[o.i + 1];
+    if (!t){ if (o.cb){ const c = o.cb; o.cb = null; o.pts = []; c(); } place(o); continue; }
+    const dx = t.x - o.x, dy = t.y - o.y, d = Math.hypot(dx, dy), step = WALK * dt;
+    if (d <= step){ o.x = t.x; o.y = t.y; o.i++; const nx = o.pts[o.i + 1];
+      if (t.door && nx && nx.door){ o.img.style.opacity = 0; o.hold = now + 350; o.x = nx.x; o.y = nx.y; o.i++; o.small = !o.small; place(o); continue; } }
+    else { o.x += dx / d * step; o.y += dy / d * step; }
+    if (Math.abs(dx) > 0.5) o.flip = dx < 0; place(o);
   }
   requestAnimationFrame(frame);
 }

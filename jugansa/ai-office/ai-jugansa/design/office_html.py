@@ -180,8 +180,12 @@ def char(lk, cx, desk_y, s, team, working, pose="type", stand=False):
     if stand:
         sv = sc.svg(lk, n, team=team, working=working, pose=pose, size=(240 * s, 400 * s))
         return sv.replace("<svg ", f'<svg x="{cx - 120 * s:.1f}" y="{desk_y - 385 * s:.1f}" ', 1)
-    sv = sc.svg(lk, n, team=team, working=working, pose=pose, size=(240 * s, 292 * s), view="-120 -180 240 292")
-    return sv.replace("<svg ", f'<svg x="{cx - 120 * s:.1f}" y="{desk_y - 280 * s:.1f}" ', 1)
+    hc = 280 - 12 / s          # 몸은 책상 윗면 뒤쪽 선에서 자른다 (그 아래는 책상이 가림)
+    sv = sc.svg(lk, n, team=team, working=working, pose=pose, size=(240 * s, hc * s), view=f"-120 -180 240 {hc:.2f}")
+    sv = sv.replace("<svg ", f'<svg x="{cx - 120 * s:.1f}" y="{desk_y - 280 * s:.1f}" ', 1)
+    if pose == "type":         # 손은 책상 위에
+        sv += "".join(f'<circle cx="{cx + k * 31 * s:.1f}" cy="{desk_y - 6:.1f}" r="{8.5 * s:.1f}" fill="{lk["skin"]}" stroke="{sc.INK}" stroke-width="{1.4 * s + 0.6:.1f}"/>' for k in (-1, 1))
+    return sv
 
 DESK = {"월넛라운지": ("#9a6844", "#6e4630", "#b78258"), "마블펜트하우스": ("#f7f6f2", "#2a2d33", "#ffffff"), "나이트스카이": ("#2a3142", "#161b26", "#c9a45c")}[A.office]
 def desk(x0, x1, yt, depth=12, panel=22):
@@ -194,12 +198,19 @@ def chair(cx, yt, s):
     c = "#2b2a33" if not OS["night"] else "#3a3448"
     return f'<rect x="{cx - 38 * s:.1f}" y="{yt - 150 * s:.1f}" width="{76 * s:.1f}" height="{150 * s:.1f}" rx="{18 * s:.1f}" fill="{c}"/><rect x="{cx - 30 * s:.1f}" y="{yt - 142 * s:.1f}" width="{60 * s:.1f}" height="{10 * s:.1f}" rx="{4 * s:.1f}" fill="#ffffff" opacity=".12"/>'
 
+APPLE = ("M 0,-4 C -2,-6.5 -8,-7 -9.5,-2 C -11,3 -7,9.5 -4.5,9.5 C -3,9.5 -1.5,8.6 0,8.6 C 1.5,8.6 3,9.5 4.5,9.5 C 7,9.5 9.5,4.5 9.8,2.4 "
+         "C 7.4,1.4 6.6,-2.8 9,-4.6 C 7.2,-7.2 2.4,-6.6 0,-4 Z M 0.6,-5.2 C 0.4,-8.4 2.8,-10.6 5,-10.8 C 5.2,-8 3,-5.6 0.6,-5.2 Z")
 def laptop(cx, yt, s, on, team):
-    w, h = 54 * s, 30 * s
-    g = f'<rect x="{cx - w / 2:.1f}" y="{yt - h:.1f}" width="{w:.1f}" height="{h:.1f}" rx="{3 * s:.1f}" fill="#d9dde3" stroke="#9aa3ad" stroke-width="1"/>'
-    if on: g += f'<circle cx="{cx}" cy="{yt - h / 2:.1f}" r="{4.5 * s:.1f}" fill="{team}"/><ellipse cx="{cx}" cy="{yt - h - 4:.1f}" rx="{w * 0.7:.1f}" ry="{8 * s:.1f}" fill="{team}" opacity=".15"/>'
-    else: g = f'<rect x="{cx - w / 2:.1f}" y="{yt - 5 * s:.1f}" width="{w:.1f}" height="{5 * s:.1f}" rx="2" fill="#c9ced6"/>' + f'<rect x="{cx + w / 2 + 4:.1f}" y="{yt - 14 * s:.1f}" width="{11 * s:.1f}" height="{13 * s:.1f}" rx="2" fill="#ffffff" stroke="#c9bfae"/>'
-    return g
+    """작업 중 = 실버 노트북을 펼침(뒷면 사과 로고가 하얗게 빛남) · 쉬는 중 = 덮어 둠 + 머그컵"""
+    w, h = 58 * s, 36 * s
+    if on:
+        gid = nid(); DEFS_LOCAL = f'<defs><linearGradient id="lp{gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef1f4"/><stop offset="1" stop-color="#b9c0c8"/></linearGradient></defs>'
+        return (DEFS_LOCAL + f'<rect x="{cx - w / 2 - 2:.1f}" y="{yt - 3:.1f}" width="{w + 4:.1f}" height="4" rx="2" fill="#a9b0b8"/>'
+                f'<rect x="{cx - w / 2:.1f}" y="{yt - h - 2:.1f}" width="{w:.1f}" height="{h:.1f}" rx="{4 * s:.1f}" fill="url(#lp{gid})" stroke="#8f98a3" stroke-width="1"/>'
+                f'<ellipse cx="{cx}" cy="{yt - h / 2 - 2:.1f}" rx="{11 * s:.1f}" ry="{11 * s:.1f}" fill="#ffffff" opacity=".55"/>'
+                f'<path d="{APPLE}" transform="translate({cx:.1f},{yt - h / 2 - 1:.1f}) scale({0.62 * s + 0.2:.2f})" fill="#ffffff" stroke="#c8ced6" stroke-width=".6"/>')
+    return (f'<rect x="{cx - w / 2:.1f}" y="{yt - 6 * s - 2:.1f}" width="{w:.1f}" height="{6 * s + 2:.1f}" rx="2" fill="#c9ced6" stroke="#9aa3ad" stroke-width=".8"/>'
+            f'<rect x="{cx + w / 2 + 4:.1f}" y="{yt - 15 * s:.1f}" width="{11 * s:.1f}" height="{14 * s:.1f}" rx="2" fill="#ffffff" stroke="#c9bfae"/><path d="M {cx + w / 2 + 15 * s + 4:.1f},{yt - 12 * s:.1f} q {5 * s:.1f},{3 * s:.1f} 0,{7 * s:.1f}" stroke="#c9bfae" fill="none"/>')
 
 # ───────────── 방별 벽 장식 ─────────────
 def decor(key, x, w, top, dx):
@@ -312,18 +323,24 @@ def boss_room(x, y, reporter):
     sy = y + RH - 70
     g.append(f'<rect x="{x + 30}" y="{sy}" width="84" height="34" rx="11" fill="#5a2f25" stroke="#3a1d16" stroke-width="1.6"/><rect x="{x + 34}" y="{sy + 4}" width="76" height="11" rx="5" fill="#73402f"/>'
              f'<rect x="{x + 26}" y="{sy + 6}" width="10" height="28" rx="4" fill="#4a2620"/><rect x="{x + 108}" y="{sy + 6}" width="10" height="28" rx="4" fill="#4a2620"/>')
-    g.append(f'<ellipse cx="{x + 136}" cy="{sy + 26}" rx="16" ry="5" fill="#2a1a12"/><rect x="{x + 134}" y="{sy + 26}" width="4" height="8" fill="#2a1a12"/><rect x="{x + 130}" y="{sy + 20}" width="10" height="4" rx="1" fill="#f6f2ea"/>')
+    mtx, mty = x + 176, y + RH - 50                       # 원탁 회의 테이블 (보고 뒤 잠깐 회의)
+    for ox in (-38, 38): g.append(f'<rect x="{mtx + ox - 9}" y="{mty - 22}" width="18" height="24" rx="5" fill="#5a2f25"/><rect x="{mtx + ox - 11}" y="{mty}" width="22" height="7" rx="3" fill="#73402f"/>')
+    g.append(f'<rect x="{mtx - 3}" y="{mty}" width="6" height="22" fill="#2a1a12"/><ellipse cx="{mtx}" cy="{mty + 22}" rx="14" ry="4" fill="#2a1a12"/><ellipse cx="{mtx}" cy="{mty}" rx="30" ry="9" fill="#f6f2ea" stroke="#c9a45c" stroke-width="1.6"/>'
+             f'<rect x="{mtx - 10}" y="{mty - 4}" width="12" height="7" rx="1" fill="#ffffff" stroke="#d8cdbb" stroke-width=".6"/><rect x="{mtx + 6}" y="{mty - 5}" width="5" height="6" rx="1" fill="#c9a45c"/>')
     lg2 = grad("radialGradient", [(0, "#fff1cc", 0.7), (1, "#fff1cc", 0)])
     g.append(f'<ellipse cx="{x + 44}" cy="{wb - 34}" rx="26" ry="22" fill="{lg2}"/><rect x="{x + 43}" y="{wb - 32}" width="2.4" height="64" fill="{gold}"/><path d="M {x + 34},{wb - 30} L {x + 54},{wb - 30} L {x + 50},{wb - 44} L {x + 38},{wb - 44} Z" fill="#fbf3e2" stroke="{gold}"/><ellipse cx="{x + 44}" cy="{wb + 32}" rx="8" ry="2.4" fill="{gold}"/>')
     # 뒤쪽 오른편: 지구본 · 회사 깃발
     g.append(f'<rect x="{x + 300}" y="{wb + 40}" width="3" height="16" fill="{gold}"/><ellipse cx="{x + 301}" cy="{wb + 57}" rx="10" ry="3" fill="{wal}"/><circle cx="{x + 301}" cy="{wb + 28}" r="14" fill="#5f95db" stroke="{gold}" stroke-width="2"/>'
              f'<path d="M {x + 292},{wb + 22} q 6,-6 12,0 q 4,6 -2,12 q -6,2 -8,-4 Z M {x + 304},{wb + 32} q 4,-2 6,2 q -2,4 -6,2 Z" fill="#5cb87a"/>')
     g.append(f'<rect x="{x + 236}" y="{wb - 66}" width="2.4" height="118" fill="{gold}"/><circle cx="{x + 237}" cy="{wb - 68}" r="3" fill="{gold}"/><path d="M {x + 238},{wb - 62} Q {x + 254},{wb - 66} {x + 266},{wb - 58} L {x + 266},{wb - 26} Q {x + 254},{wb - 34} {x + 238},{wb - 30} Z" fill="#1b2433" stroke="{gold}" stroke-width="1"/>' + T(x + 252, wb - 41, "E", 11, gold, 800, "middle"))
-    cx, yt, s = x + CW / 2 - 10, y + 226, 0.46
+    cx, yt, s = x + CW / 2 - 10, y + 204, 0.44
     g.append(f'<rect x="{cx - 50 * s:.1f}" y="{yt - 190 * s:.1f}" width="{100 * s:.1f}" height="{190 * s:.1f}" rx="{24 * s:.1f}" fill="#5a2f25"/>')
     if ASSETS:
         LAYOUT["boss"] = {"sprite": sprite("boss_work.svg", (cx - 90, yt - 280 * s, 180, 280 * s + 8), char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type") + laptop(cx - 62, yt, 0.4, True, "#c9a45c")),
-                          "hx": cx, "hy": yt - 232 * s, "spot": [x + CW - 112, y + RH - 36], "door": None, "room": {"x": x, "y": y, "w": CW, "h": RH}, "name": sc.BOSS_LOOK["name"]}
+                          "hx": cx, "hy": yt - 232 * s, "spot": [x + CW - 104, y + RH - 36], "meet": {"boss": [x + 128, y + RH - 30], "rep": [x + 222, y + RH - 30]},
+                          "standAt": [cx + 108, yt + 34], "door": None, "room": {"x": x, "y": y, "w": CW, "h": RH}, "name": sc.BOSS_LOOK["name"]}
+        open(os.path.join(ASSETS, "boss_stand.svg"), "w", encoding="utf-8").write(sc.svg(sc.BOSS_LOOK, nid(), working=True, pose="side", size=(240 * 0.36, 400 * 0.36)))
+        LAYOUT["boss"]["stand"] = {"file": "boss_stand.svg", "w": 240 * 0.36, "h": 400 * 0.36, "feet": (205 + 180) / 400}
     else: g.append(char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type"))
     top_, front, edge = DESK
     g.append(f'<polygon points="{cx - 86},{yt - 14} {cx + 86},{yt - 14} {cx + 96},{yt} {cx - 96},{yt}" fill="{top_}" stroke="{mix(front, "#000000", 0.2)}"/><rect x="{cx - 96}" y="{yt}" width="192" height="40" fill="{front}"/><rect x="{cx - 96}" y="{yt}" width="192" height="2" fill="{edge}"/>')
