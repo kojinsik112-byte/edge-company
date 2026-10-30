@@ -1,0 +1,470 @@
+# 원피스직원 v1 (고품질판) — 애니메이션풍 치비 SVG 생성기
+# 사내 오피스 화면 전용 (팬아트 · 외부 게시 · 홍보물 사용 금지 — 캐릭터 저작권은 원작자)
+# 좌표: 머리 가운데 (0, 0) · 얼굴 위 -54 · 턱 43 · 몸 36 ~ 92 · 발 118 · viewBox -90 -130 180 260
+import math
+
+INK = "#4a2f25"
+def mix(a, b, t):
+    a = [int(a[i:i+2], 16) for i in (1, 3, 5)]; b = [int(b[i:i+2], 16) for i in (1, 3, 5)]
+    return "#%02x%02x%02x" % tuple(int(a[i] * (1 - t) + b[i] * t) for i in range(3))
+SK, SK2, SK3 = "#ffe0c8", "#f6cba6", "#e9b48a"
+
+def C(name, hs, hair, out, c1, c2="#ffffff", c3="#24304a", skin=SK, hat=None, eyes="normal", mouth="smile", ex=(), hair2=None, eyec="#5a3a2a", legs="#3b4258", girl=False, shoes="#3a2a24"):
+    return dict(name=name, hs=hs, hair=hair, hair2=hair2 or hair, out=out, c1=c1, c2=c2, c3=c3, skin=skin, hat=hat, eyes=eyes,
+                mouth=mouth, ex=list(ex), eyec=eyec, legs=legs, girl=girl, shoes=shoes)
+
+BOSS_LOOK = C("루피 (기어5 니카)", "cloud", "#fbf8ff", "vest_open", "#ffffff", "#f1ecff", hair2="#ece6fb", hat="straw", eyes="sparkle",
+              mouth="laugh", ex=["scar_luffy", "x_scar", "cloud_ring", "sash_nika"], eyec="#6b3a2a", legs="#ffffff", shoes="#f2c94c")
+ROSTER = {
+    "scout": [
+        C("나미", "long_wavy", "#f68a3c", "stripe", "#ffffff", "#4f8fe0", eyec="#b5652e", girl=True, ex=["earrings_gold"], legs="#4f6fb0"),
+        C("우솝", "curly", "#2b2220", "overalls", "#c58a4a", "#fff8ee", skin=SK3, ex=["long_nose", "goggles_head"], legs="#c58a4a"),
+        C("캐럿", "bunny", "#fbf6ee", "dress", "#8fd0f2", "#ffffff", eyec="#e0484a", girl=True, ex=["bunny_ears"]),
+        C("비비", "pony", "#5aaef0", "tshirt", "#ffffff", "#5aaef0", eyec="#3a5a8a", girl=True, ex=["earrings_gold"], legs="#d9e6f5"),
+    ],
+    "analysis": [
+        C("로빈", "blunt", "#2b2a38", "coat", "#7b5aa6", "#f4efe6", eyec="#3a6aa8", girl=True, ex=["sunglasses_head"]),
+        C("로우", "short", "#23222c", "hoodie", "#f2c94c", "#23222c", hat="law", eyes="sharp", mouth="smirk", ex=["goatee", "earrings_gold", "eyebags"], eyec="#6a5a3a"),
+        C("징베", "topknot", "#23222c", "kimono", "#ec8b3c", "#ffffff", "#2a5ea8", skin="#86b6dc", eyes="sharp", eyec="#3a3a4a"),
+        C("마르코", "pineapple", "#f4d35a", "vest_open", "#8a6ac0", "#8a6ac0", eyes="sleepy", ex=["beads_blue"], eyec="#4a5a7a"),
+        C("베가펑크", "big_round", "#c89ae6", "labcoat", "#ffffff", "#6ab0e6", eyec="#5a4a8a", ex=["goggles_head"]),
+    ],
+    "build": [
+        C("프랑키", "pompadour", "#3aa6ec", "hawaii", "#e64a4a", "#ffd34d", skin=SK2, eyes="shades", mouth="grin", legs="#3b4258"),
+        C("상디", "sanji", "#f6d260", "suit", "#232633", "#5a8fe0", "#232633", eyec="#3a5a8a", mouth="smirk", ex=["curly_brow", "goatee_blond"]),
+        C("쵸파", "chopper_fur", "#a8693a", "fur", "#a8693a", "#f2d6b0", skin="#f7e2c4", hat="chopper", eyec="#3a2a22", mouth="smile", ex=["blue_nose"], legs="#5f8fd8", shoes="#a8693a"),
+        C("브룩", "afro", "#1f1d26", "suit", "#1f1d26", "#ffffff", "#c9483b", skin="#f6f2ea", hat="tophat", eyes="skull", mouth="skull"),
+        C("에이스", "spiky", "#1f1d26", "shirtless", SK2, skin=SK2, hat="ace", mouth="grin", ex=["freckles", "beads_red"], eyec="#3a2a22", legs="#2b3a5a"),
+        C("사보", "wavy", "#f6d260", "coat", "#2f4f8a", "#ffffff", hat="sabo", eyec="#3a4a7a", ex=["scar_sabo", "cravat"]),
+        C("키드", "flame", "#e0402c", "fur_coat", "#c0392b", "#f2a6a0", eyes="sharp", mouth="grin", ex=["goggles_head"], eyec="#c9a23a"),
+        C("야마토", "pony", "#f6f6f6", "kimono", "#ffffff", "#e05a5a", "#8c4bd0", hair2="#6ad8cc", eyec="#e0584a", girl=True, ex=["horns"]),
+    ],
+    "audit": [
+        C("조로", "short", "#47a05a", "kimono", "#3f7d4f", "#2b5a3a", "#d9493b", skin=SK2, eyes="zoro", mouth="smirk", ex=["earrings3"], eyec="#3a2a22"),
+        C("미호크", "short", "#1f1d26", "coat", "#7a2a2e", "#1f1d26", hat="mihawk", eyes="hawk", mouth="flat", ex=["mustache_thin"]),
+        C("스모커", "slick", "#eeeef2", "coat", "#f4f4f6", "#3a5f9a", eyes="sharp", mouth="flat", ex=["fur_collar"], eyec="#5a5a6a"),
+        C("타시기", "bob", "#2c2c5a", "tshirt", "#f6a8bc", "#f6a8bc", eyec="#3a3a6a", girl=True, ex=["glasses_square"]),
+        C("가프", "short", "#c4c4c8", "marine", "#ffffff", "#3a5f9a", hat="marine", mouth="grin", ex=["beard_white", "scar_garp"], eyec="#3a2a22"),
+        C("코비", "side", "#f6a8c8", "marine", "#ffffff", "#3a5f9a", hat="marine", eyec="#7a4a8a"),
+    ],
+    "mail": [
+        C("봉쿠레", "bun", "#1f1d26", "swan", "#ffffff", "#f6a0c6", eyes="makeup", mouth="lips", eyec="#3a2a3a"),
+        C("버기", "spiky", "#3a86e0", "coat", "#d03a32", "#f4d35a", hat="captain", mouth="grin", ex=["red_nose", "clown_paint"], eyec="#3a2a22"),
+        C("페로나", "drills", "#f6a0c6", "dress", "#2b2a38", "#e0484a", hat="crown", eyec="#6a3a5a", girl=True, ex=["star_cheek"]),
+        C("바르톨로메오", "mohawk", "#3aaa6a", "coat", "#2b2a38", "#ffffff", eyes="sharp", mouth="teeth", ex=["nose_ring"]),
+    ],
+    "pt": [
+        C("우타", "uta", "#e0483c", "dress", "#ffffff", "#6a6a7a", hair2="#f6f6f8", eyec="#8c4bd0", girl=True, ex=["headphones"]),
+        C("핸콕", "blunt", "#1f1d26", "dress", "#d03a32", "#ffffff", eyec="#3a3a7a", mouth="lips", girl=True, ex=["snake_earrings"]),
+        C("레베카", "long", "#f6a0c6", "dress", "#ec6a94", "#f6d36b", eyec="#3a6aa8", girl=True, ex=["headband_flower"]),
+        C("히요리", "blunt", "#1f1d26", "kimono", "#ec6a84", "#ffffff", "#f4d35a", eyec="#4a2a3a", girl=True, ex=["kanzashi"]),
+    ],
+    "retro": [
+        C("샹크스", "spiky", "#c8352c", "cloak", "#1f1d26", "#ffffff", ex=["scar_shanks", "stubble"], eyec="#3a2a22"),
+        C("흰수염", "short", "#f4f4f4", "coat", "#f6f2e8", "#8a6ac0", skin=SK2, hat="bandana", eyes="sharp", mouth="flat", ex=["mustache_crescent"], eyec="#4a4a5a"),
+        C("레일리", "slick", "#f4f4f4", "tshirt", "#f6f2e8", "#f6f2e8", ex=["glasses_round", "beard_white"], eyec="#4a5a7a"),
+        C("크로커다일", "slick", "#1f1d26", "fur_coat", "#3a2f2a", "#6a5a4a", eyes="sharp", mouth="smirk", ex=["scar_croc"], eyec="#4a3a2a"),
+    ],
+}
+VIBES = {   # 멋짐 cool · 귀여움 cute · 매혹 glam · 유쾌 fun
+    "cool": "로우 마르코 상디 에이스 사보 키드 조로 미호크 스모커 샹크스 크로커다일",
+    "glam": "나미 로빈 핸콕 히요리",
+    "fun": "우솝 징베 베가펑크 프랑키 브룩 가프 봉쿠레 버기 바르톨로메오 흰수염 레일리",
+}
+VIBE_OF = {nm: v for v, names in VIBES.items() for nm in names.split()}
+POSE = {"cute": "wave", "cool": "cross", "glam": "hip", "fun": "fist"}
+def _vibe(lk, v=None):
+    v = v or VIBE_OF.get(lk["name"], "cute"); lk["vibe"] = v; lk.setdefault("pose", POSE[v])
+    if lk["mouth"] == "smile": lk["mouth"] = {"cute": "open", "cool": "smirk", "glam": "lips" if lk["girl"] else "smirk", "fun": "grin"}[v]
+    if lk["eyes"] == "normal": lk["eyes"] = {"cute": "cute", "cool": "cool", "glam": "glam", "fun": "normal"}[v]
+for _l in ROSTER.values():
+    for _lk in _l: _vibe(_lk)
+BOSS_LOOK["pose"] = "cheer"; _vibe(BOSS_LOOK, "cute")
+
+# ── 그림 버전 3가지 ──
+STYLE_NAME = {"A": "A · SD 치비 2등신 (부드러운 그라데이션)", "B": "B · 애니 셀 3등신 (만화 명암)", "C": "C · 슬림 4등신 (광택 · 멋짐 · 매혹 강조)"}
+ST = {"id": "A", "bx": 1.0, "by": 1.0, "leg": 24, "shade": "soft", "ink": 2.2}
+def set_style(k):
+    ST.update({"A": dict(id="A", bx=1.0, by=1.0, leg=24, shade="soft", ink=2.2),
+               "B": dict(id="B", bx=1.12, by=1.3, leg=36, shade="cel", ink=2.0),
+               "C": dict(id="C", bx=1.0, by=1.42, leg=56, shade="gloss", ink=1.8)}[k])
+
+def new_look(team, i=0): return ROSTER[team][i % len(ROSTER[team])]
+
+FACE = "M -46,-4 C -47,-38 -25,-55 0,-55 C 25,-55 47,-38 46,-4 C 45,23 26,43 0,44 C -26,43 -45,23 -46,-4 Z"
+CAP = "M -53,14 C -60,-46 -28,-72 0,-72 C 28,-72 60,-46 53,14 "
+
+def _pts(p): return " ".join(f"L {x},{y}" for x, y in p)
+
+def hair_front(lk):
+    """앞머리 path(얼굴 그림자에도 씀) + 덧붙일 요소"""
+    hs = lk["hs"]; extra = ""
+    if hs == "spiky":
+        p = CAP + _pts([(46, -4), (38, -22), (32, 2), (22, -20), (12, 6), (4, -24), (-6, 4), (-14, -22), (-24, 2), (-32, -20), (-42, 0), (-53, 14)]) + " Z"
+        extra = ""
+    elif hs == "short":
+        p = CAP + _pts([(46, -10), (38, -26), (28, -14), (18, -28), (8, -18), (-2, -30), (-12, -18), (-22, -28), (-32, -16), (-42, -24), (-48, -8), (-53, 14)]) + " Z"
+    elif hs == "slick":
+        p = "M -53,10 C -60,-46 -28,-72 0,-72 C 28,-72 60,-46 53,10 L 47,-6 C 40,-40 -40,-40 -47,-6 Z"
+        extra = f'<path d="M -30,-56 Q 0,-66 30,-56 M -36,-46 Q 0,-58 36,-46" stroke="{{shine}}" stroke-width="2" fill="none" opacity=".6"/>'
+    elif hs == "blunt":
+        p = CAP + "L 48,-6 Q 0,-14 -48,-6 Z"
+        extra = '<path d="M 40,-14 Q 52,20 46,58 L 56,58 Q 62,10 50,-14 Z M -40,-14 Q -52,20 -46,58 L -56,58 Q -62,10 -50,-14 Z" fill="url(#hair{n})" stroke="' + INK + '" stroke-width="2"/>'
+    elif hs in ("side", "long", "long_wavy", "pony", "bob", "bunny", "drills", "wavy"):
+        p = CAP + _pts([(46, -6), (40, -20), (30, -8), (20, -26), (6, -14), (-8, -32), (-22, -20), (-34, -26), (-44, -8), (-53, 14)]) + " Z"
+        if hs in ("long", "long_wavy", "bob", "bunny", "wavy"):
+            ln = 34 if hs in ("bob", "bunny") else 56
+            extra = f'<path d="M 42,-16 Q 54,14 48,{ln} L 58,{ln - 4} Q 62,8 52,-16 Z M -42,-16 Q -54,14 -48,{ln} L -58,{ln - 4} Q -62,8 -52,-16 Z" fill="url(#hair{{n}})" stroke="{INK}" stroke-width="2"/>'
+    elif hs == "sanji":
+        p = CAP + _pts([(46, -8), (38, -24), (28, -12), (18, -26), (8, -12)]) + " Q 2,10 -14,30 Q -34,30 -48,14 L -53,14 Z"
+    elif hs == "curly":
+        p = CAP + "Q 0,-58 -53,14 Z"
+        extra = "".join(f'<circle cx="{42 * math.cos(a):.1f}" cy="{-30 + 40 * math.sin(a):.1f}" r="14" fill="url(#hair{{n}})" stroke="{INK}" stroke-width="2"/>'
+                        for a in [math.pi * (1.02 + k * 0.12) for k in range(9)])
+    elif hs == "cloud":
+        p = CAP + "Q 30,-6 0,-20 Q -30,-6 -53,14 Z"
+        extra = "".join(f'<circle cx="{x}" cy="{y}" r="{r}" fill="url(#hair{{n}})" stroke="#c9bfe6" stroke-width="2"/>'
+                        for x, y, r in [(-46, -28, 17), (-30, -52, 20), (-6, -64, 22), (20, -58, 21), (44, -34, 17)])
+    elif hs == "afro":
+        p = CAP + "Q 0,-58 -53,14 Z"
+    elif hs == "big_round":
+        p = CAP + "Q 0,-58 -53,14 Z"
+    elif hs == "pompadour":
+        p = "M -50,8 C -56,-36 -30,-60 0,-60 C 30,-60 56,-36 50,8 L 44,-14 Q 0,-30 -44,-14 Z"
+        extra = f'<path d="M -40,-48 C -46,-90 50,-104 62,-62 C 66,-44 44,-36 20,-44 C 0,-50 -26,-40 -40,-48 Z" fill="url(#hair{{n}})" stroke="{INK}" stroke-width="2.2"/><path d="M -24,-66 Q 10,-90 46,-72" stroke="{{shine}}" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>'
+    elif hs == "pineapple":
+        p = "M -50,6 C -56,-40 -28,-62 0,-62 C 28,-62 56,-40 50,6 L 44,-18 Q 0,-34 -44,-18 Z"
+        extra = f'<path d="M -16,-58 L -26,-92 L -6,-70 L 0,-104 L 8,-70 L 26,-94 L 18,-58 Z" fill="url(#hair{{n}})" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
+    elif hs == "mohawk":
+        p = "M -10,-56 C -12,-80 12,-80 10,-56 Z"
+        extra = f'<path d="M -12,-50 C -18,-100 18,-100 12,-50 Z" fill="url(#hair{{n}})" stroke="{INK}" stroke-width="2"/>'
+    elif hs == "flame":
+        p = CAP + _pts([(44, -14), (30, -24), (14, -16), (0, -28), (-14, -16), (-30, -24), (-44, -14), (-53, 14)]) + " Z"
+        extra = f'<path d="M -46,-40 L -58,-96 L -30,-62 L -24,-116 L -6,-70 L 4,-122 L 16,-70 L 30,-112 L 34,-62 L 60,-92 L 48,-40 Z" fill="url(#hair{{n}})" stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"/>'
+    elif hs == "uta":
+        p = CAP + _pts([(46, -6), (36, -22), (24, -8), (12, -26), (0, -12), (-12, -28), (-24, -10), (-38, -24), (-46, -6), (-53, 14)]) + " Z"
+    elif hs == "bun":
+        p = CAP + "Q 0,-58 -53,14 Z"
+    elif hs == "topknot":
+        p = "M -50,6 C -56,-42 -28,-66 0,-66 C 28,-66 56,-42 50,6 L 46,-10 C 38,-42 -38,-42 -46,-10 Z"
+    elif hs == "chopper_fur":
+        p = "M -54,30 C -64,-40 -30,-70 0,-70 C 30,-70 64,-40 54,30 L 44,24 C 46,-28 -46,-28 -44,24 Z"
+    else:
+        p = CAP + "Q 0,-58 -53,14 Z"
+    return p, extra
+
+def hair_back(lk):
+    hs, ex = lk["hs"], lk["ex"]; s = ""
+    H = 'fill="url(#hair{n})" stroke="' + INK + '" stroke-width="2.2" stroke-linejoin="round"'
+    if "bunny_ears" in ex:
+        for sx in (-1, 1):
+            s += f'<g transform="translate({sx * 20},-60) rotate({sx * 8})"><ellipse cx="0" cy="-40" rx="13" ry="44" fill="#fbf6ee" stroke="{INK}" stroke-width="2"/><ellipse cx="0" cy="-38" rx="6" ry="34" fill="#f8b8c8"/></g>'
+    if hs in ("long", "blunt"):
+        s += f'<path d="M -56,-6 C -64,40 -60,84 -44,100 L 44,100 C 60,84 64,40 56,-6 Z" {H}/>'
+    elif hs == "long_wavy":
+        s += f'<path d="M -56,-6 C -66,36 -64,74 -50,96 Q -40,108 -30,96 Q -20,110 -8,98 Q 4,110 16,98 Q 28,110 38,96 Q 50,106 54,92 C 64,70 64,36 56,-6 Z" {H}/>'
+    elif hs == "pony":
+        s += f'<path d="M 30,-60 C 70,-74 96,-30 84,16 C 78,40 64,58 56,70 C 62,40 60,10 46,-14 Z" {H}/>'
+        if lk["hair2"] != lk["hair"]: s += f'<path d="M 72,20 C 70,40 62,56 56,70 C 72,56 82,40 84,16 Z" fill="{lk["hair2"]}"/>'
+    elif hs == "afro":
+        s += "".join(f'<circle cx="{58 * math.cos(a):.1f}" cy="{-34 + 52 * math.sin(a):.1f}" r="24" {H}/>' for a in [math.pi * (0.9 + k * 0.1) for k in range(13)])
+        s += f'<circle cx="0" cy="-40" r="56" fill="url(#hair{{n}})"/>'
+    elif hs == "big_round":
+        s += f'<ellipse cx="0" cy="-46" rx="66" ry="62" {H}/><path d="M -40,-86 Q 0,-110 40,-86" stroke="{{shine}}" stroke-width="5" fill="none" opacity=".6" stroke-linecap="round"/>'
+    elif hs == "cloud":
+        s += "".join(f'<circle cx="{x}" cy="{y}" r="{r}" fill="url(#hair{{n}})" stroke="#c9bfe6" stroke-width="2"/>'
+                     for x, y, r in [(-62, -6, 18), (-62, -36, 20), (-46, -64, 22), (-18, -82, 24), (14, -84, 24), (44, -68, 22), (62, -40, 20), (62, -8, 18), (-52, 18, 14), (52, 18, 14)])
+    elif hs == "drills":
+        for sx in (-1, 1):
+            for k in range(4):
+                y = -6 + k * 20; w = 22 - k * 3
+                s += f'<ellipse cx="{sx * (58 - k * 2)}" cy="{y}" rx="{w}" ry="13" {H}/>'
+    elif hs == "uta":
+        for sx, c in ((-1, "hair2"), (1, "hair")):
+            col = lk[c]
+            s += f'<path d="M {sx * 46},-10 Q {sx * 62},30 {sx * 52},62 L {sx * 40},58 Q {sx * 48},26 {sx * 36},-10 Z" fill="{col}" stroke="{INK}" stroke-width="2"/>'
+            s += f'<circle cx="{sx * 44}" cy="-70" r="17" fill="none" stroke="{INK}" stroke-width="13"/><circle cx="{sx * 44}" cy="-70" r="17" fill="none" stroke="{col}" stroke-width="9"/>'
+    elif hs == "wavy":
+        for sx in (-1, 1):
+            s += "".join(f'<circle cx="{sx * (52 - k * 2)}" cy="{-14 + k * 16}" r="14" {H}/>' for k in range(4))
+    elif hs == "bun":
+        s += f'<circle cx="0" cy="-78" r="18" {H}/>'
+    elif hs == "topknot":
+        s += f'<ellipse cx="0" cy="-72" rx="12" ry="10" {H}/>'
+    elif hs == "bob" or hs == "bunny":
+        s += f'<path d="M -56,-10 C -62,20 -58,40 -46,48 L 46,48 C 58,40 62,20 56,-10 Z" {H}/>'
+    return s
+
+def eyes(lk, working):
+    e, ic = lk["eyes"], lk["eyec"]; s = ""
+    if e == "shades":
+        return f'<path d="M -36,-2 L 36,-2 L 34,14 Q 20,22 4,12 L -4,12 Q -20,22 -34,14 Z" fill="#2a4a7a" stroke="{INK}" stroke-width="2"/><path d="M -28,2 L -14,2" stroke="#9fd3f2" stroke-width="3" stroke-linecap="round"/>'
+    if e == "skull":
+        for sx in (-1, 1):
+            s += f'<ellipse cx="{sx * 17}" cy="6" rx="12" ry="13" fill="#24222c"/><circle cx="{sx * 17 + 4}" cy="1" r="3" fill="#ffffff" opacity=".9"/>'
+        return s + '<path d="M -4,22 L 4,22 L 0,15 Z" fill="#24222c"/>'
+    for sx in (-1, 1):
+        x = sx * 17
+        if e == "zoro" and sx == 1:
+            s += f'<path d="M {x - 9},8 Q {x},12 {x + 9},8" stroke="{INK}" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M {x + 1},-10 L {x - 2},24" stroke="#b05a48" stroke-width="2.6" stroke-linecap="round"/>'
+            continue
+        if not working:
+            s += f'<path d="M {x - 10},8 Q {x},-2 {x + 10},8" stroke="{INK}" stroke-width="3" fill="none" stroke-linecap="round"/>'
+            continue
+        ry = {"cute": 13.5, "cool": 9, "glam": 11.5, "sharp": 10, "hawk": 10, "sleepy": 10}.get(e, 12.5)
+        if e == "glam": s += f'<ellipse cx="{x}" cy="{-1}" rx="13" ry="8" fill="#d88aa8" opacity=".35"/>'
+        lw = 4.6 if e == "glam" else (3.6 if lk["girl"] else 3)
+        top = (f'<path d="M {x - 11},{2 - ry * 0.4} Q {x},{-2 - ry} {x + 11},{2 - ry * 0.4}" stroke="#2b1d18" stroke-width="{lw}" fill="none" stroke-linecap="round"/>' if e != "cool" else
+               f'<path d="M {x - 11},{3 - ry * 0.5} Q {x},{-3 - ry * 0.9} {x + 11},{1 - ry * 0.7}" stroke="#2b1d18" stroke-width="3.4" fill="none" stroke-linecap="round"/>')
+        if e == "glam": top += f'<path d="M {x + sx * 11},{2 - ry * 0.4} q {sx * 6},-2 {sx * 8},-7" stroke="#2b1d18" stroke-width="3" fill="none" stroke-linecap="round"/>'
+        if e == "hawk":
+            s += f'<ellipse cx="{x}" cy="8" rx="9" ry="{ry}" fill="#f6d260" stroke="#2b1d18" stroke-width="1.5"/><ellipse cx="{x}" cy="8" rx="2.2" ry="{ry - 2}" fill="#2b1d18"/>' + top
+        else:
+            s += (f'<ellipse cx="{x}" cy="8" rx="10" ry="{ry}" fill="#ffffff"/>'
+                  f'<ellipse cx="{x}" cy="9" rx="8.6" ry="{ry - 1}" fill="url(#iris{{n}})"/>'
+                  f'<ellipse cx="{x}" cy="10" rx="4" ry="{ry * 0.45}" fill="#1e1612"/>'
+                  f'<circle cx="{x + 3.5}" cy="{8 - ry * 0.35}" r="{4 if e in ("sparkle", "cute") else (2.4 if e == "cool" else 3)}" fill="#ffffff"/>'
+                  f'<circle cx="{x - 3.2}" cy="{8 + ry * 0.45}" r="1.6" fill="#ffffff" opacity=".9"/>' + top)
+            if e in ("sparkle", "cute"): s += f'<path d="M {x - 4},{2} l 1.2,-3 l 1.2,3 l 3,1.2 l -3,1.2 l -1.2,3 l -1.2,-3 l -3,-1.2 Z" fill="#ffffff"/>'
+            if e == "sleepy": s += f'<path d="M {x - 11},{4} L {x + 11},{4}" stroke="#2b1d18" stroke-width="3.2" stroke-linecap="round"/><rect x="{x - 11}" y="{-6}" width="22" height="10" fill="url(#skin{{n}})"/>'
+            if lk["girl"] or e == "makeup":
+                s += f'<path d="M {x + sx * 10},{2 - ry * 0.4} l {sx * 5},-4 M {x + sx * 11},{5 - ry * 0.4} l {sx * 5},-1" stroke="#2b1d18" stroke-width="2" stroke-linecap="round"/>'
+        if e in ("sharp", "hawk", "zoro", "cool"):
+            s += f'<path d="M {x - 12},{-10 + (4 if sx == -1 else 0)} L {x + 12},{-10 + (0 if sx == -1 else 4)}" stroke="#2b1d18" stroke-width="3.4" stroke-linecap="round"/>'
+        elif e != "sleepy":
+            s += f'<path d="M {x - 8},-11 Q {x},-15 {x + 8},-11" stroke="{mix(lk["hair"], "#2b1d18", 0.45)}" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+    return s
+
+def mouth(lk):
+    m = lk["mouth"]
+    if m == "laugh":
+        return ('<path d="M -15,22 Q 0,46 15,22 Q 0,26 -15,22 Z" fill="#9a3a3a" stroke="' + INK + '" stroke-width="2" stroke-linejoin="round"/>'
+                '<path d="M -8,33 Q 0,40 8,33 Q 0,29 -8,33 Z" fill="#f48a9a"/><path d="M -13,23 Q 0,27 13,23 L 12,26 Q 0,29 -12,26 Z" fill="#ffffff"/>')
+    if m == "open":
+        return '<path d="M -8,23 Q 0,35 8,23 Q 0,25 -8,23 Z" fill="#a8404a" stroke="' + INK + '" stroke-width="2" stroke-linejoin="round"/><path d="M -4,30 Q 0,33 4,30 Q 0,28 -4,30 Z" fill="#f48a9a"/>'
+    if m == "grin":
+        return f'<path d="M -12,22 Q 0,38 12,22 Z" fill="#ffffff" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/><path d="M -11,25 L 11,25" stroke="#d8c8c0" stroke-width="1.2"/>'
+    if m == "skull":
+        return f'<rect x="-13" y="25" width="26" height="10" rx="3" fill="#ffffff" stroke="#24222c" stroke-width="2"/>' + "".join(f'<path d="M {x},25 L {x},35" stroke="#24222c" stroke-width="1.5"/>' for x in (-6, 0, 6))
+    if m == "teeth":
+        return f'<rect x="-10" y="23" width="20" height="8" rx="3" fill="#ffffff" stroke="{INK}" stroke-width="2"/><path d="M -3,23 L -3,31 M 3,23 L 3,31" stroke="{INK}" stroke-width="1.2"/>'
+    if m == "smirk": return f'<path d="M -6,27 Q 2,29 8,23" stroke="{INK}" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+    if m == "flat": return f'<path d="M -6,27 L 6,27" stroke="{INK}" stroke-width="2.4" stroke-linecap="round"/>'
+    if m == "lips": return '<path d="M -6,26 Q 0,22 6,26 Q 0,32 -6,26 Z" fill="#e0405a"/>'
+    return f'<path d="M -6,25 Q 0,31 6,25" stroke="{INK}" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+
+def face_extras(lk):
+    ex, s, sk = lk["ex"], "", lk["skin"]
+    op = {"cute": .5, "glam": .4, "cool": .18, "fun": .32}.get(lk.get("vibe"), .38)
+    if lk["eyes"] != "skull": s += f'<ellipse cx="-27" cy="22" rx="8" ry="4.5" fill="#ff8c8c" opacity="{op}"/><ellipse cx="27" cy="22" rx="8" ry="4.5" fill="#ff8c8c" opacity="{op}"/>'
+    if "long_nose" not in ex and "red_nose" not in ex and "blue_nose" not in ex and lk["eyes"] != "skull":
+        s += f'<path d="M -1,17 Q 1,19 2,17" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
+    if "scar_luffy" in ex: s += f'<path d="M -30,24 L -16,24 M -27,21 L -27,27 M -21,21 L -21,27" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>'
+    if "long_nose" in ex: s += f'<path d="M -2,12 C 10,12 30,14 40,18 C 42,22 38,24 34,23 C 22,22 8,22 -2,22 Z" fill="url(#skin{{n}})" stroke="{INK}" stroke-width="2"/>'
+    if "red_nose" in ex: s += f'<circle cx="0" cy="18" r="8" fill="#e0302a" stroke="{INK}" stroke-width="2"/><circle cx="-3" cy="15" r="2.4" fill="#ffffff" opacity=".8"/>'
+    if "blue_nose" in ex: s += f'<ellipse cx="0" cy="18" rx="7" ry="5" fill="#3a86e0" stroke="{INK}" stroke-width="1.8"/><circle cx="-2" cy="16.5" r="1.8" fill="#ffffff"/>'
+    if "freckles" in ex: s += "".join(f'<circle cx="{sx * x}" cy="{y}" r="1.5" fill="#c07a50"/>' for sx in (-1, 1) for x, y in ((24, 18), (29, 21), (21, 22)))
+    if "curly_brow" in ex: s += f'<path d="M 9,-12 Q 17,-18 25,-12 Q 28,-6 22,-6 Q 18,-8 21,-11" stroke="#c9a23a" stroke-width="2.2" fill="none" stroke-linecap="round"/>'
+    if "goatee" in ex: s += '<path d="M -4,34 L 4,34 L 2,42 L -2,42 Z" fill="#23222c"/>'
+    if "goatee_blond" in ex: s += '<path d="M -3,35 L 3,35 L 1,41 L -1,41 Z" fill="#e0b84a"/>'
+    if "eyebags" in ex: s += f'<path d="M -24,22 Q -17,25 -10,22 M 10,22 Q 17,25 24,22" stroke="{mix(sk, INK, 0.3)}" stroke-width="1.5" fill="none"/>'
+    if "scar_sabo" in ex: s += f'<ellipse cx="-17" cy="8" rx="15" ry="16" fill="#e07a6a" opacity=".22"/>'
+    if "scar_shanks" in ex: s += "".join(f'<path d="M {-24 + k * 5},-8 L {-18 + k * 5},22" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>' for k in range(3))
+    if "scar_croc" in ex: s += f'<path d="M -34,16 L 34,14" stroke="#b0604e" stroke-width="2" stroke-linecap="round"/>' + "".join(f'<path d="M {x},11 L {x},19" stroke="#b0604e" stroke-width="1.4"/>' for x in (-20, -6, 8, 22))
+    if "scar_garp" in ex: s += '<path d="M -30,-8 L -10,10" stroke="#b0604e" stroke-width="1.8" stroke-linecap="round"/>'
+    if "stubble" in ex: s += "".join(f'<circle cx="{x}" cy="{y}" r="1" fill="#8a6a5a"/>' for x, y in ((-10, 36), (-4, 38), (2, 38), (8, 36), (-7, 34), (5, 34)))
+    if "nose_ring" in ex: s += f'<path d="M -3,21 A 3,3 0 1 0 3,21" stroke="#d9b25f" stroke-width="2" fill="none"/>'
+    if "clown_paint" in ex: s += "".join(f'<path d="M {sx * 17 - 7},-4 L {sx * 17 + 7},-4" stroke="#3a86e0" stroke-width="3" stroke-linecap="round"/>' for sx in (-1, 1))
+    if "star_cheek" in ex: s += '<path d="M 30,16 l 2,4 l 4,.5 l -3,3 l .8,4 l -3.8,-2 l -3.8,2 l .8,-4 l -3,-3 l 4,-.5 Z" fill="#f4d35a"/>'
+    if "beard_white" in ex: s += f'<path d="M -34,18 Q -30,52 0,58 Q 30,52 34,18 Q 20,34 0,34 Q -20,34 -34,18 Z" fill="#f6f6f6" stroke="#cfcfd4" stroke-width="2"/>'
+    if "mustache_crescent" in ex: s += f'<path d="M -70,-14 Q -40,30 0,20 Q 40,30 70,-14 Q 40,40 0,30 Q -40,40 -70,-14 Z" fill="#fbfbfb" stroke="#cfcfd4" stroke-width="2"/>'
+    if "mustache_thin" in ex: s += f'<path d="M -16,22 Q -8,18 0,22 Q 8,18 16,22" stroke="#23222c" stroke-width="2" fill="none"/><path d="M -2,34 L 2,34 L 1,44 L -1,44 Z" fill="#23222c"/>'
+    if "glasses_round" in ex: s += "".join(f'<circle cx="{sx * 17}" cy="8" r="13" fill="none" stroke="#c9a45c" stroke-width="2.2"/>' for sx in (-1, 1)) + '<path d="M -4,6 L 4,6" stroke="#c9a45c" stroke-width="2"/>'
+    if "glasses_square" in ex: s += "".join(f'<rect x="{sx * 17 - 13}" y="-3" width="26" height="22" rx="5" fill="none" stroke="#d03a32" stroke-width="2.4"/>' for sx in (-1, 1)) + '<path d="M -4,6 L 4,6" stroke="#d03a32" stroke-width="2"/>'
+    if "earrings3" in ex: s += "".join(f'<circle cx="48" cy="{10 + k * 7}" r="3" fill="#e6c25a" stroke="{INK}" stroke-width="1"/>' for k in range(3))
+    if "earrings_gold" in ex: s += "".join(f'<circle cx="{sx * 47}" cy="20" r="3.5" fill="#e6c25a" stroke="{INK}" stroke-width="1"/>' for sx in (-1, 1))
+    if "snake_earrings" in ex: s += "".join(f'<path d="M {sx * 47},14 q {sx * 4},6 0,12 q {-sx * 4},6 0,12" stroke="#8c4bd0" stroke-width="3" fill="none" stroke-linecap="round"/>' for sx in (-1, 1))
+    return s
+
+def top_extras(lk):
+    ex, s = lk["ex"], ""
+    if "goggles_head" in ex:
+        s += f'<path d="M -52,-30 Q 0,-46 52,-30" stroke="#5a4232" stroke-width="7" fill="none"/>' + "".join(f'<circle cx="{sx * 18}" cy="-40" r="12" fill="#a8dcf6" stroke="#5a4232" stroke-width="4"/><circle cx="{sx * 18 - 3}" cy="-44" r="3" fill="#ffffff"/>' for sx in (-1, 1))
+    if "sunglasses_head" in ex: s += f'<path d="M -30,-50 Q 0,-58 30,-50 L 28,-42 Q 14,-38 2,-44 L -2,-44 Q -14,-38 -28,-42 Z" fill="#3a2f2a" stroke="{INK}" stroke-width="1.5"/>'
+    if "horns" in ex: s += "".join(f'<path d="M {sx * 14},-58 Q {sx * 18},-90 {sx * 30},-100 Q {sx * 28},-80 {sx * 26},-56 Z" fill="#e0584a" stroke="{INK}" stroke-width="2"/>' for sx in (-1, 1))
+    if "headphones" in ex:
+        s += f'<path d="M -54,4 C -60,-60 60,-60 54,4" stroke="#f4f4f6" stroke-width="8" fill="none"/><path d="M -54,4 C -60,-60 60,-60 54,4" stroke="{INK}" stroke-width="1.5" fill="none" opacity=".4"/>'
+        s += "".join(f'<rect x="{sx * 56 - 9}" y="-8" width="18" height="26" rx="8" fill="#6a6a7a" stroke="{INK}" stroke-width="2"/>' for sx in (-1, 1))
+    if "headband_flower" in ex: s += f'<path d="M -44,-34 Q 0,-60 44,-34" stroke="#f6d36b" stroke-width="6" fill="none"/>' + "".join(f'<circle cx="{30 + 7 * math.cos(a):.1f}" cy="{-44 + 7 * math.sin(a):.1f}" r="5" fill="#ffffff" stroke="#f2a6c0" stroke-width="1"/>' for a in [k * 1.2566 for k in range(5)]) + '<circle cx="30" cy="-44" r="3.5" fill="#f6d36b"/>'
+    if "kanzashi" in ex: s += '<path d="M 22,-48 L 50,-76" stroke="#d9b25f" stroke-width="3"/><circle cx="46" cy="-70" r="8" fill="#ec6a84" stroke="#4a2f25" stroke-width="1.5"/><circle cx="46" cy="-70" r="3" fill="#ffffff"/>'
+    return s
+
+def hat(lk):
+    h = lk["hat"]; S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
+    if not h: return ""
+    if h == "straw":
+        return (f'<ellipse cx="0" cy="-54" rx="74" ry="17" fill="url(#straw{{n}})" {S}/>'
+                f'<path d="M -42,-56 C -44,-100 44,-100 42,-56 Z" fill="url(#straw{{n}})" {S}/>'
+                f'<path d="M -42,-60 C -42,-66 42,-66 42,-60 L 42,-52 C 30,-48 -30,-48 -42,-52 Z" fill="#d93a2e"/>'
+                + "".join(f'<path d="M {x},-90 Q {x * 1.1},-76 {x * 1.15},-66" stroke="#d9a84a" stroke-width="1.2" fill="none" opacity=".7"/>' for x in (-24, -8, 8, 24))
+                + f'<path d="M -30,-86 Q 0,-96 30,-86" stroke="#fff3c8" stroke-width="4" fill="none" stroke-linecap="round" opacity=".8"/>')
+    if h == "ace":
+        return (f'<path d="M -78,-48 C -60,-64 -40,-58 0,-58 C 40,-58 60,-64 78,-48 C 60,-40 40,-44 0,-44 C -40,-44 -60,-40 -78,-48 Z" fill="#f08c2c" {S}/>'
+                f'<path d="M -38,-54 C -40,-98 -10,-96 0,-86 C 10,-96 40,-98 38,-54 Z" fill="#f59a3a" {S}/>'
+                f'<path d="M -38,-62 L 38,-62 L 38,-54 L -38,-54 Z" fill="#3a2a22"/>'
+                f'<circle cx="-14" cy="-70" r="7" fill="#5aaef0" {S}/><circle cx="14" cy="-70" r="7" fill="#f0484a" {S}/>')
+    if h in ("tophat", "sabo"):
+        c = "#1f1d26" if h == "tophat" else "#2f4f8a"
+        g = ""
+        if h == "sabo": g = "".join(f'<circle cx="{sx * 14}" cy="-86" r="10" fill="#a8dcf6" stroke="#5a4232" stroke-width="3.5"/>' for sx in (-1, 1))
+        return (f'<ellipse cx="0" cy="-58" rx="54" ry="11" fill="{c}" {S}/><path d="M -34,-60 L -38,-128 Q 0,-136 38,-128 L 34,-60 Z" fill="{c}" {S}/>'
+                f'<path d="M -35,-72 L 35,-72 L 34,-62 L -34,-62 Z" fill="{"#d93a2e" if h == "tophat" else "#5a4232"}"/>'
+                f'<path d="M -22,-124 L -20,-80" stroke="#ffffff" stroke-width="4" opacity=".2" stroke-linecap="round"/>' + g)
+    if h == "chopper":
+        ant = "".join(f'<path d="M {sx * 30},-80 Q {sx * 52},-96 {sx * 58},-124 M {sx * 50},-100 Q {sx * 66},-100 {sx * 74},-112 M {sx * 44},-90 Q {sx * 34},-108 {sx * 38},-120" stroke="#8a5530" stroke-width="7" fill="none" stroke-linecap="round"/>' for sx in (-1, 1))
+        return (ant + f'<ellipse cx="0" cy="-58" rx="58" ry="12" fill="#f6a0c0" {S}/><path d="M -36,-60 Q -42,-118 0,-120 Q 42,-118 36,-60 Z" fill="#f8acc8" {S}/>'
+                f'<path d="M -16,-108 L 16,-74 M 16,-108 L -16,-74" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>'
+                f'<path d="M -36,-70 Q 0,-76 36,-70 L 36,-62 Q 0,-66 -36,-62 Z" fill="#3a86e0"/>')
+    if h == "law":
+        spots = "".join(f'<circle cx="{x}" cy="{y}" r="{r}" fill="#6a5040"/>' for x, y, r in ((-28, -58, 6), (-6, -74, 7), (20, -64, 6), (36, -44, 5), (-40, -36, 5), (6, -50, 5)))
+        return f'<path d="M -58,10 C -66,-70 66,-70 58,10 C 54,0 52,-14 48,-24 C 30,-40 -30,-40 -48,-24 C -52,-14 -54,0 -58,10 Z" fill="#fbf8f2" {S}/>' + spots
+    if h == "mihawk":
+        return (f'<path d="M 18,-92 C 50,-134 104,-112 92,-78 C 74,-96 46,-96 18,-86 Z" fill="#fbf8f2" stroke="#cfcfd4" stroke-width="2"/>'
+                f'<ellipse cx="0" cy="-58" rx="86" ry="16" fill="#1f1d26" {S}/><path d="M -36,-60 C -38,-104 38,-104 36,-60 Z" fill="#26242e" {S}/>')
+    if h == "marine":
+        return (f'<path d="M -46,-48 C -50,-96 50,-96 46,-48 Z" fill="#ffffff" {S}/><path d="M -46,-56 L 46,-56 L 46,-46 L -46,-46 Z" fill="#2f4f8a"/>'
+                f'<path d="M -40,-46 Q -10,-26 30,-44 Q 0,-36 -40,-46 Z" fill="#24304a" {S}/><path d="M -8,-80 L 8,-80 L 0,-68 Z" fill="#c9a45c"/>')
+    if h == "captain":
+        return f'<path d="M -86,-46 Q -40,-120 0,-118 Q 40,-120 86,-46 Q 40,-64 0,-62 Q -40,-64 -86,-46 Z" fill="#24222c" {S}/><path d="M -80,-50 Q -40,-66 0,-64 Q 40,-66 80,-50" stroke="#e6c25a" stroke-width="3" fill="none"/>'
+    if h == "bandana":
+        return f'<path d="M -53,-2 C -60,-62 60,-62 53,-2 C 40,-14 -40,-14 -53,-2 Z" fill="#24304a" {S}/><path d="M 48,-16 L 70,-4 L 56,6 Z" fill="#24304a" {S}/>'
+    if h == "crown":
+        return f'<path d="M -20,-62 L -22,-90 L -10,-76 L 0,-96 L 10,-76 L 22,-90 L 20,-62 Z" fill="#f4d35a" {S}/><circle cx="0" cy="-74" r="3.5" fill="#e0484a"/>'
+    return ""
+
+def body(lk, team):
+    o, c1, c2, c3, sk = lk["out"], lk["c1"], lk["c2"], lk["c3"], lk["skin"]; S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
+    bare_arm = o in ("vest_open", "shirtless", "stripe", "dress", "hawaii")
+    arm_c = "url(#skin{n})" if bare_arm else "url(#cloth{n})"
+    s = ""
+    def arm(pts, fist=False):
+        d = "M " + " L ".join(f"{x},{y}" for x, y in pts)
+        hx, hy = pts[-1]
+        return (f'<path d="{d}" stroke="{INK}" stroke-width="15" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+                f'<path d="{d}" stroke="{arm_c}" stroke-width="11" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+                f'<circle cx="{hx}" cy="{hy}" r="{8 if fist else 7}" fill="url(#skin{{n}})" {S}/>')
+    pose = lk.get("pose", "side")
+    SIDE = {-1: [(-25, 47), (-34, 64), (-33, 82)], 1: [(25, 47), (34, 64), (33, 82)]}
+    UP = [(25, 47), (46, 36), (58, 8)]
+    behind, front = [], []
+    if pose == "wave": behind = [arm(SIDE[-1]), arm(UP)]
+    elif pose == "fist": behind = [arm(SIDE[-1]), arm([(25, 47), (44, 40), (46, 16)], True)]
+    elif pose == "cheer": behind = [arm([(-25, 47), (-46, 36), (-58, 8)]), arm(UP)]
+    elif pose == "hip": behind = [arm(SIDE[-1]), arm([(25, 47), (44, 60), (30, 76)])]
+    elif pose == "cross": front = [arm([(-25, 47), (-32, 60), (14, 66)]), arm([(25, 47), (32, 62), (-14, 70)])]
+    else: behind = [arm(SIDE[-1]), arm(SIDE[1])]
+    s += "".join(behind)
+    torso = "M -28,42 C -34,62 -32,82 -26,94 L 26,94 C 32,82 34,62 28,42 C 16,36 -16,36 -28,42 Z"
+    if o == "shirtless":
+        s += f'<path d="{torso}" fill="url(#skin{{n}})" {S}/><path d="M -26,84 L 26,84 L 26,94 L -26,94 Z" fill="{lk["legs"]}"/>'
+    elif o == "overalls":
+        s += f'<path d="{torso}" fill="{c2}" {S}/><path d="M -20,60 L 20,60 L 24,94 L -24,94 Z" fill="url(#cloth{{n}})" {S}/><path d="M -16,42 L -16,62 M 16,42 L 16,62" stroke="{c1}" stroke-width="6"/>'
+    else:
+        s += f'<path d="{torso}" fill="url(#cloth{{n}})" {S}/>'
+    if o == "vest_open":
+        s += f'<path d="M -12,40 L 12,40 L 8,94 L -8,94 Z" fill="url(#skin{{n}})"/>'
+        if "x_scar" in lk["ex"]: s += '<path d="M -7,52 L 7,66 M 7,52 L -7,66" stroke="#d07a6a" stroke-width="2.2" stroke-linecap="round"/>'
+        if "sash_nika" in lk["ex"]: s += '<path d="M -28,80 L 28,80 L 27,88 L -27,88 Z" fill="#e0b0e8"/>'
+    elif o == "stripe":
+        s += "".join(f'<path d="M -30,{56 + k * 10} L 30,{56 + k * 10}" stroke="{c2}" stroke-width="5"/>' for k in range(4)) + '<path d="M -10,40 Q 0,50 10,40 Z" fill="url(#skin{n})"/>'
+    elif o == "tshirt":
+        s += '<path d="M -10,40 Q 0,50 10,40 Z" fill="url(#skin{n})"/>'
+    elif o == "dress":
+        s += f'<path d="M -12,40 L 0,52 L 12,40 Z" fill="{c2}"/><path d="M -30,74 L 30,74 L 34,96 L -34,96 Z" fill="url(#cloth{{n}})" {S}/><path d="M -30,74 L 30,74" stroke="{c2}" stroke-width="3"/>'
+    elif o in ("coat", "marine", "labcoat", "cloak", "fur_coat"):
+        s += f'<path d="M -10,40 L 10,40 L 10,94 L -10,94 Z" fill="{c2}"/><path d="M -10,40 L -18,64 L -10,94 M 10,40 L 18,64 L 10,94" stroke="{mix(c1, INK, 0.4)}" stroke-width="2" fill="none"/>'
+        if o == "marine": s += "".join(f'<rect x="{sx * 26 - 8}" y="40" width="16" height="6" rx="3" fill="#e6c25a" stroke="{INK}" stroke-width="1.2"/>' for sx in (-1, 1))
+        if o == "fur_coat" or "fur_collar" in lk["ex"]: s += "".join(f'<circle cx="{x}" cy="42" r="8" fill="{c2 if o == "fur_coat" else "#efe8d8"}" stroke="{INK}" stroke-width="1.5"/>' for x in (-26, -14, 0, 14, 26))
+    elif o == "suit":
+        s += f'<path d="M -12,40 L 12,40 L 0,66 Z" fill="{c2}"/><path d="M -3,46 L 3,46 L 4,70 L 0,76 L -4,70 Z" fill="{c3}"/>'
+    elif o == "kimono":
+        s += f'<path d="M -16,40 L 0,70 L 16,40" stroke="{c2}" stroke-width="5" fill="none"/><path d="M -10,40 L 0,58 L 10,40 Z" fill="url(#skin{{n}})"/><path d="M -31,70 L 31,70 L 31,80 L -31,80 Z" fill="{c3}"/>'
+    elif o == "hawaii":
+        s += f'<path d="M -12,40 L 12,40 L 0,70 Z" fill="url(#skin{{n}})"/>' + "".join(f'<circle cx="{x}" cy="{y}" r="4" fill="{c2}"/>' for x, y in ((-18, 54), (16, 60), (-14, 80), (18, 84), (-2, 88)))
+    elif o == "hoodie":
+        s += f'<path d="M -26,46 L 26,46" stroke="{c2}" stroke-width="0"/><path d="M -30,66 L 30,66 L 30,74 L -30,74 Z" fill="{c2}"/><path d="M -5,44 L -5,58 M 5,44 L 5,58" stroke="{c2}" stroke-width="2.4" stroke-linecap="round"/>'
+    elif o == "fur":
+        s += f'<ellipse cx="0" cy="68" rx="18" ry="20" fill="{c2}"/>'
+    elif o == "swan":
+        s += "".join(f'<path d="M {sx * 26},44 q {sx * 4},-22 {sx * 16},-18 q {sx * 6},2 {sx * 2},8" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M {sx * 42},-2 l {sx * 8},2 l {-sx * 8},3 Z" fill="#f29a3a"/>' for sx in (-1, 1))
+        s += f'<path d="M -30,70 L 30,70 L 30,76 L -30,76 Z" fill="{c2}"/>'
+    if "cloud_ring" in lk["ex"]:
+        s += "".join(f'<circle cx="{x}" cy="{38 + (abs(x) / 8)}" r="10" fill="#ffffff" stroke="#d6cdee" stroke-width="1.6"/>' for x in (-36, -24, -12, 0, 12, 24, 36))
+    if "beads_red" in lk["ex"]: s += "".join(f'<circle cx="{18 * math.cos(a):.1f}" cy="{40 + 12 * math.sin(a):.1f}" r="3.6" fill="#e0302a" stroke="{INK}" stroke-width="1"/>' for a in [math.pi * (0.1 + k * 0.1) for k in range(9)])
+    if "beads_blue" in lk["ex"]: s += "".join(f'<circle cx="{16 * math.cos(a):.1f}" cy="{42 + 10 * math.sin(a):.1f}" r="3.2" fill="#3a86e0" stroke="{INK}" stroke-width="1"/>' for a in [math.pi * (0.1 + k * 0.1) for k in range(9)])
+    if "cravat" in lk["ex"]: s += f'<path d="M -8,40 Q 0,56 8,40 Q 0,46 -8,40 Z" fill="#ffffff" stroke="{INK}" stroke-width="1.5"/>'
+    s += "".join(front)
+    if team: s += f'<path d="M -40,60 L -29,58 L -28,66 L -39,68 Z" fill="{team}" stroke="{INK}" stroke-width="1.2"/>'
+    return s
+
+def legs(lk, top=88, L=24):
+    S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'; w = 15 if L < 40 else 13; g = 3 if L < 40 else 2
+    return (f'<rect x="{-g - w}" y="{top}" width="{w}" height="{L}" rx="6" fill="{lk["legs"]}" {S}/><rect x="{g}" y="{top}" width="{w}" height="{L}" rx="6" fill="{lk["legs"]}" {S}/>'
+            f'<ellipse cx="{-g - w / 2 - 3}" cy="{top + L + 2}" rx="11" ry="6" fill="{lk["shoes"]}" {S}/><ellipse cx="{g + w / 2 + 3}" cy="{top + L + 2}" rx="11" ry="6" fill="{lk["shoes"]}" {S}/>')
+
+def _stops(top, mid, bot):
+    if ST["shade"] == "cel":
+        return f'<stop offset="0" stop-color="{mid}"/><stop offset=".58" stop-color="{mid}"/><stop offset=".58" stop-color="{bot}"/><stop offset="1" stop-color="{bot}"/>'
+    if ST["shade"] == "gloss":
+        return f'<stop offset="0" stop-color="{mix(top, "#ffffff", 0.35)}"/><stop offset=".3" stop-color="{mid}"/><stop offset=".8" stop-color="{bot}"/><stop offset="1" stop-color="{bot if _lum(bot) > 0.75 else mix(bot, "#000000", 0.15)}"/>'
+    return f'<stop offset="0" stop-color="{top}"/><stop offset=".6" stop-color="{mid}"/><stop offset="1" stop-color="{bot}"/>'
+
+def _lum(c): return sum(int(c[i:i+2], 16) for i in (1, 3, 5)) / 765
+def _dark(c, t): return mix(c, "#b8b2d8", t * 1.2) if _lum(c) > 0.85 else mix(c, "#000000", t)
+
+def defs(lk, n):
+    hc, h2 = lk["hair"], lk["hair2"]; sk = lk["skin"]; c1 = lk["c1"] if lk["out"] != "shirtless" else sk; ic = lk["eyec"]
+    if ST["shade"] != "soft":
+        sk_in = sk if ST["shade"] == "cel" else mix(sk, "#ffffff", 0.55)
+        return (f'<defs><linearGradient id="hair{n}" x1="0" y1="0" x2=".35" y2="1">{_stops(mix(hc, "#ffffff", 0.22), hc, _dark(h2, 0.22))}</linearGradient>'
+                f'<radialGradient id="skin{n}" cx=".42" cy=".35" r=".8"><stop offset="0" stop-color="{sk_in}"/><stop offset="{".85" if ST["shade"] == "cel" else "1"}" stop-color="{sk}"/><stop offset="1" stop-color="{mix(sk, "#c08060", 0.25 if ST["shade"] == "cel" else 0)}"/></radialGradient>'
+                f'<linearGradient id="cloth{n}" x1="0" y1="0" x2=".4" y2="1">{_stops(mix(c1, "#ffffff", 0.18), c1, _dark(c1, 0.2))}</linearGradient>'
+                f'<linearGradient id="iris{n}" x1="0" y1="0" x2="0" y2="1">{_stops(mix(ic, "#000000", 0.55), ic, mix(ic, "#ffffff", 0.5))}</linearGradient>'
+                f'<linearGradient id="straw{n}" x1="0" y1="0" x2="0" y2="1">{_stops("#fff0b8", "#ffe39a", "#e3ae44")}</linearGradient>'
+                f'<clipPath id="face{n}"><path d="{FACE}"/></clipPath></defs>')
+    return (f'<defs><linearGradient id="hair{n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{mix(hc, "#ffffff", 0.22)}"/><stop offset=".6" stop-color="{hc}"/><stop offset="1" stop-color="{_dark(h2, 0.18)}"/></linearGradient>'
+            f'<radialGradient id="skin{n}" cx=".42" cy=".35" r=".8"><stop offset="0" stop-color="{mix(sk, "#ffffff", 0.45)}"/><stop offset="1" stop-color="{sk}"/></radialGradient>'
+            f'<linearGradient id="cloth{n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{mix(c1, "#ffffff", 0.18)}"/><stop offset="1" stop-color="{mix(c1, "#000000", 0.14)}"/></linearGradient>'
+            f'<linearGradient id="iris{n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{mix(ic, "#000000", 0.55)}"/><stop offset=".55" stop-color="{ic}"/><stop offset="1" stop-color="{mix(ic, "#ffffff", 0.5)}"/></linearGradient>'
+            f'<linearGradient id="straw{n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe6a0"/><stop offset="1" stop-color="#e9b84e"/></linearGradient>'
+            f'<clipPath id="face{n}"><path d="{FACE}"/></clipPath></defs>')
+
+def svg(lk, n, team=None, working=True, back=False, size=None, view=None):
+    sk = lk["skin"]; shine = mix(lk["hair"], "#ffffff", 0.7)
+    front, extra = hair_front(lk)
+    S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
+    bx, by, L = ST["bx"], ST["by"], ST["leg"]
+    ltop = 40 + 48 * by - 6; feet = ltop + L + 8
+    bg = body(lk, team)
+    if (bx, by) != (1.0, 1.0): bg = f'<g transform="translate(0,40) scale({bx},{by}) translate(0,-40)">{bg}</g>'
+    bodyg = legs(lk, ltop, L) + bg
+    if ST["shade"] == "gloss": bodyg = f'<ellipse cx="0" cy="{feet - 2}" rx="36" ry="6" fill="#000000" opacity=".12"/>' + bodyg
+    g = hair_back(lk) + bodyg
+    g += f'<path d="M -10,34 L 10,34 L 9,44 Q 0,48 -9,44 Z" fill="{mix(sk, "#c08060", 0.2)}"/>'   # 목
+    if back:
+        g += f'<path d="{FACE}" fill="url(#hair{{n}})" {S}/>' + f'<path d="{front}" fill="url(#hair{{n}})" {S}/>' + hat(lk)
+    else:
+        g += "".join(f'<ellipse cx="{sx * 45}" cy="8" rx="7" ry="10" fill="url(#skin{{n}})" {S}/>' for sx in (-1, 1))
+        g += f'<path d="{FACE}" fill="url(#skin{{n}})" {S}/>'
+        g += f'<g clip-path="url(#face{{n}})"><path d="{front}" transform="translate(0,6)" fill="{mix(sk, "#b06a50", 0.28)}" opacity=".55"/></g>'   # 앞머리 그림자
+        g += eyes(lk, working) + mouth(lk) + face_extras(lk)
+        g += f'<path d="{front}" fill="url(#hair{{n}})" {S}/>' + extra
+        if lk["hs"] not in ("mohawk", "cloud", "curly"):
+            g += f'<path d="M -34,-50 Q -10,-64 18,-60" stroke="{shine}" stroke-width="5" fill="none" stroke-linecap="round" opacity=".55"/>'
+            if ST["shade"] == "gloss": g += f'<path d="M -40,-38 Q -36,-54 -24,-60" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/><ellipse cx="22" cy="-58" rx="7" ry="3" fill="#ffffff" opacity=".6"/>'
+        g += top_extras(lk) + hat(lk)
+    g = g.replace("{n}", str(n)).replace("{shine}", shine)
+    if ST["ink"] != 2.2: g = g.replace('stroke-width="2.2"', f'stroke-width="{ST["ink"]}"')
+    vb = view or f"-100 -140 200 {feet + 150:.0f}"
+    wh = f' width="{size[0]}" height="{size[1]}"' if size else ""
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}"{wh}>{defs(lk, n)}{g}</svg>'
