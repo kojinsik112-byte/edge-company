@@ -965,15 +965,15 @@ def elbaf_hat(lk):
         horns = "".join(f'<path d="M {sx * 44},-82 L {sx * 92},-108 L {sx * 50},-62 Z" fill="#efe2b8" {S}/><path d="M {sx * 56},-80 L {sx * 84},-102" stroke="#c9b884" stroke-width="1.6"/>' for sx in (-1, 1))
         gog = "".join(f'<circle cx="{sx * 15}" cy="-66" r="11" fill="#9ad8f4" stroke="{gold}" stroke-width="3.4"/><circle cx="{sx * 15 - 3}" cy="-69" r="3" fill="#ffffff" opacity=".8"/>' for sx in (-1, 1))
         return G + horns + dome("#2f3a7a", top=-122, w=54, yb=-46) + band("#2a3268", yb=-46, w=55) + gog + '<rect x="-4" y="-69" width="8" height="5" rx="1.5" fill="#c9ced6"/>'
-    if h == "chopper_elbaf":      # 분홍 모자 위 빨간 큰 투구 · 손바닥에서 솟은 금빛 손가락 뿔
+    if h == "chopper_elbaf":      # 빨간 큰 투구를 눈 위까지 푹 (분홍 모자 없음) · 손바닥에서 솟은 금빛 손가락 뿔
+        yb, dy = -24, 26
         ant = ""
         for sx in (-1, 1):
-            px = sx * 60
-            ant += "".join(f'<rect x="{px + sx * (k * 8 - 12) - 3.6:.1f}" y="{-124 + abs(k - 1.5) * 5:.1f}" width="7.2" height="{50 - abs(k - 1.5) * 5:.1f}" rx="3.6" fill="#e0c878" {S}/>' for k in range(4))
-            ant += f'<path d="M {px - 18},-92 L {px + 18},-92 L {px + 14},-70 L {px - 14},-70 Z" fill="#8a5530" {S}/>'
-            ant += "".join(f'<rect x="{px + sx * (k * 8 - 12) - 3.6:.1f}" y="-96" width="7.2" height="6" fill="#8a5530"/>' for k in range(4))
-        return (G + ant + f'<ellipse cx="0" cy="-52" rx="58" ry="11" fill="#f6a0c0" {S}/>' + dome("#b02a3a", top=-130, w=50, yb=-56)
-                + strip(top=-126, yb=-60) + band(yb=-56, w=51, hgt=10))
+            px = sx * 62
+            ant += "".join(f'<rect x="{px + sx * (k * 8 - 12) - 3.6:.1f}" y="{-124 + dy + abs(k - 1.5) * 5:.1f}" width="7.2" height="{50 - abs(k - 1.5) * 5:.1f}" rx="3.6" fill="#e0c878" {S}/>' for k in range(4))
+            ant += f'<path d="M {px - 18},{-92 + dy} L {px + 18},{-92 + dy} L {px + 14},{-68 + dy} L {px - 14},{-68 + dy} Z" fill="#8a5530" {S}/>'
+            ant += "".join(f'<rect x="{px + sx * (k * 8 - 12) - 3.6:.1f}" y="{-96 + dy}" width="7.2" height="6" fill="#8a5530"/>' for k in range(4))
+        return (G + ant + dome("#b02a3a", top=-112, w=57, yb=yb) + strip(top=-108, yb=yb - 12) + band(yb=yb, w=58, hgt=12))
     return ""
 
 ELBAF = {   # 이름 → 엘바프 편 차림 (공식 설정화 기준)
