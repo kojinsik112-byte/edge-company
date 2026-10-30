@@ -247,6 +247,9 @@ B.CSS += r"""
 .bars.b7 .v small{font-size:15px;margin-left:2px}
 .toc4{grid-template-columns:repeat(4,1fr)!important}
 .toc4 .col{padding:0 22px}
+.tocH{grid-template-columns:repeat(3,1fr)!important;row-gap:22px!important}
+.tocH .col{display:contents}
+.tocH .s{border-left:1px solid rgba(255,255,255,.16);padding:0 26px}
 """
 
 
