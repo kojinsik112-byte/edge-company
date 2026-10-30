@@ -170,11 +170,11 @@ def hair_back(lk):
             col = lk[c]
             s += f'<path d="M {sx * 46},-10 Q {sx * 62},30 {sx * 52},64 L {sx * 40},60 Q {sx * 48},26 {sx * 36},-10 Z" fill="{col}" stroke="{INK}" stroke-width="2"/>'
             s += f'<circle cx="{sx * 44}" cy="-70" r="17" fill="none" stroke="{INK}" stroke-width="13"/><circle cx="{sx * 44}" cy="-70" r="17" fill="none" stroke="{col}" stroke-width="9"/>'
-    elif hs == "wavy":       # 사보: 어깨까지 내려오는 물결 머리 (바깥으로 살짝 말림)
+    elif hs == "wavy":       # 사보: 모자 챙 아래에서 머리 옆을 감싸고 턱까지 내려오는 풍성한 물결 머리 (머리 윗부분과 이어짐)
         for sx in (-1, 1):
-            s += (f'<path d="M {sx * 40},-30 Q {sx * 62},-20 {sx * 58},0 Q {sx * 68},12 {sx * 60},26 Q {sx * 70},40 {sx * 58},52 Q {sx * 52},58 {sx * 46},50 '
-                  f'Q {sx * 52},40 {sx * 46},30 Q {sx * 54},16 {sx * 46},4 Q {sx * 50},-12 {sx * 36},-18 Z" {H}/>'
-                  f'<path d="M {sx * 54},-6 Q {sx * 60},6 {sx * 54},18 M {sx * 56},32 Q {sx * 62},42 {sx * 54},50" stroke="{INK}" stroke-width="1.4" fill="none" opacity=".45"/>')
+            s += (f'<path d="M {sx * 20},-62 Q {sx * 52},-64 {sx * 62},-38 Q {sx * 70},-22 {sx * 63},-8 Q {sx * 72},8 {sx * 64},22 Q {sx * 70},38 {sx * 56},46 '
+                  f'Q {sx * 48},50 {sx * 44},42 Q {sx * 50},32 {sx * 46},22 Q {sx * 50},8 {sx * 46},-4 Q {sx * 50},-24 {sx * 38},-38 Q {sx * 28},-50 {sx * 10},-54 Z" {H}/>'
+                  f'<path d="M {sx * 58},-30 Q {sx * 64},-18 {sx * 57},-8 M {sx * 58},6 Q {sx * 64},16 {sx * 56},26 M {sx * 56},34 Q {sx * 60},40 {sx * 52},44" stroke="{INK}" stroke-width="1.3" fill="none" opacity=".4"/>')
     elif hs == "bun": s += f'<circle cx="0" cy="-78" r="18" {H}/>'
     elif hs == "topknot": s += f'<ellipse cx="0" cy="-72" rx="12" ry="10" {H}/>'
     elif hs in ("bob", "bunny"): s += f'<path d="M -56,-10 C -62,20 -58,40 -46,48 L 46,48 C 58,40 62,20 56,-10 Z" {H}/>'
