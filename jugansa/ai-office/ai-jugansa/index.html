@@ -7,10 +7,11 @@
 <style>
   html,body{margin:0;height:100%;background:#dfe3e8;overflow:hidden;font-family:"Malgun Gothic","Pretendard",sans-serif}
   #fit{position:absolute;inset:0;overflow:hidden}
-  #stage{position:absolute;left:0;top:0;width:1600px;height:1300px;transform-origin:0 0}
-  #bg{position:absolute;left:0;top:0;width:1600px;height:1300px}
+  #stage{position:absolute;left:0;top:0;width:1600px;height:1440px;transform-origin:0 0}
+  #bg{position:absolute;left:0;top:0;width:1600px;height:1440px}
   .seat,.walker{position:absolute;pointer-events:none}
-  .walker{z-index:4;transition:opacity .25s;transform-origin:50% 96%}
+  .seat{z-index:2}
+  .walker{z-index:5;transition:opacity .25s;transform-origin:50% 96%}
   .bub{position:absolute;transform:translate(-50%,-100%);background:#fff;border:1.2px solid #d8cdbb;border-radius:11px;padding:4px 11px;font-size:13px;font-weight:700;color:#2b2018;white-space:nowrap;box-shadow:0 3px 6px rgba(0,0,0,.18);z-index:7;max-width:330px;overflow:hidden;text-overflow:ellipsis}
   .bub:after{content:"";position:absolute;left:50%;bottom:-7px;margin-left:-6px;border:6px solid transparent;border-top-color:#fff;border-bottom:0}
   .bub.boss{background:#fff6dc}.bub.boss:after{border-top-color:#fff6dc}
@@ -72,7 +73,7 @@
   #ptalert{position:absolute;left:50%;top:110px;transform:translateX(-50%);z-index:9;min-width:640px;padding:16px 22px;border-radius:14px;background:rgba(29,22,8,.96);box-shadow:0 0 0 2px #c9a45c,0 18px 50px rgba(0,0,0,.5);color:#f3dfb0;font-size:15px;display:none}
   #ptalert.on{display:block}#ptalert h2{margin:0 0 6px;color:#ffd77a}
   #ptalert button{margin-top:10px;background:#c9a45c;border:0;border-radius:12px;padding:6px 16px;font-weight:800;cursor:pointer}
-  #log{position:absolute;left:30px;top:1278px;width:1540px;color:#6a7280;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #log{position:absolute;left:30px;top:1418px;width:1540px;color:#6a7280;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #memos{position:absolute;right:26px;top:88px;display:flex;flex-direction:column;gap:6px;align-items:flex-end;z-index:8}
   #memos div{background:#1b2433;color:#ffe7a6;border:1px solid #c9a45c;border-radius:12px;padding:4px 12px;font-size:12px;font-weight:700}
 </style>
@@ -118,18 +119,19 @@ let boardRows = [];
 const el = (tag, cls, css) => { const e = document.createElement(tag); if (cls) e.className = cls; if (css) Object.assign(e.style, css); layer.appendChild(e); return e; };
 const px = v => v + "px";
 
-function fit(){ const k = Math.min(innerWidth / 1600, innerHeight / 1300); const st = $("stage"); st.style.transform = `scale(${k})`; st.style.left = px((innerWidth - 1600*k) / 2); }
+function fit(){ const H = L ? L.H : 1440, k = Math.min(innerWidth / 1600, innerHeight / H); const st = $("stage"); st.style.transform = `scale(${k})`; st.style.left = px((innerWidth - 1600*k) / 2); }
 addEventListener("resize", fit);
 
 // ───────── 자리 · 캐릭터 ─────────
 async function init(){
   L = await (await fetch("/v4/layout.json", {cache:"no-store"})).json();
-  $("bg").src = "/v4/bg.svg"; document.body.style.background = L.bg;
+  $("stage").style.height = $("bg").style.height = px(L.H); $("bg").src = "/v4/bg.svg"; document.body.style.background = L.bg;
   $("hd").style.background = `linear-gradient(${L.header},${L.header2})`;
   $("sub").textContent = `EDGE COMPANY · ${L.office_name} · 원피스직원`;
   const b = L.board; Object.assign($("board").style, {left:px(b.x), top:px(b.y), width:px(b.w), height:px(b.h)});
   for (const team in L.seats) L.seats[team].forEach(s => {
-    const img = el("img", "seat", {left:px(s.work.x), top:px(s.work.y), width:px(s.work.w), height:px(s.work.h)}); img.src = "/v4/" + s.idle.file;
+    const row = s.fy - L.rooms[s.team].y > 280 ? 2 : 1;      // 1 = 뒷줄 · 2 = 앞줄 (앞줄이 위에 그려짐)
+    const img = el("img", "seat", {left:px(s.work.x), top:px(s.work.y), width:px(s.work.w), height:px(s.work.h), zIndex:String(2 * row)}); img.src = "/v4/" + s.idle.file; s.row = row;
     seats.push({...s, img, state:"idle", agent:null, label:"", lastWork:0, used:0, batch:-1, dot:el("div", "dot off", {left:px(s.hx + 18), top:px(s.hy)}), bub:null, tag:null});
   });
   for (const team in L.rooms){ const r = L.rooms[team]; r.badgeEl = el("span", "badge", {left:px(r.badge[0]), top:px(r.badge[1])}); }
@@ -192,15 +194,17 @@ function tickIdle(){
 }
 
 // ───────── 본부장실로 걸어가서 보고 → 자리로 돌아오기 ─────────
-const walkers = []; let meeting = false;
-// 자리 → 통로(문 쪽) → 앞 유리문 → 아래 복도(작게 보임) → 본부장실 앞문 → 보고 자리 (door 두 점 사이 = 문을 지남)
-function pathTo(s){
-  const r = L.rooms[s.team], d = r.door, bd = L.boss.door, k = walkers.filter(w => w.kind === "rep" && !w.leaving).length;
-  const pts = [{x:s.fx, y:s.fy}, {x:d.in[0], y:s.fy}, {x:d.in[0], y:d.in[1], door:true}, {x:d.out[0], y:d.out[1], door:true}];
+const walkers = [], line = []; let meeting = false, inRoom = null;
+// 자리 → 의자 뒤 통로(동료 뒤로 지나감) → 문 쪽 → 앞 유리문 → 복도(작게 보임) → 본부장실 문 앞 줄
+function pathOut(s){
+  const r = L.rooms[s.team], d = r.door, bd = L.boss.door, lane = s.fy - 22;     // 책상 윗면 뒤 = 의자 뒤 통로
+  const pts = [{x:s.fx, y:s.fy}, {x:s.fx, y:lane, lane:s.row}, {x:d.in[0], y:lane, lane:s.row}, {x:d.in[0], y:d.in[1], door:true}, {x:d.out[0], y:d.out[1], door:true}];
   if (r.row === 0) pts.push({x:L.vX, y:d.out[1]}, {x:L.vX, y:bd.out[1]});
-  pts.push({x:bd.out[0], y:bd.out[1], door:true}, {x:bd.in[0], y:bd.in[1], door:true}, {x:L.boss.spot[0] - k * 26, y:L.boss.spot[1]});
   return pts;
 }
+// 본부장실 앞 복도에 한 줄로 대기 (맨 앞 = 문 바로 왼쪽)
+const waitPt = i => ({x:L.boss.door.out[0] - 46 - i * 34, y:L.boss.door.out[1]});
+function queueWalk(w, i){ w.waiting = false; walk(w, [waitPt(i)], () => { w.waiting = true; w.flip = false; place(w); pump(); }); }
 function mkWalker(st, x, y, kind){
   const o = {img: el("img", "walker", {width:px(st.w), height:px(st.h)}), sw: st.w, sh: st.h, feet: st.feet, x, y, pts: [], i: 0, cb: null, small: false, flip: false, hold: 0, bub: null, kind};
   o.img.src = "/v4/" + st.file; walkers.push(o); place(o); return o;
@@ -212,16 +216,28 @@ function place(o){ const moving = o.pts.length && o.i < o.pts.length - 1, bob = 
   o.img.style.left = px(o.x - o.sw / 2); o.img.style.top = px(o.y - o.sh * o.feet - bob);
   o.img.style.transform = `scale(${o.flip ? -1 : 1}, 1) scale(${o.small ? 0.6 : 1})`;     // 복도에서는 작게 (방 그림을 덮지 않게)
   if (o.bub){ o.bub.style.left = px(o.x); o.bub.style.top = px(o.y - o.sh * 0.92 * (o.small ? 0.6 : 1)); } }
-// 팀 작업 끝 → 본부장실로 걸어가 보고 → (본부장이 비어 있으면) 원탁에서 잠깐 회의 → 자리로 복귀
+// 팀 작업 끝 → 본부장실 앞 줄 → 한 명씩 들어가 보고 → 원탁에서 잠깐 회의 → 복도로 나와 자리로 복귀
 function report(s){
   if (!s || s.state === "away" || s.state === "walk") return;
   if (s.bub){ s.bub.remove(); s.bub = null; }
   setState(s, "away"); doneN++; render();
-  const there = pathTo(s), o = mkWalker(s.stand, s.fx, s.fy, "rep");
-  walk(o, there.slice(1), () => {
+  const out = pathOut(s), o = mkWalker(s.stand, s.fx, s.fy, "rep"); o.s = s; o.out = out; line.push(o);
+  walk(o, [...out.slice(1), waitPt(line.indexOf(o))], () => { o.waiting = true; o.flip = false; place(o); pump(); });
+}
+function pump(){
+  if (inRoom || meeting || !line.length || !line[0].waiting) return;
+  const o = line.shift(), bd = L.boss.door, B = L.boss; inRoom = o; o.waiting = false;
+  line.forEach((w, i) => { if (w.waiting) queueWalk(w, i); });          // 뒤에 선 사람은 한 칸씩 앞으로
+  walk(o, [{x:bd.out[0], y:bd.out[1], door:true}, {x:bd.in[0], y:bd.in[1], door:true}, {x:B.spot[0], y:B.spot[1]}], () => {
     o.flip = true; place(o); wsay(o, "보고 드립니다", 2000); setTimeout(() => bossSay("확인! 수고했어!", 1800), 600);
-    const home = () => { o.leaving = true; walk(o, there.slice(0, -1).reverse(), () => { killWalker(o); setState(s, "idle", ""); }); };
-    setTimeout(() => meeting ? setTimeout(home, 600) : meet(o, home), 2200);
+    const home = () => {
+      o.leaving = true;
+      walk(o, [{x:bd.in[0], y:bd.in[1], door:true}, {x:bd.out[0], y:bd.out[1], door:true}], () => {
+        inRoom = null; setTimeout(pump, 300);
+        walk(o, [...o.out].reverse(), () => { killWalker(o); setState(o.s, "idle", ""); });
+      });
+    };
+    setTimeout(() => meet(o, home), 2200);
   });
 }
 function meet(o, done){
@@ -234,7 +250,7 @@ function meet(o, done){
     const lines = [[o, "이번 건 진행 상황 공유드립니다"], [b, "좋아, 일정 맞춰서 가자!"], [o, "네, 바로 반영하겠습니다"], [b, "고생했어 👍"]];
     lines.forEach(([w, t], i) => setTimeout(() => wsay(w, t, 1500), i * 1600));
     setTimeout(() => {
-      walk(b, [{x:B.standAt[0], y:B.standAt[1]}], () => { killWalker(b); boss.img.style.visibility = "visible"; meeting = false; });
+      walk(b, [{x:B.standAt[0], y:B.standAt[1]}], () => { killWalker(b); boss.img.style.visibility = "visible"; meeting = false; pump(); });
       walk(o, [{x:B.spot[0], y:B.spot[1]}], done);
     }, lines.length * 1600 + 300);
   };
@@ -251,7 +267,9 @@ function frame(now){
     if (d <= step){ o.x = t.x; o.y = t.y; o.i++; const nx = o.pts[o.i + 1];
       if (t.door && nx && nx.door){ o.img.style.opacity = 0; o.hold = now + 350; o.x = nx.x; o.y = nx.y; o.i++; o.small = !o.small; place(o); continue; } }
     else { o.x += dx / d * step; o.y += dy / d * step; }
-    if (Math.abs(dx) > 0.5) o.flip = dx < 0; place(o);
+    if (Math.abs(dx) > 0.5) o.flip = dx < 0;
+    o.img.style.zIndex = t.lane ? 2 * t.lane - 1 : 5;   // 뒷줄 통로 1 (뒷줄 2 아래) · 앞줄 통로 3 (뒷줄 위 · 앞줄 4 아래)                   // 의자 뒤 통로에서는 앉은 동료 뒤로 지나간다
+    place(o);
   }
   requestAnimationFrame(frame);
 }
