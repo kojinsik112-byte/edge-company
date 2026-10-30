@@ -950,13 +950,16 @@ def elbaf_hat(lk):
         horns = "".join(f'<path d="M {sx * 46},-78 C {sx * 78},-82 {sx * 98},-96 {sx * 100},-136 C {sx * 92},-92 {sx * 78},-54 {sx * 52},-46 Z" fill="url(#hh§)" {S}/>'
                         f'<path d="M {sx * 100},-136 Q {sx * 101},-116 {sx * 97},-106 Q {sx * 90},-114 {sx * 91},-122 Z" fill="#1f1d26"/>' + ridge(sx, ((58, -62), (72, -68), (82, -80), (88, -94))) for sx in (-1, 1))
         return G + horns + dome("#24222c") + strip() + band()
-    if h == "viking_usopp":       # 분홍 두건 + 옆 헤드폰 · 금 투구(줄무늬) · 금 뿔 위로
-        hood = (f'<path d="M -56,-40 Q -66,14 -46,56 L -34,50 Q -50,10 -44,-36 Z M 56,-40 Q 66,14 46,56 L 34,50 Q 50,10 44,-36 Z" fill="#e06a9a" {S}/>'
-                '<path d="M -50,-20 Q -54,14 -42,44 M 50,-20 Q 54,14 42,44" stroke="#b84a78" stroke-width="1.6" fill="none"/>'
-                f'<circle cx="57" cy="8" r="10" fill="{gold}" {S}/><circle cx="57" cy="8" r="5" fill="#8a8f9a" stroke="#5a5f6a" stroke-width="1"/>')
-        horns = "".join(f'<path d="M {sx * 36},-96 Q {sx * 66},-112 {sx * 50},-150 Q {sx * 46},-120 {sx * 26},-104 Z" fill="{gold}" {S}/>' + ridge(sx, ((40, -108), (48, -122), (50, -136)), "#a8761e") for sx in (-1, 1))
-        stripes = "".join(f'<path d="M {x},-112 Q {x * 1.15},-80 {x * 1.25},-48" stroke="#b8862a" stroke-width="3.4" fill="none"/>' for x in (-26, -9, 9, 26))
-        return G + hood + horns + dome("#e6b84a") + stripes + band()
+    if h == "viking_usopp":       # 얼굴을 감싼 분홍 두건(이마 · 양옆) + 옆 헤드폰 · 그 위에 금 투구(줄무늬는 투구 안에만) · 금 뿔 위로
+        yb = -34
+        hood = (f'<path d="M -58,-30 C -62,-74 62,-74 58,-30 Q 66,16 50,56 L 36,50 Q 46,16 44,-12 Q 0,-30 -44,-12 Q -46,16 -36,50 L -50,56 Q -66,16 -58,-30 Z" fill="#e06a9a" {S}/>'
+                '<path d="M -52,-6 Q -56,22 -44,48 M 52,-6 Q 56,22 44,48 M -40,-18 Q 0,-32 40,-18" stroke="#b84a78" stroke-width="1.6" fill="none"/>'
+                f'<circle cx="58" cy="10" r="10.5" fill="{gold}" {S}/><circle cx="58" cy="10" r="5.4" fill="#9aa0aa" stroke="#5a5f6a" stroke-width="1"/><path d="M 52,4 L 64,16 M 64,4 L 52,16" stroke="#5a5f6a" stroke-width="1"/>')
+        horns = "".join(f'<path d="M {sx * 40},-80 Q {sx * 72},-100 {sx * 54},-146 Q {sx * 50},-112 {sx * 30},-92 Z" fill="{gold}" {S}/>' + ridge(sx, ((44, -94), (52, -110), (54, -126)), "#a8761e") for sx in (-1, 1))
+        dpath = f"M -54,{yb} C -56,-120 56,-120 54,{yb} Z"
+        stripes = (f'<defs><clipPath id="uc§"><path d="{dpath}"/></clipPath></defs><g clip-path="url(#uc§)">'
+                   + "".join(f'<path d="M {x},-122 Q {x * 1.12},-80 {x * 1.2},{yb}" stroke="#b8862a" stroke-width="3.6" fill="none"/>' for x in (-30, -11, 11, 30)) + '</g>')
+        return G + hood + horns + dome("#e6b84a", top=-120, w=54, yb=yb) + stripes + band(yb=yb, w=55, hgt=12)
     if h == "viking_franky":      # 검정 큰 뿔 · 짙은 투구 · 금 테두리 + 코 보호대
         horns = "".join(f'<path d="M {sx * 46},-78 C {sx * 88},-82 {sx * 110},-104 {sx * 110},-150 C {sx * 100},-100 {sx * 84},-56 {sx * 52},-46 Z" fill="url(#hk§)" {S}/>'
                         f'<path d="M {sx * 56},-62 Q {sx * 96},-66 {sx * 98},-128" stroke="#8a8f9a" stroke-width="2.2" fill="none" opacity=".6"/>' for sx in (-1, 1))
