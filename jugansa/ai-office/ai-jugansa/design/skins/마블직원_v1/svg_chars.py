@@ -1362,7 +1362,7 @@ def M(name, skin=SK, hs="short", hair="#2a2420", suit="#2a4fb0", **kw):
 
 # ── 명단 (인기순 매핑 · 본부장 확정) ──
 DK, BR, PL = "#8a5a3a", "#7a4a2a", "#f2e2c8"
-BOSS_LOOK = M("아이언맨", iron_style="C", hs="bald", suit="#c8202a", hat="m_iron", mv_top="iron", glove="#c8202a", legs="#c8202a", boots="#c8202a", boot_top=176, iron_arms=True, iron_legs=True, mvp=["repulsor"], ex=["no_ears", "burly"])
+BOSS_LOOK = M("아이언맨", iron_style="C", head_k=0.9, hs="bald", suit="#c8202a", hat="m_iron", mv_top="iron", glove="#c8202a", legs="#c8202a", boots="#c8202a", boot_top=176, iron_arms=True, iron_legs=True, mvp=["repulsor"], ex=["no_ears", "burly"])
 ROSTER = {
     "scout": [
         M("스파이더맨", hs="bald", suit="#d42430", hat="m_spidey", head_k=0.86, mv_top="spidey", legs="#2a4fb0", boots="#d42430", boot_top=150, glove="#d42430", ex=["no_ears"]),
