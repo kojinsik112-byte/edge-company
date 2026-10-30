@@ -57,12 +57,12 @@ ROSTER = {
         C("봉쿠레", "bun", "#1f1d26", "swan", "#ffffff", "#f6a0c6", eyes="makeup", mouth="lips", vibe="fun", pose="cheer", eyec="#3a2a3a", legs="#f6a0c6"),
         C("버기", "messy", "#3a86e0", "coat", "#d03a32", "#f4d35a", hat="captain", mouth="grin", vibe="fun", pose="fist", props=["knife"], ex=["red_nose", "clown_paint"], eyec="#3a2a22"),
         C("페로나", "drills", "#f6a0c6", "dress", "#2b2a38", "#e0484a", hat="crown", eyec="#6a3a5a", girl=True, vibe="cute", pose="wave", props=["ghost"], ex=["star_cheek"], legs="#2b2a38"),
-        C("바르톨로메오", "mohawk", "#3aaa6a", "coat", "#2b2a38", "#ffffff", mouth="teeth", vibe="fun", pose="fist", ex=["nose_ring"]),
+        C("오키쿠", "pony", "#2b2230", "kimono", "#f4b6c4", "#ffffff", "#7a3a8a", eyec="#4a2a3a", girl=True, vibe="glam", mouth="lips", pose="hold", props=["sword_hip"], legs="#f4b6c4"),   # 바르톨로메오 대신 (본부장 10-31)
     ],
     "pt": [
         C("우타", "uta", "#e0483c", "dress", "#ffffff", "#6a6a7a", hair2="#f6f6f8", eyec="#8c4bd0", girl=True, vibe="cute", pose="sing", props=["mic"], ex=["headphones"], legs="#f6f6f8"),
         C("핸콕", "blunt", "#1f1d26", "dress", "#d03a32", "#ffffff", eyec="#3a3a7a", mouth="lips", girl=True, vibe="glam", pose="hip", ex=["snake_earrings"], legs="#f6e0d0"),
-        C("레베카", "long", "#f6a0c6", "dress", "#ec6a94", "#f6d36b", eyec="#3a6aa8", girl=True, vibe="cute", pose="hold", props=["katana_up"], ex=["headband_flower"], legs="#f6e0d0"),
+        C("시라호시", "long_wavy", "#f6a6c8", "dress", "#fbd3e2", "#ffffff", hat="crown", eyec="#4a90d8", girl=True, vibe="cute", pose="side", ex=["mermaid_tail", "earrings_gold"]),   # 레베카 대신 (본부장 10-31) · 인어 공주
         C("히요리", "blunt", "#1f1d26", "kimono", "#ec6a84", "#ffffff", "#f4d35a", eyec="#4a2a3a", girl=True, vibe="glam", pose="hold", props=["fan"], ex=["kanzashi"], legs="#ec6a84"),
     ],
     "retro": [
@@ -444,6 +444,13 @@ def skirt_tails(lk):
 
 def legs(lk):
     S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'; L = lk["legs"]; s = ""
+    if "mermaid_tail" in lk["ex"]:      # 시라호시: 분홍 꼬리 + 비늘 + 꼬리지느러미
+        tc = "#f48aa8"
+        s += f'<path d="M -26,116 C -30,150 -16,180 -4,196 L 4,196 C 16,180 30,150 26,116 Z" fill="{tc}" {S}/>'
+        s += "".join(f'<path d="M {-22 + k * 2 + j * 11},{130 + k * 14} q 5.5,6 11,0" stroke="#d0607e" stroke-width="1.4" fill="none"/>' for k in range(4) for j in range(4 - k) if -22 + k * 2 + j * 11 < 18 - k * 4)
+        s += f'<path d="M -2,194 C -24,198 -40,206 -42,214 C -24,214 -10,208 0,202 C 10,208 24,214 42,214 C 40,206 24,198 2,194 Z" fill="#f6b4c8" {S}/>'
+        s += '<path d="M -10,140 Q -8,166 -2,186" stroke="#ffffff" stroke-width="2.4" fill="none" opacity=".35" stroke-linecap="round"/>'
+        return s
     for sx in (-1, 1):
         x0 = -23 if sx == -1 else 3
         cx_ = x0 + 10
