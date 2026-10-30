@@ -997,7 +997,7 @@ def elbaf_hat(lk):
                 '<path d="M -50,-4 Q -53,16 -48,34 M 50,-4 Q 53,16 48,34" stroke="#b84a78" stroke-width="1.4" fill="none"/>'
                 f'<circle cx="54" cy="6" r="10" fill="{gold}" {S}/><circle cx="54" cy="6" r="5.4" fill="#9aa0aa" stroke="#5a5f6a" stroke-width="1"/>'
                 '<path d="M 50.5,2.5 L 57.5,9.5 M 57.5,2.5 L 50.5,9.5" stroke="#5a5f6a" stroke-width="1"/>')
-        horns = "".join(f'<path d="M {sx * 46},-80 C {sx * 62},-96 {sx * 64},-124 {sx * 52},-150 C {sx * 48},-124 {sx * 42},-106 {sx * 30},-98 Z" fill="{gold}" {S}/>'
+        horns = "".join(f'<path d="M {sx * 42},-66 C {sx * 64},-90 {sx * 66},-122 {sx * 52},-150 C {sx * 48},-124 {sx * 40},-102 {sx * 20},-88 Z" fill="{gold}" {S}/>'
                         + ridge(sx, ((44, -100), (50, -116), (52, -134)), "#a8761e") for sx in (-1, 1))
         dpath = f"M -54,{yb} C -56,-120 56,-120 54,{yb} Z"
         panels = (f'<defs><clipPath id="uc§"><path d="{dpath}"/></clipPath></defs><g clip-path="url(#uc§)" opacity=".55">'
