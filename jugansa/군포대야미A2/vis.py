@@ -643,12 +643,12 @@ def apply2(B, D, take, sub):
     _hv = lambda n: bool(n) and _os2.path.exists(_os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), "assets_ins", n + ".jpg"))
     _gy = lambda key: D.IMG[key][0] if _hv(D.IMG[key][0]) else (D.IMG[key][1] if _hv(D.IMG[key][1]) else "gy_cover_aerial")  # 법정 10-23: 단지 사진 없으면 슬롯 대체(타 단지 예시)
     _own_lx = _hv(D.IMG["lx_front1"][0])
-    th = [(_gy("lx_front1"), "동 파사드 · 문주"), (_gy("lx_play"), "포켓정원 · 산책로" if _own_lx else "놀이터 (가상 연출)"), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
+    th = [(_gy("lx_front1"), "동 파사드 · 문주"), ((_gy("lx_play"), "포켓정원 · 산책로") if _own_lx else ("gp_lx_walk", "조경 · 산책로 조명")), ("n13_fit", "커뮤니티 조명"),  # 외부 경관 먼저(본부장 10-15)
           ("n13_ev1", "전기차 충전"), ("g14_light3", "입주 기념 점등식")]
     thm = ('<div class="thm">' + "".join(f'<figure><div class="im"><img src="assets_ins/{im}.jpg" alt=""><b>{i:02d}</b></div><figcaption>{c}</figcaption></figure>'
                                           for i, (im, c) in enumerate(th, 1))
            + (f'</div><div class="thc">01 · 02 = {D.SITE["name"]} 경관조명 연출 시뮬레이션(실제와 다를 수 있음) · 03 ~ 05 = 타 단지 현장 · 예시</div>' if _own_lx
-              else f'</div><div class="thc">01 · 02 = 타 단지 경관조명 연출 예시({D.SITE["short"]} 이미지 아님 · 02는 가상 연출) · 03 ~ 05 = 타 단지 현장 · 예시</div>'))
+              else f'</div><div class="thc">01 · 02 = 타 단지 경관조명 연출 예시({D.SITE["short"]} 이미지 아님 · 02는 01의 조경부 확대) · 03 ~ 05 = 타 단지 현장 · 예시</div>'))
     k["body"] = sub(k["body"], "</li></ul></div></div></div>", "</li></ul>" + thm + "</div></div></div>")
 
     # 커뮤니티·공용부 조명 개선 — 목록 + 2×2

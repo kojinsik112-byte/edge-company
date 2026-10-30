@@ -53,6 +53,8 @@ SGI_PNG = os.path.join(HERE, "assets_ins", "os_sgi_bond_masked.png")   # 서울�
 KB = r"C:\본부장\05주관사 입찰공고\20261024_창릉신도시 S5\엣지컴퍼니_고양창릉S5_제출서류\12_영업배상책임보험_증서\엣지컴퍼니_고양창릉S5_12_영업배상책임보험_증서.pdf"   # KB 2026.10.14 ~ 2027.10.14
 REG_MASK = [(203, 163, 556, 177), (30, 176, 50, 187)]   # 등기부 2/2쪽 대표이사 주소(엘리프 docs_el 좌표 · 같은 10.23 발급본)
 KB_MASK = [(365, 790, 445, 801)]                        # KB 증권 아래 영업담당자 휴대번호
+TAX_PHONE = (119, 228.5, 196, 239)                      # 지방세 납세증명서(6번 2쪽) '전화번호(휴대전화)' 칸의 대표 휴대번호 — 그림이라 좌표로(법정 10-30 · 본부장 '응')
+DNB_DATE = "2026년 10월 26일"                             # 디엔비 업무협약 체결일(본부장 10-30) — 협약서에 날짜 칸이 없어 본문 밖 위 여백에 표기
 SUBMIT = os.path.join(HERE, "제출본")
 SEAL_SCAN = getattr(D, "GP_SEAL_SCAN", None) or os.path.join(WORK, "사용인감계_날인스캔.pdf")   # 본부장 실물 날인 스캔 1쪽
 OUT_NAME = f"{D.FILE_TITLE}.pdf"
@@ -197,7 +199,7 @@ def p_q6(sgi_uri):
     rows = [("①", "하자 처리 · 환불 규정", "제출서류 10(컴플레인 · A/S 관리 프로세스 · 계약 취소 · 환불 · 10배 보상 · 도산 이관)", "제출서류 10"),
             ("②", "서울보증보험 계약보증보험증권 발급 이력", "발급 2026.09.07 · 주계약 = 광고대행 용역(입주박람회 이행보증 아님) · 금액 · 상대방 정보 가림 · 보증 발급 이력의 근거", "다음 쪽"),
             ("③", "KB 영업배상책임보험 증권", "시설소유관리자 · 2026.10.14 ~ 2027.10.14 · 본사 기준 · 행사주최자배상책임보험은 박람회 기간 행사장 기준으로 별도 가입", "1쪽"),
-            ("④", "건축 기술 자문 업무협약서", f"{D.ADVISOR} · 2026.10.28 · 양측 날인 · 2쪽 을 정보 가림 · 건설 하자 판정 · 보수는 시공사 책임", "2쪽")]
+            ("④", "건축 기술 자문 업무협약서", f"{D.ADVISOR} · 2026.10.26 · 양측 날인 · 2쪽 을 정보 가림 · 건설 하자 판정 · 보수는 시공사 책임", "2쪽")]
     body = ('<h2>입찰자격 6) 하자담보 이행 능력 - 증빙 붙임</h2>'
             '<p class="b">공고 입찰자격 6) ‘공동구매 제품 전체에 대한 계약 이행 등의 명확한 하자담보 이행 능력이 수립된 업체’의 증빙입니다.</p>'
             '<table class="l"><tr><th>No</th><th>증빙</th><th>내용</th><th>쪽</th></tr>'
@@ -323,7 +325,7 @@ def ev8_pages(seal_uri):
             uri = _img(s03, pno, k, f"b{j}.png")
             body += (f'<div style="margin-bottom:7mm"><h2 style="font-size:12.5pt">B-{j} · {e(nm)}</h2>'
                      f'<p style="font-size:10pt;color:#444;margin-bottom:2mm">{e(src)} · {e(when)}</p>'
-                     f'<img src="{uri}" style="display:block;max-width:100%;max-height:100mm;margin:0 auto;border:1px solid #bbb"></div>')
+                     f'<img src="{uri}" style="display:block;max-width:100%;max-height:92mm;margin:0 auto;border:1px solid #bbb"></div>')
         pages.append(page("제출서류 8 · 붙임 B · 공식 행사일정 · 카페 공지", body,
                           "B-1 ~ B-4 = 입찰자격 5) 1,000세대 이상 단지 · B-5 ~ B-9 = 500 ~ 999세대 주관 단지(입찰자격 7) 참고) · 화면 그대로 · 입주민 닉네임만 가림"))
     for j, (pno, nm, dt) in enumerate(C_DOCS, 1):
@@ -380,7 +382,10 @@ def main():
     parts.append(("4", "인감증명서(최근 1개월)" if not D.GAM_SUBMIT else "인감증명서 / 사용인감계(최근 1개월)",
                   f"인감증명서 {D.INGAM_DATE} 발급 · 가림" + ("" if not D.GAM_SUBMIT else " + 사용인감계" + ("" if os.path.exists(SEAL_SCAN) else "(날인 전)")), d4))
     parts.append(("5", "법인 사업자 통장 사본", "법인 명의 계좌", fitz.open(BANK)))
-    parts.append(("6", "국세 · 지방세 완납 증명서(유효기한 내)", f"{D.ISSUE['tax']} 발급", take(nr("07_국세_지방세_완납증명서.pdf"), [1, 2])))
+    d6 = take(nr("07_국세_지방세_완납증명서.pdf"), [1, 2])
+    d6[1].add_redact_annot(fitz.Rect(*TAX_PHONE), fill=(0.6, 0.6, 0.6))   # 법정 10-30 · 본부장 '응': 지방세 증명서 대표 휴대번호(그림) 화소 가림
+    d6[1].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
+    parts.append(("6", "국세 · 지방세 완납 증명서(유효기한 내)", f"{D.ISSUE['tax']} 발급 · 휴대번호 가림", d6))
     parts.append(("7", "4대 사회보험 가입자 명부(최근 1개월)", f"{D.ROSTER_DATE} 발급 · 13명 · 개인정보 가림", take(nr("08_4대보험_가입자명부_완납증명서.pdf"), [1, 2])))
 
     # 8 실적 증빙 = 안내 + A NICE 연혁 발췌 + B 공식 행사일정 · 카페 공지 캡처 + C 주관사 협약서(나리벡 03 · 09의 이미지만 꺼내 군포 머리글로 새로 조판)
@@ -405,7 +410,12 @@ def main():
         kb[0].add_redact_annot(fitz.Rect(*r_), fill=(0.6, 0.6, 0.6))
     kb[0].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
     dq6.insert_pdf(kb)
-    dq6.insert_pdf(fitz.open(DNB))
+    dnb = fitz.open(DNB)
+    _w = dnb[0].rect.width   # 서명된 본문은 건드리지 않고 1쪽 위 여백에만 체결일을 적음
+    dnb[0].insert_textbox(fitz.Rect(_w - 300, 14, _w - 30, 30), f"업무협약 체결일 : {DNB_DATE}", fontsize=9.5,
+                          fontname="malgun", fontfile=r"C:\Windows\Fonts\malgun.ttf", color=(0.25, 0.25, 0.25), align=fitz.TEXT_ALIGN_RIGHT)
+    dnb.subset_fonts()   # 맑은고딕 전체 내장(약 8MB) 대신 쓴 글자만
+    dq6.insert_pdf(dnb)
     parts.append(("붙임", "입찰자격 6) 하자담보 이행 능력 증빙", "안내 · SGI 계약보증증권 발급 이력(가림) · KB 영업배상책임보험 증권 · 건축 기술 자문 업무협약서(2쪽 을 정보 가림)", dq6))
     # 선택 자료
     sel = fitz.open()
