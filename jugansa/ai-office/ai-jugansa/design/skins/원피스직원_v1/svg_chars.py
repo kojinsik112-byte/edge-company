@@ -36,13 +36,13 @@ ROSTER = {
         C("베가펑크", "big_round", "#c89ae6", "labcoat", "#ffffff", "#6ab0e6", vibe="fun", pose="hold", props=["tablet"], eyec="#5a4a8a", ex=["goggles_head"]),
     ],
     "build": [
-        C("프랑키", "pompadour", "#3aa6ec", "hawaii", "#e64a4a", "#ffd34d", skin=SK2, eyes="shades", mouth="grin", vibe="fun", pose="cheer", ex=["star_tattoo", "metal_nose"]),
+        C("프랑키", "pompadour", "#3aa6ec", "hawaii", "#e64a4a", "#ffd34d", skin=SK2, eyes="shades", mouth="grin", vibe="fun", pose="cheer", ex=["burly", "star_tattoo", "metal_nose"]),
         C("상디", "sanji", "#f6d260", "suit", "#232633", "#5a8fe0", "#232633", eyec="#3a5a8a", vibe="cool", pose="pockets", ex=["cigarette", "curly_brow", "goatee_blond"]),
         C("쵸파", "chopper_fur", "#a8693a", "fur", "#a8693a", "#f2d6b0", skin="#f7e2c4", hat="chopper", eyec="#3a2a22", vibe="cute", pose="wave", ex=["blue_nose", "tiny_body"], legs="#e88aa8", shorts=True, shoes="hoof"),
         C("브룩", "afro", "#1f1d26", "suit", "#1f1d26", "#ffffff", "#c9483b", skin="#f6f2ea", hat="tophat", eyes="skull", mouth="skull", vibe="fun", pose="hold", props=["cane"]),
         C("에이스", "messy", "#1f1d26", "shirtless", SK2, skin=SK2, hat="ace", mouth="grin", vibe="cool", pose="fist", props=["flame"], ex=["asce", "ace_belt", "freckles", "beads_red"], eyec="#3a2a22", legs="#2b3a5a", shorts=True),
         C("사보", "wavy", "#f6d260", "coat", "#2f4f8a", "#ffffff", hat="sabo", eyec="#3a4a7a", vibe="cool", pose="shoulder", props=["pipe"], ex=["scar_sabo", "cravat"]),
-        C("키드", "flame", "#e0402c", "fur_coat", "#c0392b", "#f2a6a0", mouth="kid", vibe="cool", pose="cross", ex=["metal_arm", "stitch_scar", "goggles_head"], eyec="#c9a23a", legs="#2b2a38"),
+        C("키드", "flame", "#e0402c", "fur_coat", "#c0392b", "#f2a6a0", mouth="kid", vibe="cool", pose="cross", ex=["burly", "metal_arm", "stitch_scar", "goggles_head"], eyec="#c9a23a", legs="#2b2a38"),
         C("야마토", "pony", "#f6f6f6", "kimono", "#ffffff", "#e05a5a", "#8c4bd0", hair2="#6ad8cc", eyec="#e0584a", girl=True, vibe="cool", pose="shoulder", props=["club"], ex=["wrist_cuffs", "horns"], legs="#ffffff"),
     ],
     "audit": [
@@ -51,7 +51,7 @@ ROSTER = {
           ex=["mustache_thin", "sideburns", "gold_sleeves", "cross_necklace"], legs="#efeae0", shoes="#1f1d26"),
         C("스모커", "slick", "#eeeef2", "coat", "#f4f4f6", "#3a5f9a", mouth="flat", vibe="cool", pose="cross", props=["jitte"], ex=["cigars3", "fur_collar"], eyec="#5a5a6a"),
         C("타시기", "bob", "#2c2c5a", "tshirt", "#f6a8bc", "#f6a8bc", eyec="#3a3a6a", girl=True, vibe="cute", pose="hold", props=["katana_up"], ex=["glasses_square"], legs="#4a5a8a"),
-        C("가프", "short", "#c4c4c8", "marine", "#ffffff", "#3a5f9a", hat="marine", mouth="laugh", vibe="fun", pose="fist", ex=["beard_garp", "thick_brows", "big_nose", "scar_garp"], eyec="#3a2a22"),
+        C("가프", "short", "#c4c4c8", "marine", "#ffffff", "#3a5f9a", hat="marine", mouth="laugh", vibe="fun", pose="fist", ex=["burly", "beard_garp", "thick_brows", "big_nose", "scar_garp"], eyec="#3a2a22"),
         C("코비", "side", "#f6a8c8", "marine", "#ffffff", "#3a5f9a", hat="marine", eyec="#7a4a8a", vibe="cute", pose="wave"),
     ],
     "mail": [
@@ -70,7 +70,7 @@ ROSTER = {
         C("샹크스", "messy", "#c8352c", "cloak", "#1f1d26", "#ffffff", vibe="cool", pose="onearm", props=["sword_hip"], ex=["open_shirt_white", "scar_shanks", "stubble", "no_left_arm"], eyec="#3a2a22", legs="#5a4a3a"),
         C("흰수염", "short", "#f4f4f4", "coat", "#f6f2e8", "#8a6ac0", skin=SK2, hat="bandana", mouth="flat", vibe="cool", pose="hold", props=["bisento"], ex=["mustache_crescent", "giant"], eyec="#4a4a5a"),
         C("레베카", "long", "#f6a0c6", "dress", "#ec6a94", "#f6d36b", eyec="#3a6aa8", girl=True, vibe="cute", pose="hold", props=["katana_up"], ex=["headband_flower"], legs="#f6e0d0"),   # 레일리 대신 (본부장 10-31)
-        C("크로커다일", "slick", "#1f1d26", "fur_coat", "#3a2f2a", "#6a5a4a", mouth="smirk", vibe="cool", pose="hip", ex=["scar_croc", "hook"], eyec="#4a3a2a"),
+        C("크로커다일", "slick", "#1f1d26", "fur_coat", "#3a2f2a", "#6a5a4a", mouth="smirk", vibe="cool", pose="hip", ex=["burly", "scar_croc", "hook"], eyec="#4a3a2a"),
     ],
 }
 def _defaults(lk):
@@ -287,12 +287,13 @@ def face_extras(lk):
     if "nose_ring" in ex: s += '<path d="M -3,21 A 3,3 0 1 0 3,21" stroke="#d9b25f" stroke-width="2" fill="none"/>'
     if "clown_paint" in ex: s += "".join(f'<path d="M {sx * 17 - 7},-6 L {sx * 17 + 7},-6" stroke="#3a86e0" stroke-width="3" stroke-linecap="round"/>' for sx in (-1, 1))
     if "star_cheek" in ex: s += '<path d="M 30,16 l 2,4 l 4,.5 l -3,3 l .8,4 l -3.8,-2 l -3.8,2 l .8,-4 l -3,-3 l 4,-.5 Z" fill="#f4d35a"/>'
-    if "beard_garp" in ex:   # 가프: 턱선을 따라 귀에서 귀까지 덮는 회색 수염 (입은 보이게 · 바깥은 몽글몽글)
-        bumps = "".join(f"Q {50 * math.cos(a0) * 1.08:.1f},{4 + 54 * math.sin(a0) * 1.08:.1f} {50 * math.cos(a1):.1f},{4 + 54 * math.sin(a1):.1f} "
-                        for a0, a1 in [(math.radians(5 + k * 17 + 8.5), math.radians(5 + (k + 1) * 17)) for k in range(10)])
-        s += (f'<path d="M {50 * math.cos(math.radians(5)):.1f},{4 + 54 * math.sin(math.radians(5)):.1f} {bumps}'
-              f'L -38,6 Q -36,30 -22,44 Q -10,52 0,52 Q 10,52 22,44 Q 36,30 38,6 Z" fill="url(#beard§)" stroke="#8e8e98" stroke-width="1.8" stroke-linejoin="round"/>')
-        s += "".join(f'<path d="M {x},{y} q {d},6 {d * 0.4},12" stroke="#a6a6b0" stroke-width="1.3" fill="none" stroke-linecap="round"/>' for x, y, d in ((-40, 20, -3), (-30, 40, -2), (-12, 54, -1), (12, 54, 1), (30, 40, 2), (40, 20, 3)))
+    if "beard_garp" in ex:   # 가프: 관자놀이에서 턱선을 따라 반대쪽까지 얼굴 위에 붙은 회색 수염 (입 둘레는 비움 · 바깥은 몽글몽글)
+        P = lambda a_, k=1.0: (49 * k * math.cos(math.radians(a_)), -4 + 61 * k * math.sin(math.radians(a_)))
+        n_ = 14; pts = [P(-8 + 196 * i / n_) for i in range(n_ + 1)]
+        d = f"M {pts[0][0]:.1f},{pts[0][1]:.1f} " + "".join(f"Q {P(-8 + 196 * (i + .5) / n_, 1.07)[0]:.1f},{P(-8 + 196 * (i + .5) / n_, 1.07)[1]:.1f} {pts[i + 1][0]:.1f},{pts[i + 1][1]:.1f} " for i in range(n_))
+        d += "L -40,4 Q -38,30 -22,40 Q 0,50 22,40 Q 38,30 40,4 Z"
+        s += f'<path d="{d}" fill="url(#beard§)" stroke="#8e8e98" stroke-width="1.8" stroke-linejoin="round"/>'
+        s += "".join(f'<path d="M {x},{y} q {dx},5 {dx * 0.5},10" stroke="#a2a2ac" stroke-width="1.3" fill="none" stroke-linecap="round"/>' for x, y, dx in ((-44, 10, -1.5), (-38, 30, -2), (-24, 46, -1.5), (-8, 52, -.8), (8, 52, .8), (24, 46, 1.5), (38, 30, 2), (44, 10, 1.5)))
     if "thick_brows" in ex: s += "".join(f'<path d="M {sx * 6},-12 Q {sx * 17},-20 {sx * 30},-14 L {sx * 29},-9 Q {sx * 17},-14 {sx * 7},-7 Z" fill="#8e8e98" stroke="#5a5a64" stroke-width="1.2"/>' for sx in (-1, 1))
     if "big_nose" in ex: s += f'<path d="M -6,18 Q -7,10 0,9 Q 7,10 6,18 Q 0,21 -6,18 Z" fill="{mix(sk, "#c08060", 0.25)}" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.4"/><circle cx="-2" cy="12.5" r="1.4" fill="#ffffff" opacity=".6"/>'
     if "beard_white" in ex: s += '<path d="M -34,18 Q -30,52 0,58 Q 30,52 34,18 Q 20,34 0,34 Q -20,34 -34,18 Z" fill="#f6f6f6" stroke="#cfcfd4" stroke-width="2"/>'
@@ -638,7 +639,7 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
     S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
     b = body(lk, team, pose)
     tiny = "tiny_body" in lk["ex"]          # 쵸파: 몸은 작게 (발 기준) · 머리는 그대로 크게 → 몸 위로 내려 붙임
-    bk, bkx = (0.6, 0.9) if tiny else (1, 1)        # 쵸파: 2등신 — 몸은 짧고 통통하게 (본부장 10-31)
+    bk, bkx = (0.6, 0.9) if tiny else (1.06, 1.2) if "burly" in lk["ex"] else (1, 1)   # 쵸파: 2등신 · 통통 / 다부진 체격: 어깨 · 몸 넓게 (본부장 10-31)
     hs_ = HEAD_SCALE * (1.2 if tiny else 1); hdy = ((14 if view else (205 - 44) * (1 - bk)) if tiny else 0)     # 앉으면 책상 위로 눈이 보이게 조금만 내림
     HG = f'<g transform="translate(0,{HEAD_PIVOT + hdy:.1f}) scale({hs_:.3f}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
     BG = f'<g transform="translate(0,205) scale({bkx},{bk}) translate(0,-205)">'
