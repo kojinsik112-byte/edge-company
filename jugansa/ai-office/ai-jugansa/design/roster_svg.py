@@ -27,14 +27,14 @@ body{{margin:0;background:#f3ede2;font-family:"Malgun Gothic",sans-serif;width:{
 .hd{{background:linear-gradient(#1b2433,#263247);color:#fbf3e2;padding:18px 28px 14px;border-bottom:2px solid #c9a45c}}
 .hd b{{font-size:28px}} .hd span{{display:block;color:#c9a45c;font-size:14px;margin-top:6px}}
 .grid{{display:grid;grid-template-columns:repeat({cols},238px);gap:12px;padding:16px 20px 24px}}
-.card{{background:#fffaf2;border:1.5px solid #e3d8c6;border-radius:16px;height:300px;display:flex;flex-direction:column;align-items:center}}
+.card{{background:#fffaf2;border:1.5px solid #e3d8c6;border-radius:16px;height:372px;display:flex;flex-direction:column;align-items:center}}
 .card.boss{{background:#fff4d6;border:3px solid #c9a45c}}
-.fig{{width:226px;height:226px;margin-top:6px}} .fig svg{{width:100%;height:100%}}
+.fig{{width:226px;height:300px;margin-top:4px}} .fig svg{{width:100%;height:100%}}
 .nm{{font-weight:700;font-size:17px;color:#2b2018;margin-top:4px}} .tg{{color:#fff;font-weight:700;font-size:12px;border-radius:10px;padding:2px 10px;margin-top:5px}}
 </style></head><body><div class="hd"><b>원피스직원 v1 · {html.escape(title)}</b><span>본부장 1 + 팀원 {len(cells) - 1}명 · 팀 완장 색 = 사무실 색 · 본부장 PC 전용</span></div>
 <div class="grid">{"".join(cards)}</div></body></html>'''
 rows = (len(cells) + cols - 1) // cols
-H = 90 + rows * 312 + 30
+H = 90 + rows * 384 + 30
 hp = os.path.join(HERE, "skins", A.skin, f"roster_{A.style}.html")
 open(hp, "w", encoding="utf-8").write(page)
 out = A.out or os.path.join(HERE, "skins", A.skin, f"roster_{A.style}.png")
