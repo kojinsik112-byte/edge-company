@@ -10,7 +10,7 @@
   #stage{position:absolute;left:0;top:0;width:1600px;height:1300px;transform-origin:0 0}
   #bg{position:absolute;left:0;top:0;width:1600px;height:1300px}
   .seat,.walker{position:absolute;pointer-events:none}
-  .walker{z-index:4}
+  .walker{z-index:4;transition:opacity .25s}
   .bub{position:absolute;transform:translate(-50%,-100%);background:#fff;border:1.2px solid #d8cdbb;border-radius:11px;padding:4px 11px;font-size:13px;font-weight:700;color:#2b2018;white-space:nowrap;box-shadow:0 3px 6px rgba(0,0,0,.18);z-index:7;max-width:330px;overflow:hidden;text-overflow:ellipsis}
   .bub:after{content:"";position:absolute;left:50%;bottom:-7px;margin-left:-6px;border:6px solid transparent;border-top-color:#fff;border-bottom:0}
   .bub.boss{background:#fff6dc}.bub.boss:after{border-top-color:#fff6dc}
@@ -193,12 +193,12 @@ function tickIdle(){
 
 // ───────── 본부장실로 걸어가서 보고 → 자리로 돌아오기 ─────────
 const walkers = [];
+// 자리 → 방 문 → 좁은 복도 → 본부장실 문 → 보고 자리 (door 표시 두 점 사이는 문을 지나가는 것 = 잠깐 사라졌다 나타남)
 function pathTo(s){
-  const r = L.rooms[s.team], gy = r.y < 400 ? L.gapY[0] : L.gapY[1], bd = L.boss.door, sp = L.boss.spot, k = walkers.filter(w => w.phase !== "back").length;
-  const spot = [sp[0] + k * 26, sp[1]];
-  const pts = [[s.fx, s.fy], [s.fx, r.door[1]], [r.door[0], r.door[1]], [r.door[0], gy]];
-  if (r.y < 400) pts.push([bd[0], gy], [spot[0] + 30, L.boss.room.y + 60]); else pts.push([L.boss.room.x + 40, gy], [L.boss.room.x + 40, spot[1] - 4]);
-  pts.push(spot); return pts;
+  const r = L.rooms[s.team], d = r.door, bd = L.boss.door, cy = L.corrY[r.row], k = walkers.filter(w => w.phase !== "back").length;
+  return [{x:s.fx, y:s.fy}, {x:(s.fx + d.in[0]) / 2, y:r.y + r.h - 26}, {x:d.in[0], y:d.in[1], door:true}, {x:d.out[0], y:d.out[1], door:true},
+          {x:d.colX, y:cy}, {x:bd.colX, y:cy}, {x:bd.out[0], y:bd.out[1], door:true}, {x:bd.in[0], y:bd.in[1], door:true},
+          {x:L.boss.spot[0] + k * 26, y:L.boss.spot[1]}];
 }
 function report(s){
   if (!s || s.state === "away" || s.state === "walk") return;
@@ -214,6 +214,7 @@ let last = performance.now();
 function frame(now){
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   for (const w of walkers.slice()){
+    if (w.hold){ if (now < w.hold) continue; w.hold = 0; w.img.style.opacity = 1; }
     if (w.phase === "wait"){ if (now > w.wait){ w.phase = "back"; w.pts = w.pts.slice().reverse(); w.i = 0; if (w.bub){ w.bub.remove(); w.bub = null; } } place(w); continue; }
     const t = w.pts[w.i + 1];
     if (!t){
@@ -221,8 +222,10 @@ function frame(now){
       else { w.img.remove(); walkers.splice(walkers.indexOf(w), 1); setState(w.s, "idle", ""); }
       continue;
     }
-    const dx = t[0] - w.x, dy = t[1] - w.y, d = Math.hypot(dx, dy), step = WALK * dt;
-    if (d <= step){ w.x = t[0]; w.y = t[1]; w.i++; } else { w.x += dx / d * step; w.y += dy / d * step; }
+    const dx = t.x - w.x, dy = t.y - w.y, d = Math.hypot(dx, dy), step = WALK * dt;
+    if (d <= step){ w.x = t.x; w.y = t.y; w.i++; const nx = w.pts[w.i + 1];
+      if (t.door && nx && nx.door){ w.img.style.opacity = 0; w.hold = now + 350; w.x = nx.x; w.y = nx.y; w.i++; place(w); continue; } }
+    else { w.x += dx / d * step; w.y += dy / d * step; }
     w.img.style.transform = dx < -0.5 ? "scaleX(-1)" : ""; place(w);
   }
   requestAnimationFrame(frame);

@@ -30,9 +30,11 @@ TEAM = {
 WORK = {"scout": (1, "notice_watch.py"), "analysis": (0, ""), "build": (2, "build_군포.py"), "audit": (5, "독립 검수관 × 5 · full.txt 대조"),
         "mail": (1, "mail_군포.html"), "pt": (2, "오산 PT 대본"), "retro": (1, "입찰현황판.md")}
 AWAY = {"audit": 1}
-CX = [24, 417, 810, 1203]; CW = 373
-R1, R2, RH, R3, RH3 = 100, 460, 340, 820, 455
-LAYOUT = {"W": W, "H": H, "seats": {}, "rooms": {}, "boss": {}, "board": {}, "gapY": [R1 + RH + 10, R2 + RH + 10]}
+CX = [20, 416, 812, 1208]; CW = 366; CORR = 30            # 방 사이 좁은 복도
+R1, R2, RH, R3, RH3 = 100, 470, 340, 840, 430
+LAYOUT = {"W": W, "H": H, "seats": {}, "rooms": {}, "boss": {}, "board": {},
+          "corrY": [R1 + RH + CORR / 2, R2 + RH + CORR / 2], "corrX": [CX[i] + CW + CORR / 2 for i in range(3)]}
+DOORS = {}       # (방 x, y) → 문 안쪽 · 바깥쪽 좌표
 ROOMS = [("scout", CX[0], R1), ("analysis", CX[1], R1), ("build", CX[2], R1), ("audit", CX[3], R1),
          ("mail", CX[0], R2), ("pt", CX[1], R2), ("retro", CX[2], R2)]
 mix = sc.mix
@@ -52,7 +54,46 @@ def grad(kind, stops, **kw):
     return f"url(#g{i})"
 
 # ───────────── 방(3D 상자) ─────────────
-def shell(x, y, w, h, dx=44, bh=150, team=None):
+def door(x, y, w, h, dx, wb, bh, side):
+    """옆벽 앞쪽에 문 하나 (원근 따라 기울어진 평행사변형) · 걸어 나가는 자리 기록"""
+    ex, ix = (x + w, x + w - dx) if side == "right" else (x, x + dx)
+    B = lambda t: (lerp(ex, ix, t), lerp(y + h, wb, t)); Hh = lambda t: lerp(h, bh, t) * 0.6
+    t1, t2 = 0.1, 0.58; (b1x, b1y), (b2x, b2y) = B(t1), B(t2); h1, h2 = Hh(t1), Hh(t2)
+    fr = {"월넛라운지": ("#3a2418", "#8a5a3c"), "마블펜트하우스": ("#b89a74", "#d6bf9c"), "나이트스카이": ("#1a2236", "#3a4a6a")}[A.office]
+    g = poly([(b1x, b1y + 2), (b2x, b2y + 2), (b2x, b2y - h2 - 4), (b1x, b1y - h1 - 4)], OS["trim"])
+    g += poly([(b1x, b1y), (b2x, b2y), (b2x, b2y - h2), (b1x, b1y - h1)], fr[0])
+    m = lambda a, b_, t: lerp(a, b_, t)
+    for k in (0.08, 0.52):                                   # 문짝 두 칸
+        u1, u2 = k, k + 0.4
+        q = [(m(b1x, b2x, 0.12), m(b1y, b2y, 0.12) - m(h1, h2, 0.12) * u1), (m(b1x, b2x, 0.88), m(b1y, b2y, 0.88) - m(h1, h2, 0.88) * u1),
+             (m(b1x, b2x, 0.88), m(b1y, b2y, 0.88) - m(h1, h2, 0.88) * u2), (m(b1x, b2x, 0.12), m(b1y, b2y, 0.12) - m(h1, h2, 0.12) * u2)]
+        g += poly(q, fr[1])
+    hx, hy = m(b1x, b2x, 0.8), m(b1y, b2y, 0.8) - m(h1, h2, 0.8) * 0.46
+    g += f'<circle cx="{hx:.1f}" cy="{hy:.1f}" r="2.6" fill="{OS["trim"] if not OS["glass"] else "#c9a45c"}"/>'
+    g += poly([(b1x, b1y), (b2x, b2y), (b2x - (8 if side == "right" else -8), b2y + 3), (b1x - (14 if side == "right" else -14), b1y + 4)], "#000000", 'opacity=".12"')
+    sx_, sy_ = m(b1x, b2x, 0.5), m(b1y, b2y, 0.5) - m(h1, h2, 0.5) - 14          # 문 위 표지
+    g += f'<rect x="{sx_ - 15:.1f}" y="{sy_ - 6:.1f}" width="30" height="12" rx="3" fill="#1b2433"/>' + T(sx_, sy_ + 3.5, "문", 9, "#ffe7a6", anchor="middle")
+    cx, cy = (b1x + b2x) / 2, (b1y + b2y) / 2
+    ox = x + w + CORR / 2 if side == "right" else x - CORR / 2
+    g += f'<rect x="{ox - 11:.1f}" y="{cy - 9:.1f}" width="22" height="16" rx="3" fill="{OS["trim"]}" opacity=".35"/>'        # 복도 쪽 문 앞 매트
+    DOORS[(x, y)] = {"in": [round(cx + (-34 if side == "right" else 34), 1), round(cy - 2, 1)], "out": [round(x + w + CORR / 2 if side == "right" else x - CORR / 2, 1), round(cy - 2, 1)],
+                     "colX": round(x + w + CORR / 2 if side == "right" else x - CORR / 2, 1)}
+    return g
+
+def corridors():
+    c, run = OS["floor2"], mix(OS["trim"], OS["floor"], 0.55)
+    g = []
+    for i in range(3):          # 세로 복도
+        xx = CX[i] + CW
+        g.append(f'<rect x="{xx}" y="{R1 - 6}" width="{CORR}" height="{R3 - R1 + 6}" fill="{c}"/><rect x="{xx + CORR / 2 - 3}" y="{R1}" width="6" height="{R3 - R1 - 4}" rx="3" fill="{run}" opacity=".7"/>')
+    for yy in (R1 + RH, R2 + RH):   # 가로 복도
+        g.append(f'<rect x="{CX[0] - 6}" y="{yy}" width="{CX[3] + CW - CX[0] + 12}" height="{CORR}" fill="{c}"/><rect x="{CX[0]}" y="{yy + CORR / 2 - 3}" width="{CX[3] + CW - CX[0]}" height="6" rx="3" fill="{run}" opacity=".7"/>')
+    for i in range(3):
+        for yy in (R1 + RH, R2 + RH):
+            xx = CX[i] + CW; g.append(f'<rect x="{xx}" y="{yy}" width="{CORR}" height="{CORR}" fill="{c}"/><circle cx="{xx + CORR / 2}" cy="{yy + CORR / 2}" r="5" fill="{run}"/>')
+    return g
+
+def shell(x, y, w, h, dx=44, bh=150, team=None, door_side=None):
     top, wb = y + 10, y + 10 + bh; cid = nid()
     DEFS.append(f'<clipPath id="c{cid}"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="18"/></clipPath>')
     g = [f'<rect x="{x + 3}" y="{y + 10}" width="{w}" height="{h}" rx="18" fill="#000" opacity=".22" filter="url(#blur)"/>', f'<g clip-path="url(#c{cid})">']
@@ -108,6 +149,7 @@ def shell(x, y, w, h, dx=44, bh=150, team=None):
     sg = grad("radialGradient", [(0, OS["sconce"], 0.7), (1, OS["sconce"], 0)])
     for sx in (x + dx + 22, x + w - dx - 22):
         g.append(f'<ellipse cx="{sx}" cy="{top + 46}" rx="26" ry="34" fill="{sg}"/><rect x="{sx - 4}" y="{top + 36}" width="8" height="16" rx="3" fill="{OS["trim"]}"/><path d="M {sx - 9},{top + 36} L {sx + 9},{top + 36} L {sx + 6},{top + 26} L {sx - 6},{top + 26} Z" fill="{OS["sconce"]}"/>')
+    if door_side: g.append(door(x, y, w, h, dx, wb, bh, door_side))
     return g, (top, wb, dx)
 
 def close(g, x, y, w, h):
@@ -215,7 +257,7 @@ def decor(key, x, w, top, dx):
 # ───────────── 팀 사무실 ─────────────
 def team_room(key, x, y):
     no, name, color, n, sub = TEAM[key]; busy, label = WORK[key]
-    g, (top, wb, dx) = shell(x, y, CW, RH, team=color)
+    g, (top, wb, dx) = shell(x, y, CW, RH, team=color, door_side="left" if x == CX[3] else "right")
     g.append(decor(key, x, CW, top, dx))
     rug_c = mix(color, OS["floor"], OS["rug_mix"])
     g.append(poly([(x + 70, wb + 22), (x + CW - 70, wb + 22), (x + CW - 30, y + RH - 10), (x + 30, y + RH - 10)], rug_c, f'stroke="{OS["trim"]}" stroke-width="1.6" opacity=".95"'))
@@ -248,10 +290,9 @@ def team_room(key, x, y):
     g = close(g, x, y, CW, RH)
     g.append(plaque(x + dx + 8, top + 8, no, name, color))
     if ASSETS:
-        LAYOUT["rooms"][key] = {"x": x, "y": y, "w": CW, "h": RH, "badge": [x + dx + 8, top + 48], "door": [x + CW / 2, y + RH - 14], "name": name, "color": color, "n": n}
-        g.append(T(x + CW / 2, y + RH + 18, sub, 12, "#7a6a58" if not OS["night"] else "#9aa6bc", 400, "middle")); return g, None
+        LAYOUT["rooms"][key] = {"x": x, "y": y, "w": CW, "h": RH, "badge": [x + dx + 8, top + 48], "door": DOORS[(x, y)], "row": 0 if y == R1 else 1, "name": name, "color": color, "n": n}
+        return g, None
     g.append(f'<rect x="{x + dx + 8}" y="{top + 48}" width="{tw(f"작업 {busy} / {n}석", 13) + 20}" height="22" rx="11" fill="{"#2f9a5a" if busy else "#8a909c"}"/>' + T(x + dx + 18, top + 64, f"작업 {busy} / {n}석", 13, "#ffffff"))
-    g.append(T(x + CW / 2, y + RH + 18, sub, 12, "#7a6a58" if not OS["night"] else "#9aa6bc", 400, "middle"))
     for hx, hy, st in heads:
         g.append(dot(hx + 18, hy, st))
         if st == "away": g.append(f'<rect x="{hx - 28}" y="{hy + 6}" width="56" height="22" rx="11" fill="#1b2433" stroke="#c9a45c"/>' + T(hx, hy + 21, "보고 중", 12, "#ffe7a6", anchor="middle"))
@@ -263,7 +304,7 @@ def team_room(key, x, y):
 
 # ───────────── 본부장실 ─────────────
 def boss_room(x, y, reporter):
-    g, (top, wb, dx) = shell(x, y, CW, RH)
+    g, (top, wb, dx) = shell(x, y, CW, RH, door_side="left")
     if not OS["glass"]:
         g.append(f'<rect x="{x + CW - dx - 150}" y="{top + 12}" width="136" height="96" rx="4" fill="#4a2f22"/><rect x="{x + CW - dx - 146}" y="{top + 16}" width="128" height="88" fill="#bcd6ea"/>')
         g.append("".join(f'<rect x="{x + CW - dx - 144 + i * 21}" y="{top + 104 - hh}" width="17" height="{hh}" fill="#9fb6cc"/>' for i, hh in enumerate((40, 58, 30, 66, 46, 36))))
@@ -275,13 +316,13 @@ def boss_room(x, y, reporter):
     g.append(f'<rect x="{cx - 50 * s:.1f}" y="{yt - 190 * s:.1f}" width="{100 * s:.1f}" height="{190 * s:.1f}" rx="{24 * s:.1f}" fill="#5a2f25"/>')
     if ASSETS:
         LAYOUT["boss"] = {"sprite": sprite("boss_work.svg", (cx - 90, yt - 280 * s, 180, 280 * s + 8), char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type") + laptop(cx - 62, yt, 0.4, True, "#c9a45c")),
-                          "hx": cx, "hy": yt - 232 * s, "spot": [x + 80, y + RH - 16], "door": [x + CW / 2, y + RH - 14], "room": {"x": x, "y": y, "w": CW, "h": RH}, "name": sc.BOSS_LOOK["name"]}
+                          "hx": cx, "hy": yt - 232 * s, "spot": [x + 96, y + RH - 20], "door": DOORS[(x, y)], "room": {"x": x, "y": y, "w": CW, "h": RH}, "name": sc.BOSS_LOOK["name"]}
     else: g.append(char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type"))
     top_, front, edge = DESK
     g.append(f'<polygon points="{cx - 100},{yt - 14} {cx + 100},{yt - 14} {cx + 112},{yt} {cx - 112},{yt}" fill="{top_}" stroke="{mix(front, "#000000", 0.2)}"/><rect x="{cx - 112}" y="{yt}" width="224" height="40" fill="{front}"/><rect x="{cx - 112}" y="{yt}" width="224" height="2" fill="{edge}"/>')
     g.append(f'<rect x="{cx + 40}" y="{yt + 8}" width="52" height="14" rx="2" fill="#c9a45c"/>' + T(cx + 66, yt + 19, "본부장", 9, "#1b2433", 800, "middle"))
     if not ASSETS: g.append(laptop(cx - 62, yt, 0.4, True, "#c9a45c"))
-    if reporter and not ASSETS: g.append(char(reporter, x + 76, y + RH - 16, 0.34, TEAM["audit"][2], True, pose="hold", stand=True))
+    if reporter and not ASSETS: g.append(char(reporter, x + 96, y + RH - 20, 0.34, TEAM["audit"][2], True, pose="hold", stand=True))
     g.append(plant(x + CW - 26, y + RH - 14, 0.9))
     g = close(g, x, y, CW, RH)
     g.append(plaque(x + dx + 8, top + 8, "", "본부장실", "#c9a45c"))
@@ -290,7 +331,6 @@ def boss_room(x, y, reporter):
     g.append(bubble(cx + 50, yt - 240 * s, "확인! 수고했어!", bg="#fff6dc", sz=12))
     g.append(dot(cx + 30, yt - 232 * s, "on"))
     gx = CX[3] + CW / 2
-    g.append(f'<rect x="{gx - 110}" y="{R1 + RH + 1}" width="220" height="18" rx="9" fill="#1b2433" stroke="#c9a45c"/>' + T(gx, R1 + RH + 14, "▼ 보고하러 감   ·   ▲ 자리로 복귀", 11, "#ffe7a6", anchor="middle"))
     return g
 
 # ───────────── 상황실 (현황판) ─────────────
@@ -369,7 +409,7 @@ def header():
     g.append(f'<rect x="{W - 150}" y="22" width="126" height="36" rx="18" fill="#263247" stroke="#3a4660"/><circle cx="{W - 132}" cy="40" r="6" fill="#5fe39a"/>' + T(W - 118, 46, "서버 연결됨", 14, "#c8f2d8"))
     return g
 
-body, report = [], None
+body, report = corridors(), None
 for key, x, y in ROOMS:
     g, rep = team_room(key, x, y); body += g; report = report or rep
 body += boss_room(CX[3], R2, report)
