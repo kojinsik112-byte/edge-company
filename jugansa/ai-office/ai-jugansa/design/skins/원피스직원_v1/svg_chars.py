@@ -51,7 +51,7 @@ ROSTER = {
           ex=["mustache_thin", "sideburns", "gold_sleeves", "cross_necklace"], legs="#efeae0", shoes="#1f1d26"),
         C("스모커", "slick", "#eeeef2", "coat", "#f4f4f6", "#3a5f9a", mouth="flat", vibe="cool", pose="cross", props=["jitte"], ex=["cigars3", "fur_collar"], eyec="#5a5a6a"),
         C("타시기", "bob", "#2c2c5a", "tshirt", "#f6a8bc", "#f6a8bc", eyec="#3a3a6a", girl=True, vibe="cute", pose="hold", props=["katana_up"], ex=["glasses_square"], legs="#4a5a8a"),
-        C("가프", "short", "#c4c4c8", "marine", "#ffffff", "#3a5f9a", hat="marine", mouth="grin", vibe="fun", pose="fist", ex=["beard_white", "scar_garp"], eyec="#3a2a22"),
+        C("가프", "short", "#c4c4c8", "marine", "#ffffff", "#3a5f9a", hat="marine", mouth="laugh", vibe="fun", pose="fist", ex=["beard_garp", "thick_brows", "big_nose", "scar_garp"], eyec="#3a2a22"),
         C("코비", "side", "#f6a8c8", "marine", "#ffffff", "#3a5f9a", hat="marine", eyec="#7a4a8a", vibe="cute", pose="wave"),
     ],
     "mail": [
@@ -282,11 +282,19 @@ def face_extras(lk):
     if "scar_sabo" in ex: s += '<path d="M -31,-4 Q -24,-10 -14,-6 Q -4,0 -6,12 Q -8,22 -18,24 Q -30,22 -32,10 Z" fill="#d88a7a" opacity=".16"/>'
     if "scar_shanks" in ex: s += "".join(f'<path d="M {-24 + k * 5},-8 L {-18 + k * 5},22" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>' for k in range(3))
     if "scar_croc" in ex: s += '<path d="M -34,16 L 34,14" stroke="#b0604e" stroke-width="2" stroke-linecap="round"/>' + "".join(f'<path d="M {x},11 L {x},19" stroke="#b0604e" stroke-width="1.4"/>' for x in (-20, -6, 8, 22))
-    if "scar_garp" in ex: s += '<path d="M -30,-8 L -10,10" stroke="#b0604e" stroke-width="1.8" stroke-linecap="round"/>'
+    if "scar_garp" in ex: s += '<path d="M -24,-16 L -12,22" stroke="#b0604e" stroke-width="2.2" stroke-linecap="round"/><path d="M -22,-10 l 4,-1 M -18,2 l 4,-1 M -15,12 l 4,-1" stroke="#b0604e" stroke-width="1.4" stroke-linecap="round"/>'
     if "stubble" in ex: s += "".join(f'<circle cx="{x}" cy="{y}" r="1" fill="#8a6a5a"/>' for x, y in ((-10, 36), (-4, 38), (2, 38), (8, 36), (-7, 34), (5, 34)))
     if "nose_ring" in ex: s += '<path d="M -3,21 A 3,3 0 1 0 3,21" stroke="#d9b25f" stroke-width="2" fill="none"/>'
     if "clown_paint" in ex: s += "".join(f'<path d="M {sx * 17 - 7},-6 L {sx * 17 + 7},-6" stroke="#3a86e0" stroke-width="3" stroke-linecap="round"/>' for sx in (-1, 1))
     if "star_cheek" in ex: s += '<path d="M 30,16 l 2,4 l 4,.5 l -3,3 l .8,4 l -3.8,-2 l -3.8,2 l .8,-4 l -3,-3 l 4,-.5 Z" fill="#f4d35a"/>'
+    if "beard_garp" in ex:   # 가프: 턱선을 따라 귀에서 귀까지 덮는 회색 수염 (입은 보이게 · 바깥은 몽글몽글)
+        bumps = "".join(f"Q {50 * math.cos(a0) * 1.08:.1f},{4 + 54 * math.sin(a0) * 1.08:.1f} {50 * math.cos(a1):.1f},{4 + 54 * math.sin(a1):.1f} "
+                        for a0, a1 in [(math.radians(5 + k * 17 + 8.5), math.radians(5 + (k + 1) * 17)) for k in range(10)])
+        s += (f'<path d="M {50 * math.cos(math.radians(5)):.1f},{4 + 54 * math.sin(math.radians(5)):.1f} {bumps}'
+              f'L -38,6 Q -36,30 -22,44 Q -10,52 0,52 Q 10,52 22,44 Q 36,30 38,6 Z" fill="url(#beard§)" stroke="#8e8e98" stroke-width="1.8" stroke-linejoin="round"/>')
+        s += "".join(f'<path d="M {x},{y} q {d},6 {d * 0.4},12" stroke="#a6a6b0" stroke-width="1.3" fill="none" stroke-linecap="round"/>' for x, y, d in ((-40, 20, -3), (-30, 40, -2), (-12, 54, -1), (12, 54, 1), (30, 40, 2), (40, 20, 3)))
+    if "thick_brows" in ex: s += "".join(f'<path d="M {sx * 6},-12 Q {sx * 17},-20 {sx * 30},-14 L {sx * 29},-9 Q {sx * 17},-14 {sx * 7},-7 Z" fill="#8e8e98" stroke="#5a5a64" stroke-width="1.2"/>' for sx in (-1, 1))
+    if "big_nose" in ex: s += f'<path d="M -6,18 Q -7,10 0,9 Q 7,10 6,18 Q 0,21 -6,18 Z" fill="{mix(sk, "#c08060", 0.25)}" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.4"/><circle cx="-2" cy="12.5" r="1.4" fill="#ffffff" opacity=".6"/>'
     if "beard_white" in ex: s += '<path d="M -34,18 Q -30,52 0,58 Q 30,52 34,18 Q 20,34 0,34 Q -20,34 -34,18 Z" fill="#f6f6f6" stroke="#cfcfd4" stroke-width="2"/>'
     if "mustache_crescent" in ex: s += '<path d="M -70,-14 Q -40,30 0,20 Q 40,30 70,-14 Q 40,40 0,30 Q -40,40 -70,-14 Z" fill="#fbfbfb" stroke="#cfcfd4" stroke-width="2"/>'
     if "mustache_thin" in ex:
@@ -618,6 +626,7 @@ def defs(lk, n):
             f'<linearGradient id="iris{n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{mix(ic, "#000000", 0.55)}"/><stop offset=".5" stop-color="{ic}"/><stop offset="1" stop-color="{mix(ic, "#ffffff", 0.45)}"/></linearGradient>'
             f'<linearGradient id="gold{n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6d27a"/><stop offset=".55" stop-color="#d9a63a"/><stop offset="1" stop-color="#a8761e"/></linearGradient>'
             f'<linearGradient id="steel{n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e4e8ee"/><stop offset=".5" stop-color="#9aa3ad"/><stop offset="1" stop-color="#5a606a"/></linearGradient>'
+            f'<linearGradient id="beard{n}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6e6ea"/><stop offset="1" stop-color="#b8b8c2"/></linearGradient>'
             f'<radialGradient id="hawkiris{n}" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#ffe27a"/><stop offset=".6" stop-color="#e8a52a"/><stop offset="1" stop-color="#9a5a12"/></radialGradient>'
             f'<linearGradient id="straw{n}" x1="0" y1="0" x2=".3" y2="1">{cel("#ffe39a", "#e9b456")}</linearGradient>'
             f'<radialGradient id="blush{n}"><stop offset="0" stop-color="#ff7f86" stop-opacity=".9"/><stop offset="1" stop-color="#ff7f86" stop-opacity="0"/></radialGradient>'
