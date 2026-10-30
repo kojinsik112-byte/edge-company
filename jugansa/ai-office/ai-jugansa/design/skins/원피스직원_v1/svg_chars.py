@@ -80,6 +80,10 @@ def _defaults(lk):
 for _l in ROSTER.values():
     for _lk in _l: _defaults(_lk)
 _defaults(BOSS_LOOK)
+# 한 손 든 포즈는 몇 명만 (본부장 10-30 '몇몇만 빼고 손 내려줘 · 루피도') — 에이스 불꽃 · 우솝 새총 · 쵸파 인사만 유지
+RAISE_KEEP = {"에이스", "우솝", "쵸파"}
+for _lk in [BOSS_LOOK] + [l for _l in ROSTER.values() for l in _l]:
+    if _lk["pose"] in ("wave", "fist") and _lk["name"] not in RAISE_KEEP: _lk["pose"] = "side"
 def new_look(team, i=0): return ROSTER[team][i % len(ROSTER[team])]
 
 # ───────────── 머리 · 얼굴 ─────────────
