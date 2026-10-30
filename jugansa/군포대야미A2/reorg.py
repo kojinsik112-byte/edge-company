@@ -182,6 +182,20 @@ def apply(G):
 .toc5 .s li{font-size:14.5px;line-height:1.7}
 .toc5 .s li i{font-size:12px;margin-right:8px}
 .toc5 .s .sn{font-size:26px}
+.tocr{display:grid!important;grid-template-columns:1fr!important;grid-auto-rows:1fr;gap:0!important;align-content:stretch}
+.tocr .col{display:contents}
+.tocr .col:nth-child(1) .s:first-child{order:1}.tocr .col:nth-child(1) .s:last-child{order:6}
+.tocr .col:nth-child(2) .s:first-child{order:2}.tocr .col:nth-child(2) .s:last-child{order:7}
+.tocr .col:nth-child(3) .s:first-child{order:3}.tocr .col:nth-child(3) .s:last-child{order:8}
+.tocr .col:nth-child(4) .s:first-child{order:4}.tocr .col:nth-child(4) .s:last-child{order:9}
+.tocr .col:nth-child(5) .s:first-child{order:5}.tocr .col:nth-child(5) .s:last-child{order:10}
+.tocr .s{display:grid;grid-template-columns:54px 168px 1fr;align-items:center;column-gap:8px;border-bottom:1px solid var(--line);padding:0 8px}
+.tocr .col:nth-child(5) .s:last-child{border-bottom:none}
+.tocr .s .sn{font-size:24px;line-height:1}
+.tocr .s h3{font-size:19px;margin:0;white-space:nowrap}
+.tocr .s ul{display:flex;flex-wrap:wrap;gap:2px 18px;margin:0;padding:0}
+.tocr .s li{font-size:14px;line-height:1.5;white-space:nowrap}
+.tocr .s li i{font-size:11.5px;margin-right:6px}
 """
 
     A = [("백화점 상품권", "세대당 5만원 또는 10만원 · 입주민 세대에 현물 직접 지급"),
@@ -1002,4 +1016,4 @@ def apply(G):
         [("05", "주관 콜센터", ["콜센터 · 선보상", "하자 예치금 최대 1억", "클레임 처리 · CRM", "컴플레인 · 해결 사례"]),
          ("10", "특화서비스 요약", ["A 입주민 특화서비스", "B 업무지원 · C 컨설팅", "안전망 · 업체 · 홍보", "핵심 제안 6가지"])],
     ]
-    G["TOC_CLS"] = "toc5"
+    G["TOC_CLS"] = "tocr"  # 본부장 10-30 '목차 가로형으로': 한 줄에 장 하나(번호 · 장 제목 · 소항목 옆으로) · 01 → 10 위에서 아래로
