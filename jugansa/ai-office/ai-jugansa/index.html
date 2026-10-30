@@ -398,7 +398,7 @@ function handle(ev){
     lastWorkAt = performance.now();
     const id = ev.agent_id || ev.team + Date.now(); const stn = st || "analysis";
     const ch = mk(id, pickLook(ev.team || ev.team_kr || stn), ev.team_kr || ev.team, DOOR[0] - 30 + Math.random()*60, DOOR[1]); ch.tag = ev.team_kr || ev.team;
-    go(ch, slot(stn), stn); ch.state = "working"; activeStation = stn;
+    go(ch, slot(stn), stn); ch.state = "working"; ch.lastWork = performance.now(); activeStation = stn;
     say(chars.boss, "팀 호출 → " + (ev.team_kr || ev.team)); touchSite(ev.site || curSite, stn, ev.team_kr || ev.team);
     setLog(`${STATIONS[stn].name} 작업대 · ${ev.team_kr || ev.team} 투입`);
   } else if (k === "work"){
@@ -414,7 +414,8 @@ function handle(ev){
       if (ev.call) say(ch, "팀 호출 → " + ev.call);
       touchSite(ev.site, st || "", "");
     } else {
-      const ch = chars[ev.agent_id]; ch.state = "working"; ch.label = ev.label || ev.tool || ""; if (st && ch.at !== st){ go(ch, slot(st), st); activeStation = st; }
+      // 보고 · 퇴근 중이던 팀도 일이 오면 퇴근 예약을 지우고 작업대로 돌아온다 (안 지우면 작업대에 닿자마자 사라짐)
+      const ch = chars[ev.agent_id]; ch.state = "working"; ch.leaveAt = 0; ch.after = null; ch.lastWork = performance.now(); ch.label = ev.label || ev.tool || ""; if (st && ch.at !== st){ go(ch, slot(st), st); activeStation = st; }
       touchSite(ev.site || curSite, st || "", ch.tag);
     }
     memos = memos.filter(m => m.type !== "notice");
@@ -432,7 +433,8 @@ function handle(ev){
     // 일한 직원은 보고하고 퇴근, 본부장은 보고를 받은 뒤 휴게 코너로 (다른 세션이 계속 일하면 담당 직원이 다시 출근한다)
     activeStation = null; const b = chars.boss, now = performance.now(); let n = 0;
     lastWorkAt = -Infinity;                         // 일이 끝나면 팀원도 바로 차분해진다
-    for (const id in chars){ const c = chars[id]; if (id !== "boss" && c.state === "working"){ report(c); n++; } }
+    // 세션 하나가 끝나도 다른 세션의 팀(서브에이전트)은 계속 일한다 → 팀은 자기 끝 신호(team_stop)나 1분 넘게 신호가 없을 때만 보고
+    for (const id in chars){ const c = chars[id]; if (id !== "boss" && c.state === "working" && (c.member || now - (c.lastWork || 0) > 60000)){ report(c); n++; } }
     b.label = ""; b.state = "idle"; b.restAt = now + (n ? 5200 : 300);
     memos = memos.filter(m => m.type !== "notice"); setLog("작업 끝 · 보고 후 본부장 휴식");
   } else if (k === "start" || k === "prompt"){
