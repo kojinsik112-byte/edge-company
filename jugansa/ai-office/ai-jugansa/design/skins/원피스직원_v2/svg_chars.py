@@ -113,7 +113,9 @@ def hair_front(lk):
     elif hs == "blunt":
         p = CAP + "L 48,-6 Q 0,-12 -48,-6 Z"
         extra = f'<path d="M 40,-14 Q 54,22 46,60 L 57,58 Q 62,10 50,-14 Z M -40,-14 Q -54,22 -46,60 L -57,58 Q -62,10 -50,-14 Z" {H}/>'
-    elif hs in ("side", "long", "long_wavy", "pony", "bob", "bunny", "drills", "wavy"):
+    elif hs == "wavy":       # 사보: 앞머리는 윗머리 · 앞머리만 (옆은 뒷머리의 물결 머리가 맡음 → 선이 두 겹으로 겹치지 않게)
+        p = "M -50,-8 C -56,-48 -28,-72 0,-72 C 28,-72 56,-48 50,-8 L 48,-4 " + strands([(48, -4), (40, -20), (30, -6), (18, -28), (4, -12), (-10, -34), (-24, -18), (-36, -28), (-46, -6), (-50, -8)]) + "Z"
+    elif hs in ("side", "long", "long_wavy", "pony", "bob", "bunny", "drills"):
         p = CAP + "L 48,-4 " + strands([(48, -4), (40, -20), (30, -6), (18, -28), (4, -12), (-10, -34), (-24, -18), (-36, -28), (-46, -6), (-53, 14)]) + "Z"
         if hs in ("long", "long_wavy", "bob", "bunny"):
             ln = 34 if hs in ("bob", "bunny") else 58
