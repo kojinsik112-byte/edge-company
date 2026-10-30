@@ -309,7 +309,8 @@ def hat(lk):
         return (f'<path d="M -46,-48 C -50,-96 50,-96 46,-48 Z" fill="#ffffff" {S}/><path d="M -46,-56 L 46,-56 L 46,-46 L -46,-46 Z" fill="#2f4f8a"/>'
                 f'<path d="M -40,-46 Q -10,-26 30,-44 Q 0,-36 -40,-46 Z" fill="#24304a" {S}/><path d="M -8,-80 L 8,-80 L 0,-68 Z" fill="#c9a45c"/>')
     if h == "captain":
-        return f'<path d="M -86,-46 Q -40,-120 0,-118 Q 40,-120 86,-46 Q 40,-64 0,-62 Q -40,-64 -86,-46 Z" fill="#24222c" {S}/><path d="M -80,-50 Q -40,-66 0,-64 Q 40,-66 80,-50" stroke="#e6c25a" stroke-width="3" fill="none"/>'
+        return (f'<g transform="translate(0,-54) scale(.78) translate(0,54)">'      # 버기 선장모자 22% 줄임 (본부장 10-31)
+                f'<path d="M -86,-46 Q -40,-120 0,-118 Q 40,-120 86,-46 Q 40,-64 0,-62 Q -40,-64 -86,-46 Z" fill="#24222c" {S}/><path d="M -80,-50 Q -40,-66 0,-64 Q 40,-66 80,-50" stroke="#e6c25a" stroke-width="3" fill="none"/></g>')
     if h == "bandana":
         return f'<path d="M -53,-2 C -60,-62 60,-62 53,-2 C 40,-14 -40,-14 -53,-2 Z" fill="#24304a" {S}/><path d="M 48,-16 L 70,-4 L 56,6 Z" fill="#24304a" {S}/>'
     if h == "crown":
