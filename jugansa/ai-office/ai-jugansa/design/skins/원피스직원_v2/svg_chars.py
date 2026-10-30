@@ -31,7 +31,8 @@ ROSTER = {
     "analysis": [
         C("로빈", "blunt", "#2b2a38", "coat", "#7b5aa6", "#f4efe6", eyec="#3a6aa8", girl=True, vibe="glam", pose="cross", ex=["hana_arms", "sunglasses_head"], legs="#3a3448"),
         C("로우", "short", "#23222c", "hoodie", "#f2c94c", "#23222c", hat="law", vibe="cool", pose="shoulder", props=["nodachi"], ex=["heart_jolly", "sideburns", "goatee", "earrings_gold", "eyebags"], eyec="#6a5a3a", legs="#3a3a40"),
-        C("징베", "topknot", "#23222c", "kimono", "#ec8b3c", "#ffffff", "#2a5ea8", skin="#86b6dc", vibe="cool", mouth="flat", pose="cross", eyec="#3a3a4a", legs="#2a5ea8", ex=["burly", "tusks"]),
+        C("징베", "topknot", "#1f1d26", "jinbe", "#f2c430", "#f6f4ee", "#3a9a3a", skin="#86b6dc", vibe="cool", mouth="jinbe", eyes="cool", pose="side", eyec="#3a3a4a", legs="#86b6dc", shoes="geta",
+          ex=["huge", "wide_head", "curly_rim", "thick_brows_dark", "tusks", "chin_tuft", "haori", "sun_tattoo"]),   # 본부장 10-31 그림 참고 — 거대한 몸 · 붉은 하오리 · 갈색 기모노 · 주황 띠
         C("마르코", "pineapple", "#f4d35a", "vest_open", "#8a6ac0", "#8a6ac0", vibe="cool", eyes="sleepy", pose="cross", props=["blue_flame"], ex=["wb_tattoo", "beads_blue"], eyec="#4a5a7a"),
         C("베가펑크", "big_round", "#c89ae6", "labcoat", "#ffffff", "#6ab0e6", vibe="fun", pose="hold", props=["tablet"], eyec="#5a4a8a", ex=["goggles_head"]),
     ],
@@ -178,7 +179,11 @@ def hair_back(lk):
                   f'Q {sx * 48},50 {sx * 44},42 Q {sx * 50},32 {sx * 46},22 Q {sx * 50},8 {sx * 46},-4 Q {sx * 50},-24 {sx * 38},-38 Q {sx * 28},-50 {sx * 10},-54 Z" {H}/>'
                   f'<path d="M {sx * 58},-30 Q {sx * 64},-18 {sx * 57},-8 M {sx * 58},6 Q {sx * 64},16 {sx * 56},26 M {sx * 56},34 Q {sx * 60},40 {sx * 52},44" stroke="{INK}" stroke-width="1.3" fill="none" opacity=".4"/>')
     elif hs == "bun": s += f'<circle cx="0" cy="-78" r="18" {H}/>'
-    elif hs == "topknot": s += f'<ellipse cx="0" cy="-72" rx="12" ry="10" {H}/>'
+    elif hs == "topknot":
+        s += f'<ellipse cx="0" cy="-72" rx="12" ry="10" {H}/>'
+        if "curly_rim" in ex:
+            s += "".join(f'<circle cx="{52 * math.cos(a):.1f}" cy="{-26 + 46 * math.sin(a):.1f}" r="11" {H}/>' for a in [math.pi * (0.92 + k * 0.105) for k in range(12)])
+            s += '<rect x="-4" y="-84" width="8" height="12" rx="2" fill="#f6f4ee" stroke="#3d2820" stroke-width="1.4"/><path d="M -6,-90 Q 0,-104 6,-90" stroke="#1f1d26" stroke-width="7" fill="none" stroke-linecap="round"/>'
     elif hs in ("bob", "bunny"): s += f'<path d="M -56,-10 C -62,20 -58,40 -46,48 L 46,48 C 58,40 62,20 56,-10 Z" {H}/>'
     return s
 
@@ -254,6 +259,10 @@ def mouth(lk):
     if m == "grin":
         return (f'<path d="M -13,22 Q 0,40 13,22 Q 0,25 -13,22 Z" fill="#8a2f36" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
                 '<path d="M -11.5,23 Q 0,26 11.5,23 L 10.5,26.5 Q 0,29.5 -10.5,26.5 Z" fill="#ffffff"/><path d="M -6,32.5 Q 0,37.5 6,32.5 Q 0,29.5 -6,32.5 Z" fill="#f48a9a"/>')
+    if m == "jinbe":
+        lip = "#5a7ea8"
+        return (f'<path d="M -18,27 Q -8,22 0,24 Q 8,22 18,27 Q 8,30 0,29 Q -8,30 -18,27 Z" fill="{lip}" stroke="{INK}" stroke-width="1.8" stroke-linejoin="round"/>'
+                f'<path d="M -12,30 Q 0,36 12,30" stroke="{INK}" stroke-width="1.8" fill="none" stroke-linecap="round"/>')
     if m == "smile_teeth":   # 사보: 이를 드러내고 씩 웃음
         return (f'<path d="M -15,20 Q 0,25 15,20 Q 12,35 0,36 Q -12,35 -15,20 Z" fill="#ffffff" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
                 '<path d="M -12,26.5 Q 0,29.5 12,26.5" stroke="#cfc6c0" stroke-width="1.2" fill="none"/>')
@@ -306,6 +315,8 @@ def face_extras(lk):
         s += f'<path d="{d}" fill="url(#beard§)" stroke="#8e8e98" stroke-width="1.8" stroke-linejoin="round"/>'
         s += "".join(f'<path d="M {x},{y} q {dx},5 {dx * 0.5},10" stroke="#a2a2ac" stroke-width="1.3" fill="none" stroke-linecap="round"/>' for x, y, dx in ((-44, 10, -1.5), (-38, 30, -2), (-24, 46, -1.5), (-8, 52, -.8), (8, 52, .8), (24, 46, 1.5), (38, 30, 2), (44, 10, 1.5)))
     if "thick_brows" in ex: s += "".join(f'<path d="M {sx * 6},-12 Q {sx * 17},-20 {sx * 30},-14 L {sx * 29},-9 Q {sx * 17},-14 {sx * 7},-7 Z" fill="#8e8e98" stroke="#5a5a64" stroke-width="1.2"/>' for sx in (-1, 1))
+    if "thick_brows_dark" in ex: s += "".join(f'<path d="M {sx * 6},-6 Q {sx * 16},-18 {sx * 31},-12 L {sx * 30},-6 Q {sx * 17},-11 {sx * 8},-1 Z" fill="#1f1d26"/>' for sx in (-1, 1))
+    if "chin_tuft" in ex: s += '<path d="M -9,38 Q -12,46 -6,50 Q 0,54 6,50 Q 12,46 9,38 Q 0,42 -9,38 Z" fill="#1f1d26"/>'
     if "big_nose" in ex: s += f'<path d="M -6,18 Q -7,10 0,9 Q 7,10 6,18 Q 0,21 -6,18 Z" fill="{mix(sk, "#c08060", 0.25)}" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.4"/><circle cx="-2" cy="12.5" r="1.4" fill="#ffffff" opacity=".6"/>'
     if "beard_white" in ex: s += '<path d="M -34,18 Q -30,52 0,58 Q 30,52 34,18 Q 20,34 0,34 Q -20,34 -34,18 Z" fill="#f6f6f6" stroke="#cfcfd4" stroke-width="2"/>'
     if "mustache_crescent" in ex: s += '<path d="M -70,-14 Q -40,30 0,20 Q 40,30 70,-14 Q 40,40 0,30 Q -40,40 -70,-14 Z" fill="#fbfbfb" stroke="#cfcfd4" stroke-width="2"/>'
@@ -475,6 +486,11 @@ def props_front(lk, R):
                 s += f'<path d="M {sx * 30},50 C {sx * 46},38 {sx * 52},20 {sx * 62},10 C {sx * 56},28 {sx * 66},34 {sx * 72},28 C {sx * 66},50 {sx * 50},60 {sx * 32},62 Z" fill="#7fd6f6" stroke="#3a9ad0" stroke-width="2" opacity=".9"/>'
     return s
 
+def jolly(x, y, r=6):
+    """노란 기모노 무늬: 검은 원 안에 흰 해골 + 뼈"""
+    return (f'<circle cx="{x}" cy="{y}" r="{r}" fill="#1f1d26"/><circle cx="{x}" cy="{y - r * 0.15:.1f}" r="{r * 0.42:.1f}" fill="#ffffff"/>'
+            f'<path d="M {x - r * 0.6:.1f},{y + r * 0.2:.1f} L {x + r * 0.6:.1f},{y + r * 0.62:.1f} M {x + r * 0.6:.1f},{y + r * 0.2:.1f} L {x - r * 0.6:.1f},{y + r * 0.62:.1f}" stroke="#ffffff" stroke-width="{r * 0.2:.1f}" stroke-linecap="round"/>')
+
 def outfit(lk, team):
     o, c1, c2, c3 = lk["out"], lk["c1"], lk["c2"], lk["c3"]; S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
     s = ""
@@ -493,6 +509,13 @@ def outfit(lk, team):
         s += f'<path d="M -11,42 L 11,42 L 11,124 L -11,124 Z" fill="{c2}"/><path d="M -11,42 L -20,74 L -11,124 M 11,42 L 20,74 L 11,124" stroke="{dark(c1, 0.35)}" stroke-width="2" fill="none"/>'
         if o == "marine": s += "".join(f'<rect x="{sx * 26 - 9}" y="44" width="18" height="7" rx="3.5" fill="#e6c25a" stroke="{INK}" stroke-width="1.2"/>' for sx in (-1, 1))
         if o == "fur_coat" or "fur_collar" in lk["ex"]: s += "".join(f'<circle cx="{x}" cy="46" r="9" fill="{c2 if o == "fur_coat" else "#efe8d8"}" stroke="{INK}" stroke-width="1.5"/>' for x in (-28, -15, 0, 15, 28))
+    elif o == "jinbe":      # 노란 기모노(흰 동그라미 · 해골 무늬) · 가슴 V 열림 + 태양 문신 · 초록 띠 매듭 · 어깨 위 붉은 하오리
+        s += '<g clip-path="url(#torso§)">' + "".join(f'<circle cx="{x}" cy="{y}" r="3.6" fill="#ffffff"/>' for x, y in ((-26, 58), (24, 56), (-20, 92), (26, 90), (-28, 76), (12, 96))) + jolly(-18, 72) + jolly(22, 74) + '</g>'
+        s += f'<path d="M -16,43 L 16,43 L 0,86 Z" fill="url(#skin§)"/><path d="M -16,43 L 0,86 L 16,43" stroke="{mix(c1, "#000000", 0.25)}" stroke-width="3" fill="none"/>'
+        if "sun_tattoo" in lk["ex"]: s += '<path d="M -10,64 Q 0,54 10,64 Q 5,61 0,68 Q -5,61 -10,64 Z" fill="#d93a2e"/><path d="M -7,57 l -3,-4 M 0,55 l 0,-5 M 7,57 l 3,-4" stroke="#d93a2e" stroke-width="1.8" stroke-linecap="round"/>'
+        s += f'<path d="M -30,100 L 30,100 L 30,111 L -30,111 Z" fill="{c3}" {S}/>'
+        s += f'<path d="M -6,104 Q 0,97 6,104 Q 0,112 -6,104 Z" fill="{mix(c3, "#000000", 0.2)}" stroke="{INK}" stroke-width="1.2"/><path d="M -3,108 L -11,136 L -2,133 Z M 3,108 L 9,140 L 1,135 Z" fill="{c3}" {S}/>'
+        if "haori" in lk["ex"]: s += "".join(f'<path d="M {sx * 8},44 Q {sx * 26},32 {sx * 42},46 Q {sx * 44},62 {sx * 34},74 Q {sx * 22},56 {sx * 8},44 Z" fill="#e0482c" stroke="{INK}" stroke-width="1.8" stroke-linejoin="round"/>' for sx in (-1, 1))
     elif o == "mihawk":
         s += '<path d="M -15,43 L 15,43 L 7,100 L -7,100 Z" fill="url(#skin§)"/>'                                                     # 열린 가슴
         s += f'<path d="M -10,58 Q -4,62 0,60 Q 4,62 10,58 M 0,64 L 0,92 M -6,74 L 6,74 M -5,84 L 5,84" stroke="{mix(lk["skin"], INK, 0.32)}" stroke-width="1.3" fill="none"/>'
@@ -538,6 +561,10 @@ def outfit(lk, team):
 def skirt_tails(lk):
     o, c1 = lk["out"], lk["c1"]; S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
     if o == "dress": return f'<path d="M -27,104 L 27,104 L 40,162 Q 0,170 -40,162 Z" fill="url(#cloth§)" {S}/><path d="M -38,156 Q 0,164 38,156" stroke="{lk["c2"]}" stroke-width="3" fill="none"/>'
+    if o == "jinbe":       # 넓은 기모노 자락 (발목까지) + 무늬
+        return (f'<path d="M -30,110 L -40,192 L -4,192 L -2,116 Z M 30,110 L 40,192 L 4,192 L 2,116 Z" fill="url(#cloth§)" {S}/>'
+                + "".join(f'<circle cx="{x}" cy="{y}" r="3.6" fill="#ffffff"/>' for x, y in ((-28, 130), (-12, 176), (26, 124), (14, 180), (-30, 168), (32, 160)))
+                + jolly(-20, 150, 7) + jolly(22, 146, 7))
     if o in ("coat", "marine", "labcoat", "fur_coat", "kimono", "swan", "mihawk"):
         ln = 176 if o in ("coat", "fur_coat", "kimono", "mihawk") else 166
         if o == "mihawk":                                          # 긴 코트 자락 + 진홍 안감이 살짝 보임
@@ -570,6 +597,8 @@ def legs(lk):
             s += f'<path d="M {cx_ - 5},126 Q {cx_ - 6},150 {cx_ - 5},170" stroke="#ffffff" stroke-width="2" fill="none" opacity=".22" stroke-linecap="round"/>'
         fx = sx * 13
         if lk["shoes"] == "sandal": s += f'<ellipse cx="{fx}" cy="205" rx="13" ry="6.5" fill="url(#skin§)" {S}/><path d="M {fx - 8},202 Q {fx},198 {fx + 8},202" stroke="#c9a23a" stroke-width="3" fill="none"/>'
+        elif lk["shoes"] == "geta":
+            s += f'<rect x="{fx - 14}" y="203" width="28" height="5" rx="1.5" fill="#8a5a30" {S}/><rect x="{fx - 11}" y="208" width="5" height="4" fill="#5a3a22"/><rect x="{fx + 6}" y="208" width="5" height="4" fill="#5a3a22"/><ellipse cx="{fx}" cy="202" rx="11" ry="4.5" fill="url(#skin§)" {S}/>'
         elif lk["shoes"] == "hoof": s += f'<ellipse cx="{fx}" cy="205" rx="11" ry="6" fill="#6a4228" {S}/>'
         else: s += f'<ellipse cx="{fx}" cy="205" rx="14" ry="7" fill="{lk["shoes"]}" {S}/><ellipse cx="{fx - 4}" cy="202.5" rx="5" ry="2" fill="#ffffff" opacity=".35"/>'
     return s
@@ -610,6 +639,9 @@ def body(lk, team, pose=None):
             out_ += f'<rect x="{x - 3.5:.1f}" y="{y - 4:.1f}" width="7" height="8" rx="1" fill="none" stroke="#e6b84a" stroke-width="1.8"/>'
         return out_
     out = {"behind": "", "front": "", "after_head": ""}
+    if "haori" in lk["ex"]:
+        out["behind"] += (f'<path d="M -36,46 Q -66,70 -64,190 Q -44,200 -30,188 L -26,60 Z M 36,46 Q 66,70 64,190 Q 44,200 30,188 L 26,60 Z" fill="#2a2f5a" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
+                          f'<path d="M -36,46 Q -60,70 -58,186 L -64,190 Q -66,70 -36,46 Z M 36,46 Q 60,70 58,186 L 64,190 Q 66,70 36,46 Z" fill="#e0482c"/>')
     out["behind"] += props_behind(lk, Rp) + legs(lk)
     glove = "#1f1d26" if "black_gloves" in lk["ex"] else None
     arms_b, arms_f, hands = "", "", ""
@@ -662,9 +694,10 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
     S = f'stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
     b = body(lk, team, pose)
     tiny = "tiny_body" in lk["ex"]          # 쵸파: 몸은 작게 (발 기준) · 머리는 그대로 크게 → 몸 위로 내려 붙임
-    bk, bkx = (0.6, 0.9) if tiny else (1.06, 1.2) if "burly" in lk["ex"] else (1, 1)   # 쵸파: 2등신 · 통통 / 다부진 체격: 어깨 · 몸 넓게 (본부장 10-31)
+    bk, bkx = (0.6, 0.9) if tiny else (1.04, 1.45) if "huge" in lk["ex"] else (1.06, 1.2) if "burly" in lk["ex"] else (1, 1)   # 쵸파: 2등신 · 통통 / 다부진 체격: 어깨 · 몸 넓게 (본부장 10-31)
     hs_ = HEAD_SCALE * (1.2 if tiny else 1); hdy = ((14 if view else (205 - 44) * (1 - bk)) if tiny else 0)     # 앉으면 책상 위로 눈이 보이게 조금만 내림
-    HG = f'<g transform="translate(0,{HEAD_PIVOT + hdy:.1f}) scale({hs_:.3f}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
+    hsx = hs_ * (1.14 if "wide_head" in lk["ex"] else 1)
+    HG = f'<g transform="translate(0,{HEAD_PIVOT + hdy:.1f}) scale({hsx:.3f},{hs_:.3f}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
     BG = f'<g transform="translate(0,205) scale({bkx},{bk}) translate(0,-205)">'
     g = '<ellipse cx="0" cy="208" rx="42" ry="7" fill="#000000" opacity=".16"/>' + HG + hair_back(lk) + "</g>" + BG + b["behind"] + b["front"]
     g += f'<path d="M -10,34 L 10,34 L 9,46 Q 0,50 -9,46 Z" fill="{mix(sk, "#c08060", 0.22)}"/>' + "</g>"     # 목 (몸 그룹 끝)
