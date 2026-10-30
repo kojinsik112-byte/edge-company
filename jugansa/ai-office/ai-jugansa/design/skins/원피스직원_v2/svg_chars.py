@@ -31,7 +31,7 @@ ROSTER = {
     "analysis": [
         C("로빈", "blunt", "#2b2a38", "coat", "#7b5aa6", "#f4efe6", eyec="#3a6aa8", girl=True, vibe="glam", pose="cross", ex=["hana_arms", "sunglasses_head"], legs="#3a3448"),
         C("로우", "short", "#23222c", "hoodie", "#f2c94c", "#23222c", hat="law", vibe="cool", pose="shoulder", props=["nodachi"], ex=["heart_jolly", "sideburns", "goatee", "earrings_gold", "eyebags"], eyec="#6a5a3a", legs="#3a3a40"),
-        C("징베", "topknot", "#23222c", "kimono", "#ec8b3c", "#ffffff", "#2a5ea8", skin="#86b6dc", vibe="cool", mouth="flat", pose="cross", eyec="#3a3a4a", legs="#2a5ea8", ex=["tusks"]),
+        C("징베", "topknot", "#23222c", "kimono", "#ec8b3c", "#ffffff", "#2a5ea8", skin="#86b6dc", vibe="cool", mouth="flat", pose="cross", eyec="#3a3a4a", legs="#2a5ea8", ex=["burly", "tusks"]),
         C("마르코", "pineapple", "#f4d35a", "vest_open", "#8a6ac0", "#8a6ac0", vibe="cool", eyes="sleepy", pose="cross", props=["blue_flame"], ex=["wb_tattoo", "beads_blue"], eyec="#4a5a7a"),
         C("베가펑크", "big_round", "#c89ae6", "labcoat", "#ffffff", "#6ab0e6", vibe="fun", pose="hold", props=["tablet"], eyec="#5a4a8a", ex=["goggles_head"]),
     ],
@@ -41,7 +41,8 @@ ROSTER = {
         C("쵸파", "chopper_fur", "#a8693a", "fur", "#a8693a", "#f2d6b0", skin="#f7e2c4", hat="chopper", eyec="#3a2a22", vibe="cute", pose="wave", ex=["blue_nose", "tiny_body"], legs="#e88aa8", shorts=True, shoes="hoof"),
         C("브룩", "afro", "#1f1d26", "suit", "#1f1d26", "#ffffff", "#c9483b", skin="#f6f2ea", hat="tophat", eyes="skull", mouth="skull", vibe="fun", pose="hold", props=["cane"]),
         C("에이스", "messy", "#1f1d26", "shirtless", SK2, skin=SK2, hat="ace", mouth="grin", vibe="cool", pose="fist", props=["flame"], ex=["asce", "ace_belt", "freckles", "beads_red"], eyec="#3a2a22", legs="#2b3a5a", shorts=True),
-        C("사보", "wavy", "#f6d260", "coat", "#2f4f8a", "#ffffff", hat="sabo", eyec="#3a4a7a", vibe="cool", pose="shoulder", props=["pipe"], ex=["scar_sabo", "cravat"]),
+        C("사보", "wavy", "#f6d260", "coat", "#2a55c0", "#ffffff", hat="sabo", eyec="#3a4a7a", eyes="round", mouth="smile_teeth", vibe="cool", pose="cross", props=["pipe_back"],
+          ex=["scar_sabo", "popped_collar", "cravat", "black_gloves", "armband"]),
         C("키드", "flame", "#e0402c", "fur_coat", "#c0392b", "#f2a6a0", mouth="kid", vibe="cool", pose="cross", ex=["burly", "metal_arm", "stitch_scar", "goggles_head"], eyec="#c9a23a", legs="#2b2a38"),
         C("야마토", "pony", "#f6f6f6", "kimono", "#ffffff", "#e05a5a", "#8c4bd0", hair2="#6ad8cc", eyec="#e0584a", girl=True, vibe="cool", pose="shoulder", props=["club"], ex=["wrist_cuffs", "horns"], legs="#ffffff"),
     ],
@@ -114,7 +115,7 @@ def hair_front(lk):
         extra = f'<path d="M 40,-14 Q 54,22 46,60 L 57,58 Q 62,10 50,-14 Z M -40,-14 Q -54,22 -46,60 L -57,58 Q -62,10 -50,-14 Z" {H}/>'
     elif hs in ("side", "long", "long_wavy", "pony", "bob", "bunny", "drills", "wavy"):
         p = CAP + "L 48,-4 " + strands([(48, -4), (40, -20), (30, -6), (18, -28), (4, -12), (-10, -34), (-24, -18), (-36, -28), (-46, -6), (-53, 14)]) + "Z"
-        if hs in ("long", "long_wavy", "bob", "bunny", "wavy"):
+        if hs in ("long", "long_wavy", "bob", "bunny"):
             ln = 34 if hs in ("bob", "bunny") else 58
             extra = f'<path d="M 42,-16 Q 55,14 48,{ln} L 58,{ln - 4} Q 62,8 52,-16 Z M -42,-16 Q -55,14 -48,{ln} L -58,{ln - 4} Q -62,8 -52,-16 Z" {H}/>'
     elif hs == "sanji":
@@ -169,8 +170,11 @@ def hair_back(lk):
             col = lk[c]
             s += f'<path d="M {sx * 46},-10 Q {sx * 62},30 {sx * 52},64 L {sx * 40},60 Q {sx * 48},26 {sx * 36},-10 Z" fill="{col}" stroke="{INK}" stroke-width="2"/>'
             s += f'<circle cx="{sx * 44}" cy="-70" r="17" fill="none" stroke="{INK}" stroke-width="13"/><circle cx="{sx * 44}" cy="-70" r="17" fill="none" stroke="{col}" stroke-width="9"/>'
-    elif hs == "wavy":
-        for sx in (-1, 1): s += "".join(f'<circle cx="{sx * (52 - k * 2)}" cy="{-14 + k * 16}" r="14" {H}/>' for k in range(4))
+    elif hs == "wavy":       # 사보: 어깨까지 내려오는 물결 머리 (바깥으로 살짝 말림)
+        for sx in (-1, 1):
+            s += (f'<path d="M {sx * 40},-30 Q {sx * 62},-20 {sx * 58},0 Q {sx * 68},12 {sx * 60},26 Q {sx * 70},40 {sx * 58},52 Q {sx * 52},58 {sx * 46},50 '
+                  f'Q {sx * 52},40 {sx * 46},30 Q {sx * 54},16 {sx * 46},4 Q {sx * 50},-12 {sx * 36},-18 Z" {H}/>'
+                  f'<path d="M {sx * 54},-6 Q {sx * 60},6 {sx * 54},18 M {sx * 56},32 Q {sx * 62},42 {sx * 54},50" stroke="{INK}" stroke-width="1.4" fill="none" opacity=".45"/>')
     elif hs == "bun": s += f'<circle cx="0" cy="-78" r="18" {H}/>'
     elif hs == "topknot": s += f'<ellipse cx="0" cy="-72" rx="12" ry="10" {H}/>'
     elif hs in ("bob", "bunny"): s += f'<path d="M -56,-10 C -62,20 -58,40 -46,48 L 46,48 C 58,40 62,20 56,-10 Z" {H}/>'
@@ -248,6 +252,9 @@ def mouth(lk):
     if m == "grin":
         return (f'<path d="M -13,22 Q 0,40 13,22 Q 0,25 -13,22 Z" fill="#8a2f36" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
                 '<path d="M -11.5,23 Q 0,26 11.5,23 L 10.5,26.5 Q 0,29.5 -10.5,26.5 Z" fill="#ffffff"/><path d="M -6,32.5 Q 0,37.5 6,32.5 Q 0,29.5 -6,32.5 Z" fill="#f48a9a"/>')
+    if m == "smile_teeth":   # 사보: 이를 드러내고 씩 웃음
+        return (f'<path d="M -15,20 Q 0,25 15,20 Q 12,35 0,36 Q -12,35 -15,20 Z" fill="#ffffff" stroke="{INK}" stroke-width="2" stroke-linejoin="round"/>'
+                '<path d="M -12,26.5 Q 0,29.5 12,26.5" stroke="#cfc6c0" stroke-width="1.2" fill="none"/>')
     if m == "wild":         # 바르톨로메오: 크게 벌린 입 + 들쭉날쭉한 이
         return (f'<path d="M -17,21 Q 0,44 17,21 Q 0,26 -17,21 Z" fill="#7a2430" stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"/>'
                 '<path d="M -15,22.5 L -11,28 L -8,23.6 L -4,29 L 0,24.2 L 4,29 L 8,23.6 L 11,28 L 15,22.5 Q 0,26 -15,22.5 Z" fill="#ffffff"/>'
@@ -279,7 +286,9 @@ def face_extras(lk):
     if "goatee" in ex: s += '<path d="M -4,34 L 4,34 L 2,42 L -2,42 Z" fill="#23222c"/>'
     if "goatee_blond" in ex: s += '<path d="M -3,35 L 3,35 L 1,41 L -1,41 Z" fill="#e0b84a"/>'
     if "eyebags" in ex: s += f'<path d="M -24,22 Q -17,25 -10,22 M 10,22 Q 17,25 24,22" stroke="{mix(sk, INK, 0.3)}" stroke-width="1.5" fill="none"/>'
-    if "scar_sabo" in ex: s += '<path d="M -31,-4 Q -24,-10 -14,-6 Q -4,0 -6,12 Q -8,22 -18,24 Q -30,22 -32,10 Z" fill="#d88a7a" opacity=".16"/>'
+    if "scar_sabo" in ex:
+        s += '<path d="M 8,-22 Q 16,-30 26,-24 Q 34,-14 32,-2 Q 36,10 30,20 Q 22,26 14,20 Q 8,12 10,2 Q 4,-8 8,-22 Z" fill="#b8644a" opacity=".32"/>'
+        s += '<path d="M 12,-18 Q 18,-12 15,-4 M 26,4 Q 30,10 27,16" stroke="#8a3e2c" stroke-width="1.3" fill="none" opacity=".6" stroke-linecap="round"/>'
     if "scar_shanks" in ex: s += "".join(f'<path d="M {-24 + k * 5},-8 L {-18 + k * 5},22" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>' for k in range(3))
     if "scar_croc" in ex: s += '<path d="M -34,16 L 34,14" stroke="#b0604e" stroke-width="2" stroke-linecap="round"/>' + "".join(f'<path d="M {x},11 L {x},19" stroke="#b0604e" stroke-width="1.4"/>' for x in (-20, -6, 8, 22))
     if "scar_garp" in ex: s += '<path d="M -24,-16 L -12,22" stroke="#b0604e" stroke-width="2.2" stroke-linecap="round"/><path d="M -22,-10 l 4,-1 M -18,2 l 4,-1 M -15,12 l 4,-1" stroke="#b0604e" stroke-width="1.4" stroke-linecap="round"/>'
@@ -347,10 +356,13 @@ def hat(lk):
                 '<path d="M -17,-72 L -16,-71 M -12,-72 L -11,-71 M -17,-66 Q -14,-69 -11,-66" stroke="#1f1d26" stroke-width="1.4" fill="none" stroke-linecap="round"/>'
                 '<path d="M 11,-72 L 12,-71 M 16,-72 L 17,-71 M 11,-68 Q 14,-64 17,-68" stroke="#1f1d26" stroke-width="1.4" fill="none" stroke-linecap="round"/>')
     if h in ("tophat", "sabo"):
-        c = "#1f1d26" if h == "tophat" else "#2f4f8a"
-        g = "".join(f'<circle cx="{sx * 14}" cy="-86" r="10" fill="#a8dcf6" stroke="#5a4232" stroke-width="3.5"/>' for sx in (-1, 1)) if h == "sabo" else ""
+        c = "#1f1d26"
+        hexa = lambda cx, cy, r: " ".join(f"{cx + r * math.cos(math.radians(30 + k * 60)):.1f},{cy + r * math.sin(math.radians(30 + k * 60)):.1f}" for k in range(6))
+        g = (f'<path d="M -35,-76 L 35,-76 L 35,-68 L -35,-68 Z" fill="#2a7a8a"/>'
+             + "".join(f'<polygon points="{hexa(sx * 15, -76, 12)}" fill="#5ab4e6" stroke="{INK}" stroke-width="1.8"/><polygon points="{hexa(sx * 15, -76, 7.5)}" fill="#24203a"/><path d="M {sx * 15 - 4},-80 L {sx * 15 + 1},-73" stroke="#8a7ae0" stroke-width="2" opacity=".8"/>' for sx in (-1, 1))
+             + '<rect x="-4" y="-79" width="8" height="5" rx="1.5" fill="#c9ced6" stroke="#3d2820" stroke-width="1"/>') if h == "sabo" else ""
         return (f'<ellipse cx="0" cy="-58" rx="54" ry="11" fill="{c}" {S}/><path d="M -34,-60 L -38,-128 Q 0,-136 38,-128 L 34,-60 Z" fill="{c}" {S}/>'
-                f'<path d="M -35,-72 L 35,-72 L 34,-62 L -34,-62 Z" fill="{"#d93a2e" if h == "tophat" else "#5a4232"}"/>' + g)
+                + (f'<path d="M -35,-72 L 35,-72 L 34,-62 L -34,-62 Z" fill="#d93a2e"/>' if h == "tophat" else "") + g)
     if h == "chopper":
         ant = "".join(f'<path d="M {sx * 30},-80 Q {sx * 52},-96 {sx * 58},-124 M {sx * 50},-100 Q {sx * 66},-100 {sx * 74},-112 M {sx * 44},-90 Q {sx * 34},-108 {sx * 38},-120" stroke="#8a5530" stroke-width="7" fill="none" stroke-linecap="round"/>' for sx in (-1, 1))
         return (ant + f'<ellipse cx="0" cy="-58" rx="58" ry="12" fill="#f6a0c0" {S}/><path d="M -36,-60 Q -42,-118 0,-120 Q 42,-118 36,-60 Z" fill="#f8acc8" {S}/>'
@@ -422,6 +434,7 @@ def props_behind(lk, R):
             s += stick(58, 96, -66, -100, 8, "#24222c") + "".join(f'<path d="M {58 - k * 22},{96 - k * 35} l -5,4 m 0,-8 l 10,8" stroke="#ffffff" stroke-width="1.6"/>' for k in range(1, 5))
             s += f'<ellipse cx="46" cy="78" rx="9" ry="5" fill="#f4f1ea" stroke="{INK}" stroke-width="1.6"/>'
         elif p == "pipe": s += stick(hx + 4, hy + 6, -52, -66, 6, "#8a93a3")
+        elif p == "pipe_back": s += stick(-34, 150, 56, -64, 7, "#b8bec8") + stick(56, -64, 74, -70, 7, "#b8bec8") + '<path d="M -30,140 L 52,-58" stroke="#ffffff" stroke-width="1.6" opacity=".55"/>'
         elif p == "club":
             s += stick(hx + 4, hy + 6, -50, -70, 14, "#3a3448") + "".join(f'<circle cx="{-50 + k * 14}" cy="{-70 + k * 19}" r="3" fill="#c9ced6"/>' for k in range(4))
         elif p == "bisento":
@@ -513,7 +526,11 @@ def outfit(lk, team):
     if "cross_necklace" in lk["ex"]:
         s += '<path d="M -10,44 Q -4,58 0,62 Q 4,58 10,44" stroke="#d9a63a" stroke-width="1.3" fill="none"/>'
         s += f'<path d="M -1.8,61 L 1.8,61 L 1.8,65 L 6,65 L 6,68.5 L 1.8,68.5 L 1.8,78 L -1.8,78 L -1.8,68.5 L -6,68.5 L -6,65 L -1.8,65 Z" fill="#e6b84a" stroke="{INK}" stroke-width="1.1"/>'
-    if "cravat" in lk["ex"]: s += f'<path d="M -9,42 Q 0,60 9,42 Q 0,48 -9,42 Z" fill="#ffffff" stroke="{INK}" stroke-width="1.5"/>'
+    if "popped_collar" in lk["ex"]: s += "".join(f'<path d="M {sx * 6},44 L {sx * 22},30 L {sx * 30},48 L {sx * 14},56 Z" fill="#b8d4f0" stroke="{INK}" stroke-width="1.6" stroke-linejoin="round"/>' for sx in (-1, 1))
+    if "cravat" in lk["ex"]:
+        big = "popped_collar" in lk["ex"]
+        s += (f'<path d="M -12,44 Q 0,52 12,44 Q 16,62 8,74 Q 12,86 4,96 L -4,96 Q -12,86 -8,74 Q -16,62 -12,44 Z" fill="#f6f4ee" stroke="{INK}" stroke-width="1.6" stroke-linejoin="round"/>'
+              '<path d="M -4,56 Q -2,72 -5,88 M 4,56 Q 2,72 5,88" stroke="#d6d0c4" stroke-width="1.3" fill="none"/>') if big else f'<path d="M -9,42 Q 0,60 9,42 Q 0,48 -9,42 Z" fill="#ffffff" stroke="{INK}" stroke-width="1.5"/>'
     return s
 
 def skirt_tails(lk):
@@ -586,13 +603,17 @@ def body(lk, team, pose=None):
             out_ += band(1, 0.82, "#8a5a30", 4); x, y, dx, dy = at(1, 0.82)
             out_ += f'<circle cx="{x - dy * 9:.1f}" cy="{y + dx * 9:.1f}" r="4.2" fill="#cfeefb" stroke="{INK}" stroke-width="1.2"/><path d="M {x - dy * 9 - 2:.1f},{y + dx * 9:.1f} L {x - dy * 9 + 2:.1f},{y + dx * 9:.1f}" stroke="#e0484a" stroke-width="1.2"/>'
         if "wrist_cuffs" in ex: out_ += band(len(pts) - 2, 0.84, "#8a93a3", 5)
+        if "armband" in ex and side == "R":
+            out_ += band(0, 0.62, "#1f1d26", 7); x, y, _, _ = at(0, 0.62)
+            out_ += f'<rect x="{x - 3.5:.1f}" y="{y - 4:.1f}" width="7" height="8" rx="1" fill="none" stroke="#e6b84a" stroke-width="1.8"/>'
         return out_
     out = {"behind": "", "front": "", "after_head": ""}
     out["behind"] += props_behind(lk, Rp) + legs(lk)
+    glove = "#1f1d26" if "black_gloves" in lk["ex"] else None
     arms_b, arms_f, hands = "", "", ""
     if Lp and "no_left_arm" not in lk["ex"]:
         metal = "metal_arm" in lk["ex"]
-        a, h = arm(Lp, "url(#steel§)" if metal else col, hand="hook" not in lk["ex"], skin="url(#steel§)" if metal else "url(#skin§)"); a += deco(Lp, "L")
+        a, h = arm(Lp, "url(#steel§)" if metal else col, hand="hook" not in lk["ex"], skin="url(#steel§)" if metal else glove or "url(#skin§)"); a += deco(Lp, "L")
         if metal: a += "".join(f'<circle cx="{Lp[0][0] + (Lp[-1][0] - Lp[0][0]) * t:.1f}" cy="{Lp[0][1] + (Lp[-1][1] - Lp[0][1]) * t:.1f}" r="1.8" fill="#5a606a"/>' for t in (0.25, 0.5, 0.75))
         if pose in IN_FRONT: arms_f += a
         else: arms_b += a
@@ -600,7 +621,7 @@ def body(lk, team, pose=None):
         if "hook" in lk["ex"]:
             hx, hy = Lp[-1]; hands += f'<path d="M {hx},{hy - 4} L {hx},{hy + 6} Q {hx},{hy + 22} {hx - 14},{hy + 18}" stroke="{INK}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M {hx},{hy - 4} L {hx},{hy + 6} Q {hx},{hy + 22} {hx - 14},{hy + 18}" stroke="#e6c25a" stroke-width="4" fill="none" stroke-linecap="round"/>'
     if Rp:
-        a, h = arm(Rp, col, fist=pose in ("fist", "shoulder", "hold", "sing"), hand=pose != "pockets"); a += deco(Rp, "R")
+        a, h = arm(Rp, col, fist=pose in ("fist", "shoulder", "hold", "sing"), hand=pose != "pockets", skin=glove or "url(#skin§)"); a += deco(Rp, "R")
         if pose in IN_FRONT: arms_f += a
         elif pose == "sing": out["after_head"] += a
         else: arms_b += a
