@@ -1807,7 +1807,7 @@ def p_contact():
 <b>콜센터</b> 평일 09:00 ~ 18:00 · 온라인 365일 접수 · 24시간 이내 회신<br>
 <b>등록 · 인증</b> {D.ELEC_LICENSE} · ISO 9001 / 14001 / 45001<br><b>제휴</b> 삼성 측 업무제휴 · 세스코 MOU</div>
 </div>
-<div class="bt"><span>입주박람회 주관사 제안서 · {D.SITE['name']}</span><span>주식회사 엣지컴퍼니</span></div>
+<div class="bt"><span>입주업무 주관사 제안서 · {D.SITE['name']}</span><span>주식회사 엣지컴퍼니</span></div>
 </section>"""
 
 
@@ -2445,7 +2445,7 @@ def emit_company(full):
     global TITLE_H1
     pages = [p for p in full if p[0] == "cover"] + [p for p in full if p[1].get("sec") == "01. 회사소개"] + [p for p in full if p[0] == "contact"]
     keep, keep_h1, keep_pill = list(B.PAGES), TITLE_H1, COVER["pill"]
-    TITLE_H1, COVER["pill"] = f"{D.SITE['name']}<br><em>회사소개서</em>", "입주박람회 주관사 선정 · 제출서류 1 회사소개서"
+    TITLE_H1, COVER["pill"] = f"{D.SITE['name']}<br><em>회사소개서</em>", "입주업무 주관사 선정 · 제출서류 1 회사소개서"
     B.PAGES[:] = pages
     PGNO.clear()
     for k, tt in PGREF.items():
