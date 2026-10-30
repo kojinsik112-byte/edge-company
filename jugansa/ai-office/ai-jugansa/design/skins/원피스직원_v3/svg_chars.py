@@ -290,7 +290,7 @@ def face_extras(lk):
     if not any(k in ex for k in ("long_nose", "red_nose", "blue_nose")) and lk["eyes"] != "skull":
         s += f'<path d="M -1,17 Q 1,19 2,17" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
     if "scar_luffy" in ex: s += '<path d="M -31,24 L -15,24 M -28,21 L -28,27 M -22,21 L -22,27 M -18,21 L -18,27" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>'
-    if "long_nose" in ex: s += f'<path d="M -2,12 C 10,12 30,14 40,18 C 42,22 38,24 34,23 C 22,22 8,22 -2,22 Z" fill="url(#skin§)" stroke="{INK}" stroke-width="2"/>'
+    if "long_nose" in ex and not lk.get("elbaf"): s += f'<path d="M -2,12 C 10,12 30,14 40,18 C 42,22 38,24 34,23 C 22,22 8,22 -2,22 Z" fill="url(#skin§)" stroke="{INK}" stroke-width="2"/>'
     if "red_nose" in ex: s += f'<circle cx="0" cy="13" r="7.5" fill="#e0302a" stroke="{INK}" stroke-width="2"/><circle cx="-2.6" cy="10" r="2.2" fill="#ffffff" opacity=".8"/>'
     if "blue_nose" in ex: s += f'<ellipse cx="0" cy="18" rx="7" ry="5" fill="#3a86e0" stroke="{INK}" stroke-width="1.8"/><circle cx="-2" cy="16.5" r="1.8" fill="#ffffff"/>'
     if "freckles" in ex: s += "".join(f'<circle cx="{sx * x}" cy="{y}" r="1.5" fill="#c07a50"/>' for sx in (-1, 1) for x, y in ((24, 18), (29, 21), (21, 22)))
@@ -903,12 +903,27 @@ def elbaf_neck(lk):       # 머리보다 앞에 오는 목도리 (몸 좌표)
         s += _fur([(-24, 46), (-10, 40), (0, 41), (10, 40), (24, 46)], 14, mix(c, "#ffffff", 0.14), seed=23)
     return s
 
+def long_nose(sk):
+    """우솝 코: 얼굴에서 자연스럽게 뻗어 나와 끝이 둥글게 · 밑면 그늘 · 윗면 하이라이트 · 얼굴에 드리운 그림자 (붙은 쪽엔 선 없음)"""
+    lo, hi = mix(sk, "#8a4a2a", 0.32), mix(sk, "#ffffff", 0.3)
+    body = "M -3,6 C 6,6 18,8 30,11.5 C 36,13 39.5,15 39.5,18 C 39.5,21.5 36,22.6 31,22 C 20,21 8,21 -3,20 Q -5,13 -3,6 Z"
+    edge = "M 2,6.4 C 10,6.8 20,8.6 30,11.5 C 36,13 39.5,15 39.5,18 C 39.5,21.5 36,22.6 31,22 C 22,21.2 12,21 4,20.6"
+    return (f'<defs><linearGradient id="ns§" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{hi}"/><stop offset=".45" stop-color="{sk}"/><stop offset="1" stop-color="{lo}"/></linearGradient>'
+            f'<radialGradient id="nb§" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#5a2a1a" stop-opacity=".28"/><stop offset="1" stop-color="#5a2a1a" stop-opacity="0"/></radialGradient></defs>'
+            f'<ellipse cx="18" cy="27" rx="20" ry="4.5" fill="url(#nb§)"/>'
+            f'<path d="{body}" fill="url(#ns§)"/>'
+            f'<path d="{edge}" stroke="{INK}" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+            f'<path d="M 6,9 C 14,9.6 24,11.4 33,14.4" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".55"/>'
+            f'<ellipse cx="35.5" cy="16.2" rx="2.2" ry="1.4" fill="#ffffff" opacity=".6"/>'
+            f'<path d="M 2,19 q 3,2 6,0.4" stroke="{lo}" stroke-width="1.3" fill="none" stroke-linecap="round"/>')
+
 def elbaf_face(lk):
     s, b = "", lk.get("beard")
     if b == "usopp":
         s += ('<path d="M -42,4 Q -46,40 -24,58 Q -12,68 0,70 Q 12,68 24,58 Q 46,40 42,4 L 34,8 Q 30,30 18,38 Q 0,46 -18,38 Q -30,30 -34,8 Z" fill="#d9822b" stroke="#8a4a1a" stroke-width="1.8" stroke-linejoin="round"/>'
               '<path d="M -2,22 Q -14,18 -24,26 Q -30,30 -28,22 Q -16,14 -2,18 Z M 2,22 Q 14,18 24,26 Q 30,30 28,22 Q 16,14 2,18 Z" fill="#c9701f" stroke="#8a4a1a" stroke-width="1.2"/>'
               + "".join(f'<path d="M {x},{y} q 2,6 0,10" stroke="#b0601a" stroke-width="1.3" fill="none"/>' for x, y in ((-30, 34), (-16, 52), (0, 56), (16, 52), (30, 34))))
+    if "long_nose" in lk["ex"]: s += long_nose(lk["skin"])        # 수염보다 앞에
     if b == "franky":
         s += ('<path d="M -36,14 Q -40,60 -24,92 Q -14,104 -6,96 Q 0,108 6,96 Q 14,104 24,92 Q 40,60 36,14 L 28,20 Q 24,36 12,40 Q 0,44 -12,40 Q -24,36 -28,20 Z" fill="#7ad0e8" stroke="#3a8ab0" stroke-width="1.8" stroke-linejoin="round"/>'
               + "".join(f'<path d="M {x},{y} q 3,10 -1,22" stroke="#4aa8c8" stroke-width="1.4" fill="none"/>' for x, y in ((-24, 48), (-10, 56), (8, 56), (22, 48))))
@@ -923,13 +938,14 @@ def elbaf_top(lk):        # 이마 띠 (조로)
             + "".join(f'<rect x="{x}" y="-30" width="4" height="9" fill="#e6c25a" opacity=".8"/>' for x in (-30, -14, 2, 18)) + f'<path d="M 50,-22 L 62,-10 L 56,-8 Z M 50,-20 L 60,-2 L 54,0 Z" fill="{c}" stroke="{INK}" stroke-width="1.2"/>')
 
 def elbaf_hair_back(lk):
-    if lk.get("side_afro"):       # 우솝: 투구 아래 양옆으로 풍성하게 삐져나온 곱슬머리 (위로는 안 보임)
+    if lk.get("side_afro"):       # 우솝: 투구 뒤로 동그랗게 부푼 곱슬머리 — 위로 살짝 솟고 옆은 둥글게 · 귀를 살짝 덮을 정도까지 (본부장 10-31)
         H = f'fill="url(#hair§)" stroke="#3d2820" stroke-width="2" stroke-linejoin="round"'
-        g = ""
-        for sx in (-1, 1):
-            for x, y, r in ((58, -40, 15), (70, -26, 17), (78, -6, 17), (74, 12, 15), (62, -8, 17), (60, 10, 13)):
-                g += f'<circle cx="{sx * x}" cy="{y}" r="{r}" {H}/>'
-            g += "".join(f'<path d="M {sx * x},{y} a 5,5 0 1 1 {sx * 6},3" stroke="#4a3a34" stroke-width="1.4" fill="none" opacity=".8"/>' for x, y in ((70, -24), (78, -2), (72, 14)))
+        cx0, cy0, rx, ry = 0, -30, 80, 62
+        bumps = [(cx0 + rx * math.cos(math.radians(a_)), cy0 + ry * math.sin(math.radians(a_))) for a_ in range(-200, 25, 15)]
+        bumps += [(-x, y) for x, y in bumps]
+        g = "".join(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="15" {H}/>' for x, y in bumps)
+        g += f'<ellipse cx="{cx0}" cy="{cy0}" rx="{rx}" ry="{ry}" fill="url(#hair§)"/>'
+        g += "".join(f'<path d="M {sx * x},{y} a 5,5 0 1 1 {sx * 6},3" stroke="#4a3a34" stroke-width="1.4" fill="none" opacity=".75"/>' for sx in (-1, 1) for x, y in ((56, -66), (68, -42), (66, -18), (50, -2), (38, -84)))
         return g
     if lk.get("nami_braids"):      # 양옆으로 늘어뜨린 가는 땋은 머리
         return "".join(f'<ellipse cx="{sx * (40 - k * 0.5):.1f}" cy="{14 + k * 9}" rx="5" ry="5.5" fill="url(#hair§)" stroke="#3d2820" stroke-width="1.2"/>' for sx in (-1, 1) for k in range(6))
