@@ -67,9 +67,12 @@ GARBAGE = 1
 def ceo_birth():
     if D.CEO_BIRTH:
         return D.CEO_BIRTH
-    p = os.path.join(HERE, "org_private.json")   # 깃 제외
-    if os.path.exists(p):
-        return json.load(open(p, encoding="utf-8")).get("ceo_birth")
+    for f in ("ceo_private.json", "org_private.json"):   # 둘 다 깃 제외(org_private = 조직도 실명 · 있으면 reorg가 읽음)
+        p = os.path.join(HERE, f)
+        if os.path.exists(p):
+            b = json.load(open(p, encoding="utf-8-sig")).get("ceo_birth")
+            if b:
+                return b
     return None
 
 
