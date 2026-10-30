@@ -645,6 +645,9 @@ def body(lk, team, pose=None):
             out_ += band(1, 0.82, "#8a5a30", 4); x, y, dx, dy = at(1, 0.82)
             out_ += f'<circle cx="{x - dy * 9:.1f}" cy="{y + dx * 9:.1f}" r="4.2" fill="#cfeefb" stroke="{INK}" stroke-width="1.2"/><path d="M {x - dy * 9 - 2:.1f},{y + dx * 9:.1f} L {x - dy * 9 + 2:.1f},{y + dx * 9:.1f}" stroke="#e0484a" stroke-width="1.2"/>'
         if "wrist_cuffs" in ex: out_ += band(len(pts) - 2, 0.84, "#8a93a3", 5)
+        if lk.get("stud_cuffs"):
+            out_ += band(len(pts) - 2, 0.8, "#1f1d26", 6); x, y, dx, dy = at(len(pts) - 2, 0.8)
+            out_ += "".join(f'<circle cx="{x - dy * d:.1f}" cy="{y + dx * d:.1f}" r="1.3" fill="#c9ced6"/>' for d in (-5, 0, 5))
         if "armband" in ex and side == "R":
             out_ += band(0, 0.62, "#1f1d26", 7); x, y, _, _ = at(0, 0.62)
             out_ += f'<rect x="{x - 3.5:.1f}" y="{y - 4:.1f}" width="7" height="8" rx="1" fill="none" stroke="#e6b84a" stroke-width="1.8"/>'
@@ -854,6 +857,7 @@ def elbaf_torso(lk):
     if lk.get("kilt"): s += _kilt(lk["kilt"])
     if lk.get("strap"): s += _strap(lk["strap"], 9 if lk.get("strap_wide") else 6)
     if lk.get("belt"): s += _belt(lk["belt"])
+    if lk.get("bag_strap"): s += '<path d="M -26,48 L 30,112" stroke="#3d2820" stroke-width="7" stroke-linecap="round"/><path d="M -26,48 L 30,112" stroke="#9aa0aa" stroke-width="4.4" stroke-linecap="round"/>'
     if lk.get("pouch"): s += f'<path d="M 20,104 L 36,116" stroke="#8a8f9a" stroke-width="2.4"/><ellipse cx="38" cy="126" rx="11" ry="12" fill="{lk["pouch"]}" {S}/><path d="M 30,120 Q 38,116 46,120" stroke="#8a2a1a" stroke-width="1.6" fill="none"/>'
     if lk.get("collar"):
         c = lk["collar"]; s += _collar(c, spread=lk.get("collar_w", 38), r=lk.get("collar_r", 7.5))
@@ -933,11 +937,11 @@ def long_nose(sk):
 
 def elbaf_face(lk):
     s, b = "", lk.get("beard")
-    if b == "usopp":
-        s += ('<path d="M -42,4 Q -46,40 -24,58 Q -12,68 0,70 Q 12,68 24,58 Q 46,40 42,4 L 34,8 Q 30,30 18,38 Q 0,46 -18,38 Q -30,30 -34,8 Z" fill="#d9822b" stroke="#8a4a1a" stroke-width="1.8" stroke-linejoin="round"/>'
-              '<path d="M -2,22 Q -14,18 -24,26 Q -30,30 -28,22 Q -16,14 -2,18 Z M 2,22 Q 14,18 24,26 Q 30,30 28,22 Q 16,14 2,18 Z" fill="#c9701f" stroke="#8a4a1a" stroke-width="1.2"/>'
-              + "".join(f'<path d="M {x},{y} q 2,6 0,10" stroke="#b0601a" stroke-width="1.3" fill="none"/>' for x, y in ((-30, 34), (-16, 52), (0, 56), (16, 52), (30, 34))))
-    if "long_nose" in lk["ex"]: s += long_nose_v(lk["skin"], lk.get("nose_style", "A"))        # 수염보다 앞에
+    if b == "usopp":       # 설정화 기준: 귀밑에서 가슴까지 내려오는 풍성한 주황 수염 · 두툼한 콧수염 · 입은 크게 보임
+        s += ('<path d="M -42,0 Q -48,40 -30,66 Q -16,84 0,92 Q 16,84 30,66 Q 48,40 42,0 L 34,6 Q 30,32 18,42 Q 0,50 -18,42 Q -30,32 -34,6 Z" fill="#e0862e" stroke="#8a4a1a" stroke-width="1.8" stroke-linejoin="round"/>'
+              '<path d="M -1,24 Q -12,18 -26,24 Q -32,28 -30,20 Q -18,12 -1,18 Z M 1,24 Q 12,18 26,24 Q 32,28 30,20 Q 18,12 1,18 Z" fill="#cc7020" stroke="#8a4a1a" stroke-width="1.3"/>'
+              + "".join(f'<path d="M {x},{y} q {d},8 {d * 0.4},16" stroke="#b0601a" stroke-width="1.4" fill="none"/>' for x, y, d in ((-34, 30, -2), (-24, 50, -2), (-10, 62, -1), (10, 62, 1), (24, 50, 2), (34, 30, 2), (0, 68, 0))))
+    if "long_nose" in lk["ex"]: s += long_nose_v(lk["skin"], lk.get("nose_style", "B"))        # 수염보다 앞에
     if b == "franky":
         s += ('<path d="M -36,14 Q -40,60 -24,92 Q -14,104 -6,96 Q 0,108 6,96 Q 14,104 24,92 Q 40,60 36,14 L 28,20 Q 24,36 12,40 Q 0,44 -12,40 Q -24,36 -28,20 Z" fill="#7ad0e8" stroke="#3a8ab0" stroke-width="1.8" stroke-linejoin="round"/>'
               + "".join(f'<path d="M {x},{y} q 3,10 -1,22" stroke="#4aa8c8" stroke-width="1.4" fill="none"/>' for x, y in ((-24, 48), (-10, 56), (8, 56), (22, 48))))
@@ -952,13 +956,13 @@ def elbaf_top(lk):        # 이마 띠 (조로)
             + "".join(f'<rect x="{x}" y="-30" width="4" height="9" fill="#e6c25a" opacity=".8"/>' for x in (-30, -14, 2, 18)) + f'<path d="M 50,-22 L 62,-10 L 56,-8 Z M 50,-20 L 60,-2 L 54,0 Z" fill="{c}" stroke="{INK}" stroke-width="1.2"/>')
 
 def elbaf_hair_back(lk):
-    if lk.get("side_afro"):       # 우솝: 투구 아래 양옆으로 풍성하게 삐져나온 곱슬머리 (위로는 안 보임)
+    if lk.get("side_afro"):       # 설정화 기준: 두건 뒤로 크게 부푼 검은 아프로 (옆 · 뒤 · 어깨 높이까지)
         H = f'fill="url(#hair§)" stroke="#3d2820" stroke-width="2" stroke-linejoin="round"'
         g = ""
         for sx in (-1, 1):
-            for x, y, r in ((58, -40, 15), (70, -26, 17), (78, -6, 17), (74, 12, 15), (62, -8, 17), (60, 10, 13)):
+            for x, y, r in ((60, -34, 15), (72, -16, 17), (78, 6, 18), (74, 28, 17), (62, 44, 15), (48, 54, 12), (62, 0, 20), (56, 24, 18)):
                 g += f'<circle cx="{sx * x}" cy="{y}" r="{r}" {H}/>'
-            g += "".join(f'<path d="M {sx * x},{y} a 5,5 0 1 1 {sx * 6},3" stroke="#4a3a34" stroke-width="1.4" fill="none" opacity=".8"/>' for x, y in ((70, -24), (78, -2), (72, 14)))
+            g += "".join(f'<path d="M {sx * x},{y} a 5,5 0 1 1 {sx * 6},3" stroke="#4a3a34" stroke-width="1.4" fill="none" opacity=".75"/>' for x, y in ((68, -20), (72, 6), (66, 30), (54, 46)))
         return g
     if lk.get("nami_braids"):      # 양옆으로 늘어뜨린 가는 땋은 머리
         return "".join(f'<ellipse cx="{sx * (40 - k * 0.5):.1f}" cy="{14 + k * 9}" rx="5" ry="5.5" fill="url(#hair§)" stroke="#3d2820" stroke-width="1.2"/>' for sx in (-1, 1) for k in range(6))
@@ -987,16 +991,18 @@ def elbaf_hat(lk):
         horns = "".join(f'<path d="M {sx * 46},-78 C {sx * 78},-82 {sx * 98},-96 {sx * 100},-136 C {sx * 92},-92 {sx * 78},-54 {sx * 52},-46 Z" fill="url(#hh§)" {S}/>'
                         f'<path d="M {sx * 100},-136 Q {sx * 101},-116 {sx * 97},-106 Q {sx * 90},-114 {sx * 91},-122 Z" fill="#1f1d26"/>' + ridge(sx, ((58, -62), (72, -68), (82, -80), (88, -94))) for sx in (-1, 1))
         return G + horns + dome("#24222c") + strip() + band()
-    if h == "viking_usopp":       # 얼굴을 감싼 분홍 두건(이마 · 양옆) + 옆 헤드폰 · 그 위에 금 투구(줄무늬는 투구 안에만) · 금 뿔 위로
+    if h == "viking_usopp":       # 설정화 기준: 턱선까지 내려온 분홍 두건 + 옆 헤드폰 · 넓은 금 줄무늬 투구 · 가늘고 길게 솟은 금 뿔
         yb = -34
-        hood = (f'<path d="M -54,-30 C -58,-72 58,-72 54,-30 Q 57,2 52,20 L 45,19 Q 48,2 45,-16 Q 0,-34 -45,-16 Q -48,2 -45,19 L -52,20 Q -57,2 -54,-30 Z" fill="#e06a9a" {S}/>'      # 귀 바로 아래까지만 (본부장 10-31)
-                '<path d="M -49,-6 Q -51,8 -48,17 M 49,-6 Q 51,8 48,17" stroke="#b84a78" stroke-width="1.4" fill="none"/>'
-                f'<circle cx="54" cy="8" r="9.5" fill="{gold}" {S}/><circle cx="54" cy="8" r="5" fill="#9aa0aa" stroke="#5a5f6a" stroke-width="1"/><path d="M 49,3 L 59,13 M 59,3 L 49,13" stroke="#5a5f6a" stroke-width="1"/>')
-        horns = "".join(f'<path d="M {sx * 40},-80 Q {sx * 72},-100 {sx * 54},-146 Q {sx * 50},-112 {sx * 30},-92 Z" fill="{gold}" {S}/>' + ridge(sx, ((44, -94), (52, -110), (54, -126)), "#a8761e") for sx in (-1, 1))
+        hood = (f'<path d="M -54,-30 C -58,-72 58,-72 54,-30 Q 60,10 52,40 L 44,38 Q 49,8 45,-16 Q 0,-34 -45,-16 Q -49,8 -44,38 L -52,40 Q -60,10 -54,-30 Z" fill="#e06a9a" {S}/>'
+                '<path d="M -50,-4 Q -53,16 -48,34 M 50,-4 Q 53,16 48,34" stroke="#b84a78" stroke-width="1.4" fill="none"/>'
+                f'<circle cx="54" cy="6" r="10" fill="{gold}" {S}/><circle cx="54" cy="6" r="5.4" fill="#9aa0aa" stroke="#5a5f6a" stroke-width="1"/>'
+                '<path d="M 50.5,2.5 L 57.5,9.5 M 57.5,2.5 L 50.5,9.5" stroke="#5a5f6a" stroke-width="1"/>')
+        horns = "".join(f'<path d="M {sx * 46},-80 C {sx * 62},-96 {sx * 64},-124 {sx * 52},-150 C {sx * 48},-124 {sx * 42},-106 {sx * 30},-98 Z" fill="{gold}" {S}/>'
+                        + ridge(sx, ((44, -100), (50, -116), (52, -134)), "#a8761e") for sx in (-1, 1))
         dpath = f"M -54,{yb} C -56,-120 56,-120 54,{yb} Z"
-        stripes = (f'<defs><clipPath id="uc§"><path d="{dpath}"/></clipPath></defs><g clip-path="url(#uc§)">'
-                   + "".join(f'<path d="M {x},-122 Q {x * 1.12},-80 {x * 1.2},{yb}" stroke="#b8862a" stroke-width="3.6" fill="none"/>' for x in (-30, -11, 11, 30)) + '</g>')
-        return G + hood + horns + dome("#e6b84a", top=-120, w=54, yb=yb) + band(yb=yb, w=55, hgt=12)      # 투구는 맨들하게 (줄무늬 없음 · 본부장 10-31)
+        panels = (f'<defs><clipPath id="uc§"><path d="{dpath}"/></clipPath></defs><g clip-path="url(#uc§)" opacity=".55">'
+                  + "".join(f'<path d="M {x0},-126 L {x0 + 9},-126 L {(x0 + 9) * 1.25},{yb} L {x0 * 1.25},{yb} Z" fill="#b8862a"/>' for x0 in (-33, -13, 7, 27)) + '</g>')
+        return G + hood + horns + dome("#ecc25a", top=-120, w=54, yb=yb) + panels + band(yb=yb, w=55, hgt=12)
     if h == "viking_franky":      # 검정 큰 뿔 · 짙은 투구 · 금 테두리 + 코 보호대
         horns = "".join(f'<path d="M {sx * 46},-78 C {sx * 88},-82 {sx * 110},-104 {sx * 110},-150 C {sx * 100},-100 {sx * 84},-56 {sx * 52},-46 Z" fill="url(#hk§)" {S}/>'
                         f'<path d="M {sx * 56},-62 Q {sx * 96},-66 {sx * 98},-128" stroke="#8a8f9a" stroke-width="2.2" fill="none" opacity=".6"/>' for sx in (-1, 1))
@@ -1026,7 +1032,7 @@ ELBAF = {   # 이름 → 엘바프 편 차림 (공식 설정화 기준)
                 boots="#1f1d26", boot_top=190, goggles_y=True, headband="#8a2a4a"),
     "로빈": dict(out="crop", top="tank", shawl="#c9a0e8", belt=("#8a5a3a", "#c9a45c"), kilt=("#4a2a6a", 176, "long_side"), bare_legs=True, boots="#2a3a7a", boot_top=150, ex_del=["sunglasses_head", "hana_arms"]),
     "쵸파": dict(hat="chopper_elbaf", cape="#efeaf6", cape_len=176, collar="#efeaf6", collar_r=8, stripes=("#e86aa0", "#5a8ae0"), baggy=True, hoof_legs=True, belt=("#8a5a3a", "#e6c25a")),
-    "우솝": dict(hat="viking_usopp", hs="short", side_afro=True, out="shirtless", pose="hip", suspenders="#5a3aa0", belt=("#1f1d26", "#e6c25a"), stripes=("#e05a7a", "#5a3aa0"), baggy=True,
+    "우솝": dict(hat="viking_usopp", hs="short", side_afro=True, mouth="laugh", nose_style="B", stud_cuffs=True, bag_strap=True, out="shirtless", pose="hip", suspenders="#5a3aa0", belt=("#1f1d26", "#e6c25a"), stripes=("#e05a7a", "#5a3aa0"), baggy=True,
                 boots="#8a5a3a", cuff="#c9a878", boot_top=172, pouch="#d0402c", beard="usopp", props=[], ex_del=["goggles_head"]),
     "징베": dict(out="crop", top="tunic_orange", pose="side", cape="#c8407a", cape_w=70, collar="#c8407a", collar_w=40, collar_r=9, strap="#8a5a30", strap_wide=True, belt=("#e8b830", "#3a3f4a", "dragon"),
                 kilt=("#8a6a3a", 178, "fur"), braids=True, legs="#86b6dc", boots="#7a4a2a", boot_top=192, back="axe_jinbe", ex_del=["haori", "sun_tattoo", "curly_rim"]),
