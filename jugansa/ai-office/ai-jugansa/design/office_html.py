@@ -1,9 +1,9 @@
 # AI 주관사업부 오피스 v4 시안 — 3D 입체 사무실(뒷벽 · 옆벽 · 원근 바닥 · 조명) + 사무실 스킨 + 캐릭터 스킨
-# 실행: python office_html.py --office 월넛라운지 --skin 원피스직원_v1 [-o 저장.png]   (크롬 헤드리스로 2배 해상도 저장)
+# 실행: python office_html.py --office 마블펜트하우스 --skin 원피스직원_v2 [-o 저장.png]   (크롬 헤드리스로 2배 해상도 저장)
 import os, json, math, random, html, argparse, subprocess, importlib.util, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ap = argparse.ArgumentParser(); ap.add_argument("--office", default="월넛라운지"); ap.add_argument("--skin", default="원피스직원_v1"); ap.add_argument("-o", "--out", default=""); ap.add_argument("--assets", default="")
+ap = argparse.ArgumentParser(); ap.add_argument("--office", default="월넛라운지"); ap.add_argument("--skin", default="원피스직원_v2"); ap.add_argument("-o", "--out", default=""); ap.add_argument("--assets", default="")
 A = ap.parse_args()
 from office_skins import OFFICE_SKINS
 OS = OFFICE_SKINS[A.office]

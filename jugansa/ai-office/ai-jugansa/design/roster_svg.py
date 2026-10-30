@@ -4,7 +4,7 @@ import os, sys, argparse, subprocess, importlib.util, html
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ap = argparse.ArgumentParser()
-ap.add_argument("--skin", default="원피스직원_v1"); ap.add_argument("--style", default="A"); ap.add_argument("--only", default="")
+ap.add_argument("--skin", default="원피스직원_v2"); ap.add_argument("--style", default="A"); ap.add_argument("--only", default="")
 ap.add_argument("-o", "--out", default="")
 A = ap.parse_args()
 spec = importlib.util.spec_from_file_location("sc", os.path.join(HERE, "skins", A.skin, "svg_chars.py")); sc = importlib.util.module_from_spec(spec); spec.loader.exec_module(sc)
