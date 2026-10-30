@@ -3,13 +3,19 @@
 import os, json, math, random, html, argparse, subprocess, importlib.util, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ap = argparse.ArgumentParser(); ap.add_argument("--office", default="월넛라운지"); ap.add_argument("--skin", default="원피스직원_v1"); ap.add_argument("-o", "--out", default="")
+ap = argparse.ArgumentParser(); ap.add_argument("--office", default="월넛라운지"); ap.add_argument("--skin", default="원피스직원_v1"); ap.add_argument("-o", "--out", default=""); ap.add_argument("--assets", default="")
 A = ap.parse_args()
 from office_skins import OFFICE_SKINS
 OS = OFFICE_SKINS[A.office]
 spec = importlib.util.spec_from_file_location("sc", os.path.join(HERE, "skins", A.skin, "svg_chars.py")); sc = importlib.util.module_from_spec(spec); spec.loader.exec_module(sc)
 sc.POSES["type"] = ([(-28, 54), (-38, 84), (-31, 102)], [(28, 54), (38, 84), (31, 102)])   # 앉아서 키보드 — 손이 노트북 양옆에 보이게
 random.seed(7)
+ASSETS = A.assets          # 실제 오피스 화면용: 배경(bg.svg) · 자리별 캐릭터 그림 · 배치(layout.json)를 이 폴더에 쓴다
+LAYOUT = {"W": 1600, "H": 1300, "seats": {}, "rooms": {}, "boss": {}, "board": {}, "gaps": [R1 + 0, 0]} if False else None
+def sprite(fname, box, inner):
+    bx, by, bw, bh = box
+    open(os.path.join(ASSETS, fname), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{bx:.1f} {by:.1f} {bw:.1f} {bh:.1f}" width="{bw:.1f}" height="{bh:.1f}">{inner}</svg>')
+    return {"file": fname, "x": round(bx, 1), "y": round(by, 1), "w": round(bw, 1), "h": round(bh, 1)}
 
 W, H = 1600, 1300
 TEAM = {
@@ -26,6 +32,7 @@ WORK = {"scout": (1, "notice_watch.py"), "analysis": (0, ""), "build": (2, "buil
 AWAY = {"audit": 1}
 CX = [24, 417, 810, 1203]; CW = 373
 R1, R2, RH, R3, RH3 = 100, 460, 340, 820, 455
+LAYOUT = {"W": W, "H": H, "seats": {}, "rooms": {}, "boss": {}, "board": {}, "gapY": [R1 + RH + 10, R2 + RH + 10]}
 ROOMS = [("scout", CX[0], R1), ("analysis", CX[1], R1), ("build", CX[2], R1), ("audit", CX[3], R1),
          ("mail", CX[0], R2), ("pt", CX[1], R2), ("retro", CX[2], R2)]
 mix = sc.mix
@@ -213,7 +220,7 @@ def team_room(key, x, y):
     rug_c = mix(color, OS["floor"], OS["rug_mix"])
     g.append(poly([(x + 70, wb + 22), (x + CW - 70, wb + 22), (x + CW - 30, y + RH - 10), (x + 30, y + RH - 10)], rug_c, f'stroke="{OS["trim"]}" stroke-width="1.6" opacity=".95"'))
     back, front = (n + 1) // 2, n // 2
-    looks = sc.ROSTER[key]; order = list(range(n)); occ = set(order[:busy]); away = set(order[busy:busy + AWAY.get(key, 0)])
+    looks = sc.ROSTER[key]; order = list(range(n)); occ = set(order[:busy]); away = set() if ASSETS else set(order[busy:busy + AWAY.get(key, 0)])
     mx = max(back, front); sp = min(100, (CW - 70) / mx); sf = min(0.46, sp / 205)
     rows = [(back, y + 222, sf * 0.84, sp * 0.86, 0), (front, y + 306, sf, sp, back)]
     heads, report = [], None
@@ -224,6 +231,15 @@ def team_room(key, x, y):
         for j in range(cnt):
             i = off + j; sx = cx0 + j * sp
             g.append(chair(sx, yt, s))
+            if ASSETS:
+                n_ = sc.ROSTER[key][i]; hy = yt - (230 if n_["hat"] else 172) * s; box = (sx - 120 * s, yt - 280 * s, 240 * s, 280 * s + 8)
+                seat = {"team": key, "i": i, "name": n_["name"], "hx": round(sx, 1), "hy": round(hy, 1), "fx": round(sx, 1), "fy": round(yt + 4, 1),
+                        "work": sprite(f"seat_{key}_{i}_work.svg", box, char(n_, sx, yt, s, color, True) + laptop(sx, yt, s, True, color)),
+                        "idle": sprite(f"seat_{key}_{i}_idle.svg", box, char(n_, sx, yt, s, color, False) + laptop(sx, yt, s, False, color))}
+                st_svg = sc.svg(n_, nid(), team=color, working=True, pose="side", size=(240 * 0.34, 400 * 0.34))
+                open(os.path.join(ASSETS, f"stand_{key}_{i}.svg"), "w", encoding="utf-8").write(st_svg)
+                seat["stand"] = {"file": f"stand_{key}_{i}.svg", "w": 240 * 0.34, "h": 400 * 0.34, "feet": (205 + 180) / 400}
+                LAYOUT["seats"].setdefault(key, []).append(seat); continue
             if i in away:
                 report = looks[i]; heads.append((sx, yt - 120 * s, "away")); g.append(laptop(sx, yt, s, False, color)); continue
             g.append(char(looks[i], sx, yt, s, color, i in occ))
@@ -231,6 +247,9 @@ def team_room(key, x, y):
     g.append(plant(x + 26, y + RH - 14, 0.9)); g.append(plant(x + CW - 26, y + RH - 14, 0.9))
     g = close(g, x, y, CW, RH)
     g.append(plaque(x + dx + 8, top + 8, no, name, color))
+    if ASSETS:
+        LAYOUT["rooms"][key] = {"x": x, "y": y, "w": CW, "h": RH, "badge": [x + dx + 8, top + 48], "door": [x + CW / 2, y + RH - 14], "name": name, "color": color, "n": n}
+        g.append(T(x + CW / 2, y + RH + 18, sub, 12, "#7a6a58" if not OS["night"] else "#9aa6bc", 400, "middle")); return g, None
     g.append(f'<rect x="{x + dx + 8}" y="{top + 48}" width="{tw(f"작업 {busy} / {n}석", 13) + 20}" height="22" rx="11" fill="{"#2f9a5a" if busy else "#8a909c"}"/>' + T(x + dx + 18, top + 64, f"작업 {busy} / {n}석", 13, "#ffffff"))
     g.append(T(x + CW / 2, y + RH + 18, sub, 12, "#7a6a58" if not OS["night"] else "#9aa6bc", 400, "middle"))
     for hx, hy, st in heads:
@@ -254,15 +273,19 @@ def boss_room(x, y, reporter):
     g.append(poly([(x + 60, wb + 26), (x + CW - 60, wb + 26), (x + CW - 24, y + RH - 10), (x + 24, y + RH - 10)], mix("#b48a5a", OS["floor"], 0.4), f'stroke="{OS["trim"]}" stroke-width="1.6"'))
     cx, yt, s = x + CW / 2 + 40, y + 268, 0.5
     g.append(f'<rect x="{cx - 50 * s:.1f}" y="{yt - 190 * s:.1f}" width="{100 * s:.1f}" height="{190 * s:.1f}" rx="{24 * s:.1f}" fill="#5a2f25"/>')
-    g.append(char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type"))
+    if ASSETS:
+        LAYOUT["boss"] = {"sprite": sprite("boss_work.svg", (cx - 90, yt - 280 * s, 180, 280 * s + 8), char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type") + laptop(cx - 62, yt, 0.4, True, "#c9a45c")),
+                          "hx": cx, "hy": yt - 232 * s, "spot": [x + 80, y + RH - 16], "door": [x + CW / 2, y + RH - 14], "room": {"x": x, "y": y, "w": CW, "h": RH}, "name": sc.BOSS_LOOK["name"]}
+    else: g.append(char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type"))
     top_, front, edge = DESK
     g.append(f'<polygon points="{cx - 100},{yt - 14} {cx + 100},{yt - 14} {cx + 112},{yt} {cx - 112},{yt}" fill="{top_}" stroke="{mix(front, "#000000", 0.2)}"/><rect x="{cx - 112}" y="{yt}" width="224" height="40" fill="{front}"/><rect x="{cx - 112}" y="{yt}" width="224" height="2" fill="{edge}"/>')
     g.append(f'<rect x="{cx + 40}" y="{yt + 8}" width="52" height="14" rx="2" fill="#c9a45c"/>' + T(cx + 66, yt + 19, "본부장", 9, "#1b2433", 800, "middle"))
-    g.append(laptop(cx - 62, yt, 0.4, True, "#c9a45c"))
-    if reporter: g.append(char(reporter, x + 76, y + RH - 16, 0.34, TEAM["audit"][2], True, pose="hold", stand=True))
+    if not ASSETS: g.append(laptop(cx - 62, yt, 0.4, True, "#c9a45c"))
+    if reporter and not ASSETS: g.append(char(reporter, x + 76, y + RH - 16, 0.34, TEAM["audit"][2], True, pose="hold", stand=True))
     g.append(plant(x + CW - 26, y + RH - 14, 0.9))
     g = close(g, x, y, CW, RH)
     g.append(plaque(x + dx + 8, top + 8, "", "본부장실", "#c9a45c"))
+    if ASSETS: return g
     if reporter: g.append(bubble(x + 120, y + RH - 16 - 385 * 0.34 + 34, f"{reporter['name']}: 검증 결과 보고드립니다", sz=12))
     g.append(bubble(cx + 50, yt - 240 * s, "확인! 수고했어!", bg="#fff6dc", sz=12))
     g.append(dot(cx + 30, yt - 232 * s, "on"))
@@ -275,6 +298,15 @@ def board_room(x, y, w, h):
     g, (top, wb, dx) = shell(x, y, w, h, dx=60, bh=372)
     BX0, BY0, BX1, BY1 = x + dx + 18, top + 52, x + w - dx - 18, wb - 30
     g.append(f'<rect x="{BX0 - 5}" y="{BY0 - 5}" width="{BX1 - BX0 + 10}" height="{BY1 - BY0 + 10}" rx="14" fill="{OS["board_frame"]}"/><rect x="{BX0}" y="{BY0}" width="{BX1 - BX0}" height="{BY1 - BY0}" rx="10" fill="{grad("linearGradient", [(0, "#1d2740", 1), (1, OS["board"], 1)], x1=0, y1=0, x2=0, y2=1)}"/>')
+    if ASSETS:
+        LAYOUT["board"] = {"x": BX0, "y": BY0, "w": BX1 - BX0, "h": BY1 - BY0}
+        g.append(plant(x + 40, y + h - 10, 1.0)); g.append(plant(x + w - 40, y + h - 10, 1.0)); g = close(g, x, y, w, h)
+        g.append(plaque(x + dx + 18, top + 10, "", "상황실 · 단지 현황판", "#c9a45c"))
+        g.append(f'<rect x="{x + dx + 270}" y="{top + 16}" width="150" height="22" rx="11" fill="#2f9a5a"/>' + T(x + dx + 345, top + 32, "입찰현황판.md 실시간", 12, "#ffffff", anchor="middle"))
+        lx = x + w - dx - 470
+        g.append(f'<rect x="{lx}" y="{top + 12}" width="452" height="30" rx="15" fill="#fffaf0" stroke="#dccfb7"/>' + dot(lx + 20, top + 27, "on") + T(lx + 34, top + 32, "작업 중", 13, "#2b2018")
+                 + dot(lx + 112, top + 27, "off") + T(lx + 124, top + 32, "자리 대기(눈 감고 휴식)", 13, "#2b2018") + dot(lx + 300, top + 27, "away") + T(lx + 312, top + 32, "본부장실 보고 중", 13, "#2b2018"))
+        return g
     rows = json.load(open(os.path.join(HERE, "board_snap.json"), encoding="utf-8")); today = datetime.date.today()
     STG = [("scout", "#d9a441"), ("analysis", "#5f95db"), ("build", "#5cb87a"), ("audit", "#e07a68"), ("ready", "#ef8a3c"), ("mail", "#a77fd6"), ("pt", "#e6ad3c"), ("retro", "#4fb8b0")]
     RIGHT = BX0 + 1010; yy = BY0 + 14; pt = next((q for q in rows if q["pt_ok"]), None)
@@ -342,6 +374,13 @@ for key, x, y in ROOMS:
     g, rep = team_room(key, x, y); body += g; report = report or rep
 body += boss_room(CX[3], R2, report)
 body += board_room(CX[0], R3, CX[3] + CW - CX[0], RH3)
+if ASSETS:
+    bg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}"><defs><filter id="blur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="8"/></filter>{"".join(DEFS)}</defs>'
+          f'<rect width="{W}" height="{H}" fill="{OS["bg"]}"/>' + "".join(body) + "</svg>")
+    open(os.path.join(ASSETS, "bg.svg"), "w", encoding="utf-8").write(bg)
+    LAYOUT.update(office=A.office, office_name=OS["name"], skin=A.skin, header=OS["header"], header2=OS["header2"], bg=OS["bg"], board_bg=OS["board"])
+    json.dump(LAYOUT, open(os.path.join(ASSETS, "layout.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print("assets", ASSETS, sum(len(v) for v in LAYOUT["seats"].values()), "seats"); raise SystemExit
 HDR = "".join(header())
 svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}"><defs><filter id="blur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="8"/></filter>{"".join(DEFS)}</defs>'
        f'<rect width="{W}" height="{H}" fill="{OS["bg"]}"/>' + HDR + "".join(body) + "</svg>")

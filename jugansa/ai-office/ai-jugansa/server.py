@@ -245,7 +245,7 @@ def translate(h):
         return {"kind": "prompt", "label": short(h.get("prompt", ""), 40), "site": site_for(str(h.get("prompt", "")) + " " + str(h.get("cwd", "")))}
     return None
 
-MIME = {".html": "text/html; charset=utf-8", ".png": "image/png", ".js": "text/javascript", ".json": "application/json"}
+MIME = {".html": "text/html; charset=utf-8", ".png": "image/png", ".js": "text/javascript", ".json": "application/json", ".svg": "image/svg+xml"}
 
 class H(BaseHTTPRequestHandler):
     def log_message(self, *a): pass
@@ -262,6 +262,8 @@ class H(BaseHTTPRequestHandler):
         u = urlparse(self.path)
         if u.path in ("/", "/index.html"): return self._file("index.html")
         if u.path.startswith("/static/"): return self._file(os.path.join("static", os.path.basename(u.path)))
+        if u.path.startswith("/v4/"): return self._file(os.path.join("static", "v4", os.path.basename(u.path)))     # v4 오피스 그림 · 배치
+        if u.path in ("/v3", "/v3/"): return self._file("index_v3.html")                                          # 옛 오픈 플로어 화면
         if u.path == "/poll":
             since = int(parse_qs(u.query).get("since", ["0"])[0])
             with LOCK: evs = [e for e in EVENTS if e["id"] > since]; seq = SEQ[0]
