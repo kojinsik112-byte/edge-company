@@ -586,7 +586,7 @@ def apply(G):
 
     k = take("이행보증보험 [[2년 · 10억]]")[1]
     k["title"] = "계약이행 · 하자보증 [[24개월]]"
-    k["lead"] = "입찰자격 6) 하자담보 이행 능력 - 협약 후 입예협을 피보험자로 계약이행 · 하자보증보험을 보증기간 24개월로 발급합니다. 보증 금액 · 기산일 · 보증 대상은 협약 때 입예협과 정합니다."
+    k["lead"] = "입찰 자격 ⑥ 계약 이행 · 하자 사후관리 - 협약 후 입예협을 피보험자로 계약이행 · 하자보증보험을 보증기간 24개월로 발급합니다. 보증 금액 · 기산일 · 보증 대상은 협약 때 입예협과 정합니다."
     # 본부장 10-17: 분당 p37과 같은 SGI 양식 기반 견본 이미지(오산 단지명 · 433세대 · $SP/bond/bond_os.html → assets_ins, 깃 제외)
     bond = '<img class="docimg" src="assets_ins/cj_bond_sample.jpg" alt="계약이행 · 하자보증보험증권 발급 예정 내용 견본">'
     k["body"] = ('<div class="nb"><div class="docx" style="grid-template-columns:1fr 1fr">'
