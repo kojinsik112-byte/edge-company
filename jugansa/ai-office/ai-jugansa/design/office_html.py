@@ -3,7 +3,7 @@
 import os, json, math, random, html, argparse, subprocess, importlib.util, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ap = argparse.ArgumentParser(); ap.add_argument("--office", default="월넛라운지"); ap.add_argument("--skin", default="마블직원_v1"); ap.add_argument("-o", "--out", default=""); ap.add_argument("--assets", default="")
+ap = argparse.ArgumentParser(); ap.add_argument("--office", default="월넛라운지"); ap.add_argument("--skin", default="원피스직원_v3"); ap.add_argument("-o", "--out", default=""); ap.add_argument("--assets", default="")
 A = ap.parse_args()
 from office_skins import OFFICE_SKINS
 OS = OFFICE_SKINS[A.office]
