@@ -18,7 +18,7 @@ def sprite(fname, box, inner):
     open(os.path.join(ASSETS, fname), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{bx:.1f} {by:.1f} {bw:.1f} {bh:.1f}" width="{bw:.1f}" height="{bh:.1f}">{inner}</svg>')
     return {"file": fname, "x": round(bx, 1), "y": round(by, 1), "w": round(bw, 1), "h": round(bh, 1)}
 
-W, H = 1600, 1440
+W, H = 1920, 1440      # 4:3 (본부장 10-31 · 방을 옆으로 넓게)
 TEAM = {
     "scout":    ("01", "개척",     "#d9a441", 4, "공고 감시 · 공고 분석 · 단지 · 카페"),
     "analysis": ("02", "착수분석", "#5f95db", 5, "손익 · 행사장 · 주관사 연구"),

@@ -7,8 +7,8 @@
 <style>
   html,body{margin:0;height:100%;background:#dfe3e8;overflow:hidden;font-family:"Malgun Gothic","Pretendard",sans-serif}
   #fit{position:absolute;inset:0;overflow:hidden}
-  #stage{position:absolute;left:0;top:0;width:1600px;height:1440px;transform-origin:0 0}
-  #bg{position:absolute;left:0;top:0;width:1600px;height:1440px}
+  #stage{position:absolute;left:0;top:0;width:1920px;height:1440px;transform-origin:0 0}
+  #bg{position:absolute;left:0;top:0;width:1920px;height:1440px}
   .seat,.walker{position:absolute;pointer-events:none}
   .seat{z-index:2}
   .walker{z-index:5;transition:opacity .25s;transform-origin:50% 96%}
@@ -22,7 +22,7 @@
   .tag{position:absolute;transform:translate(-50%,0);background:#1b2433;border:1px solid #c9a45c;color:#ffe7a6;font-size:12px;font-weight:700;border-radius:11px;padding:2px 9px;z-index:6;white-space:nowrap}
   .badge{position:absolute;color:#fff;font-size:13px;font-weight:700;border-radius:11px;padding:2px 10px;background:#8a909c;white-space:nowrap}
   .badge.on{background:#2f9a5a}
-  header{position:absolute;left:0;top:0;width:1600px;height:80px;display:flex;align-items:center;gap:12px;padding:0 24px;box-sizing:border-box;border-bottom:2px solid #c9a45c;color:#fbf3e2;z-index:8}
+  header{position:absolute;left:0;top:0;width:1920px;height:80px;display:flex;align-items:center;gap:12px;padding:0 24px;box-sizing:border-box;border-bottom:2px solid #c9a45c;color:#fbf3e2;z-index:8}
   header h1{margin:0;font-size:26px;font-weight:800}
   header small{color:#c9a45c;font-size:13px}
   .sp{flex:1}
@@ -73,7 +73,7 @@
   #ptalert{position:absolute;left:50%;top:110px;transform:translateX(-50%);z-index:9;min-width:640px;padding:16px 22px;border-radius:14px;background:rgba(29,22,8,.96);box-shadow:0 0 0 2px #c9a45c,0 18px 50px rgba(0,0,0,.5);color:#f3dfb0;font-size:15px;display:none}
   #ptalert.on{display:block}#ptalert h2{margin:0 0 6px;color:#ffd77a}
   #ptalert button{margin-top:10px;background:#c9a45c;border:0;border-radius:12px;padding:6px 16px;font-weight:800;cursor:pointer}
-  #log{position:absolute;left:30px;top:1418px;width:1540px;color:#6a7280;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #log{position:absolute;left:30px;top:1418px;width:1860px;color:#6a7280;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #memos{position:absolute;right:26px;top:88px;display:flex;flex-direction:column;gap:6px;align-items:flex-end;z-index:8}
   #memos div{background:#1b2433;color:#ffe7a6;border:1px solid #c9a45c;border-radius:12px;padding:4px 12px;font-size:12px;font-weight:700}
 </style>
@@ -119,13 +119,13 @@ let boardRows = [];
 const el = (tag, cls, css) => { const e = document.createElement(tag); if (cls) e.className = cls; if (css) Object.assign(e.style, css); layer.appendChild(e); return e; };
 const px = v => v + "px";
 
-function fit(){ const H = L ? L.H : 1440, k = Math.min(innerWidth / 1600, innerHeight / H); const st = $("stage"); st.style.transform = `scale(${k})`; st.style.left = px((innerWidth - 1600*k) / 2); }
+function fit(){ const H = L ? L.H : 1440, Wd = L ? L.W : 1920, k = Math.min(innerWidth / Wd, innerHeight / H); const st = $("stage"); st.style.transform = `scale(${k})`; st.style.left = px((innerWidth - Wd*k) / 2); }
 addEventListener("resize", fit);
 
 // ───────── 자리 · 캐릭터 ─────────
 async function init(){
   L = await (await fetch("/v4/layout.json", {cache:"no-store"})).json();
-  $("stage").style.height = $("bg").style.height = px(L.H); $("bg").src = "/v4/bg.svg"; document.body.style.background = L.bg;
+  $("stage").style.height = $("bg").style.height = px(L.H); $("stage").style.width = $("bg").style.width = $("hd").style.width = px(L.W); $("bg").src = "/v4/bg.svg"; document.body.style.background = L.bg;
   $("hd").style.background = `linear-gradient(${L.header},${L.header2})`;
   $("sub").textContent = `EDGE COMPANY · ${L.office_name} · ${(L.skin || "").replace("_", " ")}`;
   const b = L.board; Object.assign($("board").style, {left:px(b.x), top:px(b.y), width:px(b.w), height:px(b.h)});
