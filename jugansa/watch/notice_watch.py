@@ -43,8 +43,13 @@ def node_exe():
 try:
     from dotenv import load_dotenv
     load_dotenv(ROOT / "design-division" / ".env")
-except Exception:
-    pass
+except Exception:                       # python-dotenv가 없어도 .env를 직접 읽는다
+    _env = ROOT / "design-division" / ".env"
+    if _env.exists():
+        for _l in _env.read_text(encoding="utf-8-sig").splitlines():
+            if "=" in _l and not _l.strip().startswith("#"):
+                _k, _v = _l.split("=", 1)
+                os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
 
 
 def clean(t):
