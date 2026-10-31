@@ -440,7 +440,7 @@ def main():
     have_saeop = os.path.exists(SAEOP)
     if not have_saeop:
         BLANKS.append("⑦ 사업장 가입증명서")
-    g7 = [("4대 보험 사업장 가입증명서", "공단 발급본" if have_saeop else "발급본 넣을 자리(빈칸)"),
+    g7 = [("4대 보험 사업장 가입증명서", "고용 · 산재보험 가입증명원(근로복지공단 · 2026.10.31 발급 · 제출용)" if have_saeop else "발급본 넣을 자리(빈칸)"),
           ("사업장가입자 명부", f"{D.ROSTER_DATE} 발급 · 국민연금 · 건강 · 산재 · 고용 · 13명"),
           ("4대 사회보험료 완납증명서 · 고용 · 산재보험료 완납증명서", "2026.10.23 · 10.24 발급"),
           ("조직도", "대표이사 · 주관사업 총괄 본부장 · 4개 팀(제안서 조직 구성 쪽)")]
@@ -450,7 +450,7 @@ def main():
     _o = org_page(prop)
     d7.insert_pdf(prop, from_page=_o, to_page=_o)
     docs["⑦"] = d7
-    desc["⑦"] = f"명부 {D.ROSTER_DATE} · 완납증명 · 조직도" + ("" if have_saeop else " · 가입증명서 빈칸")
+    desc["⑦"] = ("가입증명원 2026.10.31 · " if have_saeop else "") + f"명부 {D.ROSTER_DATE} · 완납증명 · 조직도" + ("" if have_saeop else " · 가입증명서 빈칸")
 
     d8 = fitz.open(render("08_안내", doc("⑧ 안내", [p08_guide()])))
     d8.insert_pdf(fitz.open(render("08_붙임", doc("⑧ 붙임", ev8_pages(seal_uri)))))
