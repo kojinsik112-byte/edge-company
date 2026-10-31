@@ -285,7 +285,7 @@ def mouth(lk):
 def face_extras(lk):
     ex, s, sk = lk["ex"], "", lk["skin"]
     op = {"cute": .5, "glam": .4, "cool": .18, "fun": .32}.get(lk["vibe"], .38)
-    if lk["eyes"] not in ("skull", "hawk"): s += f'<ellipse cx="-27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/><ellipse cx="27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/>'
+    if lk["eyes"] not in ("skull", "hawk") and "no_blush" not in lk["ex"]: s += f'<ellipse cx="-27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/><ellipse cx="27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/>'
     if not any(k in ex for k in ("long_nose", "red_nose", "blue_nose")) and lk["eyes"] != "skull":
         s += f'<path d="M -1,17 Q 1,19 2,17" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
     if "scar_luffy" in ex: s += '<path d="M -31,24 L -15,24 M -28,21 L -28,27 M -22,21 L -22,27 M -18,21 L -18,27" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>'
@@ -1075,6 +1075,8 @@ OP_FACES = {
     "sharp": "M -45,-6 C -46,-40 -25,-55 0,-55 C 25,-55 46,-40 45,-6 C 44,14 33,34 14,45 Q 0,51 -14,45 C -33,34 -44,14 -45,-6 Z",
     # 각진 턱(조로 · 스모커 · 키드 · 샹크스)
     "square": "M -47,-6 C -48,-40 -26,-56 0,-56 C 26,-56 48,-40 47,-6 L 46,16 Q 44,33 28,41 L 13,46 L -13,46 L -28,41 Q -44,33 -46,16 Z",
+    # 마른 각진 얼굴(조로 · 본부장 10-31 '저렇게 통통하지 않다'): 볼 좁게 · 광대 아래로 곧게 내려와 각진 턱
+    "lean": "M -42,-8 C -44,-42 -24,-56 0,-56 C 24,-56 44,-42 42,-8 L 39,12 Q 36,28 24,40 L 10,49 Q 0,52 -10,49 L -24,40 Q -36,28 -39,12 Z",
     # 넓고 큰 턱(가프 · 프랑키 · 흰수염)
     "jaw": "M -47,-10 C -49,-46 -26,-57 0,-57 C 26,-57 49,-46 47,-10 L 50,18 Q 49,40 32,48 L 15,53 L -15,53 L -32,48 Q -49,40 -50,18 Z",
     # 긴 얼굴(미호크 · 크로커다일 · 마르코 · 로우 · 브룩)
@@ -1084,10 +1086,11 @@ OP_FACE_OF = {
     "나미": "vchin", "비비": "vchin", "로빈": "vchin", "핸콕": "vchin", "우타": "vchin", "히요리": "vchin", "레베카": "vchin",
     "오키쿠": "vchin", "타시기": "vchin", "야마토": "vchin",
     "상디": "sharp", "에이스": "sharp", "사보": "sharp", "코비": "sharp",
-    "조로": "square", "스모커": "square", "키드": "square", "샹크스": "square",
+    "조로": "lean", "스모커": "square", "키드": "square", "샹크스": "square",
     "가프": "jaw", "프랑키": "jaw", "흰수염": "jaw",
     "미호크": "long", "크로커다일": "long", "마르코": "long", "로우": "long", "브룩": "long",
 }
 for _lk in [BOSS_LOOK] + [l for _l in ROSTER.values() for l in _l]:
     if _lk["name"] in OP_FACE_OF: _lk["face_d"] = OP_FACES[OP_FACE_OF[_lk["name"]]]
     if _lk["name"] == "가프": _lk["beard_w"] = 1.1      # 넓은 턱(jaw)을 수염이 덮게
+    if _lk["name"] == "조로": _lk["ex"].append("no_blush")      # 마른 얼굴 · 볼 홍조 없음 (본부장 10-31 '통통하지 않다')
