@@ -350,7 +350,7 @@ function handle(ev){
       if (s){ s.lastWork = performance.now(); s.label = (ev.team_kr ? ev.team_kr + " · " : "") + (ev.label || ev.tool || ""); setState(s, "work"); }
       touchSite(ev.site || curSite, st || "", ev.team_kr);
     } else {
-      if (st) assign(st, ev.label || ev.tool || "");
+      if (st){ const s = assign(st, ev.label || ev.tool || ""); if (s) s.sid = ev.sid || ""; }
       if (ev.call) bossSay("팀 호출 → " + ev.call);
       touchSite(ev.site, st || "", "");
     }
@@ -366,7 +366,7 @@ function handle(ev){
     setLog("메모: " + ev.label); render();
   } else if (k === "rest"){
     // 지시 하나가 끝남: 가장 최근에 일한 1명이 대표로 보고, 나머지는 자리에서 쉰다. 다른 세션의 팀(에이전트)은 그대로 일한다
-    const now = performance.now(), mine = seats.filter(s => s.state === "work" && (!s.agent || now - s.lastWork > 60000));
+    const now = performance.now(), mine = seats.filter(s => s.state === "work" && (!s.agent || now - s.lastWork > 60000) && (!ev.sid || !s.sid || s.sid === ev.sid));   // 끝난 세션의 일만 (본부장 10-31)
     const rep = mine.sort((a, b) => b.lastWork - a.lastWork)[0];
     for (const s of mine){ if (s === rep) continue; s.agent = null; setState(s, "idle", ""); }
     if (rep){ rep.agent = null; report(rep); }

@@ -183,8 +183,10 @@ def haystack(tool, ti):
         if k in ti: parts.append(str(ti[k])[:400])
     return " ".join(parts)
 
-INTAKE = r"[\\/]uploads[\\/]|[\\/]자료[\\/]|evidence|seal_scan|[\\/]images[\\/]|스크랩|\.(jpe?g|png|webp|pdf|hwpx?|docx?|xlsx?)$"
-INTAKE_PROMPT = r"첨부|올렸|올려|올린|자료|사진|이미지|캡처|스크랩|파일|보낸|보내|https?://"
+INTAKE = r"[\\/]uploads[\\/]|[\\/]자료[\\/]|evidence|seal_scan|[\\/]images[\\/]|스크랩"      # 본부장이 넣어 준 자료 폴더
+INTAKE_EXT = r"\.(jpe?g|png|webp|pdf|hwpx?|docx?|xlsx?)$"     # 단계 이름이 없는 그림 · 문서
+INTAKE_PROMPT = r"올렸|올려|올린|자료|사진|이미지|캡처|스크랩|https?://"
+MAIL_PROMPT = r"메일|발송|보내|보낸|보냈|압축|zip|첨부"      # 메일 검사 · 발송 질문 = 발송팀 (본부장 10-31 '발송팀이 일을 안 한다')
 LOG_CMD = r"git (commit|push|log)|입찰현황판|events\.log"
 def later(ev, sec):                     # 다른 신호 뒤에 한 번 더 (화면에 팀이 움직이게)
     threading.Timer(sec, lambda: push(ev)).start()
@@ -202,6 +204,7 @@ def stage_for(tool, ti):
     h = haystack(tool, ti)
     for room, rx in PATH_RULES:
         if re.search(rx, h, re.I): return room
+    if tool == "Read" and re.search(INTAKE_EXT, str((ti or {}).get("file_path", "")), re.I): return "scout"   # mail_final.png 처럼 단계 이름이 있으면 그 팀이 먼저
     return "office"
 
 LOCK = threading.Lock(); EVENTS = []; SEQ = [0]; SEEN = set()
@@ -239,7 +242,7 @@ def translate(h):
         room = stage_for(tool, ti); sid = h.get("session_id", "")
         if room != "office": STICKY[sid] = (room, time.time())
         elif tool in WORK_TOOLS and sid in STICKY and time.time() - STICKY[sid][1] < 300: room = STICKY[sid][0]   # 단계가 안 보이는 잔손질은 그 세션의 직전 단계로
-        return {"kind": "work", "who": BOSS, "room": room, "team": "", "team_kr": "본부장", "tool": tool, "label": label_for(tool, ti), "site": site_for(haystack(tool, ti)),
+        return {"kind": "work", "who": BOSS, "room": room, "team": "", "team_kr": "본부장", "tool": tool, "label": label_for(tool, ti), "site": site_for(haystack(tool, ti)), "sid": sid[:8],
                 "call": str(ti.get("subagent_type", "")) if tool == "Agent" else ""}
     if name == "PostToolUse":
         return {"kind": "done", "who": CHAR_OF_ROOM[TEAM_ROOM.get(team, "analysis")] if team else BOSS, "tool": tool}
@@ -247,12 +250,15 @@ def translate(h):
         return {"kind": "memo", "memo_type": h.get("notification_type", "notice"), "label": short(h.get("title") or h.get("message") or "알림", 36)}
     if name in ("Stop", "SessionEnd"):
         if name == "Stop": later({"kind": "work", "who": BOSS, "room": "retro", "team": "", "team_kr": "결과·관제", "tool": "기록", "label": "작업 기록 · 현황 정리", "site": ""}, 2.5)
-        return {"kind": "rest", "reason": name}
+        return {"kind": "rest", "reason": name, "sid": str(h.get("session_id", ""))[:8]}     # 그 세션 일만 쉬게 (다른 세션의 발송 · 제작은 계속)
     if name == "SessionStart":
         find_board(h.get("cwd"))
         return {"kind": "start", "source": h.get("source", ""), "model": h.get("model", ""), "cwd": os.path.basename(h.get("cwd", "") or "")}
     if name == "UserPromptSubmit":
-        if re.search(INTAKE_PROMPT, str(h.get("prompt", ""))):
+        if re.search(MAIL_PROMPT, str(h.get("prompt", "")), re.I):
+            later({"kind": "work", "who": BOSS, "room": "mail", "team": "", "team_kr": "발송팀", "tool": "검사", "label": "메일 · 첨부 확인",
+                   "site": site_for(str(h.get("prompt", "")) + " " + str(h.get("cwd", ""))), "sid": str(h.get("session_id", ""))[:8]}, 0.6)
+        elif re.search(INTAKE_PROMPT, str(h.get("prompt", ""))):
             later({"kind": "work", "who": BOSS, "room": "scout", "team": "", "team_kr": "개척팀", "tool": "자료", "label": "본부장 자료 확인", "site": site_for(str(h.get("prompt", "")))}, 0.6)
         return {"kind": "prompt", "label": short(h.get("prompt", ""), 40), "site": site_for(str(h.get("prompt", "")) + " " + str(h.get("cwd", "")))}
     return None
