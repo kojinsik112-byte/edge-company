@@ -1365,7 +1365,7 @@ DK, BR, PL = "#8a5a3a", "#7a4a2a", "#f2e2c8"
 BOSS_LOOK = M("아이언맨", iron_style="C", head_k=0.9, hs="bald", suit="#c8202a", hat="m_iron", mv_top="iron", glove="#c8202a", legs="#c8202a", boots="#c8202a", boot_top=176, iron_arms=True, iron_legs=True, mvp=["repulsor"], ex=["no_ears", "burly"])
 ROSTER = {
     "scout": [
-        M("스파이더맨", hs="bald", suit="#d42430", hat="m_spidey", head_k=0.86, mv_top="spidey", legs="#2a4fb0", boots="#d42430", boot_top=150, glove="#d42430", ex=["no_ears"]),
+        M("스파이더맨", hs="bald", suit="#d42430", hat="m_spidey", head_k=0.95, mv_top="spidey", legs="#2a4fb0", boots="#d42430", boot_top=150, glove="#d42430", ex=["no_ears"]),
         M("블랙위도우", hs="long", hair="#c8442a", suit="#1a1a22", mv_top="widow", legs="#1a1a22", boots="#1a1a22", boot_top=150, girl=True, vibe="glam", mouth="lips", mvp=["batons"], eyec="#3a6a5a"),
         M("호크아이", hs="short", hair="#8a6a3a", suit="#2a2a34", mv_top="hawkeye", legs="#2a2a34", boots="#1a1a22", glove="#3a2a4a", mvp=["bow"], mvb=["quiver"], eyec="#3a5a7a"),
         M("앤트맨", hs="bald", suit="#c8202a", hat="m_antman", mv_top="antman", legs="#c8202a", boots="#1a1a22", glove="#1a1a22", ex=["no_ears"]),
