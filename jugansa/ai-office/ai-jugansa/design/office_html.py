@@ -629,11 +629,14 @@ for key, x, y in ROOMS:
     g, rep = team_room(key, x, y); body += g; report = report or rep
 body += boss_room(CX[3], R2, report)
 body += board_room(CX[0], R3, CX[3] + CWS[3] - CX[0], RH3)
-BX, BY = CX[0] + 34, R1 + RH + 26          # 벤치: 개척(위) · 착수분석(아래) 사이 복도, 위쪽 벽에 붙임
-b_back, b_front, b_st, b_w = bench_parts(BX, BY)
-body.append(b_back)
-if ASSETS: LAYOUT["bench"] = {"front": sprite("bench_front.svg", (BX - 2, b_st - 6, b_w + 4, BY - b_st + 8), b_front),
-                              "seats": [[BX + b_w * 0.28, b_st], [BX + b_w * 0.72, b_st]], "y": R1 + RH + CORR / 2 + 8}
+LAYOUT["bench"] = {"fronts": [], "seats": []}     # 2인용 벤치 2개: 개척팀 앞 · 착수분석팀 앞 복도 위쪽 벽 (본부장 10-31)
+for k_, (BX, RY) in enumerate([(CX[0] + 20, R1), (CX[0] + 20, R2)]):      # 조금 더 왼쪽 벽 쪽으로 (본부장 10-31)
+    BY = RY + RH + 26
+    b_back, b_front, b_st, b_w = bench_parts(BX, BY)
+    body.append(b_back)
+    if ASSETS:
+        LAYOUT["bench"]["fronts"].append(sprite(f"bench_front_{k_}.svg", (BX - 2, b_st - 6, b_w + 4, BY - b_st + 8), b_front))
+        LAYOUT["bench"]["seats"] += [[BX + b_w * 0.28, b_st, RY + RH + CORR / 2 + 8], [BX + b_w * 0.72, b_st, RY + RH + CORR / 2 + 8]]
 for vx_, vy_, vc_, vl_ in VEND: body.append(f'<g transform="translate({vx_},{vy_}) scale({VK}) translate({-vx_},{-vy_})">{vending(vx_, vy_, vc_, vl_)}</g>')     # 방 위에 그림 (본부장 10-31 '방보다 위로')
 if ASSETS:
     bg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}"><defs><filter id="blur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="8"/></filter>{FILTERS}{"".join(DEFS)}</defs>'
