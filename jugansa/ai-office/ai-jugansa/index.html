@@ -334,7 +334,7 @@ function frame(now){
 
 // ───────── 이벤트 (훅 신호) ─────────
 function setLog(t){ $("log").textContent = t; }
-function touchSite(site, stage, team){ if (!site) return; const s = sites[site] || (sites[site] = {stage:"", t:0, teams:[]}); if (stage) s.stage = stage; s.t = Date.now(); if (team && !s.teams.includes(team)){ s.teams.push(team); s.teams = s.teams.slice(-4); } curSite = site; renderBoard(); }
+function touchSite(site, stage, team){ if (!site) return; const s = sites[site] || (sites[site] = {stage:"", t:0, teams:[]}); if (stage && stage !== "retro") s.stage = stage; /* 커밋 · 기록(결과·관제)은 단지 단계를 바꾸지 않음 (본부장 10-31) */ s.t = Date.now(); if (team && !s.teams.includes(team)){ s.teams.push(team); s.teams = s.teams.slice(-4); } curSite = site; renderBoard(); }
 const agentSeat = {};
 function handle(ev){
   const k = ev.kind, st = STATIONS[ev.room] ? ev.room : null;
@@ -400,7 +400,8 @@ function renderBoard(){
   $("ptbar").innerHTML = pts.map(r => `<div class="ptc${r.pt_dday <= 3 ? " near" : ""}"><span class="t">2차 PT 확정</span><span class="w">${esc(r.name)} &nbsp; ${esc(ptWhen(r))} &nbsp; ${esc(r.pt_place || "")}${r.pt_more ? `<small>${esc(r.pt_more)}</small>` : ""}</span><span class="d">${r.pt_dday === 0 ? "오늘 PT" : "D-" + r.pt_dday}</span></div>`).join("");
   $("rows").innerHTML = rows.filter(r => !(r.pt_ok && r.pt_dday >= 0)).map(r => {
     const s = sites[r.site] || {stage:"", t:0}, stale = !s.t || Date.now() - s.t > SITE_STALE_MS;
-    const live = !r.done && !stale && s.stage && s.stage !== "pt", lv = live && s.stage === "mail" && r.stage !== "mail" ? "ready" : s.stage;
+    let live = !r.done && !stale && s.stage && s.stage !== "pt", lv = live && s.stage === "mail" && r.stage !== "mail" ? "ready" : s.stage;
+    if (live && r.stage && BOARD_ORDER.indexOf(lv) < BOARD_ORDER.indexOf(r.stage)) live = false;      // 현황판 단계보다 뒤로 가지 않음 (자료 다시 보기 · 수정은 현재 단계 그대로)
     const stage = live ? lv : (r.stage || (s.stage !== "pt" ? s.stage : "") || "analysis"), si = BOARD_ORDER.indexOf(stage);
     const urgent = r.dday !== null && r.dday <= 3 && !r.done;
     const dtxt = r.done ? "제출" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";

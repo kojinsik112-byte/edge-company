@@ -84,7 +84,7 @@ def parse_date(txt, today):
     except ValueError: return None, ""
     return d, (f"{m.group(3)}:{m.group(4)}" if m.group(3) else "")
 
-STAGE_KEY = {"발송대기": "ready", "개척": "scout", "착수": "analysis", "착수분석": "analysis", "제작": "build", "검증": "audit",
+STAGE_KEY = {"발송대기": "ready", "개척": "scout", "착수": "analysis", "착수분석": "analysis", "제작": "build", "빌드": "build", "검증": "audit",
              "발송": "mail", "PT": "pt", "관제": "retro", "결과": "retro", "결과·관제": "retro"}
 
 def board():
@@ -100,7 +100,8 @@ def board():
         if son and not ln.startswith("|"): son = False
         if not son or ln.startswith("|---") or ln.startswith("| ---"): continue
         c = [x.strip() for x in ln.strip().strip("|").split("|")]
-        if len(c) >= 2 and STAGE_KEY.get(c[1].replace(" ", "")): stage_of[c[0]] = STAGE_KEY[c[1].replace(" ", "")]
+        w = re.sub(r"[(（].*", "", c[1]).replace(" ", "") if len(c) >= 2 else ""      # '빌드(확인본)' → 빌드 (본부장 10-31)
+        if STAGE_KEY.get(w): stage_of[c[0]] = STAGE_KEY[w]
     for ln in lines:
         if ln.startswith("| 단지 |") and "제출 마감" in ln: on = True; continue
         if on and not ln.startswith("|"): on = False
