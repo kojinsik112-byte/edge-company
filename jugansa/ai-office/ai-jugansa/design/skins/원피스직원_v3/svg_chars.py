@@ -65,7 +65,7 @@ ROSTER = {
     "pt": [
         C("우타", "uta", "#e0483c", "dress", "#ffffff", "#6a6a7a", hair2="#f6f6f8", eyec="#8c4bd0", girl=True, vibe="cute", pose="sing", props=["mic"], ex=["headphones"], legs="#f6f6f8"),
         C("핸콕", "blunt", "#1f1d26", "dress", "#d03a32", "#ffffff", eyec="#3a3a7a", mouth="lips", girl=True, vibe="glam", pose="hip", ex=["snake_earrings"], legs="#f6e0d0"),
-        C("시라호시", "long_wavy", "#f6a6c8", "dress", "#fbd3e2", "#ffffff", hat="crown", eyec="#4a90d8", girl=True, vibe="cute", pose="side", ex=["mermaid_tail", "earrings_gold"]),   # 레베카 대신 (본부장 10-31) · 인어 공주
+        C("시라호시", "long_wavy", "#f6a6c8", "dress", "#fbd3e2", "#ffffff", hat="crown", eyec="#4a90d8", girl=True, vibe="cute", pose="side", ex=["mermaid_tail", "earrings_gold", "tall_slim", "giant"]),   # 레베카 대신 (본부장 10-31) · 인어 공주
         C("히요리", "blunt", "#1f1d26", "kimono", "#ec6a84", "#ffffff", "#f4d35a", eyec="#4a2a3a", girl=True, vibe="glam", pose="hold", props=["fan"], ex=["kanzashi"], legs="#ec6a84"),
     ],
     "retro": [
@@ -114,16 +114,11 @@ def hair_front(lk):
     elif hs == "blunt":
         p = CAP + "L 48,-6 Q 0,-12 -48,-6 Z"
         extra = f'<path d="M 40,-14 Q 54,22 46,60 L 57,58 Q 62,10 50,-14 Z M -40,-14 Q -54,22 -46,60 L -57,58 Q -62,10 -50,-14 Z" {H}/>'
-    elif hs == "wavy":       # 사보: 앞머리는 윗머리 · 앞머리만 (옆은 뒷머리의 물결 머리가 맡음 → 선이 두 겹으로 겹치지 않게)
-        p = "M -50,-8 C -56,-48 -28,-72 0,-72 C 28,-72 56,-48 50,-8 L 48,-4 " + strands([(48, -4), (40, -20), (30, -6), (18, -28), (4, -12), (-10, -34), (-24, -18), (-36, -28), (-46, -6), (-50, -8)]) + "Z"
-        # 옆 물결 머리를 앞 머리 위에 '선 없이' 한 번 더 칠해 윗머리 옆 테두리를 지우고, 바깥 · 얼굴 쪽 테두리만 다시 그린다 → 한 덩어리 (본부장 10-31)
-        F = 'fill="url(#hair§)" stroke="none"'; L = f'stroke="{INK}" stroke-width="2.2" fill="none" stroke-linejoin="round" stroke-linecap="round"'
-        for sx in (-1, 1):
-            extra += (f'<path d="M {sx * 20},-62 Q {sx * 52},-64 {sx * 62},-38 Q {sx * 70},-22 {sx * 63},-8 Q {sx * 72},8 {sx * 64},22 Q {sx * 70},38 {sx * 56},46 '
-                      f'Q {sx * 48},50 {sx * 44},42 Q {sx * 50},32 {sx * 46},22 Q {sx * 50},8 {sx * 46},-4 L {sx * 40},-20 L {sx * 30},-30 Q {sx * 28},-50 {sx * 10},-54 Z" {F}/>'
-                      f'<path d="M {sx * 34},-63 Q {sx * 52},-64 {sx * 62},-38 Q {sx * 70},-22 {sx * 63},-8 Q {sx * 72},8 {sx * 64},22 Q {sx * 70},38 {sx * 56},46 '
-                      f'Q {sx * 48},50 {sx * 44},42 Q {sx * 50},32 {sx * 46},22 Q {sx * 50},8 {sx * 46},-4 L {sx * 40},-20" {L}/>'
-                      f'<path d="M {sx * 58},-30 Q {sx * 64},-18 {sx * 57},-8 M {sx * 58},6 Q {sx * 64},16 {sx * 56},26 M {sx * 56},34 Q {sx * 60},40 {sx * 52},44" stroke="{INK}" stroke-width="1.3" fill="none" opacity=".4"/>')
+    elif hs == "wavy":       # 사보 (본부장 10-31 사진): 모자 아래 머리에 붙어 턱선까지 · 끝만 물결 · 앞머리는 이마를 덮고 흉터 쪽(화면 오른쪽) 한 가닥이 길다 · 경로 하나 = 테두리 겹침 없음
+        p = ("M 0,-72 C 30,-72 56,-50 55,-22 C 56,0 58,18 54,32 Q 57,40 51,45 Q 49,38 46,37 Q 47,45 41,47 Q 41,38 40,30 C 43,14 44,0 43,-8 "
+             + strands([(43, -8), (38, -24), (31, 3), (22, -26), (12, -11), (2, -30), (-8, -13), (-18, -30), (-28, -13), (-36, -28), (-43, -8)], 0.16)
+             + "C -44,0 -43,14 -40,30 Q -41,38 -41,47 Q -47,45 -46,37 Q -49,38 -51,45 Q -57,40 -54,32 C -58,18 -56,0 -55,-22 C -56,-50 -30,-72 0,-72 Z")
+        extra = "".join(f'<path d="M {sx * 50},-12 Q {sx * 52},8 {sx * 49},26 M {sx * 46},4 Q {sx * 48},18 {sx * 46},30" stroke="{INK}" stroke-width="1.2" fill="none" opacity=".35"/>' for sx in (-1, 1))
     elif hs in ("side", "long", "long_wavy", "pony", "bob", "bunny", "drills"):
         p = CAP + "L 48,-4 " + strands([(48, -4), (40, -20), (30, -6), (18, -28), (4, -12), (-10, -34), (-24, -18), (-36, -28), (-46, -6), (-53, 14)]) + "Z"
         if hs in ("long", "long_wavy", "bob", "bunny"):
@@ -181,11 +176,7 @@ def hair_back(lk):
             col = lk[c]
             s += f'<path d="M {sx * 46},-10 Q {sx * 62},30 {sx * 52},64 L {sx * 40},60 Q {sx * 48},26 {sx * 36},-10 Z" fill="{col}" stroke="{INK}" stroke-width="2"/>'
             s += f'<circle cx="{sx * 44}" cy="-70" r="17" fill="none" stroke="{INK}" stroke-width="13"/><circle cx="{sx * 44}" cy="-70" r="17" fill="none" stroke="{col}" stroke-width="9"/>'
-    elif hs == "wavy":       # 사보: 모자 챙 아래에서 머리 옆을 감싸고 턱까지 내려오는 풍성한 물결 머리 (머리 윗부분과 이어짐)
-        for sx in (-1, 1):
-            s += (f'<path d="M {sx * 20},-62 Q {sx * 52},-64 {sx * 62},-38 Q {sx * 70},-22 {sx * 63},-8 Q {sx * 72},8 {sx * 64},22 Q {sx * 70},38 {sx * 56},46 '
-                  f'Q {sx * 48},50 {sx * 44},42 Q {sx * 50},32 {sx * 46},22 Q {sx * 50},8 {sx * 46},-4 Q {sx * 50},-24 {sx * 38},-38 Q {sx * 28},-50 {sx * 10},-54 Z" {H}/>'
-                  f'<path d="M {sx * 58},-30 Q {sx * 64},-18 {sx * 57},-8 M {sx * 58},6 Q {sx * 64},16 {sx * 56},26 M {sx * 56},34 Q {sx * 60},40 {sx * 52},44" stroke="{INK}" stroke-width="1.3" fill="none" opacity=".4"/>')
+    elif hs == "wavy": pass     # 사보: 뒷머리 없음(앞 경로 하나가 머리 전체 · 본부장 10-31)
     elif hs == "bun": s += f'<circle cx="0" cy="-78" r="18" {H}/>'
     elif hs == "topknot":
         s += f'<ellipse cx="0" cy="-72" rx="12" ry="10" {H}/>'
@@ -317,7 +308,7 @@ def face_extras(lk):
     if "clown_paint" in ex: s += "".join(f'<path d="M {sx * 17 - 7},-6 L {sx * 17 + 7},-6" stroke="#3a86e0" stroke-width="3" stroke-linecap="round"/>' for sx in (-1, 1))
     if "star_cheek" in ex: s += '<path d="M 30,16 l 2,4 l 4,.5 l -3,3 l .8,4 l -3.8,-2 l -3.8,2 l .8,-4 l -3,-3 l 4,-.5 Z" fill="#f4d35a"/>'
     if "beard_garp" in ex:   # 가프: 관자놀이에서 턱선을 따라 반대쪽까지 얼굴 위에 붙은 회색 수염 (입 둘레는 비움 · 바깥은 몽글몽글)
-        P = lambda a_, k=1.0: (49 * k * math.cos(math.radians(a_)), -4 + 61 * k * math.sin(math.radians(a_)))
+        bw_ = lk.get("beard_w", 1.0); P = lambda a_, k=1.0: (49 * bw_ * k * math.cos(math.radians(a_)), -4 + 61 * k * math.sin(math.radians(a_)))   # 얼굴형이 넓으면 수염도 넓게 (v4 · 본부장 10-31)
         n_ = 14; pts = [P(-8 + 196 * i / n_) for i in range(n_ + 1)]
         d = f"M {pts[0][0]:.1f},{pts[0][1]:.1f} " + "".join(f"Q {P(-8 + 196 * (i + .5) / n_, 1.07)[0]:.1f},{P(-8 + 196 * (i + .5) / n_, 1.07)[1]:.1f} {pts[i + 1][0]:.1f},{pts[i + 1][1]:.1f} " for i in range(n_))
         d += "L -40,4 Q -38,30 -22,40 Q 0,50 22,40 Q 38,30 40,4 Z"
@@ -445,6 +436,24 @@ def stick(x1, y1, x2, y2, w, col):
     return (f'<path d="M {x1},{y1} L {x2},{y2}" stroke="{INK}" stroke-width="{w + 3.4}" stroke-linecap="round"/>'
             f'<path d="M {x1},{y1} L {x2},{y2}" stroke="{col}" stroke-width="{w}" stroke-linecap="round"/>')
 
+def phoenix_wings():
+    """마르코: 등 뒤로 크게 펼친 푸른 불사조 날개 (깃털 끝 = 노란 불꽃 · 본부장 10-31 '날개 멋지게 크게')"""
+    s = ('<defs><linearGradient id="phx§" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1c5fd0"/><stop offset=".55" stop-color="#3fb6f2"/><stop offset="1" stop-color="#9aeeff"/></linearGradient>'
+         '<linearGradient id="phy§" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8fe6ff"/><stop offset="1" stop-color="#e8fbff"/></linearGradient></defs>')
+    for sx in (-1, 1):
+        g = f'<g transform="scale({sx},1)">'
+        outer = ("M 22,44 C 40,14 66,-22 108,-44 Q 100,-24 114,-14 Q 96,-4 110,14 Q 90,16 98,38 Q 78,38 80,60 Q 62,56 60,78 Q 46,66 34,70 Z")
+        inner = ("M 26,46 C 42,22 62,-4 92,-22 Q 86,-6 96,2 Q 82,8 90,22 Q 74,26 76,42 Q 60,42 58,58 Q 46,52 36,58 Z")
+        g += f'<path d="{outer}" fill="url(#phx§)" stroke="#1a4f9c" stroke-width="2.2" stroke-linejoin="round" opacity=".95"/>'
+        g += f'<path d="{inner}" fill="url(#phy§)" opacity=".55"/>'
+        g += "".join(f'<path d="M 28,46 Q {mx},{my} {tx},{ty}" stroke="#1a5fae" stroke-width="1.3" fill="none" opacity=".45"/>'
+                     for mx, my, tx, ty in ((58, 4, 104, -36), (64, 18, 108, -10), (66, 30, 104, 16), (62, 42, 94, 38), (54, 52, 78, 60), (44, 58, 58, 76)))
+        g += "".join(f'<path d="M {x},{y} q {dx},{dy} {dx * 2.2:.1f},{dy * 0.6:.1f} q {-dx * 0.6:.1f},{dy * 0.9:.1f} {-dx * 1.5:.1f},{dy * 0.5:.1f} Z" fill="#ffe27a" stroke="#f2a43a" stroke-width="1" opacity=".95"/>'
+                     for x, y, dx, dy in ((108, -44, 5, -6), (114, -14, 6, -3), (110, 14, 6, 0), (98, 38, 5, 3), (80, 60, 4, 5), (60, 78, 2, 6)))
+        g += '<path d="M 70,-16 q 6,-12 2,-22 q 8,8 6,20 Z M 46,8 q 4,-10 0,-18 q 7,6 5,16 Z" fill="#bff4ff" opacity=".8"/>'
+        s += g + "</g>"
+    return s
+
 def props_behind(lk, R):
     s = ""; hx, hy = R[-1] if R else (0, 0)
     for p in lk["props"]:
@@ -467,6 +476,7 @@ def props_behind(lk, R):
         elif p == "climatact":
             if lk.get("ct_col"): s += stick(hx, hy - 70, hx, hy + 40, 6, lk["ct_col"]) + f'<circle cx="{hx}" cy="{hy - 76}" r="7" fill="#f2a43a" stroke="#3d2820" stroke-width="2"/><circle cx="{hx - 2}" cy="{hy - 78}" r="2" fill="#ffffff" opacity=".8"/>'
             else: s += stick(hx, hy - 84, hx, hy + 60, 5, "#3a86e0") + "".join(f'<rect x="{hx - 4}" y="{hy - 70 + k * 40}" width="8" height="4" fill="#ffffff"/>' for k in range(4))
+        elif p == "blue_flame": s += phoenix_wings()
         elif p == "cane": s += stick(hx, hy, hx + 4, 204, 4, "#24222c") + f'<circle cx="{hx}" cy="{hy - 4}" r="5" fill="#dfe6ee" stroke="{INK}" stroke-width="1.6"/>'
     return s
 
@@ -495,9 +505,6 @@ def props_front(lk, R):
         elif p == "ghost":
             s += (f'<path d="M 50,-40 C 50,-70 92,-70 92,-40 L 92,-20 Q 86,-14 80,-20 Q 74,-14 68,-20 Q 62,-14 56,-20 Q 50,-14 50,-20 Z" fill="#ffffff" stroke="#c9c2e0" stroke-width="2"/>'
                   '<circle cx="64" cy="-44" r="3.4" fill="#2b2a38"/><circle cx="78" cy="-44" r="3.4" fill="#2b2a38"/><path d="M 66,-34 Q 71,-28 76,-34" fill="#f48a9a"/>')
-        elif p == "blue_flame":
-            for sx in (-1, 1):
-                s += f'<path d="M {sx * 30},50 C {sx * 46},38 {sx * 52},20 {sx * 62},10 C {sx * 56},28 {sx * 66},34 {sx * 72},28 C {sx * 66},50 {sx * 50},60 {sx * 32},62 Z" fill="#7fd6f6" stroke="#3a9ad0" stroke-width="2" opacity=".9"/>'
     return s
 
 def jolly(x, y, r=6):
@@ -721,6 +728,7 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
     tiny = "tiny_body" in lk["ex"]          # 쵸파: 몸은 작게 (발 기준) · 머리는 그대로 크게 → 몸 위로 내려 붙임
     bk, bkx = (0.6, 0.9) if tiny else (1.04, 1.45) if "huge" in lk["ex"] else (1.06, 1.2) if "burly" in lk["ex"] else (1, 1)   # 쵸파: 2등신 · 통통 / 다부진 체격: 어깨 · 몸 넓게 (본부장 10-31)
     hs_ = HEAD_SCALE * (1.2 if tiny else 1); hdy = ((14 if view else (205 - 44) * (1 - bk)) if tiny else 0)     # 앉으면 책상 위로 눈이 보이게 조금만 내림
+    if "tall_slim" in lk["ex"]: bk, bkx = 1.16, 0.84; hdy = (205 - 44) * (1 - bk)     # 시라호시: 야위고 키 크게 (본부장 10-31)
     hsx = hs_ * (1.14 if "wide_head" in lk["ex"] else 1)
     HG = f'<g transform="translate(0,{HEAD_PIVOT + hdy:.1f}) scale({hsx:.3f},{hs_:.3f}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
     BG = f'<g transform="translate(0,205) scale({bkx},{bk}) translate(0,-205)">'
@@ -951,8 +959,8 @@ def elbaf_face(lk):
               + "".join(f'<path d="M {x},{y} q {d},8 {d * 0.4},16" stroke="#b0601a" stroke-width="1.4" fill="none"/>' for x, y, d in ((-34, 30, -2), (-24, 50, -2), (-10, 62, -1), (10, 62, 1), (24, 50, 2), (34, 30, 2), (0, 68, 0))))
     if "long_nose" in lk["ex"]: s += long_nose_v(lk["skin"], lk.get("nose_style", "B"))        # 수염보다 앞에
     if b == "franky":
-        s += ('<path d="M -36,14 Q -40,60 -24,92 Q -14,104 -6,96 Q 0,108 6,96 Q 14,104 24,92 Q 40,60 36,14 L 28,20 Q 24,36 12,40 Q 0,44 -12,40 Q -24,36 -28,20 Z" fill="#7ad0e8" stroke="#3a8ab0" stroke-width="1.8" stroke-linejoin="round"/>'
-              + "".join(f'<path d="M {x},{y} q 3,10 -1,22" stroke="#4aa8c8" stroke-width="1.4" fill="none"/>' for x, y in ((-24, 48), (-10, 56), (8, 56), (22, 48))))
+        s += ('<path d="M -49,2 Q -56,58 -30,92 Q -16,106 -6,98 Q 0,110 6,98 Q 16,106 30,92 Q 56,58 49,2 L 40,10 Q 34,34 16,42 Q 0,47 -16,42 Q -34,34 -40,10 Z" fill="#7ad0e8" stroke="#3a8ab0" stroke-width="1.8" stroke-linejoin="round"/>'
+              + "".join(f'<path d="M {x},{y} q 3,10 -1,22" stroke="#4aa8c8" stroke-width="1.4" fill="none"/>' for x, y in ((-38, 34), (-26, 52), (-10, 58), (8, 58), (24, 52), (36, 34))))
     if lk.get("goggles_y"):
         s += "".join(f'<rect x="{sx * 17 - 14}" y="-2" width="28" height="20" rx="7" fill="#fff6c8" fill-opacity=".25" stroke="#e8c02a" stroke-width="4.4"/>' for sx in (-1, 1)) + '<path d="M -3,7 L 3,7" stroke="#e8c02a" stroke-width="3"/>'
     return s
@@ -1037,7 +1045,7 @@ ELBAF = {   # 이름 → 엘바프 편 차림 (공식 설정화 기준)
     "상디": dict(out="armor", c1="#5ab0e8", top="armor", pose="side", cape="#2f5fc0", scarf="#3a6ad0", strap="#e8962a", belt=("#8a6a3a", "#e6c25a", "medal"),
                 kilt=("#8a86a8", 148, "scale"), legs="#5ab0e8", boots="#3a3aa0", cuff="#8a6a4a", back="sword_sanji"),
     "조로": dict(out="tunic", c1="#3a5a3a", top="tunic", cape="#8ab858", collar="#8ab858", pads=True, belt=("#1f1d26", "#e6b84a"), legs="#2a2a2e", warmers="#2a8a8a", warmer_straps=True,
-                boots="#1f1d26", boot_top=190, goggles_y=True, headband="#8a2a4a"),
+                boots="#1f1d26", boot_top=190, headband="#8a2a4a"),
     "로빈": dict(out="crop", top="tank", shawl="#c9a0e8", belt=("#8a5a3a", "#c9a45c"), kilt=("#4a2a6a", 176, "long_side"), bare_legs=True, boots="#2a3a7a", boot_top=150, ex_del=["sunglasses_head", "hana_arms"]),
     "쵸파": dict(hat="chopper_elbaf", cape="#efeaf6", cape_len=176, collar="#efeaf6", collar_r=8, stripes=("#e86aa0", "#5a8ae0"), baggy=True, hoof_legs=True, belt=("#8a5a3a", "#e6c25a")),
     "우솝": dict(hat="viking_usopp", hs="short", side_afro=True, mouth="laugh", nose_style="B", stud_cuffs=True, bag_strap=True, out="shirtless", pose="hip", suspenders="#5a3aa0", belt=("#1f1d26", "#e6c25a"), stripes=("#e05a7a", "#5a3aa0"), baggy=True,
