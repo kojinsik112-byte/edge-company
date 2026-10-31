@@ -174,6 +174,14 @@ def main():
                                  "due": d.get("마감") or "본문에 없음 — 첨부 공고문 확인 필요", "due_date": due_date, "pt": d.get("PT", ""),
                                  "mail": d.get("메일", ""), "how": d.get("제출", ""), "hh": d.get("세대", ""), "link": it["link"],
                                  "todo": "참여할지 결정 → 하면 /kickoff"})
+        # 지난 공고(마감이 지났거나 게시 30일 넘고 마감 미확인)는 '참고 · 지난 공고'로 한 번만 보고 — 이후는 seen.json으로 보고 안 함 (본부장 10-31)
+        today = now[:10]; keep, past = [], []
+        for c in rdata["new"]:
+            posted = re.sub(r"[^0-9]", "", c.get("posted", ""))[:8]
+            old = len(posted) == 8 and (datetime.strptime(today, "%Y-%m-%d") - datetime.strptime(posted, "%Y%m%d")).days > 30
+            (past if (c["due_date"] and c["due_date"] < today) or (not c["due_date"] and old) else keep).append(c)
+        rdata["new"] = keep
+        rdata["ref"] = [{"site": c["site"], "note": f"지난 공고 · {c['due'] if c['due_date'] else (c.get('posted') or '') + ' 게시'} — 이번만 보고, 다음부터 제외"} for c in past]
         RP.render(rdata, STATE)
         report_text = RP.kakao_text(rdata)
     except Exception as e:
