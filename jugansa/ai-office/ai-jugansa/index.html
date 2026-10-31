@@ -426,6 +426,7 @@ function ptAlert(due){
 const SIM = [
   {kind:"start", cwd:"jugansa"},
   {kind:"prompt", label:"/kickoff 엘리프 한신더휴 수원", site:"엘리프"},
+  {kind:"work", who:"boss", room:"scout", tool:"자료", label:"본부장 자료 확인", site:"엘리프"},
   {kind:"team_start", team:"bid_notice_analyst", team_kr:"공고 분석관", room:"scout", agent_id:"a1", site:"엘리프"},
   {kind:"team_start", team:"realestate_analyst", team_kr:"단지 분석팀", room:"scout", agent_id:"a2", site:"엘리프"},
   {kind:"team_start", team:"bid_economist", team_kr:"손익 분석관", room:"analysis", agent_id:"a4", site:"엘리프"},
@@ -440,6 +441,7 @@ const SIM = [
   {kind:"team_start", team:"bid_pmo", team_kr:"마감 관제팀", room:"retro", agent_id:"c1", site:"상주"},
   {kind:"team_stop", room:"analysis", agent_id:"a4"},
   {kind:"rest"},
+  {kind:"work", who:"boss", room:"retro", tool:"기록", label:"작업 기록 · 현황 정리"},
 ];
 function runSim(){
   if (simTimer){ clearTimeout(simTimer); simTimer = null; $("simBtn").textContent = "시뮬레이션"; return; }

@@ -182,8 +182,16 @@ def haystack(tool, ti):
         if k in ti: parts.append(str(ti[k])[:400])
     return " ".join(parts)
 
+INTAKE = r"[\\/]uploads[\\/]|[\\/]자료[\\/]|evidence|seal_scan|[\\/]images[\\/]|스크랩|\.(jpe?g|png|webp|pdf|hwpx?|docx?|xlsx?)$"
+INTAKE_PROMPT = r"첨부|올렸|올려|올린|자료|사진|이미지|캡처|스크랩|파일|보낸|보내|https?://"
+LOG_CMD = r"git (commit|push|log)|입찰현황판|events\.log"
+def later(ev, sec):                     # 다른 신호 뒤에 한 번 더 (화면에 팀이 움직이게)
+    threading.Timer(sec, lambda: push(ev)).start()
+
 def stage_for(tool, ti):
     """본부장 직접 작업의 단계 추정. 못 정하면 본부장실."""
+    if tool == "Read" and re.search(INTAKE, str((ti or {}).get("file_path", "")), re.I): return "scout"       # 본부장 자료 확인 = 개척팀 겸업 (본부장 10-31)
+    if tool in ("Bash", "PowerShell") and re.search(LOG_CMD, str((ti or {}).get("command", ""))): return "retro"   # 커밋 · 기록 = 결과·관제팀
     if tool == "Skill":
         s = str((ti or {}).get("skill", ""))
         if s == "court": return "audit"
@@ -237,11 +245,14 @@ def translate(h):
     if name == "Notification":
         return {"kind": "memo", "memo_type": h.get("notification_type", "notice"), "label": short(h.get("title") or h.get("message") or "알림", 36)}
     if name in ("Stop", "SessionEnd"):
+        if name == "Stop": later({"kind": "work", "who": BOSS, "room": "retro", "team": "", "team_kr": "결과·관제", "tool": "기록", "label": "작업 기록 · 현황 정리", "site": ""}, 2.5)
         return {"kind": "rest", "reason": name}
     if name == "SessionStart":
         find_board(h.get("cwd"))
         return {"kind": "start", "source": h.get("source", ""), "model": h.get("model", ""), "cwd": os.path.basename(h.get("cwd", "") or "")}
     if name == "UserPromptSubmit":
+        if re.search(INTAKE_PROMPT, str(h.get("prompt", ""))):
+            later({"kind": "work", "who": BOSS, "room": "scout", "team": "", "team_kr": "개척팀", "tool": "자료", "label": "본부장 자료 확인", "site": site_for(str(h.get("prompt", "")))}, 0.6)
         return {"kind": "prompt", "label": short(h.get("prompt", ""), 40), "site": site_for(str(h.get("prompt", "")) + " " + str(h.get("cwd", "")))}
     return None
 
