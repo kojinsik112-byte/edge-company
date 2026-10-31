@@ -11,7 +11,7 @@
   9  입주박람회 제안서 = build_gp.py 밝은 시안
   10 컴플레인 · A/S 관리 프로세스 제안서(취소 · 환불 규정 포함) = 표지 + 제안서 해당 쪽 발췌
   11 청렴 계약 이행각서 · 12 비밀 유지 서약서 · 13 서류 미반환 · 이의 미제기 서약서(자유 · 직인)
-  자격 6 증빙 붙임: 안내 · SGI 계약보증증권 발급 이력(가림) · KB 영업배상책임보험 증권 · 건축 기술 자문 업무협약서(2쪽 을 정보 가림)(10-29 재확인)
+  자격 6 증빙 붙임: 안내 · SGI 계약보증증권 발급 이력(가림) · KB 영업배상책임보험 증권 · 건축 기술 자문 업무협약서(요지 + 원본 축소 · 을 정보 가림)(10-29 재확인 · 10-30 축소)
   선택 자료(필수 아님): NICE 기업신용평가 전문(가림) · 전기공사업 등록증 · ISO 인증서
 
 증빙 원본: 나리벡 최종 제출본(2026.10.26 · 가림 · 검증 끝)의 쪽을 그대로 쓰고, 나리벡 건명이 박힌 표지 · 안내 쪽은 군포용으로 새로 만들거나 글자만 바꾼다.
@@ -194,12 +194,13 @@ NOTE_GAM = ("※ 사용인감 칸 = 입찰참가신청서 · 이행각서 · 서
 
 
 # ------------------------------------------------------------ 안내 · 표지
-def p_q6(sgi_uri):
-    """10-29 재확인: 입찰자격 6) 하자담보 이행 능력 증빙 붙임 = 안내 1쪽 + SGI 증권 1쪽(뒤에 KB 증권 · 디엔비 협약서 원본 쪽)."""
+def p_q6(sgi_uri, dnb_uris):
+    """10-29 재확인: 입찰자격 6) 하자담보 이행 능력 증빙 붙임 = 안내 1쪽 + SGI 증권 1쪽 + 디엔비 협약 요약 1쪽(KB 증권 원본 쪽은 SGI 뒤에 끼움).
+    10-30 본부장 '요약 1쪽 + 원본 축소' — 협약서 원본 2쪽을 A4로 크게 넣지 않고, 요지 표 + 원본 축소본 2장을 한 쪽에."""
     rows = [("①", "하자 처리 · 환불 규정", "제출서류 10(컴플레인 · A/S 관리 프로세스 · 계약 취소 · 환불 · 10배 보상 · 도산 이관)", "제출서류 10"),
             ("②", "서울보증보험 계약보증보험증권 발급 이력", "발급 2026.09.07 · 주계약 = 광고대행 용역(입주박람회 이행보증 아님) · 금액 · 상대방 정보 가림 · 보증 발급 이력의 근거", "다음 쪽"),
             ("③", "KB 영업배상책임보험 증권", "시설소유관리자 · 2026.10.14 ~ 2027.10.14 · 본사 기준 · 행사주최자배상책임보험은 박람회 기간 행사장 기준으로 별도 가입", "1쪽"),
-            ("④", "건축 기술 자문 업무협약서", f"{D.ADVISOR} · 2026.10.26 · 양측 날인 · 2쪽 을 정보 가림 · 건설 하자 판정 · 보수는 시공사 책임", "2쪽")]
+            ("④", "건축 기술 자문 업무협약서", f"{D.ADVISOR} · 2026.10.26 · 양측 날인 · 협약 요지 + 원본 2쪽 축소(을 정보 가림) · 건설 하자 판정 · 보수는 시공사 책임", "1쪽")]
     body = ('<h2>입찰자격 6) 하자담보 이행 능력 - 증빙 붙임</h2>'
             '<p class="b">공고 입찰자격 6) ‘공동구매 제품 전체에 대한 계약 이행 등의 명확한 하자담보 이행 능력이 수립된 업체’의 증빙입니다.</p>'
             '<table class="l"><tr><th>No</th><th>증빙</th><th>내용</th><th>쪽</th></tr>'
@@ -208,8 +209,26 @@ def p_q6(sgi_uri):
             '<p style="font-size:10pt;color:#555">가림 없는 원본은 협의회가 요청하시면 열람할 수 있습니다.</p>')
     sgi = ('<h2>② 서울보증보험 계약보증보험증권 발급 이력</h2>'
            f'<div style="text-align:center"><img src="{sgi_uri}" style="height:205mm;border:.6pt solid #bbb"></div>')
+    dnb_rows = [("당사자", f"갑 {D.COMPANY}(주관사) · 을 {D.ADVISOR}(건축 분야 기술 자문) · 을 사업자번호 · 주소 · 대표자 가림", "날인란"),
+                ("체결 · 기간", f"{DNB_DATE} 양측 날인 · 1년(만료 1개월 전 종료 통지가 없으면 1년씩 연장) · 이미 시작된 단지 자문은 그 단지 협약이 끝날 때까지", "제10조"),
+                ("적용 단지", "엣지컴퍼니가 주관사로 선정되어 협의회와 협약한 단지 · 단지마다 자문 범위를 서면 요청 → 을이 수락하면 시작", "제2조"),
+                ("자문인", "을 소속 건축사 또는 건축 분야 건설기술인(설계 · 건설사업관리) · 단지별 성명 · 자격 · 소속 서면 통지 · 명의만 빌려주지 않음", "제3 · 9조"),
+                ("자문 업무", "협의회 · 주관사 요청 시(횟수 제한 없음) - 공정별 기술 자문 · 협의회 질의 기술 검토 / 하자 취약 부위 · 마감 품질 확인(사업주체가 허용하는 범위) / "
+                             "설계도서 · 설계변경 · 마감재 검토 의견 / 의견서 작성 · 협의회 회의 참석 · 설명", "제4조 ① ②"),
+                ("하지 않는 일", "법정 감리 · 하자 판정 · 보수 · 소송 대리 · 별도 계약이 필요한 설계 · 감리 - 건설 하자 보수 책임은 사업주체 · 시공사", "제4조 ③"),
+                ("회신 기한", "요청 받은 날부터 7영업일 안 서면 회신 · 어려우면 사유 · 회신 예정일 즉시 통지", "제5조"),
+                ("비용", "주관사(갑) 부담 · 건별 정산 · 협의회 · 입주예정자에게 청구하지 않음", "제6조"),
+                ("이해관계 · 정보", "단지 시행 · 시공 · 감리 · 협의회 임원과 이해관계 없음 서면 확인 · 비밀 유지 · 개인정보 파기 · 협의회 임원 등 개별 접촉 금지", "제7 · 8조")]
+    thumbs = "".join(f'<figure style="margin:0;text-align:center"><img src="{u}" style="width:64mm;border:.6pt solid #999;display:block">'
+                     f'<figcaption style="font-size:8.5pt;color:#555;margin-top:1.5mm">{c}</figcaption></figure>'
+                     for u, c in zip(dnb_uris, ("원본 1쪽 · 제1 ~ 7조(위 여백 = 체결일 표기)", "원본 2쪽 · 제8 ~ 12조 · 양측 날인(을 정보 가림)")))
+    dnb = ('<h2>④ 건축 기술 자문 업무협약서 - 요지</h2>'
+           '<table class="l" style="font-size:9.5pt;margin-bottom:5mm"><tr><th style="width:28mm">항목</th><th>협약 내용</th><th style="width:23mm">조항</th></tr>'
+           + "".join(f'<tr><td><b>{e(a)}</b></td><td>{e(b)}</td><td>{e(c)}</td></tr>' for a, b, c in dnb_rows) + '</table>'
+           f'<div style="display:flex;justify-content:center;gap:10mm">{thumbs}</div>')
     return [page("입찰자격 6) 증빙 붙임 · 안내", body),
-            page("입찰자격 6) 증빙 붙임 · ②", sgi, "광고대행 용역 계약보증(입주박람회 이행보증 아님) · 금액 · 상대방 정보 · 증권번호 일부 가림")]
+            page("입찰자격 6) 증빙 붙임 · ②", sgi, "광고대행 용역 계약보증(입주박람회 이행보증 아님) · 금액 · 상대방 정보 · 증권번호 일부 가림"),
+            page("입찰자격 6) 증빙 붙임 · ④", dnb, "원본(2쪽)은 축소해 실었습니다 · 원본 전문은 협의회가 요청하시면 제출하고 PT 때 지참합니다")]
 
 
 def p08_guide():
@@ -404,19 +423,22 @@ def main():
     # 자격 6 증빙 붙임(10-29 재확인 · 착수 결정 3의 묶음)
     for p in (SGI_PNG, KB, DNB):
         assert os.path.exists(p), ("자격 6 증빙 원본 없음", p)
-    dq6 = fitz.open(render("14_자격6_증빙붙임", doc("자격 6 증빙 붙임", p_q6(pathlib.Path(SGI_PNG).as_uri()))))
-    kb = fitz.open(KB)
-    for r_ in KB_MASK:
-        kb[0].add_redact_annot(fitz.Rect(*r_), fill=(0.6, 0.6, 0.6))
-    kb[0].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
-    dq6.insert_pdf(kb)
     dnb = fitz.open(DNB)
     _w = dnb[0].rect.width   # 서명된 본문은 건드리지 않고 1쪽 위 여백에만 체결일을 적음
     dnb[0].insert_textbox(fitz.Rect(_w - 300, 14, _w - 30, 30), f"업무협약 체결일 : {DNB_DATE}", fontsize=9.5,
                           fontname="malgun", fontfile=r"C:\Windows\Fonts\malgun.ttf", color=(0.25, 0.25, 0.25), align=fitz.TEXT_ALIGN_RIGHT)
-    dnb.subset_fonts()   # 맑은고딕 전체 내장(약 8MB) 대신 쓴 글자만
-    dq6.insert_pdf(dnb)
-    parts.append(("붙임", "입찰자격 6) 하자담보 이행 능력 증빙", "안내 · SGI 계약보증증권 발급 이력(가림) · KB 영업배상책임보험 증권 · 건축 기술 자문 업무협약서(2쪽 을 정보 가림)", dq6))
+    dnb_uris = []   # 10-30 본부장 '요약 1쪽 + 원본 축소' — 원본 쪽은 그림(확대하면 읽히는 200dpi)으로 요지 쪽에 작게
+    for i, pg in enumerate(dnb):
+        fp = os.path.join(WORK, f"14_디엔비협약서_원본{i + 1}.jpg")
+        pg.get_pixmap(dpi=200).save(fp, jpg_quality=85)
+        dnb_uris.append(pathlib.Path(fp).as_uri())
+    dq6 = fitz.open(render("14_자격6_증빙붙임", doc("자격 6 증빙 붙임", p_q6(pathlib.Path(SGI_PNG).as_uri(), dnb_uris))))
+    kb = fitz.open(KB)
+    for r_ in KB_MASK:
+        kb[0].add_redact_annot(fitz.Rect(*r_), fill=(0.6, 0.6, 0.6))
+    kb[0].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
+    dq6.insert_pdf(kb, start_at=2)   # 안내 · ② SGI · ③ KB · ④ 디엔비 요지 순
+    parts.append(("붙임", "입찰자격 6) 하자담보 이행 능력 증빙", "안내 · SGI 계약보증증권 발급 이력(가림) · KB 영업배상책임보험 증권 · 건축 기술 자문 업무협약서(요지 + 원본 축소 · 을 정보 가림)", dq6))
     # 선택 자료
     sel = fitz.open()
     sel.insert_pdf(nr("09_기업신용평가서.pdf"), from_page=1)
