@@ -482,6 +482,7 @@ def boss_room(x, y, reporter):
     g.append(f'<rect x="{cx - 50 * s:.1f}" y="{yt - 190 * s:.1f}" width="{100 * s:.1f}" height="{190 * s:.1f}" rx="{24 * s:.1f}" fill="#5a2f25"/>')
     if ASSETS:
         LAYOUT["boss"] = {"sprite": sprite("boss_work.svg", (cx - 90, yt - 280 * s, 180, 280 * s + 8), char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type") + laptop(cx - 62, yt, 0.4, True, "#c9a45c")),
+                          "type": sprite("boss_type.svg", (cx - 90, yt - 280 * s, 180, 280 * s + 8), char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type") + laptop(cx, yt, s, True, "#c9a45c")),   # 노트북을 앞에 펼치고 일함 (평상시 90%)
                           "hx": cx, "hy": yt - 232 * s, "spot": [x + CW - 70, y + RH - 34], "spot2": [x + CW - 118, y + RH - 34], "meet": {"boss": [x + 126, y + RH - 28], "rep": [x + 218, y + RH - 28]},
                           "standAt": [cx + 108, yt + 34], "door": None, "room": {"x": x, "y": y, "w": CW, "h": RH}, "name": sc.BOSS_LOOK["name"]}
         open(os.path.join(ASSETS, "boss_stand.svg"), "w", encoding="utf-8").write(sc.svg(sc.BOSS_LOOK, nid(), working=True, pose="side", size=(240 * 0.36, 400 * 0.36)))

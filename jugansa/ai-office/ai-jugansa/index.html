@@ -137,7 +137,12 @@ async function init(){
   });
   for (const team in L.rooms){ const r = L.rooms[team]; r.badgeEl = el("span", "badge", {left:px(r.badge[0]), top:px(r.badge[1])}); }
   const bs = L.boss.sprite; boss = {img: el("img", "seat", {left:px(bs.x), top:px(bs.y), width:px(bs.w), height:px(bs.h)}), bub:null, until:0};
-  boss.img.src = "/v4/" + bs.file;
+  boss.img.src = "/v4/" + (L.boss.type ? L.boss.type.file : bs.file);
+  if (L.boss.type){      // 평상시: 90% 노트북 펼치고 일하는 모습 · 10% 지금 모습 (본부장 10-31)
+    new Image().src = "/v4/" + bs.file;
+    const bossLook = () => { const work = Math.random() < 0.9; boss.img.src = "/v4/" + (work ? L.boss.type.file : bs.file); setTimeout(bossLook, work ? 9000 + Math.random() * 9000 : 3000 + Math.random() * 3000); };
+    setTimeout(bossLook, 9000);
+  }
   // 그림 미리 받아 두기 (일하기 ↔ 쉬기 바꿀 때 깜빡임 없게)
   seats.forEach(s => { new Image().src = "/v4/" + s.work.file; new Image().src = "/v4/" + s.stand.file; });
   fit(); render(); loadBoard(); poll(); setInterval(tickIdle, 1000); setTimeout(wanderTick, 3000); clock(); setInterval(clock, 15000);
