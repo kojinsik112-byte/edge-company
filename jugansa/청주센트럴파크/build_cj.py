@@ -159,7 +159,7 @@ B.CSS += r"""
 .cv4 h1.cvx{font-size:48px}
 .cv4 .gbar{width:150px;height:2px;background:var(--gold2);margin:26px 0 20px}
 .cv4 h1{font-size:52px;line-height:1.28;margin-top:24px}
-.cv4 .tag2{font-size:19px;line-height:1.6;margin-top:0}
+.cv4 .tag2{font-size:19px;line-height:1.6;margin-top:0;max-width:520px;text-shadow:0 1px 8px rgba(13,30,51,.9)}
 .cv4 .stats{margin-top:34px}
 .ctp .mid{width:46%}.ctp .contacts{grid-template-columns:1fr;gap:14px;margin-top:22px}.ctp .contacts b{font-size:27px}.ctp .contacts .me{grid-column:auto}.ctp .contacts .me b{font-size:23px}.ctp .contacts span{font-size:14px}.ctp .mid{width:48%}.ctp .addr{font-size:12.6px;line-height:1.8;margin-top:26px;color:var(--mute)}.ctp .addr b{color:var(--sub);font-weight:700;margin-right:4px}.ctp .gbar{margin:18px 0 6px}.ctp h1.cvx{font-size:46px}
 .sub2{display:flex;gap:64px;padding:18px 0 20px;border-top:1px solid rgba(200,168,106,.35)}
