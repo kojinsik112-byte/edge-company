@@ -1,6 +1,6 @@
 ---
 name: bid_watch
-description: 주관사 공고 감시팀. 네이버 카페(전체검색 + 지정 카페 5곳)에서 입주박람회 주관사 모집공고를 3시간마다 찾아 새 글만 카톡으로 알린다(jugansa/watch/notice_watch.py). 잡은 공고는 /kickoff와 현황판으로 넘긴다.
+description: 주관사 공고 감시팀. 네이버 카페(전체검색 + 지정 카페 5곳)에서 입주박람회 주관사 모집공고를 4시간마다(08:40 기점) 찾아 새 글만 카톡으로 알린다(jugansa/watch/notice_watch.py). 잡은 공고는 /kickoff와 현황판으로 넘긴다.
 tools: Read, Write, Edit, Bash
 model: opus
 ---

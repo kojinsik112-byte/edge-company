@@ -159,6 +159,25 @@ def main():
     SEEN.write_text(json.dumps(sorted(seen), ensure_ascii=False, indent=0), encoding="utf-8")
     if init or not new:
         return
+    # 보고서 한 장 (report.py 양식 · state/report_*.png) + 카톡은 같은 양식의 글 (본부장 10-31)
+    try:
+        import report as RP
+        nxt = next((t for t in sorted(CFG["times"]) if t > now[11:16]), sorted(CFG["times"])[0])
+        rdata = {"at": now, "scope": {"지정 카페": f"{len(CFG['cafes'])}곳",
+                                      "카페 전체글": " · ".join(f"'{q['query']}' 1 ~ {q.get('pages', 4)}쪽" for q in CFG.get("section_search", []))},
+                 "new": [], "next": nxt}
+        for it in new:
+            d = detail.get(it["link"], {})
+            dm = re.search(r"(\d{1,2})\s*[.월/]\s*(\d{1,2})", d.get("마감", "")) if d.get("마감") else None
+            due_date = f"{now[:4]}-{int(dm.group(1)):02d}-{int(dm.group(2)):02d}" if dm else ""
+            rdata["new"].append({"site": it["title"], "region": "", "posted": it.get("date", ""), "cafe": it["cafe"],
+                                 "due": d.get("마감") or "본문에 없음 — 첨부 공고문 확인 필요", "due_date": due_date, "pt": d.get("PT", ""),
+                                 "mail": d.get("메일", ""), "how": d.get("제출", ""), "hh": d.get("세대", ""), "link": it["link"],
+                                 "todo": "참여할지 결정 → 하면 /kickoff"})
+        RP.render(rdata, STATE)
+        report_text = RP.kakao_text(rdata)
+    except Exception as e:
+        print(f"[보고서] 만들기 실패: {e}"); report_text = ""
     with LOG.open("a", encoding="utf-8") as f:
         f.write(f"\n## {now} · 새 글 {len(new)}\n" + "".join(f"- [{it['cafe']}] {it['title']} — {it['link']}\n" + "".join(f"  - {k}: {v}\n" for k, v in detail.get(it["link"], {}).items()) for it in new))
     if CFG.get("kakao") and KAKAO.exists():
@@ -166,7 +185,7 @@ def main():
             d = detail.get(it["link"], {})
             extra = "".join(f"\n  · {k}: {v}" for k, v in d.items())
             return f"- {it['cafe']} · {it['title']}{extra}\n  {it['link']}"
-        msg = f"[주관사 공고 감시] 새 공고 {len(new)}건 ({now})\n" + "\n".join(one(it) for it in new[:10])
+        msg = report_text or (f"[주관사 공고 감시] 새 공고 {len(new)}건 ({now})\n" + "\n".join(one(it) for it in new[:10]))
         subprocess.run([sys.executable, str(KAKAO), "send", msg], cwd=str(KAKAO.parent), timeout=60)
 
 
