@@ -3,7 +3,7 @@
 import os, json, math, random, html, argparse, subprocess, importlib.util, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ap = argparse.ArgumentParser(); ap.add_argument("--office", default="원피스"); ap.add_argument("--skin", default="원피스직원_v3"); ap.add_argument("-o", "--out", default=""); ap.add_argument("--assets", default="")
+ap = argparse.ArgumentParser(); ap.add_argument("--office", default="원피스"); ap.add_argument("--skin", default="원피스직원_v4"); ap.add_argument("-o", "--out", default=""); ap.add_argument("--assets", default="")
 A = ap.parse_args()
 from office_skins import OFFICE_SKINS, ALIAS
 A.office = ALIAS.get(A.office.replace(" ", ""), A.office)      # "기본배경1" · "원피스" · "어벤져스사무실" 로도 부름
