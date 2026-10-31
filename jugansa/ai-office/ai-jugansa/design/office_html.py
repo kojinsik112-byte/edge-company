@@ -606,10 +606,11 @@ def sea_bg():         # 원피스 배경: 바깥 바다 물결
         g += f'<path d="M {x0:.0f},{y0:.0f} q 6,-4 12,0 q 6,4 12,0" stroke="#ffffff" stroke-width="1.6" fill="none" opacity="{rnd.uniform(.3, .7):.2f}"/>'
     return g
 
-VEND = [(CX[0] + 18, R1 + RH + CORR - 4, "#d8352e", "DRINK"), (CX[2] + 44, R2 + RH + CORR - 4, "#2f6fd0", "COFFEE")]     # 자판기 2대 (본부장 10-31)
+VK = 0.62      # 자판기 크기 — 위쪽 벽에 붙여 걷는 줄 위 칸에만 (본부장 10-31 '복도 가운데 말고 윗쪽 벽면')
+VEND = [(CX[0] + 30, R1 + RH + 30, "#d8352e", "DRINK"), (CX[2] + 40, R2 + RH + 30, "#2f6fd0", "COFFEE")]
 body, report = corridors(), None
-for vx_, vy_, vc_, vl_ in VEND: body.append(vending(vx_, vy_, vc_, vl_))
-LAYOUT["vend"] = [[vx_ + 62, vy_ - CORR / 2 + 12, vl_] for vx_, vy_, vc_, vl_ in VEND]
+for vx_, vy_, vc_, vl_ in VEND: body.append(f'<g transform="translate({vx_},{vy_}) scale({VK}) translate({-vx_},{-vy_})">{vending(vx_, vy_, vc_, vl_)}</g>')
+LAYOUT["vend"] = [[vx_ + 46 * VK + 16, vy_ - 30 + CORR / 2 + 8, vl_] for vx_, vy_, vc_, vl_ in VEND]
 for key, x, y in ROOMS:
     g, rep = team_room(key, x, y); body += g; report = report or rep
 body += boss_room(CX[3], R2, report)
