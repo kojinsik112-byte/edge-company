@@ -444,7 +444,27 @@ def main():
     sel.insert_pdf(nr("09_기업신용평가서.pdf"), from_page=1)
     for p in (ELEC, ISO):
         assert os.path.exists(p), ("선택 자료 원본 없음", p)
-        sel.insert_pdf(fitz.open(p))
+    sel.insert_pdf(fitz.open(ELEC))
+    # 10-31 본부장 'ISO 인증도 2개씩 맞춰서 · 너무 페이지 차지 많이해' — 원본 6쪽(국문 · 영문 × 9001 · 14001 · 45001)을
+    # A4 가로 한 쪽에 국문 · 영문 2장씩(원본 쪽을 그대로 축소해 얹음 · 다시 그리지 않음) → 3쪽
+    iso = fitz.open(ISO)
+    assert iso.page_count == 6, ("ISO 원본 쪽 수가 바뀜", iso.page_count)
+    W_, H_, top, gap = 842, 595, 34, 18
+    h_ = H_ - top - 16
+    w_ = h_ * iso[0].rect.width / iso[0].rect.height
+    x0 = (W_ - 2 * w_ - gap) / 2
+    for k, nm in enumerate(("ISO 9001:2015 품질경영시스템", "ISO 14001:2015 환경경영시스템", "ISO 45001:2018 안전보건경영시스템")):
+        pg = sel.new_page(width=W_, height=H_)
+        pg.insert_textbox(fitz.Rect(x0, 12, W_ - x0, 28), f"선택 자료 · {nm} 인증서(국문 · 영문)", fontsize=9.5, fontname="malgun",
+                          fontfile=r"C:\Windows\Fonts\malgun.ttf", color=(0.6, 0.48, 0.25))
+        pg.insert_textbox(fitz.Rect(x0, 12, W_ - x0, 28), f"{D.COMPANY} · 입주박람회 주관사", fontsize=9.5, fontname="malgun",
+                          fontfile=r"C:\Windows\Fonts\malgun.ttf", color=(0.6, 0.48, 0.25), align=fitz.TEXT_ALIGN_RIGHT)
+        pg.draw_line(fitz.Point(x0, 29), fitz.Point(W_ - x0, 29), color=(0.78, 0.66, 0.42), width=0.8)
+        for j in range(2):
+            r = fitz.Rect(x0 + j * (w_ + gap), top, x0 + j * (w_ + gap) + w_, top + h_)
+            pg.show_pdf_page(r, iso, 2 * k + j)
+            pg.draw_rect(r, color=(0.75, 0.75, 0.75), width=0.5)
+    sel.subset_fonts()
     parts.append(("선택", "선택 자료(필수 아님)", "NICE 기업신용평가 전문(연 1회 정기 평가 · 가림) · 전기공사업 등록증 · ISO 인증서", sel))
 
     # 목록(쪽 번호) → 병합
