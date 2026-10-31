@@ -438,12 +438,19 @@ def boss_room(x, y, reporter):
              f'<circle cx="{x + 82}" cy="{top + 72}" r="12" fill="#e6ad3c" opacity=".9"/><path d="M {x + 60},{top + 98} Q {x + 90},{top + 76} {x + 136},{top + 94} L {x + 136},{top + 106} L {x + 60},{top + 106} Z" fill="#3a6ea8"/><path d="M {x + 60},{top + 104} Q {x + 100},{top + 88} {x + 136},{top + 102} L {x + 136},{top + 106} L {x + 60},{top + 106} Z" fill="#c9a45c" opacity=".8"/>')
     g.append(f'<rect x="{x + 284}" y="{top + 12}" width="30" height="{wb - top - 34}" fill="{wal}"/>' + "".join(
         f'<rect x="{x + 286}" y="{top + 44 + k * 34}" width="26" height="3" fill="{wal2}"/><path d="M {x + 293},{top + 22 + k * 34} L {x + 305},{top + 22 + k * 34} Q {x + 305},{top + 34 + k * 34} {x + 299},{top + 36 + k * 34} Q {x + 293},{top + 34 + k * 34} {x + 293},{top + 22 + k * 34} Z" fill="{gold}"/><rect x="{x + 296}" y="{top + 36 + k * 34}" width="6" height="7" fill="{gold}"/>' for k in range(3)))
-    if OS.get("theme") == "ship":        # 밀짚모자 해적단 깃발
-        fx, fy = x + 54, top + 46
-        g.append(f'<rect x="{fx}" y="{fy}" width="90" height="66" fill="#16161a" stroke="#3a2414" stroke-width="2"/><path d="M {fx + 90},{fy} q 6,10 0,22 q 6,12 0,22 q 6,12 0,22" fill="#16161a"/>'
-                 f'<circle cx="{fx + 45}" cy="{fy + 32}" r="13" fill="#f6f4ee"/><circle cx="{fx + 40}" cy="{fy + 30}" r="3" fill="#16161a"/><circle cx="{fx + 50}" cy="{fy + 30}" r="3" fill="#16161a"/><rect x="{fx + 40}" y="{fy + 38}" width="10" height="5" fill="#f6f4ee"/>'
-                 f'<path d="M {fx + 24},{fy + 50} L {fx + 66},{fy + 58} M {fx + 66},{fy + 50} L {fx + 24},{fy + 58}" stroke="#f6f4ee" stroke-width="5" stroke-linecap="round"/>'
-                 f'<ellipse cx="{fx + 45}" cy="{fy + 21}" rx="21" ry="4.6" fill="#f2c94c" stroke="#8a6a1a" stroke-width="1"/><path d="M {fx + 33},{fy + 21} Q {fx + 45},{fy + 4} {fx + 57},{fy + 21} Z" fill="#f2c94c" stroke="#8a6a1a" stroke-width="1"/><rect x="{fx + 33}" y="{fy + 16}" width="24" height="3.6" fill="#d93a2e"/>')
+    if OS.get("theme") == "ship":        # 밀짚모자 해적단(루피) 깃발: 검은 깃발 · 뒤로 X자 뼈 · 밀짚모자 쓴 해골
+        fx, fy, fw, fh = x + 50, top + 40, 100, 74; cx, cy = fx + fw / 2, fy + 40
+        g.append(f'<rect x="{fx - 4}" y="{fy - 6}" width="4" height="{fh + 30}" fill="#8a5a30" stroke="#3a2414" stroke-width="1"/><circle cx="{fx - 2}" cy="{fy - 8}" r="4" fill="#e6b84a" stroke="#3a2414" stroke-width="1"/>')
+        g.append(f'<path d="M {fx},{fy} Q {fx + fw / 2},{fy - 6} {fx + fw},{fy + 2} Q {fx + fw - 6},{fy + fh / 2} {fx + fw + 2},{fy + fh} Q {fx + fw / 2},{fy + fh - 6} {fx},{fy + fh} Z" fill="#141418" stroke="#000" stroke-width="1.6"/>')
+        bone = lambda x1, y1, x2, y2: (f'<path d="M {x1},{y1} L {x2},{y2}" stroke="#f6f4ee" stroke-width="7" stroke-linecap="round"/>'
+                                      + "".join(f'<circle cx="{px + ox}" cy="{py + oy}" r="4.4" fill="#f6f4ee"/>' for px, py in ((x1, y1), (x2, y2)) for ox, oy in ((-2.6, 2.6), (2.6, -2.6))))
+        g.append(bone(cx - 32, cy - 20, cx + 32, cy + 26) + bone(cx + 32, cy - 20, cx - 32, cy + 26))                       # 해골 뒤 X자 뼈
+        g.append(f'<path d="M {cx - 17},{cy - 2} C {cx - 19},{cy - 26} {cx + 19},{cy - 26} {cx + 17},{cy - 2} Q {cx + 16},{cy + 8} {cx + 9},{cy + 10} L {cx + 9},{cy + 18} L {cx - 9},{cy + 18} L {cx - 9},{cy + 10} Q {cx - 16},{cy + 8} {cx - 17},{cy - 2} Z" fill="#f6f4ee" stroke="#000" stroke-width="1.2"/>'
+                 f'<ellipse cx="{cx - 7}" cy="{cy - 3}" rx="5" ry="6" fill="#141418"/><ellipse cx="{cx + 7}" cy="{cy - 3}" rx="5" ry="6" fill="#141418"/><path d="M {cx - 2},{cy + 6} L {cx},{cy + 2} L {cx + 2},{cy + 6} Z" fill="#141418"/>'
+                 + "".join(f'<path d="M {cx + dx_},{cy + 11} L {cx + dx_},{cy + 18}" stroke="#141418" stroke-width="1.2"/>' for dx_ in (-4.5, 0, 4.5)))       # 해골
+        g.append(f'<ellipse cx="{cx}" cy="{cy - 15}" rx="27" ry="5.6" fill="#f2c94c" stroke="#8a6a1a" stroke-width="1.2"/><path d="M {cx - 16},{cy - 15} C {cx - 17},{cy - 36} {cx + 17},{cy - 36} {cx + 16},{cy - 15} Z" fill="#f2c94c" stroke="#8a6a1a" stroke-width="1.2"/>'
+                 f'<path d="M {cx - 16},{cy - 20} Q {cx},{cy - 23} {cx + 16},{cy - 20} L {cx + 16},{cy - 15} Q {cx},{cy - 18} {cx - 16},{cy - 15} Z" fill="#d93a2e"/>'
+                 f'<path d="M {cx - 10},{cy - 30} Q {cx - 4},{cy - 33} {cx + 2},{cy - 32}" stroke="#ffffff" stroke-width="1.4" fill="none" opacity=".6"/>')       # 밀짚모자
     if OS.get("theme") == "avengers":    # A 엠블럼
         fx, fy = x + 98, top + 80
         g.append(f'<circle cx="{fx}" cy="{fy}" r="34" fill="#0e141e" stroke="#3aa8ff" stroke-width="3"/><circle cx="{fx}" cy="{fy}" r="40" fill="none" stroke="#3aa8ff" stroke-width="1.2" opacity=".5"/>'
