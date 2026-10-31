@@ -62,10 +62,10 @@ ROSTER = {
         C("페로나", "drills", "#f6a0c6", "dress", "#2b2a38", "#e0484a", hat="crown", eyec="#6a3a5a", girl=True, vibe="cute", pose="wave", props=["ghost"], ex=["star_cheek"], legs="#2b2a38"),
         C("오키쿠", "pony", "#2b2230", "kimono", "#f4b6c4", "#ffffff", "#7a3a8a", eyec="#4a2a3a", girl=True, vibe="glam", mouth="lips", pose="hold", props=["sword_hip"], legs="#f4b6c4"),   # 바르톨로메오 대신 (본부장 10-31)
     ],
-    "pt": [
-        C("우타", "uta", "#e0483c", "dress", "#ffffff", "#6a6a7a", hair2="#f6f6f8", eyec="#8c4bd0", girl=True, vibe="cute", pose="sing", props=["mic"], ex=["headphones"], legs="#f6f6f8"),
-        C("핸콕", "blunt", "#1f1d26", "dress", "#d03a32", "#ffffff", eyec="#3a3a7a", mouth="lips", girl=True, vibe="glam", pose="hip", ex=["snake_earrings"], legs="#f6e0d0"),
+    "pt": [   # 시라호시 = 키 큰 거인이라 뒷줄 (본부장 10-31)
         C("시라호시", "long_wavy", "#f6a6c8", "dress", "#fbd3e2", "#ffffff", hat="crown", eyec="#4a90d8", girl=True, vibe="cute", pose="side", ex=["mermaid_tail", "earrings_gold", "tall_slim", "giant"]),   # 레베카 대신 (본부장 10-31) · 인어 공주
+        C("핸콕", "blunt", "#1f1d26", "dress", "#d03a32", "#ffffff", eyec="#3a3a7a", mouth="lips", girl=True, vibe="glam", pose="hip", ex=["snake_earrings"], legs="#f6e0d0"),
+        C("우타", "uta", "#e0483c", "dress", "#ffffff", "#6a6a7a", hair2="#f6f6f8", eyec="#8c4bd0", girl=True, vibe="cute", pose="sing", props=["mic"], ex=["headphones"], legs="#f6f6f8"),
         C("히요리", "blunt", "#1f1d26", "kimono", "#ec6a84", "#ffffff", "#f4d35a", eyec="#4a2a3a", girl=True, vibe="glam", pose="hold", props=["fan"], ex=["kanzashi"], legs="#ec6a84"),
     ],
     "retro": [
@@ -101,6 +101,11 @@ def strands(pts, k=0.22):
         d += f"Q {cx:.1f},{cy:.1f} {bx},{by} "
     return d
 
+_PAIR = __import__("re").compile(r"(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)")
+def _sx(d, k):
+    """경로의 x 좌표만 k배 (머리 · 이마 띠 폭을 얼굴형에 맞춤)"""
+    return _PAIR.sub(lambda m: f"{float(m.group(1)) * k:.1f},{m.group(2)}", d) if k != 1 else d
+
 def hair_front(lk):
     hs = lk["hs"]; extra = ""
     H = f'fill="url(#hair§)" stroke="{INK}" stroke-width="2.2" stroke-linejoin="round"'
@@ -114,11 +119,14 @@ def hair_front(lk):
     elif hs == "blunt":
         p = CAP + "L 48,-6 Q 0,-12 -48,-6 Z"
         extra = f'<path d="M 40,-14 Q 54,22 46,60 L 57,58 Q 62,10 50,-14 Z M -40,-14 Q -54,22 -46,60 L -57,58 Q -62,10 -50,-14 Z" {H}/>'
-    elif hs == "wavy":       # 사보 (본부장 10-31 사진): 모자 아래 머리에 붙어 턱선까지 · 끝만 물결 · 앞머리는 이마를 덮고 흉터 쪽(화면 오른쪽) 한 가닥이 길다 · 경로 하나 = 테두리 겹침 없음
-        p = ("M 0,-72 C 30,-72 56,-50 55,-22 C 56,0 58,18 54,32 Q 57,40 51,45 Q 49,38 46,37 Q 47,45 41,47 Q 41,38 40,30 C 43,14 44,0 43,-8 "
-             + strands([(43, -8), (38, -24), (31, 3), (22, -26), (12, -11), (2, -30), (-8, -13), (-18, -30), (-28, -13), (-36, -28), (-43, -8)], 0.16)
-             + "C -44,0 -43,14 -40,30 Q -41,38 -41,47 Q -47,45 -46,37 Q -49,38 -51,45 Q -57,40 -54,32 C -58,18 -56,0 -55,-22 C -56,-50 -30,-72 0,-72 Z")
-        extra = "".join(f'<path d="M {sx * 50},-12 Q {sx * 52},8 {sx * 49},26 M {sx * 46},4 Q {sx * 48},18 {sx * 46},30" stroke="{INK}" stroke-width="1.2" fill="none" opacity=".35"/>' for sx in (-1, 1))
+    elif hs == "wavy":       # 사보 (본부장 10-31 사진 · 모자 벗은 모습 기준): 가르마(살짝 왼쪽)에서 양옆으로 갈라지는 커튼 앞머리 · 흉터 쪽이 눈 옆까지 덮음 · 매끈하게 턱선까지 · 끝만 살짝 바깥으로 · 경로 하나
+        p = ("M 0,-72 C 30,-72 56,-54 56,-26 C 57,-6 56,12 54,24 Q 59,32 57,39 Q 51,34 46,36 Q 46,30 44,25 C 45,14 45,4 44,-4 "
+             "Q 41,3 36,5 Q 30,-12 16,-24 Q 4,-33 -6,-47 "
+             "Q -14,-34 -26,-25 Q -36,-18 -40,-8 "
+             "C -44,0 -45,10 -44,25 Q -46,30 -46,36 Q -51,34 -57,39 Q -59,32 -54,24 C -56,12 -57,-6 -56,-26 C -56,-54 -30,-72 0,-72 Z")
+        L = f'stroke="{INK}" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".38"'
+        extra = (f'<path d="M -2,-52 Q 22,-42 40,-8 M 6,-56 Q 34,-46 50,-12 M -12,-50 Q -26,-38 -36,-14" {L}/>'
+                 f'<path d="M 51,-14 Q 53,6 50,24 M -51,-14 Q -53,6 -50,24" {L}/>')
     elif hs in ("side", "long", "long_wavy", "pony", "bob", "bunny", "drills"):
         p = CAP + "L 48,-4 " + strands([(48, -4), (40, -20), (30, -6), (18, -28), (4, -12), (-10, -34), (-24, -18), (-36, -28), (-46, -6), (-53, 14)]) + "Z"
         if hs in ("long", "long_wavy", "bob", "bunny"):
@@ -149,7 +157,8 @@ def hair_front(lk):
     elif hs == "topknot": p = "M -50,6 C -56,-42 -28,-66 0,-66 C 28,-66 56,-42 50,6 L 46,-10 C 38,-42 -38,-42 -46,-10 Z"
     elif hs == "chopper_fur": p = "M -54,30 C -64,-40 -30,-70 0,-70 C 30,-70 64,-40 54,30 L 44,24 C 46,-28 -46,-28 -44,24 Z"
     else: p = CAP + "Q 0,-58 -53,14 Z"
-    return p, extra
+    k_ = lk.get("hair_w", 1)
+    return _sx(p, k_), _sx(extra, k_)
 
 def hair_back(lk):
     hs, ex = lk["hs"], lk["ex"]; s = ""
@@ -728,7 +737,7 @@ def svg(lk, n, team=None, working=True, pose=None, size=None, view=None):
     tiny = "tiny_body" in lk["ex"]          # 쵸파: 몸은 작게 (발 기준) · 머리는 그대로 크게 → 몸 위로 내려 붙임
     bk, bkx = (0.6, 0.9) if tiny else (1.04, 1.45) if "huge" in lk["ex"] else (1.06, 1.2) if "burly" in lk["ex"] else (1, 1)   # 쵸파: 2등신 · 통통 / 다부진 체격: 어깨 · 몸 넓게 (본부장 10-31)
     hs_ = HEAD_SCALE * (1.2 if tiny else 1); hdy = ((14 if view else (205 - 44) * (1 - bk)) if tiny else 0)     # 앉으면 책상 위로 눈이 보이게 조금만 내림
-    if "tall_slim" in lk["ex"]: bk, bkx = 1.16, 0.84; hdy = (205 - 44) * (1 - bk)     # 시라호시: 야위고 키 크게 (본부장 10-31)
+    if "tall_slim" in lk["ex"]: bk, bkx = 1.0, 0.86     # 시라호시: 갸름한 몸 · 크기는 흰수염만큼(giant 1.2배)만 (본부장 10-31 너무 커)
     hsx = hs_ * (1.14 if "wide_head" in lk["ex"] else 1)
     HG = f'<g transform="translate(0,{HEAD_PIVOT + hdy:.1f}) scale({hsx:.3f},{hs_:.3f}) translate(0,{-HEAD_PIVOT})">'      # 머리 전체 키우기 (목 아래를 중심으로)
     BG = f'<g transform="translate(0,205) scale({bkx},{bk}) translate(0,-205)">'
@@ -965,7 +974,8 @@ def elbaf_face(lk):
         s += "".join(f'<rect x="{sx * 17 - 14}" y="-2" width="28" height="20" rx="7" fill="#fff6c8" fill-opacity=".25" stroke="#e8c02a" stroke-width="4.4"/>' for sx in (-1, 1)) + '<path d="M -3,7 L 3,7" stroke="#e8c02a" stroke-width="3"/>'
     return s
 
-def elbaf_top(lk):        # 이마 띠 (조로)
+def elbaf_top(lk): return _sx(_elbaf_top0(lk), lk.get("hair_w", 1))     # 이마 띠도 머리 폭에 맞춤
+def _elbaf_top0(lk):        # 이마 띠 (조로)
     if not lk.get("headband"): return ""
     c = lk["headband"]
     return (f'<path d="M -50,-26 Q 0,-40 50,-26 L 50,-16 Q 0,-30 -50,-16 Z" fill="{c}" stroke="{INK}" stroke-width="1.6"/>'
