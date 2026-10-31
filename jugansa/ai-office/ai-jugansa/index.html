@@ -19,6 +19,7 @@
   .dot.on{background:#34c46c;box-shadow:0 0 0 5px rgba(52,196,108,.25)}
   .dot.off{background:#b4bac4;width:10px;height:10px;margin:-5px 0 0 -5px}
   .dot.away{background:#c9a45c}
+  .dot.gone{opacity:.35}
   .tag{position:absolute;transform:translate(-50%,0);background:#1b2433;border:1px solid #c9a45c;color:#ffe7a6;font-size:12px;font-weight:700;border-radius:11px;padding:2px 9px;z-index:6;white-space:nowrap}
   .badge{position:absolute;color:#fff;font-size:13px;font-weight:700;border-radius:11px;padding:2px 10px;background:#8a909c;white-space:nowrap}
   .badge.on{background:#2f9a5a}
@@ -139,16 +140,17 @@ async function init(){
   boss.img.src = "/v4/" + bs.file;
   // 그림 미리 받아 두기 (일하기 ↔ 쉬기 바꿀 때 깜빡임 없게)
   seats.forEach(s => { new Image().src = "/v4/" + s.work.file; new Image().src = "/v4/" + s.stand.file; });
-  fit(); render(); loadBoard(); poll(); setInterval(tickIdle, 1000); clock(); setInterval(clock, 15000);
+  fit(); render(); loadBoard(); poll(); setInterval(tickIdle, 1000); setTimeout(wanderTick, 3000); clock(); setInterval(clock, 15000);
   requestAnimationFrame(frame);
 }
 function clock(){ const d = new Date(); $("hm").textContent = `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; $("md").textContent = `${d.getMonth()+1}.${d.getDate()}(${"일월화수목금토"[d.getDay()]})`; }
 
 function setState(s, st, label){
+  if (s.state === "wander" && s.wk && st === "work"){ s.pend = label !== undefined ? label : s.label || " "; wanderHome(s.wk, true); return; }    // 산책 중 일이 생기면 바로 복귀
   s.state = st; if (label !== undefined) s.label = label;
-  s.img.style.visibility = st === "away" ? "hidden" : "visible";
+  s.img.style.visibility = st === "away" || st === "wander" ? "hidden" : "visible";
   if (st !== "away") s.img.src = "/v4/" + (st === "work" ? s.work.file : s.idle.file);
-  s.dot.className = "dot " + (st === "work" ? "on" : st === "away" ? "away" : "off");
+  s.dot.className = "dot " + (st === "work" ? "on" : st === "away" ? "away" : "off") + (st === "wander" ? " gone" : "");
   if (st === "away"){ if (!s.tag){ s.tag = el("div", "tag", {left:px(s.hx), top:px(s.hy + 16)}); s.tag.textContent = "보고 중"; } }
   else if (s.tag){ s.tag.remove(); s.tag = null; }
   render();
@@ -194,7 +196,7 @@ function tickIdle(){
 }
 
 // ───────── 본부장실로 걸어가서 보고 → 자리로 돌아오기 ─────────
-const walkers = [], line = []; let meeting = false, inRoom = null;
+const walkers = [], line = [], inRoom = []; let meeting = false;      // 본부장실 안 = 최대 2명
 // 자리 → 의자 뒤 통로(동료 뒤로 지나감) → 문 쪽 → 앞 유리문 → 복도(작게 보임) → 본부장실 문 앞 줄
 function pathOut(s){
   const r = L.rooms[s.team], d = r.door, bd = L.boss.door, lane = s.fy - 22;     // 책상 윗면 뒤 = 의자 뒤 통로
@@ -211,34 +213,41 @@ function mkWalker(st, x, y, kind){
 }
 function walk(o, pts, cb){ o.pts = [{x:o.x, y:o.y}, ...pts]; o.i = 0; o.cb = cb || null; }
 function killWalker(o){ o.img.remove(); if (o.bub) o.bub.remove(); walkers.splice(walkers.indexOf(o), 1); }
-function wsay(o, t, ms){ bubble(o, o.x, o.y - o.sh * 0.92 * (o.small ? 0.6 : 1), t, o.kind === "boss" ? "boss" : "", ms); }
+const SMALL = 0.8;      // 복도 크기 (0.6 → 0.8 · 본부장 10-31)
+function wsay(o, t, ms){ bubble(o, o.x, o.y - o.sh * 0.92 * (o.small ? SMALL : 1), t, o.kind === "boss" ? "boss" : "", ms); }
 function place(o){ const moving = o.pts.length && o.i < o.pts.length - 1, bob = moving ? Math.abs(Math.sin(performance.now() / 120)) * 3 : 0;
   o.img.style.left = px(o.x - o.sw / 2); o.img.style.top = px(o.y - o.sh * o.feet - bob);
-  o.img.style.transform = `scale(${o.flip ? -1 : 1}, 1) scale(${o.small ? 0.6 : 1})`;     // 복도에서는 작게 (방 그림을 덮지 않게)
-  if (o.bub){ o.bub.style.left = px(o.x); o.bub.style.top = px(o.y - o.sh * 0.92 * (o.small ? 0.6 : 1)); } }
+  o.img.style.transform = `scale(${o.flip ? -1 : 1}, 1) scale(${o.small ? SMALL : 1})`;     // 복도에서는 조금 작게 (방 그림을 덮지 않게)
+  if (o.bub){ o.bub.style.left = px(o.x); o.bub.style.top = px(o.y - o.sh * 0.92 * (o.small ? SMALL : 1)); } }
 // 팀 작업 끝 → 본부장실 앞 줄 → 한 명씩 들어가 보고 → 원탁에서 잠깐 회의 → 복도로 나와 자리로 복귀
 function report(s){
   if (!s || s.state === "away" || s.state === "walk") return;
+  const pool = seats.filter(x => x.team === s.team && (x === s || (x.state === "idle" && !x.agent)));      // 같은 팀에서 랜덤으로 1명이 보고하러 감
+  const r = pool[Math.floor(Math.random() * pool.length)] || s;
+  if (r !== s){ if (s.bub){ s.bub.remove(); s.bub = null; } setState(s, "idle", ""); s = r; }
   if (s.bub){ s.bub.remove(); s.bub = null; }
   setState(s, "away"); doneN++; render();
   const out = pathOut(s), o = mkWalker(s.stand, s.fx, s.fy, "rep"); o.s = s; o.out = out; line.push(o);
   walk(o, [...out.slice(1), waitPt(line.indexOf(o))], () => { o.waiting = true; o.flip = false; place(o); pump(); });
 }
 function pump(){
-  if (inRoom || meeting || !line.length || !line[0].waiting) return;
-  const o = line.shift(), bd = L.boss.door, B = L.boss; inRoom = o; o.waiting = false;
-  line.forEach((w, i) => { if (w.waiting) queueWalk(w, i); });          // 뒤에 선 사람은 한 칸씩 앞으로
-  walk(o, [{x:bd.out[0], y:bd.out[1], door:true}, {x:bd.in[0], y:bd.in[1], door:true}, {x:B.spot[0], y:B.spot[1]}], () => {
-    o.flip = true; place(o); wsay(o, "보고 드립니다", 2000); setTimeout(() => bossSay("확인! 수고했어!", 1800), 600);
-    const home = () => {
-      o.leaving = true;
-      walk(o, [{x:bd.in[0], y:bd.in[1], door:true}, {x:bd.out[0], y:bd.out[1], door:true}], () => {
-        inRoom = null; setTimeout(pump, 300);
-        walk(o, [...o.out].reverse(), () => { killWalker(o); setState(o.s, "idle", ""); });
-      });
-    };
-    setTimeout(() => meet(o, home), 2200);
-  });
+  const bd = L.boss.door, B = L.boss;
+  while (inRoom.length < 2 && line.length && line[0].waiting){
+    const o = line.shift(); o.waiting = false; o.slot = inRoom.some(w => w.slot === 0) ? 1 : 0; inRoom.push(o);
+    line.forEach((w, i) => { if (w.waiting) queueWalk(w, i); });          // 뒤에 선 사람은 한 칸씩 앞으로
+    const sp = o.slot ? (B.spot2 || [B.spot[0] - 46, B.spot[1]]) : B.spot;
+    walk(o, [{x:bd.out[0], y:bd.out[1], door:true}, {x:bd.in[0], y:bd.in[1], door:true}, {x:sp[0], y:sp[1]}], () => {
+      o.flip = true; place(o); wsay(o, "보고 드립니다", 2000); setTimeout(() => bossSay("확인! 수고했어!", 1800), 600);
+      const home = () => {
+        o.leaving = true;
+        walk(o, [{x:bd.in[0], y:bd.in[1], door:true}, {x:bd.out[0], y:bd.out[1], door:true}], () => {
+          inRoom.splice(inRoom.indexOf(o), 1); setTimeout(pump, 300);
+          walk(o, [...o.out].reverse(), () => { killWalker(o); setState(o.s, "idle", ""); });
+        });
+      };
+      setTimeout(() => meeting ? setTimeout(home, 900) : meet(o, home), 2200);     // 회의는 1명씩 · 나머지는 보고만
+    });
+  }
 }
 function meet(o, done){
   meeting = true; const M = L.boss.meet, B = L.boss;
@@ -256,6 +265,35 @@ function meet(o, done){
   };
   walk(o, [{x:M.rep[0], y:M.rep[1]}], both); walk(b, [{x:M.boss[0], y:M.boss[1]}], both);
 }
+// ───────── 한가할 때 4 ~ 10명이 복도를 돌아다니다 자리로 (본부장 10-31 '너무 앉아 있으면 그렇잖아') ─────────
+let wanderTarget = 6, wanderRoll = 0;
+const WANDER_LINES = ["커피 한 잔 ☕", "스트레칭~", "바람 쐬러", "잠깐 산책", "물 마시러", "금방 올게요", "기지개 쭉~", "산책 좋다"];
+function startWander(s){
+  setState(s, "wander", "");
+  const out = pathOut(s).slice(0, 5), o = mkWalker(s.stand, s.fx, s.fy, "wander"); o.s = s; s.wk = o;
+  const ys = [L.corrY[0] + 8, L.corrY[1] + 8], xs = L.corrX, y0 = out[4].y, xv = xs[Math.floor(Math.random() * xs.length)];
+  const y1 = Math.random() < 0.5 ? y0 : (ys.find(v => Math.abs(v - y0) > 20) ?? y0);
+  const route = [...out.slice(1), {x:xv, y:y0}, {x:xv, y:y1}, {x:60 + Math.random() * (L.W - 120), y:y1}];
+  o.route = route;
+  walk(o, route, () => { if (Math.random() < 0.45) wsay(o, WANDER_LINES[Math.floor(Math.random() * WANDER_LINES.length)], 1800);
+                         o.timer = setTimeout(() => wanderHome(o), 1500 + Math.random() * 3500); });
+}
+function wanderHome(o, fast){
+  clearTimeout(o.timer); if (fast) o.spd = 2.4;
+  if (o.homing) return; o.homing = true;
+  const s = o.s, reached = Math.max(0, Math.min(o.route.length, o.i) - 1);        // 지금까지 지나온 지점까지 되짚어 자리로
+  walk(o, [...o.route.slice(0, reached + 1).reverse(), {x:s.fx, y:s.fy}], () => {
+    killWalker(o); s.wk = null; s.state = "idle"; const p = s.pend; s.pend = null;
+    if (p) setState(s, "work", p.trim() ? p : undefined); else setState(s, "idle", "");
+  });
+}
+function wanderTick(){
+  const now = performance.now();
+  if (now > wanderRoll){ wanderTarget = 4 + Math.floor(Math.random() * 7); wanderRoll = now + 40000; }
+  const out = seats.filter(s => s.state === "wander").length, free = seats.filter(s => s.state === "idle" && !s.agent && !s.wk);
+  if (out < wanderTarget && free.length && Math.random() < 0.7) startWander(free[Math.floor(Math.random() * free.length)]);
+  setTimeout(wanderTick, 900 + Math.random() * 1600);
+}
 let last = performance.now();
 function frame(now){
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
@@ -263,7 +301,7 @@ function frame(now){
     if (o.hold){ if (now < o.hold) continue; o.hold = 0; o.img.style.opacity = 1; }
     const t = o.pts[o.i + 1];
     if (!t){ if (o.cb){ const c = o.cb; o.cb = null; o.pts = []; c(); } place(o); continue; }
-    const dx = t.x - o.x, dy = t.y - o.y, d = Math.hypot(dx, dy), step = WALK * dt;
+    const dx = t.x - o.x, dy = t.y - o.y, d = Math.hypot(dx, dy), step = WALK * dt * (o.spd || 1);
     if (d <= step){ o.x = t.x; o.y = t.y; o.i++; const nx = o.pts[o.i + 1];
       if (t.door && nx && nx.door){ o.img.style.opacity = 0; o.hold = now + 350; o.x = nx.x; o.y = nx.y; o.i++; o.small = !o.small; place(o); continue; } }
     else { o.x += dx / d * step; o.y += dy / d * step; }

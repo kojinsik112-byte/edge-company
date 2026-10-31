@@ -32,7 +32,7 @@ WORK = {"scout": (1, "notice_watch.py"), "analysis": (0, ""), "build": (2, "buil
         "mail": (1, "mail_군포.html"), "pt": (2, "오산 PT 대본"), "retro": (1, "입찰현황판.md")}
 AWAY = {"audit": 1}
 CORR = 64; _free = W - 40 - 3 * CORR
-CWS = [round(_free * k / 4.34) for k in (1, 1.34, 1, 1)]; CWS[3] = _free - sum(CWS[:3])     # 2번째 칸(03 제작 · 04 검증 = 사람 많음)을 넓게 (본부장 10-31)
+CWS = [430, 520, 0, 389]; CWS[2] = _free - CWS[0] - CWS[1] - CWS[3]     # 03·04 제일 넓게 > 01·02 > 07·본부장(원래 389) > 05·06 제일 좁게 (본부장 10-31)
 CX = [20 + sum(CWS[:i]) + i * CORR for i in range(4)]; CW = CWS[0]; CWOF = {CX[i]: CWS[i] for i in range(4)}
 R1, RH = 100, 300; R2 = R1 + RH + CORR; R3 = R2 + RH + CORR; RH3 = H - R3 - 25     # 상황판 세로 더 크게 (본부장 10-31)
 LAYOUT = {"W": W, "H": H, "seats": {}, "rooms": {}, "boss": {}, "board": {},
@@ -433,7 +433,7 @@ def team_room(key, x, y):
 # ───────────── 본부장실 ─────────────
 def boss_room(x, y, reporter):
     CW = CWOF[x]
-    g, (top, wb, dx) = shell(x, y, CW, RH, bh=136)
+    g, (top, wb, dx) = shell(x, y, CW, RH, bh=120)
     gold, wal, wal2 = "#c9a45c", "#4a2f22", "#6e4630"
     # 뒷벽: 월넛 포인트 벽 + 금색 회사 로고 · 큰 그림 · 트로피 장식장
     g.append(f'<rect x="{x + 150}" y="{top + 4}" width="126" height="{wb - top - 30}" fill="{wal}"/>' + "".join(f'<rect x="{x + 150 + k * 21}" y="{top + 4}" width="1.2" height="{wb - top - 30}" fill="{wal2}"/>' for k in range(1, 6)))
@@ -465,10 +465,10 @@ def boss_room(x, y, reporter):
     g.append(poly([(x + 72, wb + 30), (x + CW - 72, wb + 30), (x + CW - 40, y + RH - 38), (x + 40, y + RH - 38)], "none", f'stroke="{gold}" stroke-width="1.2" opacity=".8"'))
     g.append(f'<ellipse cx="{x + CW / 2}" cy="{(wb + y + RH) / 2 - 4}" rx="44" ry="14" fill="none" stroke="{gold}" stroke-width="1.2" opacity=".7"/>')
     # 뒤쪽 왼편: 가죽 소파 · 탁자 · 스탠드 조명
-    sy = y + RH - 70
-    g.append(f'<rect x="{x + 30}" y="{sy}" width="84" height="34" rx="11" fill="#5a2f25" stroke="#3a1d16" stroke-width="1.6"/><rect x="{x + 34}" y="{sy + 4}" width="76" height="11" rx="5" fill="#73402f"/>'
+    sy = y + RH - 62
+    g.append(f'<rect x="{x + 30}" y="{sy}" width="84" height="30" rx="11" fill="#5a2f25" stroke="#3a1d16" stroke-width="1.6"/><rect x="{x + 34}" y="{sy + 4}" width="76" height="11" rx="5" fill="#73402f"/>'
              f'<rect x="{x + 26}" y="{sy + 6}" width="10" height="28" rx="4" fill="#4a2620"/><rect x="{x + 108}" y="{sy + 6}" width="10" height="28" rx="4" fill="#4a2620"/>')
-    mtx, mty = x + 176, y + RH - 50                       # 원탁 회의 테이블 (보고 뒤 잠깐 회의)
+    mtx, mty = x + 172, y + RH - 48                       # 원탁 회의 테이블 (책상을 올려 앞쪽 회의 공간 넓힘 · 본부장 10-31)
     for ox in (-38, 38): g.append(f'<rect x="{mtx + ox - 9}" y="{mty - 22}" width="18" height="24" rx="5" fill="#5a2f25"/><rect x="{mtx + ox - 11}" y="{mty}" width="22" height="7" rx="3" fill="#73402f"/>')
     g.append(f'<rect x="{mtx - 3}" y="{mty}" width="6" height="22" fill="#2a1a12"/><ellipse cx="{mtx}" cy="{mty + 22}" rx="14" ry="4" fill="#2a1a12"/><ellipse cx="{mtx}" cy="{mty}" rx="30" ry="9" fill="#f6f2ea" stroke="#c9a45c" stroke-width="1.6"/>'
              f'<rect x="{mtx - 10}" y="{mty - 4}" width="12" height="7" rx="1" fill="#ffffff" stroke="#d8cdbb" stroke-width=".6"/><rect x="{mtx + 6}" y="{mty - 5}" width="5" height="6" rx="1" fill="#c9a45c"/>')
@@ -478,11 +478,11 @@ def boss_room(x, y, reporter):
     g.append(f'<rect x="{x + 300}" y="{wb + 40}" width="3" height="16" fill="{gold}"/><ellipse cx="{x + 301}" cy="{wb + 57}" rx="10" ry="3" fill="{wal}"/><circle cx="{x + 301}" cy="{wb + 28}" r="14" fill="#5f95db" stroke="{gold}" stroke-width="2"/>'
              f'<path d="M {x + 292},{wb + 22} q 6,-6 12,0 q 4,6 -2,12 q -6,2 -8,-4 Z M {x + 304},{wb + 32} q 4,-2 6,2 q -2,4 -6,2 Z" fill="#5cb87a"/>')
     g.append(f'<rect x="{x + 236}" y="{wb - 66}" width="2.4" height="118" fill="{gold}"/><circle cx="{x + 237}" cy="{wb - 68}" r="3" fill="{gold}"/><path d="M {x + 238},{wb - 62} Q {x + 254},{wb - 66} {x + 266},{wb - 58} L {x + 266},{wb - 26} Q {x + 254},{wb - 34} {x + 238},{wb - 30} Z" fill="#1b2433" stroke="{gold}" stroke-width="1"/>' + T(x + 252, wb - 41, "E", 11, gold, 800, "middle"))
-    cx, yt, s = x + CW / 2 - 10, y + 190, 0.44
+    cx, yt, s = x + CW / 2 - 10, y + 162, 0.44
     g.append(f'<rect x="{cx - 50 * s:.1f}" y="{yt - 190 * s:.1f}" width="{100 * s:.1f}" height="{190 * s:.1f}" rx="{24 * s:.1f}" fill="#5a2f25"/>')
     if ASSETS:
         LAYOUT["boss"] = {"sprite": sprite("boss_work.svg", (cx - 90, yt - 280 * s, 180, 280 * s + 8), char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type") + laptop(cx - 62, yt, 0.4, True, "#c9a45c")),
-                          "hx": cx, "hy": yt - 232 * s, "spot": [x + CW - 104, y + RH - 36], "meet": {"boss": [x + 128, y + RH - 30], "rep": [x + 222, y + RH - 30]},
+                          "hx": cx, "hy": yt - 232 * s, "spot": [x + CW - 70, y + RH - 34], "spot2": [x + CW - 118, y + RH - 34], "meet": {"boss": [x + 126, y + RH - 28], "rep": [x + 218, y + RH - 28]},
                           "standAt": [cx + 108, yt + 34], "door": None, "room": {"x": x, "y": y, "w": CW, "h": RH}, "name": sc.BOSS_LOOK["name"]}
         open(os.path.join(ASSETS, "boss_stand.svg"), "w", encoding="utf-8").write(sc.svg(sc.BOSS_LOOK, nid(), working=True, pose="side", size=(240 * 0.36, 400 * 0.36)))
         LAYOUT["boss"]["stand"] = {"file": "boss_stand.svg", "w": 240 * 0.36, "h": 400 * 0.36, "feet": (205 + 180) / 400}
