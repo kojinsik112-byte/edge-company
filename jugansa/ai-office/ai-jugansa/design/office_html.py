@@ -597,6 +597,22 @@ def header():
     g.append(f'<rect x="{W - 150}" y="22" width="126" height="36" rx="18" fill="#263247" stroke="#3a4660"/><circle cx="{W - 132}" cy="40" r="6" fill="#5fe39a"/>' + T(W - 118, 46, "서버 연결됨", 14, "#c8f2d8"))
     return g
 
+def bench_parts(x, yb):
+    """2인용 벤치 (가로 92): 등받이 · 다리 = 배경 / 앉는 판 · 앞판 = 앉은 직원 위에 덮는 그림 (본부장 10-31)"""
+    th = OS.get("theme"); w = 92
+    wood, dk = ("#3a4454", "#1f2633") if th == "avengers" else ("#b07a44", "#6a4424")
+    cush = "#c9483b" if th == "avengers" else "#e8c98a"
+    st = yb - 16                                        # 앉는 면 높이
+    back = (f'<ellipse cx="{x + w / 2}" cy="{yb + 2}" rx="{w * .56}" ry="5" fill="#000" opacity=".2"/>'
+            f'<rect x="{x + 4}" y="{st - 30}" width="{w - 8}" height="26" rx="6" fill="{wood}" stroke="{dk}" stroke-width="1.6"/>'
+            + "".join(f'<rect x="{x + 8}" y="{st - 26 + k * 8}" width="{w - 16}" height="4" rx="2" fill="{mix(wood, "#ffffff", .25)}" opacity=".6"/>' for k in range(3))
+            + f'<rect x="{x + 2}" y="{st - 34}" width="8" height="34" rx="3" fill="{dk}"/><rect x="{x + w - 10}" y="{st - 34}" width="8" height="34" rx="3" fill="{dk}"/>')
+    front = (f'<rect x="{x}" y="{st - 3}" width="{w}" height="9" rx="4" fill="{cush}" stroke="{dk}" stroke-width="1.6"/>'
+             f'<rect x="{x + 4}" y="{st - 2}" width="{w - 8}" height="2.5" rx="1.2" fill="#ffffff" opacity=".35"/>'
+             f'<rect x="{x + 3}" y="{st + 6}" width="{w - 6}" height="{yb - st - 6}" rx="3" fill="{wood}" stroke="{dk}" stroke-width="1.6"/>'
+             f'<rect x="{x + 2}" y="{st + 4}" width="8" height="{yb - st - 2}" rx="2" fill="{dk}"/><rect x="{x + w - 10}" y="{st + 4}" width="8" height="{yb - st - 2}" rx="2" fill="{dk}"/>')
+    return back, front, st, w
+
 def sea_bg():         # 원피스 배경: 바깥 바다 물결
     if OS.get("theme") != "ship": return ""
     rnd = random.Random(3); g = f'<rect width="{W}" height="{H}" fill="{grad("linearGradient", [(0, "#8ad0ec", 1), (1, "#3a8ac0", 1)], x1=0, y1=0, x2=0, y2=1)}"/>'
@@ -606,13 +622,18 @@ def sea_bg():         # 원피스 배경: 바깥 바다 물결
     return g
 
 VK = 1.0       # 자판기 원래 크기 · 위쪽 벽(방 앞쪽)에 붙여 세움 — 방 앞부분을 조금 가려도 됨 (본부장 10-31)
-VEND = [(CX[0] + 26, R1 + RH + 22, "#d8352e", "DRINK"), (CX[2] + 10, R2 + RH + 22, "#2f6fd0", "COFFEE")]
+VEND = [(CX[1] + 26, R1 + RH + 22, "#d8352e", "DRINK"), (CX[2] + 10, R2 + RH + 22, "#2f6fd0", "COFFEE")]     # 빨강 = 제작팀 앞 (본부장 10-31)
 body, report = corridors(), None
 LAYOUT["vend"] = [[vx_ + 46 * VK + 14, vy_ - 22 + CORR / 2 + 8, vl_] for vx_, vy_, vc_, vl_ in VEND]
 for key, x, y in ROOMS:
     g, rep = team_room(key, x, y); body += g; report = report or rep
 body += boss_room(CX[3], R2, report)
 body += board_room(CX[0], R3, CX[3] + CWS[3] - CX[0], RH3)
+BX, BY = CX[0] + 34, R1 + RH + 26          # 벤치: 개척(위) · 착수분석(아래) 사이 복도, 위쪽 벽에 붙임
+b_back, b_front, b_st, b_w = bench_parts(BX, BY)
+body.append(b_back)
+if ASSETS: LAYOUT["bench"] = {"front": sprite("bench_front.svg", (BX - 2, b_st - 6, b_w + 4, BY - b_st + 8), b_front),
+                              "seats": [[BX + b_w * 0.28, b_st], [BX + b_w * 0.72, b_st]], "y": R1 + RH + CORR / 2 + 8}
 for vx_, vy_, vc_, vl_ in VEND: body.append(f'<g transform="translate({vx_},{vy_}) scale({VK}) translate({-vx_},{-vy_})">{vending(vx_, vy_, vc_, vl_)}</g>')     # 방 위에 그림 (본부장 10-31 '방보다 위로')
 if ASSETS:
     bg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}"><defs><filter id="blur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="8"/></filter>{FILTERS}{"".join(DEFS)}</defs>'
