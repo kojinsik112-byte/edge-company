@@ -121,8 +121,10 @@ def board():
                      "pt": ptx[:28], "pt_dday": (ptd - today).days if ptd else None, "done": done,
                      "stage": stage_of.get(name, ""), "pt_ok": bool(ptd) and stage_of.get(name) == "pt",
                      "pt_date": ptd.isoformat() if ptd else "", "pt_time": ptt, "pt_place": place, "pt_more": more})
+    # 정렬 (본부장 10-31): PT 확정 → 마감 안 지난 단지(제출했어도 위 · 마감 가까운 순) → 마감 지난 단지(아래 · 최근 마감 먼저)
+    past = lambda r: r["dday"] is not None and r["dday"] < 0
     rows.sort(key=lambda r: (not (r["pt_ok"] and r["pt_dday"] >= 0), r["pt_dday"] if r["pt_ok"] else 0,
-                             r["done"], r["dday"] if r["dday"] is not None else 999))
+                             past(r), -r["dday"] if past(r) else (r["dday"] if r["dday"] is not None else 999)))
     return {"file": f, "today": today.isoformat(), "sites": rows}
 
 # ── PT 확정 알림: PT 3일 전 · 2일 전 · 1일 전 × 10:00 · 16:00 (작업 스케줄러가 --pt-alert 로 부름 → 윈도우 알림) ──

@@ -426,7 +426,8 @@ function renderBoard(){
     const dtxt = r.done ? "제출" : r.dday === null ? "—" : r.dday > 0 ? "D-" + r.dday : r.dday === 0 ? "D-DAY" : "지남";
     const pips = BOARD_ORDER.map((k, i) => { const c = BSTAGE(k).color;
       return i < si ? `<i class="past" style="background:${c}"></i>` : i === si ? `<i class="on${live ? " live" : ""}" style="background:${c}"></i>` : `<i></i>`; }).join("");
-    return `<div class="row${r.done ? " done" : ""}${r.site === curSite ? " cur" : ""}" title="${esc(r.name || r.site)}"><span class="nm">${esc(dn(r))}</span>`
+    const past = r.dday !== null && r.dday < 0;      // 마감 지남 = 연하게 · 아래로 (제출했어도 마감 전이면 선명하게 위 · 본부장 10-31)
+    return `<div class="row${past ? " done" : ""}${r.site === curSite ? " cur" : ""}" title="${esc(r.name || r.site)}"><span class="nm">${esc(dn(r))}</span>`
       + `<span class="due">${esc((r.due || "—").split(" (")[0].split("까지")[0])}</span><span><em class="dd${r.done ? " done" : urgent ? " urgent" : ""}" style="font-style:normal">${dtxt}</em></span>`
       + `<span class="pips">${pips}</span><span class="pt${r.pt_date ? " has" : ""}">${esc(clip(r.pt || "—", 30))}</span></div>`; }).join("");
   const ev = [], today = new Date(); today.setHours(0,0,0,0);
