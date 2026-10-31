@@ -486,7 +486,13 @@ def main():
     dnb.subset_fonts()
     d11.insert_pdf(dnb)
     d11.insert_pdf(fitz.open(ELEC))
-    d11.insert_pdf(fitz.open(ISO))
+    # 본부장 10-31 'ISO도 2개씩 · 너무 페이지 차지': 국문 · 영문 한 쌍을 가로 A4 한 쪽에 나란히(원본 그림 축소만 · 6쪽 → 3쪽)
+    iso = fitz.open(ISO)
+    for k in range(0, iso.page_count, 2):
+        pg = d11.new_page(width=842, height=595)
+        for j, x0 in enumerate((20, 426)):
+            if k + j < iso.page_count:
+                pg.show_pdf_page(fitz.Rect(x0, 18, x0 + 396, 577), iso, k + j)
     docs["⑪"] = d11
     desc["⑪"] = "A/S 프로세스 · SGI 발급 이력 · KB 증권 · 자문 협약 · 전기공사업 · ISO"
 
