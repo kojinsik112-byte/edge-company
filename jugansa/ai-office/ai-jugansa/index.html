@@ -227,8 +227,9 @@ function report(s){
   if (r !== s){ if (s.bub){ s.bub.remove(); s.bub = null; } setState(s, "idle", ""); s = r; }
   if (s.bub){ s.bub.remove(); s.bub = null; }
   setState(s, "away"); doneN++; render();
-  const out = pathOut(s), o = mkWalker(s.stand, s.fx, s.fy, "rep"); o.s = s; o.out = out; line.push(o);
-  walk(o, [...out.slice(1), waitPt(line.indexOf(o))], () => { o.waiting = true; o.flip = false; place(o); pump(); });
+  const out = pathOut(s), o = mkWalker(s.stand, s.fx, s.fy, "rep"); o.s = s; o.out = out;
+  const arrive = {x:Math.max(L.vX + 10, L.boss.door.out[0] - 260), y:L.boss.door.out[1]};      // 본부장실 앞에 먼저 도착한 순서대로 줄을 선다 (본부장 10-31)
+  walk(o, [...out.slice(1), arrive], () => { line.push(o); walk(o, [waitPt(line.indexOf(o))], () => { o.waiting = true; o.flip = false; place(o); pump(); }); });
 }
 function pump(){
   const bd = L.boss.door, B = L.boss;
