@@ -19,11 +19,11 @@ OFFICE_SKINS = {
         light="#9fc4ff", light_op=0.35, sconce="#ffd8a0", plaque="#0b0f18", plaque_text="#ffe7a6", header="#0b0f18", header2="#141b2a",
         board="#0a0e16", board_frame="#c9a45c", rug_mix=0.35, glass=True, night=True),
     "써니호선실": dict(
-        name="원피스", desc="원피스 배 안 선실 — 나무 판자 벽 · 갑판 바닥 · 둥근 현창(바다) · 천장 들보 · 랜턴 · 밧줄 · 술통 · 해적 깃발",
+        name="원피스", desc="원피스 써니호 선실 — 잔디 갑판 복도 · 햇살 갈기 사자 · 바다 · 나무 판자 벽 · 갑판 바닥 · 둥근 현창(바다) · 천장 들보 · 랜턴 · 밧줄 · 술통 · 해적 깃발",
         bg="#9fd0e6", ceil="#5a3a22", wall="#a87644", wall2="#8a5c32", wall_line="#6e4626", trim="#6a4426",
         side="#8a5c32", side2="#6e4626", side_kind="hull", wall_kind="plank", floor_kind="deck", floor="#c8945a", floor2="#b8844c", floor_line="#7a5030",
         light="#ffd08a", light_op=0.5, sconce="#ffc86a", plaque="#3a2416", plaque_text="#ffe7b0", header="#3a2416", header2="#5a3a22",
-        board="#16201c", board_frame="#8a5a30", rug_mix=0.55, glass=False, night=False, theme="ship", accent="#e8c27a"),
+        board="#16201c", board_frame="#e8862a", rug_mix=0.55, glass=False, night=False, theme="ship", accent="#f2a43a"),
     "어벤져스본부": dict(
         name="어벤져스 사무실", desc="어벤져스 사무실 — 짙은 강철 패널 · 파란 LED 라인 · 육각 바닥 · 야경 통유리 + 홀로그램 · A 엠블럼",
         bg="#0b1018", ceil="#121822", wall="#252d3a", wall2="#1b222d", wall_line="#3aa8ff", trim="#6a7484",

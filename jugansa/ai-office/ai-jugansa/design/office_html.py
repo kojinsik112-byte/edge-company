@@ -82,6 +82,15 @@ def front_glass(x, y, w, h):
     DOORS[(x, y)] = {"in": [round(cx, 1), round(y + h - 30, 1)], "out": [round(cx, 1), round(y + h + CORR / 2 + 8, 1)], "aisle": round(cx, 1)}
     return g
 
+def sunny_lion(cx, cy, r=22):
+    """써니호 뱃머리 사자: 햇살처럼 뻗은 주황 갈기 · 노란 얼굴 · 큰 코 · 웃는 입"""
+    g = "".join(f'<path d="M {cx + r * .7 * math.cos(math.radians(a - 9)):.1f},{cy + r * .7 * math.sin(math.radians(a - 9)):.1f} L {cx + r * 1.28 * math.cos(math.radians(a)):.1f},{cy + r * 1.28 * math.sin(math.radians(a)):.1f} L {cx + r * .7 * math.cos(math.radians(a + 9)):.1f},{cy + r * .7 * math.sin(math.radians(a + 9)):.1f} Z" fill="{"#f08c2c" if k % 2 else "#f6b23a"}" stroke="#7a3a10" stroke-width="1"/>' for k, a in enumerate(range(0, 360, 20)))
+    g += f'<circle cx="{cx}" cy="{cy}" r="{r * .78:.1f}" fill="#f6d27a" stroke="#7a3a10" stroke-width="1.6"/>'
+    g += "".join(f'<ellipse cx="{cx + sx * r * .28:.1f}" cy="{cy - r * .16:.1f}" rx="{r * .09:.1f}" ry="{r * .13:.1f}" fill="#2a1a0a"/><path d="M {cx + sx * r * .16:.1f},{cy - r * .34:.1f} q {sx * r * .12:.1f},{-r * .08:.1f} {sx * r * .24:.1f},0" stroke="#7a3a10" stroke-width="1.4" fill="none"/>' for sx in (-1, 1))
+    g += f'<ellipse cx="{cx}" cy="{cy + r * .06:.1f}" rx="{r * .2:.1f}" ry="{r * .13:.1f}" fill="#c8602a"/><path d="M {cx - r * .32:.1f},{cy + r * .26:.1f} Q {cx},{cy + r * .56:.1f} {cx + r * .32:.1f},{cy + r * .26:.1f}" stroke="#7a3a10" stroke-width="1.6" fill="none"/>'
+    g += "".join(f'<path d="M {cx + sx * r * .36:.1f},{cy + r * .14:.1f} l {sx * r * .3:.1f},{-r * .04 + k * r * .08:.1f}" stroke="#7a3a10" stroke-width="1"/>' for sx in (-1, 1) for k in (0, 1))
+    return g
+
 def corridors():
     base = mix(OS["trim"], OS["bg"], 0.18) if not OS["night"] else mix(OS["bg"], "#000000", 0.25)
     run, gold = mix(base, "#ffffff", 0.10), OS.get("accent", "#c9a45c")
@@ -100,6 +109,23 @@ def corridors():
                  f'<rect x="{rx + 12}" y="{ry}" width="1.4" height="{rh}" fill="{gold}" opacity=".75"/><rect x="{rx + rw - 13.4}" y="{ry}" width="1.4" height="{rh}" fill="{gold}" opacity=".75"/>')
         g.append(f'<rect x="{rx + 14}" y="{ry}" width="{(rw - 28) / 2}" height="{rh}" fill="#ffffff" opacity=".05"/>')
         for k in range(int(ry) + 40, int(ry + rh), 80): g.append(f'<rect x="{rx}" y="{k}" width="{rw}" height="1" fill="#000000" opacity=".18"/>')
+    if OS.get("theme") == "ship":        # 써니호 잔디 갑판 · 나무 테두리
+        lawn = grad("linearGradient", [(0, "#7cc45a", 1), (1, "#5aa846", 1)], x1=0, y1=0, x2=0, y2=1)
+        for rx, ry, rw, rh in hz + vt:
+            g.append(f'<rect x="{rx}" y="{ry}" width="{rw}" height="{rh}" fill="{lawn}"/>')
+        rnd = random.Random(7)
+        for rx, ry, rw, rh in hz + vt:
+            for _ in range(int(rw * rh / 90)):
+                gx, gy = rx + rnd.uniform(2, rw - 2), ry + rnd.uniform(4, rh - 2)
+                g.append(f'<path d="M {gx:.1f},{gy:.1f} l {rnd.uniform(-1.5, 1.5):.1f},-4" stroke="{rnd.choice(["#4a9a3a", "#9ad87a", "#3a8a30"])}" stroke-width="1.1"/>')
+        for rx, ry, rw, rh in hz: g.append(f'<rect x="{rx}" y="{ry}" width="{rw}" height="5" fill="#8a5a30"/><rect x="{rx}" y="{ry + rh - 5}" width="{rw}" height="5" fill="#8a5a30"/>')
+        for rx, ry, rw, rh in vt: g.append(f'<rect x="{rx}" y="{ry}" width="5" height="{rh}" fill="#8a5a30"/><rect x="{rx + rw - 5}" y="{ry}" width="5" height="{rh}" fill="#8a5a30"/>')
+        for i in range(3):
+            for yy in (R1 + RH, R2 + RH): g.append(sunny_lion(CX[i] + CW + CORR / 2, yy + CORR / 2, 17))
+        for key, x, y in ROOMS + [("boss", CX[3], R2)]:
+            mx = x + CW - 14 - DOOR_W
+            g.append(f'<rect x="{mx - 4}" y="{y + RH + 6}" width="{DOOR_W + 8}" height="{CORR - 12}" rx="4" fill="#a8703c" stroke="#5a3a1e" stroke-width="1.4"/>' + "".join(f'<rect x="{mx - 4}" y="{y + RH + 6 + k * 9}" width="{DOOR_W + 8}" height="1" fill="#5a3a1e" opacity=".6"/>' for k in range(1, 6)))
+        return g
     for i in range(3):                                                                           # 교차점 금색 장식
         for yy in (R1 + RH, R2 + RH):
             cx, cy = CX[i] + CW + CORR / 2, yy + CORR / 2
@@ -475,6 +501,7 @@ def board_room(x, y, w, h):
         LAYOUT["board"] = {"x": BX0, "y": BY0, "w": BX1 - BX0, "h": BY1 - BY0}
         g.append(plant(x + 40, y + h - 10, 1.0)); g.append(plant(x + w - 40, y + h - 10, 1.0)); g = close(g, x, y, w, h)
         g.append(plaque(x + dx + 18, top + 10, "", "상황실 · 단지 현황판", "#c9a45c"))
+        if OS.get("theme") == "ship": g.append(sunny_lion(x + w / 2 - 40, top + 24, 22) + T(x + w / 2 - 6, top + 32, "THOUSAND SUNNY", 13, "#ffe7b0", 800, "start", 'letter-spacing="2"'))
         g.append(f'<rect x="{x + dx + 270}" y="{top + 16}" width="150" height="22" rx="11" fill="#2f9a5a"/>' + T(x + dx + 345, top + 32, "입찰현황판.md 실시간", 12, "#ffffff", anchor="middle"))
         lx = x + w - dx - 470
         g.append(f'<rect x="{lx}" y="{top + 12}" width="452" height="30" rx="15" fill="#fffaf0" stroke="#dccfb7"/>' + dot(lx + 20, top + 27, "on") + T(lx + 34, top + 32, "작업 중", 13, "#2b2018")
@@ -542,6 +569,14 @@ def header():
     g.append(f'<rect x="{W - 150}" y="22" width="126" height="36" rx="18" fill="#263247" stroke="#3a4660"/><circle cx="{W - 132}" cy="40" r="6" fill="#5fe39a"/>' + T(W - 118, 46, "서버 연결됨", 14, "#c8f2d8"))
     return g
 
+def sea_bg():         # 원피스 배경: 바깥 바다 물결
+    if OS.get("theme") != "ship": return ""
+    rnd = random.Random(3); g = f'<rect width="{W}" height="{H}" fill="{grad("linearGradient", [(0, "#8ad0ec", 1), (1, "#3a8ac0", 1)], x1=0, y1=0, x2=0, y2=1)}"/>'
+    for _ in range(140):
+        x0, y0 = rnd.uniform(0, W), rnd.uniform(90, H)
+        g += f'<path d="M {x0:.0f},{y0:.0f} q 6,-4 12,0 q 6,4 12,0" stroke="#ffffff" stroke-width="1.6" fill="none" opacity="{rnd.uniform(.3, .7):.2f}"/>'
+    return g
+
 body, report = corridors(), None
 for key, x, y in ROOMS:
     g, rep = team_room(key, x, y); body += g; report = report or rep
@@ -549,7 +584,7 @@ body += boss_room(CX[3], R2, report)
 body += board_room(CX[0], R3, CX[3] + CW - CX[0], RH3)
 if ASSETS:
     bg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}"><defs><filter id="blur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="8"/></filter>{FILTERS}{"".join(DEFS)}</defs>'
-          f'<rect width="{W}" height="{H}" fill="{OS["bg"]}"/>' + "".join(body) + "</svg>")
+          f'<rect width="{W}" height="{H}" fill="{OS["bg"]}"/>' + sea_bg() + "".join(body) + "</svg>")
     open(os.path.join(ASSETS, "bg.svg"), "w", encoding="utf-8").write(bg)
     LAYOUT.update(office=A.office, office_name=OS["name"], skin=A.skin, header=OS["header"], header2=OS["header2"], bg=OS["bg"], board_bg=OS["board"])
     json.dump(LAYOUT, open(os.path.join(ASSETS, "layout.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
