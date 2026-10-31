@@ -93,6 +93,23 @@ def sunny_lion(cx, cy, r=22):
     g += "".join(f'<path d="M {cx + sx * r * .36:.1f},{cy + r * .14:.1f} l {sx * r * .3:.1f},{-r * .04 + k * r * .08:.1f}" stroke="#7a3a10" stroke-width="1"/>' for sx in (-1, 1) for k in (0, 1))
     return g
 
+def vending(x, yb, body, label):
+    """복도 자판기 (가로 46 · 세로 58): 몸통 · 진열창 음료 · 버튼 · 꺼내는 구멍 · 간판"""
+    w, h = 46, 58; y = yb - h; dk = mix(body, "#000000", 0.35); lt = mix(body, "#ffffff", 0.3)
+    g = f'<ellipse cx="{x + w / 2}" cy="{yb + 1}" rx="{w * .6}" ry="4" fill="#000" opacity=".22"/>'
+    g += f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="4" fill="{body}" stroke="{dk}" stroke-width="1.6"/><rect x="{x + 2}" y="{y + 2}" width="4" height="{h - 4}" fill="{lt}" opacity=".5"/>'
+    g += f'<rect x="{x + 4}" y="{y + 3}" width="{w - 8}" height="9" rx="2" fill="#1b2433"/>' + T(x + w / 2, y + 10.4, label, 7, "#ffe7a6", 800, "middle")
+    g += f'<rect x="{x + 5}" y="{y + 15}" width="{w - 18}" height="26" rx="2" fill="#cfeefb" stroke="{dk}" stroke-width="1"/>'
+    cols = ["#e0402c", "#3a86e0", "#f2c230", "#5cb87a", "#a75ae0", "#f08c2c"]
+    for r in range(3):
+        for c in range(4):
+            g += f'<rect x="{x + 7 + c * 6.6:.1f}" y="{y + 17 + r * 8.2:.1f}" width="4.6" height="6.6" rx="1.4" fill="{cols[(r * 4 + c) % 6]}"/>'
+        g += f'<rect x="{x + 6}" y="{y + 24 + r * 8.2:.1f}" width="{w - 20}" height="1" fill="{dk}" opacity=".6"/>'
+    g += "".join(f'<circle cx="{x + w - 8}" cy="{y + 18 + k * 7}" r="2.2" fill="{["#ffffff", "#ffe27a", "#9af4ff"][k]}" stroke="{dk}" stroke-width=".6"/>' for k in range(3))
+    g += f'<rect x="{x + w - 11}" y="{y + 39}" width="6" height="2" fill="#1b2433"/>'
+    g += f'<rect x="{x + 6}" y="{y + 45}" width="{w - 12}" height="9" rx="2" fill="#1b2433"/><rect x="{x + 8}" y="{y + 46}" width="{w - 16}" height="2" fill="#3a4454"/>'
+    return g
+
 def corridors():
     base = mix(OS["trim"], OS["bg"], 0.18) if not OS["night"] else mix(OS["bg"], "#000000", 0.25)
     run, gold = mix(base, "#ffffff", 0.10), OS.get("accent", "#c9a45c")
@@ -589,7 +606,10 @@ def sea_bg():         # 원피스 배경: 바깥 바다 물결
         g += f'<path d="M {x0:.0f},{y0:.0f} q 6,-4 12,0 q 6,4 12,0" stroke="#ffffff" stroke-width="1.6" fill="none" opacity="{rnd.uniform(.3, .7):.2f}"/>'
     return g
 
+VEND = [(CX[0] + 18, R1 + RH + CORR - 4, "#d8352e", "DRINK"), (CX[2] + 44, R2 + RH + CORR - 4, "#2f6fd0", "COFFEE")]     # 자판기 2대 (본부장 10-31)
 body, report = corridors(), None
+for vx_, vy_, vc_, vl_ in VEND: body.append(vending(vx_, vy_, vc_, vl_))
+LAYOUT["vend"] = [[vx_ + 62, vy_ - CORR / 2 + 12, vl_] for vx_, vy_, vc_, vl_ in VEND]
 for key, x, y in ROOMS:
     g, rep = team_room(key, x, y); body += g; report = report or rep
 body += boss_room(CX[3], R2, report)
