@@ -297,7 +297,7 @@ def f_s2(seal_uri):
             + f'<div class="dt">{y}년 {m}월 {d}일</div>'
             f'<div class="who">[서 약 자]<br>상 호 : {e(D.COMPANY)}<br>대 표 : <span class="in">대표이사 {e(D.CEO)} (인){_seal_img(seal_uri)}</span></div>'
             f'<div class="to">{e(SITE)} 입주예정자협의회 귀하</div>')
-    return page("제출 ⑩ · 개별 입주박람회 및 단지 영업행위 금지 서약서 [서식2]", body)
+    return page("제출 ⑩ · 영업행위 금지 서약서 [서식2]", body)   # 챗 검증 10-31: 머리말 한 줄로
 
 
 # ------------------------------------------------------------ 안내 · 표지
@@ -314,7 +314,7 @@ def p03_cover():
 def p07_guide(parts):
     rows = "".join(f'<tr><td class="n">{i}</td><td>{e(a)}</td><td>{e(b)}</td></tr>' for i, (a, b) in enumerate(parts, 1))
     body = ('<h2>4대 보험 사업장 가입증명서 및 조직도 - 안내</h2>'
-            '<p class="b">공고 제출 서류 ⑦ ‘4대 보험 사업장 가입증명서 및 조직도(최근 1개월 이내)’입니다. 개인정보(성명 가운데 글자 · 주민등록번호 뒷자리)는 가렸습니다.</p>'
+            '<p class="b">공고 제출 서류 ⑦ ‘4대 보험 사업장 가입증명서 및 조직도(최근 1개월 이내)’입니다. 개인정보(성명 가운데 글자 · 주민등록번호 칸 전체)는 가렸습니다.</p>'
             '<table class="l"><tr><th>No</th><th>서류</th><th>발급 · 내용</th></tr>' + rows + '</table>'
             '<p style="font-size:10pt;color:#555;margin-top:5mm">가림 없는 원본은 협의회가 요청하시면 열람할 수 있습니다.</p>')
     return page("제출 ⑦ · 4대 보험 사업장 가입증명서 및 조직도", body)
@@ -448,6 +448,10 @@ def main():
     d7 = fitz.open(render("07_안내", doc("⑦ 안내", [p07_guide(g7)])))
     d7.insert_pdf(fitz.open(SAEOP) if have_saeop else fitz.open(render("07_빈칸", doc("⑦ 빈칸", [p07_blank()]))))
     d7.insert_pdf(nr("08_4대보험_가입자명부_완납증명서.pdf"))
+    # 챗 검증 10-31: 명부 주민번호 칸 전체(생년월일 · 뒷자리 첫 숫자) 가림 — 13명 칸만(성명 · 취득일은 그대로)
+    _ms = d7[2]   # 0 안내 · 1 가입증명원(또는 빈칸) · 2 명부 1쪽
+    _ms.add_redact_annot(fitz.Rect(87, 311, 193, 571), fill=(0.72, 0.72, 0.72))
+    _ms.apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
     _o = org_page(prop)
     d7.insert_pdf(prop, from_page=_o, to_page=_o)
     docs["⑦"] = d7
