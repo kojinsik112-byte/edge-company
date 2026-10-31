@@ -60,6 +60,8 @@
   .dd.urgent{background:#c9483b;animation:blink 1s steps(2,start) infinite}.dd.done{background:#2c6e4c;color:#d9f5e4}
   @keyframes blink{to{background:#8a2a1f}}
   .pips{display:flex;align-items:center}
+  .head>span.pipl{display:flex;overflow:visible;margin-left:-18px}   /* 단계 이름을 점 바로 위에 (본부장 10-31 '발송인데 발송대기로 보임') */
+  .pipl b{width:47px;flex:none;text-align:center;font-weight:400;font-size:12.5px;letter-spacing:-.3px}
   .pips i{display:block;width:11px;height:11px;border-radius:50%;border:2px solid #3f4a5e;box-sizing:border-box;margin-right:36px;position:relative}
   .pips i.past{border:0}
   .pips i.on{width:20px;height:20px;border:2.5px solid #fff;margin-right:27px}
@@ -95,7 +97,7 @@
   </header>
   <section id="board" aria-label="진행 중 단지 보드">
     <div id="left"><div id="ptbar"></div>
-      <div class="row head"><span>단지</span><span>마감</span><span>D-day</span><span>단계 &nbsp;개척 · 착수 · 제작 · 검증 · 발송대기 · 발송 · PT · 결과</span><span>PT 일정</span></div>
+      <div class="row head"><span>단지</span><span>마감</span><span>D-day</span><span class="pipl"><b>개척</b><b>착수</b><b>제작</b><b>검증</b><b>발송대기</b><b>발송</b><b>PT</b><b>결과</b></span><span>PT 일정</span></div>
       <div id="rows"></div></div>
     <div id="up"><b>다가오는 일정</b><div id="uplist"></div></div>
   </section>

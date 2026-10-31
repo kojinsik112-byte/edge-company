@@ -342,13 +342,12 @@ def chair(cx, yt, s):
 APPLE = ("M 0,-4 C -2,-6.5 -8,-7 -9.5,-2 C -11,3 -7,9.5 -4.5,9.5 C -3,9.5 -1.5,8.6 0,8.6 C 1.5,8.6 3,9.5 4.5,9.5 C 7,9.5 9.5,4.5 9.8,2.4 "
          "C 7.4,1.4 6.6,-2.8 9,-4.6 C 7.2,-7.2 2.4,-6.6 0,-4 Z M 0.6,-5.2 C 0.4,-8.4 2.8,-10.6 5,-10.8 C 5.2,-8 3,-5.6 0.6,-5.2 Z")
 def laptop(cx, yt, s, on, team):
-    """작업 중 = 실버 노트북을 펼침(뒷면 사과 로고가 하얗게 빛남) · 쉬는 중 = 덮어 둠 + 머그컵"""
+    """작업 중 = 실버 노트북을 펼침(뒷면 사과 로고만 · 동그란 빛 삭제 본부장 10-31) · 쉬는 중 = 덮어 둠 + 머그컵"""
     w, h = 58 * s, 36 * s
     if on:
         gid = nid(); DEFS_LOCAL = f'<defs><linearGradient id="lp{gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef1f4"/><stop offset="1" stop-color="#b9c0c8"/></linearGradient></defs>'
         return (DEFS_LOCAL + f'<rect x="{cx - w / 2 - 2:.1f}" y="{yt - 3:.1f}" width="{w + 4:.1f}" height="4" rx="2" fill="#a9b0b8"/>'
                 f'<rect x="{cx - w / 2:.1f}" y="{yt - h - 2:.1f}" width="{w:.1f}" height="{h:.1f}" rx="{4 * s:.1f}" fill="url(#lp{gid})" stroke="#8f98a3" stroke-width="1"/>'
-                f'<ellipse cx="{cx}" cy="{yt - h / 2 - 2:.1f}" rx="{11 * s:.1f}" ry="{11 * s:.1f}" fill="#ffffff" opacity=".55"/>'
                 f'<path d="{APPLE}" transform="translate({cx:.1f},{yt - h / 2 - 1:.1f}) scale({0.62 * s + 0.2:.2f})" fill="#ffffff" stroke="#c8ced6" stroke-width=".6"/>')
     return (f'<rect x="{cx - w / 2:.1f}" y="{yt - 6 * s - 2:.1f}" width="{w:.1f}" height="{6 * s + 2:.1f}" rx="2" fill="#c9ced6" stroke="#9aa3ad" stroke-width=".8"/>'
             f'<rect x="{cx + w / 2 + 4:.1f}" y="{yt - 15 * s:.1f}" width="{11 * s:.1f}" height="{14 * s:.1f}" rx="2" fill="#ffffff" stroke="#c9bfae"/><path d="M {cx + w / 2 + 15 * s + 4:.1f},{yt - 12 * s:.1f} q {5 * s:.1f},{3 * s:.1f} 0,{7 * s:.1f}" stroke="#c9bfae" fill="none"/>')
