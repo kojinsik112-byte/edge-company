@@ -1309,22 +1309,7 @@
   ]
  ],
  "bench": {
-  "fronts": [
-   {
-    "file": "bench_front_0.svg",
-    "x": 38,
-    "y": 404,
-    "w": 96,
-    "h": 24
-   },
-   {
-    "file": "bench_front_1.svg",
-    "x": 38,
-    "y": 768,
-    "w": 96,
-    "h": 24
-   }
-  ],
+  "fronts": [],
   "seats": [
    [
     65.76,

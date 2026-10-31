@@ -607,10 +607,11 @@ def bench_parts(x, yb):
             f'<rect x="{x + 4}" y="{st - 30}" width="{w - 8}" height="26" rx="6" fill="{wood}" stroke="{dk}" stroke-width="1.6"/>'
             + "".join(f'<rect x="{x + 8}" y="{st - 26 + k * 8}" width="{w - 16}" height="4" rx="2" fill="{mix(wood, "#ffffff", .25)}" opacity=".6"/>' for k in range(3))
             + f'<rect x="{x + 2}" y="{st - 34}" width="8" height="34" rx="3" fill="{dk}"/><rect x="{x + w - 10}" y="{st - 34}" width="8" height="34" rx="3" fill="{dk}"/>')
-    front = (f'<rect x="{x}" y="{st - 3}" width="{w}" height="9" rx="4" fill="{cush}" stroke="{dk}" stroke-width="1.6"/>'
-             f'<rect x="{x + 4}" y="{st - 2}" width="{w - 8}" height="2.5" rx="1.2" fill="#ffffff" opacity=".35"/>'
-             f'<rect x="{x + 3}" y="{st + 6}" width="{w - 6}" height="{yb - st - 6}" rx="3" fill="{wood}" stroke="{dk}" stroke-width="1.6"/>'
-             f'<rect x="{x + 2}" y="{st + 4}" width="8" height="{yb - st - 2}" rx="2" fill="{dk}"/><rect x="{x + w - 10}" y="{st + 4}" width="8" height="{yb - st - 2}" rx="2" fill="{dk}"/>')
+    back += (f'<rect x="{x + 8}" y="{st}" width="6" height="{yb - st}" rx="2" fill="{dk}"/><rect x="{x + w - 14}" y="{st}" width="6" height="{yb - st}" rx="2" fill="{dk}"/>'      # 다리 (테이블처럼 보이지 않게 판 없이 · 본부장 10-31)
+             f'<rect x="{x + 6}" y="{st + 7}" width="{w - 12}" height="3" rx="1.5" fill="{dk}" opacity=".7"/>')
+    back += (f'<rect x="{x}" y="{st - 3}" width="{w}" height="7" rx="3.5" fill="{cush}" stroke="{dk}" stroke-width="1.5"/>'      # 앉는 판 하나만 (앉은 직원 위에 덮임)
+             f'<rect x="{x + 4}" y="{st - 2}" width="{w - 8}" height="2" rx="1" fill="#ffffff" opacity=".4"/>')
+    front = ""          # 앉는 판도 사람 뒤 (앞을 가로지르면 테이블처럼 보임 · 본부장 10-31)
     return back, front, st, w
 
 def sea_bg():         # 원피스 배경: 바깥 바다 물결
@@ -635,7 +636,6 @@ for k_, (BX, RY) in enumerate([(CX[0] + 20, R1), (CX[0] + 20, R2)]):      # 조�
     b_back, b_front, b_st, b_w = bench_parts(BX, BY)
     body.append(b_back)
     if ASSETS:
-        LAYOUT["bench"]["fronts"].append(sprite(f"bench_front_{k_}.svg", (BX - 2, b_st - 6, b_w + 4, BY - b_st + 8), b_front))
         LAYOUT["bench"]["seats"] += [[BX + b_w * 0.28, b_st, RY + RH + CORR / 2 + 8], [BX + b_w * 0.72, b_st, RY + RH + CORR / 2 + 8]]
 for vx_, vy_, vc_, vl_ in VEND: body.append(f'<g transform="translate({vx_},{vy_}) scale({VK}) translate({-vx_},{-vy_})">{vending(vx_, vy_, vc_, vl_)}</g>')     # 방 위에 그림 (본부장 10-31 '방보다 위로')
 if ASSETS:

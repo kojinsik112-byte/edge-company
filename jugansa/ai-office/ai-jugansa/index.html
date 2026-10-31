@@ -230,7 +230,7 @@ function place(o){ const moving = o.pts.length && o.i < o.pts.length - 1, bob = 
     const S = o.small ? SMALL : 1, F = SIT_HIP, fx = o.flip ? -1 : 1, lx = px(o.sit[0] - o.sw / 2);
     Object.assign(o.img.style, {left:lx, top:px(o.sit[1] + 3 - o.sh * (0.96 - (0.96 - F) * S)), clipPath:`inset(0 0 ${((1 - F) * 100).toFixed(1)}% 0)`, zIndex:"4"});
     if (!o.legs){ o.legs = el("img", "walker", {width:px(o.sw), height:px(o.sh)}); o.legs.src = o.img.src; }
-    Object.assign(o.legs.style, {left:lx, top:px(o.sit[1] + 4 - F * o.sh), clipPath:`inset(${(F * 100).toFixed(1)}% 0 0 0)`, transformOrigin:`50% ${(F * 100).toFixed(1)}%`, transform:`scale(${fx * S},${S * 0.5})`, zIndex:"6"});
+    Object.assign(o.legs.style, {left:lx, top:px(o.sit[1] + 2 - F * o.sh), clipPath:`inset(${(F * 100).toFixed(1)}% 0 0 0)`, transformOrigin:`50% ${(F * 100).toFixed(1)}%`, transform:`scale(${fx * S},${S * 0.5})`, zIndex:"6"});
   } else { if (o.img.style.clipPath){ o.img.style.clipPath = ""; o.img.style.zIndex = ""; } if (o.legs){ o.legs.remove(); o.legs = null; } }
   o.img.style.transform = `scale(${o.flip ? -1 : 1}, 1) scale(${o.small ? SMALL : 1})`;     // 복도에서는 조금 작게 (방 그림을 덮지 않게)
   if (o.bub){ o.bub.style.left = px(o.x); o.bub.style.top = px(o.y - o.sh * 0.92 * (o.small ? SMALL : 1)); }
