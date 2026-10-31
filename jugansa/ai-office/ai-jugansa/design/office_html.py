@@ -31,13 +31,15 @@ TEAM = {
 WORK = {"scout": (1, "notice_watch.py"), "analysis": (0, ""), "build": (2, "build_군포.py"), "audit": (5, "독립 검수관 × 5 · full.txt 대조"),
         "mail": (1, "mail_군포.html"), "pt": (2, "오산 PT 대본"), "retro": (1, "입찰현황판.md")}
 AWAY = {"audit": 1}
-CORR = 64; CW = (W - 40 - 3 * CORR) / 4; CX = [20 + i * (CW + CORR) for i in range(4)]     # 방 사이 복도 (본부장 10-31 '조금만 넓히자' 40 → 64)
-R1, RH = 100, 340; R2 = R1 + RH + CORR; R3 = R2 + RH + CORR; RH3 = H - R3 - 25     # 상황판 세로 더 크게 (본부장 10-31)
+CORR = 64; _free = W - 40 - 3 * CORR
+CWS = [round(_free * k / 4.34) for k in (1, 1.34, 1, 1)]; CWS[3] = _free - sum(CWS[:3])     # 2번째 칸(03 제작 · 04 검증 = 사람 많음)을 넓게 (본부장 10-31)
+CX = [20 + sum(CWS[:i]) + i * CORR for i in range(4)]; CW = CWS[0]; CWOF = {CX[i]: CWS[i] for i in range(4)}
+R1, RH = 100, 300; R2 = R1 + RH + CORR; R3 = R2 + RH + CORR; RH3 = H - R3 - 25     # 상황판 세로 더 크게 (본부장 10-31)
 LAYOUT = {"W": W, "H": H, "seats": {}, "rooms": {}, "boss": {}, "board": {},
-          "corrY": [R1 + RH + CORR / 2, R2 + RH + CORR / 2], "corrX": [CX[i] + CW + CORR / 2 for i in range(3)], "vX": CX[3] - CORR / 2}
+          "corrY": [R1 + RH + CORR / 2, R2 + RH + CORR / 2], "corrX": [CX[i] + CWS[i] + CORR / 2 for i in range(3)], "vX": CX[3] - CORR / 2}
 DOORS = {}       # (방 x, y) → 문 안쪽 · 바깥쪽 좌표
-ROOMS = [("scout", CX[0], R1), ("analysis", CX[1], R1), ("build", CX[2], R1), ("audit", CX[3], R1),
-         ("mail", CX[0], R2), ("pt", CX[1], R2), ("retro", CX[2], R2)]
+ROOMS = [("scout", CX[0], R1), ("analysis", CX[0], R2), ("build", CX[1], R1), ("audit", CX[1], R2),      # 세로형 순서 (본부장 10-31)
+         ("mail", CX[2], R1), ("pt", CX[2], R2), ("retro", CX[3], R1)]
 mix = sc.mix
 FONT = 'font-family="Malgun Gothic, sans-serif"'
 P, DEFS = [], []
@@ -96,8 +98,8 @@ def corridors():
     run, gold = mix(base, "#ffffff", 0.10), OS.get("accent", "#c9a45c")
     lg = grad("radialGradient", [(0, "#fff3d4", 0.30), (1, "#fff3d4", 0)])
     g = []
-    hz = [(CX[0] - 8, yy, CX[3] + CW - CX[0] + 16, CORR) for yy in (R1 + RH, R2 + RH)]          # 가로 복도
-    vt = [(CX[i] + CW, R1 - 8, CORR, R3 - R1 + 8) for i in range(3)]                             # 세로 복도
+    hz = [(CX[0] - 8, yy, CX[3] + CWS[3] - CX[0] + 16, CORR) for yy in (R1 + RH, R2 + RH)]          # 가로 복도
+    vt = [(CX[i] + CWS[i], R1 - 8, CORR, R3 - R1 + 8) for i in range(3)]                             # 세로 복도
     for rx, ry, rw, rh in hz + vt: g.append(f'<rect x="{rx}" y="{ry}" width="{rw}" height="{rh}" fill="{base}"/>')
     for rx, ry, rw, rh in hz:
         g.append(f'<rect x="{rx}" y="{ry + 12}" width="{rw}" height="{rh - 24}" rx="4" fill="{run}"/>'
@@ -121,17 +123,17 @@ def corridors():
         for rx, ry, rw, rh in hz: g.append(f'<rect x="{rx}" y="{ry}" width="{rw}" height="5" fill="#8a5a30"/><rect x="{rx}" y="{ry + rh - 5}" width="{rw}" height="5" fill="#8a5a30"/>')
         for rx, ry, rw, rh in vt: g.append(f'<rect x="{rx}" y="{ry}" width="5" height="{rh}" fill="#8a5a30"/><rect x="{rx + rw - 5}" y="{ry}" width="5" height="{rh}" fill="#8a5a30"/>')
         for i in range(3):
-            for yy in (R1 + RH, R2 + RH): g.append(sunny_lion(CX[i] + CW + CORR / 2, yy + CORR / 2, 17))
+            for yy in (R1 + RH, R2 + RH): g.append(sunny_lion(CX[i] + CWS[i] + CORR / 2, yy + CORR / 2, 17))
         for key, x, y in ROOMS + [("boss", CX[3], R2)]:
-            mx = x + CW - 14 - DOOR_W
+            mx = x + CWOF[x] - 14 - DOOR_W
             g.append(f'<rect x="{mx - 4}" y="{y + RH + 6}" width="{DOOR_W + 8}" height="{CORR - 12}" rx="4" fill="#a8703c" stroke="#5a3a1e" stroke-width="1.4"/>' + "".join(f'<rect x="{mx - 4}" y="{y + RH + 6 + k * 9}" width="{DOOR_W + 8}" height="1" fill="#5a3a1e" opacity=".6"/>' for k in range(1, 6)))
         return g
     for i in range(3):                                                                           # 교차점 금색 장식
         for yy in (R1 + RH, R2 + RH):
-            cx, cy = CX[i] + CW + CORR / 2, yy + CORR / 2
+            cx, cy = CX[i] + CWS[i] + CORR / 2, yy + CORR / 2
             g.append(f'<rect x="{cx - 14}" y="{cy - 14}" width="28" height="28" fill="none" stroke="{gold}" stroke-width="1.4" transform="rotate(45 {cx} {cy})" opacity=".8"/><circle cx="{cx}" cy="{cy}" r="4" fill="{gold}"/>')
     for key, x, y in ROOMS + [("boss", CX[3], R2)]:                                              # 문 앞 매트 · 문틈 빛
-        mx = x + CW - 14 - DOOR_W
+        mx = x + CWOF[x] - 14 - DOOR_W
         g.append(f'<rect x="{mx - 4}" y="{y + RH + 3}" width="{DOOR_W + 8}" height="{CORR - 6}" rx="5" fill="{gold}" opacity=".28"/><rect x="{mx}" y="{y + RH + 6}" width="{DOOR_W}" height="{CORR - 12}" rx="4" fill="none" stroke="{gold}" stroke-width="1.2" opacity=".9"/>')
     return g
 
@@ -381,7 +383,8 @@ def decor(key, x, w, top, dx):
 # ───────────── 팀 사무실 ─────────────
 def team_room(key, x, y):
     no, name, color, n, sub = TEAM[key]; busy, label = WORK[key]
-    g, (top, wb, dx) = shell(x, y, CW, RH, bh=128, team=color)     # 위쪽 벽을 줄여 책상 · 통로 자리 확보 (본부장 10-31 허용)
+    CW = CWOF[x]
+    g, (top, wb, dx) = shell(x, y, CW, RH, bh=108, team=color)     # 위쪽 벽을 줄여 책상 · 통로 자리 확보 (본부장 10-31 허용)
     g.append(decor(key, x, CW, top, dx))
     rug_c = mix(color, OS["floor"], OS["rug_mix"])
     g.append(poly([(x + 70, wb + 22), (x + CW - 70, wb + 22), (x + CW - 30, y + RH - 10), (x + 30, y + RH - 10)], rug_c, f'stroke="{mix(rug_c, "#000000", 0.25)}" stroke-width="2" opacity=".95"'))
@@ -389,7 +392,7 @@ def team_room(key, x, y):
     back, front = (n + 1) // 2, n // 2
     looks = sc.ROSTER[key]; order = list(range(n)); occ = set(order[:busy]); away = set() if ASSETS else set(order[busy:busy + AWAY.get(key, 0)])
     mx = max(back, front); sp = min(100, (CW - 128) / mx); sf = min(0.46, sp / 205); RCX = x + 30 + (CW - 128) / 2 + 8   # 문 쪽(오른쪽 앞) 비움
-    rows = [(back, y + 210, sf * 0.84, sp * 0.86, 0), (front, y + 306, sf, sp, back)]
+    rows = [(back, y + 186, sf * 0.84, sp * 0.86, 0), (front, y + 268, sf, sp, back)]
     heads, report = [], None
     for cnt, yt, s, sp, off in rows:
         if not cnt: continue
@@ -415,7 +418,7 @@ def team_room(key, x, y):
     g = close(g, x, y, CW, RH, front=True)
     g.append(plaque(x + dx + 8, top + 8, no, name, color))
     if ASSETS:
-        LAYOUT["rooms"][key] = {"x": x, "y": y, "w": CW, "h": RH, "badge": [x + dx + 8, top + 48], "door": DOORS[(x, y)], "row": 0 if y == R1 else 1, "name": name, "color": color, "n": n}
+        LAYOUT["rooms"][key] = {"x": x, "y": y, "w": CW, "h": RH, "badge": [x + dx + 8, top + 48], "door": DOORS[(x, y)], "row": 0 if y == R1 else 1, "col": CX.index(x), "name": name, "color": color, "n": n}
         return g, None
     g.append(f'<rect x="{x + dx + 8}" y="{top + 48}" width="{tw(f"작업 {busy} / {n}석", 13) + 20}" height="22" rx="11" fill="{"#2f9a5a" if busy else "#8a909c"}"/>' + T(x + dx + 18, top + 64, f"작업 {busy} / {n}석", 13, "#ffffff"))
     for hx, hy, st in heads:
@@ -429,7 +432,8 @@ def team_room(key, x, y):
 
 # ───────────── 본부장실 ─────────────
 def boss_room(x, y, reporter):
-    g, (top, wb, dx) = shell(x, y, CW, RH)
+    CW = CWOF[x]
+    g, (top, wb, dx) = shell(x, y, CW, RH, bh=136)
     gold, wal, wal2 = "#c9a45c", "#4a2f22", "#6e4630"
     # 뒷벽: 월넛 포인트 벽 + 금색 회사 로고 · 큰 그림 · 트로피 장식장
     g.append(f'<rect x="{x + 150}" y="{top + 4}" width="126" height="{wb - top - 30}" fill="{wal}"/>' + "".join(f'<rect x="{x + 150 + k * 21}" y="{top + 4}" width="1.2" height="{wb - top - 30}" fill="{wal2}"/>' for k in range(1, 6)))
@@ -474,7 +478,7 @@ def boss_room(x, y, reporter):
     g.append(f'<rect x="{x + 300}" y="{wb + 40}" width="3" height="16" fill="{gold}"/><ellipse cx="{x + 301}" cy="{wb + 57}" rx="10" ry="3" fill="{wal}"/><circle cx="{x + 301}" cy="{wb + 28}" r="14" fill="#5f95db" stroke="{gold}" stroke-width="2"/>'
              f'<path d="M {x + 292},{wb + 22} q 6,-6 12,0 q 4,6 -2,12 q -6,2 -8,-4 Z M {x + 304},{wb + 32} q 4,-2 6,2 q -2,4 -6,2 Z" fill="#5cb87a"/>')
     g.append(f'<rect x="{x + 236}" y="{wb - 66}" width="2.4" height="118" fill="{gold}"/><circle cx="{x + 237}" cy="{wb - 68}" r="3" fill="{gold}"/><path d="M {x + 238},{wb - 62} Q {x + 254},{wb - 66} {x + 266},{wb - 58} L {x + 266},{wb - 26} Q {x + 254},{wb - 34} {x + 238},{wb - 30} Z" fill="#1b2433" stroke="{gold}" stroke-width="1"/>' + T(x + 252, wb - 41, "E", 11, gold, 800, "middle"))
-    cx, yt, s = x + CW / 2 - 10, y + 204, 0.44
+    cx, yt, s = x + CW / 2 - 10, y + 190, 0.44
     g.append(f'<rect x="{cx - 50 * s:.1f}" y="{yt - 190 * s:.1f}" width="{100 * s:.1f}" height="{190 * s:.1f}" rx="{24 * s:.1f}" fill="#5a2f25"/>')
     if ASSETS:
         LAYOUT["boss"] = {"sprite": sprite("boss_work.svg", (cx - 90, yt - 280 * s, 180, 280 * s + 8), char(sc.BOSS_LOOK, cx, yt, s, None, True, pose="type") + laptop(cx - 62, yt, 0.4, True, "#c9a45c")),
@@ -496,13 +500,13 @@ def boss_room(x, y, reporter):
     if reporter: g.append(bubble(x + CW - 150, y + RH - 36 - 130, f"{reporter['name']}: 검증 결과 보고드립니다", sz=12))
     g.append(bubble(cx + 50, yt - 240 * s, "확인! 수고했어!", bg="#fff6dc", sz=12))
     g.append(dot(cx + 30, yt - 232 * s, "on"))
-    gx = CX[3] + CW / 2
+    gx = CX[3] + CWS[3] / 2
     return g
 
 # ───────────── 상황실 (현황판) ─────────────
 def board_room(x, y, w, h):
-    g, (top, wb, dx) = shell(x, y, w, h, dx=60, bh=h - 40)
-    BX0, BY0, BX1, BY1 = x + dx + 18, top + 52, x + w - dx - 18, wb - 30
+    g, (top, wb, dx) = shell(x, y, w, h, dx=60, bh=h - 24)
+    BX0, BY0, BX1, BY1 = x + dx + 18, top + 48, x + w - dx - 18, wb - 12
     g.append(f'<rect x="{BX0 - 5}" y="{BY0 - 5}" width="{BX1 - BX0 + 10}" height="{BY1 - BY0 + 10}" rx="14" fill="{OS["board_frame"]}"/><rect x="{BX0}" y="{BY0}" width="{BX1 - BX0}" height="{BY1 - BY0}" rx="10" fill="{grad("linearGradient", [(0, "#1d2740", 1), (1, OS["board"], 1)], x1=0, y1=0, x2=0, y2=1)}"/>')
     if ASSETS:
         LAYOUT["board"] = {"x": BX0, "y": BY0, "w": BX1 - BX0, "h": BY1 - BY0}
@@ -588,7 +592,7 @@ body, report = corridors(), None
 for key, x, y in ROOMS:
     g, rep = team_room(key, x, y); body += g; report = report or rep
 body += boss_room(CX[3], R2, report)
-body += board_room(CX[0], R3, CX[3] + CW - CX[0], RH3)
+body += board_room(CX[0], R3, CX[3] + CWS[3] - CX[0], RH3)
 if ASSETS:
     bg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}"><defs><filter id="blur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="8"/></filter>{FILTERS}{"".join(DEFS)}</defs>'
           f'<rect width="{W}" height="{H}" fill="{OS["bg"]}"/>' + sea_bg() + "".join(body) + "</svg>")
