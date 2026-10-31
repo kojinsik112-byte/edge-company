@@ -4,7 +4,7 @@
 import math
 
 INK = "#3d2820"
-STYLE_NAME = {"B": "마블 2.5등신"}
+STYLE_NAME = {"B": "마블 2.2등신"}
 def set_style(k): pass
 
 def mix(a, b, t):

@@ -3,9 +3,10 @@
 import os, json, math, random, html, argparse, subprocess, importlib.util, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ap = argparse.ArgumentParser(); ap.add_argument("--office", default="월넛라운지"); ap.add_argument("--skin", default="원피스직원_v3"); ap.add_argument("-o", "--out", default=""); ap.add_argument("--assets", default="")
+ap = argparse.ArgumentParser(); ap.add_argument("--office", default="원피스"); ap.add_argument("--skin", default="원피스직원_v3"); ap.add_argument("-o", "--out", default=""); ap.add_argument("--assets", default="")
 A = ap.parse_args()
-from office_skins import OFFICE_SKINS
+from office_skins import OFFICE_SKINS, ALIAS
+A.office = ALIAS.get(A.office.replace(" ", ""), A.office)      # "기본배경1" · "원피스" · "어벤져스사무실" 로도 부름
 OS = OFFICE_SKINS[A.office]
 spec = importlib.util.spec_from_file_location("sc", os.path.join(HERE, "skins", A.skin, "svg_chars.py")); sc = importlib.util.module_from_spec(spec); spec.loader.exec_module(sc)
 sc.POSES["type"] = ([(-28, 54), (-38, 84), (-31, 102)], [(28, 54), (38, 84), (31, 102)])   # 앉아서 키보드 — 손이 노트북 양옆에 보이게
@@ -83,7 +84,7 @@ def front_glass(x, y, w, h):
 
 def corridors():
     base = mix(OS["trim"], OS["bg"], 0.18) if not OS["night"] else mix(OS["bg"], "#000000", 0.25)
-    run, gold = mix(base, "#ffffff", 0.10), "#c9a45c"
+    run, gold = mix(base, "#ffffff", 0.10), OS.get("accent", "#c9a45c")
     lg = grad("radialGradient", [(0, "#fff3d4", 0.30), (1, "#fff3d4", 0)])
     g = []
     hz = [(CX[0] - 8, yy, CX[3] + CW - CX[0] + 16, CORR) for yy in (R1 + RH, R2 + RH)]          # 가로 복도
@@ -114,9 +115,25 @@ def shell(x, y, w, h, dx=44, bh=150, team=None, door_side=None):
     g = [f'<rect x="{x + 3}" y="{y + 10}" width="{w}" height="{h}" rx="18" fill="#000" opacity=".22" filter="url(#blur)"/>', f'<g clip-path="url(#c{cid})">']
     g.append(poly([(x, y), (x + w, y), (x + w - dx, top), (x + dx, top)], OS["ceil"]))
     cove = grad("linearGradient", [(0, "#fff2cf", 0.9), (1, "#fff2cf", 0)], x1=0, y1=0, x2=0, y2=1)
+    if OS.get("theme") == "ship":       # 천장 들보
+        for t in (0.18, 0.5, 0.82):
+            g.append(poly([(lerp(x, x + w, t) - 9, y), (lerp(x, x + w, t) + 9, y), (lerp(x + dx, x + w - dx, t) + 6, top), (lerp(x + dx, x + w - dx, t) - 6, top)], "#3a2414"))
+    if OS.get("theme") == "avengers":   # 천장 LED 줄
+        g.append(poly([(x + w * .3, y), (x + w * .7, y), (x + w * .66, top), (x + w * .34, top)], "#3aa8ff", 'opacity=".25"'))
     # 뒷벽
     g.append(f'<rect x="{x + dx}" y="{top}" width="{w - 2 * dx}" height="{bh}" fill="{grad("linearGradient", [(0, OS["wall"], 1), (1, OS["wall2"], 1)], x1=0, y1=0, x2=0, y2=1)}"/>')
-    if OS["side_kind"] == "panel":
+    if OS.get("wall_kind") == "plank":         # 배 선실: 가로 나무 판자 · 이음새 · 못
+        for k, yy in enumerate(range(int(top) + 14, int(wb) - 6, 14)):
+            g.append(f'<rect x="{x + dx}" y="{yy}" width="{w - 2 * dx}" height="1.4" fill="{OS["wall_line"]}" opacity=".8"/>')
+            for xx in range(int(x + dx) + (30 if k % 2 else 70), int(x + w - dx), 90):
+                g.append(f'<rect x="{xx}" y="{yy - 14}" width="1.4" height="14" fill="{OS["wall_line"]}" opacity=".7"/><circle cx="{xx + 5}" cy="{yy - 7}" r="1.2" fill="#3a2414"/><circle cx="{xx - 4}" cy="{yy - 7}" r="1.2" fill="#3a2414"/>')
+        g.append(f'<rect x="{x + dx}" y="{top}" width="{w - 2 * dx}" height="{bh}" fill="{grad("linearGradient", [(0, "#ffe0a0", .12), (1, "#000000", .18)], x1=0, y1=0, x2=0, y2=1)}"/>')
+    elif OS.get("wall_kind") == "steel":     # 어벤져스: 강철 패널 · 리벳 · 파란 LED 줄
+        for xx in range(int(x + dx) + 44, int(x + w - dx), 44): g.append(f'<rect x="{xx}" y="{top}" width="1.6" height="{bh - 22}" fill="#0e131a" opacity=".9"/><rect x="{xx + 1.6}" y="{top}" width="1" height="{bh - 22}" fill="#3a4454" opacity=".7"/>')
+        g.append(f'<rect x="{x + dx}" y="{top + (bh - 22) / 2}" width="{w - 2 * dx}" height="1.6" fill="#0e131a"/>')
+        lg_ = grad("linearGradient", [(0, "#3aa8ff", .55), (1, "#3aa8ff", 0)], x1=0, y1=0, x2=0, y2=1)
+        g.append(f'<rect x="{x + dx}" y="{wb - 30}" width="{w - 2 * dx}" height="3" fill="#7ad0ff"/><rect x="{x + dx}" y="{wb - 27}" width="{w - 2 * dx}" height="14" fill="{lg_}"/>')
+    elif OS["side_kind"] == "panel":
         for xx in range(int(x + dx) + 24, int(x + w - dx), 26): g.append(f'<rect x="{xx}" y="{top}" width="1.6" height="{bh - 22}" fill="{OS["wall_line"]}" opacity=".55"/>')
     elif OS["night"]:
         for xx in range(int(x + dx) + 18, int(x + w - dx), 30): g.append(f'<rect x="{xx}" y="{top}" width="1" height="{bh - 22}" fill="{OS["wall_line"]}" opacity=".28"/>')
@@ -126,7 +143,10 @@ def shell(x, y, w, h, dx=44, bh=150, team=None, door_side=None):
         for _ in range(5):
             vx = random.uniform(x + dx, x + w - dx); vy = random.uniform(top, wb - 30)
             g.append(f'<path d="M {vx:.0f},{vy:.0f} q {random.uniform(20, 50):.0f},{random.uniform(-10, 14):.0f} {random.uniform(50, 110):.0f},{random.uniform(-6, 20):.0f}" stroke="{OS["wall_line"]}" stroke-width="1.2" fill="none" opacity=".7"/>')
-    g.append(f'<rect x="{x + dx}" y="{top}" width="{w - 2 * dx}" height="38" fill="{cove}"/><rect x="{x + dx}" y="{top}" width="{w - 2 * dx}" height="1.6" fill="#fff6dc"/>')
+    if not OS.get("theme"): g.append(f'<rect x="{x + dx}" y="{top}" width="{w - 2 * dx}" height="38" fill="{cove}"/><rect x="{x + dx}" y="{top}" width="{w - 2 * dx}" height="1.6" fill="#fff6dc"/>')
+    if OS.get("theme") == "ship":       # 벽 위 늘어진 밧줄
+        g.append(f'<path d="M {x + dx},{top + 6} Q {x + dx + (w - 2 * dx) / 4},{top + 22} {x + w / 2},{top + 6} Q {x + w - dx - (w - 2 * dx) / 4},{top + 22} {x + w - dx},{top + 6}" stroke="#3a2414" stroke-width="5.4" fill="none"/>'
+                 f'<path d="M {x + dx},{top + 6} Q {x + dx + (w - 2 * dx) / 4},{top + 22} {x + w / 2},{top + 6} Q {x + w - dx - (w - 2 * dx) / 4},{top + 22} {x + w - dx},{top + 6}" stroke="#d9b070" stroke-width="3.4" fill="none" stroke-dasharray="4 2"/>')
     g.append(f'<rect x="{x + dx}" y="{wb - 22}" width="{w - 2 * dx}" height="3" fill="{OS["trim"]}" opacity=".85"/><rect x="{x + dx}" y="{wb - 6}" width="{w - 2 * dx}" height="6" fill="{mix(OS["wall2"], "#000000", 0.25)}"/>')
     if OS["floor_kind"] == "marble": g.append(f'<rect x="{x + dx}" y="{wb - 7}" width="{w - 2 * dx}" height="1.4" fill="#c9a45c"/>')
     if team and OS["night"]: g.append(f'<rect x="{x + dx}" y="{wb - 4}" width="{w - 2 * dx}" height="3" fill="{team}" opacity=".9"/><rect x="{x + dx}" y="{wb - 14}" width="{w - 2 * dx}" height="12" fill="{team}" opacity=".18"/>')
@@ -134,7 +154,16 @@ def shell(x, y, w, h, dx=44, bh=150, team=None, door_side=None):
     for side in (-1, 1):
         if side == -1: q = [(x, y), (x + dx, top), (x + dx, wb), (x, y + h)]
         else: q = [(x + w, y), (x + w - dx, top), (x + w - dx, wb), (x + w, y + h)]
-        if OS["side_kind"] == "panel":
+        if OS["side_kind"] == "hull":
+            g.append(poly(q, grad("linearGradient", [(0, OS["side2"], 1), (1, OS["side"], 1)], x1=0 if side == -1 else 1, y1=0, x2=1 if side == -1 else 0, y2=0)))
+            ex = x if side == -1 else x + w; ix = x + dx if side == -1 else x + w - dx
+            for v in [k / 9 for k in range(1, 9)]:
+                g.append(f'<line x1="{ex}" y1="{lerp(y, y + h, v):.1f}" x2="{ix}" y2="{lerp(top, wb, v):.1f}" stroke="{OS["wall_line"]}" stroke-width="1.2" opacity=".8"/>')
+            for t, v, r in ((0.45, 0.3, 15), (0.5, 0.62, 13)):          # 현창 (바다 · 하늘)
+                px = lerp(ex, ix, t); py = lerp(lerp(y, top, t), lerp(y + h, wb, t), v); sea = grad("linearGradient", [(0, "#9fd8f4", 1), (0.5, "#5ab4e0", 1), (0.52, "#1f6aa8", 1), (1, "#164e80", 1)], x1=0, y1=0, x2=0, y2=1)
+                g.append(f'<ellipse cx="{px:.1f}" cy="{py:.1f}" rx="{r * 0.62:.1f}" ry="{r}" fill="{sea}" stroke="#c9952a" stroke-width="4"/><ellipse cx="{px:.1f}" cy="{py:.1f}" rx="{r * 0.62:.1f}" ry="{r}" fill="none" stroke="#5a3a14" stroke-width="1.2"/>'
+                         f'<path d="M {px - r * .5:.1f},{py + 3:.1f} q {r * .25:.1f},-3 {r * .5:.1f},0 q {r * .25:.1f},3 {r * .5:.1f},0" stroke="#ffffff" stroke-width="1.2" fill="none" opacity=".7"/><ellipse cx="{px - r * .2:.1f}" cy="{py - r * .45:.1f}" rx="{r * .18:.1f}" ry="{r * .2:.1f}" fill="#ffffff" opacity=".6"/>')
+        elif OS["side_kind"] == "panel":
             g.append(poly(q, grad("linearGradient", [(0, OS["side2"], 1), (1, OS["side"], 1)], x1=0 if side == -1 else 1, y1=0, x2=1 if side == -1 else 0, y2=0)))
         else:
             sky = [(0, "#0b1430", 1), (0.6, "#1c2c55", 1), (1, "#2a3a64", 1)] if OS["night"] else [(0, "#a9d2f0", 1), (0.7, "#d8ecf8", 1), (1, "#eef6fb", 1)]
@@ -148,6 +177,9 @@ def shell(x, y, w, h, dx=44, bh=150, team=None, door_side=None):
             for t in (0.0, 0.34, 0.67, 1.0):
                 px = lerp(ex, ix, t); g.append(f'<line x1="{px:.1f}" y1="{lerp(y, top, t):.1f}" x2="{px:.1f}" y2="{lerp(y + h, wb, t):.1f}" stroke="{OS["trim"]}" stroke-width="{3 if t in (0.0, 1.0) else 2}"/>')
             g.append(f'<line x1="{ex}" y1="{lerp(y, y + h, 0.62):.1f}" x2="{ix}" y2="{lerp(top, wb, 0.62):.1f}" stroke="{OS["trim"]}" stroke-width="1.6" opacity=".7"/>')
+            if OS.get("theme") == "avengers":   # 창에 뜬 파란 홀로그램 격자
+                for v in (0.25, 0.4, 0.55):
+                    g.append(f'<line x1="{lerp(ex, ix, .15):.1f}" y1="{lerp(lerp(y, top, .15), lerp(y + h, wb, .15), v):.1f}" x2="{lerp(ex, ix, .85):.1f}" y2="{lerp(lerp(y, top, .85), lerp(y + h, wb, .85), v):.1f}" stroke="#3aa8ff" stroke-width="1" opacity=".45"/>')
     # 바닥 (원근)
     fq = [(x + dx, wb), (x + w - dx, wb), (x + w, y + h), (x, y + h)]
     g.append(poly(fq, OS["floor"]))
@@ -159,15 +191,27 @@ def shell(x, y, w, h, dx=44, bh=150, team=None, door_side=None):
         g.append(poly(fq, grad("linearGradient", [(0, "#ffffff", 0.55), (0.35, "#ffffff", 0.05), (1, "#ffffff", 0.18)], x1=0, y1=0, x2=0, y2=1)))
         for t in (0.2, 0.8):                                                      # 창 빛 반사 줄
             g.append(poly([(lerp(x + dx, x + w - dx, t) - 10, wb), (lerp(x + dx, x + w - dx, t) + 10, wb), (lerp(x, x + w, t) + 22, y + h), (lerp(x, x + w, t) - 22, y + h)], "#ffffff", 'opacity=".22"'))
-    lanes = {"herring": 14, "marble": 0, "stone": 8}[OS["floor_kind"]]
+    if OS["floor_kind"] == "hex":
+        fid = nid(); DEFS.append(f'<clipPath id="f{fid}"><polygon points="{" ".join(f"{a:.1f},{b:.1f}" for a, b in fq)}"/></clipPath>'
+                                 f'<pattern id="hx{fid}" width="26" height="15" patternUnits="userSpaceOnUse"><path d="M 0,7.5 L 4.3,0 L 13,0 L 17.3,7.5 L 13,15 L 4.3,15 Z M 17.3,7.5 L 26,7.5" fill="none" stroke="#3a4a5e" stroke-width="1"/></pattern>')
+        g.append(f'<g clip-path="url(#f{fid})"><rect x="{x}" y="{wb}" width="{w}" height="{y + h - wb}" fill="url(#hx{fid})"/></g>')
+        g.append(poly(fq, grad("linearGradient", [(0, "#3aa8ff", 0.16), (0.5, "#3aa8ff", 0), (1, "#ffffff", 0.06)], x1=0, y1=0, x2=0, y2=1)))
+        g.append(f'<ellipse cx="{x + w / 2}" cy="{lerp(wb, y + h, .55):.1f}" rx="{w * .3:.1f}" ry="{(y + h - wb) * .22:.1f}" fill="none" stroke="#3aa8ff" stroke-width="1.6" opacity=".35"/>')
+    lanes = {"herring": 14, "marble": 0, "stone": 8, "deck": 12, "hex": 0}[OS["floor_kind"]]
     for i in range(lanes):
         if i % 2: continue
         a0, a1 = i / lanes, (i + 1) / lanes
         g.append(poly([(lerp(x + dx, x + w - dx, a0), wb), (lerp(x + dx, x + w - dx, a1), wb), (lerp(x, x + w, a1), y + h), (lerp(x, x + w, a0), y + h)], OS["floor2"]))
-    rows = {"herring": 7, "marble": 5, "stone": 4}[OS["floor_kind"]]
+    rows = {"herring": 7, "marble": 5, "stone": 4, "deck": 6, "hex": 0}[OS["floor_kind"]]
     for k in range(1, rows):
         f = (k / rows) ** 1.45; yy = lerp(wb, y + h, f)
         g.append(f'<line x1="{lerp(x + dx, x, f):.1f}" y1="{yy:.1f}" x2="{lerp(x + w - dx, x + w, f):.1f}" y2="{yy:.1f}" stroke="{OS["floor_line"]}" stroke-width="1" opacity=".8"/>')
+    if OS["floor_kind"] == "deck":           # 갑판 못 자국
+        for k in range(1, 6):
+            f = (k / 6) ** 1.45; yy = lerp(wb, y + h, f)
+            for i in range(1, 12, 2):
+                a_ = (i + 0.5) / 12; xx = lerp(lerp(x + dx, x + w - dx, a_), lerp(x, x + w, a_), f)
+                g.append(f'<circle cx="{xx:.1f}" cy="{yy - 3:.1f}" r="1.1" fill="#5a3a1e"/>')
     if OS["floor_kind"] == "stone":
         g.append(poly(fq, grad("linearGradient", [(0, "#ffffff", 0), (1, "#ffffff", 0.07)], x1=0, y1=0, x2=0, y2=1)))
     # 벽 조명 · 바닥 빛 웅덩이
@@ -176,7 +220,13 @@ def shell(x, y, w, h, dx=44, bh=150, team=None, door_side=None):
         g.append(f'<ellipse cx="{x + w * fx:.1f}" cy="{lerp(wb, y + h, 0.55):.1f}" rx="{w * 0.26:.1f}" ry="{(y + h - wb) * 0.32:.1f}" fill="{lg}"/>')
     sg = grad("radialGradient", [(0, OS["sconce"], 0.7), (1, OS["sconce"], 0)])
     for sx in (x + dx + 22, x + w - dx - 22):
-        g.append(f'<ellipse cx="{sx}" cy="{top + 46}" rx="26" ry="34" fill="{sg}"/><rect x="{sx - 4}" y="{top + 36}" width="8" height="16" rx="3" fill="{OS["trim"]}"/><path d="M {sx - 9},{top + 36} L {sx + 9},{top + 36} L {sx + 6},{top + 26} L {sx - 6},{top + 26} Z" fill="{OS["sconce"]}"/>')
+        if OS.get("theme") == "ship":       # 걸린 랜턴
+            g.append(f'<ellipse cx="{sx}" cy="{top + 50}" rx="28" ry="34" fill="{sg}"/><path d="M {sx},{top + 18} L {sx},{top + 30}" stroke="#3a2414" stroke-width="2"/>'
+                     f'<path d="M {sx - 8},{top + 30} L {sx + 8},{top + 30} L {sx + 6},{top + 34} L {sx - 6},{top + 34} Z" fill="#3a2414"/><rect x="{sx - 7}" y="{top + 34}" width="14" height="18" rx="3" fill="#ffd27a" stroke="#3a2414" stroke-width="2"/>'
+                     f'<path d="M {sx},{top + 34} L {sx},{top + 52} M {sx - 7},{top + 43} L {sx + 7},{top + 43}" stroke="#3a2414" stroke-width="1.2"/><path d="M {sx - 8},{top + 52} L {sx + 8},{top + 52} L {sx + 5},{top + 56} L {sx - 5},{top + 56} Z" fill="#3a2414"/>')
+        elif OS.get("theme") == "avengers": # 세로 파란 라이트 바
+            g.append(f'<ellipse cx="{sx}" cy="{top + 50}" rx="18" ry="40" fill="{sg}"/><rect x="{sx - 2.5}" y="{top + 22}" width="5" height="52" rx="2.5" fill="#bfe8ff"/>')
+        else: g.append(f'<ellipse cx="{sx}" cy="{top + 46}" rx="26" ry="34" fill="{sg}"/><rect x="{sx - 4}" y="{top + 36}" width="8" height="16" rx="3" fill="{OS["trim"]}"/><path d="M {sx - 9},{top + 36} L {sx + 9},{top + 36} L {sx + 6},{top + 26} L {sx - 6},{top + 26} Z" fill="{OS["sconce"]}"/>')
     return g, (top, wb, dx)
 
 def close(g, x, y, w, h, front=False):
@@ -187,6 +237,11 @@ def close(g, x, y, w, h, front=False):
     return g
 
 def plant(cx, by, s=1.0):
+    if OS.get("theme") == "ship":        # 술통
+        w_, h_ = 20 * s, 30 * s
+        return (f'<path d="M {cx - w_ * .8},{by - h_} Q {cx - w_ * 1.05},{by - h_ / 2} {cx - w_ * .8},{by} L {cx + w_ * .8},{by} Q {cx + w_ * 1.05},{by - h_ / 2} {cx + w_ * .8},{by - h_} Z" fill="#a8703c" stroke="#3a2414" stroke-width="1.8"/>'
+                + "".join(f'<path d="M {cx - w_ * .95:.1f},{by - h_ * f:.1f} L {cx + w_ * .95:.1f},{by - h_ * f:.1f}" stroke="#4a4f5a" stroke-width="2.6"/>' for f in (0.2, 0.8))
+                + f'<path d="M {cx - w_ * .4},{by - h_} L {cx - w_ * .4},{by} M {cx + w_ * .3},{by - h_} L {cx + w_ * .3},{by}" stroke="#7a4a24" stroke-width="1.2"/><ellipse cx="{cx}" cy="{by - h_}" rx="{w_ * .8}" ry="{4 * s}" fill="#8a5a30" stroke="#3a2414" stroke-width="1.4"/>')
     g = f'<path d="M {cx - 14 * s},{by - 26 * s} L {cx + 14 * s},{by - 26 * s} L {cx + 11 * s},{by} L {cx - 11 * s},{by} Z" fill="{"#f2efe8" if not OS["night"] else "#2a3040"}" stroke="{OS["trim"]}" stroke-width="1.4"/>'
     for i, (dx_, dy, rx, ry, rot) in enumerate([(-12, -44, 8, 20, -30), (10, -48, 8, 22, 28), (0, -58, 7, 22, 0), (-20, -34, 7, 16, -55), (20, -36, 7, 16, 55)]):
         c = ["#2f7d4a", "#3f9a5a", "#2a6e42", "#4aa866", "#358a50"][i]
@@ -224,7 +279,7 @@ def char(lk, cx, desk_y, s, team, working, pose="type", stand=False):
         sv += "".join(f'<circle cx="{cx + k * 31 * s:.1f}" cy="{desk_y - 6:.1f}" r="{8.5 * s:.1f}" fill="{lk["skin"]}" stroke="{sc.INK}" stroke-width="{1.4 * s + 0.6:.1f}"/>' for k in (-1, 1))
     return sv
 
-DESK = {"월넛라운지": ("#9a6844", "#6e4630", "#b78258"), "마블펜트하우스": ("#f7f6f2", "#2a2d33", "#ffffff"), "나이트스카이": ("#2a3142", "#161b26", "#c9a45c")}[A.office]
+DESK = {"써니호선실": ("#b07a44", "#6a4426", "#e0b070"), "어벤져스본부": ("#2a3240", "#161b24", "#3aa8ff"), "월넛라운지": ("#9a6844", "#6e4630", "#b78258"), "마블펜트하우스": ("#f7f6f2", "#2a2d33", "#ffffff"), "나이트스카이": ("#2a3142", "#161b26", "#c9a45c")}[A.office]
 def desk(x0, x1, yt, depth=12, panel=22):
     top, front, edge = DESK; gl = grad("linearGradient", [(0, "#ffffff", 0.0), (1, "#ffffff", 0.7)], x1=0, y1=0, x2=0, y2=1)
     pf = grad("linearGradient", [(0, mix(front, "#ffffff", 0.18), 1), (1, front, 1)], x1=0, y1=0, x2=0, y2=1)
@@ -357,6 +412,17 @@ def boss_room(x, y, reporter):
              f'<circle cx="{x + 82}" cy="{top + 72}" r="12" fill="#e6ad3c" opacity=".9"/><path d="M {x + 60},{top + 98} Q {x + 90},{top + 76} {x + 136},{top + 94} L {x + 136},{top + 106} L {x + 60},{top + 106} Z" fill="#3a6ea8"/><path d="M {x + 60},{top + 104} Q {x + 100},{top + 88} {x + 136},{top + 102} L {x + 136},{top + 106} L {x + 60},{top + 106} Z" fill="#c9a45c" opacity=".8"/>')
     g.append(f'<rect x="{x + 284}" y="{top + 12}" width="30" height="{wb - top - 34}" fill="{wal}"/>' + "".join(
         f'<rect x="{x + 286}" y="{top + 44 + k * 34}" width="26" height="3" fill="{wal2}"/><path d="M {x + 293},{top + 22 + k * 34} L {x + 305},{top + 22 + k * 34} Q {x + 305},{top + 34 + k * 34} {x + 299},{top + 36 + k * 34} Q {x + 293},{top + 34 + k * 34} {x + 293},{top + 22 + k * 34} Z" fill="{gold}"/><rect x="{x + 296}" y="{top + 36 + k * 34}" width="6" height="7" fill="{gold}"/>' for k in range(3)))
+    if OS.get("theme") == "ship":        # 밀짚모자 해적단 깃발
+        fx, fy = x + 54, top + 46
+        g.append(f'<rect x="{fx}" y="{fy}" width="90" height="66" fill="#16161a" stroke="#3a2414" stroke-width="2"/><path d="M {fx + 90},{fy} q 6,10 0,22 q 6,12 0,22 q 6,12 0,22" fill="#16161a"/>'
+                 f'<circle cx="{fx + 45}" cy="{fy + 32}" r="13" fill="#f6f4ee"/><circle cx="{fx + 40}" cy="{fy + 30}" r="3" fill="#16161a"/><circle cx="{fx + 50}" cy="{fy + 30}" r="3" fill="#16161a"/><rect x="{fx + 40}" y="{fy + 38}" width="10" height="5" fill="#f6f4ee"/>'
+                 f'<path d="M {fx + 24},{fy + 50} L {fx + 66},{fy + 58} M {fx + 66},{fy + 50} L {fx + 24},{fy + 58}" stroke="#f6f4ee" stroke-width="5" stroke-linecap="round"/>'
+                 f'<ellipse cx="{fx + 45}" cy="{fy + 21}" rx="21" ry="4.6" fill="#f2c94c" stroke="#8a6a1a" stroke-width="1"/><path d="M {fx + 33},{fy + 21} Q {fx + 45},{fy + 4} {fx + 57},{fy + 21} Z" fill="#f2c94c" stroke="#8a6a1a" stroke-width="1"/><rect x="{fx + 33}" y="{fy + 16}" width="24" height="3.6" fill="#d93a2e"/>')
+    if OS.get("theme") == "avengers":    # A 엠블럼
+        fx, fy = x + 98, top + 80
+        g.append(f'<circle cx="{fx}" cy="{fy}" r="34" fill="#0e141e" stroke="#3aa8ff" stroke-width="3"/><circle cx="{fx}" cy="{fy}" r="40" fill="none" stroke="#3aa8ff" stroke-width="1.2" opacity=".5"/>'
+                 f'<path d="M {fx - 18},{fy + 22} L {fx + 2},{fy - 26} L {fx + 12},{fy - 26} L {fx + 12},{fy + 22} L {fx + 4},{fy + 22} L {fx + 4},{fy + 8} L {fx - 6},{fy + 8} L {fx - 12},{fy + 22} Z M {fx - 2},{fy} L {fx + 4},{fy} L {fx + 4},{fy - 14} Z" fill="#cfe8ff" fill-rule="evenodd"/>'
+                 f'<path d="M {fx - 30},{fy + 4} L {fx + 30},{fy + 4}" stroke="#cfe8ff" stroke-width="3"/>')
     # 바닥: 고급 카펫
     g.append(poly([(x + 58, wb + 22), (x + CW - 58, wb + 22), (x + CW - 22, y + RH - 30), (x + 22, y + RH - 30)], "#7a2f2a", f'stroke="{gold}" stroke-width="2"'))
     g.append(poly([(x + 72, wb + 30), (x + CW - 72, wb + 30), (x + CW - 40, y + RH - 38), (x + 40, y + RH - 38)], "none", f'stroke="{gold}" stroke-width="1.2" opacity=".8"'))

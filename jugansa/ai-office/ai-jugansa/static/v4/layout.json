@@ -1278,11 +1278,11 @@
   1206.0
  ],
  "vX": 1206.0,
- "office": "마블펜트하우스",
- "office_name": "마블 펜트하우스",
+ "office": "써니호선실",
+ "office_name": "원피스",
  "skin": "원피스직원_v3",
- "header": "#2a2d33",
- "header2": "#3a3f48",
- "bg": "#eef0f2",
- "board_bg": "#16191f"
+ "header": "#3a2416",
+ "header2": "#5a3a22",
+ "bg": "#9fd0e6",
+ "board_bg": "#16201c"
 }
