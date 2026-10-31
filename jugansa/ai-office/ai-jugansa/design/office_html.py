@@ -607,7 +607,7 @@ def sea_bg():         # 원피스 배경: 바깥 바다 물결
     return g
 
 VK = 1.0       # 자판기 원래 크기 · 위쪽 벽(방 앞쪽)에 붙여 세움 — 방 앞부분을 조금 가려도 됨 (본부장 10-31)
-VEND = [(CX[0] + 26, R1 + RH + 22, "#d8352e", "DRINK"), (CX[2] + 40, R2 + RH + 22, "#2f6fd0", "COFFEE")]
+VEND = [(CX[0] + 26, R1 + RH + 22, "#d8352e", "DRINK"), (CX[2] + 10, R2 + RH + 22, "#2f6fd0", "COFFEE")]
 body, report = corridors(), None
 LAYOUT["vend"] = [[vx_ + 46 * VK + 14, vy_ - 22 + CORR / 2 + 8, vl_] for vx_, vy_, vc_, vl_ in VEND]
 for key, x, y in ROOMS:

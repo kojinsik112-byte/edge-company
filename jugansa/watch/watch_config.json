@@ -26,37 +26,39 @@
     "결과 발표",
     "선정 결과",
     "최종 선정",
-    "후기"
+    "후기",
+    "매각",
+    "매각주관사"
   ],
   "cafes": [
     {
       "name": "aptmaster10",
-      "home": "https://m.cafe.naver.com/ca-fe/aptmaster10",
+      "home": "https://cafe.naver.com/aptmaster10",
       "keyword": "주관사",
       "_메모": "본부장 10-21 · 공고 감시 카페"
     },
     {
       "name": "rainup",
-      "home": "https://m.cafe.naver.com/ca-fe/rainup",
+      "home": "https://cafe.naver.com/rainup",
       "keyword": "주관사",
       "_메모": "본부장 10-31 방법: 왼쪽 검색칸에 '주관사' → 검색 → 목록(전체기간 · 글+댓글 · 최신순)에서 주관사 모집 · 선정 · 공고 · 입찰 공고 글 확인 · 카페 번호 10955043",
       "search_url": "https://cafe.naver.com/f-e/cafes/10955043/menus/0?viewType=L&ta=ARTICLE_COMMENT&page=1&q=%EC%A3%BC%EA%B4%80%EC%82%AC"
     },
     {
       "name": "casa114",
-      "home": "https://m.cafe.naver.com/ca-fe/casa114",
+      "home": "https://cafe.naver.com/casa114",
       "keyword": "주관사",
       "_메모": "본부장 10-21 · 공고 감시 카페"
     },
     {
       "name": "jaegebal",
-      "home": "https://m.cafe.naver.com/ca-fe/jaegebal",
+      "home": "https://cafe.naver.com/jaegebal",
       "keyword": "주관사",
       "_메모": "본부장 10-21 · 공고 감시 카페"
     },
     {
       "name": "ishift",
-      "home": "https://m.cafe.naver.com/ca-fe/ishift",
+      "home": "https://cafe.naver.com/ishift",
       "keyword": "주관사",
       "_메모": "본부장 10-21 · 공고 감시 카페"
     }
@@ -72,5 +74,12 @@
     "21:00"
   ],
   "kakao": true,
-  "_방법": "본부장 10-31: 카페 왼쪽 검색칸에 '주관사' 입력 → 검색 → 목록 제목에 '주관사 모집 · 주관사 선정 · 주관사 공고 · 입찰 공고'가 보이면 새 공고. 이미 아는 단지(군포 · 엘리프 · 상주 · 분당 · 지웰 · 철산 · 탕정 · 한강 등)는 --init 때 '본 글'로 저장해 알리지 않음. 3시간마다 확인."
+  "_방법": "본부장 10-31: 카페 왼쪽 검색칸에 '주관사' 입력 → 검색 → 목록 제목에 '주관사 모집 · 주관사 선정 · 주관사 공고 · 입찰 공고'가 보이면 새 공고. 이미 아는 단지(군포 · 엘리프 · 상주 · 분당 · 지웰 · 철산 · 탕정 · 한강 등)는 --init 때 '본 글'로 저장해 알리지 않음. 3시간마다 확인.",
+  "section_search": [
+    {
+      "query": "주관사 공고",
+      "pages": 4,
+      "_메모": "본부장 10-31: section.cafe.naver.com/ca-fe/home 상단 검색 → 전체글 → 1 ~ 4쪽"
+    }
+  ]
 }

@@ -31,6 +31,15 @@ KAKAO = ROOT / "business-ops" / "secretary" / "tools" / "kakao_send.py"
 CAFE_JS = ROOT / "tools" / "scraper" / "cafe_watch.js"
 TAG = re.compile(r"<[^>]+>")
 
+
+def node_exe():
+    """node 위치: PATH → tools/scraper/.node 휴대용 Node(관리자 권한 없이 설치 · 본부장 10-31)."""
+    import shutil
+    n = shutil.which("node")
+    if n: return n
+    local = CAFE_JS.parent / ".node" / "node.exe"          # tools/scraper/.node (깃 제외) — 예약 작업에서도 같은 위치
+    return str(local) if local.exists() else "node"
+
 try:
     from dotenv import load_dotenv
     load_dotenv(ROOT / "design-division" / ".env")
@@ -66,10 +75,10 @@ def api_search():
 
 def cafe_search():
     """② 로그인 카페(home 또는 search_url 있는 곳) — Node 스크립트 결과."""
-    if not any(c.get("search_url") or c.get("home") for c in CFG["cafes"]):
+    if not any(c.get("search_url") or c.get("home") for c in CFG["cafes"]) and not CFG.get("section_search"):
         return []
     try:
-        p = subprocess.run(["node", str(CAFE_JS), str(HERE / "watch_config.json")], cwd=str(CAFE_JS.parent),
+        p = subprocess.run([node_exe(), str(CAFE_JS), str(HERE / "watch_config.json")], cwd=str(CAFE_JS.parent),
                            capture_output=True, text=True, encoding="utf-8", timeout=300)
         rows = json.loads(p.stdout or "[]")
     except Exception as e:
@@ -78,11 +87,12 @@ def cafe_search():
     for r in rows:
         if r.get("error"):
             print(f"[②] {r['cafe']}: {r['error']} (로그인 만료면 node cafe_watch.js --login)")
-    return [{"src": "카페", "cafe": r["cafe"], "title": r["title"], "desc": "", "link": r["link"]} for r in rows if not r.get("error")]
+    return [{"src": "카페", "cafe": r["cafe"], "title": r["title"], "desc": r.get("desc", ""), "date": r.get("date", ""), "link": r["link"]}
+            for r in rows if not r.get("error") and r.get("title")]
 
 
 def hit(it):
-    t = f"{it['title']} {it['desc']}"
+    t = it["title"] if it.get("src") == "카페" else f"{it['title']} {it['desc']}"      # 카페 글은 제목만 (본문에 '주관사'만 있는 잡글 제외)
     return (any(k in t for k in CFG["must_any"]) and any(k in t for k in CFG["also_any"])
             and not any(k in t for k in CFG["exclude_any"]))
 
@@ -90,6 +100,35 @@ def hit(it):
 def key(it):
     """같은 글이 검색 · 카페 안 검색에서 주소 모양이 달라도 하나로 — 카페명 + 제목(공백 · 기호 제거)."""
     return re.sub(r"[\s\W_]+", "", f"{it['cafe']}|{it['title']}").lower()
+
+
+DATE = r"((20\d\d|\d\d)\s*[.\-/년]\s*)?\d{1,2}\s*[.\-/월]\s*\d{1,2}\s*일?"
+def read_articles(items):
+    """새 글을 열어 본문을 읽고 핵심(세대 · 마감 · 메일 · 제출)만 뽑는다."""
+    links = [it["link"] for it in items if it.get("link", "").startswith("http")][:8]
+    if not links: return {}
+    try:
+        p = subprocess.run([node_exe(), str(CAFE_JS), "--read", *links], cwd=str(CAFE_JS.parent),
+                           capture_output=True, text=True, encoding="utf-8", timeout=400)
+        rows = json.loads((p.stdout or "[]").strip().splitlines()[-1])
+    except Exception as e:
+        print(f"[본문] 읽기 실패: {e}"); return {}
+    out = {}
+    for r in rows:
+        t = r.get("text", "")
+        if not t: continue
+        info = {}
+        m = re.search(r"([\d,]{3,6})\s*세대", t);                         info["세대"] = m.group(1) + "세대" if m else ""
+        lines = [l.strip() for l in t.splitlines() if l.strip()]
+        due = next((l for l in lines if re.search(r"마감|접수\s*기간|제출\s*기한|접수\s*마감|제출\s*마감|까지", l) and re.search(DATE, l)), "")
+        info["마감"] = re.sub(r"\s+", " ", due)[:70]
+        m = re.search(r"[\w.+-]+@[\w-]+(\.[\w-]+)+", t);                info["메일"] = m.group(0) if m else ""
+        how = next((l for l in lines if re.search(r"제출\s*방법|접수\s*방법|이메일\s*접수|방문\s*접수|우편", l)), "")
+        info["제출"] = re.sub(r"\s+", " ", how)[:60]
+        pt = next((l for l in lines if re.search(r"PT|프레젠테이션|발표", l) and re.search(DATE, l)), "")
+        info["PT"] = re.sub(r"\s+", " ", pt)[:60]
+        out[r["link"]] = {k: v for k, v in info.items() if v}
+    return out
 
 
 def main():
@@ -110,8 +149,10 @@ def main():
             new.append(it)
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     print(f"[{now}] 전체 {len(items)} · 주관사 공고 후보 {len(hits)} · 새 글 {len(new)}")
+    detail = read_articles(new) if new and not init and "--no-read" not in args else {}
     for it in new:
         print(f"  ★ [{it['cafe']}] {it['title']}  {it['link']}")
+        for k, v in detail.get(it["link"], {}).items(): print(f"      {k}: {v}")
     if dry:
         return
     seen |= set(hits)
@@ -119,9 +160,13 @@ def main():
     if init or not new:
         return
     with LOG.open("a", encoding="utf-8") as f:
-        f.write(f"\n## {now} · 새 글 {len(new)}\n" + "".join(f"- [{it['cafe']}] {it['title']} — {it['link']}\n" for it in new))
+        f.write(f"\n## {now} · 새 글 {len(new)}\n" + "".join(f"- [{it['cafe']}] {it['title']} — {it['link']}\n" + "".join(f"  - {k}: {v}\n" for k, v in detail.get(it["link"], {}).items()) for it in new))
     if CFG.get("kakao") and KAKAO.exists():
-        msg = f"[주관사 공고 감시] 새 글 {len(new)}건 ({now})\n" + "\n".join(f"- {it['cafe']} · {it['title']}\n  {it['link']}" for it in new[:10])
+        def one(it):
+            d = detail.get(it["link"], {})
+            extra = "".join(f"\n  · {k}: {v}" for k, v in d.items())
+            return f"- {it['cafe']} · {it['title']}{extra}\n  {it['link']}"
+        msg = f"[주관사 공고 감시] 새 공고 {len(new)}건 ({now})\n" + "\n".join(one(it) for it in new[:10])
         subprocess.run([sys.executable, str(KAKAO), "send", msg], cwd=str(KAKAO.parent), timeout=60)
 
 
