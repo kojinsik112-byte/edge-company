@@ -164,7 +164,8 @@ C_DOCS = [(8, "e편한세상 에코델타 센터포인트", "2023.04.03"), (9, "
 EV6 = {"레이카운티": "A", "두산위브더제니스 센트럴사하": "A", "양정자이더샵SK VIEW 1·2단지": "A", "춘천 학곡지구 중해마루힐 포레스트": "A",
        "두산위브더제니스 오션시티": "A", "창원 센트럴 아이파크": "A · B-4", "힐스테이트 포항": "A", "에코델타 대성베르힐": "B-1 · B-3",
        "e편한세상 송도 더퍼스트비치": "B-2", "e편한세상 에코델타 센터포인트": "B-5 · C-1", "강서자이 에코델타": "B-6", "에코델타시티 푸르지오 린": "B-7",
-       "남울산 노르웨이숲": "B-8", "영주자이 시그니처": "B-9", "부산 드파인 센텀": "C-2", "디에트르 더 퍼스트": "C-3"}
+       "남울산 노르웨이숲": "B-8", "영주자이 시그니처": "B-9", "부산 드파인 센텀": "C-2", "디에트르 더 퍼스트": "C-3",
+       "부산사상 중흥S-클래스 그랜드센트럴": "B-0"}
 
 
 def _img(src, pno, k, name, top=0):
@@ -207,7 +208,7 @@ def p6_table(seal_uri):
             f'<p style="font-size:10pt;margin-bottom:3mm">공고 5항 가 · 7항 나 · 기준 = 공고일(2026.10.31) 기준 최근 5년 · 입주 연월 순 · 아파트 입주박람회 주관 {len(rows)}개 단지 · '
             f'{sum(r[2] for r in rows):,}세대(500세대 이상)</p>'
             '<table class="l sm r6"><tr><th>No</th><th>입주</th><th>단지(모두 주관)</th><th>세대</th><th>박람회 일정</th><th>장소</th><th style="white-space:nowrap">증빙</th></tr>' + tr + '</table>'
-            f'<div class="box" style="margin-top:4mm">증빙 = 이 파일의 실적 확인자료 A(NICE 연혁) · B(공식 행사일정 · 카페 공지) · C(주관사 협약서) · 증빙 첨부 {ev_n}개 단지 · 나머지는 협의회가 요청하시면 제출합니다(공고 마 ※). '
+            f'<div class="box" style="margin-top:4mm">증빙 = 이 파일의 실적 확인자료 A(NICE 연혁) · B(공식 행사일정 · 카페 공지) · C(주관사 협약서) · 증빙 첨부 {ev_n}개 단지 · 나머지는 협의회가 요청하시면 제출합니다(공고 6항 라 · 요청받은 보완자료). '
             '누적 수임 단지(전신 실적 · 입주 예정 포함)는 이 표에 넣지 않았습니다.</div>'
             + sign_line(seal_uri))
     return page("제출서류 나 · 최근 5년간 운영 실적표", body)
@@ -225,6 +226,14 @@ def ev_pages():
           f'<img src="{pathlib.Path(nfn).as_uri()}" style="display:block;width:106mm;margin:0 auto;border:1px solid #bbb">'
           '<p style="font-size:10pt;margin-top:3mm">연혁의 2023/03 ~ 2026/07 주관 행이 1,000세대 이상 입주박람회 주관 실적입니다. 연혁 일자는 주관 협약 뒤 확정된 일정 기준이라, 창원 센트럴 아이파크(2026/07)는 평가 당시 이미 일정이 확정된 단지이며 2026.07.03 ~ 05 CECO에서 개최했습니다(붙임 B-4). 위 발췌는 원본과 같습니다.</p>')
     pages = [page("제출서류 나 · 실적 확인자료 A", pa)]
+    # 검수 11-02 #2: 사상(1,572 · 입주 2023.07) = 입주민 소통 카페 주관사 게시판 캡처(나리벡 제출본 03 5쪽 · 입주민 닉네임 가림 끝난 것)
+    uri0 = _img(s03, 5, 0, "b0.png")
+    pages.append(page("제출서류 나 · 실적 확인자료 B-0 · 카페 주관사 게시판", (
+        '<h2 style="font-size:12.5pt">B-0 · 부산사상 중흥S-클래스 그랜드센트럴(1,572세대 · 1,000세대 이상 주관)</h2>'
+        '<p style="font-size:10pt;color:#444;margin-bottom:2mm">입주민 소통 카페 · 엣지컴퍼니 게시판(cafe.naver.com/f-e/cafes/30121620 · 게시판명 (주)엣지컴퍼니&amp;오케이시스템 · 오케이시스템은 당사 협력사) · '
+        '작성자 ‘주관사엣지컴퍼니’ — 2022.12.14 박람회 수요조사 · 2022.12.31 주관사 인사 · 2023.01.16 입주 설명회 · 2023.02.20 박람회 날짜 · 장소 · 혜택 안내 · 2023.03.01 박람회 혜택 안내</p>'
+        f'<img src="{uri0}" style="display:block;max-width:100%;max-height:205mm;margin:0 auto;border:1px solid #bbb">'),
+        "화면 그대로 · 입주민 닉네임(동 · 호수)은 가림"))
     for grp in ([0], [1, 2], [3, 4], [5, 6], [7, 8]):   # 신분평 D11: 카페 공지 캡처(B-1)는 혼자 한 쪽에 크게
         body = ""
         for i in grp:
@@ -249,12 +258,57 @@ def ev_pages():
 PRICE_PAGES = (22, 23)   # 나리벡 제출본 14 ⑥ = 2026.10 타 단지 공개 단가표(품목별 범위 · 실링팬 현금 괄호 가림본)
 
 
+FONT_R, FONT_B = r"C:\Windows\Fonts\malgun.ttf", r"C:\Windows\Fonts\malgunbd.ttf"
+PRICE_RETEXT = [("박람회 현장 계약가", "타 단지 공개 단가표(2026.10) · 참고"), ("그 외 전 품목은 박람회 현장 공개", "그 외 품목은 업체 견적"),
+                ("'현장 제시' 항목은 박람회 현장에서 업체별로 안내합니다", "'업체 견적' 항목은 업체 견적서로 안내합니다"),
+                ("현장 제시", "업체 견적"), ("부산 시내", "시내")]   # 검수 11-02 #8: 타 단지 표의 '현장' 표현 · 지역명 정리(가림 후 같은 자리에 다시 씀)
+
+
+def retext(page, old, new):
+    """page에서 old 글자를 배경색으로 가리고 같은 자리에 new를 맑은 고딕으로 다시 쓴다(폭에 맞춰 글자 크기 줄임). 바꾼 수를 돌려준다."""
+    rects = page.search_for(old)
+    if not rects:
+        return 0
+    pix = page.get_pixmap(dpi=144)
+    sc = 144 / 72
+    jobs = []
+    for r in rects:
+        bx = max(0, min(pix.width - 1, int((r.x0 - 1.5) * sc)))
+        by = max(0, min(pix.height - 1, int((r.y0 + r.height / 2) * sc)))
+        bg = tuple(c / 255 for c in pix.pixel(bx, by)[:3])
+        _bg = pix.pixel(bx, by)[:3]
+        dark = max(((pix.pixel(int(x * sc), int(y * sc))[:3]) for x in range(int(r.x0) + 1, int(r.x1) - 1) for y in range(int(r.y0) + 1, int(r.y1))),
+                   key=lambda c: sum(abs(c[i] - _bg[i]) for i in range(3)))   # 글자색 = 배경과 가장 다른 화소(어두운 머리띠 위 흰 글자도)
+        jobs.append((r, bg, tuple(c / 255 for c in dark)))
+        page.add_redact_annot(r, fill=bg)
+    page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
+    for r, bg, fg in jobs:
+        fs = min(r.height * 0.86, r.height * 0.86 * (r.width + 30) / max(1e-3, fitz.Font(fontfile=FONT_R).text_length(new, fontsize=r.height * 0.86)))
+        page.insert_text((r.x0, r.y1 - r.height * 0.18), new, fontsize=fs, fontname="mg", fontfile=FONT_R, color=fg)
+    return len(rects)
+
+
+def stamp_cover(prop, seal):
+    """검수 11-02 #1: 6항 나 '서명 또는 날인한 제안서' — 제안서 표지 오른쪽 아래에 작성일 · 상호 · 대표이사 직인."""
+    pg = prop[0]
+    W, H = pg.rect.width, pg.rect.height
+    y = H * 0.845
+    txt = f"{ymd()}   {D.COMPANY}  대표이사 {D.CEO}  (인)"
+    fs = H * 0.022
+    tl = fitz.Font(fontfile=FONT_B).text_length(txt, fontsize=fs)
+    x = W * 0.94 - tl
+    pg.insert_text((x, y), txt, fontsize=fs, fontname="mgb", fontfile=FONT_B, color=(0.93, 0.86, 0.70))
+    sz = fs * 3.0
+    xi = W * 0.94 - fitz.Font(fontfile=FONT_B).text_length("(인)", fontsize=fs) / 2
+    pg.insert_image(fitz.Rect(xi - sz / 2, y - fs * 0.35 - sz / 2, xi + sz / 2, y - fs * 0.35 + sz / 2), filename=seal, overlay=True)
+
+
 def p4_price_note():
     body = ('<h2>붙임 · 타 단지 공개 단가표(참고가격 근거)</h2>'
             '<table class="f"><tr><th>무엇인가</th><td>다른 단지 입주박람회(2026.10)에서 입주예정자에게 실제 공개한 품목별 시공 단가 범위(참여 업체 수 · 일반 / 프리미엄 · 시공 범위 · 84㎡ 기준)</td></tr>'
             '<tr><th>왜 붙이는가</th><td>공고 5항 다 · 라 - 제안서의 대표 품목 참고가격이 어디서 왔는지 보여 드리기 위해</td></tr>'
             f'<tr><th>이 단지 단가인가</th><td><b>아닙니다.</b> {e(SITE)} 단가로 약속하는 금액이 아니며, 확정 단가는 업체 공개 모집 → 박람회 30일 전 협의회 검수 → 14일 전 확정가 · 비교자료 공개로 정합니다(제안서 3 · 4장).</td></tr>'
-            '<tr><th>‘현장 제시’ 표기</th><td>붙임 표의 ‘현장 제시’ · ‘박람회 현장 공개’는 <b>다른 단지의 진행 방식</b>입니다. 이 단지는 <b>D-14에 전 품목 확정 단가를 미리 공개</b>하고, 현장에서 가격을 바꾸지 않습니다.</td></tr>'
+            '<tr><th>‘업체 견적’ 표기</th><td>다른 단지 표에서 금액 없이 업체가 따로 안내한 칸은 <b>‘업체 견적’</b>으로 바꿔 적었습니다(같은 자리 · 가림 후 다시 씀 · 지역명도 가림). 이 단지는 <b>D-14에 전 품목 확정 단가를 미리 공개</b>하고, 현장에서 가격을 바꾸지 않습니다.</td></tr>'
             '<tr><th>가림 표시</th><td>머리의 ‘단지 ______’ 빈 밑줄과 회색 상자 = 다른 단지 이름 · 업체 정보 · 결제 조건 1곳을 가린 자리입니다(빈칸이 아님).</td></tr></table>')
     return page("제출서류 라 · 붙임 안내", body)
 
@@ -268,14 +322,15 @@ def p4_fee(seal_uri):
     fee = [("입점비(참가비)", "참여업체", "정액 · 품목군별 같은 기준 · 공구가와 연동 없음", "업체 모집 공고 전 협의회 승인 금액 이내 · 모집 공고에 공개"),
            ("판매수수료", "-", "받지 않음(계약 건 · 매출 비례 수수료 없음)", "-"),
            ("광고비", "-", "별도로 받지 않음(카페 · 홍보물 제작은 입점비 안)", "-"),
-           ("발전기금(세대 혜택)", "업체에게 걷지 않음 · 주관사 부담", f"{D.FUND_BASIS}에 주관사가 직접 사서 드리는 선택 항목", f"세대당 {D.FUND}만원 상당(안) · {D.FUND_DECIDE}"),
+           ("발전기금(세대 혜택)", "업체에게 걷지 않음 · 주관사가 직접 사서 드림", f"{D.FUND_BASIS}에 주관사가 직접 사서 드리는 선택 항목", f"세대당 {D.FUND}만원 상당(안) · {D.FUND_DECIDE}"),
            ("구매자 추가비용", "구매자", "부가세 · 배송비 · 설치비 · 철거 · 추가 자재를 단가표에 칸으로 따로 적고 합계 = 총 부담액", "단가표에 없는 현장 추가 비용 받지 않음")]
     body = ('<h2>대표 품목 가격표 · 추가비용 및 수수료 명세서</h2>'
             f'<p style="font-size:10pt;margin-bottom:2.5mm">공고 5항 다 · 라 · 마 · 7항 라 · {e(SITE)} · 작성 {ymd()}</p>'
-            '<h3>1. 대표 품목 참고가격(타 단지 2026.10 공개 단가 · 84㎡ 기준 · 이 단지 확정가 아님)</h3>'
+            '<h3>1. 대표 품목 참고가격(타 단지 공개 단가표 2026.10 · 참고 · 84㎡ 기준 · 이 단지 확정가 아님)</h3>'
             '<table class="l sm"><tr><th>품목 · 시공 범위</th><th>모델 · 규격 표기</th><th>참고가격</th></tr>'
             + "".join(f"<tr><td>{e(a)}</td><td>{e(b)}</td><td class='r'>{e(c)}</td></tr>" for a, b, c in price) + '</table>'
-            '<p style="font-size:9.4pt;color:#444;margin:1.5mm 0 3mm">확정 시점 = 업체 선정 뒤 단가 제출 → 박람회 30일 전 협의회 검수 → 14일 전 확정가 · 같은 조건 일반 판매가 비교자료 공개(매장 2곳 + 온라인 1곳 · 출처 · 조사일) · '
+            '<p style="font-size:9.4pt;color:#444;margin:1.5mm 0 1mm">부가세 = 참고가격은 타 단지 표기 그대로(부가세 포함 여부 미표기) · 확정 단가표에는 품목마다 부가세 포함 / 별도를 적습니다.</p>'
+            '<p style="font-size:9.4pt;color:#444;margin:0 0 3mm">확정 시점 = 업체 선정 뒤 단가 제출 → 박람회 30일 전 협의회 검수 → 14일 전 확정가 · 같은 조건 일반 판매가 비교자료 공개(매장 2곳 + 온라인 1곳 · 출처 · 조사일) · '
             '적용기간 = 공개일 ~ 공동구매 운영기간 종료일 · 계약 후 7일 안 인근 매장이 더 싸면 차액 10배(1건당 최대 50만원 · 주관사 지급)</p>'
             '<h3>2. 추가비용 및 수수료 명세(항목 · 부과 대상 · 방식 · 상한)</h3>'
             '<table class="l sm"><tr><th>항목</th><th>부과 대상</th><th>방식</th><th>상한 · 공개</th></tr>'
@@ -348,13 +403,14 @@ RULES = [
 ]
 
 
-def p5_rules():
+def p5_rules(seal_uri=None):
     half = 5
     b1 = ('<h2>취소 · 환불 · 사후관리 계획서</h2>'
           f'<p style="font-size:10pt;margin-bottom:3mm">공고 5항 바 · 사 · 7항 마 · {SITE} 1BL 공동구매에 적용 · 모든 공동구매 계약서에 붙임</p>'
           + "".join(f'<div class="art"><b>{e(a)}</b> {e(b)}</div>' for a, b in RULES[:half]))
     b2 = ("".join(f'<div class="art"><b>{e(a)}</b> {e(b)}</div>' for a, b in RULES[half:])
-          + '<div class="box" style="margin-top:4mm"><b>붙임</b> 계약 취소 · 환불 규정 전문 ① 제1 ~ 5조 · ② 제6 ~ 10조 · 별표(제안서 해당 쪽 그대로) → 다음 2쪽 · 보험 가입 현황 · 증권 사본 · 계약 후 보증 제공계획 → 그 다음 쪽</div>')
+          + '<div class="box" style="margin-top:4mm"><b>붙임</b> 계약 취소 · 환불 규정 전문 ① 제1 ~ 5조 · ② 제6 ~ 10조 · 별표(제안서 해당 쪽 그대로) → 다음 2쪽 · 계약 후 보증 제공계획 · 보험 가입증명 → 그 다음 쪽</div>'
+          + sign_line(seal_uri))
     return [page("제출서류 마 · 취소 · 환불 · 사후관리 계획서 (1/2)", b1), page("제출서류 마 · 취소 · 환불 · 사후관리 계획서 (2/2)", b2)]
 
 
@@ -365,17 +421,16 @@ def p5_ins(seal_uri):
             ("보상한도", "대인 1인당 1억원 · 1사고당 3억원 · 대물 1사고당 1억원 · 구내치료비 1인당 100만원 · 1사고당 300만원"), ("자기부담", "1사고당 10만원(대인 · 대물)"),
             ("청구 대상", "본사 사업장 시설 사고로 피해를 입은 제3자")]
     plan = [("행사(주최자)배상책임보험", "입주박람회 개최가 확정되면 행사 기간 · 장소 기준으로 가입 · 개장 전 증권 사본 제출 · 청구 대상 = 박람회장 관람객 등 제3자"),
-            ("계약 후 보증(계약이행 · 하자보증보험)", "계약 체결 시 협의회를 피보험자로 발급 · 보증 금액은 협약 시 확정 · 보증기간 24개월 · 기산일 · 보장 대상은 계약서에 명시(공고 10항 라) · 증서 제출 = 계약 체결 시 협의회와 정한 날까지"),
+            ("계약 후 보증(계약이행 · 하자보증보험)", "협약 체결 시 보증보험사 심사를 거쳐 협의회를 피보험자로 발급 · 금액은 협약 시 확정 · 보증기간 24개월 이상(공동구매 운영기간부터 무상 A/S 종료까지 공백이 없도록 협약 때 기산일을 정함) · 보장 대상은 계약서에 명시(공고 10항 라) · 증서 제출 = 계약 체결 시 협의회와 정한 날까지"),
             ("하자 예치금(주관사 자산)", "선보상 재원 · 최대 1억원 · 금액 · 예치 방식은 계약 때 확정"),
-            ("보증서 발급 이력", "서울보증보험 계약보증보험증권 1건(2026.09.07 발급 · 주계약 = 광고대행 용역 · 공동구매 · 입주박람회 이행보증 아님) - 다음 쪽 가림본")]
-    body = ('<h2>보험 가입증명 · 계약 후 보증 제공계획</h2>'
-            '<p style="font-size:10pt;margin-bottom:2mm"><b>먼저 밝힙니다.</b> 현재 가입한 보험은 본사 사업장의 영업배상책임보험(시설소유관리자배상책임)이며, 공동구매 · 박람회 피해보상 보험이 아닙니다. 증권 사본은 종류 그대로 붙입니다(다음 쪽).</p>'
-            '<h3>1. 현재 가입 - 영업배상책임보험</h3><table class="f sm" style="margin-bottom:3mm">' + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in rows) + "</table>"
-            '<h3>2. 박람회 · 계약 뒤 더하는 보험 · 보증</h3><table class="f sm">' + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in plan) + "</table>"
+            ("참고 · 다른 용역 계약보증 1건", "서울보증보험 계약보증보험증권(2026.09.07 발급 · 주계약 = 광고대행 용역 · 공동구매 · 입주박람회 이행보증 아님) - 다음 쪽 가림본")]
+    body = ('<h2>계약 후 보증 제공계획 · 보험 가입증명</h2>'
+            '<h3>1. 계약 후 보증 · 박람회 행사배상</h3><table class="f sm" style="margin-bottom:3mm">' + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in plan) + "</table>"
+            '<h3>2. 현재 가입 - 영업배상책임보험(시설소유관리자배상책임 · 증권 사본 다음 쪽)</h3><table class="f sm">' + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in rows) + "</table>"
             + sign_line(seal_uri))
     sgi = ('<h2>붙임 · 서울보증보험 계약보증보험증권 발급 이력</h2>'
            f'<div style="text-align:center"><img src="{pathlib.Path(SGI_PNG).as_uri()}" style="height:212mm;border:.6pt solid #bbb"></div>')
-    return page("제출서류 마 · 보험 가입증명 · 보증 제공계획", body), page("제출서류 마 · 붙임 · 보증서 발급 이력", sgi,
+    return page("제출서류 마 · 보증 제공계획 · 보험 가입증명", body), page("제출서류 마 · 붙임 · 보증서 발급 이력", sgi,
                                                             "광고대행 용역 계약보증(공동구매 · 입주박람회 이행보증 아님) · 금액 · 상대방 정보 · 증권번호 일부 가림 · 원본은 협의회 요청 시 열람")
 
 
@@ -440,7 +495,7 @@ def p00(spans, blanks):
     body = ('<h2>자료 목록</h2>'
             f'<p style="margin-bottom:4mm;font-size:11pt">건명 : {e(NOTICE)} · {e(SITE)} 1BL<br>제출처 : {e(TO)} · {e(D.SUBMIT_TO)}(동시 제출) · 공고 7항 제출서류 가 ~ 아 순서</p>'
             '<table class="l sm"><tr><th>No</th><th>서류(7항)</th><th>파일</th><th>쪽</th><th>발급일 · 내용</th></tr>' + rows + "</table>"
-            '<p style="font-size:9.6pt;color:#555;margin-top:4mm">공고 6항 나에 따라 파일을 나누어 이 목록을 함께 냅니다. 모든 파일은 PDF이며, 파일 이름 앞 번호 = 이 목록 번호입니다. 작성 서류(01 · 02 · 04 · 05 · 06 · 07 · 08)는 자체 양식 · 대표이사 직인(서명 또는 날인) · 개인정보는 가림본(원본은 협의회 요청 시 열람).</p>'
+            '<p style="font-size:9.6pt;color:#555;margin-top:4mm">공고 6항 나에 따라 파일을 나누어 이 목록을 함께 냅니다. 모든 파일은 PDF이며, 파일 이름 앞 번호 = 이 목록 번호입니다. 대표이사 직인(서명 또는 날인 · 6항 나) = 01 신청서 · 02 회사소개 · 실적표 · 04 제안서 표지 · 가격표 · 수수료 명세서 · 05 계획서 · 보증 제공계획 · 06 · 07 · 08(자체 양식). 개인정보는 가림본(원본은 협의회 요청 시 열람).</p>'
             + (f'<p style="color:#b00;font-weight:800;margin-top:4mm">※ 확인본 - 빈칸 {len(blanks)}곳({e(" · ".join(blanks))})을 채우기 전에는 제출하지 않습니다.</p>' if blanks else ""))
     return page("00 · 자료 목록", body)
 
@@ -465,6 +520,7 @@ def main():
     assert os.path.exists(PROPOSAL), "제안서 밝은 시안 PDF가 없음 — build_eo.py → light_build.py 먼저"
     assert os.path.exists(KB), ("KB 영업배상책임보험 증권 없음", KB)
     prop = fitz.open(PROPOSAL)
+    stamp_cover(prop, seal)
     BLANKS.clear()
 
     def take(src, pages):
@@ -499,12 +555,12 @@ def main():
     d2.insert_pdf(nr("08_4대보험_가입자명부_완납증명서.pdf"))
     d2[n0].add_redact_annot(fitz.Rect(*ROSTER_MASK), fill=(0.72, 0.72, 0.72))   # 명부 1쪽 주민번호 칸 전체
     d2[n0].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
-    add_prop(d2, prop_pages(prop, ["숫자로 보는 엣지컴퍼니", "엣지컴퍼니 연혁", "경인 쇼룸 · 자본금 2억", "대표자 · 핵심 운영인력 수행 경험", "조직 구성 - ", "담당 인력 - 운영책임자"]))
+    add_prop(d2, prop_pages(prop, ["숫자로 보는 엣지컴퍼니", "엣지컴퍼니 연혁", "경인 쇼룸 · 자본금 2억", "회사 수행 실적과 운영책임자 역할", "조직 구성 - ", "담당 인력 - 운영책임자"]))
     d2.insert_pdf(fitz.open(render("02_실적표", doc("최근 5년 실적표", [p6_table(seal_uri)]))))
     d2.insert_pdf(fitz.open(render("02_붙임", doc("실적 확인자료", ev_pages()))))
     docs["02"] = d2
     desc["02"] = ("회사 개요 · 인력 현황(직인) · 고용 · 산재 가입증명원 10.31 · " if have_goyong else "회사 개요 · 인력 현황(직인) · ") + \
-        f"4대보험 명부 · 완납증명(10.23 · 10.24) · 회사소개 6쪽 · 실적표 {len(rec5())}개 단지 · NICE 연혁 · 공식 행사일정 · 카페 공지 9 · 협약서 3"
+        f"4대보험 명부 · 완납증명(10.23 · 10.24) · 회사소개 6쪽 · 실적표 {len(rec5())}개 단지 · NICE 연혁 · 공식 행사일정 · 카페 공지 10 · 협약서 3"
     d4 = take(nr("07_국세_지방세_완납증명서.pdf"), [1, 2])
     d4[1].add_redact_annot(fitz.Rect(*TAX_PHONE), fill=(0.6, 0.6, 0.6))
     d4[1].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
@@ -514,15 +570,30 @@ def main():
     d7.insert_pdf(prop)
     d7.insert_pdf(fitz.open(render("04_가격표_수수료", doc("가격표 · 수수료 명세서", [p4_fee(seal_uri), p4_price_note()]))))
     _n14 = nr("14_기타_제안_확인자료.pdf")
+    n_price = d7.page_count
     for p_ in PRICE_PAGES:
         d7.insert_pdf(_n14, from_page=p_ - 1, to_page=p_ - 1)
+    _hit = {}
+    for k_ in range(n_price, d7.page_count):
+        for a_, b_ in PRICE_RETEXT:
+            _hit[a_] = _hit.get(a_, 0) + retext(d7[k_], a_, b_)
+    assert all(_hit.values()), ("공개 단가표 바꿀 글자를 못 찾음", _hit)
+    _pt = "".join(d7[k_].get_text() for k_ in range(n_price, d7.page_count))
+    assert "현장 제시" not in _pt and "현장 계약가" not in _pt and "부산" not in _pt, "공개 단가표 '현장' 표현 남음"
+    d7.subset_fonts()   # 다시 쓴 글자 · 표지 날인 글꼴(맑은 고딕)을 쓴 글자만 남김 — 용량
     docs["04"] = d7
-    desc["04"] = f"운영제안서 {prop.page_count}쪽(5항 가 ~ 자 순서 · 제안설명 자료 겸) + 가격표 · 수수료 명세서(직인) + 붙임 안내 + 타 단지 공개 단가표 2쪽(참고)"
-    d5 = fitz.open(render("05_계획서", doc("취소 · 환불 · 사후관리 계획서", p5_rules())))
+    desc["04"] = f"운영제안서 {prop.page_count}쪽(5항 가 ~ 자 순서 · 제안설명 자료 겸 · 표지 직인) + 가격표 · 수수료 명세서(직인) + 붙임 안내 + 타 단지 공개 단가표 2쪽(참고)"
+    d5 = fitz.open(render("05_계획서", doc("취소 · 환불 · 사후관리 계획서", p5_rules(seal_uri))))
     add_prop(d5, prop_pages(prop, ["계약 취소 · 환불 규정 전문 ① 제1 ~ 5조", "계약 취소 · 환불 규정 전문 ② 제6 ~ 10조"]))
     ins, sgi = p5_ins(seal_uri)
     d5.insert_pdf(fitz.open(render("05_보험", doc("보험 · 보증", [ins]))))
-    d5.insert_pdf(fitz.open(KB))
+    _kb = fitz.open(KB)
+    for w_ in ("노경희", "010-2744-0360"):   # 검수 11-02 #11: 보험대리점 담당자 이름 · 휴대번호 가림
+        for r_ in _kb[0].search_for(w_):
+            _kb[0].add_redact_annot(r_ + (-1, -1, 1, 1), fill=(0.72, 0.72, 0.72))
+    _kb[0].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
+    assert "노경희" not in _kb[0].get_text() and "2744" not in _kb[0].get_text()
+    d5.insert_pdf(_kb)
     assert os.path.exists(SGI_PNG), ("SGI 가림본 없음", SGI_PNG)
     d5.insert_pdf(fitz.open(render("05_보증이력", doc("보증서 발급 이력", [sgi]))))
     docs["05"] = d5
