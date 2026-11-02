@@ -167,7 +167,7 @@ function drawCheck(){
        +'<div class="inl" data-why hidden><input placeholder="어떤 점이 아직 남았나요? (필수)" maxlength="200"><button class="ghost" type="button" data-reopen>다시 요청</button></div></div>';}
     else if(r.confirm===1)c='<div class="note ok">해결 확인으로 마감됐습니다. 이용해 주셔서 감사합니다.</div>';
     return '<div class="item"><div class="top2"><span class="mono">'+esc(r.no)+'</span><span class="pill '+PC[r.st]+'">'+esc(r.stage)+'</span></div>'+(FLASH[r.no]?'<div class="flash">'+esc(FLASH[r.no])+'</div>':'')+'<div style="margin-top:6px;font-weight:700">'+esc(r.build?r.cat:iv(r))+'</div><div style="font-size:13px;color:var(--ink-2)">'+esc(r.body)+'</div>'+phBox(r.photos.req,'올린 사진')+phBox(r.photos.done,'업체 완료 사진')+clockBox(r)+'<ul class="tl">'+tl(r)+'</ul>'+c+'</div>';
-  }).join(''):'<div class="note warn">일치하는 요청이 없어요. 동 · 호수는 103-1502처럼, 연락처는 뒤 4자리만 넣어 주세요.</div>';
+  }).join(''):'<div class="note warn">일치하는 요청이 없어요. 동 · 호수는 103-1502처럼(또는 접수번호 EC-…), 연락처는 뒤 4자리만 넣어 주세요.</div>';
 }
 $('ck').onsubmit=function(e){e.preventDefault();FLASH={};lookup({dh:$('cDh').value,tel4:$('cTel').value.replace(/\D/g,'')});};
 $('ckList').onclick=function(e){

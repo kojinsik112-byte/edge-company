@@ -118,10 +118,16 @@ function a_lookup() {
     $rows = all(T_SEL . ' WHERE t.danji_id=? AND t.rtoken=? AND t.purged=0', [$d['id'], $k]);
   } else {
     if (!hit_ok('lookup', 20, 600)) fail('조회가 너무 많습니다. 10분 뒤 다시 해 주세요.', 429);
+    $raw = (string)($_POST['dh'] ?? ''); $tel4 = digits($_POST['tel4'] ?? '');
+    // 접수번호: 'EC-261102-004', 'ec261102004', '261102-004' 모두 같은 번호로(번호는 이어져 있어 연락처 뒤 4자리도 함께 확인)
+    if (preg_match('/^(?:EC)?(\d{6})(\d{3})$/', strtoupper(preg_replace('/[^0-9A-Za-z]/', '', $raw)), $m)) {
+      if (strlen($tel4) !== 4) fail('접수번호와 연락처 뒤 4자리를 넣어 주세요.');
+      $rows = all(T_SEL . ' WHERE t.danji_id=? AND t.no=? AND t.tel4=? AND t.purged=0', [$d['id'], 'EC-' . $m[1] . '-' . $m[2], $tel4]);
+      out(['ok' => true, 'list' => array_map(function ($t) { return t_pub($t, 'res'); }, $rows)]);
+    }
     // '103-1502', '103동 1502호', '103 1502' 모두 같은 집으로
-    $p = preg_split('/\s+/', trim(preg_replace('/[^0-9A-Za-z가-힣]+/u', ' ', str_replace(['동', '호'], ' ', (string)($_POST['dh'] ?? '')))));
-    $tel4 = digits($_POST['tel4'] ?? '');
-    if (count($p) < 2 || strlen($tel4) !== 4) fail('동 · 호수와 연락처 뒤 4자리를 넣어 주세요.');
+    $p = preg_split('/\s+/', trim(preg_replace('/[^0-9A-Za-z가-힣]+/u', ' ', str_replace(['동', '호'], ' ', $raw))));
+    if (count($p) < 2 || strlen($tel4) !== 4) fail('동 · 호수(또는 접수번호)와 연락처 뒤 4자리를 넣어 주세요.');
     $rows = all(T_SEL . ' WHERE t.danji_id=? AND t.dong=? AND t.ho=? AND t.tel4=? AND t.purged=0 ORDER BY t.id DESC LIMIT 10', [$d['id'], $p[0], $p[1], $tel4]);
   }
   out(['ok' => true, 'list' => array_map(function ($t) { return t_pub($t, 'res'); }, $rows)]);

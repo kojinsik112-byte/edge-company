@@ -166,11 +166,11 @@ header('Referrer-Policy: same-origin');
         <div class="sec">
           <div class="h2"><span class="k">03</span><b>진행 확인</b></div>
           <div class="row">
-            <label class="f">동 · 호<input id="cDh" placeholder="예) 103-1502"></label>
+            <label class="f">동 · 호 또는 접수번호<input id="cDh" placeholder="예) 103-1502 또는 EC-261102-004"></label>
             <label class="f">연락처 뒤 4자리<input id="cTel" inputmode="numeric" maxlength="4" placeholder="예) 1234"></label>
           </div>
           <button class="btn wide" style="margin-top:14px" type="submit">확인하기</button>
-          <div class="note info">문자로 받은 링크를 누르면 입력 없이 바로 열립니다. '103동 1502호'처럼 적어도 됩니다.</div>
+          <div class="note info">문자로 받은 링크를 누르면 입력 없이 바로 열립니다. '103동 1502호'처럼 적어도 되고, 접수번호(접수 문자에 있음)로도 찾을 수 있어요.</div>
         </div>
       </form>
       <div class="list" id="ckList"></div>
@@ -182,5 +182,5 @@ header('Referrer-Policy: same-origin');
 <div class="zoom" id="lb" hidden><img id="lbImg" alt="사진 크게 보기"></div>
 <footer><div class="wrap"><div class="wm2">엣지컴퍼니</div><?= h(cfg('company', '㈜엣지컴퍼니')) ?> · 공동구매 주관사 · <?= h(cfg('contact_email', '')) ?><?= cfg('callcenter') ? ' · 콜센터 ' . h(cfg('callcenter')) : ' · 콜센터 번호는 단지 협약 뒤 안내합니다' ?> · <a href="privacy.php" style="color:inherit">개인정보 처리방침</a></div></footer>
 <script src="assets/common.js?v=1"></script>
-<script src="assets/resident.js?v=1"></script>
+<script src="assets/resident.js?v=2"></script>
 </body></html>
