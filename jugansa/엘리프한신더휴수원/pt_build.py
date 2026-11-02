@@ -18,9 +18,11 @@ DOCS = [("00_제출본_약속정리", "00_제출본_약속정리_내부용"), ("
 # 대본 01 · 01b의 화면 순서와 같아야 함 — S1 · S2 = 요약 ① ② · END = 감사 인사(직통 번호 있는 p.115 대신)
 # AS = A/S 한 창구 접수 화면(04d · 제출본 p.45 · 71 · '업체 먼저' 화면은 뺌) · BR = 경인 지사(경기남부) 계약서 가림본 — 파일이 있을 때만 넣음
 BRANCH = os.path.join(PT, "근거", "경기남부지사_계약서_가림.pdf")
-ORDER30 = [1, 64, 59, 60, 11, 16, 17, 67, 75, "BR", 76, 65, 66, 68, 77, 29, 69, 34, 71, "AS", 45, 70, 72, 62, 63, 86, 87, 90, 79, 82, 74,
+# VR = 업체 모집 프로그램 화면 1장(as-site 세션 · 11.03 뒤 재개) — 파일이 있을 때만 · 30분 = p.29 뒤 · 20분 = p.69 앞
+RECRUIT = os.path.join(PT, "근거", "업체모집_1장.pdf")
+ORDER30 = [1, 64, 59, 60, 11, 16, 17, 67, 75, "BR", 76, 65, 66, 68, 77, 29, "VR", 69, 34, 71, "AS", 45, 70, 72, 62, 63, 86, 87, 90, 79, 82, 74,
            "S1", "S2", 113, "END"]
-ORDER20 = [1, 64, 59, 11, 67, 75, 65, 66, 69, 71, "AS", 70, 72, 87, 79, 82, "S1", "S2", "END"]
+ORDER20 = [1, 64, 59, 11, 67, 75, 65, 66, "VR", 69, 71, "AS", 70, 72, 87, 79, 82, "S1", "S2", "END"]
 CHROME = next(p for p in (r"C:\Program Files\Google\Chrome\Application\chrome.exe",
                           r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe") if os.path.exists(p))
 
@@ -42,9 +44,10 @@ def deck(order, prop, summ, end, asp):
             d.insert_pdf(end)
         elif o == "AS":
             d.insert_pdf(asp)
-        elif o == "BR":
-            if os.path.exists(BRANCH):
-                d.insert_pdf(pymupdf.open(BRANCH))
+        elif o in ("BR", "VR"):
+            f = BRANCH if o == "BR" else RECRUIT
+            if os.path.exists(f):
+                d.insert_pdf(pymupdf.open(f))
         else:
             d.insert_pdf(prop, from_page=o - 1, to_page=o - 1)
     return d
