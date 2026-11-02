@@ -62,7 +62,7 @@ function tl(r){
     {lb:'요청 접수',ds:(known(r)?r.vend+' · 주관사 담당자':'주관사 담당자')+'에게 바로 문자 알림',when:fmt(r.t),on:1},
     {lb:r.build?'시공사 전달':'1차 연락',ds:r.build?'주관사가 내용을 정리해 시공사 하자 창구에 전달하고 연락드림':(known(r)?'업체가 연락드립니다. 기한 안에 연락이 없으면 주관사가 직접 연락':'주관사가 계약 업체를 확인해 연결하고 연락드림'),when:r.rAt?fmt(r.rAt):fmt(r.replyDue)+'까지',on:r.st>=1},
     {lb:r.build?'시공사 처리 확인':(nv?'방문 일정 확정':'처리 진행'),ds:r.build?'시공사 처리 상황을 주관사가 확인해 알려 드림':(nv?(r.visit?'방문 '+r.visit:'통화로 협의한 날로 방문 날짜 확정'):'요청하신 내용을 업체 · 주관사가 처리해 안내드림'),when:r.vAt?fmt(r.vAt):(nv&&r.st<2?fmt(r.visitDue)+'까지':''),on:r.st>=2},
-    {lb:'처리 완료',ds:r.confirm===1?'입주민 해결 확인':'처리 뒤 입주민이 \'해결됐어요\'를 눌러 마감',when:r.dAt?fmt(r.dAt):'',on:r.st>=3}];
+    {lb:'처리 완료',ds:r.hcAt?'주관사 해피콜로 해결 확인 · 마감':(r.center?'처리 뒤 주관사가 해피콜로 해결 여부를 확인하고 마감':(r.confirm===1?'입주민 해결 확인':'처리 뒤 입주민이 \'해결됐어요\'를 눌러 마감')),when:r.dAt?fmt(r.dAt):'',on:r.st>=3}];
   var cur=Math.min(r.st+1,3);
   return rows.map(function(x,i){return '<li class="'+(x.on?'on':(i===cur?'now':''))+'"><span class="dot"></span><div><div class="lb">'+esc(x.lb)+'</div><div class="ds">'+esc(x.ds)+'</div></div><div class="when">'+esc(x.when)+'</div></li>';}).join('');
 }

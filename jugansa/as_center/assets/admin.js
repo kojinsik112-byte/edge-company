@@ -38,8 +38,10 @@ function loadList(first){
 }
 function djName(id){var d=DANJI.filter(function(x){return +x.id===+id;})[0];return d?d.name:'';}
 function isLate(r){return r.nextDue&&r.nextDue<Date.now();}
+// 마감 전 = 처리 완료 전 + 주관사 한 창구 단지의 해피콜 전
+function isOpen(r){return r.st<3||(r.center&&!r.hcAt);}
 function renderList(){
-  var open=LIST.filter(function(x){return x.st<3;}),late=open.filter(isLate);
+  var open=LIST.filter(isOpen),late=open.filter(isLate);
   var vend=LIST.filter(function(x){return known(x)&&x.rBy==='업체';}),inTime=vend.filter(function(x){return x.rAt<=x.replyDue;});
   var rated=LIST.filter(function(x){return x.rating;}),good=rated.filter(function(x){return x.rating===3;});
   $('kpi').innerHTML=[
@@ -51,13 +53,13 @@ function renderList(){
   ].map(function(k){return '<div><div class="l">'+esc(k[0])+'</div><div class="v">'+esc(k[1])+'</div><div class="l">'+esc(k[2])+'</div></div>';}).join('');
   var q=($('fQ').value||'').replace(/\s/g,'');
   var rows=LIST.filter(function(r){
-    if(FST==='open'&&r.st>=3)return false;if(FST==='late'&&!isLate(r))return false;if(FST==='done'&&r.st<3)return false;
+    if(FST==='open'&&!isOpen(r))return false;if(FST==='late'&&!isLate(r))return false;if(FST==='done'&&isOpen(r))return false;
     return !q||(r.no+r.dh+(r.vend||'')+r.item).replace(/\s/g,'').indexOf(q)>=0;});
-  rows.sort(function(a,b){return (a.st>=3)-(b.st>=3)||(a.nextDue||9e15)-(b.nextDue||9e15)||b.t-a.t;});
+  rows.sort(function(a,b){return isOpen(b)-isOpen(a)||(a.nextDue||9e15)-(b.nextDue||9e15)||b.t-a.t;});
   $('admBody').innerHTML=rows.map(function(r){
     var d=r.nextDue,lt=isLate(r);
-    var pill=lt?'<span class="pill pl">주관사 개입</span>':'<span class="pill '+PC[r.st]+'">'+esc(r.stage)+'</span>';
-    return '<tr'+(r.id===ASEL?' class="sel"':'')+'><td class="mono">'+esc(r.no)+(r.reopen?'<span class="ex">다시 열림</span>':'')+'</td><td>'+esc(r.dj)+'</td><td>'+esc(r.dh)+'</td><td>'+(r.build||known(r)?esc(iv(r)):esc(r.item)+' · <span class="pill p1">업체 확인 필요</span>')+'</td><td>'+esc(r.build?'—':(VC_SHORT[VC.indexOf(r.vc)]||'—'))+'</td><td>'+pill+'</td><td class="sla'+(lt?' late':'')+'">'+(d?esc((r.st===0?'1차 연락 ':'방문 일정 ')+left(d)):'—')+'</td><td>'+(r.rating?esc(RLB[r.rating]):(r.st===3&&r.confirm===null?'확인 대기':(r.confirm?'평가 안 함':'—')))+'</td><td><button class="ghost sm" type="button" data-id="'+r.id+'">자세히</button></td></tr>';
+    var pill=lt?'<span class="pill pl">주관사 개입</span>':(r.center&&r.st===3&&!r.hcAt?'<span class="pill p1">해피콜 대기</span>':'<span class="pill '+PC[r.st]+'">'+esc(r.stage)+'</span>');
+    return '<tr'+(r.id===ASEL?' class="sel"':'')+'><td class="mono">'+esc(r.no)+(r.reopen?'<span class="ex">다시 열림</span>':'')+'</td><td>'+esc(r.dj)+'</td><td>'+esc(r.dh)+'</td><td>'+(r.build||known(r)?esc(iv(r)):esc(r.item)+' · <span class="pill p1">업체 확인 필요</span>')+'</td><td>'+esc(r.build?'—':(VC_SHORT[VC.indexOf(r.vc)]||'—'))+'</td><td>'+pill+'</td><td class="sla'+(lt?' late':'')+'">'+(d?esc((r.st===0?'1차 연락 ':'방문 일정 ')+left(d)):'—')+'</td><td>'+(r.rating?esc(RLB[r.rating]):(r.hcAt?'해피콜 완료':(r.st===3&&r.confirm===null?'확인 대기':(r.confirm?'평가 안 함':'—'))))+'</td><td><button class="ghost sm" type="button" data-id="'+r.id+'">자세히</button></td></tr>';
   }).join('')||'<tr><td colspan="9">해당하는 요청이 없습니다.</td></tr>';
   // 업체별 성적
   $('vsBody').innerHTML=VENDORS.map(function(v){
@@ -82,6 +84,7 @@ function renderDetail(err){
   if(r.st<=1&&r.needVisit)acts+='<div class="inl"><input id="aWhen" placeholder="방문 날짜 · 시간" maxlength="60"><button class="ghost" type="button" data-a="visit">방문 일정 입력</button></div>';
   if(r.st===1&&r.build)acts+='<div class="inl"><button class="ghost" type="button" data-a="bcheck">시공사 처리 확인함</button></div>';
   if(r.st<=2)acts+='<div class="inl"><button class="ghost" type="button" data-a="done">처리 완료</button></div>';
+  if(r.center&&r.st===3&&!r.hcAt)acts+='<div class="note info" style="margin-top:0">처리 완료 뒤 입주민에게 전화로 해결 여부를 확인하고 마감하세요.'+(r.confirm===1?' 입주민이 화면에서 \'해결됐어요\'를 눌렀습니다.':'')+'</div><div class="inl"><input id="aHc" placeholder="해피콜 메모(선택) 예) 해결 확인 · 추가 요청 없음" maxlength="200"><button class="btn" type="button" data-a="happy">해피콜 완료 · 마감</button></div>';
   acts+='<div class="inl"><input id="aMemo" placeholder="메모(처리 이력에 남음)" maxlength="300"><button class="ghost" type="button" data-a="memo">메모 남기기</button></div>';
   if(h)acts+='<div class="undo" style="display:block"><div><b>한 단계 되돌리기</b> · 마지막 처리: \''+esc(h.label)+'\' ('+esc(h.by)+' · '+esc(fmt(h.at))+')</div>'
     +'<div class="inl"><input id="aWhy" placeholder="되돌리는 사유(필수) 예) 업체가 잘못 누름" maxlength="200"><button class="ghost" type="button" data-a="undo">되돌리기</button></div>'
@@ -97,6 +100,7 @@ $('adDetail').onclick=function(e){
   var b=e.target.closest('button[data-a]');if(!b||!DET)return;var a=b.getAttribute('data-a'),d={id:DET.id,act:a};
   if(a==='vend'){var s=$('aVend');if(!s.value){s.classList.add('bad');s.focus();return;}d.vendor_id=s.value;}
   if(a==='visit'){var w=$('aWhen').value.trim();if(!w){need($('aWhen'),'방문 날짜 · 시간을 적어 주세요');return;}d.when=w;}
+  if(a==='happy')d.note=$('aHc').value.trim();
   if(a==='memo'){var m=$('aMemo').value.trim();if(!m){need($('aMemo'),'메모를 적어 주세요');return;}d.memo=m;}
   if(a==='undo'){var y=$('aWhy').value.trim();if(!y){need($('aWhy'),'되돌리는 사유를 적어 주세요(필수)');return;}d.why=y;d.fix=$('aFix')&&$('aFix').checked?'1':'0';}
   b.disabled=true;
@@ -120,7 +124,7 @@ var DJS=[],VS=[],BASE='';
 function loadDanji(){api('adm_danji').then(function(j){if(!guard(j))return;DJS=j.danji;VS=j.vendors;BASE=j.base;drawDanji();});}
 function link(d){return BASE+'/?d='+d.code;}
 function drawDanji(){
-  $('djList').innerHTML=DJS.length?DJS.map(function(d){return '<div class="djcard"><div><div class="nm">'+esc(d.name)+(+d.active?'':' <span class="pill pl">멈춤</span>')+'</div><div class="meta">단지 코드 '+esc(d.code)+' · 업체 '+VS.filter(function(v){return +v.danji_id===+d.id&&+v.active;}).length+'곳 · 보유 기간 '+(d.purge_date?esc(d.purge_date)+'까지':'미정')+'</div><div class="lnk">'+esc(link(d))+'</div>'
+  $('djList').innerHTML=DJS.length?DJS.map(function(d){return '<div class="djcard"><div><div class="nm">'+esc(d.name)+(+d.active?'':' <span class="pill pl">멈춤</span>')+'</div><div class="meta">'+(d.intake==='center'?'주관사 한 창구':'업체 먼저')+' · 단지 코드 '+esc(d.code)+' · 업체 '+VS.filter(function(v){return +v.danji_id===+d.id&&+v.active;}).length+'곳 · 보유 기간 '+(d.purge_date?esc(d.purge_date)+'까지':'미정')+'</div><div class="lnk">'+esc(link(d))+'</div>'
     +'<div class="btnrow" style="margin-top:8px"><button class="ghost sm" type="button" data-dj="'+d.id+'" data-x="edit">고치기</button><button class="ghost sm" type="button" data-dj="'+d.id+'" data-x="copy">링크 복사</button><button class="ghost sm" type="button" data-dj="'+d.id+'" data-x="print">안내문(QR) 인쇄</button><button class="ghost sm" type="button" data-dj="'+d.id+'" data-x="vend">업체 보기</button></div></div><div class="qr" id="qr'+d.id+'"></div></div>';}).join(''):'<div class="note info">아직 단지가 없습니다. 아래에서 첫 단지를 만드세요.</div>';
   DJS.forEach(function(d){var el=$('qr'+d.id);if(el&&window.QRCode)new QRCode(el,{text:link(d),width:88,height:88,correctLevel:QRCode.CorrectLevel.M});});
   $('vDj').innerHTML=DJS.map(function(d){return '<option value="'+d.id+'">'+esc(d.name)+'</option>';}).join('');
@@ -128,16 +132,18 @@ function drawDanji(){
   drawVendors();
 }
 $('djList').onclick=function(e){var b=e.target.closest('button[data-dj]');if(!b)return;var d=DJS.filter(function(x){return +x.id===+b.getAttribute('data-dj');})[0],x=b.getAttribute('data-x');
-  if(x==='edit'){$('djId').value=d.id;$('djName').value=d.name;$('djPurge').value=d.purge_date||'';$('djKeep').value=d.keep_text||'';$('djActive').value=String(+d.active);$('djFormT').textContent=d.name+' 고치기';$('djForm').scrollIntoView({behavior:'smooth'});}
+  if(x==='edit'){$('djId').value=d.id;$('djName').value=d.name;$('djPurge').value=d.purge_date||'';$('djKeep').value=d.keep_text||'';$('djIntake').value=d.intake==='center'?'center':'vendor';$('djActive').value=String(+d.active);$('djFormT').textContent=d.name+' 고치기';$('djForm').scrollIntoView({behavior:'smooth'});}
   if(x==='copy'){var t=link(d);try{navigator.clipboard.writeText(t).then(function(){b.textContent='복사했어요';});}catch(er){b.textContent=t;}}
   if(x==='vend'){VDJ=+d.id;$('vDj').value=String(d.id);drawVendors();$('vBody').scrollIntoView({behavior:'smooth'});}
   if(x==='print')printPoster(d);};
 // 입주 안내문용 한 장: 단지 이름 · QR · 링크 · 이용 순서 · 약속
 function printPoster(d){var tmp=document.createElement('div');new QRCode(tmp,{text:link(d),width:360,height:360,correctLevel:QRCode.CorrectLevel.M});
   setTimeout(function(){var c=tmp.querySelector('canvas'),src=c?c.toDataURL('image/png'):(tmp.querySelector('img')||{}).src;var w=window.open('','_blank');if(!w)return;
-    w.document.write('<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>'+esc(d.name)+' A/S 도움 창구 안내</title><style>body{font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;color:#2a2521;margin:0;padding:40px;text-align:center}h1{font-size:30px;margin:6px 0 4px}h2{font-size:20px;font-weight:600;margin:0 0 24px;color:#8c6a2f}.box{border:2px solid #c99a52;border-radius:14px;padding:28px;max-width:560px;margin:0 auto}ol{text-align:left;font-size:16px;line-height:1.8;max-width:460px;margin:20px auto}.u{font-family:monospace;font-size:14px;word-break:break-all}.p{font-size:14px;color:#6a5f52}</style></head><body><div class="box"><div class="p">엣지컴퍼니 · 공동구매 주관사</div><h1>'+esc(d.name)+'</h1><h2>공동구매 품목 A/S 도움 창구</h2><img src="'+src+'" width="300" height="300" alt="QR"><div class="u">'+esc(link(d))+'</div><ol><li>먼저 계약 업체에 연락해 주세요(업체 번호는 QR 안에 있어요).</li><li>업체가 24시간 안에 답이 없거나 해결이 안 되면 QR로 주관사에 요청하세요.</li><li>주관사가 업체를 챙기고, 업체가 답이 없으면 직접 연락합니다.</li></ol><div class="p">1차 연락 24시간(주말 · 공휴일은 다음 영업일 12시까지) · 방문 일정 확정 48시간</div></div><script>window.onload=function(){window.print();}<\/script></body></html>');w.document.close();},150);}
+    w.document.write('<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>'+esc(d.name)+' A/S 도움 창구 안내</title><style>body{font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;color:#2a2521;margin:0;padding:40px;text-align:center}h1{font-size:30px;margin:6px 0 4px}h2{font-size:20px;font-weight:600;margin:0 0 24px;color:#8c6a2f}.box{border:2px solid #c99a52;border-radius:14px;padding:28px;max-width:560px;margin:0 auto}ol{text-align:left;font-size:16px;line-height:1.8;max-width:460px;margin:20px auto}.u{font-family:monospace;font-size:14px;word-break:break-all}.p{font-size:14px;color:#6a5f52}</style></head><body><div class="box"><div class="p">엣지컴퍼니 · 공동구매 주관사</div><h1>'+esc(d.name)+'</h1><h2>공동구매 품목 A/S 도움 창구</h2><img src="'+src+'" width="300" height="300" alt="QR"><div class="u">'+esc(link(d))+'</div>'+(d.intake==='center'
+      ?'<ol><li>공동구매 품목에 문제가 생기면 QR로 주관사에 접수하세요.</li><li>접수하면 계약 업체와 주관사 담당에게 바로 알림이 가고, 업체 연락과 기한은 주관사가 챙깁니다.</li><li>처리가 끝나면 주관사가 해피콜로 해결 여부를 확인합니다.</li></ol>'
+      :'<ol><li>먼저 계약 업체에 연락해 주세요(업체 번호는 QR 안에 있어요).</li><li>업체가 24시간 안에 답이 없거나 해결이 안 되면 QR로 주관사에 요청하세요.</li><li>주관사가 업체를 챙기고, 업체가 답이 없으면 직접 연락합니다.</li></ol>')+'<div class="p">1차 연락 24시간(주말 · 공휴일은 다음 영업일 12시까지) · 방문 일정 확정 48시간</div></div><script>window.onload=function(){window.print();}<\/script></body></html>');w.document.close();},150);}
 $('djForm').onsubmit=function(e){e.preventDefault();$('djErr').textContent='';
-  api('adm_danji_save',{id:$('djId').value,name:$('djName').value.trim(),purge_date:$('djPurge').value.trim(),keep_text:$('djKeep').value.trim(),active:$('djActive').value}).then(function(j){if(!j.ok){$('djErr').textContent=j.msg;return;}$('djNew').click();loadDanji();});};
+  api('adm_danji_save',{id:$('djId').value,name:$('djName').value.trim(),purge_date:$('djPurge').value.trim(),keep_text:$('djKeep').value.trim(),intake:$('djIntake').value,active:$('djActive').value}).then(function(j){if(!j.ok){$('djErr').textContent=j.msg;return;}$('djNew').click();loadDanji();});};
 $('djNew').onclick=function(){$('djForm').reset();$('djId').value='';$('djFormT').textContent='새 단지';};
 var VDJ=0;
 $('vDj').onchange=function(){VDJ=+this.value;drawVendors();};

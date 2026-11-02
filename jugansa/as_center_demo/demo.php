@@ -2,14 +2,14 @@
 // 시험판 시작 화면: 입주민 · 업체 · 관리 화면으로 바로 가는 링크와 시연 순서
 require __DIR__ . '/lib/boot.php';
 if (!installed()) { header('Content-Type: text/plain; charset=utf-8'); exit('시연 데이터가 없습니다. 시험판 폴더의 \'시연_시작.bat\'으로 열어 주세요.'); }
-$dj = one("SELECT * FROM danji WHERE code='demo'");
-$rows = $dj ? all(T_SEL . ' WHERE t.danji_id=? AND t.purged=0 ORDER BY t.id DESC', [$dj['id']]) : [];
+$djs = all("SELECT * FROM danji WHERE code IN ('demo','demo2') ORDER BY id");
 $A = cfg('demo_admin', []);
 $now = time();
 function state($t, $now) {
   $d = next_due($t);
   if ($d && $d < $now) return ['주관사 개입', 'pl'];
   if (!$t['is_build'] && !$t['vendor_id']) return ['업체 확인 필요', 'p1'];
+  if ((int)$t['st'] === 3 && is_center($t)) return [$t['hc_at'] ? '마감(해피콜)' : '해피콜 대기', $t['hc_at'] ? 'p3' : 'p1'];
   if ((int)$t['st'] === 3) return [$t['confirm'] === null ? '입주민 확인 대기' : '마감', 'p3'];
   if ((int)$t['reopen'] && (int)$t['st'] < 3) return ['다시 열림 · ' . stage_name($t), 'p1'];
   return [stage_name($t), 'p' . (int)$t['st']];
@@ -35,7 +35,8 @@ ol.flow{display:block;line-height:1.9;padding-left:20px;margin:8px 0 0}
   <div class="sec">
     <div class="h2"><span class="k">열기</span><b>세 화면으로 바로 가기</b></div>
     <div class="go">
-      <a class="card" href="./?d=demo" target="_blank"><span class="k">입주민 · 안내문 QR로 들어오는 화면</span><b>입주민 화면</b><span class="k">업체 연락처 → 주관사에 요청 → 진행 확인</span></a>
+      <a class="card" href="./?d=demo" target="_blank"><span class="k">입주민 · 접수 방식 ① 업체 먼저</span><b>입주민 화면</b><span class="k">업체 연락처 → 주관사에 요청 → 진행 확인</span></a>
+      <a class="card" href="./?d=demo2" target="_blank"><span class="k">입주민 · 접수 방식 ② 주관사 한 창구</span><b>입주민 화면</b><span class="k">주관사에 접수 → 진행 확인 → 해피콜로 마감</span></a>
       <a class="card" href="admin.php" target="_blank"><span class="k">주관사 담당자</span><b>관리 화면</b><span class="k">요청 관리 · 단지 · 업체 · 문자 기록 · 설정</span>
         <div class="acct">아이디 <?= h($A['login'] ?? '') ?> · 비밀번호 <?= h($A['pw'] ?? '') ?></div></a>
       <a class="card" href="#ven"><span class="k">업체 · 문자로 받는 링크</span><b>업체 화면</b><span class="k">아래 표의 '업체 화면'을 누르세요</span></a>
@@ -50,20 +51,23 @@ ol.flow{display:block;line-height:1.9;padding-left:20px;margin:8px 0 0}
       <li>아래 표 맨 위(<b>방금 들어온 요청</b>)의 '업체 화면' → '고객에게 연락했어요' → 10분 안 '되돌리기'</li>
       <li><b>입주민 확인 대기</b> 건의 '입주민 화면' → '해결됐어요' + 업체 응대 평가(선택)</li>
       <li>관리 화면 '문자 기록' → 단계마다 누구에게 어떤 문자가 가는지(시험판은 기록만)</li>
+      <li><b>② 주관사 한 창구</b> 단지: 입주민 화면 → 업체 연락 여부를 묻지 않고 바로 접수 → 관리 화면 <b>해피콜 대기</b> 건 '자세히' → '해피콜 완료 · 마감'</li>
     </ol>
     <p class="hint" style="margin-top:8px">'시연_시작.bat'을 다시 실행하면 시연 데이터가 지금 시각 기준으로 처음 상태로 돌아갑니다.</p>
   </div>
 
-  <div class="sec" id="ven" style="margin-top:14px">
-    <div class="h2"><span class="k">요청</span><b>시연용 요청 <?= count($rows) ?>건 · <?= h($dj['name'] ?? '') ?></b></div>
+  <?php foreach ($djs as $i => $dj): $rows = all(T_SEL . ' WHERE t.danji_id=? AND t.purged=0 ORDER BY t.id DESC', [$dj['id']]); ?>
+  <div class="sec"<?= $i ? '' : ' id="ven"' ?> style="margin-top:14px">
+    <div class="h2"><span class="k">요청</span><b><?= h($dj['name']) ?> · <?= count($rows) ?>건 · <?= $dj['intake'] === 'center' ? '② 주관사 한 창구' : '① 업체 먼저' ?></b></div>
     <table class="dm"><thead><tr><th>접수번호</th><th>동 · 호</th><th>품목 · 업체</th><th>지금 상태</th><th>바로 가기</th></tr></thead><tbody>
     <?php foreach ($rows as $t): [$st, $pc] = state($t, $now); $known = t_known($t); ?>
       <tr><td class="mono"><?= h($t['no']) ?></td><td><?= h($t['dong'] . '-' . $t['ho']) ?></td>
         <td><?= h($t['is_build'] ? '아파트 자체 하자(시공사 전달)' : $t['item'] . ' · ' . ($known ? $t['vend'] : '업체 확인 필요')) ?></td>
         <td><span class="pill <?= h($pc) ?>"><?= h($st) ?></span></td>
-        <td><?php if ($known): ?><a href="v.php?t=<?= h($t['vtoken']) ?>" target="_blank">업체 화면</a> · <?php endif; ?><a href="./?d=demo&amp;k=<?= h($t['rtoken']) ?>" target="_blank">입주민 화면</a></td></tr>
+        <td><?php if ($known): ?><a href="v.php?t=<?= h($t['vtoken']) ?>" target="_blank">업체 화면</a> · <?php endif; ?><a href="./?d=<?= h($t['dcode']) ?>&amp;k=<?= h($t['rtoken']) ?>" target="_blank">입주민 화면</a></td></tr>
     <?php endforeach; ?>
     </tbody></table>
   </div>
+  <?php endforeach; ?>
 </main></div>
 </body></html>

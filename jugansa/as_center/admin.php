@@ -70,7 +70,8 @@ header('Cache-Control: no-store');
           <div class="h2"><span class="k">추가</span><b id="djFormT">새 단지</b></div>
           <input type="hidden" id="djId">
           <div class="row"><label class="f">단지 이름<input id="djName" maxlength="100"></label><label class="f">보유 기간 끝나는 날<input id="djPurge" placeholder="예) 2030-02-28"></label></div>
-          <label class="f" style="margin-top:10px">입주민 동의 화면에 보일 보유 기간 문구<input id="djKeep" maxlength="100" placeholder="예) 2030.02.28까지 보관 뒤 파기(무상 A/S 기간 끝)"></label>
+          <label class="f" style="margin-top:10px">입주민 동의 화면에 보일 보유 기간 문구<input id="djKeep" maxlength="100" placeholder="예) 2030.02.28까지 보관 뒤 파기"></label>
+          <label class="f" style="margin-top:10px">접수 방식<select id="djIntake"><option value="vendor">업체 먼저(업체에 먼저 연락 → 24시간 뒤 주관사에 요청)</option><option value="center">주관사 한 창구(주관사에 바로 접수 · 마감은 주관사 해피콜)</option></select></label>
           <label class="f" style="margin-top:10px">사용<select id="djActive"><option value="1">사용</option><option value="0">멈춤(링크 닫힘)</option></select></label>
           <div class="err" id="djErr"></div>
           <div class="btnrow"><button class="btn" type="submit">저장</button><button class="ghost" type="button" id="djNew">새로 쓰기</button></div>
@@ -126,6 +127,6 @@ header('Cache-Control: no-store');
 <div class="zoom" id="lb" hidden><img id="lbImg" alt="사진 크게 보기"></div>
 <footer><div class="wrap"><div class="wm2">엣지컴퍼니</div>관리 페이지에서 본 입주민 정보는 A/S 처리에만 씁니다. 화면을 본 기록(접속 기록)이 남습니다.</div></footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="assets/common.js?v=1"></script>
-<script src="assets/admin.js?v=1"></script>
+<script src="assets/common.js?v=3"></script>
+<script src="assets/admin.js?v=3"></script>
 </body></html>

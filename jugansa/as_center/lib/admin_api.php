@@ -33,6 +33,15 @@ function admin_route($a) {
     case 'adm_admin_save': a_admin_save(); break;
     case 'adm_pw': a_pw(); break;
     case 'adm_sms_test': a_sms_test(); break;
+    // 업체 모집 · 심사(lib/recruit.php)
+    case 'adm_rc': a_rc_list(); break;
+    case 'adm_rc_save': a_rc_save(); break;
+    case 'adm_rc_get': a_rc_get(); break;
+    case 'adm_rc_act': a_rc_act(); break;
+    case 'adm_rc_file': a_rc_file(); break;
+    case 'adm_rc_csv': a_rc_csv(); break;
+    case 'adm_rc_remind': a_rc_remind_all(); break;
+    case 'adm_rc_score': a_rc_score_save(); break;
   }
   fail('잘못된 요청입니다.', 404);
 }
@@ -102,6 +111,11 @@ function a_act() {
   } elseif ($act === 'done' && $st <= 2) {
     snap($t, '주관사', '처리 완료', 1); $t['st'] = 3; if (!$t['r_at']) { $t['r_at'] = $now; $t['r_by'] = '주관사'; } $t['d_at'] = $now; t_save($t);
     tlog($t['id'], $who, '처리 완료'); n_done(t_reload($t));
+  } elseif ($act === 'happy' && $st === 3 && !$t['hc_at']) {
+    // 주관사 해피콜: 입주민에게 전화로 해결 여부를 확인하고 마감(입주민 '해결됐어요'는 보조 신호)
+    $m = str_in($_POST['note'] ?? '', 200);
+    snap($t, '주관사', '해피콜 완료'); $t['hc_at'] = $now; if (!$t['c_at']) $t['c_at'] = $now; t_save($t);
+    tlog($t['id'], $who, '해피콜로 해결 확인 · 마감' . ($m !== '' ? ' · ' . $m : ''));
   } elseif ($act === 'memo') {
     $m = str_in($_POST['memo'] ?? '', 300); if ($m === '') fail('메모를 적어 주세요.');
     tlog($t['id'], $who, '메모: ' . $m);
@@ -127,7 +141,7 @@ function a_danji_save() {
   if ($name === '') fail('단지 이름을 적어 주세요.');
   $pd = (string)($_POST['purge_date'] ?? '');
   if ($pd !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $pd)) fail('보유 기간 끝나는 날은 2028-12-31처럼 적어 주세요.');
-  $row = ['name' => $name, 'active' => ($_POST['active'] ?? '1') === '1' ? 1 : 0, 'purge_date' => $pd ?: null, 'keep_text' => str_in($_POST['keep_text'] ?? '', 100) ?: null];
+  $row = ['name' => $name, 'active' => ($_POST['active'] ?? '1') === '1' ? 1 : 0, 'intake' => ($_POST['intake'] ?? '') === 'center' ? 'center' : 'vendor', 'purge_date' => $pd ?: null, 'keep_text' => str_in($_POST['keep_text'] ?? '', 100) ?: null];
   if ($id) { upd('danji', $id, $row); alog('danji_edit', $name); }
   else { do { $code = rnd(6); } while (one('SELECT id FROM danji WHERE code=?', [$code])); $row['code'] = $code; $row['created'] = time(); $id = ins('danji', $row); alog('danji_add', $name); }
   out(['ok' => true, 'id' => $id]);
@@ -158,12 +172,12 @@ function a_export() {
   header('Content-Disposition: attachment; filename="as_report_' . date('Ymd') . '.csv"');
   $o = fopen('php://output', 'w');
   fwrite($o, "\xEF\xBB\xBF");
-  fputcsv($o, ['접수번호', '단지', '동', '호', '구분', '품목', '업체', '업체 연락', '단계', '요청 시각', '1차 연락 시각', '1차 연락 기한', '기한 안 여부', '연락한 쪽', '방문 확정 시각', '처리 완료 시각', '입주민 확인', '다시 열림']);
+  fputcsv($o, ['접수번호', '단지', '동', '호', '구분', '품목', '업체', '업체 연락', '단계', '요청 시각', '1차 연락 시각', '1차 연락 기한', '기한 안 여부', '연락한 쪽', '방문 확정 시각', '처리 완료 시각', '입주민 확인', '해피콜 시각', '다시 열림']);
   foreach ($rows as $t) {
     $rd = reply_due($t);
     fputcsv($o, [$t['no'], $t['dname'], $t['dong'], $t['ho'], $t['cat'], $t['item'], t_known($t) ? $t['vend'] : ($t['is_build'] ? '시공사' : '확인 필요'), $t['vc'], stage_name($t),
       date('Y-m-d H:i', $t['created']), $t['r_at'] ? date('Y-m-d H:i', $t['r_at']) : '', date('Y-m-d H:i', $rd), $t['r_at'] ? ((int)$t['r_at'] <= $rd ? '예' : '아니요') : '', (string)$t['r_by'],
-      $t['v_at'] ? date('Y-m-d H:i', $t['v_at']) : '', $t['d_at'] ? date('Y-m-d H:i', $t['d_at']) : '', $t['confirm'] === null ? '' : ((int)$t['confirm'] === 1 ? '해결 확인' : '마감'), (int)$t['reopen']]);
+      $t['v_at'] ? date('Y-m-d H:i', $t['v_at']) : '', $t['d_at'] ? date('Y-m-d H:i', $t['d_at']) : '', $t['confirm'] === null ? '' : ((int)$t['confirm'] === 1 ? '해결 확인' : '마감'), $t['hc_at'] ? date('Y-m-d H:i', $t['hc_at']) : '', (int)$t['reopen']]);
   }
   fclose($o);
   exit;
@@ -174,7 +188,7 @@ function a_settings() {
   $c = cfg('sms', []);
   $h = all('SELECT d, name FROM holiday ORDER BY d');
   $txt = implode("\n", array_map(function ($r) { return $r['d'] . ' ' . $r['name']; }, $h));
-  out(['ok' => true, 'holidays' => $txt, 'admins' => all('SELECT id, login, name, phone, notify, active FROM admin ORDER BY id'), 'me' => (int)$_SESSION['adm'],
+  out(['ok' => true, 'holidays' => $txt, 'rcScore' => (string)(meta_get('rc_score') ?: RC_SCORE), 'admins' => all('SELECT id, login, name, phone, notify, active FROM admin ORDER BY id'), 'me' => (int)$_SESSION['adm'],
     'sms' => ['mode' => $c['mode'] ?? 'off', 'callback' => !empty($c['callback']) ? tel_fmt($c['callback']) : '', 'keys' => !empty($c['sms_id']) && !empty($c['api_key'])],
     'server' => ['php' => PHP_VERSION, 'gd' => function_exists('imagecreatefromstring'), 'curl' => function_exists('curl_init'), 'https' => is_https(), 'addr' => $_SERVER['SERVER_ADDR'] ?? '', 'db' => db_type(), 'writable' => is_writable(DATA)]]);
 }

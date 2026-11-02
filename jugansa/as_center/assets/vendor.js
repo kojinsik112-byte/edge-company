@@ -11,7 +11,7 @@ function render(note){
   if(r.st===0)act+='<div class="btnrow"><button class="btn" type="button" data-v="reply">고객에게 연락했어요 (1차 회신)</button></div>';
   if(r.st<=1&&r.needVisit)act+='<div class="lbl">통화로 정한 방문 날짜 · 시간</div><div class="inl"><input id="vWhen" placeholder="예) 11.05(목) 14:00" maxlength="60"><button class="btn" type="button" data-v="visit">방문 일정 확정</button></div>';
   if(r.st<=2)act+='<div class="lbl">처리 내용 · 완료 사진(선택)</div><label class="addph sm" for="vDonePh" tabindex="0" role="button">＋ 완료 사진</label><input type="file" id="vDonePh" accept="image/*" multiple hidden><div id="vDonePrev" class="photos">'+thumbsEdit(VDONE)+'</div><div class="inl"><input id="vNote" placeholder="예) 경첩 조정 · 부품 교체" maxlength="200"><button class="ghost" type="button" data-v="done">처리 완료</button></div>';
-  if(r.st===3)act+='<div class="note '+(r.confirm?'ok':'info')+'">'+(r.confirm?'마감됐습니다. 수고하셨습니다.':'처리 완료로 표시했습니다. 입주민 확인을 기다리는 중입니다.')+'</div>';
+  if(r.st===3){var closed=r.hcAt||(r.confirm&&!r.center);act+='<div class="note '+(closed?'ok':'info')+'">'+(closed?'마감됐습니다. 수고하셨습니다.':(r.center?'처리 완료로 표시했습니다. 주관사가 입주민께 해피콜로 확인합니다.':'처리 완료로 표시했습니다. 입주민 확인을 기다리는 중입니다.'))+'</div>';}
   if(h&&h.by==='업체'){var rest=UNDO_MIN*60e3-(Date.now()-h.at);
     act+=rest>0?'<div class="undo"><span>방금 누른 <b>\''+esc(h.label)+'\'</b> 버튼을 잘못 눌렀나요? '+esc(dur(rest))+' 안에 되돌릴 수 있어요.</span><button class="ghost sm" type="button" data-v="undo">되돌리기</button></div>'
       :'<div class="undo"><span>\''+esc(h.label)+'\' 버튼을 누른 지 '+UNDO_MIN+'분이 지났습니다. 잘못 눌렀다면 주관사에 알려 주세요. 주관사가 되돌립니다.</span></div>';}

@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 var P=new URLSearchParams(location.search),CODE=P.get('d')||'',KEY=P.get('k')||'';
-var VEND=[],ITEMS=[],MANY=6,FORGOT='forgot',S,STEP=1,EXP={},RATE={},RNOTE={},FLASH={};
+var VEND=[],ITEMS=[],MANY=6,FORGOT='forgot',S,STEP=1,EXP={},RATE={},RNOTE={},FLASH={},CENTER=false;
 window.ROWS={};
 var BUILD_WORDS='아파트자체하자시공사벽창호배관타일결로누수곰팡이균열천장바닥';
 function vendorsOf(it){return VEND.filter(function(v){return v.item===it;});}
@@ -18,6 +18,9 @@ api('danji',null,{d:CODE}).then(function(j){
   if(!j.ok){$('noDanji').textContent=j.msg;$('noDanji').hidden=false;return;}
   $('djName').textContent=j.name+' 입주민 전용';$('djName').hidden=false;document.title=j.name+' · 엣지컴퍼니 A/S 도움 창구';
   if(j.keep)$('keepTxt').textContent=j.keep;
+  // 주관사 한 창구 단지: 업체 연락처 탭 · '업체에 먼저 연락' 단계 없이 바로 접수(단계 번호도 01 ~ 03)
+  CENTER=j.intake==='center';
+  if(CENTER){$('t-vendors').hidden=true;document.querySelector('#fm .sec[data-step="3"] .h2 .k').textContent='02';document.querySelector('#fm .sec[data-step="4"] .h2 .k').textContent='03';}
   VEND=j.vendors;VEND.forEach(function(v){if(ITEMS.indexOf(v.item)<0)ITEMS.push(v.item);});
   $('item').innerHTML='<option value="">품목을 골라 주세요</option>'+ITEMS.map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+' (업체 '+vendorsOf(x).length+'곳)</option>';}).join('')+'<option value="unknown">잘 모르겠어요</option><option value="free">목록에 없어요(직접 적기)</option>';
   $('app').hidden=false;resetForm();renderVgrid();
@@ -26,7 +29,7 @@ api('danji',null,{d:CODE}).then(function(j){
 
 // 탭
 var VIEWS=['vendors','req','check'];
-function show(v){if(VIEWS.indexOf(v)<0)v='vendors';VIEWS.forEach(function(x){$('v-'+x).hidden=x!==v;$('t-'+x).setAttribute('aria-selected',x===v?'true':'false');});try{history.replaceState(null,'','?d='+encodeURIComponent(CODE)+'#'+v);}catch(e){}}
+function show(v){if(VIEWS.indexOf(v)<0||(CENTER&&v==='vendors'))v=CENTER?'req':'vendors';VIEWS.forEach(function(x){$('v-'+x).hidden=x!==v;$('t-'+x).setAttribute('aria-selected',x===v?'true':'false');});try{history.replaceState(null,'','?d='+encodeURIComponent(CODE)+'#'+v);}catch(e){}}
 document.querySelector('nav.tabs').onclick=function(e){var b=e.target.closest('button');if(b)show(b.getAttribute('data-v'));};
 
 // ① 업체 연락처
@@ -88,7 +91,7 @@ function drawSlots(){[].forEach.call($('slot').children,function(x){x.setAttribu
 function slotPick(v){var i=S.slots.indexOf(v);if(i>=0)S.slots.splice(i,1);else{if(v===ANY)S.slots=S.slots.filter(function(x){return x===NEGO;});else if(v!==NEGO)S.slots=S.slots.filter(function(x){return x!==ANY;});S.slots.push(v);}drawSlots();}
 
 function drawSteps(focus){
-  $('steps').innerHTML=['무엇이','업체 연락','내용 · 사진','연락처'].map(function(t,i){var n=i+1,skip=n===2&&S.build;return '<div class="'+(skip?'skip':n===STEP?'on':n<STEP?'done':'')+'"><b>0'+n+'</b><span>'+esc(skip?'해당 없음':t)+'</span></div>';}).join('');
+  $('steps').innerHTML=['무엇이','업체 연락','내용 · 사진','연락처'].map(function(t,i){var n=i+1,skip=n===2&&S.build;if(CENTER&&n===2)return '';return '<div class="'+(skip?'skip':n===STEP?'on':n<STEP?'done':'')+'"><b>0'+(CENTER&&n>2?n-1:n)+'</b><span>'+esc(skip?'해당 없음':t)+'</span></div>';}).join('');
   [].forEach.call(document.querySelectorAll('#fm .sec'),function(s){s.hidden=+s.getAttribute('data-step')!==STEP;});
   $('prev').hidden=STEP===1;$('next').hidden=STEP===4;$('go').hidden=STEP!==4;$('err').textContent='';
   if(focus){var h=document.querySelector('#fm .sec[data-step="'+STEP+'"] .h2 b');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}}
@@ -102,8 +105,8 @@ function stepOk(){
   if(STEP===3&&!$('body').value.trim())return '내용을 적어 주세요.';
   return '';
 }
-$('next').onclick=function(){var m=stepOk();if(m){$('err').textContent=m;return;}STEP++;if(STEP===2&&S.build)STEP=3;drawSteps(true);window.scrollTo({top:$('steps').getBoundingClientRect().top+scrollY-12,behavior:'smooth'});};
-$('prev').onclick=function(){STEP--;if(STEP===2&&S.build)STEP=1;drawSteps(true);};
+$('next').onclick=function(){var m=stepOk();if(m){$('err').textContent=m;return;}STEP++;if(STEP===2&&(S.build||CENTER))STEP=3;drawSteps(true);window.scrollTo({top:$('steps').getBoundingClientRect().top+scrollY-12,behavior:'smooth'});};
+$('prev').onclick=function(){STEP--;if(STEP===2&&(S.build||CENTER))STEP=1;drawSteps(true);};
 function resetForm(){
   S={cat:CATS[0],build:false,photos:[],slots:[NEGO],vc:'',vend:''};STEP=1;
   $('fm').reset();drawVend();
@@ -159,13 +162,15 @@ var LIST=[];
 function drawCheck(){
   $('ckList').innerHTML=LIST.length?LIST.map(function(r){
     var c='';
-    if(r.st===3&&r.confirm===null){var rt=RATE[r.no]||0;
+    if(r.st===3&&r.confirm===null&&!r.hcAt){var rt=RATE[r.no]||0;
       c='<div class="confirm" data-no="'+esc(r.no)+'"><div style="font-weight:700">처리 완료로 표시됐어요. 해결되었나요?</div>'
+       +(r.center?'<div class="hint" style="margin:4px 0 0">주관사가 해피콜로도 확인드립니다. 여기서 먼저 알려 주셔도 됩니다.</div>':'')
        +(known(r)?'<div class="rate"><div class="q">'+esc(r.vend)+' 응대는 어떠셨나요? (선택 · 주관사 업체 관리에만 씁니다)</div><div class="chips" role="group" aria-label="업체 응대 평가">'+[3,2,1].map(function(n){return '<button type="button" data-rate="'+n+'" aria-pressed="'+(n===rt)+'">'+RLB[n]+'</button>';}).join('')+'</div>'
        +(rt===1?'<div class="inl"><input data-rnote placeholder="아쉬웠던 점을 적어 주시면 업체 관리에 반영합니다(선택)" maxlength="200" value="'+esc(RNOTE[r.no]||'')+'"></div>':'')+'</div>':'')
        +'<div class="btnrow" style="margin-top:12px"><button class="btn" type="button" data-ok="1">해결됐어요</button><button class="ghost" type="button" data-ok="0">아직 해결 안 됐어요</button></div>'
        +'<div class="inl" data-why hidden><input placeholder="어떤 점이 아직 남았나요? (필수)" maxlength="200"><button class="ghost" type="button" data-reopen>다시 요청</button></div></div>';}
-    else if(r.confirm===1)c='<div class="note ok">해결 확인으로 마감됐습니다. 이용해 주셔서 감사합니다.</div>';
+    else if(r.hcAt)c='<div class="note ok">주관사 해피콜로 해결을 확인해 마감됐습니다. 이용해 주셔서 감사합니다.</div>';
+    else if(r.confirm===1)c='<div class="note ok">'+(r.center?'해결됐다고 알려 주셔서 감사합니다. 주관사가 해피콜로 한 번 더 확인드립니다.':'해결 확인으로 마감됐습니다. 이용해 주셔서 감사합니다.')+'</div>';
     return '<div class="item"><div class="top2"><span class="mono">'+esc(r.no)+'</span><span class="pill '+PC[r.st]+'">'+esc(r.stage)+'</span></div>'+(FLASH[r.no]?'<div class="flash">'+esc(FLASH[r.no])+'</div>':'')+'<div style="margin-top:6px;font-weight:700">'+esc(r.build?r.cat:iv(r))+'</div><div style="font-size:13px;color:var(--ink-2)">'+esc(r.body)+'</div>'+phBox(r.photos.req,'올린 사진')+phBox(r.photos.done,'업체 완료 사진')+clockBox(r)+'<ul class="tl">'+tl(r)+'</ul>'+c+'</div>';
   }).join(''):'<div class="note warn">일치하는 요청이 없어요. 동 · 호수는 103-1502처럼(또는 접수번호 EC-…), 연락처는 뒤 4자리만 넣어 주세요.</div>';
 }
@@ -183,7 +188,7 @@ $('ckList').onclick=function(e){
   b.disabled=true;
   api('confirm',data).then(function(j){b.disabled=false;if(!j.ok){alertBox(box,j.msg);return;}
     var t=j.t;window.ROWS[t.no]=t;LIST=LIST.map(function(x){return x.no===t.no?t:x;});
-    FLASH[t.no]=data.ok==='1'?'해결 확인으로 마감했어요.':'다시 요청했어요. '+(known(t)?t.vend+' · 주관사':'주관사')+'에 알렸어요.';drawCheck();});
+    FLASH[t.no]=data.ok==='1'?(t.center?'해결됐다고 알렸어요. 주관사가 해피콜로 확인드립니다.':'해결 확인으로 마감했어요.'):'다시 요청했어요. '+(known(t)?t.vend+' · 주관사':'주관사')+'에 알렸어요.';drawCheck();});
 };
 function alertBox(box,msg){var n=document.createElement('div');n.className='note warn';n.textContent=msg;box.appendChild(n);}
 })();

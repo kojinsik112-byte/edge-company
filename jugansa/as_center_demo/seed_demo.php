@@ -21,7 +21,9 @@ meta_set('installed', date('Y-m-d H:i'));
 db()->beginTransaction();
 
 // ---------- 단지 · 업체(번호는 010-0000-으로 시작하는 시연용) ----------
-$DJ = ins('danji', ['code' => 'demo', 'name' => '○○ 아파트(시연)', 'active' => 1, 'purge_date' => null, 'keep_text' => null, 'created' => time()]);
+// 단지 2곳: demo = 업체 먼저(기본) · demo2 = 주관사 한 창구(접수는 주관사 · 마감은 해피콜)
+$DJ = ins('danji', ['code' => 'demo', 'name' => '○○ 아파트(시연)', 'active' => 1, 'purge_date' => null, 'keep_text' => null, 'intake' => 'vendor', 'created' => time()]);
+$DJ2 = ins('danji', ['code' => 'demo2', 'name' => '△△ 아파트(시연 · 주관사 한 창구)', 'active' => 1, 'purge_date' => null, 'keep_text' => null, 'intake' => 'center', 'created' => time()]);
 $VEND = [
   ['중문', '중문 업체 A', '3연동 · 슬라이딩'], ['중문', '중문 업체 B', '스윙 · 여닫이'],
   ['줄눈', '줄눈 업체 A', '욕실 · 현관'], ['탄성코트', '탄성코트 업체 A', '발코니 · 다용도실'], ['탄성코트', '탄성코트 업체 B', '발코니'],
@@ -30,8 +32,9 @@ $VEND = [
   ['붙박이장', '붙박이장 업체 A', '안방 · 드레스룸'], ['안전 방충망', '방충망 업체 A', '미세 방충망'],
 ];
 foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] as $i => $c) $VEND[] = ['입주청소', '입주청소 업체 ' . $c, $i % 2 ? '새집증후군 시공 포함' : '줄눈 · 탄성 부분 보수'];
-foreach ($VEND as $i => $v) ins('vendor', ['danji_id' => $DJ, 'item' => $v[0], 'company' => $v[1], 'tag' => $v[2], 'person' => '담당자', 'phone' => sprintf('0100000%04d', 1001 + $i), 'show_phone' => null, 'active' => 1, 'sort' => $i]);
-function V($company) { return one('SELECT * FROM vendor WHERE company=?', [$company]); }
+foreach ([$DJ, $DJ2] as $k => $dj) foreach ($VEND as $i => $v)
+  ins('vendor', ['danji_id' => $dj, 'item' => $v[0], 'company' => $v[1], 'tag' => $v[2], 'person' => '담당자', 'phone' => sprintf('0100000%04d', 1001 + $i + $k * 100), 'show_phone' => null, 'active' => 1, 'sort' => $i]);
+function V($company, $dj = null) { return one('SELECT * FROM vendor WHERE company=? AND danji_id=?', [$company, $dj ?: $GLOBALS['DJ']]); }
 
 // ---------- 도우미 ----------
 $NOW = time();
@@ -51,15 +54,15 @@ function photo($tid, $kind, $label) {
 }
 // 요청 넣기(입주민 화면 '주관사에 요청'과 같은 결과)
 function mk($o) {
-  $at = $o['at']; $pre = 'EC-' . date('ymd', $at) . '-'; $build = !empty($o['build']); $v = $o['vendor'] ?? null;
+  $at = $o['at']; $pre = 'EC-' . date('ymd', $at) . '-'; $build = !empty($o['build']); $v = $o['vendor'] ?? null; $dj = $o['dj'] ?? $GLOBALS['DJ'];
   $n = (int)one('SELECT COUNT(*) c FROM ticket WHERE no LIKE ?', [$pre . '%'])['c'] + 1;
-  $id = ins('ticket', ['danji_id' => $GLOBALS['DJ'], 'no' => $pre . sprintf('%03d', $n), 'dong' => $o['dh'][0], 'ho' => $o['dh'][1], 'name' => $o['name'], 'phone' => $o['tel'], 'tel4' => substr($o['tel'], -4),
+  $id = ins('ticket', ['danji_id' => $dj, 'no' => $pre . sprintf('%03d', $n), 'dong' => $o['dh'][0], 'ho' => $o['dh'][1], 'name' => $o['name'], 'phone' => $o['tel'], 'tel4' => substr($o['tel'], -4),
     'cat' => $build ? BUILD_CAT : ($o['cat'] ?? CATS[0]), 'is_build' => $build ? 1 : 0, 'item' => $build ? '—' : $o['item'], 'vendor_id' => $v ? (int)$v['id'] : null,
     'vc' => $build ? '' : ($o['vc'] ?? VC[0]), 'body' => $o['body'], 'slot' => $o['slot'] ?? SLOTS[0], 'st' => 0, 'created' => $at, 'hist' => '[]', 'vtoken' => rnd(24), 'rtoken' => rnd(24), 'ip' => '127.0.0.1']);
   $ph = 0; foreach ($o['photos'] ?? [] as $lb) { photo($id, 'req', $lb); $ph++; }
   if ($ph) upd('ticket', $id, ['ph' => $ph]);
   $t = t_get('t.id=?', [$id]);
-  tlog($id, '입주민', '주관사에 요청' . ($t['vc'] ? ' · ' . $t['vc'] : '') . ($ph ? ' · 사진 ' . $ph . '장' : ''), 0, $at);
+  tlog($id, '입주민', (is_center($t) ? '주관사에 접수' : '주관사에 요청') . ($t['vc'] ? ' · ' . $t['vc'] : '') . ($ph ? ' · 사진 ' . $ph . '장' : ''), 0, $at);
   at_time($at, function () use ($t) { n_new($t); });
   return $t;
 }
@@ -131,6 +134,26 @@ mk(['at' => ago(2.5), 'item' => '음식물 처리기', 'vc' => VC[3], 'dh' => ['
 // 방금 들어온 요청(업체 링크로 '연락했어요' 시연)
 mk(['at' => ago(1), 'item' => '중문', 'vendor' => V('중문 업체 B'), 'vc' => VC[0], 'dh' => ['104', '1103'], 'name' => '오○○', 'tel' => '01000002012',
   'body' => '중문 손잡이가 헐거워졌어요. 어제 업체에 문자 남겼는데 답이 없어요.', 'photos' => ['중문 손잡이']]);
+
+// ---------- 주관사 한 창구 단지(demo2) 7건: 업체 연락 여부를 묻지 않고 바로 접수 · 마감은 주관사 해피콜 ----------
+function happy(&$t, $h, $note) { step($t, ago($h), '주관사', '해피콜 완료', 0, ['hc_at' => ago($h), 'c_at' => $t['c_at'] ?: ago($h)], '주관사 ' . cfg('demo_admin')['name'], '해피콜로 해결 확인 · 마감 · ' . $note); }
+$C = ['dj' => $DJ2, 'vc' => ''];
+mk($C + ['at' => ago(110), 'item' => '줄눈', 'vendor' => V('줄눈 업체 A', $DJ2), 'dh' => ['201', '1504'], 'name' => '서○○', 'tel' => '01000003001',
+  'body' => '욕실 바닥 줄눈 한 줄이 갈라졌어요.']);
+$t = mk($C + ['at' => ago(70), 'item' => '조명', 'vendor' => V('조명 업체 A', $DJ2), 'dh' => ['202', '703'], 'name' => '권○○', 'tel' => '01000003002',
+  'body' => '주방 조명 한 개가 켜지지 않아요.', 'slot' => '평일 오후']);
+reply($t, 66); visit($t, 64, ago(31)); done($t, 30, '안정기 교체'); happy($t, 26, '해결 확인 · 추가 요청 없음');
+$t = mk($C + ['at' => ago(26), 'item' => '중문', 'vendor' => V('중문 업체 A', $DJ2), 'dh' => ['203', '1201'], 'name' => '황○○', 'tel' => '01000003003',
+  'body' => '현관 중문이 레일에서 걸려 잘 안 밀려요.', 'photos' => ['중문 레일 걸림']]);
+reply($t, 24); visit($t, 22, ago(4)); done($t, 3, '레일 청소 · 바퀴 교체', ['중문 수리 후', '레일 교체 부품']);
+mk($C + ['at' => ago(20), 'build' => true, 'dh' => ['201', '402'], 'name' => '안○○', 'tel' => '01000003004', 'body' => '작은방 벽지 위로 결로 자국이 생겨요.', 'photos' => ['결로 자국']]);
+mk($C + ['at' => ago(8), 'item' => '입주청소', 'dh' => ['202', '1103'], 'name' => '송○○', 'tel' => '01000003005',
+  'body' => '입주청소 뒤 베란다 창틀에 먼지가 그대로 있어요. 어느 업체였는지 기억이 안 나요.']);
+$t = mk($C + ['at' => ago(5), 'item' => '안전 방충망', 'vendor' => V('방충망 업체 A', $DJ2), 'dh' => ['203', '305'], 'name' => '류○○', 'tel' => '01000003006',
+  'body' => '작은방 방충망이 틀에서 빠졌어요.']);
+reply($t, 4);
+mk($C + ['at' => ago(1), 'item' => '중문', 'vendor' => V('중문 업체 B', $DJ2), 'dh' => ['204', '901'], 'name' => '전○○', 'tel' => '01000003007',
+  'body' => '중문 손잡이가 헐거워졌어요.', 'photos' => ['중문 손잡이']]);
 
 db()->commit();
 tick(true);

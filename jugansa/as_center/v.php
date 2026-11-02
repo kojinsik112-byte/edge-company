@@ -22,6 +22,6 @@ header('Referrer-Policy: no-referrer');
 </main></div>
 <div class="zoom" id="lb" hidden><img id="lbImg" alt="사진 크게 보기"></div>
 <footer><div class="wrap"><div class="wm2">엣지컴퍼니</div><?= h(cfg('company', '㈜엣지컴퍼니')) ?> · 공동구매 주관사 · <?= h(cfg('contact_email', '')) ?> · 고객 정보는 A/S 처리에만 쓰고, 다른 곳에 옮기거나 보관하지 마세요.</div></footer>
-<script src="assets/common.js?v=1"></script>
-<script src="assets/vendor.js?v=1"></script>
+<script src="assets/common.js?v=3"></script>
+<script src="assets/vendor.js?v=3"></script>
 </body></html>

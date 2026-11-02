@@ -2,6 +2,7 @@
 // 접수창 API: 입주민(단지 정보 · 접수 · 진행 확인 · 해결 확인) · 업체(문자 링크 토큰) · 사진 · 주관사(로그인 세션 → lib/admin_api.php)
 require __DIR__ . '/lib/boot.php';
 require __DIR__ . '/lib/notify.php';
+require __DIR__ . '/lib/recruit.php';
 if (!installed()) fail('아직 설치 전입니다. install.php를 먼저 열어 주세요.', 503);
 tick();
 $a = $_GET['a'] ?? '';
@@ -13,6 +14,11 @@ switch ($a) {
   case 'photo': a_photo(); break;
   case 'v_get': a_v_get(); break;
   case 'v_act': a_v_act(); break;
+  // 업체 모집(공고 · 신청 · 업체 전용 링크) → lib/recruit.php
+  case 'rc_info': a_rc_info(); break;
+  case 'rc_apply': a_rc_apply(); break;
+  case 'pt_get': a_pt_get(); break;
+  case 'pt_upload': a_pt_upload(); break;
 }
 require_once __DIR__ . '/lib/admin_api.php';
 admin_route($a);
@@ -54,7 +60,7 @@ function a_danji() {
   $list = [];
   foreach (all('SELECT id, item, company, tag, phone, show_phone FROM vendor WHERE danji_id=? AND active=1 ORDER BY sort, id', [$d['id']]) as $v)
     $list[] = ['id' => (int)$v['id'], 'item' => $v['item'], 'co' => $v['company'], 'tag' => (string)$v['tag'], 'tel' => tel_fmt($v['show_phone'] ?: $v['phone'])];
-  out(['ok' => true, 'name' => $d['name'], 'vendors' => $list, 'keep' => (string)$d['keep_text'], 'callcenter' => (string)cfg('callcenter', ''), 'email' => (string)cfg('contact_email', ''), 'company' => (string)cfg('company', '')]);
+  out(['ok' => true, 'name' => $d['name'], 'intake' => $d['intake'] === 'center' ? 'center' : 'vendor', 'vendors' => $list, 'keep' => (string)$d['keep_text'], 'callcenter' => (string)cfg('callcenter', ''), 'email' => (string)cfg('contact_email', ''), 'company' => (string)cfg('company', '')]);
 }
 
 function a_submit() {
@@ -79,7 +85,8 @@ function a_submit() {
     elseif ($mode === 'free') { $item = str_in($_POST['item_free'] ?? '', 30); if ($item === '') fail('품목 이름을 적어 주세요.'); }
     else fail('품목을 골라 주세요.');
     $vc = (string)($_POST['vc'] ?? '');
-    if (!in_array($vc, VC, true)) fail('업체에 연락해 보셨는지 골라 주세요.');
+    // 주관사 한 창구 단지는 '업체에 먼저 연락' 단계가 없음(골랐으면 참고로만 남김)
+    if (!in_array($vc, VC, true)) { if ($d['intake'] === 'center') $vc = ''; else fail('업체에 연락해 보셨는지 골라 주세요.'); }
   }
   $body = str_in($_POST['body'] ?? '', 1000);
   if ($body === '') fail('내용을 적어 주세요.');
@@ -105,7 +112,7 @@ function a_submit() {
   $ph = save_photos($id, 'req', 'photos', 5);
   if ($ph) upd('ticket', $id, ['ph' => $ph]);
   $t = t_get('t.id=?', [$id]);
-  tlog($id, '입주민', '주관사에 요청' . ($vc ? ' · ' . $vc : '') . ($ph ? ' · 사진 ' . $ph . '장' : ''));
+  tlog($id, '입주민', ($d['intake'] === 'center' ? '주관사에 접수' : '주관사에 요청') . ($vc ? ' · ' . $vc : '') . ($ph ? ' · 사진 ' . $ph . '장' : ''));
   n_new($t);
   out(['ok' => true, 't' => t_pub($t, 'res')]);
 }
@@ -138,7 +145,7 @@ function a_confirm() {
   $d = req_danji();
   $t = t_get('t.danji_id=? AND t.rtoken=? AND t.purged=0', [$d['id'], (string)($_POST['k'] ?? '')]);
   if (!$t) fail('요청을 찾지 못했습니다.', 404);
-  if ((int)$t['st'] !== 3 || $t['confirm'] !== null) fail('지금은 할 수 없는 처리입니다. 화면을 새로 고쳐 주세요.');
+  if ((int)$t['st'] !== 3 || $t['confirm'] !== null || $t['hc_at']) fail('지금은 할 수 없는 처리입니다. 화면을 새로 고쳐 주세요.');
   if (($_POST['ok'] ?? '') === '1') {
     $rating = (int)($_POST['rating'] ?? 0); if (!t_known($t) || $rating < 1 || $rating > 3) $rating = null;
     $note = str_in($_POST['note'] ?? '', 200);

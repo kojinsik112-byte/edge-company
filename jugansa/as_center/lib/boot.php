@@ -96,8 +96,10 @@ const VC_SHORT = ['답 없음', '해결 안 됨', '일정 안 맞음', '업체 �
 const SLOTS = ['업체와 통화로 협의', '언제든 가능', '평일 오전', '평일 오후', '평일 저녁(18시 이후)', '토요일', '일요일'];
 const RLB = ['', '아쉬워요', '보통이에요', '좋았어요'];
 // 되돌리기 때 함께 돌아가는 칸
-const TKEYS = ['st', 'r_at', 'r_by', 'v_at', 'visit', 'd_at', 'confirm', 'rating', 'c_at', 'vd', 'va', 'ro', 'rw', 'reopen', 'phd', 'item', 'vendor_id'];
+const TKEYS = ['st', 'r_at', 'r_by', 'v_at', 'visit', 'd_at', 'confirm', 'rating', 'c_at', 'hc_at', 'vd', 'va', 'ro', 'rw', 'reopen', 'phd', 'item', 'vendor_id'];
 
+// 단지 접수 방식: vendor = 업체에 먼저 연락 → 24시간 뒤 주관사(기본) / center = 주관사 한 창구(접수는 주관사 · 마감은 주관사 해피콜)
+function is_center($t) { return ($t['intake'] ?? '') === 'center'; }
 function t_known($t) { return !$t['is_build'] && !empty($t['vendor_id']); }
 function need_visit($t) { return !$t['is_build'] && ($t['cat'] === CATS[0] || $t['cat'] === CATS[1]); }
 // 1차 연락 = 요청(또는 업체 지정 · 변경) 시각부터 영업일 24시간 · 방문 일정 확정 = 그 기한에서 다시 영업일 24시간
@@ -111,7 +113,7 @@ function stage_name($t) {
   return ['접수', '1차 회신', '방문 일정 확정', '처리 완료'][$st];
 }
 // 요청 한 건(단지 · 업체 이름까지)
-define('T_SEL', 'SELECT t.*, d.name dname, d.code dcode, v.company vend, v.phone vphone FROM ticket t JOIN danji d ON d.id=t.danji_id LEFT JOIN vendor v ON v.id=t.vendor_id');
+define('T_SEL', 'SELECT t.*, d.name dname, d.code dcode, d.intake, v.company vend, v.phone vphone FROM ticket t JOIN danji d ON d.id=t.danji_id LEFT JOIN vendor v ON v.id=t.vendor_id');
 function t_get($where, $p) { return one(T_SEL . ' WHERE ' . $where, $p); }
 function t_reload($t) { return t_get('t.id=?', [$t['id']]); }
 function t_save($t) { $row = []; foreach (array_merge(TKEYS, ['hist', 'late_key', 'remind_key']) as $k) $row[$k] = $t[$k]; upd('ticket', $t['id'], $row); }
@@ -152,7 +154,7 @@ function t_pub($t, $who, $light = false) {
     'item' => $t['item'], 'vend' => t_known($t) ? $t['vend'] : null, 'vc' => $t['vc'], 'body' => $t['body'], 'slot' => $t['slot'],
     'st' => (int)$t['st'], 't' => ms($t['created']), 'va' => ms($t['va']), 'rAt' => ms($t['r_at']), 'rBy' => $t['r_by'], 'vAt' => ms($t['v_at']), 'visit' => $t['visit'],
     'dAt' => ms($t['d_at']), 'confirm' => $t['confirm'] === null ? null : (int)$t['confirm'], 'cAt' => ms($t['c_at']), 'ro' => ms($t['ro']), 'rw' => $t['rw'],
-    'reopen' => (int)$t['reopen'], 'ph' => (int)$t['ph'], 'phd' => (int)$t['phd'], 'needVisit' => need_visit($t) ? 1 : 0,
+    'reopen' => (int)$t['reopen'], 'center' => is_center($t) ? 1 : 0, 'hcAt' => ms($t['hc_at']), 'ph' => (int)$t['ph'], 'phd' => (int)$t['phd'], 'needVisit' => need_visit($t) ? 1 : 0,
     'stage' => stage_name($t), 'replyDue' => ms(reply_due($t)), 'visitDue' => ms(visit_due($t)), 'nextDue' => ms(next_due($t)),
     'photos' => $light ? null : ['req' => photos_of($t, 'req', $tp), 'done' => photos_of($t, 'done', $tp)],
   ];

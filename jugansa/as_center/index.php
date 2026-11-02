@@ -4,6 +4,9 @@ require __DIR__ . '/lib/boot.php';
 if (!installed()) { header('Location: install.php'); exit; }
 header('X-Frame-Options: DENY');
 header('Referrer-Policy: same-origin');
+// 단지 접수 방식에 따라 첫 화면 문구가 다름(주관사 한 창구 = 업체 연락처 탭 · '업체에 먼저 연락' 단계 없음)
+$dj0 = one('SELECT intake FROM danji WHERE code=? AND active=1', [(string)($_GET['d'] ?? '')]);
+$C = $dj0 && $dj0['intake'] === 'center';
 ?><!doctype html>
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -21,15 +24,20 @@ header('Referrer-Policy: same-origin');
     </div>
     <div class="hero">
       <div class="eyebrow ko">공동구매 A/S 도움 창구</div>
+<?php if ($C): ?>
+      <h1>주관사 한 창구로 접수하시면,<br><em>업체 연락과 기한은 주관사가 챙깁니다.</em></h1>
+      <p class="sub">박람회에서 계약한 품목에 문제가 생기면 업체를 찾지 않고 여기로 주관사에 접수하세요. 접수하면 계약 업체와 주관사 담당에게 바로 알림이 가고, 업체가 기한 안에 연락하지 않으면 주관사가 직접 연락합니다. 처리가 끝나면 주관사가 해피콜로 해결 여부를 확인합니다.</p>
+<?php else: ?>
       <h1>업체에 먼저 연락하시고,<br><em>답이 늦으면 주관사가 나섭니다.</em></h1>
       <p class="sub">박람회에서 계약한 품목의 A/S는 계약 업체가 직접 합니다. 업체가 24시간 안에 답이 없거나 해결이 안 되면 여기로 요청하세요. 주관사가 업체를 챙기고, 업체가 답이 없으면 직접 연락해 해결될 때까지 챙깁니다.</p>
+<?php endif; ?>
     </div>
   </div>
   <div class="wrap" style="padding-inline:0">
     <div class="promise">
-      <div><div class="n">24<small>시간</small></div><div class="t">1차 연락</div><div class="s">업체가 먼저, 없으면 주관사가 · 주말 · 공휴일은 다음 영업일 12시까지</div></div>
+      <div><div class="n">24<small>시간</small></div><div class="t">1차 연락</div><div class="s"><?= $C ? '업체 또는 주관사가' : '업체가 먼저, 없으면 주관사가' ?> · 주말 · 공휴일은 다음 영업일 12시까지</div></div>
       <div><div class="n">48<small>시간</small></div><div class="t">방문 일정 확정</div><div class="s">방문은 입주민과 협의한 날</div></div>
-      <div><div class="n">24<small>시간</small></div><div class="t">업체 무응답 시 주관사가 직접 연락</div><div class="s">해결될 때까지 주관사가 챙김</div></div>
+      <div><div class="n">24<small>시간</small></div><div class="t">업체 무응답 시 주관사가 직접 연락</div><div class="s"><?= $C ? '처리 뒤 주관사 해피콜로 확인하고 마감' : '해결될 때까지 주관사가 챙김' ?></div></div>
     </div>
   </div>
 </header>
@@ -38,15 +46,21 @@ header('Referrer-Policy: same-origin');
   <div class="note warn" id="noDanji" hidden style="margin-top:22px"></div>
   <div id="app" hidden>
   <div class="flow" aria-label="이용 순서">
+<?php if ($C): ?>
+    <div><div class="k">01</div><div class="t">주관사에 접수</div><div class="s">품목 · 내용 · 사진만 남기면 돼요</div></div>
+    <div><div class="k">02</div><div class="t">업체 · 주관사 담당에게 바로 알림</div><div class="s">업체가 기한 안에 연락 · 없으면 주관사가 직접</div></div>
+    <div><div class="k">03</div><div class="t">처리 뒤 해피콜로 확인</div><div class="s">진행은 문자와 '진행 확인'에서</div></div>
+<?php else: ?>
     <div><div class="k">01</div><div class="t">계약 업체에 직접 연락</div><div class="s">통화로 바로 방문 일정을 잡을 수 있어요</div></div>
     <div><div class="k">02</div><div class="t">답이 없거나 해결이 안 되면 요청</div><div class="s">업체 연락 24시간 뒤 · 일정이 안 맞을 때도</div></div>
     <div><div class="k">03</div><div class="t">주관사가 업체를 챙기고 직접 연락</div><div class="s">진행은 문자와 '진행 확인'에서</div></div>
+<?php endif; ?>
   </div>
 
   <nav class="tabs" role="tablist">
-    <button role="tab" id="t-vendors" data-v="vendors">① 업체 연락처</button>
-    <button role="tab" id="t-req" data-v="req">② 주관사에 요청</button>
-    <button role="tab" id="t-check" data-v="check">③ 진행 확인</button>
+    <button role="tab" id="t-vendors" data-v="vendors"<?= $C ? ' hidden' : '' ?>>① 업체 연락처</button>
+    <button role="tab" id="t-req" data-v="req"><?= $C ? '① 주관사에 접수' : '② 주관사에 요청' ?></button>
+    <button role="tab" id="t-check" data-v="check"><?= $C ? '② 진행 확인' : '③ 진행 확인' ?></button>
   </nav>
 
   <main>
@@ -97,7 +111,7 @@ header('Referrer-Policy: same-origin');
         <div class="sec" data-step="3" hidden>
           <div class="h2"><span class="k">03</span><b>내용 · 사진 · 방문 시간</b></div>
           <label class="f">내용 <span class="req">*</span>
-            <textarea id="body" maxlength="1000" placeholder="언제부터 어떤 문제가 있는지, 업체와 어디까지 이야기됐는지 적어 주세요. 예) 어제 중문 업체에 전화했는데 아직 답이 없어요. 중문이 끝까지 안 닫히고 1cm 정도 떠 있어요."></textarea>
+            <textarea id="body" maxlength="1000" placeholder="<?= $C ? '언제부터 어떤 문제가 있는지 적어 주세요. 예) 중문이 끝까지 안 닫히고 1cm 정도 떠 있어요.' : '언제부터 어떤 문제가 있는지, 업체와 어디까지 이야기됐는지 적어 주세요. 예) 어제 중문 업체에 전화했는데 아직 답이 없어요. 중문이 끝까지 안 닫히고 1cm 정도 떠 있어요.' ?>"></textarea>
           </label>
           <div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-2)"><span>사진이 있으면 미리 보고 부품 · 장비를 챙길 수 있어요</span><span id="cnt">0 / 1000</span></div>
           <label class="addph" for="phIn" tabindex="0" role="button" id="phBtn">＋ 사진 올리기 <small>최대 5장 · 휴대폰에서 줄여서 올림</small></label>
@@ -142,7 +156,7 @@ header('Referrer-Policy: same-origin');
         <div class="btnrow" style="margin-top:6px">
           <button class="ghost" type="button" id="prev" hidden>이전</button>
           <button class="btn" type="button" id="next" style="flex:1">다음</button>
-          <button class="btn" type="submit" id="go" style="flex:1" hidden>주관사에 요청하기</button>
+          <button class="btn" type="submit" id="go" style="flex:1" hidden><?= $C ? '주관사에 접수하기' : '주관사에 요청하기' ?></button>
         </div>
       </form>
 
@@ -164,7 +178,7 @@ header('Referrer-Policy: same-origin');
     <section id="v-check" hidden>
       <form class="form" id="ck" novalidate>
         <div class="sec">
-          <div class="h2"><span class="k">03</span><b>진행 확인</b></div>
+          <div class="h2"><span class="k"><?= $C ? '02' : '03' ?></span><b>진행 확인</b></div>
           <div class="row">
             <label class="f">동 · 호 또는 접수번호<input id="cDh" placeholder="예) 103-1502 또는 EC-261102-004"></label>
             <label class="f">연락처 뒤 4자리<input id="cTel" inputmode="numeric" maxlength="4" placeholder="예) 1234"></label>
@@ -181,6 +195,6 @@ header('Referrer-Policy: same-origin');
 
 <div class="zoom" id="lb" hidden><img id="lbImg" alt="사진 크게 보기"></div>
 <footer><div class="wrap"><div class="wm2">엣지컴퍼니</div><?= h(cfg('company', '㈜엣지컴퍼니')) ?> · 공동구매 주관사 · <?= h(cfg('contact_email', '')) ?><?= cfg('callcenter') ? ' · 콜센터 ' . h(cfg('callcenter')) : ' · 콜센터 번호는 단지 협약 뒤 안내합니다' ?> · <a href="privacy.php" style="color:inherit">개인정보 처리방침</a></div></footer>
-<script src="assets/common.js?v=1"></script>
-<script src="assets/resident.js?v=2"></script>
+<script src="assets/common.js?v=3"></script>
+<script src="assets/resident.js?v=3"></script>
 </body></html>
