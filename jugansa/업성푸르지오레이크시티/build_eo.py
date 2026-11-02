@@ -1443,7 +1443,7 @@ _lxo = slot("lx_front1")[1]
 _lxx = "시뮬레이션" if _lxo else "타 단지 예시"
 _lxg = (_fig("lx_front1", "① 동 파사드", f"외벽 라인조명 · 도로변 경관 · {_lxx}", "50% 45%")
         + _fig("lx_front2", "② 단지 조감 야간", f"동 간 통일된 색온도 · 산책로 동선 · {_lxx}", "50% 50%")
-        + _fig("lx_gate", "③ 문주 · 진입부", f"진입부 보행 동선 · 간접광 · {_lxx}", "50% 55%"))
+        + _fig("lx_gate", "③ 문주 · 진입부", f"{'문주 디자인 제안 · ' if _lxo else ''}진입부 보행 동선 · 간접광 · {_lxx}", "45% 100%"))  # 본부장 11-02 문주 = 신규 디자인 제안(실제 문주 아님)
 if _lxg:
     _lx_body = ('<div class="nb"><div class="lxo"><div class="gal lxa">' + _lxg + '</div><div class="lxd">'
                 + "".join(f"<div><b>{a}</b><p>{t(b)}</p></div>" for a, b in _LXPT) + '</div></div></div>')
