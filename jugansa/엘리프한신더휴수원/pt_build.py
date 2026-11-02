@@ -13,11 +13,14 @@ SRC = os.path.join(PT, "원본html")
 PROP = os.path.join(HERE, "엣지컴퍼니_엘리프한신더휴수원_입주박람회_주관사_제안서_밝은시안.pdf")   # 제출본 ⑩과 같은 115쪽
 DOCS = [("00_제출본_약속정리", "00_제출본_약속정리_내부용"), ("01_PT_발표대본_30분", "01_PT_발표대본_30분"),
         ("01b_PT_발표대본_20분", "01b_PT_발표대본_20분"), ("02_예상질문_답변", "02_예상질문_답변_내부용"),
-        ("03_당일_체크리스트", "03_당일_체크리스트"), ("04_화면요약", "04_화면요약_2장"), ("04c_감사인사", "04c_감사인사")]
+        ("03_당일_체크리스트", "03_당일_체크리스트"), ("04_화면요약", "04_화면요약_2장"), ("04c_감사인사", "04c_감사인사"),
+        ("04d_AS창구", "04d_AS창구_1장")]
 # 대본 01 · 01b의 화면 순서와 같아야 함 — S1 · S2 = 요약 ① ② · END = 감사 인사(직통 번호 있는 p.115 대신)
-ORDER30 = [1, 64, 59, 60, 11, 16, 17, 67, 75, 76, 65, 66, 68, 77, 29, 69, 34, 71, 45, 70, 72, 62, 63, 86, 87, 90, 79, 82, 74,
+# AS = A/S 한 창구 접수 화면(04d · 제출본 p.45 · 71 · '업체 먼저' 화면은 뺌) · BR = 경인 지사(경기남부) 계약서 가림본 — 파일이 있을 때만 넣음
+BRANCH = os.path.join(PT, "근거", "경기남부지사_계약서_가림.pdf")
+ORDER30 = [1, 64, 59, 60, 11, 16, 17, 67, 75, "BR", 76, 65, 66, 68, 77, 29, 69, 34, 71, "AS", 45, 70, 72, 62, 63, 86, 87, 90, 79, 82, 74,
            "S1", "S2", 113, "END"]
-ORDER20 = [1, 64, 59, 11, 67, 75, 65, 66, 69, 71, 70, 72, 87, 79, 82, "S1", "S2", "END"]
+ORDER20 = [1, 64, 59, 11, 67, 75, 65, 66, 69, 71, "AS", 70, 72, 87, 79, 82, "S1", "S2", "END"]
 CHROME = next(p for p in (r"C:\Program Files\Google\Chrome\Application\chrome.exe",
                           r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe") if os.path.exists(p))
 
@@ -30,13 +33,18 @@ def to_pdf(name, out):
     return dst
 
 
-def deck(order, prop, summ, end):
+def deck(order, prop, summ, end, asp):
     d = pymupdf.open()
     for o in order:
         if o == "S1" or o == "S2":
             d.insert_pdf(summ, from_page=0 if o == "S1" else 1, to_page=0 if o == "S1" else 1)
         elif o == "END":
             d.insert_pdf(end)
+        elif o == "AS":
+            d.insert_pdf(asp)
+        elif o == "BR":
+            if os.path.exists(BRANCH):
+                d.insert_pdf(pymupdf.open(BRANCH))
         else:
             d.insert_pdf(prop, from_page=o - 1, to_page=o - 1)
     return d
@@ -45,10 +53,10 @@ def deck(order, prop, summ, end):
 def main():
     made = {out: to_pdf(name, out) for name, out in DOCS}
     prop, summ = pymupdf.open(PROP), pymupdf.open(made["04_화면요약_2장"])
-    end = pymupdf.open(made["04c_감사인사"])
-    assert prop.page_count == 115 and summ.page_count == 2 and end.page_count == 1, (prop.page_count, summ.page_count, end.page_count)
+    end, asp = pymupdf.open(made["04c_감사인사"]), pymupdf.open(made["04d_AS창구_1장"])
+    assert prop.page_count == 115 and summ.page_count == 2 and end.page_count == 1 and asp.page_count == 1, (prop.page_count, summ.page_count, end.page_count, asp.page_count)
     for order, fn, title in ((ORDER30, "05_발표화면_30분.pdf", "30분 · %d쪽"), (ORDER20, "05b_발표화면_20분.pdf", "20분 · %d쪽")):
-        d = deck(order, prop, summ, end)
+        d = deck(order, prop, summ, end, asp)
         d.set_metadata({"title": "엘리프 한신더휴 수원 PT 발표화면 (" + title % d.page_count + ")", "author": "주식회사 엣지컴퍼니"})
         d.save(os.path.join(PT, fn), garbage=1, deflate=True)
     a = pymupdf.open()
