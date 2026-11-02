@@ -1,0 +1,18 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# 설정 · 안내서 파일은 바깥에서 열리지 않게
+<FilesMatch "^(config\.php|config\.sample\.php|README\.md|\.gitignore)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# 보안 연결(https)을 켠 뒤 아래 세 줄 앞의 # 를 지우면, http로 들어와도 https로 넘어갑니다
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

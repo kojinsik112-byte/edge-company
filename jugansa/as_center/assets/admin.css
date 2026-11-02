@@ -1,0 +1,21 @@
+/* 관리 페이지에만 쓰는 모양(색 · 글꼴은 app.css 토큰) */
+.loginbox{max-width:420px;margin:32px auto}
+.loginbox .btn{margin-top:6px}
+.tabbtn{background:none;border:0;padding:11px 14px;font-weight:700;font-size:14.5px;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.filters{display:flex;gap:10px 14px;flex-wrap:wrap;align-items:flex-end}
+.filters label.f{min-width:200px}
+.filters .ghost{text-decoration:none;display:inline-block}
+.djcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:start}
+.djcard + .djcard{margin-top:10px}
+.djcard .nm{font-family:var(--f-kserif);font-weight:800;font-size:17px}
+.djcard .meta{font-size:12.5px;color:var(--ink-2)}
+.djcard .lnk{font-family:var(--f-mono);font-size:12.5px;word-break:break-all;margin-top:6px}
+.djcard .qr{width:96px;height:96px;background:#fff;padding:4px;border-radius:6px}
+.djcard .qr img,.djcard .qr canvas{width:88px!important;height:88px!important}
+.setgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.setgrid .sec + .sec{margin-top:0}
+.chk{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13.5px}
+.chk .y{color:var(--ok);font-weight:700}
+.chk .n{color:var(--bad);font-weight:700}
+.smsmsg{white-space:pre-wrap;font-size:12.5px;max-width:420px}
+@media (max-width:860px){ .setgrid{grid-template-columns:minmax(0,1fr)} .djcard{grid-template-columns:minmax(0,1fr)} }
