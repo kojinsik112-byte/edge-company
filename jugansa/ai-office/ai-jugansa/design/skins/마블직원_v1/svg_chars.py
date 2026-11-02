@@ -291,7 +291,7 @@ def mouth(lk):
 def face_extras(lk):
     ex, s, sk = lk["ex"], "", lk["skin"]
     op = {"cute": .5, "glam": .4, "cool": .18, "fun": .32}.get(lk["vibe"], .38)
-    if lk["eyes"] not in ("skull", "hawk"): s += f'<ellipse cx="-27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/><ellipse cx="27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/>'
+    if lk["eyes"] not in ("skull", "hawk") and "no_blush" not in lk["ex"]: s += f'<ellipse cx="-27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/><ellipse cx="27" cy="22" rx="11" ry="6" fill="url(#blush§)" opacity="{min(1, op * 2.2):.2f}"/>'
     if not any(k in ex for k in ("long_nose", "red_nose", "blue_nose")) and lk["eyes"] != "skull":
         s += f'<path d="M -1,17 Q 1,19 2,17" stroke="{mix(sk, INK, 0.45)}" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
     if "scar_luffy" in ex: s += '<path d="M -31,24 L -15,24 M -28,21 L -28,27 M -22,21 L -22,27 M -18,21 L -18,27" stroke="#b0604e" stroke-width="1.6" stroke-linecap="round"/>'
@@ -1184,6 +1184,9 @@ def mv_face(lk):
         s += "".join(f'<ellipse cx="{sx * 17}" cy="5" rx="7" ry="8" fill="#3a2a1a"/><circle cx="{sx * 17 + 2.4}" cy="2" r="2.4" fill="#ffffff"/>' for sx in (-1, 1))      # 검은 털 위로 반짝이는 눈
     if "mantis_ant" in ex: pass
     if "fx_temples" in ex: s += "".join(f'<circle cx="{sx * 40}" cy="-10" r="3" fill="#9ad8f4" opacity=".7"/>' for sx in (-1, 1))
+    if "joker_face" in ex:      # 조커: 눈가 짙은 그늘 · 입꼬리가 볼까지 올라간 빨간 웃음
+        s += "".join(f'<path d="M {sx * 5},14 Q {sx * 17},26 {sx * 31},12 Q {sx * 18},20 {sx * 5},14 Z" fill="#4a2a4a" opacity=".55"/>' for sx in (-1, 1))   # 눈 밑 짙은 그늘
+        s += '<path d="M -26,14 Q -22,24 -15,23 M 26,14 Q 22,24 15,23" stroke="#c8202a" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M -15,21 Q 0,44 15,21" stroke="#c8202a" stroke-width="3" fill="none" stroke-linecap="round"/>'
     if "grey_temples" in ex: s += "".join(f'<path d="M {sx * 46},-26 Q {sx * 50},-10 {sx * 46},4" stroke="#c9ced6" stroke-width="4" fill="none"/>' for sx in (-1, 1))
     return s
 
@@ -1275,6 +1278,13 @@ def mv_torso(lk):
         s += clip('<path d="M -40,92 L 40,92 L 40,104 L -40,104 Z" fill="#e6b84a"/>') + '<path d="M 0,56 Q -14,52 -20,62 Q -10,60 -6,66 Q -10,76 -2,84 L 0,74 L 2,84 Q 10,76 6,66 Q 10,60 20,62 Q 14,52 0,56 Z" fill="#e6b84a" stroke="#a8761e" stroke-width="1"/>'
     elif t == "shangchi":
         s += '<path d="M -12,42 L 0,54 L 12,42" stroke="#1a1a22" stroke-width="5" fill="none"/>' + clip('<path d="M -24,70 Q -14,62 -8,74 Q -2,86 8,78" stroke="#e6b84a" stroke-width="2" fill="none"/>')
+    elif t == "joker":         # 보라 재킷 · 주황 조끼 · 초록 셔츠 · 초록 나비넥타이 · 단추 · 꽃 꽂은 깃
+        s += clip('<path d="M -24,40 L 24,40 L 20,130 L -20,130 Z" fill="#e8862a"/><path d="M -10,40 L 10,40 L 0,66 Z" fill="#4aa84a"/>'
+                  '<path d="M -40,40 L -12,40 L -2,78 L -16,130 L -40,130 Z M 40,40 L 12,40 L 2,78 L 16,130 L 40,130 Z" fill="#6a2a8a"/>'
+                  '<path d="M -12,40 L -2,78 L -14,64 L -20,46 Z M 12,40 L 2,78 L 14,64 L 20,46 Z" fill="#8a3aaa" stroke="#3a1a4a" stroke-width="1.4"/>')
+        s += f'<path d="M -11,42 L -1,47 L -11,52 Z M 11,42 L 1,47 L 11,52 Z" fill="#3a9a3a" {S}/><circle cx="0" cy="47" r="3" fill="#2a7a2a"/>'
+        s += "".join(f'<circle cx="{x}" cy="{y}" r="2.4" fill="#f2c230" stroke="#7a5a1a" stroke-width="1"/>' for x, y in ((-6, 86), (-8, 98)))
+        s += '<circle cx="-24" cy="56" r="4.6" fill="#ffffff" stroke="#c8202a" stroke-width="1.4"/><circle cx="-24" cy="56" r="1.6" fill="#f2c230"/>'
     elif t == "profx":
         s += '<path d="M -13,42 L 13,42 L 0,74 Z" fill="#f6f4ee"/><path d="M -3.5,48 L 3.5,48 L 4.5,80 L 0,88 L -4.5,80 Z" fill="#3a5aa0"/><path d="M -16,58 L -10,64 M -10,58 L -16,64" stroke="#e6b84a" stroke-width="2"/>'
     elif t == "magneto":
@@ -1318,6 +1328,10 @@ def mv_props_front(lk, R):
             s += f'<circle cx="{hx}" cy="{hy - 6}" r="14" fill="#e0304a" opacity=".35"/><path d="M {hx - 10},{hy - 6} Q {hx},{hy - 22} {hx + 10},{hy - 6} Q {hx},{hy + 10} {hx - 10},{hy - 6}" stroke="#ff5a7a" stroke-width="2" fill="none"/>'
         elif p == "repulsor":
             s += f'<circle cx="{hx}" cy="{hy}" r="13" fill="#9aecff" opacity=".35"/><circle cx="{hx}" cy="{hy}" r="6" fill="#ffffff"/>'
+        elif p == "joker_card":    # 조커 카드
+            s += (f'<g transform="rotate(-14 {hx} {hy - 10})"><rect x="{hx - 10}" y="{hy - 26}" width="20" height="28" rx="3" fill="#ffffff" stroke="{INK}" stroke-width="1.6"/>'
+                  f'<rect x="{hx - 7}" y="{hy - 23}" width="14" height="22" rx="2" fill="none" stroke="#c8202a" stroke-width="1"/>'
+                  f'<text x="{hx}" y="{hy - 7}" font-size="13" font-weight="900" text-anchor="middle" fill="#6a2a8a" font-family="Georgia,serif">J</text></g>')
         elif p == "batons":
             s += stick(hx - 2, hy - 24, hx + 2, hy + 18, 4, "#3a3f4a")
         elif p == "rings":
@@ -1392,6 +1406,7 @@ ROSTER = {
         M("토르", hs="long", hair="#e6b84a", suit="#3a3f4a", mv_top="thor", cape="#b01828", cape_plain=True, lining="#6a0a14", legs="#2a2e38", boots="#3a3f4a", mvp=["mjolnir"], ex=["beard_thor", "burly"], eyec="#3a6aa8"),
         M("울버린", hs="bald", suit="#f2c230", hat="m_wolverine", mv_top="wolverine", legs="#f2c230", boots="#2a4fb0", boot_top=150, glove="#2a4fb0", mvp=["claws"], mouth="grit", ex=["no_ears", "burly"]),
         M("블랙 팬서", hs="bald", suit="#24242e", hat="m_panther", mv_top="panther", legs="#24242e", boots="#24242e", glove="#24242e", ex=["no_ears"]),
+        M("조커", skin="#f4f2ee", hs="messy", hair="#3aa84a", suit="#6a2a8a", mv_top="joker", legs="#6a2a8a", shoes="#2a1a2a", mvp=["joker_card"], mouth="grin", vibe="fun", eyec="#3a7a3a", ex=["joker_face", "no_blush"]),   # 특별 게스트(DC · 본부장 11-02)
         M("타노스", skin="#8a6aa8", hs="bald", suit="#2a3a7a", mv_top="thanos", legs="#2a3a7a", boots="#d9a63a", boot_top=160, glove="#d9a63a", mvp=["gauntlet"], eyes="cool", mouth="flat", brow="#4a3a6a", ex=["thanos_chin", "huge", "giant", "lids", "angry_brows"]),
         M("완다", hs="long", hair="#8a3a2a", hat="m_wanda", suit="#9a1a28", mv_top="wanda", kilt=("#7a0a18", 172, ""), legs="#2a1a1a", boots="#1a1a1a", boot_top=150, girl=True, vibe="glam", mvp=["hex"], eyec="#4a6a3a"),
     ],
@@ -1427,7 +1442,7 @@ FACES = {   # 캐릭터 얼굴형 (본부장 10-31 '다 동글동글 안 해도 
 }
 FACE_OF = {"토르": "square", "캡틴 아메리카": "square", "울버린": "square", "드랙스": "square", "닉 퓨리": "square", "윈터솔저": "square", "스타로드": "square",
            "호크아이": "square", "프로페서 X": "square", "샹치": "square", "팔콘": "square", "타노스": "jaw", "헐크": "heavy",
-           "닥터 스트레인지": "long", "로키": "long", "비전": "long",
+           "닥터 스트레인지": "long", "로키": "long", "조커": "long", "비전": "long",
            "블랙위도우": "slim", "가모라": "slim", "네뷸라": "slim", "완다": "slim", "캡틴 마블": "slim", "스톰": "slim", "진 그레이": "slim", "슈리": "slim", "맨티스": "slim", "와스프": "slim"}
 for _lk in [BOSS_LOOK] + [l for _l in ROSTER.values() for l in _l]:
     if _lk["name"] in FACE_OF: _lk["face_d"] = FACES[FACE_OF[_lk["name"]]]

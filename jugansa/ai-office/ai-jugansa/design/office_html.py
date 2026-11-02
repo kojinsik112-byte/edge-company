@@ -399,6 +399,7 @@ def decor(key, x, w, top, dx):
 # ───────────── 팀 사무실 ─────────────
 def team_room(key, x, y):
     no, name, color, n, sub = TEAM[key]; busy, label = WORK[key]
+    if ASSETS: n = max(n, len(sc.ROSTER[key]))     # 스킨 명단이 더 많으면 자리를 늘림 (마블 조커 = 검증 7석 · 본부장 11-02)
     CW = CWOF[x]
     g, (top, wb, dx) = shell(x, y, CW, RH, bh=108, team=color)     # 위쪽 벽을 줄여 책상 · 통로 자리 확보 (본부장 10-31 허용)
     g.append(decor(key, x, CW, top, dx))
