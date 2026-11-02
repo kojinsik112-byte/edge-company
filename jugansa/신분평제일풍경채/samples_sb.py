@@ -48,7 +48,7 @@ td.k{{width:28%;background:#eef2f7;font-weight:700}}.g{{color:#999}}
 <tr><td class="k">피보험자</td><td>{CL} <span class="g">(고유번호 · 대표자는 발급 시 기재)</span></td></tr>
 <tr><td class="k">보증 종목</td><td>☐ 이행(계약)보증 &nbsp; ☐ 하자보수보증 <span class="g">- 협약에서 정한 종목으로 발급</span></td></tr>
 <tr><td class="k">보험가입금액</td><td><span class="g">금 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 원정</span> - 보증금액 <b>10억 원 이상</b>(공고 라 6) · 또는 이에 준하는 보증 수단</td></tr>
-<tr><td class="k">보험기간</td><td><span class="g">20 &nbsp; 년 &nbsp; 월 &nbsp; 일부터 20 &nbsp; 년 &nbsp; 월 &nbsp; 일까지</span> (협약일 ~ 공동구매 품목 A/S 종료일 기준 협의)</td></tr>
+<tr><td class="k">보험기간</td><td><span class="g">20 &nbsp; 년 &nbsp; 월 &nbsp; 일부터 20 &nbsp; 년 &nbsp; 월 &nbsp; 일까지</span> (보증기간 24개월 · 기산일은 계약 때 협의회와 확정)</td></tr>
 <tr><td class="k">보험료 납입</td><td>주관사 전액 부담 · 협의회 부담 없음</td></tr></table>
 <h2>보증하는 사항 (주계약 내용)</h2><table>
 <tr><td class="k">주계약명</td><td>{SITE} 공동구매 및 입주박람회 기획 · 진행 위탁 계약</td></tr>

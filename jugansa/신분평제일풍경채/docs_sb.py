@@ -49,6 +49,7 @@ SGI_PNG = os.path.join(HERE, "assets_ins", "os_sgi_bond_masked.png")
 GOYONG = os.path.join(WORK, "05_고용산재보험_가입증명원_20261031.pdf")   # 근로복지공단 고용 · 산재보험 가입증명원(2026.10.31 · 제출용)
 REG_MASK = [(203, 163, 556, 177), (30, 176, 50, 187)]   # 등기부 2/2쪽 대표이사 주소(10.23 발급본)
 TAX_PHONE = (119, 228.5, 196, 239)                      # 지방세 납세증명서 2쪽 대표 휴대번호(그림)
+PAID_DATES = "2026.10.23 · 10.24"                      # 완납증명 발급일(건강 · 연금 10.23 · 고용 · 산재 10.24 · 검증 11-01 D9)
 ROSTER_MASK = (87, 311, 193, 571)                       # 명부 1쪽 주민번호 칸 전체(챗 검증 10-31 청주와 같게)
 SUBMIT = os.path.join(HERE, "제출본")
 BLANK_DIR = os.path.join(WORK, "확인본_빈칸있음")
@@ -170,7 +171,10 @@ EV6 = {"레이카운티": "A", "두산위브더제니스 센트럴사하": "A", 
        "남울산 노르웨이숲": "B-8", "영주자이 시그니처": "B-9", "부산 드파인 센텀": "C-2", "디에트르 더 퍼스트": "C-3"}
 
 
-def _img(src, pno, k, name, top=0):
+B_CROP = {1: (0, 0, 1, 0.9)}   # B-1 = 아래 검색창 · 빈 칸만 자름(카페 제목 [인증] 살림 · 비율 x0, y0, x1, y1)
+
+
+def _img(src, pno, k, name, top=0, box=None):
     """나리벡 제출본 쪽의 k번째(큰) 이미지를 PNG로 꺼냄 → file URI. top = 위에서 잘라낼 비율(이미지에 박힌 옛 머리글)."""
     os.makedirs(os.path.join(WORK, "_ev"), exist_ok=True)
     pg = src[pno - 1]
@@ -188,6 +192,11 @@ def _img(src, pno, k, name, top=0):
         from PIL import Image
         im = Image.open(fn)
         im.crop((0, int(im.size[1] * top), im.size[0], im.size[1])).save(fn)
+    if box:
+        from PIL import Image
+        im = Image.open(fn)
+        w_, h_ = im.size
+        im.crop((int(w_ * box[0]), int(h_ * box[1]), int(w_ * box[2]), int(h_ * box[3]))).save(fn)
     return pathlib.Path(fn).as_uri()
 
 
@@ -228,13 +237,17 @@ def ev_pages():
           f'<img src="{pathlib.Path(nfn).as_uri()}" style="display:block;width:106mm;margin:0 auto;border:1px solid #bbb">'
           '<p style="font-size:10pt;margin-top:3mm">연혁의 2023/03 ~ 2026/07 주관 행이 1,000세대 이상 입주박람회 주관 실적입니다. 연혁 일자는 주관 협약 뒤 확정된 일정 기준이라, 창원 센트럴 아이파크(2026/07)는 평가 당시 이미 일정이 확정된 단지이며 2026.07.03 ~ 05 CECO에서 개최했습니다(붙임 B-4). 위 발췌는 원본과 같습니다.</p>')
     pages = [page("서류 6 · 붙임 A", pa)]
-    for i in range(0, len(B_CAPS), 2):
+    # 검증 11-01 D11: B-1(카페 공지 목록)은 세로로 길어 두 장 묶음에서 읽기 어려움 → 아래를 잘라 한 쪽에 크게(쪽수 그대로 5)
+    groups = [[0]] + [list(range(i, min(i + 2, len(B_CAPS)))) for i in range(1, len(B_CAPS), 2)]
+    for g in groups:
         body = ""
-        for j, (pno, k, nm, src, when) in enumerate(B_CAPS[i:i + 2], i + 1):
-            uri = _img(s03, pno, k, f"b{j}.png")
+        for j in (x + 1 for x in g):
+            pno, k, nm, src, when = B_CAPS[j - 1]
+            uri = _img(s03, pno, k, f"b{j}.png", box=B_CROP.get(j))
+            mh = "205mm" if len(g) == 1 else "92mm"
             body += (f'<div style="margin-bottom:7mm"><h2 style="font-size:12.5pt">B-{j} · {e(nm)}</h2>'
                      f'<p style="font-size:10pt;color:#444;margin-bottom:2mm">{e(src)} · {e(when)}</p>'
-                     f'<img src="{uri}" style="display:block;max-width:100%;max-height:92mm;margin:0 auto;border:1px solid #bbb"></div>')
+                     f'<img src="{uri}" style="display:block;max-width:100%;max-height:{mh};margin:0 auto;border:1px solid #bbb"></div>')
         pages.append(page("서류 6 · 붙임 B · 공식 행사일정 · 카페 공지", body,
                           "B-1 ~ B-4 = 1,000세대 이상 주관 단지 · B-5 ~ B-9 = 500 ~ 999세대 주관 단지 · 화면 그대로 · 입주민 닉네임만 가림"))
     for j, (pno, nm, dt) in enumerate(C_DOCS, 1):
@@ -254,7 +267,8 @@ def p7_price_note():
             '<table class="f"><tr><th>무엇인가</th><td>다른 단지 입주박람회(2026.10)에서 입주예정자에게 실제 공개한 품목별 시공 단가 범위(참여 업체 수 · 일반 / 프리미엄 · 시공 범위)</td></tr>'
             '<tr><th>왜 붙이는가</th><td>공고 바 2) 나 · 라 - 대표 품목의 제품 · 규격 · 가격 · 시공 범위와 비교 자료를 어떤 형식으로 공개하는지 보여 드리기 위해</td></tr>'
             f'<tr><th>이 단지 단가인가</th><td><b>아닙니다.</b> {e(SITE)} 단가로 약속하는 금액이 아니며, 확정 단가는 업체 공개 입찰 → 박람회 30일 전 협의회 검수 → 14일 전 비교자료 공개로 정합니다(사업제안서 가격 쪽).</td></tr>'
-            '<tr><th>가림</th><td>다른 단지 이름 · 업체 정보 · 결제 조건 1곳</td></tr></table>')
+            f'<tr><th>‘현장 제시’ 표기</th><td>그 단지의 진행 방식입니다. {e(SITE)}는 박람회 30일 전 협의회 검수 → 14일 전 비교자료 공개(협의회 승인 후)로 가격을 먼저 정하고, 현장에서 가격을 바꾸지 않습니다(사업제안서 p.16 · 17).</td></tr>'
+            '<tr><th>가림</th><td>다른 단지 이름(머리 ‘단지’ 칸 = 가림) · 업체 정보 · 결제 조건 1곳(회색 상자 = 가림)</td></tr></table>')
     return page("서류 7 · 붙임 안내", body)
 
 
@@ -278,7 +292,7 @@ def p1(seal_uri):
 def p5(seal_uri, have_goyong):
     ov = [("상호 · 대표", f"{D.COMPANY} · 대표이사 {D.CEO}"), ("설립", f"{D.FOUNDED}(법인 설립 · 개업)"), ("본점", D.ADDRESS),
           ("자본금", "2억원(법인등기 기재)"), ("사업", "입주박람회 · 공동구매 주관 · 전시 · 박람회 및 행사 대행 · 조명 · 전기공사"),
-          ("등록 · 인증", f"{D.ELEC_LICENSE} · ISO 9001 · 14001 · 45001"), ("관리 거점", "울산 본사(계약 · 책임) · 청주 지사(쇼룸 · 사무실 운영 · 상담 · 시공 관리 · A/S 출동)"),
+          ("등록 · 인증", f"{D.ELEC_LICENSE} · ISO 9001 · 14001 · 45001"), ("관리 거점", "울산 본사(계약 · 책임) · 청주 지사(직지대로 642 · 상담 · 시공 관리 · A/S 출동) · 보조 거점 경인 지사(평택 · 상설 쇼룸)"),
           ("연락", f"대표번호 {D.TEL} · {D.EMAIL}")]
     staff = [("대표이사", "1", "제안 조건 확약 · PT 참석 · 결정권자"), ("주관사업 총괄 본부장", "1", "이 단지 총괄 책임자 · 협의회 회의 · 업체 관리 감독")]
     staff += [(a, str(n), r) for a, n, r in D.STAFF]
@@ -287,7 +301,7 @@ def p5(seal_uri, have_goyong):
            ("사후관리 · 민원", "대외지원팀 3명 · 주관 콜센터(평일 09:00 ~ 18:00 · 온라인 365일 접수)", "계약 ~ A/S 완료")]
     body = ('<h2>회사소개서 · 정규직 · 전담인력 구성표</h2>'
             '<h3>1. 회사 개요</h3><table class="f sm" style="margin-bottom:3mm">' + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in ov) + "</table>"
-            '<h3>2. 정규직 구성(2026.10 · 4대보험 사업장 가입자 13명 · 대표 포함 · 공고 기준 7명 이상)</h3>'
+            '<h3>2. 임직원 구성(2026.10 · 정규직 = 4대보험 사업장 가입자 13명 · 대표 포함 · 공고 기준 7명 이상 + 인턴 1명)</h3>'
             '<table class="l sm"><tr><th>구분</th><th>인원</th><th>역할</th></tr>'
             + "".join(f"<tr><td>{e(a)}</td><td class='r'>{b}명</td><td>{e(c)}</td></tr>" for a, b, c in staff)
             + f'<tr><td><b>합계</b></td><td class="r"><b>{sum(int(b) for _a, b, _c in staff)}명</b></td><td>정규직 13명 + 인턴 1명 · 실명은 계약 시 명단으로 제출(개인정보)</td></tr></table>'
@@ -296,7 +310,7 @@ def p5(seal_uri, have_goyong):
             + "".join(f"<tr><td>{e(a)}</td><td>{e(b)}</td><td>{e(c)}</td></tr>" for a, b, c in ded) + '</table>'
             f'<p style="font-size:9.6pt;color:#444;margin-top:2.5mm">연락체계 = 콜센터 {D.TEL} → 전담 PM → 총괄 본부장({D.MANAGER[2]}) · 긴급 건은 총괄 본부장 직통. 다음 쪽부터 '
             + ("고용 · 산재보험 가입증명원(2026.10.31) · " if have_goyong else "")
-            + f'4대보험 사업장가입자 명부 · 완납증명({D.ROSTER_DATE} · 개인정보 가림) · 회사소개(사업제안서 해당 쪽)입니다.</p>'
+            + f'4대보험 사업장가입자 명부({D.ROSTER_DATE}) · 완납증명({PAID_DATES}) · 개인정보 가림 · 회사소개(사업제안서 해당 쪽)입니다.</p>'
             + sign_line(seal_uri))
     return page("서류 5 · 회사소개서 및 정규직 · 전담인력 구성표", body)
 
@@ -348,7 +362,7 @@ def p8_gaksu(seal_uri):
 # ------------------------------------------------------------ 9 보증수단 제출 가능 확인서
 def p9(seal_uri):
     rows = [("보증 수단", "계약이행보증보험(보증금액 10억 원 이상) 또는 이에 준하는 보증 수단"), ("피보험자(채권자)", f"{TO} 또는 협의회가 지정하는 명의"),
-            ("보증 대상", "계약서에서 정한 주관사의 계약상 의무 이행"), ("제출 시기", "계약 체결 시 협의회와 정한 날까지 · 보증기간 · 기산일은 계약서에서 정함"),
+            ("보증 대상", "계약서에서 정한 주관사의 계약상 의무 이행"), ("보증기간", "24개월 · 기산일은 계약 때 협의회와 확정(사업제안서 · 환불 규정 제7조와 같음)"), ("제출 시기", "계약 체결 시 협의회와 정한 날까지"),
             ("발급 이력", "서울보증보험 계약보증보험증권 발급 이력 사본 붙임(2026.09.07 발급 · 주계약 = 광고대행 용역 · 입주박람회 이행보증 아님)")]
     body = ('<h1 style="letter-spacing:.12em">보증수단 제출 가능 확인서</h1>'
             '<table class="f" style="margin-bottom:5mm">' + "".join(f"<tr><th>{a}</th><td>{e(b)}</td></tr>" for a, b in
@@ -458,7 +472,7 @@ def main():
     d5[n0].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
     add_prop(d5, prop_pages(prop, ["숫자로 보는 엣지컴퍼니", "엣지컴퍼니 연혁", "운영 · 자본금 2억", "대표자 · 핵심 운영인력 수행 경험", "조직 구성 - ", "전담 체계 - 정규직"]))
     docs["5"] = d5
-    desc["5"] = ("구성표(직인) · 고용 · 산재 가입증명원 2026.10.31 · " if have_goyong else "구성표(직인) · ") + f"4대보험 명부 · 완납증명 {D.ROSTER_DATE} · 회사소개 6쪽"
+    desc["5"] = ("구성표(직인) · 고용 · 산재 가입증명원 2026.10.31 · " if have_goyong else "구성표(직인) · ") + f"4대보험 명부 {D.ROSTER_DATE} · 완납증명 {PAID_DATES} · 회사소개 6쪽"
 
     d6 = fitz.open(render("06_실적표", doc("최근 5년 실적표", [p6_table(seal_uri)])))
     d6.insert_pdf(fitz.open(render("06_붙임", doc("서류 6 붙임", ev_pages()))))
@@ -470,8 +484,10 @@ def main():
     _n14 = nr("14_기타_제안_확인자료.pdf")
     for p_ in PRICE_PAGES:
         d7.insert_pdf(_n14, from_page=p_ - 1, to_page=p_ - 1)
+        if p_ == PRICE_PAGES[0]:   # 검증 11-01 D10: 머리 '단지 ____' 빈 밑줄이 채우지 않은 칸으로 보임 → '(가림)' 표기
+            d7[-1].insert_text((491, 64.5), "(다른 단지 · 가림)", fontsize=7.5, fontname="mg", fontfile=r"C:\Windows\Fonts\malgun.ttf", color=(0.35, 0.35, 0.35))
     docs["7"] = d7
-    desc["7"] = f"제안서 {prop.page_count}쪽(평가표 8항목 순서 · 바 1) ~ 7) 모두) + 붙임 타 단지 공개 단가표 2쪽(참고 · 이 단지 단가 아님)"
+    desc["7"] = f"제안서 {prop.page_count}쪽(평가표 8항목 순서 · 바 1) ~ 7) 모두) + 붙임 3쪽(안내 1 + 타 단지 공개 단가표 2 · 참고 · 이 단지 단가 아님)"
 
     d8 = fitz.open(render("08_운영규정", doc("운영 규정", p8_rules())))
     add_prop(d8, prop_pages(prop, ["계약 취소 · 환불 규정 전문 ① 제1 ~ 5조", "계약 취소 · 환불 규정 전문 ② 제6 ~ 10조"]))
