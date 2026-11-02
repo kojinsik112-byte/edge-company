@@ -35,7 +35,7 @@ def apply(G):
         return take(kind=x[5:]) if x.startswith("kind:") else take(part=x[5:]) if x.startswith("part:") else take(title=x)
 
     EVAL = G["EVAL"]
-    pages = [T("kind:cover"), T(G["T_ONE"]), T("kind:toc")] + [T(G[x]) for x in ["T_PROM", "T_MAPA", "T_MAPB", "T_WORK", "T_SITE", "T_VOICE"]]
+    pages = [T("kind:cover"), T(G["T_ONE"]), T("kind:toc")] + [T(G[x]) for x in ["T_PROM", "T_GL1", "T_GL2", "T_MAPA", "T_MAPB", "T_WORK", "T_SITE", "T_VOICE"]]
     for _k, kw in pages:
         if "sec" in kw:
             kw["sec"] = S_FRONT
@@ -59,7 +59,7 @@ def apply(G):
                 G["T_LICENSE"], "참여업체 [[하자보증]] 체계"],
         "ch6": [G["T_LOCAL"], "part:[[인근 지역업체]] 선정 원칙", G["T_PM"], "part:12개 지사망", "part:이어야 합니까", "part:여러 단지를 [[연속으로]]"],
         "ch7": [G["T_INCOME"], G["T_REPORT"], G["T_FAIR"]],
-        "ch8": [G["T_ROLE"], G["T_REQ"], "part:[[협의회 업무지원]]", "part:[[구조·시공 품질]] 점검", "보이지 않는 [[하자]]까지 확인합니다",
+        "ch8": [G["T_SUP1"], G["T_SUP2"], G["T_ROLE"], G["T_REQ"], "part:[[협의회 업무지원]]", "part:[[구조·시공 품질]] 점검", "보이지 않는 [[하자]]까지 확인합니다",
                 "part:[[보고서 샘플]]", "사전점검 당일 [[현장 지원]]", "위임장, 이제 [[휴대폰으로]] 받습니다", G["T_RATE"],
                 "입예협 카페 [[홍보 콘텐츠]] 제작", "사전점검 [[언박싱 영상]]과 현장 홍보", G["T_PRIV"], G["T_TERMS"]],
     }
@@ -90,7 +90,7 @@ def apply(G):
     B.PAGES[:] = pages
 
     # 목차 = 한 줄에 장 하나(tocr) · 10줄(제안 개요 + 01 ~ 09) — tocr CSS 순서: 열 k의 첫 칸 = k번째 · 둘째 칸 = k + 5번째
-    toc = [("00", "제안 개요", ["한 장 요약 · 약속 10가지", "필수 포함 사항 바 1) ~ 7)", "수행 업무 다 1) ~ 8)", "단지 · 먼저 묻는 다섯 가지"])]
+    toc = [("00", "제안 개요", ["한 장 요약 · 약속 10 · 혜택표", "필수 포함 사항 바 1) ~ 7)", "수행 업무 다 1) ~ 8)", "단지 · 먼저 묻는 다섯 가지"])]
     toc += [(n, name, bl) for _k, n, name, _t, bl in EVAL]
     toc += [("09", "차별화 · 요약", ["단지지원 컨설팅", "외부 경관조명 진단", "조명 설계 · 생산 · 시공", "핵심 제안 6가지"])]
     assert len(toc) == 10
