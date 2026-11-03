@@ -17,7 +17,8 @@ DOCS = [("00_제출본_약속정리", "00_제출본_약속정리_내부용"), ("
         ("04d_AS창구", "04d_AS창구_1장")]
 # 대본 01 · 01b의 화면 순서와 같아야 함 — S1 · S2 = 요약 ① ② · END = 감사 인사(직통 번호 있는 p.115 대신)
 # AS = A/S 한 창구 접수 화면(04d · 제출본 p.45 · 71 · '업체 먼저' 화면은 뺌) · BR = 경인 지사(경기남부) 계약서 가림본 — 파일이 있을 때만 넣음
-BRANCH = os.path.join(PT, "근거", "경기남부지사_계약서_가림.pdf")
+BRANCH = os.path.join(PT, "07_질의대비_경기남부지사_계약서_가림.pdf")   # 11-03 수령 전대차계약서 · 기간 끝 · 전차인 주소 추가 가림
+BR_IN_DECK = False   # 11-03: 화면에 넣지 않음(기간 2027.02.01 · 소재지 '문화촌로11번길 43-8'이 제안서 '비전동 866-3'과 같은 곳인지 미확인) → 질의 대비 출력만 · 확인되면 True
 # VR = 업체 모집 프로그램 화면 1장(as-site 세션 · 11.03 뒤 재개) — 파일이 있을 때만 · 30분 = p.29 뒤 · 20분 = p.69 앞
 RECRUIT = os.path.join(PT, "근거", "업체모집_1장.pdf")
 ORDER30 = [1, 64, 59, 60, 11, 16, 17, 67, 75, "BR", 76, 65, 66, 68, 77, 29, "VR", 69, 34, 71, "AS", 45, 70, 72, 62, 63, 86, 87, 90, 79, 82, 74,
@@ -46,7 +47,7 @@ def deck(order, prop, summ, end, asp):
             d.insert_pdf(asp)
         elif o in ("BR", "VR"):
             f = BRANCH if o == "BR" else RECRUIT
-            if os.path.exists(f):
+            if os.path.exists(f) and (o == "VR" or BR_IN_DECK):
                 d.insert_pdf(pymupdf.open(f))
         else:
             d.insert_pdf(prop, from_page=o - 1, to_page=o - 1)
