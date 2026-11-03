@@ -362,7 +362,7 @@ def p1(seal_uri):
 def p2_company(seal_uri, have_goyong):
     ov = [("상호 · 대표", f"{D.COMPANY} · 대표이사 {D.CEO}"), ("설립", f"{D.FOUNDED}(법인 설립 · 개업)"), ("본점", D.ADDRESS),
           ("자본금", "2억원(법인등기 기재)"), ("사업", "공동구매 · 입주박람회 주관 · 전시 · 박람회 및 행사 대행 · 조명 · 전기공사"),
-          ("등록 · 인증", f"{D.ELEC_LICENSE} · ISO 9001 · 14001 · 45001"), ("관리 거점", "울산 본사(계약 · 책임) · 경인 지사(평택 · 상설 쇼룸 · 상담 · 시공 관리 · A/S 출동) · 지사 확장 중(2026.11 초 법인등기 예정 · 진행 중)"),
+          ("등록 · 인증", f"{D.ELEC_LICENSE} · ISO 9001 · 14001 · 45001"), ("관리 거점", "울산 본사(계약 · 책임) · 경기남부 지사(평택 · 거점 · 상설 쇼룸 · 상담 · 시공 관리 · A/S 출동) · 지사 확장 중(2026.11 초 법인등기 예정 · 진행 중)"),
           ("연락", f"대표번호 {D.TEL} · {D.EMAIL}")]
     staff = [("대표이사", "1", "제안 조건 확약 · 제안설명 참석 · 결정권자"), ("주관사업 총괄 본부장", "1", "운영책임자 · 협의회 연락 · 업체 관리 감독")]
     staff += [(a, str(n), r) for a, n, r in D.STAFF]
@@ -557,16 +557,12 @@ def main():
     d2.insert_pdf(nr("08_4대보험_가입자명부_완납증명서.pdf"))
     d2[n0].add_redact_annot(fitz.Rect(*ROSTER_MASK), fill=(0.72, 0.72, 0.72))   # 명부 1쪽 주민번호 칸 전체
     d2[n0].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
-    add_prop(d2, prop_pages(prop, ["숫자로 보는 엣지컴퍼니", "엣지컴퍼니 연혁", "경인 쇼룸 · 자본금 2억", "회사 수행 실적과 운영책임자 역할", "조직 구성 - ", "담당 인력 - 운영책임자"]))
-    _jd = fitz.open(JEONDAE)   # 본부장 11-03 GPT 검증 06: 경인 지사(평택 비전동) 사용 근거 = 전대차계약서(개인정보 모자이크)
-    _jd[0].insert_text((30, 20), "붙임 · 경인 지사(평택) 사용 근거 · 전대차계약서(개인정보 가림)", fontsize=9, fontname="mg", fontfile=FONT_R, color=(0.35, 0.27, 0.09))
-    _jd.subset_fonts()   # 맑은 고딕 전체가 들어가 용량이 커지지 않게
-    d2.insert_pdf(_jd)
+    add_prop(d2, prop_pages(prop, ["숫자로 보는 엣지컴퍼니", "엣지컴퍼니 연혁", "경기남부 쇼룸 · 자본금 2억", "회사 수행 실적과 운영책임자 역할", "조직 구성 - ", "담당 인력 - 운영책임자"]))
     d2.insert_pdf(fitz.open(render("02_실적표", doc("최근 5년 실적표", [p6_table(seal_uri)]))))
     d2.insert_pdf(fitz.open(render("02_붙임", doc("실적 확인자료", ev_pages()))))
     docs["02"] = d2
     desc["02"] = ("회사 개요 · 인력 현황(직인) · 고용 · 산재 가입증명원 10.31 · " if have_goyong else "회사 개요 · 인력 현황(직인) · ") + \
-        f"4대보험 명부 · 완납증명(10.23 · 10.24) · 회사소개 6쪽 · 경인 지사 전대차계약서(가림) · 실적표 {len(rec5())}개 단지 · NICE 연혁 · 공식 행사일정 · 카페 공지 10 · 협약서 3"
+        f"4대보험 명부 · 완납증명(10.23 · 10.24) · 회사소개 6쪽 · 실적표 {len(rec5())}개 단지 · NICE 연혁 · 공식 행사일정 · 카페 공지 10 · 협약서 3"
     d4 = take(nr("07_국세_지방세_완납증명서.pdf"), [1, 2])
     d4[1].add_redact_annot(fitz.Rect(*TAX_PHONE), fill=(0.6, 0.6, 0.6))
     d4[1].apply_redactions(images=fitz.PDF_REDACT_IMAGE_PIXELS)
