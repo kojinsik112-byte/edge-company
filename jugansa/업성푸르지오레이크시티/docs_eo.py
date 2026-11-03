@@ -79,7 +79,7 @@ ol.c{margin:0 0 0 1.3em}ol.c li{margin:0 0 2.6mm;padding-left:2px;line-height:1.
 .dt{text-align:center;font-size:13pt;margin:7mm 0 5mm;letter-spacing:.1em}
 .who{margin:4mm 0 0 auto;width:96mm;line-height:2.1;position:relative;font-size:12pt}
 .who .in{position:relative;display:inline-block}
-.who .seal{position:absolute;width:21mm;height:21mm;right:-23mm;top:-6mm;opacity:.92}
+.who .seal{position:absolute;width:21mm;height:21mm;left:50%;top:50%;transform:translate(-38%,-50%);opacity:.92}
 .to{text-align:center;font-size:14.5pt;font-weight:800;margin-top:7mm;letter-spacing:.05em}
 .nt{position:absolute;left:20mm;right:20mm;bottom:12mm;font-size:8.8pt;color:#555;line-height:1.5}
 .box{border:1.2px solid #c8a86a;border-radius:6px;padding:4mm 5mm;background:#fbf8f1;font-size:10.5pt;margin-bottom:5mm}
@@ -109,12 +109,12 @@ def seal_img(seal_uri):
 
 def sign(seal_uri, who="신청인"):
     return (f'<div class="dt">{ymd()}</div><div class="who">[{who}]<br>상 호 : {e(D.COMPANY)}<br>'
-            f'대표자 : <span class="in">대표이사 {e(D.CEO)} (인){seal_img(seal_uri)}</span></div><div class="to">{e(TO)} 귀중</div>')
+            f'대표자 : 대표이사 {e(D.CEO)} <span class="in">(인){seal_img(seal_uri)}</span></div><div class="to">{e(TO)} 귀중</div>')   # 본부장 11-03: 직인은 (인) 위에 · 중심 살짝 오른쪽
 
 
 def sign_line(seal_uri):
     """목록 · 표 서류용 한 줄 서명(쪽이 꽉 찰 때) — 작성일 · 상호 · 대표이사 직인."""
-    sl = f'<img src="{seal_uri}" style="position:absolute;width:15mm;height:15mm;right:-17mm;top:-4.5mm;opacity:.92" alt="">' if seal_uri else ""
+    sl = f'<img src="{seal_uri}" style="position:absolute;width:15mm;height:15mm;left:50%;top:50%;transform:translate(-38%,-50%);opacity:.92" alt="">' if seal_uri else ""
     return (f'<div style="margin-top:4mm;text-align:right;font-size:10.5pt;padding-right:18mm">{ymd()} · {e(D.COMPANY)} 대표이사 {e(D.CEO)} '
             f'<span style="position:relative;display:inline-block">(인){sl}</span></div>')
 
@@ -299,7 +299,7 @@ def stamp_cover(prop, seal):
     x = W * 0.94 - tl
     pg.insert_text((x, y), txt, fontsize=fs, fontname="mgb", fontfile=FONT_B, color=(0.93, 0.86, 0.70))
     sz = fs * 3.0
-    xi = W * 0.94 - fitz.Font(fontfile=FONT_B).text_length("(인)", fontsize=fs) / 2
+    xi = W * 0.94 - fitz.Font(fontfile=FONT_B).text_length("(인)", fontsize=fs) / 2 + sz * 0.12   # 본부장 11-03: (인) 위 · 중심 살짝 오른쪽(서명란과 같은 기준)
     pg.insert_image(fitz.Rect(xi - sz / 2, y - fs * 0.35 - sz / 2, xi + sz / 2, y - fs * 0.35 + sz / 2), filename=seal, overlay=True)
 
 
@@ -309,7 +309,7 @@ def p4_price_note():
             '<tr><th>왜 붙이는가</th><td>공고 5항 다 · 라 - 제안서의 대표 품목 참고가격이 어디서 왔는지 보여 드리기 위해</td></tr>'
             f'<tr><th>이 단지 단가인가</th><td><b>아닙니다.</b> {e(SITE)} 단가로 약속하는 금액이 아니며, 확정 단가는 업체 공개 모집 → 박람회 30일 전 협의회 검수 → 14일 전 확정가 · 비교자료 공개로 정합니다(제안서 3 · 4장).</td></tr>'
             '<tr><th>‘업체 견적’ 표기</th><td>다른 단지 표에서 금액 없이 업체가 따로 안내한 칸은 <b>‘업체 견적’</b>으로 바꿔 적었습니다(같은 자리 · 가림 후 다시 씀 · 지역명도 가림). 이 단지는 <b>D-14에 전 품목 확정 단가를 미리 공개</b>하고, 현장에서 가격을 바꾸지 않습니다.</td></tr>'
-            '<tr><th>가림 표시</th><td>머리의 ‘단지 ______’ 빈 밑줄과 회색 상자 = 다른 단지 이름 · 업체 정보 · 결제 조건 1곳을 가린 자리입니다(빈칸이 아님).</td></tr></table>')
+            '<tr><th>가림 표시</th><td>머리의 ‘단지 ______’ 빈 밑줄 = 다른 단지 이름을 가린 자리입니다(빈칸이 아님).</td></tr></table>')
     return page("제출서류 라 · 붙임 안내", body)
 
 
@@ -421,7 +421,7 @@ def p5_ins(seal_uri):
             ("보상한도", "대인 1인당 1억원 · 1사고당 3억원 · 대물 1사고당 1억원 · 구내치료비 1인당 100만원 · 1사고당 300만원"), ("자기부담", "1사고당 10만원(대인 · 대물)"),
             ("청구 대상", "본사 사업장 시설 사고로 피해를 입은 제3자")]
     plan = [("행사(주최자)배상책임보험", "입주박람회 개최가 확정되면 행사 기간 · 장소 기준으로 가입 · 개장 전 증권 사본 제출 · 청구 대상 = 박람회장 관람객 등 제3자"),
-            ("계약 후 보증(계약이행 · 하자보증보험)", "협약 체결 시 보증보험사 심사를 거쳐 협의회를 피보험자로 발급 · 금액은 협약 시 확정 · 보증기간 24개월 이상(공동구매 운영기간부터 무상 A/S 종료까지 공백이 없도록 협약 때 기산일을 정함) · 보장 대상은 계약서에 명시(공고 10항 라) · 증서 제출 = 계약 체결 시 협의회와 정한 날까지"),
+            ("계약 후 보증(계약이행 · 하자보증보험)", "협약 체결 시 보증보험사 심사를 거쳐 협의회를 피보험자로 발급 · 금액은 협약 시 확정 · 보증기간 24개월(공동구매 운영기간부터 무상 A/S 종료까지 공백이 없도록 협약 때 기산일을 정함) · 보장 대상은 계약서에 명시(공고 10항 라) · 증서 제출 = 계약 체결 시 협의회와 정한 날까지"),
             ("하자 예치금(주관사 자산)", "선보상 재원 · 최대 1억원 · 금액 · 예치 방식은 계약 때 확정"),
             ("참고 · 다른 용역 계약보증 1건", "서울보증보험 계약보증보험증권(2026.09.07 발급 · 주계약 = 광고대행 용역 · 공동구매 · 입주박람회 이행보증 아님) - 다음 쪽 가림본")]
     body = ('<h2>계약 후 보증 제공계획 · 보험 가입증명</h2>'
@@ -578,6 +578,14 @@ def main():
         for a_, b_ in PRICE_RETEXT:
             _hit[a_] = _hit.get(a_, 0) + retext(d7[k_], a_, b_)
     assert all(_hit.values()), ("공개 단가표 바꿀 글자를 못 찾음", _hit)
+    _gray = 0
+    for k_ in range(n_price, d7.page_count):   # 본부장 11-03: 실링팬 칸 회색 가림 상자 → 흰색(밑 글자는 이미 지워짐 · 상자만 없앰)
+        for dr_ in d7[k_].get_drawings():
+            fl_ = dr_.get("fill")
+            if fl_ and max(fl_) - min(fl_) < 0.02 and 0.3 < fl_[0] < 0.8 and dr_["rect"].height < 20:
+                d7[k_].draw_rect(dr_["rect"] + (-0.7, -0.7, 0.7, 0.7), color=None, fill=(1, 1, 1), overlay=True)   # 테두리(1pt)까지
+                _gray += 1
+    assert _gray, "단가표 회색 가림 상자를 못 찾음"
     _pt = "".join(d7[k_].get_text() for k_ in range(n_price, d7.page_count))
     assert "현장 제시" not in _pt and "현장 계약가" not in _pt and "부산" not in _pt, "공개 단가표 '현장' 표현 남음"
     d7.subset_fonts()   # 다시 쓴 글자 · 표지 날인 글꼴(맑은 고딕)을 쓴 글자만 남김 — 용량
