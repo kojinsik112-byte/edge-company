@@ -83,7 +83,7 @@ ol.c{margin:0 0 0 1.3em}ol.c li{margin:0 0 2.6mm;padding-left:2px;line-height:1.
 .dt{text-align:center;font-size:13pt;margin:7mm 0 5mm;letter-spacing:.1em}
 .who{margin:4mm 0 0 auto;width:96mm;line-height:2.1;position:relative;font-size:12pt}
 .who .in{position:relative;display:inline-block}
-.who .seal{position:absolute;width:21mm;height:21mm;right:-23mm;top:-6mm;opacity:.92}
+.who .seal{position:absolute;width:21mm;height:21mm;left:50%;top:50%;transform:translate(-38%,-50%);opacity:.92}
 .to{text-align:center;font-size:14.5pt;font-weight:800;margin-top:7mm;letter-spacing:.05em}
 .nt{position:absolute;left:20mm;right:20mm;bottom:12mm;font-size:8.8pt;color:#555;line-height:1.5}
 .box{border:1.2px solid #c8a86a;border-radius:6px;padding:4mm 5mm;background:#fbf8f1;font-size:10.5pt;margin-bottom:5mm}
@@ -113,12 +113,12 @@ def seal_img(seal_uri):
 
 def sign(seal_uri, who="신청인"):
     return (f'<div class="dt">{ymd()}</div><div class="who">[{who}]<br>상 호 : {e(D.COMPANY)}<br>'
-            f'대표자 : <span class="in">대표이사 {e(D.CEO)} (인){seal_img(seal_uri)}</span></div><div class="to">{e(TO)} 귀중</div>')
+            f'대표자 : <span class="in">대표이사 {e(D.CEO)} <span style="position:relative;display:inline-block">(인){seal_img(seal_uri)}</span></span></div><div class="to">{e(TO)} 귀중</div>')
 
 
 def sign_line(seal_uri):
     """목록 · 표 서류용 한 줄 서명(쪽이 꽉 찰 때) — 작성일 · 상호 · 대표이사 직인."""
-    sl = f'<img src="{seal_uri}" style="position:absolute;width:15mm;height:15mm;right:-17mm;top:-4.5mm;opacity:.92" alt="">' if seal_uri else ""
+    sl = f'<img src="{seal_uri}" style="position:absolute;width:15mm;height:15mm;left:50%;top:50%;transform:translate(-38%,-50%);opacity:.92" alt="">' if seal_uri else ""
     return (f'<div style="margin-top:4mm;text-align:right;font-size:10.5pt;padding-right:18mm">{ymd()} · {e(D.COMPANY)} 대표이사 {e(D.CEO)} '
             f'<span style="position:relative;display:inline-block">(인){sl}</span></div>')
 
