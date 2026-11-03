@@ -43,6 +43,8 @@ def apply(G):
         k, kw = OLD[i]
         return k, dict(kw)
 
+    for x in ["kind:hi_fund", "title:" + G["T_FUNDCH"], "title:" + G["T_MENU"]]:   # 본부장 11-03: 세대 직접 제공(세대 혜택 · 선택 항목) 장 뺌
+        used.add(find(kind=x[5:]) if x.startswith("kind:") else find(title=x[6:]))
     for x in DROP:
         used.add(find(kind=x[5:]) if x.startswith("kind:") else find(part=x[5:]) if x.startswith("part:") else find(title=x))
 
@@ -60,7 +62,7 @@ def apply(G):
                 "업체 [[심사 기준]]과 계약 원칙", G["T_LICENSE"], G["T_LOCAL"], "part:[[인근 지역업체]] 선정 원칙"],
         "ch3": [G["T_PRICE"], "kind:pricing"],
         "ch4": [G["T_CHECK"], "공동구매 단가를 지키는 [[4가지 장치]]", "[[최저가 차액 10배]] 보상"],
-        "ch5": [G["T_INCOME"], "kind:hi_fund", G["T_FUNDCH"], G["T_SEP"], G["T_MENU"], "박람회 [[사은품 · 경품]]", "사전점검 대행, [[이렇게 봅니다]]"],
+        "ch5": [G["T_INCOME"], G["T_SEP"], "박람회 [[사은품 · 경품]]", "사전점검 대행, [[이렇게 봅니다]]"],
         "ch6": [G["T_CARE"], G["T_ESCROW"], "입주민 [[자금]]을 먼저 지킵니다", G["T_RULE1"], G["T_RULE2"]],
         "ch7": [G["T_AS"], "주관 [[콜센터]]와 선보상", "클레임 [[처리 흐름]]과 CRM 관리", "입주민 [[컴플레인]], 이렇게 해결합니다", G["T_DESK"],
                 G["T_BOND"], "선보상 재원 · 하자 예치금 [[최대 1억원]]", "입주민을 지키는 [[3중 안전망]]", "part:[[특약이행각서]] (예시)",
