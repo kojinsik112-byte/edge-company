@@ -606,15 +606,8 @@ def main():
     d5.insert_pdf(_kb)
     assert os.path.exists(SGI_PNG), ("SGI 가림본 없음", SGI_PNG)
     d5.insert_pdf(fitz.open(render("05_보증이력", doc("보증서 발급 이력", [sgi]))))
-    # 본부장 11-03: 붙임 · 공동구매 A/S 도움 창구(실제 작동 프로그램 · 시연용 데이터) 1장 — 16:9 원본을 A4 가로에 맞춤
-    _as = fitz.open(ASDESK)
-    _pg = d5.new_page(width=841.92, height=594.96)
-    _pg.insert_text((22, 26), "제출서류 마 · 붙임 · 공동구매 A/S 도움 창구(접수 화면 · 시연용 데이터)", fontsize=9.5, fontname="mg", fontfile=FONT_R, color=(0.35, 0.27, 0.09))
-    _w = 841.92 - 44; _h = _w * _as[0].rect.height / _as[0].rect.width; _y = 36 + (594.96 - 36 - 14 - _h) / 2
-    _pg.show_pdf_page(fitz.Rect(22, _y, 22 + _w, _y + _h), _as, 0)
-    d5.subset_fonts()
     docs["05"] = d5
-    desc["05"] = "계획서 2쪽 + 환불 규정 전문 2쪽 + 보험 · 보증 제공계획(직인) + KB 영업배상책임보험 증권 사본(종류 그대로) + SGI 발급 이력(가림) + 붙임 A/S 도움 창구 화면 1쪽"
+    desc["05"] = "계획서 2쪽 + 환불 규정 전문 2쪽 + 보험 · 보증 제공계획(직인) + KB 영업배상책임보험 증권 사본(종류 그대로) + SGI 발급 이력(가림)"
     docs["06"] = fitz.open(render("06_확약서", doc("확약서", [p6_pledge(seal_uri)])))
     desc["06"] = "청렴 · 이해관계 공개 · 개인정보 보호 · 비밀유지 · 직인"
     docs["07"] = fitz.open(render("07_모집계획", doc("모집계획", [p7_vendor(seal_uri)])))

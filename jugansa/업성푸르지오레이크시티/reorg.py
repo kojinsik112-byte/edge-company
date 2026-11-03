@@ -956,7 +956,7 @@ def apply(G):
                            "못 오셔도 [[괜찮습니다]]", "실제 박람회 [[현장]]"]]),
         (f"07. {D.SITE['name']} 맞춤 제안", [d07] + [T(G[x]) for x in [
             "T_ONE", "T_PROM", "T_VOICE", "T_MAPA", "T_DOCS", "T_SITE", "T_ITEMS", "T_OPT", "T_PRICE", "T_EXPOPLAN", "T_CANCEL", "T_RECS", "T_CAFE",
-            "T_CHECK", "T_CARE", "T_ESCROW", "T_DESK", "T_AS", "T_LICENSE", "T_LOCAL", "T_ROLE", "T_LX", "T_PM", "T_STAFF7", "T_MON1", "T_MON2",
+            "T_CHECK", "T_CARE", "T_ESCROW", "T_DESK", "T_ASDESK", "T_AS", "T_LICENSE", "T_LOCAL", "T_ROLE", "T_LX", "T_PM", "T_STAFF7", "T_MON1", "T_MON2",
             "T_INCOME", "T_REPORT", "T_FAIR", "T_QUAL", "T_BOND", "T_INS", "T_PRIV", "T_TERMS"]]),  # 신분평: 재배치 전 자리 — 평가표 순서 재배치는 sb.py  # 군포 07장 = 약속 · 질문 · 찾아보기 → 단지 · 품목 · 옵션 → 별첨 9 ① ~ ⑤ → 가격 · 하자 · A/S → 역할 · 지원 · 지역 · 인력 · 일정 → 수익 구조(제한 6) · 자격 7 · 제출 13 · 자격 6 · 제한 · 참고  # 엘리프 07장 = 착수 strategy 3-2(약속 · 질문 → 협약 범위 → 단지 · 2회 운영 → 옵션 · 가격 · 하자 · A/S → 역할 · 지원 · 지역 · 인력 · 일정 → 자기 평가 · 자격 · 제출 · 0건 · 제5조 · 유의사항)
         ("08. 혜택안내 · 세대 혜택 패키지", [dv("08", "혜택은 [[세대에]], 가격은 [[경쟁과 검수로]]",
             [f"세대당 {fund}만원 상당 범위", "A 입주민 특화서비스", "B 협의회 업무지원", "C 단지지원 컨설팅"]),

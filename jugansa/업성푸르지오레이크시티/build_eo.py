@@ -1365,6 +1365,15 @@ new("std", sec="제안 개요", title=T_ESCROW,
           ], title_w=130) + '</div>'),
     kp=("계약금은 [[10%까지]], 잔금은 [[확인 뒤에]] - 순서로 입주민을 지킵니다.", "적용 품목 · 계약금 예외는 업체 선정 때 협의회 승인 · 계약서 · 단가표에 표시"))
 
+# ------------------------------------------------------------ A/S 도움 창구(본부장 11-03 · A/S 사이트 세션 1장 · 07장 CRM 다음)
+T_ASDESK = "A/S 도움 창구 - 업체에 먼저, [[늦으면 주관사가]]"
+new("std", sec="제안 개요", title=T_ASDESK,
+    lead="안내문 QR 하나로 휴대폰에서 업체 연락처 확인 → 주관사 요청 → 진행 확인 → 해결 확인까지. 업체는 문자 링크 하나로 처리하고, 주관사는 기한이 지난 요청을 바로 찾아 입주민에게 직접 연락합니다.",
+    body=('<div class="nb asdk"><img src="assets_ins/eo_asdesk.jpg" alt="A/S 도움 창구 화면 6장(시연용 데이터)"></div>'),
+    kp=("[[24시간]] 1차 회신 · [[48시간]] 방문 일정 확정 · [[10분]]마다 기한 자동 점검 - 지나면 주관사가 입주민에게 직접 연락합니다.",
+        "실제 작동 프로그램 · 현장 시연 가능 · 화면은 시연용 데이터 · 주말 · 공휴일 1차 회신은 다음 영업일 12시까지 · 아파트 자체 하자는 시공사 하자 창구로 정리 · 전달"))
+B.CSS += ".asdk{display:flex;align-items:center;justify-content:center}.asdk img{display:block;width:100%;max-height:100%;object-fit:contain;border-radius:10px}"
+
 # ------------------------------------------------------------ 하자 책임 구분(5항 사 · 규칙 18)
 new("std", sec="제안 개요", title=T_DESK,
     lead="공동구매 품목 하자는 참여업체 1차 · 주관사 추가 책임, 건설 하자는 사업주체 · 시공사 책임입니다. 주관사는 건설 하자도 정리 · 전달 · 추적을 돕습니다.",
@@ -1728,7 +1737,7 @@ PGREF = {
     "fund": T_INCOME, "menu": T_SEP, "sep": T_SEP,   # 본부장 11-03: 세대 혜택 장 뺌 → 발전기금 명세 · 공구가와 따로
     "one": T_ONE, "prom": T_PROM, "voice": T_VOICE, "mapa": T_MAPA, "site": T_SITE, "items": T_ITEMS, "opt": T_OPT,
     "price": T_PRICE, "expoplan": T_EXPOPLAN, "cancel": T_CANCEL, "recs": T_RECS, "cafe": T_CAFE, "check": T_CHECK, "care": T_CARE, "escrow": T_ESCROW,
-    "desk": T_DESK, "license": T_LICENSE, "local": T_LOCAL, "role": T_ROLE, "lx": T_LX,
+    "desk": T_DESK, "asdesk": T_ASDESK, "license": T_LICENSE, "local": T_LOCAL, "role": T_ROLE, "lx": T_LX,
     "pm": T_PM, "staff": T_STAFF7, "mon1": T_MON1, "mon2": T_MON2, "income": T_INCOME, "report": T_REPORT, "fair": T_FAIR,
     "qual": T_QUAL, "docs": T_DOCS, "bond": T_BOND, "ins": T_INS, "priv": T_PRIV, "terms": T_TERMS,
     "call": "주관 [[콜센터]]와 선보상", "flow": "클레임 [[처리 흐름]]과 CRM 관리", "bond24": "계약이행 · 하자보증 [[24개월]]", "k1000": "1,000세대 이상 [[주관 단지]]",
