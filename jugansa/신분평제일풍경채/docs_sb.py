@@ -542,6 +542,15 @@ def main():
         print(f"[빈칸 {len(blanks)}곳] " + " / ".join(blanks))
     dst = NOTICE_DIR + ("_확인본_빈칸있음" if blanks else "")
     if os.path.isdir(dst):
+        # 11-04: 공고 폴더 PDF가 열려 있으면 지우다 멈춰 폴더가 반쯤 빈다 → 지우기 전에 먼저 확인
+        def _free(p):
+            try:
+                open(p, "r+b").close()
+                return True
+            except OSError:
+                return False
+        locked = [f for f in os.listdir(dst) if not _free(os.path.join(dst, f))]
+        assert not locked, ("공고 폴더 파일이 열려 있음 - 닫고 다시 실행(제출본/ 은 이미 새로 만듦)", locked)
         shutil.rmtree(dst)
     shutil.copytree(out_dir, dst)
     if not blanks:
