@@ -202,6 +202,14 @@ RX_SB += [
     (r"이벤트" + S + r"경품존", "이벤트존"),
 ]
 FIX += [("SB_SHOWROOM_CAP", "평택 비전동 866-3 · 조명 · 실링팬 · 커튼 상설 쇼룸 · 보조 거점")]   # 본부장 11-04: 92쪽 경기남부 지사 사진 설명(지사 문구 검사 뒤에 넣음)
+FIX += [('<img src="assets_ins/n60_kids_cinema_c.jpg" style="object-position:74% 50%" alt=""><figcaption>키즈카페 · 엣지영화관<small>아이 동반 방문객 안내</small></figcaption>',
+         '<img src="assets_ins/ev_cp_movie.jpg" style="object-position:58% 50%" alt=""><figcaption>키즈 영화관<small>아이는 영화 · 부모는 상담</small></figcaption>')]   # 본부장 11-04: 배너만 보여 이상 → 실제 상영 장면
+# 본부장 11-04: 118 · 120쪽 경관조명 사진 = 설명 띠가 건물 · 조명을 덮음 → 설명은 사진 아래로 · 조감 사진은 건물 쪽으로
+RX_SB += [(r'<div class="lxo">', '<style>.lxo .gal figure,.gal.lx5 figure{display:flex;flex-direction:column}.lxo .gal figure img,.gal.lx5 figure img{flex:1 1 0;min-height:0;height:auto!important}.lxo .gal figcaption,.gal.lx5 figcaption{position:static!important;flex:0 0 auto;padding:6px 12px!important;font-size:13.5px!important}.lxo .gal figcaption small,.gal.lx5 figcaption small{font-size:11.5px!important;margin-top:0!important}</style><div class="lxo">')]
+FIX += [('<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 50%"><figcaption>② 단지 조감 야간',
+         '<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 80%"><figcaption>② 단지 조감 야간'),
+        ('<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 50%"><figcaption>단지 조감 야간 경관',
+         '<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 80%"><figcaption>단지 조감 야간 경관')]
 GONE_SB = ["경인 지사",   # 본부장 11-04: 경인 지사 → 경기남부 지사
             "(겸임)", "가장 늦은 무상", "30일 안 전담", "<em>20회</em>", "쇼룸 · 사무실 운영", "청주 지사 쇼룸", "쇼룸 방문 상담도", "2026.12 갱신", "2026.12.31", "5개 분야", "응급 대응 지원", "미정 항목", "다른 단지와 겸임", "PM에만 씀", "주관 10곳 + 입주 예정", "~ 2026.12)", "2029년", "가장 늦은 날)", "협의회 명의 지원", "물품지원 이행", "공구이력 20회", "03 · 04 · 05장", "사내 간호사", "타일 1", "- 금액 · 보증 대상", "· 금액 · 보증 대상", ">금액은 협약 때", "· 금액은 협약 때", "보증 금액 · 보증", "발급 한도 확인 완료", "최대 10억"]
 FIX_SALE = [  # data.FUND_TARGET == 'sale'(일반분양 655)일 때만
