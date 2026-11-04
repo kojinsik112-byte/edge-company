@@ -1035,7 +1035,7 @@ new("divider", n="01", title=T_DIV, bl=EVAL[0][4])
 
 # ------------------------------------------------------------ 한 장 요약 — 평가표 8항목 ↔ 장 · 쪽
 ONE = [
-    ("ch1", "세대당 15만원 상당(안) 세대 혜택(세대에 현물 직접) · 대표 품목 가격 · 추가 비용 공개 기준 · 일반 판매가 비교 · 최저가 차액 10배"),
+    ("ch1", "세대당 15만원 상당(안) 세대 혜택(A 세대 직접 + B · C 전 세대 공용 용역) · 대표 품목 가격 · 추가 비용 공개 기준 · 일반 판매가 비교 · 최저가 차액 10배"),
     ("ch2", "취소 · 환불 기준과 기한 · 계약금 10% 상한 · 제3자 에스크로 · 24시간 · 48시간 · 선보상 · 폐업 시 이관 · A/S 완료까지 이행각서"),
     ("ch3", "참가자격 1) ~ 11) 충족표 · 제출서류 1) ~ 10) · 4대보험 가입자 13명 · 자본금 2억원 · 보증 수단 제출 가능 확인서"),
     ("ch4", "1회 · 주말 포함 2 ~ 3일(안) · 청주권 행사장 후보 3곳 · 동선 · 주차 · 안전 · 취소 · 연기 대응 · 최근 5년 주관 22개 단지"),
@@ -1059,7 +1059,7 @@ B.CSS += (".tbl.one8 td{padding:10px 12px;font-size:14.5px;line-height:1.42;vert
 
 # ------------------------------------------------------------ 약속 10가지
 PROM10 = [
-    ("세대 혜택 · 세대당 15만원 상당(안)", f"{D.FUND_BASIS} · 총 {FT} 상당(안) · 협약 시 확정 · 주관사가 직접 사서 세대에 현물 · 서비스로 전달 · 협의회 · 임원에게 금전 · 물품 제공 없음(공고 자 5)", ["fund", "menu"]),
+    ("세대 혜택 · 세대당 15만원 상당(안)", f"{D.FUND_BASIS} · 총 {FT} 상당(안) · 협약 시 확정 · 주관사 부담으로 A는 세대에 현물 · 서비스, B · C는 전 세대 공용 용역로 제공 · 협의회 · 임원에게 금전 · 물품 제공 없음(공고 자 5)", ["fund", "menu"]),
     ("같은 기준 · 선택권 보장", "박람회 · 공구가 · A/S는 같은 기준 · 특정 제품 구매나 특정 업체 이용을 권하거나 강제하지 않음(공고 차 2)", ["site", "priv"]),
     ("가격 먼저 공개", "박람회 30일 전 협의회와 단가 검수 · 14일 전 같은 조건 일반 판매가 비교자료 공개(협의회 승인 후) · 부가세 · 설치비 · 철거비 포함 총액", ["price", "check"]),
     ("최저가 차액 10배 보상", "인근 매장 · 구매 영수증 · 주관사 확인 · 1건당 최대 50만원 · 온라인 · 시공 품목 제외 · 주관사 지급", ["check", "x10"]),
@@ -1088,7 +1088,7 @@ def _gl(no, name, tag, rows_):
 
 
 GL_FUND = [
-    ("세대당 15만원 상당", f"{D.FUND_BASIS} · 총 {FT} 상당(안) · 협약 시 확정 · 주관사가 직접 사서 현물 · 서비스로 전달", ["fund", "menu"]),
+    ("세대당 15만원 상당", f"{D.FUND_BASIS} · 총 {FT} 상당(안) · 협약 시 확정 · 주관사 부담으로 A는 세대에 현물 · 서비스, B · C는 전 세대 공용 용역로 제공", ["fund", "menu"]),
     ("선택 항목 A", "백화점 상품권(5만원 또는 10만원) · 실측 · 샘플하우스 · 항공 VR · 3D · 방문 선물 - 입예협이 골라 담음 · 사전점검 대행 최대 50% 할인(대행업체 제공 · 15만원에서 빼지 않음)", ["menu"]),
     ("선택 항목 B · C", "협의회 업무지원 · 단지지원 컨설팅 = 입주예정자 전체를 위한 단지 공용 서비스(용역) · 협의회가 항목 선택", ["packB", "packC"]),
     ("공구가와 분리", "세대 혜택은 주관사 몫에서 부담 · 공구가에 얹지 않음 · 사용 내역 공개", ["sep"]),
@@ -1117,7 +1117,7 @@ GL_SUP = [
 new("std", sec=S0, title=T_GL1,
     lead="세대 혜택(주관사 직접 구매)과 참여업체 제공 혜택을 나눠 한 쪽에 모았습니다. 숫자는 본문과 같고, 업체 제공 혜택은 세대 혜택에 더하지 않습니다.",
     body=('<div class="gl"><div class="glb"><b>세대당 15만원 상당</b><span>주관사 직접 구매 · ' + f"{D.FUND_BASIS} · 총 {FT} 상당(안)" + '</span></div>'
-          + _gl("①", "입주민 세대 혜택", "주관사가 직접 사서 드림", GL_FUND)
+          + _gl("①", "세대 혜택(전 세대 같은 기준)", "A 세대 직접 · B · C 공용 용역", GL_FUND)
           + _gl("②", "참여업체 제공 혜택", "세대 혜택과 별도", GL_VENDOR) + "</div>"),
     kp=("세대 혜택은 [[주관사가 직접]], 업체 제공 혜택은 [[따로]] 셉니다.", "업체 제공 혜택 = 업체 모집 뒤 입예협 승인으로 확정 · 세대 혜택 금액 · 대상은 협약 시 확정"))
 new("std", sec=S0, title=T_GL2,
@@ -1191,7 +1191,7 @@ new("std", sec=S0, title=T_MAPA,
 new("std", sec=S0, title=T_MAPB,
     lead="4) 소비자 보호 · 5) 지원 및 정산 · 6) 홍보 및 개인정보 · 7) 독점권 및 기타 계약 조건 - 항목마다 답과 쪽 번호입니다.",
     body=_map_tbl(MAP_B),
-    kp=("필수 포함 사항 [[4) ~ 7) 12개 세부 항목]] - 모두 답했습니다.", "바 1) ~ 7) 합계 23개 세부 항목 · 자유양식 제출서류 10종은 제출서류 쪽"))
+    kp=("필수 포함 사항 [[4) ~ 7) 13개 세부 항목]] - 모두 답했습니다.", "바 1) ~ 7) 합계 24개 세부 항목 · 자유양식 제출서류 10종은 ⟪pg:docs⟫"))
 B.CSS += ".tbl.mpv td.g{white-space:nowrap;font-size:13px;font-weight:800;color:var(--gold)}.tbl.mpv td{padding:7px 11px;font-size:13.5px;line-height:1.36}.tbl.mpv td.k{font-size:14px}"
 
 # ------------------------------------------------------------ 다 1) ~ 8) 수행 업무
@@ -1524,7 +1524,7 @@ SUP1 = [
     ("LIST", "건의 관리표", "건의 접수 → 회신 추적 → ‘협의 완료’ · ‘반영 완료’를 나눠 보고", "council"),
     ("CAFE", "카페 홍보 · 진행 보고", "홍보 콘텐츠 · 가격 자료 · 진행 보고 - 협의회 승인 후 게시", "cafe"),
     ("PRIVACY", "개인정보 · 구매 선택권", "입예협 자료 · 세대 정보는 목적 안에서만 처리 · 특정 제품 · 업체를 권하거나 강제하지 않음", "priv"),
-    ("BOOTH", "사전점검 당일 부스", "현수막 · X배너 · 도우미 · 부스 운영(주관사 제작 · 운영)", "booth"),
+    ("BOOTH", "사전점검 당일 부스", "현수막 · X배너 · 도우미 · 부스 운영(주관사 제작 · 운영 · 협의회에 물품을 넘기지 않음)", "booth"),
     ("DEFECT", "건설 하자 목록 전달", "협의회가 모은 목록 정리 · 공문 초안 · 전달 · 추적(판정 · 보수는 사업주체 · 시공사)", "role"),
 ]
 SUP2 = [
@@ -1668,7 +1668,7 @@ INCOME = [  # (항목, 엣지컴퍼니, 비고)
     ("주관사 직영 품목 판매", "있음 - 조명 · 실링팬 · 커튼 · 욕실 환기(힘펠 휴젠뜨 · 본사 시공)(엣지컴퍼니 매출)", "다른 업체와 같은 공개 심사 · 같은 단가 공개 · 같은 가격 보호 규정"),
     ("공용부 · 경관조명 시공", "있음 - 진단 · 개선안 뒤 협의회 · 관리주체 · 사업주체가 승인할 때만(별도 견적)", "엣지컴퍼니 매출 · 다른 업체 견적과 비교 가능"),
     ("협의회 · 임원에게", "금전 · 물품 제공 없음(공고 자 5) · 협찬금 없음", "협의회 지원은 행사 진행 · 자료 · 인력 등 용역으로만"),
-    ("세대 혜택(입주민 세대에)", f"{FUND_TXT} × {D.FUND_BASIS} = {FT} 상당(안)", "주관사가 직접 사서 세대에 현물 · 서비스로 전달 · 협의회 계좌를 거치지 않음 · 집행 내역은 결과보고서로 공개"),
+    ("세대 혜택(A 세대 직접 · B · C 공용 용역)", f"{FUND_TXT} × {D.FUND_BASIS} = {FT} 상당(안)", "주관사 부담으로 A는 세대에 현물 · 서비스, B · C는 전 세대 공용 용역로 제공 · 협의회 계좌를 거치지 않음 · 집행 내역은 결과보고서로 공개"),
     ("업체 제공 혜택", "박람회 상품권 · 사은품 · 경품 · 현장 할인", "참여업체 확정 후 협의회 승인 · 세대 혜택 15만원과 별도"),
     ("관계자 금품 · 향응", "없음", "공고 라 10) · 자 3)"),
 ]
@@ -1686,7 +1686,7 @@ REPORT = [  # (보고, 시점, 내용)
     ("월간 진행 보고", "매월(입주 지정기간은 주 1회)", "진행 · 일정 · 건의 처리 · A/S 처리 현황"),
     ("업체 모집 · 심사 결과", "업체 확정 시", "참여업체 명단 · 심사표 · 참가비 기준 · 청주 지역 업체 비율"),
     ("박람회 결과보고서", "종료 후 30일 안", "방문 · 상담 · 계약 · 민원 · 가격 비교 결과"),
-    ("세대 혜택 집행 내역", "집행 후 30일 안", "품목 · 수량 · 구매 증빙 · 세대별 수령 확인(동 · 호 비공개)"),
+    ("세대 혜택 집행 내역", "집행 후 30일 안", "A = 품목 · 수량 · 구매 증빙 · 세대별 수령 확인(동 · 호 비공개) · B · C = 과업 · 수량 · 수행 결과"),
     ("에스크로 예치 · 지급 · 환불 내역", "월 1회 · 박람회 뒤", "기관 발행 자료 · 거래 건수 · 환불 처리 기한"),
     ("최종 결과 보고서", "A/S 완료 후 30일 안", "전체 정산 · A/S 처리 결과 · 남은 제조사 보증 안내"),
 ]
@@ -1734,7 +1734,7 @@ new("std", sec=S0, title=T_QUAL,
     lead="공고 ‘라. 참가자격’ 1) ~ 11) - 요건마다 엣지컴퍼니 현황과 증빙 서류 번호(공고 마 1 ~ 10)를 맞췄습니다.",
     body=ftable(["참가자격", "엣지컴퍼니 현황", "서류"], ["38%", "53%", "9%"], "".join(
         f'<tr><td class="k">{t(a)}</td><td>{t(b) if not b.startswith("⟦") else b}</td><td class="ev">{t(c)}</td></tr>' for a, b, c in QUAL), "q17"),
-    kp=("참가자격 [[1) ~ 11) 모두]] - 요건마다 증빙 서류를 붙였습니다.", f"자본금 = 법인등기 기재 2억원 · 누적 수임 {_cum[3]}개 단지 · {_cum[4]:,}세대는 ‘수임’ 표기(전신 실적 · 입주 예정 포함 · 주관 아님)"))
+    kp=("참가자격 [[1) ~ 11) 모두]] - 요건마다 증빙 서류 번호를 맞췄습니다.", f"자본금 = 법인등기 기재 2억원 · 누적 수임 {_cum[3]}개 단지 · {_cum[4]:,}세대는 ‘수임’ 표기(전신 실적 · 입주 예정 포함 · 주관 아님)"))
 B.CSS += (".tbl.q17 td{padding:8px 12px;font-size:13.5px;line-height:1.36;vertical-align:middle}.tbl.q17 td.k{font-size:13.5px}"
           ".tbl.q17 td.ev{font-size:13.5px;color:var(--gold);font-weight:700;text-align:center}")
 
@@ -1861,10 +1861,10 @@ B.CSS += (".mnx{display:grid;grid-template-columns:1.62fr 1fr;gap:18px;flex:1;mi
           ".tgx{display:inline-block;font-size:11.5px;font-weight:800;border-radius:99px;padding:3px 9px;white-space:nowrap}"
           ".tgx.tg-c{background:var(--gold);color:#0d1e33}.tgx.tg-f{border:1.5px solid #9fd3c7;color:#9fd3c7}"
           ".tgx.tg-v{border:1.5px dashed rgba(255,255,255,.55);color:var(--sub)}.tgx.tg-e{border:1.5px solid rgba(255,255,255,.35);color:var(--sub)}"
-          ".mnr{display:flex;flex-direction:column;gap:12px;min-height:0}.mnr h4{font-size:15px;color:var(--gold);letter-spacing:.04em}"
-          ".mx{border:1px solid var(--line);border-radius:12px;padding:11px 14px;display:flex;flex-direction:column;gap:8px}"
+          ".mnr{display:flex;flex-direction:column;gap:7px;min-height:0}.mnr h4{font-size:15px;color:var(--gold);letter-spacing:.04em}"
+          ".mx{border:1px solid var(--line);border-radius:12px;padding:8px 13px;display:flex;flex-direction:column;gap:5px}"
           ".mx .mh{display:flex;align-items:baseline;gap:8px}.mx .mh em{font-style:normal;color:var(--gold);font-weight:800}.mx .mh b{font-size:17px}"
-          ".mbar{position:relative;height:28px;border-radius:7px;border:1.5px dashed rgba(200,168,106,.7);overflow:hidden}"
+          ".mbar{position:relative;height:24px!important;flex:none!important;border-radius:7px;border:1.5px dashed rgba(200,168,106,.7);overflow:hidden}"
           ".mbar .mf{position:absolute;left:0;top:0;bottom:0;background:#C8A86A}"
           ".mbar .ml{position:absolute;right:10px;top:0;bottom:0;display:flex;align-items:center;font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap}"
           ".mx p{font-size:12.5px;color:var(--sub);line-height:1.4}")
