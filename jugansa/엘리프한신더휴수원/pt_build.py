@@ -4,7 +4,7 @@
 옛 30분 · 20분판(금액 포함)은 PT준비/이전판_30분20분_금액포함_1104/. ★ = 넘기며 보여 줄 쪽. 근거 메모 = PT_준비_1108.md
     python pt_build.py
 """
-import os, pathlib, re, subprocess
+import io, os, pathlib, re, subprocess
 import pymupdf
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -15,16 +15,17 @@ PROP = os.path.join(HERE, "엣지컴퍼니_엘리프한신더휴수원_입주박
 DOCS = [("00_제출본_약속정리", "00_제출본_약속정리_내부용"), ("01_PT_발표대본_25분", "01_PT_발표대본_25분"),
         ("02_예상질문_답변", "02_예상질문_답변_내부용"), ("03_당일_체크리스트", "03_당일_시간표_체크리스트"),
         ("04_화면요약", "04_화면요약_2장"), ("04c_감사인사", "04c_감사인사"), ("04d_AS창구", "04d_AS창구_1장"),
-        ("04e_PT정리쪽", "04e_PT정리쪽_3장"), ("09_협의회_확인메일_초안", "09_협의회_회신메일_초안")]
+        ("04e_PT정리쪽", "04e_PT정리쪽_3장"), ("09_협의회_확인메일_초안", "09_협의회_회신메일_초안"),
+        ("el_bond_sample", "el_bond_sample")]
 # 대본 01의 화면 순서와 같아야 함 — S1 · S2 = 요약 ① ②(금액 없는 판) · END = 감사 인사 · AS = A/S 한 창구 접수 화면(04d)
 # Q · C6 · PR = 정리 쪽 ① 다섯 질문(p.60) ② 두 회차 기준 여섯 가지(p.66) ③ 가격 공개 · 계약 보호(p.32 · 34 · 69) — 제안서 문장에서 금액만 뺌
 # BR = 경인 지사(경기남부) 계약서 모자이크본 · VR = 업체 모집 화면(파일이 있을 때만)
 # 뺀 쪽: 59 · 66 · 69 · 86 ~ 90 · 113(금액) · 60 · 68 · 70 · 77(‘세대 혜택’ 표현) · 79 · 82(자기 평가 약점 · 보증 0건 = 질의 때 말로만)
-#        39(견본 증권 그림에 고양창릉 S-5BL 이름이 남아 있음 = 제출본 그대로 · 화면에 띄우지 않음)
+# B39 = p.39 계약이행 · 하자보증 24개월 — 제출본 견본 그림에 고양창릉 S-5BL 이름이 남아 있어 PT 화면에서만 엘리프 견본(el_bond_sample)으로 바꿈(본부장 11-04 '견본이니 교체해도 상관없음' · 제출본은 그대로)
 BRANCH = os.path.join(PT, "07_질의대비_경기남부지사_계약서_가림.pdf")   # 11-03 전대차계약서 모자이크본(칸 12px @200dpi)
 BR_IN_DECK = True   # 11-03 본부장 확인: 소재지 '문화촌로11번길 43-8' 지번 = '비전동 866-3'(제안서 주소와 같음)
 RECRUIT = os.path.join(PT, "근거", "업체모집_1장.pdf")
-ORDER25 = [1, 64, "Q", 16, 17, 67, 20, 11, 75, "BR", 76, 65, "C6", 29, "VR", "PR", 34, 71, "AS", 45, 63, 72, 62, 74, "S1", "S2", "END"]
+ORDER25 = [1, 64, "Q", 16, 17, 67, 20, 11, 75, "BR", 76, 65, "C6", 29, "VR", "PR", 34, 71, "AS", 45, "B39", 63, 72, 62, 74, "S1", "S2", "END"]
 HANDOUT = [1, "S1", "Q", 16, 67, "C6", "PR", 71, "AS", 76, "S2"]   # 08 유인물 A4 11쪽 · 15부 이상(안내 3-(2)) · 금액 0 · 휴대번호 있는 p.11 · 계약서는 넣지 않음
 # 금액 · 금전 혜택 · 타업체 · 협의회 임원 이름 — 화면 · 유인물 · 대본(말하는 부분)에 남으면 중단
 BAN = re.compile(r"\d[\d,.]*\s*(만\s*)?원|\d\s*억|만원|상당|세대\s*혜택|지원금|발전|기금|상품권|경품|사은품|선물|이랑|목수와|칠쟁이|조동진")
@@ -40,10 +41,33 @@ def to_pdf(name, out):
     return dst
 
 
-def deck(order, prop, summ, end, asp, extra):
+def bond39(prop, sample_pdf):
+    """p.39 한 쪽 + 그림만 엘리프 견본으로 바꿈(원래 그림 1818 × 2573 자리 그대로)."""
+    one = pymupdf.open()
+    one.insert_pdf(prop, from_page=38, to_page=38)
+    pg = one[0]
+    xref = next(i["xref"] for i in pg.get_image_info(xrefs=True) if (i["width"], i["height"]) == (1818, 2573))
+    with pymupdf.open(sample_pdf) as sd:
+        src = sd[0]
+        pix = src.get_pixmap(matrix=pymupdf.Matrix(1818 / src.rect.width, 1818 / src.rect.width))
+    # 제안서 틀이 그림 위쪽 약 5%를 'SAMPLE' 띠로 덮음 → 원래 그림처럼 위에 여백을 두고 96%로 줄여 가운데에
+    from PIL import Image
+    im = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+    small = im.resize((round(pix.width * 0.96), round(pix.height * 0.96)), Image.LANCZOS)
+    canvas = Image.new("RGB", (1818, 2573), "white")
+    canvas.paste(small, ((1818 - small.width) // 2, 135))
+    buf = io.BytesIO()
+    canvas.save(buf, "JPEG", quality=92)
+    pg.replace_image(xref, stream=buf.getvalue())
+    return one
+
+
+def deck(order, prop, summ, end, asp, extra, b39=None):
     d = pymupdf.open()
     for o in order:
-        if o in ("Q", "C6", "PR"):
+        if o == "B39":
+            d.insert_pdf(b39)
+        elif o in ("Q", "C6", "PR"):
             i = ("Q", "C6", "PR").index(o)
             d.insert_pdf(extra, from_page=i, to_page=i)
         elif o == "S1" or o == "S2":
@@ -81,10 +105,12 @@ def main():
     prop, summ = pymupdf.open(PROP), pymupdf.open(made["04_화면요약_2장"])
     end, asp = pymupdf.open(made["04c_감사인사"]), pymupdf.open(made["04d_AS창구_1장"])
     extra = pymupdf.open(made["04e_PT정리쪽_3장"])
+    b39 = bond39(prop, made["el_bond_sample"])
     assert (prop.page_count, summ.page_count, end.page_count, asp.page_count, extra.page_count) == (115, 2, 1, 1, 3),         (prop.page_count, summ.page_count, end.page_count, asp.page_count, extra.page_count)
-    d = deck(ORDER25, prop, summ, end, asp, extra)
+    d = deck(ORDER25, prop, summ, end, asp, extra, b39)
     h = deck(HANDOUT, prop, summ, end, asp, extra)
     bad = banned(d, "05 화면") + banned(h, "08 유인물") + script_banned()
+    bad += [f"05 화면 {i + 1}쪽: 다른 단지 이름 {m.group(0)}" for i, pg in enumerate(d) for m in re.finditer(r"고양|창릉|신분평", pg.get_text())]
     if bad:
         raise SystemExit("금액 · 금지어가 남았습니다(안내 3-(4)):\n" + "\n".join(bad))
     d.set_metadata({"title": "엘리프 한신더휴 수원 PT 발표화면 (25분 · %d쪽)" % d.page_count, "author": "주식회사 엣지컴퍼니"})
@@ -97,7 +123,7 @@ def main():
     a.save(os.path.join(PT, "06_부록_제안서전체_115쪽_화면금지.pdf"), garbage=1, deflate=True)
     for f in (end, extra):
         f.close()
-    for k in ("04c_감사인사", "04e_PT정리쪽_3장"):
+    for k in ("04c_감사인사", "04e_PT정리쪽_3장", "el_bond_sample"):
         os.remove(made[k])   # 05 · 08 안에만 씀
     old = os.path.join(PT, "06_부록_제안서전체_115쪽.pdf")
     if os.path.exists(old):
