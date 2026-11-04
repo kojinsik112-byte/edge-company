@@ -57,7 +57,7 @@ def apply(G):
                 "part:주관 [[성공사례]]", "part:2023년 이후 수임 단지", "part:앞으로 주관할 단지", "실제 박람회 [[현장]]", "part:타 단지가 남긴", "part:행사 밖에서도"],
         "ch5": ["공동구매 [[품목]]을 한눈에", G["T_ITEMS"], G["T_OPT"], G["T_VENDORS"], "[[4단계]] 공개 심사 프로세스", "업체 [[심사 기준]]과 계약 원칙",
                 G["T_LICENSE"], "참여업체 [[하자보증]] 체계"],
-        "ch6": [G["T_LOCAL"], "part:[[인근 지역업체]] 선정 원칙", G["T_PM"], "part:12개 지사망", "part:이어야 합니까", "part:여러 단지를 [[연속으로]]"],
+        "ch6": [G["T_LOCAL"], "part:[[인근 지역업체]] 선정 원칙", G["T_PM"], "part:여러 단지를 [[연속으로]]"],
         "ch7": [G["T_INCOME"], G["T_REPORT"], G["T_FAIR"]],
         "ch8": [G["T_SUP1"], G["T_SUP2"], G["T_ROLE"], G["T_REQ"], "part:[[협의회 업무지원]]", "part:[[구조·시공 품질]] 점검", "보이지 않는 [[하자]]까지 확인합니다",
                 "part:[[보고서 샘플]]", "사전점검 당일 [[현장 지원]]", "위임장, 이제 [[휴대폰으로]] 받습니다", G["T_RATE"],
@@ -74,13 +74,15 @@ def apply(G):
 
     # 09장 차별화 · 요약
     S9 = "09. 차별화 · 요약"
-    pages.append(("divider", dict(n="09", title=G["T_CH9"], bl=["단지지원 컨설팅(협의회 요청 시)", "외부 경관조명 진단", "조명 설계 · 생산 · 시공", "특화서비스 요약 · 핵심 제안 6가지"])))
-    for x in ["part:[[단지지원 컨설팅]]", "part:[[조명 개선]]", G["T_LX"], "kind:landscape", "part:경관조명 [[진단 · 제안]]", "part:[[조명 수직계열화]]",
-              "part:특화서비스 요약 ①", "part:특화서비스 요약 ②", "part:특화서비스 요약 ③", G["T_CORE6"]]:
+    pages.append(("divider", dict(n="09", title=G["T_CH9"], bl=["단지지원 컨설팅(협의회 요청 시)", "외부 경관조명 진단", "조명 설계 · 생산 · 시공", "핵심 제안 6가지"])))
+    for x in ["part:[[단지지원 컨설팅]]", "part:[[조명 개선]]", G["T_LX"], "kind:landscape", "part:경관조명 [[진단 · 제안]]", "part:[[조명 수직계열화]]", G["T_CORE6"]]:
         k, kw = T(x)
         kw["sec"] = S9
         pages.append((k, kw))
-    pages += [T("kind:closing"), T("kind:contact")]
+    pages += [T("kind:contact")]
+    # 본부장 11-04 '중복 줄이자': 앞쪽 요약을 되풀이하는 6쪽은 뺌(지사 설명 2 · 특화서비스 요약 3 · 마무리 1) — 쪽 번호 참조 없음
+    for x in ["part:12개 지사망", "part:이어야 합니까", "part:특화서비스 요약 ①", "part:특화서비스 요약 ②", "part:특화서비스 요약 ③", "kind:closing"]:
+        T(x)
 
     # 버리는 장 — 옛 장 간지(평가표 장 간지로 바뀜) · 경관조명 간지(09장 간지로 합침)
     drop = [i for i, (k, kw) in enumerate(OLD) if i not in used and k in ("divider", "divider_lx")]
