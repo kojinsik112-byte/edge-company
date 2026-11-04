@@ -204,9 +204,14 @@ FIX += [('<img src="assets_ins/n60_kids_cinema_c.jpg" style="object-position:74%
 # 본부장 11-04: 118 · 120쪽 경관조명 사진 = 설명 띠가 건물 · 조명을 덮음 → 설명은 사진 아래로 · 조감 사진은 건물 쪽으로
 RX_SB += [(r'<div class="lxo">', '<style>.lxo .gal figure,.gal.lx5 figure{display:flex;flex-direction:column}.lxo .gal figure img,.gal.lx5 figure img{flex:1 1 0;min-height:0;height:auto!important}.lxo .gal figcaption,.gal.lx5 figcaption{position:static!important;flex:0 0 auto;padding:6px 12px!important;font-size:13.5px!important}.lxo .gal figcaption small,.gal.lx5 figcaption small{font-size:11.5px!important;margin-top:0!important}</style><div class="lxo">')]
 FIX += [('<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 50%"><figcaption>② 단지 조감 야간',
-         '<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 80%"><figcaption>② 단지 조감 야간'),
+         '<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 62%"><figcaption>② 단지 조감 야간'),
         ('<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 50%"><figcaption>단지 조감 야간 경관',
-         '<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 80%"><figcaption>단지 조감 야간 경관')]
+         '<img src="assets_ins/sb_lx_front2.jpg" alt="" style="object-position:50% 42%"><figcaption>단지 조감 야간 경관')]
+# 본부장 11-04 새 야간 연출 이미지 5장 → 120쪽 납작한 칸에서 조명 부분이 보이게 위치 조정
+FIX += [('<img src="assets_ins/sb_lx_front1.jpg" alt="" style="object-position:50% 50%"><figcaption>동 파사드 라인조명',
+         '<img src="assets_ins/sb_lx_front1.jpg" alt="" style="object-position:50% 74%"><figcaption>동 파사드 라인조명'),
+        ('<img src="assets_ins/sb_lx_play.jpg" alt="" style="object-position:50% 50%"><figcaption>조경',
+         '<img src="assets_ins/sb_lx_play.jpg" alt="" style="object-position:50% 76%"><figcaption>조경')]
 GONE_SB = ["경인 지사",   # 본부장 11-04: 경인 지사 → 경기남부 지사
             "(겸임)", "가장 늦은 무상", "30일 안 전담", "<em>20회</em>", "쇼룸 · 사무실 운영", "청주 지사 쇼룸", "쇼룸 방문 상담도", "2026.12 갱신", "2026.12.31", "5개 분야", "응급 대응 지원", "미정 항목", "다른 단지와 겸임", "PM에만 씀", "주관 10곳 + 입주 예정", "~ 2026.12)", "2029년", "가장 늦은 날)", "협의회 명의 지원", "물품지원 이행", "공구이력 20회", "03 · 04 · 05장", "사내 간호사", "타일 1", "- 금액 · 보증 대상", "· 금액 · 보증 대상", ">금액은 협약 때", "· 금액은 협약 때", "보증 금액 · 보증", "발급 한도 확인 완료", "최대 10억"]
 FIX_SALE = [  # data.FUND_TARGET == 'sale'(일반분양 655)일 때만
