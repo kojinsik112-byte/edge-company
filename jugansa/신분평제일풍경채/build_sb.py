@@ -1596,7 +1596,7 @@ new("std", sec=S0, title=T_LX, lead=_lx_lead, body=_lx_body,
 # ------------------------------------------------------------ 담당 체계 · 청주 지사
 new("std", sec=S0, title=T_PM,
     lead=f"시공 · A/S는 {BR}가 관리 · 출동하고, 회의는 책임자가 단지로 찾아갑니다. 계약과 책임은 울산 본사입니다.",
-    body=('<div class="nb"><div class="pmx">'
+    body=('<div class="nb"><div class="pmx" style="grid-template-columns:1fr 1fr .78fr">'
           '<div class="pc"><h3><i>PEOPLE</i>담당 체계</h3>'
           + B.rows([
               ("책임자", f"주관사업 총괄 본부장 {D.MANAGER[0]} - 계약 후 실제 업무를 맡을 책임자"),
@@ -1610,8 +1610,28 @@ new("std", sec=S0, title=T_PM,
               ("직접 방문", "대면 미팅 · 현장 답사 · 설명회 · PT에 책임자가 직접 · 정례회의 배석"),
               ("출동", "청주 지사 + 청주권 참여업체 · 업체 미응답 건은 주관사가 맡습니다."),
               ("입주 지정기간", "단지 안 상주 창구(위치 · 시간은 협의회 · 관리주체가 정함)"),
-          ], title_w=96) + '</div></div></div>'),
+          ], title_w=96) + '</div>'
+          '<div class="pc" style="display:flex;flex-direction:column"><h3><i>SHOWROOM</i>경기남부 지사</h3>'
+          '<div style="flex:1;min-height:0;border-radius:10px;overflow:hidden;border:1px solid rgba(200,168,106,.32)">'
+          '<img src="assets_ins/kyeongin_showroom.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>'
+          '<p style="font-size:12.5px;color:var(--sub);line-height:1.45;margin-top:8px">SB_SHOWROOM_CAP</p></div>'
+          '</div></div>'),
     kp=("책임자가 [[찾아가고]], 청주 지사가 [[관리 · 출동]]합니다.", "현장 책임자 · 주요 협력업체 변경 = 협의회 사전 동의 · 계약과 책임은 울산 본사"))
+
+# ------------------------------------------------------------ 박람회 현장 ②(본부장 11-04 사진 · 실적표 B-1 · B-3 · B-5 단지)
+T_FIELD2 = "주최 [[엣지컴퍼니]], 박람회 현장 ②"
+FIELD2 = [("ev_cp_entrance", "e편한세상 에코델타 센터포인트", "입구 현수막 · 주최 (주)엣지컴퍼니 · 2025.02 벡스코"),
+          ("ev_cp_desk", "접수 · 정회원 등록 데스크", "엣지컴퍼니 운영팀이 직접 응대"),
+          ("ev_cp_hall", "박람회장 전경", "품목 존 · 상담 데스크 · 가족 동선"),
+          ("ev_cp_brief", "입주설명회", "입주 준비 사항 · 일정 안내"),
+          ("ev_cp_mayor", "입주설명회 · 구청장 축사", "지자체와 함께한 설명회"),
+          ("ev_db_gate", "에코델타 대성베르힐", "입구 · 2025.11 벡스코")]
+new("std", sec=S0, title=T_FIELD2,
+    lead="서류 6 실적표에 올린 단지의 실제 박람회 모습입니다. 입구 현수막에 '주최 (주)엣지컴퍼니'가 적혀 있고, 접수부터 설명회까지 저희 운영팀이 맡았습니다.",
+    body=('<div class="nb"><div class="gal" style="grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;flex:1 1 0">'
+          + "".join(f'<figure><img src="assets_ins/{f}.jpg" alt=""><figcaption>{t(a)}<small>{t(b)}</small></figcaption></figure>' for f, a, b in FIELD2)
+          + '</div></div>'),
+    kp=("현수막의 [[주최 엣지컴퍼니]] - 입구부터 접수 · 설명회까지 직접 운영했습니다.", "타 단지 박람회 사진(2025) · 서류 6 실적표 B-1 · B-3 · B-5와 같은 단지"))
 
 STAFF7 = [  # (구분, 인원, 역할, 기간)
     ("총괄 책임자", "1명", "주관사업 총괄 본부장 · 관리감독 · 계약 · PT", "계약 ~ A/S 완료"),
