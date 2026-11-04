@@ -213,7 +213,7 @@ def p6_table(seal_uri):
     tr = ""
     for i, (m, nm, n) in enumerate(rows, 1):
         when, where = D.EXPO_VENUE.get(nm, ("NICE 연혁 기재 주관" if EV6.get(nm) == "A" else "일정 자료 요청 시 제출", "-"))
-        tr += (f'<tr><td class="n">{i}</td><td>{m}</td><td>{e(nm)}</td><td class="r">{n:,}</td><td>{e(when).replace(chr(10), '<br>')}</td>'
+        tr += (f'<tr><td class="n">{i}</td><td>{m}</td><td>{e(nm)}</td><td class="r">{n:,}</td><td style="white-space:nowrap">{e(when).replace(chr(10), '<br>')}</td>'
                f'<td>{e(where)}</td><td>{e(EV6.get(nm, "요청 시"))}</td></tr>')
     ev_n = sum(1 for _m, nm, _n in rows if nm in EV6)
     body = ('<h2>최근 5년간 관련 행사 실적표</h2>'
