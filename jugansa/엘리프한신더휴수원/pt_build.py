@@ -15,11 +15,12 @@ PROP = os.path.join(HERE, "엣지컴퍼니_엘리프한신더휴수원_입주박
 DOCS = [("00_제출본_약속정리", "00_제출본_약속정리_내부용"), ("01_PT_발표대본_25분", "01_PT_발표대본_25분"),
         ("02_예상질문_답변", "02_예상질문_답변_내부용"), ("03_당일_체크리스트", "03_당일_시간표_체크리스트"),
         ("04_화면요약", "04_화면요약_2장"), ("04c_감사인사", "04c_감사인사"), ("04d_AS창구", "04d_AS창구_1장"),
-        ("04e_PT정리쪽", "04e_PT정리쪽_7장"), ("09_협의회_확인메일_초안", "09_협의회_회신메일_초안"),
+        ("04e_PT정리쪽", "04e_PT정리쪽_8장"), ("09_협의회_확인메일_초안", "09_협의회_회신메일_초안"),
         ("el_bond_sample", "el_bond_sample")]
 # 대본 01의 화면 순서와 같아야 함 — S1 · S2 = 요약 ① ②(금액 없는 판) · END = 감사 인사 · AS = A/S 한 창구 접수 화면(04d)
 # Q · C6 · PR = 정리 쪽 ① 다섯 질문(p.60) ② 두 회차 기준 여섯 가지(p.66) ③ 가격 공개 · 계약 보호(p.32 · 34 · 69) — 제안서 문장에서 금액만 뺌
 # W = 입주 걱정 세 가지(바가지 · 부실 업체 · A/S) + 협의회께 한 줄 · CK = 유인물 마지막 장 우리 집 체크카드(견본)
+# D = 우리 집에 다는 것(직영 조명 · 커튼 · 실링팬 + 휴젠뜨 · p.28 · 68 · 영주자이 실적 · 금액 없음 · 본부장 11-05)
 # V1 · V2 = 영상 자리(드론 1분 30초 ~ 2분 · 경관조명 광고 30초 · mp4는 따로 재생) — 영상이 안 돌 때 대신 보여 주는 화면
 # BR = 경인 지사(경기남부) 계약서 모자이크본 · VR = 업체 모집 화면(파일이 있을 때만)
 # 뺀 쪽: 59 · 66 · 69 · 86 ~ 90 · 113(금액) · 60 · 68 · 70 · 77(‘세대 혜택’ 표현) · 79 · 82(자기 평가 약점 · 보증 0건 = 질의 때 말로만)
@@ -27,10 +28,10 @@ DOCS = [("00_제출본_약속정리", "00_제출본_약속정리_내부용"), ("
 BRANCH = os.path.join(PT, "07_질의대비_경기남부지사_계약서_가림.pdf")   # 11-03 전대차계약서 모자이크본(칸 12px @200dpi)
 BR_IN_DECK = True   # 11-03 본부장 확인: 소재지 '문화촌로11번길 43-8' 지번 = '비전동 866-3'(제안서 주소와 같음)
 RECRUIT = os.path.join(PT, "근거", "업체모집_1장.pdf")
-EXTRA = ("Q", "C6", "PR", "W", "CK", "V1", "V2")   # 04e 쪽 순서
+EXTRA = ("Q", "C6", "PR", "W", "CK", "V1", "V2", "D")   # 04e 쪽 순서
 # 본부장 11-05: 회사 소개(3분 안) → 입주 걱정 세 가지(입주민 한 줄 + 협의회 한 줄) → 협의회 몫 → 마무리 · 드론 영상은 맨 앞, 경관 광고 영상은 경관 자리
-ORDER25 = ["V1", 1, 16, 17, 67, 20, 11, 75, "BR", 64, "W", "PR", 34, 29, "VR", "B39", 71, "AS", 45, 65, "C6", 76, 63, 72, 62, "V2", 74, "W", "S2", "END"]
-HANDOUT = [1, 16, 67, "W", "PR", 29, 71, "AS", "C6", "Q", 76, "S2", "CK"]   # 08 유인물 A4 13쪽 · 15부 이상(안내 3-(2)) · 금액 0 · 휴대번호 있는 p.11 · 계약서는 넣지 않음 · 끝장 = 체크카드
+ORDER25 = ["V1", 1, 16, 17, 67, 20, 11, 75, "BR", 64, "W", "PR", 34, "D", 29, "VR", "B39", 71, "AS", 45, 65, "C6", 76, 63, 72, 62, "V2", 74, "W", "S2", "END"]
+HANDOUT = [1, 16, 67, "W", "PR", "D", 29, 71, "AS", "C6", "Q", 76, "S2", "CK"]   # 08 유인물 A4 14쪽 · 15부 이상(안내 3-(2)) · 금액 0 · 휴대번호 있는 p.11 · 계약서는 넣지 않음 · 끝장 = 체크카드
 # 금액 · 금전 혜택 · 타업체 · 협의회 임원 이름 — 화면 · 유인물 · 대본(말하는 부분)에 남으면 중단
 BAN = re.compile(r"\d[\d,.]*\s*(만\s*)?원|\d\s*억|만원|상당|세대\s*혜택|지원금|발전|기금|상품권|경품|사은품|선물|이랑|목수와|칠쟁이|조동진")
 CHROME = next(p for p in (r"C:\Program Files\Google\Chrome\Application\chrome.exe",
@@ -108,7 +109,7 @@ def main():
     made = {out: to_pdf(name, out) for name, out in DOCS}
     prop, summ = pymupdf.open(PROP), pymupdf.open(made["04_화면요약_2장"])
     end, asp = pymupdf.open(made["04c_감사인사"]), pymupdf.open(made["04d_AS창구_1장"])
-    extra = pymupdf.open(made["04e_PT정리쪽_7장"])
+    extra = pymupdf.open(made["04e_PT정리쪽_8장"])
     b39 = bond39(prop, made["el_bond_sample"])
     assert (prop.page_count, summ.page_count, end.page_count, asp.page_count, extra.page_count) == (115, 2, 1, 1, len(EXTRA)),         (prop.page_count, summ.page_count, end.page_count, asp.page_count, extra.page_count)
     d = deck(ORDER25, prop, summ, end, asp, extra, b39)
@@ -127,7 +128,7 @@ def main():
     a.save(os.path.join(PT, "06_부록_제안서전체_115쪽_화면금지.pdf"), garbage=1, deflate=True)
     for f in (end, extra):
         f.close()
-    for k in ("04c_감사인사", "04e_PT정리쪽_7장", "el_bond_sample"):
+    for k in ("04c_감사인사", "04e_PT정리쪽_8장", "el_bond_sample"):
         os.remove(made[k])   # 05 · 08 안에만 씀
     old = os.path.join(PT, "06_부록_제안서전체_115쪽.pdf")
     if os.path.exists(old):
