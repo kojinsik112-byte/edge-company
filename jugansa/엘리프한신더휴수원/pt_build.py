@@ -15,7 +15,7 @@ PROP = os.path.join(HERE, "엣지컴퍼니_엘리프한신더휴수원_입주박
 DOCS = [("00_제출본_약속정리", "00_제출본_약속정리_내부용"), ("01_PT_발표대본_25분", "01_PT_발표대본_25분"),
         ("02_예상질문_답변", "02_예상질문_답변_내부용"), ("03_당일_체크리스트", "03_당일_시간표_체크리스트"),
         ("04_화면요약", "04_화면요약_2장"), ("04c_감사인사", "04c_감사인사"), ("04d_AS창구", "04d_AS창구_1장"),
-        ("04e_PT정리쪽", "04e_PT정리쪽_6장"), ("04f_PT큰글씨", "04f_PT큰글씨_16장"), ("09_협의회_확인메일_초안", "09_협의회_회신메일_초안"),
+        ("04e_PT정리쪽", "04e_PT정리쪽_6장"), ("04f_PT큰글씨", "04f_PT큰글씨_16장"), ("04g_증거쪽", "04g_증거쪽_5장"), ("09_협의회_확인메일_초안", "09_협의회_회신메일_초안"),
         ("el_bond_sample", "el_bond_sample")]
 # 대본 01의 화면 순서와 같아야 함 — S1 · S2 = 요약 ① ②(금액 없는 판) · END = 감사 인사 · AS = A/S 한 창구 접수 화면(04d)
 # Q · C6 · PR = 정리 쪽 ① 다섯 질문(p.60) ② 두 회차 기준 여섯 가지(p.66) ③ 가격 공개 · 계약 보호(p.32 · 34 · 69) — 제안서 문장에서 금액만 뺌
@@ -30,6 +30,14 @@ BR_IN_DECK = True   # 11-03 본부장 확인: 소재지 '문화촌로11번길 43
 RECRUIT = os.path.join(PT, "근거", "업체모집_1장.pdf")
 EXTRA = ("Q", "C6", "PR", "W", "CK", "D")   # 04e 쪽 순서(밝은 색 · 유인물용 자세한 쪽)
 # 04f = 빔프로젝터용 큰 글씨 장(본부장 11-05 '글자가 작다 · 아래쪽은 머리에 가림' → 핵심은 위 · 아래 4분의 1 비움) · 사진 칸 = 원본html/사진/*.jpg(있으면 자동으로 들어감)
+EV = (16, 20, 39, 62, 74)   # 화면에 넘겨 보여 주는 제안서 쪽 — 제안서 HTML에서 그 쪽만 뽑아 글자를 키우고 KEY POINT를 위로(본부장 11-05 · 제출본은 그대로)
+EV_CSS = """<style>
+.pt>.hd{order:1}.pt>h1{order:2}.pt>.lead{order:3}.pt>.kp{order:4;margin:6px 0 10px}.pt>.rule{order:5}.pt>.ct{order:6}.pt>.ft{order:7}
+.pt>.kp small{display:none}
+.pt>.lead{font-size:17px}
+.pt .tbl td,.pt .tbl th{font-size:17px!important;line-height:1.5!important;padding-top:8px;padding-bottom:8px}
+.pt .lxd b{font-size:17px!important}.pt .lxd p{font-size:14.5px!important;line-height:1.5}
+</style></head>"""
 BIG = ("K1", "K2", "K3", "KW", "KP", "KM", "KD", "KS", "KA", "KAS", "K7", "KC", "KR", "KE", "V1", "V2")
 # 본부장 11-05: 회사 소개(3분 안) → 입주 걱정 세 가지(입주민 한 줄 + 협의회 한 줄) → 협의회 몫 → 마무리 · 드론 영상은 맨 앞, 경관 광고 영상은 경관 자리
 ORDER25 = ["V1", 1, "K1", 16, 20, "K2", "BR", "K3", "KW", "KP", "KM", "KD", "KS", "VR", "B39", "KA", "KAS", "K7", "KC", "KR", 62, "V2", 74, "KW", "KE", "END"]   # 제안서 쪽은 증거로 넘겨 보여 주는 쪽만(16 · 20 · 39 · 62 · 74) · p.11(휴대번호 · 경력 줄)은 K2로 대체
@@ -48,10 +56,10 @@ def to_pdf(name, out):
     return dst
 
 
-def bond39(prop, sample_pdf):
+def bond39(prop, sample_pdf, i=38):
     """p.39 한 쪽 + 그림만 엘리프 견본으로 바꿈(원래 그림 1818 × 2573 자리 그대로)."""
     one = pymupdf.open()
-    one.insert_pdf(prop, from_page=38, to_page=38)
+    one.insert_pdf(prop, from_page=i, to_page=i)
     pg = one[0]
     xref = next(i["xref"] for i in pg.get_image_info(xrefs=True) if (i["width"], i["height"]) == (1818, 2573))
     with pymupdf.open(sample_pdf) as sd:
@@ -69,7 +77,15 @@ def bond39(prop, sample_pdf):
     return one
 
 
-def deck(order, prop, summ, end, asp, extra, b39=None, big=None):
+def evidence_html():
+    s = open(PROP[:-4] + ".html", encoding="utf-8").read()
+    at = [m.start() for m in re.finditer(r'<section class="page', s)] + [s.rindex("</body>")]
+    head = s[:at[0]].replace("</head>", EV_CSS, 1).replace("<head>", '<head><base href="%s/">' % pathlib.Path(HERE).as_uri(), 1)
+    body = "".join(s[at[p - 1]:at[p]].replace('<section class="page"', '<section class="page pt"', 1) for p in EV)
+    open(os.path.join(SRC, "04g_증거쪽.html"), "w", encoding="utf-8").write(head + body + "</body></html>")
+
+
+def deck(order, prop, summ, end, asp, extra, b39=None, big=None, ev=None):
     d = pymupdf.open()
     for o in order:
         if o == "B39":
@@ -90,6 +106,9 @@ def deck(order, prop, summ, end, asp, extra, b39=None, big=None):
             f = BRANCH if o == "BR" else RECRUIT
             if os.path.exists(f) and (o == "VR" or BR_IN_DECK):
                 d.insert_pdf(pymupdf.open(f))
+        elif ev and o in EV:
+            i = EV.index(o)
+            d.insert_pdf(ev, from_page=i, to_page=i)
         else:
             d.insert_pdf(prop, from_page=o - 1, to_page=o - 1)
     return d
@@ -111,15 +130,18 @@ def script_banned():
 
 
 def main():
+    evidence_html()
     made = {out: to_pdf(name, out) for name, out in DOCS}
     prop, summ = pymupdf.open(PROP), pymupdf.open(made["04_화면요약_2장"])
     end, asp = pymupdf.open(made["04c_감사인사"]), pymupdf.open(made["04d_AS창구_1장"])
     extra = pymupdf.open(made["04e_PT정리쪽_6장"])
     big = pymupdf.open(made["04f_PT큰글씨_16장"])
     assert big.page_count == len(BIG), big.page_count
-    b39 = bond39(prop, made["el_bond_sample"])
+    ev = pymupdf.open(made["04g_증거쪽_5장"])
+    assert ev.page_count == len(EV), ev.page_count
+    b39 = bond39(ev, made["el_bond_sample"], EV.index(39))
     assert (prop.page_count, summ.page_count, end.page_count, asp.page_count, extra.page_count) == (115, 2, 1, 1, len(EXTRA)),         (prop.page_count, summ.page_count, end.page_count, asp.page_count, extra.page_count)
-    d = deck(ORDER25, prop, summ, end, asp, extra, b39, big)
+    d = deck(ORDER25, prop, summ, end, asp, extra, b39, big, ev)
     h = deck(HANDOUT, prop, summ, end, asp, extra, big=big)
     bad = banned(d, "05 화면") + banned(h, "08 유인물") + script_banned()
     bad += [f"05 화면 {i + 1}쪽: 다른 단지 이름 {m.group(0)}" for i, pg in enumerate(d) for m in re.finditer(r"고양|창릉|신분평", pg.get_text())]
@@ -133,9 +155,9 @@ def main():
     a.insert_pdf(prop)
     a.set_metadata({"title": "엘리프 한신더휴 수원 제안서 전체 (발표자 노트북 전용 · 화면에 띄우지 않음 · 115쪽)", "author": "주식회사 엣지컴퍼니"})
     a.save(os.path.join(PT, "06_부록_제안서전체_115쪽_화면금지.pdf"), garbage=1, deflate=True)
-    for f in (end, extra, big):
+    for f in (end, extra, big, ev):
         f.close()
-    for k in ("04c_감사인사", "04e_PT정리쪽_6장", "04f_PT큰글씨_16장", "el_bond_sample"):
+    for k in ("04c_감사인사", "04e_PT정리쪽_6장", "04f_PT큰글씨_16장", "04g_증거쪽_5장", "el_bond_sample"):
         os.remove(made[k])   # 05 · 08 안에만 씀
     old = os.path.join(PT, "06_부록_제안서전체_115쪽.pdf")
     if os.path.exists(old):
