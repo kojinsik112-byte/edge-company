@@ -129,6 +129,18 @@ def script_banned():
     return [f"대본: …{t[max(0, m.start() - 25):m.end() + 15]}…" for m in BAN.finditer(t)]
 
 
+def keep(doc, path):
+    """PDF 뷰어가 파일을 열고 있으면 저장이 막힘 → '_새판'으로 저장(뷰어를 닫고 다시 빌드하면 원래 이름으로)."""
+    try:
+        doc.save(path, garbage=1, deflate=True)
+        alt = path[:-4] + "_새판.pdf"
+        if os.path.exists(alt):
+            os.remove(alt)
+    except Exception:
+        doc.save(path[:-4] + "_새판.pdf", garbage=1, deflate=True)
+        print("열려 있어 새판으로 저장:", os.path.basename(path))
+
+
 def main():
     evidence_html()
     made = {out: to_pdf(name, out) for name, out in DOCS}
@@ -148,13 +160,13 @@ def main():
     if bad:
         raise SystemExit("금액 · 금지어가 남았습니다(안내 3-(4)):\n" + "\n".join(bad))
     d.set_metadata({"title": "엘리프 한신더휴 수원 PT 발표화면 (25분 · %d쪽)" % d.page_count, "author": "주식회사 엣지컴퍼니"})
-    d.save(os.path.join(PT, "05_발표화면_25분.pdf"), garbage=1, deflate=True)
+    keep(d, os.path.join(PT, "05_발표화면_25분.pdf"))
     h.set_metadata({"title": "엘리프 한신더휴 수원 2차 PT 유인물 (A4 가로 · %d쪽)" % h.page_count, "author": "주식회사 엣지컴퍼니"})
-    h.save(os.path.join(PT, "08_유인물_A4_%d쪽.pdf" % h.page_count), garbage=1, deflate=True)
+    keep(h, os.path.join(PT, "08_유인물_A4_%d쪽.pdf" % h.page_count))
     a = pymupdf.open()
     a.insert_pdf(prop)
     a.set_metadata({"title": "엘리프 한신더휴 수원 제안서 전체 (발표자 노트북 전용 · 화면에 띄우지 않음 · 115쪽)", "author": "주식회사 엣지컴퍼니"})
-    a.save(os.path.join(PT, "06_부록_제안서전체_115쪽_화면금지.pdf"), garbage=1, deflate=True)
+    keep(a, os.path.join(PT, "06_부록_제안서전체_115쪽_화면금지.pdf"))
     for f in (end, extra, big, ev):
         f.close()
     for k in ("04c_감사인사", "04e_PT정리쪽_6장", "04f_PT큰글씨_16장", "04g_증거쪽_5장", "el_bond_sample"):
