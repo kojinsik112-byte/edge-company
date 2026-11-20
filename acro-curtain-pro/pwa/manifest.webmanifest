@@ -1,0 +1,17 @@
+{
+  "name": "ACRO CURTAIN PRO",
+  "short_name": "커튼계산기",
+  "description": "커튼·블라인드 실측 및 원단 자동 산출 계산기",
+  "lang": "ko",
+  "start_url": "/curtain-pro",
+  "scope": "/curtain-pro",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8F8F6",
+  "theme_color": "#1F2023",
+  "icons": [
+    { "src": "/curtain-pro/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/curtain-pro/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/curtain-pro/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
