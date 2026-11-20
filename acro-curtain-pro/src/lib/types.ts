@@ -212,6 +212,8 @@ export interface CurtainDefaults {
   method: CurtainMethod;
   curtainType: CurtainType;
   wideThreshold: number; // 이 폭 이상이면 광폭 원단 안내
+  widthMode: 'field' | 'strict'; // 폭 수 판정: 현장 기준 / 엄격 올림
+  dropFraction: number; // 현장 기준 버림 한도 (폭)
   pricing: CurtainPricing;
 }
 

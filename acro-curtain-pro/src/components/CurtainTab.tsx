@@ -179,9 +179,15 @@ function MeasureCard({ rc, patch, s }: { rc: CurtainCalc; patch: (p: Patch) => v
 function captionWidths(rc: CurtainCalc, unit: Unit, cut: CutSettings) {
   const r = rc.result;
   const L = (v: number) => fmtLen(v, unit, false);
+  const plain = cut.seamLoss === 0 && cut.sideHem === 0;
+  if (r.widthMode === 'field') {
+    const head = plain ? `${L(r.requiredWidthTotal)} ÷ ${L(r.fabricWidth)} = ${fmt(r.rawWidths, 2)}` : `유효 폭 기준 ${fmt(r.rawWidths, 2)}폭`;
+    const split = r.opening === 'double' ? ` (좌 ${r.panels[0].widths} + 우 ${r.panels[1].widths})` : '';
+    return `${head} → ${r.totalWidths}폭${split}`;
+  }
   if (r.opening === 'double') return r.panels.map((p) => `${p.side === 'left' ? '좌' : '우'} ${p.widths}폭`).join(' + ') + ` = ${r.totalWidths}폭`;
   const p = r.panels[0];
-  if (cut.seamLoss === 0 && cut.sideHem === 0) return `${L(p.requiredWidth)} ÷ ${L(r.fabricWidth)} = ${fmt(p.rawRatio, 2)} → ${p.widths}폭`;
+  if (plain) return `${L(p.requiredWidth)} ÷ ${L(r.fabricWidth)} = ${fmt(p.rawRatio, 2)} → ${p.widths}폭`;
   return `유효 ${L(p.usableWidth)} ≥ 필요 ${L(p.requiredWidth)} → ${p.widths}폭`;
 }
 
@@ -224,6 +230,7 @@ export function CurtainResultCard({ rc }: { rc: CurtainCalc }) {
       <div className="flex flex-wrap items-center gap-1.5">
         <Pill>{rc.room.opening === 'double' ? '양개' : '편개'}</Pill>
         <Pill>{rc.room.method === 'joined' ? '폭 연결형' : '광폭 원단형'}</Pill>
+        {rc.room.method === 'joined' && <Pill>{s.curtain.widthMode === 'field' ? `현장 기준 ${fmt(s.curtain.dropFraction, 2)}폭 버림` : '엄격 올림'}</Pill>}
         {status}
       </div>
     </div>
@@ -315,7 +322,7 @@ export function CurtainResultCard({ rc }: { rc: CurtainCalc }) {
                   )}
                 </td>
                 <td className="px-3 py-2 text-right">
-                  {fmt(p.actualFullness, 2)}배 <span className="text-[11.5px] text-ink3">(잔여 {fmtLen(p.surplus, unit)})</span>
+                  {fmt(p.actualFullness, 2)}배 <span className="text-[11.5px] text-ink3">({p.surplus < 0 ? `부족 ${fmtLen(-p.surplus, unit)}` : `잔여 ${fmtLen(p.surplus, unit)}`})</span>
                 </td>
               </tr>
             ))}
@@ -324,6 +331,10 @@ export function CurtainResultCard({ rc }: { rc: CurtainCalc }) {
       </div>
       <p className="mt-2 text-[12px] leading-relaxed text-ink3">
         실제 주름 = 확보된 유효 원단 가로 ÷ 덮는 가로. 목표 {fmt(r.fullness, 2)}배보다 여유가 생긴 만큼 주름을 더 넣거나 잔여분으로 남길 수 있습니다.
+        {r.method === 'joined' &&
+          (r.widthMode === 'field'
+            ? ` 폭 수는 현장 기준(남는 소수 ${fmt(s.curtain.dropFraction, 2)}폭 이하 버림${r.opening === 'double' ? ', 양개는 반폭 단위로 좌우 배분' : ''})으로 잡았습니다. 환경설정에서 바꿀 수 있습니다.`
+            : ' 폭 수는 엄격 올림(소수 발생 시 올림, 양개는 좌우 각각 올림)으로 잡았습니다.')}
         {r.method === 'joined' && (cut.seamLoss > 0 || cut.sideHem > 0) && ` 유효 가로에 이음 1곳당 ${fmtLen(cut.seamLoss, unit)}, 옆단 한쪽 ${fmtLen(cut.sideHem, unit)}를 뺐습니다.`}
       </p>
       {r.issues.length > 0 && (

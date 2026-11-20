@@ -70,6 +70,8 @@ export function defaultSettings(): Settings {
       method: 'joined',
       curtainType: '겉커튼',
       wideThreshold: 250,
+      widthMode: 'field',
+      dropFraction: 0.2,
       pricing: structuredCloneSafe(EMPTY_CURTAIN_PRICING),
     },
     cut: { ...DEFAULT_CUT },

@@ -1,5 +1,5 @@
 // 커튼 원단 산출 엔진 — 순수 함수, UI와 무관. 내부 단위 cm.
-import { ceilSafe, ceilTo, clean, isNum } from './num';
+import { ceilSafe, ceilTo, clean, floorSafe, fmt, isNum, roundTo } from './num';
 import { josa } from './josa';
 import type { CurtainMethod, CutSettings, Issue, Opening } from './types';
 
@@ -14,7 +14,16 @@ export interface CurtainInput {
   method: CurtainMethod;
   cut: CutSettings;
   wideThreshold?: number;
+  /**
+   * 폭 수 판정 방식 (생략 시 strict)
+   * field  : 현장 기준 — 남는 소수가 dropFraction 폭 이하이면 버림, 양개는 전체 폭을 반폭(0.5) 단위로 좌우 배분
+   * strict : 엄격 올림 — 소수가 생기면 올림, 양개는 좌우 각각 올림
+   */
+  widthMode?: WidthMode;
+  dropFraction?: number;
 }
+
+export type WidthMode = 'field' | 'strict';
 
 export interface CurtainPanel {
   side: 'single' | 'left' | 'right';
@@ -55,6 +64,9 @@ export interface CurtainResult {
   panels: CurtainPanel[];
   totalWidths: number; // 폭 연결형: 전체 폭 수 (광폭형: 0)
   naiveWidths: number; // 전체 가로로 한 번만 올림했을 때 (비교용)
+  widthMode: WidthMode;
+  rawWidths: number; // 반올림 전 전체 필요 폭 (유효 폭 기준)
+  dropped: boolean; // 현장 기준으로 남는 소수를 버렸는가
   cut: CutSteps; // 폭연결형: 폭당 재단 길이 / 광폭형: 필요 제작 높이
   totalLength: number; // 구매 원단 총 길이 cm
   wide: null | {
@@ -92,6 +104,9 @@ function emptyResult(inp: CurtainInput, issues: Issue[]): CurtainResult {
     panels: [],
     totalWidths: 0,
     naiveWidths: 0,
+    widthMode: inp.widthMode ?? 'strict',
+    rawWidths: 0,
+    dropped: false,
     cut: { base: 0, afterShrink: 0, final: 0, patternApplied: false, roundApplied: false, roundSkippedByPattern: false },
     totalLength: 0,
     wide: null,
@@ -191,6 +206,11 @@ export function validateCurtain(inp: CurtainInput): Issue[] {
     else if (inp.cut.shrinkPct > 10)
       out.push({ level: 'warning', field: 'cut.shrinkPct', message: '수축 여유율이 10%를 넘습니다. 원단 사양을 확인하세요.' });
   }
+  if (inp.widthMode === 'field') {
+    const d = inp.dropFraction;
+    if (!isNum(d) || d < 0 || d >= 1)
+      out.push({ level: 'error', field: 'dropFraction', message: '버림 기준은 0 이상 1 미만의 폭 수로 입력하세요. (예: 0.2)' });
+  }
   if (inp.method === 'joined' && isNum(inp.fabricWidth) && inp.fabricWidth > 0 && isNum(inp.cut.seamLoss)) {
     if (inp.cut.seamLoss >= inp.fabricWidth)
       out.push({ level: 'error', field: 'cut.seamLoss', message: '봉제 손실이 원단 1폭보다 크거나 같습니다.' });
@@ -228,6 +248,14 @@ export function widthsForPanel(required: number, fabricWidth: number, seamLoss: 
   return Math.max(1, n);
 }
 
+/** 현장 기준 폭 판정: 남는 소수가 drop 폭 이하이면 버림, 아니면 올림. 최소 1폭 */
+export function fieldRound(x: number, drop: number): number {
+  const fl = floorSafe(x);
+  const frac = clean(x - fl);
+  if (fl >= 1 && frac <= drop + 1e-9) return fl;
+  return Math.max(1, ceilSafe(x));
+}
+
 export function calcCurtain(inp: CurtainInput): CurtainResult {
   const issues = validateCurtain(inp);
   if (issues.some((i) => i.level === 'error')) return emptyResult(inp, issues);
@@ -247,15 +275,35 @@ export function calcCurtain(inp: CurtainInput): CurtainResult {
           { side: 'right', ratio: (inp.splitRight as number) / 100 },
         ];
 
-  const panels: CurtainPanel[] = leaves.map(({ side, ratio }) => {
+  const mode: WidthMode = inp.widthMode ?? 'strict';
+  const drop = inp.dropFraction ?? 0;
+  const seam = cut.seamLoss;
+  const side = cut.sideHem;
+  // 반올림 전 전체 필요 폭 (각 장의 옆단·이음 손실 반영)
+  const rawWidths = clean((requiredWidthTotal + leaves.length * (2 * side - seam)) / (FW - seam));
+  let counts: number[] = [];
+  if (inp.method === 'joined') {
+    if (mode === 'strict') {
+      counts = leaves.map(({ ratio }) => widthsForPanel(clean(W * ratio * F), FW, seam, side));
+    } else {
+      const total = fieldRound(rawWidths, drop);
+      if (leaves.length === 1) counts = [total];
+      else {
+        const left = Math.min(total - 0.5, Math.max(0.5, roundTo(total * leaves[0].ratio, 0.5)));
+        counts = [left, clean(total - left)];
+      }
+    }
+  }
+
+  const panels: CurtainPanel[] = leaves.map(({ side: pside, ratio }, i) => {
     const finishedWidth = clean(W * ratio);
     const requiredWidth = clean(finishedWidth * F);
     if (inp.method === 'joined') {
-      const widths = widthsForPanel(requiredWidth, FW, cut.seamLoss, cut.sideHem);
-      const seams = widths - 1;
-      const usableWidth = clean(widths * FW - seams * cut.seamLoss - 2 * cut.sideHem);
+      const widths = counts[i];
+      const seams = Math.max(0, Math.ceil(widths - 1e-9) - 1);
+      const usableWidth = clean(widths * FW - seams * seam - 2 * side);
       return {
-        side,
+        side: pside,
         ratio,
         finishedWidth,
         requiredWidth,
@@ -273,7 +321,7 @@ export function calcCurtain(inp: CurtainInput): CurtainResult {
     const pieceLength = cut.roundUnit > 0 ? ceilTo(raw, cut.roundUnit) : raw;
     const usableWidth = clean(pieceLength - 2 * cut.sideHem);
     return {
-      side,
+      side: pside,
       ratio,
       finishedWidth,
       requiredWidth,
@@ -301,6 +349,9 @@ export function calcCurtain(inp: CurtainInput): CurtainResult {
     panels,
     totalWidths: 0,
     naiveWidths: 0,
+    widthMode: mode,
+    rawWidths: inp.method === 'joined' ? rawWidths : 0,
+    dropped: false,
     cut: cutLength(H, cut, inp.method === 'joined'),
     totalLength: 0,
     wide: null,
@@ -310,7 +361,19 @@ export function calcCurtain(inp: CurtainInput): CurtainResult {
     base.totalWidths = panels.reduce((s, p) => s + p.widths, 0);
     base.naiveWidths = Math.max(1, ceilSafe(requiredWidthTotal / FW));
     base.totalLength = clean(base.totalWidths * base.cut.final);
-    if (inp.opening === 'double' && base.naiveWidths !== base.totalWidths && cut.seamLoss === 0 && cut.sideHem === 0) {
+    base.totalWidths = clean(base.totalWidths);
+    base.dropped = mode === 'field' && base.totalWidths < ceilSafe(rawWidths);
+    if (base.dropped) {
+      const usable = panels.reduce((t, p) => t + p.usableWidth, 0);
+      const frac = clean(rawWidths - Math.floor(rawWidths + 1e-9));
+      const actual = clean(usable / W);
+      issues.push({
+        level: 'info',
+        code: 'field-drop',
+        message: `필요 ${fmt(rawWidths, 2)}폭 중 남는 ${fmt(frac, 2)}폭(약 ${fmt(clean(frac * (FW - seam)), 0)}cm)은 버림 기준 ${fmt(drop, 2)}폭 이하라 ${base.totalWidths}폭으로 잡았습니다. 실제 주름 ${fmt(actual, 2)}배 (목표 ${fmt(F, 2)}배보다 ${fmt(clean(F - actual), 2)}배 적음).`,
+      });
+    }
+    if (mode === 'strict' && inp.opening === 'double' && base.naiveWidths !== base.totalWidths && cut.seamLoss === 0 && cut.sideHem === 0) {
       issues.push({
         level: 'info',
         code: 'split-rounding',

@@ -136,6 +136,8 @@ export function calcCurtainRoom(room: CurtainRoom, s: Settings): CurtainCalc {
     method: room.method,
     cut: curtainCut(room, s),
     wideThreshold: s.curtain.wideThreshold,
+    widthMode: s.curtain.widthMode,
+    dropFraction: s.curtain.dropFraction,
   });
   const issues: Issue[] = [];
   const lines: QuoteLine[] = [];

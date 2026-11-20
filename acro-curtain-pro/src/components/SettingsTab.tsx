@@ -204,6 +204,35 @@ export function SettingsTab({ onOpenRecent }: { onOpenRecent: () => void }) {
               onChange={(v) => set((d) => (d.settings.curtain.method = v))}
             />
           </Row>
+          <Row label="폭 수 판정" hint="폭 연결형에서 필요 폭에 소수가 생겼을 때">
+            <div className="flex flex-col gap-2">
+              <Seg
+                value={s.curtain.widthMode}
+                label="폭 수 판정"
+                options={[
+                  { value: 'field', label: '현장 기준' },
+                  { value: 'strict', label: '엄격 올림' },
+                ]}
+                onChange={(v) => set((d) => (d.settings.curtain.widthMode = v))}
+              />
+              {s.curtain.widthMode === 'field' ? (
+                <>
+                  <NumberField
+                    size="sm"
+                    suffix="폭 이하 버림"
+                    value={s.curtain.dropFraction}
+                    onChange={(v) => v !== null && v >= 0 && v < 1 && set((d) => (d.settings.curtain.dropFraction = Math.round(v * 100) / 100))}
+                    ariaLabel="버림 기준 폭"
+                  />
+                  <p className="text-[12.5px] leading-relaxed text-ink3">
+                    남는 소수가 {s.curtain.dropFraction}폭 이하면 버립니다. 예: 3.10폭 → 3폭, 3.30폭 → 4폭. 양개는 전체 폭을 반폭(0.5폭) 단위로 좌우에 나눕니다(3폭 → 1.5 + 1.5).
+                  </p>
+                </>
+              ) : (
+                <p className="text-[12.5px] leading-relaxed text-ink3">소수가 생기면 무조건 올립니다(3.10폭 → 4폭). 양개는 좌우를 각각 올림합니다.</p>
+              )}
+            </div>
+          </Row>
           <Row label="기본 커튼 종류">
             <SelectField label="" value={s.curtain.curtainType} options={CURTAIN_TYPES} onChange={(v) => set((d) => (d.settings.curtain.curtainType = v))} />
           </Row>

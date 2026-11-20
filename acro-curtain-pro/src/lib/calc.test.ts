@@ -203,6 +203,57 @@ describe('커튼 세부 규칙', () => {
   });
 });
 
+describe('현장 기준 폭 판정 (0.2폭 이하 버림, 양개 반폭)', () => {
+  const field = (o: Partial<CurtainInput>) => calcCurtain(base({ widthMode: 'field', dropFraction: 0.2, ...o }));
+
+  it('300×235, 1.5배, 편개 → 3.10폭이므로 3폭', () => {
+    const r = field({ width: 300, height: 235 });
+    expect(r.rawWidths).toBeCloseTo(3.103, 3);
+    expect(r.totalWidths).toBe(3);
+    expect(r.cut.final).toBe(255);
+    expect(r.totalLength).toBe(765);
+    expect(r.panels[0].actualFullness).toBe(1.45);
+    expect(r.dropped).toBe(true);
+    expect(r.issues.find((i) => i.code === 'field-drop')?.message).toContain('1.45배');
+  });
+
+  it('300×235, 1.5배, 양개 → 1.5폭 + 1.5폭 = 3폭', () => {
+    const r = field({ width: 300, height: 235, opening: 'double' });
+    expect(r.panels.map((p) => p.widths)).toEqual([1.5, 1.5]);
+    expect(r.panels.map((p) => p.seams)).toEqual([1, 1]);
+    expect(r.totalWidths).toBe(3);
+    expect(r.totalLength).toBe(765);
+  });
+
+  it('남는 소수가 0.2폭을 넘으면 올림', () => {
+    expect(field({}).totalWidths).toBe(4); // 3.72
+    expect(field({ width: 420 }).totalWidths).toBe(5); // 4.34
+    expect(field({ width: 300, height: 230, fullness: 2 }).totalWidths).toBe(4); // 4.14 → 버림
+  });
+
+  it('정확히 0.2폭은 버림, 버림 기준 0이면 엄격 올림과 같다', () => {
+    expect(field({ width: 464, fullness: 1 }).totalWidths).toBe(3); // 464 ÷ 145 = 3.20
+    expect(field({ width: 300, height: 235, dropFraction: 0 }).totalWidths).toBe(4);
+  });
+
+  it('1폭 미만은 최소 1폭, 양개 최소 반폭씩', () => {
+    expect(field({ width: 15, fullness: 1 }).totalWidths).toBe(1); // 0.10폭
+    const r = field({ width: 60, fullness: 1.5, opening: 'double' }); // 90 ÷ 145 = 0.62 → 1폭
+    expect(r.panels.map((p) => p.widths)).toEqual([0.5, 0.5]);
+  });
+
+  it('양개 60:40은 반폭 단위로 배분', () => {
+    const r = field({ width: 480, opening: 'double', splitLeft: 60, splitRight: 40 }); // 720 ÷ 145 = 4.97 → 5폭
+    expect(r.totalWidths).toBe(5);
+    expect(r.panels.map((p) => p.widths)).toEqual([3, 2]);
+  });
+
+  it('버림 기준이 범위를 벗어나면 오류', () => {
+    expect(field({ dropFraction: 1 }).ok).toBe(false);
+    expect(field({ dropFraction: -0.1 }).ok).toBe(false);
+  });
+});
+
 describe('블라인드', () => {
   const rule: BlindRule = { deductW: 0, addW: 0, deductH: 0, addH: 0, minW: 0, maxW: 0, minH: 0, maxH: 0, roundUnit: 0, roundMode: 'round' };
   const billing = { basis: 'order' as const, minBillW: 0, minBillH: 0, minBillArea: 0, areaRoundUnit: 0, minCharge: 0 };
@@ -288,8 +339,8 @@ describe('견적', () => {
     const st = defaultSettings();
     const site = sampleSite(st);
     const t = calcSite(site, st).totals;
-    // 거실 420 양개 1.5배: 장당 315 → 3폭 ×2 = 6 / 안방 300 양개 2배: 장당 300 → 3폭 ×2 = 6
-    expect(t.curtainWidths).toBe(12);
+    // 기본값 = 현장 기준. 거실 420×1.5 = 630 → 4.34폭 → 5폭(2.5+2.5) / 안방 300×2 = 600 → 4.14폭 → 4폭(2+2)
+    expect(t.curtainWidths).toBe(9);
     expect(t.blindCount).toBe(2);
     expect(t.supply).toBe(t.net);
     expect(t.vat).toBe(Math.round(t.net * 0.1));

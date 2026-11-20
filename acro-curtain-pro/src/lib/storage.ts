@@ -24,6 +24,7 @@ const ENUMS: Record<string, readonly string[]> = {
   space: SPACES,
   curtainType: CURTAIN_TYPES,
   blindType: BLIND_TYPES,
+  widthMode: ['field', 'strict'],
 };
 
 const OPTION_TEMPLATE = { id: '', label: '', amount: null, cost: null };
