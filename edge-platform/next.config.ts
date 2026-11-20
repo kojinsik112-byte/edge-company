@@ -13,10 +13,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.supabase.in" },
     ],
   },
-  // 커튼·블라인드 실측 계산기 ACRO CURTAIN PRO (acro-curtain-pro 빌드 결과 = public/curtain-pro)
-  async rewrites() {
-    return [{ source: "/curtain-pro", destination: "/curtain-pro/index.html" }];
-  },
 };
 
 export default nextConfig;

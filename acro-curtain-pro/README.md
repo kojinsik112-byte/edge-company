@@ -7,6 +7,11 @@
 - **PC·휴대폰 브라우저**: `release/ACRO_CURTAIN_PRO.html` 파일을 크롬으로 연다. 인쇄·PDF 저장, JSON 파일 저장/불러오기까지 된다.
 - **Claude 미리보기(Artifact)**: `release/acro-curtain-pro.artifact.html`. 미리보기 화면은 인쇄 창과 파일 다운로드가 막혀 있어 견적서는 미리보기·복사, JSON은 복사·붙여넣기로 대신한다.
 
+## 휴대폰용 웹 주소 (Vercel, 엣지컴퍼니 홈페이지와 별개)
+- `npm run deploy` = `build:web` → `dist-web/` 를 Vercel 별도 프로젝트로 운영 배포.
+- web 빌드는 홈 화면 추가(manifest·아이콘 `pwa/`), 오프라인 서비스 워커(`pwa/sw.js`), 검색 제외(noindex)가 들어간다.
+- 데이터는 휴대폰마다 그 브라우저에만 저장된다. 기기 간 이동은 환경설정 → JSON 내보내기/불러오기.
+
 ## 개발
 ```bash
 npm install
