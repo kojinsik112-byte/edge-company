@@ -114,6 +114,17 @@
         "import sys,os; os.environ['EDGE_STUDIO_PORT']='8818'; os.chdir('캡컷 ai편집기'); sys.path.insert(0,'.'); from autoedit.studio.server import main; main(['--no-window'])"
       ],
       "port": 8818
+    },
+    {
+      "name": "acro-curtain-pro",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "acro-curtain-pro",
+        "run",
+        "dev"
+      ],
+      "port": 5178
     }
   ]
 }

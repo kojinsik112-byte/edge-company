@@ -1,0 +1,31 @@
+{
+  "name": "acro-curtain-pro",
+  "private": true,
+  "version": "1.0.0",
+  "description": "ACRO CURTAIN PRO — 커튼·블라인드 실측 및 원단 자동 산출 계산기",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5178 --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "build:artifact": "vite build --mode artifact && node scripts/make-artifact.mjs",
+    "build:all": "npm run build && npm run build:artifact",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.49",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "vite-plugin-singlefile": "2.0.3",
+    "vitest": "2.1.8"
+  }
+}
