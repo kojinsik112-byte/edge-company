@@ -22,13 +22,17 @@ from PIL import Image, ImageDraw, ImageFont
 sys.path.insert(0, str(Path(__file__).parent))
 import yeongju_build as yb  # noqa: E402
 
-SRC = Path.home() / "Downloads" / "영주자이 AI 시안"
+BASE = Path.home() / "Desktop" / "경관조명 관련"
+SRC = next(p for p in [BASE / "영주자이 AI 시안", Path.home() / "Downloads" / "영주자이 AI 시안"] if p.exists())
 OUT = Path.home() / "Desktop" / "경관조명 관련" / "영주자이 자료" / "제안서"
 IMG = OUT / "img"
 FIXED = OUT / "수정 사진"
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 SERIF = "C:/Windows/Fonts/NotoSerifKR-VF.ttf"
 LICENSE = "전기공사업 등록 제 울산-00821호"
+COVER_SRC = next((p for p in [Path.home() / "Downloads" / "영주자이의 밤, 빛의 풍경.png", BASE / "영주자이의 밤, 빛의 풍경.png",
+                              BASE / "영주자이 AI 시안" / "영주자이의 밤, 빛의 풍경.png"] if p.exists()), None)  # 회장 제공 표지
+FINAL_NAME = "(엣지컴퍼니) 영주자이시그니처 경관조명 통합 제안서_261121.pdf"
 
 # ───────────── 1. 사진 수정 ─────────────
 FIX_TITLE = {"별빛의 초대 게이트 조명 제안서", "별빛의 초대, 영주자이 입구-2", "별빛이 머무는 정문 야경-1",
@@ -80,7 +84,7 @@ def retext(im: Image.Image, box, text, kind, anchor="left", weight="Regular"):
     _, f, l, t, w = best
     out = Image.fromarray(a)
     d = ImageDraw.Draw(out)
-    x = bx0 - l if anchor == "left" else bx1 - w - l
+    x = {"left": bx0 - l, "right": bx1 - w - l, "center": (bx0 + bx1) // 2 - w // 2 - l}[anchor]
     d.text((x, by0 - t), text, font=f, fill=col)
     return out
 
@@ -108,6 +112,16 @@ def prepare_images() -> dict:
         out[key] = fn
         print(" ", key, "→", fn, "(수정)" if stem in FIX_TITLE | FIX_LICENSE | FIX_RIGHT else "")
     return out
+
+
+def prepare_cover():
+    """회장 표지: 정문 라벨 '별빛의 초대' → '겨울빛의 문' 통일 후 제안서\표지.png 로 저장."""
+    dst = OUT / "표지.png"
+    if COVER_SRC:
+        im = Image.open(COVER_SRC).convert("RGB")
+        im = retext(im, (200, 788, 420, 838), "겨울빛의 문", "white", anchor="center")
+        im.save(dst)
+    return dst if dst.exists() else None
 
 
 # ───────────── 2. 품목 사진 잘라내기 ─────────────
@@ -304,7 +318,7 @@ def build_html(files: dict, cover: Path | None) -> str:
     return HTML_HEAD + "".join(P) + "</body></html>"
 
 
-HTML_HEAD = """<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>영주자이 윈터 라이팅 제안서</title><style>
+HTML_HEAD = """<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>영주자이 경관조명 통합 제안서</title><style>
 @page { size: 338.67mm 190.5mm; margin: 0; }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; background: #fff; }
@@ -379,7 +393,7 @@ def main():
     files = prepare_images()
     print("2) 품목 사진")
     make_crops(files)
-    cover = next((p for ext in ("png", "jpg", "jpeg") for p in [OUT / f"표지.{ext}"] if p.exists()), None)
+    cover = prepare_cover()
     print("3) HTML", "(표지 포함)" if cover else "(표지 없음 — 표지.png 넣으면 맨 앞에 붙음)")
     hp = OUT / "제안서_본문.html"
     hp.write_text(build_html(files, cover), encoding="utf-8")
@@ -392,7 +406,10 @@ def main():
     for name in ["견적서_1_하늘에새긴빛_1줄_12V.pdf", "견적서_1B_하늘에새긴빛_프레임_12V.pdf", "견적서_2_겨울빛의문_정문문주.pdf",
                  "견적서_3_별빛이머무는정원.pdf", "견적서_4_요정의숲.pdf"]:
         doc.insert_pdf(fitz.open(qdir / name))
-    final = OUT / "영주자이_윈터라이팅_제안서.pdf"
+    final = OUT / FINAL_NAME
+    old = OUT / "영주자이_윈터라이팅_제안서.pdf"
+    if old.exists():
+        old.unlink()
     doc.save(final, garbage=3, deflate=True)
     doc.close()
     body.unlink()
