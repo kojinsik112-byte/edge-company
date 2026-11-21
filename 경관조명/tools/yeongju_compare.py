@@ -1,7 +1,8 @@
 """영주자이 105동 경관 라인 — '더 낮은 금액, 더 많은 빛' 비교 참고자료 (입예협 첨부용, A4 1쪽).
 
 선○○ = 경쟁사 견적 기준값 — 저장소 밖 로컬 파일(입예협 첨부/_비교기준_로컬.json)에서 읽음(경쟁사 자료는 GitHub에 올리지 않음).
-엣지  = yeongju_build.py 의 ㄷ자·12V 견적(디밍·출장비 포함) + 같은 범위(두줄 134m) 환산 견적.
+엣지  = yeongju_build.py 의 ㄷ자·12V 견적(디밍·출장비 포함). 두줄 134m 환산 금액은 콘솔 참고용 — 문서에는 넣지 않음
+       (회장 지시: 'ㄷ자인데도 우리가 싸다' 한 메시지로 간다. 엣지 11자 금액을 입예협 문서에 노출하지 말 것).
 회장 방침(2026-11-21 최종): ㄷ자 2,650만 선 — 선○○보다 낮은 금액에, 장점(범위·사양·안전·투명성)까지 더한다.
 실행: python 경관조명/tools/yeongju_compare.py
 """
@@ -101,10 +102,12 @@ def build():
     s_pm, o_pm = s["total"] / s["m"], o["total"] / o["m"]
     vals = "".join(f'<div data-n="{i + 1:02d}"><b>{a}</b>{b}</div>' for i, (a, b) in enumerate(VALUE))
     spec = "".join(f'<tr><td><b>{a}</b></td><td>{b}</td><td class="us">{d}</td></tr>' for a, b, d in SPEC)
-    scope = (f'<tr><td><b>두줄 라인 134m</b> <span class="spec">세로 2줄 · 상단 가로 없음</span></td>'
-             f'<td class="n">{w(s["total"])}</td><td class="n us">{w(o134["total"])}</td></tr>'
-             f'<tr><td><b>ㄷ자 라인 160m</b> <span class="spec">상단 가로 9.2m 포함</span></td>'
-             f'<td class="n">견적 없음</td><td class="n us">{w(o["total"])}</td></tr>')
+    scope = (f'<tr><td><b>선○○</b></td><td>두줄 라인 · 상단 가로 없음</td><td class="n">{s["m"]}m</td>'
+             f'<td class="n">{w(s["total"])}</td><td class="n">{w(round(s_pm))}</td></tr>'
+             f'<tr class="us"><td><b>엣지컴퍼니</b></td><td>ㄷ자 라인 · 상단 가로 9.2m 포함</td><td class="n">{o["m"]}m</td>'
+             f'<td class="n">{w(o["total"])}</td><td class="n">{w(round(o_pm))}</td></tr>'
+             f'<tr><td><b>차이</b></td><td>엣지컴퍼니가 더 길고, 더 낮게</td><td class="n">+{o["m"] - s["m"]}m</td>'
+             f'<td class="n">−{w(s["total"] - o["total"])}</td><td class="n">−{w(round(s_pm) - round(o_pm))}</td></tr>')
     co = yb.COMPANY
     body = f'''<div class="mast"><div><div class="eb">VALUE COMPARISON</div><h1>더 낮은 금액, 더 많은 빛</h1></div>
 <div class="brand"><b>{co["상호"]}</b><span>{co["면허"]} · ☎ {co["전화"]}</span></div></div><div class="rule2"></div>
@@ -112,13 +115,13 @@ def build():
 <div class="th"><em>「하늘에 새긴 빛」</em> 측벽 경관 라인</div></div>
 <div class="cmp"><div class="them"><div class="lb">선○○ 견적</div><div class="v">₩ {w(s["total"])}</div><div class="s">두줄 134m · m당 약 {round(s_pm / 1000):,}천 원</div></div>
 <div class="us"><div class="lb">엣지컴퍼니 제안</div><div class="v">₩ {w(o["total"])}</div><div class="s">ㄷ자 160m · m당 약 {round(o_pm / 1000):,}천 원</div></div>
-<div class="diff"><div class="lb">선○○보다 낮은 금액</div><div class="v">같은 11자 {round((s["total"] - o134["total"]) / 10000):,}만 원↓<br>ㄷ자 +26m {round((s["total"] - o["total"]) / 10000):,}만 원↓</div><div class="s">ㄷ자 m당 약 {(s_pm - o_pm) / s_pm:.0%} 낮음 · 상단 가로·디밍 포함</div></div></div>
+<div class="diff"><div class="lb">선○○ 두줄 134m 대비</div><div class="v">{o["m"] - s["m"]}m 더 많은 빛을<br>{round((s["total"] - o["total"]) / 10000):,}만 원 낮은 금액에</div><div class="s">ㄷ자 160m · m당 약 {(s_pm - o_pm) / s_pm:.0%} 낮음 · 디밍 포함</div></div></div>
 <div class="sect"><div class="eb">WHAT WE ADD</div><h3>엣지컴퍼니가 더 드리는 것</h3><div class="val">{vals}</div></div>
-<div class="sect"><div class="eb">SAME SCOPE</div><h3>같은 범위로 본 금액 <span class="spec">부가세 별도 · 단위 원</span></h3>
-<table class="c2"><tr><th>범위</th><th class="n">선○○</th><th class="n">엣지컴퍼니</th></tr>{scope}</table></div>
+<div class="sect"><div class="eb">AT A GLANCE</div><h3>범위와 금액 <span class="spec">부가세 별도 · 단위 원</span></h3>
+<table class="c2"><tr><th style="width:13%">구분</th><th>범위</th><th class="n">길이</th><th class="n">금액</th><th class="n">m당</th></tr>{scope}</table></div>
 <div class="sect"><div class="eb">SPECIFICATION</div><h3>사양 · 조건 비교</h3>
 <table class="c2"><tr><th style="width:13%">항목</th><th style="width:38%">선○○</th><th>엣지컴퍼니</th></tr>{spec}</table></div>
-<div class="disc">· 선○○ 금액·사양은 영주자이 105동 견적(두줄 라인 134m) 기준입니다. 엣지컴퍼니 두줄 134m 금액은 같은 단가 체계로 산출한 참고 금액이며, 기본 제안은 ㄷ자 160m입니다.<br>
+<div class="disc">· 선○○ 금액·사양은 영주자이 105동 견적(두줄 라인 134m) 기준이며, 엣지컴퍼니 금액은 ㄷ자 라인 160m(상단 가로 9.2m 포함) 기준입니다.<br>
 · 금액은 부가세 별도, 수량은 현장 실측 후 m당 단가로 정산합니다. 세부 내역은 별첨 견적서를 참고해 주십시오.</div>'''
     html = f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>{NAME}</title><style>{CSS}</style></head><body>{body}</body></html>'
     OUT.mkdir(parents=True, exist_ok=True)
