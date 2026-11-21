@@ -1,7 +1,10 @@
 """영주자이 정문 문주 + 잔디 정원 묶음 견적서 (공무팀 제출용).
 
 회장 지시(2026-11-21): 문주·정원 두 공종만 묶어, 원래 금액(공종별 견적 합계)에서 950만 원대로 할인해 제출.
-1쪽 = 묶음 요약(공종별 금액 → 묶음 할인 → 최종 금액) / 별첨 = 공종별 세부 견적서 2부(yeongju_build.py 와 같은 양식).
+회장 지시: 문주·정원 그림과 메인 사진도 넣을 것.
+구성 = 표지(메인 사진·대표컷) → 「겨울빛의 문」 1쪽 → 「별빛이 머무는 정원」 1쪽 → 묶음 요약 견적 1쪽
+       → 별첨 공종별 세부 견적서 2부(yeongju_build.py 와 같은 양식).
+사진은 제안서 빌더(yeongju_proposal.py)가 만든 수정본(오타·제목 통일)과 품목 크롭을 그대로 쓴다 — 제안서를 먼저 빌드할 것.
 실행: python 경관조명/tools/yeongju_package.py
 """
 from __future__ import annotations
@@ -11,9 +14,11 @@ import sys
 from pathlib import Path
 
 import fitz  # PyMuPDF
+from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).parent))
 import yeongju_build as yb  # noqa: E402
+import yeongju_proposal as yp  # noqa: E402
 
 PACKAGE_SUPPLY = 9_500_000  # 묶음 최종 공급가액(부가세 별도) — 회장 '950만원대로 할인'
 KEYS = ["2_겨울빛의문_정문문주", "3_별빛이머무는정원"]
@@ -110,15 +115,115 @@ def summary_html(qs: list[dict]) -> tuple[str, dict]:
     return doc, dict(listed=listed, disc=disc, supply=supply, vat=vat, removal=sum(v for _, v in removal))
 
 
+# ───────────── 앞부분: 표지 + 테마 2쪽 (A4 세로) ─────────────
+PAGES = {  # 테마 이름 → (페이지 머리 영문, 대표컷, 다른 각도 3컷)
+    "겨울빛의 문": ("GATE", "겨울빛의 문", ["자이 게이트의 별빛 조명-3", "별빛의 초대, 영주자이 입구-2", "우측 시점의 별빛 입구-4"]),
+    "별빛이 머무는 정원": ("GARDEN", "별빛이 머무는 정원 야경-2", ["나무 곁의 별빛 정원-4", "별빛이 머무는 정원, 새로운 각도-3", "초승달 아래 별빛 정원-1"]),
+}
+COVER_PAIR = [("겨울빛의 문", "별빛이 머무는 정문 야경-1", "정문 문주"), ("별빛이 머무는 정원", "나무 곁의 별빛 정원-4", "잔디 정원")]
+
+INTRO_CSS = """
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Noto Sans KR", "Malgun Gothic", sans-serif; color: #1d2430; }
+section { width: 210mm; height: 297mm; overflow: hidden; position: relative; page-break-after: always; background: #fbfaf7; }
+.eb { font-size: 7.6pt; letter-spacing: 3.2px; color: #b8913a; font-weight: 500; }
+.cvtop { padding: 19mm 16mm 8mm; }
+.cvtop h1 { font-family: "Noto Serif KR", serif; font-weight: 600; font-size: 29pt; line-height: 1.32; margin: 4mm 0 4mm; letter-spacing: 1px; }
+.cvsub { font-size: 10.6pt; color: #4a5563; margin: 0; line-height: 1.6; }
+.cvsub em { font-style: normal; color: #b8913a; font-weight: 600; }
+.cvmain { width: 210mm; height: 118.1mm; object-fit: cover; display: block; }
+.cvcap { padding: 2.5mm 16mm 0; font-size: 8.2pt; color: #8a7a55; }
+.cvpair { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; padding: 7mm 16mm 0; }
+.cvpair figure { margin: 0; }
+.cvpair img { width: 100%; height: 49mm; object-fit: cover; display: block; }
+.cvpair figcaption { font-size: 9pt; color: #4a5563; margin-top: 2mm; }
+.cvpair figcaption b { font-family: "Noto Serif KR", serif; font-size: 11pt; color: #1d2430; margin-right: 1.5mm; }
+.cvfoot { position: absolute; left: 16mm; right: 16mm; bottom: 14mm; display: flex; justify-content: space-between; align-items: flex-end;
+          border-top: 1.4px solid #b8913a; padding-top: 4mm; font-size: 9pt; color: #4a5563; line-height: 1.7; }
+.cvfoot .to { font-size: 10.5pt; font-weight: 700; color: #1d2430; }
+.cvfoot .brand { text-align: right; } .cvfoot .brand b { font-family: "Noto Serif KR", serif; font-size: 14pt; color: #1d2430; }
+.tp { padding: 13mm 13mm 11mm; }
+.tphd { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 0.8px solid #d9cfb8; padding-bottom: 2.5mm; margin-bottom: 4.5mm; }
+.tphd .br { font-size: 8pt; color: #9aa3b2; }
+.hero { width: 100%; height: 103.5mm; object-fit: cover; display: block; }
+.tpbody { display: grid; grid-template-columns: 62mm 1fr; gap: 7mm; margin: 5.5mm 0 5mm; }
+.tag { display: inline-block; font-size: 7.6pt; color: #fff; background: #b8913a; padding: 0.4mm 2.4mm; }
+.tpbody h2 { font-family: "Noto Serif KR", serif; font-size: 21pt; font-weight: 600; margin: 2mm 0 1mm; }
+.where { font-size: 8.2pt; color: #6b7280; }
+.tg { font-family: "Noto Serif KR", serif; font-size: 10.5pt; color: #8a6d2f; margin: 3mm 0 0; line-height: 1.5; }
+.concept { font-size: 9.6pt; line-height: 1.75; margin: 0 0 2.5mm; color: #374151; }
+.tpbody ul { margin: 0; padding-left: 4.5mm; } .tpbody li { font-size: 9pt; line-height: 1.65; color: #374151; }
+.gal3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5mm; }
+.gal3 img { width: 100%; height: 33mm; object-fit: cover; display: block; }
+.ithd { margin: 5mm 0 2.5mm; display: flex; align-items: baseline; gap: 3mm; }
+.ithd h3 { font-family: "Noto Serif KR", serif; font-size: 11pt; margin: 0; font-weight: 600; }
+.ithd span { font-size: 7.6pt; color: #9aa3b2; }
+.its { display: grid; gap: 3mm; }
+.it { background: #fff; border: 0.6px solid #e6e1d6; }
+.it img { width: 100%; height: 22mm; object-fit: cover; display: block; background: #0b1020; }
+.it div { padding: 1.6mm 2mm 2mm; } .it b { display: block; font-size: 8.2pt; line-height: 1.35; } .it span { font-size: 7.6pt; color: #b8913a; font-weight: 600; }
+.gal3 img { height: 41mm; } .it img { height: 33mm; } .ithd { margin: 7mm 0 3mm; } .tpbody { margin: 6.5mm 0 6.5mm; }
+.tpfoot { position: absolute; left: 13mm; right: 13mm; bottom: 9mm; font-size: 7.2pt; color: #9aa3b2; text-align: center; border-top: 0.6px solid #e2dccd; padding-top: 2mm; }
+"""
+
+
+def intro_html(img_dir: Path) -> str:
+    img_dir.mkdir(parents=True, exist_ok=True)
+
+    def jpg(src: Path, name: str) -> str:
+        dst = img_dir / f"{name}.jpg"
+        Image.open(src).convert("RGB").save(dst, quality=86)
+        return dst.as_uri()
+
+    def shot(theme: str, stem: str) -> str:
+        return jpg(yp.FIXED / theme / f"{stem}.png", f"{theme}_{stem}".replace(" ", "_").replace(",", ""))
+
+    co = yb.COMPANY
+    cover = yp.OUT / "표지.png"
+    pair = "".join(f'<figure><img src="{shot(t, s)}"><figcaption><b>「{t}」</b>{w}</figcaption></figure>' for t, s, w in COVER_PAIR)
+    pages = [f'''<section class="cv"><div class="cvtop"><div class="eb">YEONGJU Xi SIGNATURE · WINTER LIGHTING</div>
+<h1>영주자이의 겨울,<br>빛으로 맞이합니다</h1>
+<p class="cvsub">정문 문주 <em>「겨울빛의 문」</em>과 잔디 정원 <em>「별빛이 머무는 정원」</em> — 제안 및 견적</p></div>
+<img class="cvmain" src="{jpg(cover, "cover")}">
+<div class="cvcap">영주자이 시그니처 경관조명 전체 구상 — 이번 제안은 정문 문주와 잔디 정원입니다.</div>
+<div class="cvpair">{pair}</div>
+<div class="cvfoot"><div><span class="to">{TO}</span><br>{yb.DATE}</div>
+<div class="brand"><b>{co["상호"]}</b><br>{co["면허"]} · ☎ {co["전화"]}</div></div></section>''']
+    themes = {t["name"]: t for t in yp.THEMES}
+    for name, (en, hero, gal) in PAGES.items():
+        t = themes[name]
+        pts = "".join(f"<li>{html.escape(x)}</li>" for x in t["points"])
+        gal_html = "".join(f'<img src="{shot(name, s)}">' for s in gal)
+        items = "".join(f'<div class="it"><img src="{(yp.IMG / f"{c}.jpg").as_uri()}"><div><b>{html.escape(n)}</b><span>{html.escape(q)}</span></div></div>'
+                        for c, n, _, q in t["items"])
+        pages.append(f'''<section class="tp"><div class="tphd"><span class="eb">WINTER LIGHTING · {en}</span><span class="br">{co["상호"]}</span></div>
+<img class="hero" src="{shot(name, hero)}">
+<div class="tpbody"><div><span class="tag">{t["kind"]}</span><h2>{html.escape(name)}</h2><div class="where">{html.escape(t["where"])}</div>
+<p class="tg">{html.escape(t["tagline"])}</p></div>
+<div><p class="concept">{html.escape(t["concept"])}</p><ul>{pts}</ul></div></div>
+<div class="gal3">{gal_html}</div>
+<div class="ithd"><h3>구성 품목</h3><span>수량·규격은 별첨 견적서 기준</span></div>
+<div class="its" style="grid-template-columns: repeat({len(t["items"])}, 1fr)">{items}</div>
+<div class="tpfoot">{co["상호"]} · {co["면허"]} · ☎ {co["전화"]} · 이미지는 설치 예상 연출이며 실제 시공과 차이가 있을 수 있습니다.</div></section>''')
+    return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>{NAME}</title>'
+            f'<style>{INTRO_CSS}</style></head><body>{"".join(pages)}</body></html>')
+
+
 def main():
     qs = [{q["key"]: q for q in yb.QUOTES}[k] for k in KEYS]
     hdir = yb.OUT / "_html"
     hdir.mkdir(parents=True, exist_ok=True)
+    ip = hdir / "묶음_문주정원_앞부분.html"
+    ip.write_text(intro_html(hdir / "pkg_img"), encoding="utf-8")
+    intro_pdf = hdir / "묶음_문주정원_앞부분.pdf"
+    yb.to_pdf(ip, intro_pdf)
     doc, n = summary_html(qs)
     hp = hdir / "묶음_문주정원_요약.html"
     hp.write_text(doc, encoding="utf-8")
-    parts = [hdir / "묶음_문주정원_요약.pdf"]
-    yb.to_pdf(hp, parts[0])
+    summary_pdf = hdir / "묶음_문주정원_요약.pdf"
+    yb.to_pdf(hp, summary_pdf)
+    parts = [intro_pdf, summary_pdf]
     for q in qs:  # 별첨 세부 견적서는 최신 데이터로 다시 생성
         qp = hdir / f"견적서_{q['key']}.html"
         qp.write_text(yb.quote_html(q), encoding="utf-8")
@@ -132,7 +237,8 @@ def main():
     out.save(final)
     pages = out.page_count
     out.close()
-    first = fitz.open(parts[0]).page_count
+    with fitz.open(intro_pdf) as a, fitz.open(summary_pdf) as b:
+        first = f"앞부분 {a.page_count}쪽 · 요약 {b.page_count}"
     print(f"공종별 합계 {n['listed']:,} → 할인 {n['disc']:,} ({n['disc'] / n['listed']:.1%}) → 공급가 {n['supply']:,} "
           f"(VAT포함 {n['supply'] + n['vat']:,}) / 철거 {n['removal']:,}")
     print(f"요약 {first}쪽 · 전체 {pages}쪽 -> {final}")
