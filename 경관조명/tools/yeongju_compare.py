@@ -106,13 +106,13 @@ def build():
              f'<tr><td><b>ㄷ자 라인 160m</b> <span class="spec">상단 가로 9.2m 포함</span></td>'
              f'<td class="n">견적 없음</td><td class="n us">{w(o["total"])}</td></tr>')
     co = yb.COMPANY
-    body = f'''<div class="mast"><div><div class="eb">VALUE COMPARISON</div><h1>같은 예산, 더 많은 빛</h1></div>
+    body = f'''<div class="mast"><div><div class="eb">VALUE COMPARISON</div><h1>더 낮은 금액, 더 많은 빛</h1></div>
 <div class="brand"><b>{co["상호"]}</b><span>{co["면허"]} · ☎ {co["전화"]}</span></div></div><div class="rule2"></div>
 <div class="project"><div class="eb">PROJECT</div><div class="pj">영주자이 시그니처 105동 외벽 경관조명</div>
 <div class="th"><em>「하늘에 새긴 빛」</em> 측벽 경관 라인</div></div>
 <div class="cmp"><div class="them"><div class="lb">선○○ 견적</div><div class="v">₩ {w(s["total"])}</div><div class="s">두줄 134m · m당 약 {round(s_pm / 1000):,}천 원</div></div>
 <div class="us"><div class="lb">엣지컴퍼니 제안</div><div class="v">₩ {w(o["total"])}</div><div class="s">ㄷ자 160m · m당 약 {round(o_pm / 1000):,}천 원</div></div>
-<div class="diff"><div class="lb">같은 수준의 예산으로</div><div class="v">+26m · 상단 가로<br>디밍 포함</div><div class="s">m당 약 {(s_pm - o_pm) / s_pm:.0%} 낮음</div></div></div>
+<div class="diff"><div class="lb">₩ {w(s["total"] - o["total"])} 낮은 금액으로</div><div class="v">+26m · 상단 가로<br>디밍 포함</div><div class="s">m당 약 {(s_pm - o_pm) / s_pm:.0%} 낮음</div></div></div>
 <div class="sect"><div class="eb">WHAT WE ADD</div><h3>엣지컴퍼니가 더 드리는 것</h3><div class="val">{vals}</div></div>
 <div class="sect"><div class="eb">SAME SCOPE</div><h3>같은 범위로 본 금액 <span class="spec">부가세 별도 · 단위 원</span></h3>
 <table class="c2"><tr><th>범위</th><th class="n">선○○</th><th class="n">엣지컴퍼니</th></tr>{scope}</table></div>
