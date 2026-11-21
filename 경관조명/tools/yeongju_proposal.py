@@ -145,6 +145,9 @@ CROPS = {
 
 
 def make_crops(files: dict):
+    for name, fn in (("smps", "실외용 밀폐형 LED 전원공급기-2.png"), ("dbox", "열린 옥상 조명 전기함-1.png")):  # 회장 제공 실물 사진
+        if (BASE / fn).exists():
+            Image.open(BASE / fn).convert("RGB").save(IMG / f"{name}.jpg", quality=90)
     for name, (key, box) in CROPS.items():
         Image.open(IMG / files[key]).crop(box).save(IMG / f"{name}.jpg", quality=90)
 
@@ -156,11 +159,11 @@ THEMES = [
          where="105동 측벽 · 지상 27층 · 높이 79.3m", kind="상시 경관조명",
          tagline="27층을 따라 오르는 황금빛 한 줄",
          concept="어둠이 내려앉으면, 105동 위로 한 줄기 빛이 떠오릅니다. 27층의 높이를 따라 곧게 이어지는 황금빛 라인은 멀리서도 영주자이를 알아보게 하는 밤의 서명이 됩니다.",
-         points=["3000K 따뜻한 단색, 깜빡임 없는 고요한 점등", "2층에서 옥상까지 끊김 없이 이어지는 세로 라인", "기본안 1줄 · 프리미엄안 측벽을 감싸는 ∩ 프레임"],
-         note="※ 연출 이미지는 프리미엄안(∩ 프레임) 기준입니다.",
-         items=[("sky_line", "LED 경관 라인바", "알루미늄 100×85 · 광확산 커버 · 3000K · 층고 맞춤 2.9m 모듈", "기본 75.5m / 프리미엄 약 160m"),
-                (None, "분산 전원장치", "12V · 방수 IP67 · KC · 측벽 약 6m마다 설치", "기본 13대 / 프리미엄 28대"),
-                (None, "옥상 전원함", "천문 타이머 · 누전차단기 · 서지보호기", "1조")]),
+         points=["3000K 따뜻한 단색, 깜빡임 없는 고요한 점등", "측벽을 감싸는 ㄷ자 — 양쪽 세로줄과 상단 가로줄", "간소안으로 세로 1줄 구성도 가능"],
+         note="",
+         items=[("sky_line", "LED 경관 라인바", "알루미늄 100×85 · 광확산 커버 · 3000K · 층고 맞춤 2.9m 모듈", "ㄷ자 약 160m"),
+                ("smps", "밀폐형 전원공급기", "12V · 방수 IP67 · KC · 측벽 약 6m마다 분산 설치", "28대"),
+                ("dbox", "옥상 전원함", "천문 타이머 · 누전차단기 · 서지보호기", "1조")]),
     dict(no="②", name="겨울빛의 문", folder="겨울빛의 문", hero="겨울빛의 문",
          gallery=["별빛이 머무는 정문 야경-1", "별빛의 초대, 영주자이 입구-2", "자이 게이트의 별빛 조명-3", "우측 시점의 별빛 입구-4"],
          where="정문 문주 · 길이 약 28.6m · 높이 6.85m", kind="시즌 장식",
@@ -220,7 +223,7 @@ def header(no, name, sub, eb=""):
 def build_html(files: dict, cover: Path | None) -> str:
     q = {qd["key"]: yb.calc(qd) for qd in yb.QUOTES}
     qx = {qd["key"]: yb.calc(qd["철거"]) if qd.get("철거") else None for qd in yb.QUOTES}
-    k1, k1p = "1_하늘에새긴빛_1줄_12V", "1B_하늘에새긴빛_프레임_12V"
+    k1, k1p = "1_하늘에새긴빛_ㄷ자_12V", "1B_하늘에새긴빛_1줄_12V"
     others = ["2_겨울빛의문_정문문주", "3_별빛이머무는정원", "4_요정의숲"]
     base = q[k1]["supply"] + sum(q[k]["supply"] for k in others)
     prem = q[k1p]["supply"] + sum(q[k]["supply"] for k in others)
@@ -250,7 +253,8 @@ def build_html(files: dict, cover: Path | None) -> str:
         P.append(page(header(t["no"], t["name"], "여러 시점에서 본 풍경", "PERSPECTIVES") + f'<div class="gal {cols}">{tiles}</div>'))
         items = ""
         for crop, nm, spec, qty in t["items"]:
-            vis = f'<img src="img/{crop}.jpg">' if crop else f'<div class="ico">{ICON[nm]}</div>'
+            prod = ' style="object-fit:contain;background:#fff"' if crop in ("smps", "dbox") else ""
+            vis = f'<img src="img/{crop}.jpg"{prod}>' if crop else f'<div class="ico">{ICON[nm]}</div>'
             items += f'<div class="it">{vis}<div class="itb"><div class="itn">{html.escape(nm)}</div><div class="its">{html.escape(spec)}</div><div class="itq">{html.escape(qty)}</div></div></div>'
         pts = "".join(f"<li>{html.escape(x)}</li>" for x in t["points"])
         note = f'<p class="note">{html.escape(t["note"])}</p>' if t["note"] else ""
@@ -270,14 +274,16 @@ def build_html(files: dict, cover: Path | None) -> str:
         y = 520 - 18 - k * 17.4
         svg.append(f'<line x1="120" y1="{y:.1f}" x2="270" y2="{y:.1f}" stroke="#dfe4ea"/>')
     svg.append('<rect x="120" y="502" width="150" height="18" fill="#d9dee5"/><text x="150" y="515" font-size="10" fill="#5b6573">1층 필로티 · 설치 제외</text>')
-    svg.append('<line x1="266" y1="40" x2="266" y2="502" stroke="#e0b25a" stroke-width="7" stroke-linecap="round"/>')
+    svg.append('<polyline points="124,502 124,40 266,40 266,502" fill="none" stroke="#e0b25a" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>')
     for k in range(13):
         y = 58 + k * 34
         svg.append(f'<rect x="284" y="{y}" width="16" height="12" rx="2" fill="#1d2430"/><line x1="284" y1="{y + 6}" x2="270" y2="{y + 6}" stroke="#1d2430"/>')
+        svg.append(f'<rect x="90" y="{y}" width="16" height="12" rx="2" fill="#1d2430"/><line x1="106" y1="{y + 6}" x2="120" y2="{y + 6}" stroke="#1d2430"/>')
     svg.append('<rect x="290" y="16" width="44" height="22" rx="3" fill="#b8913a"/><text x="296" y="31" font-size="10" fill="#fff">전원함</text>')
     svg.append('<line x1="312" y1="38" x2="312" y2="470" stroke="#1d2430" stroke-dasharray="4 4"/>')
-    svg.append('<line x1="96" y1="40" x2="96" y2="520" stroke="#9aa3b2"/><text x="60" y="285" font-size="12" fill="#5b6573" transform="rotate(-90 70 285)">높이 79.3m · 27층</text>')
-    svg.append('<text x="318" y="130" font-size="12" fill="#1d2430">전원장치</text><text x="318" y="145" font-size="12" fill="#1d2430">약 6m마다</text>')
+    svg.append('<line x1="70" y1="40" x2="70" y2="520" stroke="#9aa3b2"/><text x="40" y="285" font-size="12" fill="#5b6573" transform="rotate(-90 50 285)">높이 79.3m · 27층</text>')
+    svg.append('<text x="134" y="60" font-size="11" fill="#b8913a">상단 가로 약 9.2m</text>')
+    svg.append('<text x="318" y="130" font-size="12" fill="#1d2430">전원장치</text><text x="318" y="145" font-size="12" fill="#1d2430">약 6m마다 (양쪽)</text>')
     svg.append('<text x="318" y="300" font-size="11" fill="#b8913a">라인바 2.9m 모듈</text><text x="318" y="314" font-size="11" fill="#b8913a">(층고 맞춤)</text>')
     svg.append('</svg>')
     P.append(page(header("①", "하늘에 새긴 빛", "경관바 설계", "CRAFTSMANSHIP") + f'''<div class="tech"><div class="tl">{"".join(svg)}</div>
@@ -294,15 +300,15 @@ def build_html(files: dict, cover: Path | None) -> str:
     def row(nm, desc, t, x, cls=""):
         xs = won(x["supply"]) if x else "—"
         return f'<tr class="{cls}"><td>{nm}</td><td>{desc}</td><td class="n">{won(t["supply"])}</td><td class="n">{won(t["total"])}</td><td class="n">{xs}</td></tr>'
-    rows = (row("① 하늘에 새긴 빛 <span class='b'>기본</span>", "105동 측벽 세로 1줄 75.5m · 상시", q[k1], None)
-            + row("&nbsp;&nbsp;&nbsp;└ 프리미엄", "측벽 ∩ 프레임 약 160m · 상시", q[k1p], None, "sub")
+    rows = (row("① 하늘에 새긴 빛 <span class='b'>기본</span>", "105동 측벽 ㄷ자 라인 약 160m · 상시", q[k1], None)
+            + row("&nbsp;&nbsp;&nbsp;└ 간소안", "측벽 세로 1줄 75.5m · 상시", q[k1p], None, "sub")
             + row("② 겨울빛의 문", "정문 문주 · 시즌", q[others[0]], qx[others[0]])
             + row("③ 별빛이 머무는 정원", "잔디 정원 · 시즌", q[others[1]], qx[others[1]])
             + row("④ 요정의 숲", "소나무 숲 · 시즌", q[others[2]], qx[others[2]]))
     P.append(page(header("₩", "견적 요약", "부가세 별도 · 단위 원", "ESTIMATE") + f'''<div class="est"><table>
 <tr><th>테마</th><th>내용</th><th class="n">공급가액</th><th class="n">부가세 포함</th><th class="n">철거(선택)</th></tr>{rows}
-<tr class="tot"><td colspan="2">합계 — ① 기본안</td><td class="n">{won(base)}</td><td class="n">{won(base + base // 10)}</td><td class="n">{won(tear)}</td></tr>
-<tr class="tot2"><td colspan="2">합계 — ① 프리미엄안</td><td class="n">{won(prem)}</td><td class="n">{won(prem + prem // 10)}</td><td class="n">{won(tear)}</td></tr></table>
+<tr class="tot"><td colspan="2">합계 — ① 기본안 (ㄷ자)</td><td class="n">{won(base)}</td><td class="n">{won(base + base // 10)}</td><td class="n">{won(tear)}</td></tr>
+<tr class="tot2"><td colspan="2">합계 — ① 간소안 (1줄)</td><td class="n">{won(prem)}</td><td class="n">{won(prem + prem // 10)}</td><td class="n">{won(tear)}</td></tr></table>
 <ul class="fine"><li>수량은 현장 실측 후 단가 기준으로 정산합니다. 세부 내역은 뒤쪽 부록 견적서를 참고해 주십시오.</li>
 <li>1차 전원(가까운 분전반 → 전원함)은 발주처 제공 조건이며, 전기요금·경관심의·인허가는 제외입니다.</li>
 <li>시즌 장식(②③④)의 철거는 선택 항목이며, 점등 기간 중 불량 조명은 무상 교체합니다.</li></ul></div>'''))
@@ -410,7 +416,7 @@ def main():
     print("4) 부록 견적서 병합")
     doc = fitz.open(body)
     qdir = OUT.parent / "견적서"
-    for name in ["견적서_1_하늘에새긴빛_1줄_12V.pdf", "견적서_1B_하늘에새긴빛_프레임_12V.pdf", "견적서_2_겨울빛의문_정문문주.pdf",
+    for name in ["견적서_1_하늘에새긴빛_ㄷ자_12V.pdf", "견적서_1B_하늘에새긴빛_1줄_12V.pdf", "견적서_2_겨울빛의문_정문문주.pdf",
                  "견적서_3_별빛이머무는정원.pdf", "견적서_4_요정의숲.pdf"]:
         doc.insert_pdf(fitz.open(qdir / name))
     final = OUT / FINAL_NAME
