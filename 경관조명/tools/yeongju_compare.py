@@ -112,7 +112,7 @@ def build():
 <div class="th"><em>「하늘에 새긴 빛」</em> 측벽 경관 라인</div></div>
 <div class="cmp"><div class="them"><div class="lb">선○○ 견적</div><div class="v">₩ {w(s["total"])}</div><div class="s">두줄 134m · m당 약 {round(s_pm / 1000):,}천 원</div></div>
 <div class="us"><div class="lb">엣지컴퍼니 제안</div><div class="v">₩ {w(o["total"])}</div><div class="s">ㄷ자 160m · m당 약 {round(o_pm / 1000):,}천 원</div></div>
-<div class="diff"><div class="lb">₩ {w(s["total"] - o["total"])} 낮은 금액으로</div><div class="v">+26m · 상단 가로<br>디밍 포함</div><div class="s">m당 약 {(s_pm - o_pm) / s_pm:.0%} 낮음</div></div></div>
+<div class="diff"><div class="lb">선○○보다 낮은 금액</div><div class="v">같은 11자 {round((s["total"] - o134["total"]) / 10000):,}만 원↓<br>ㄷ자 +26m {round((s["total"] - o["total"]) / 10000):,}만 원↓</div><div class="s">ㄷ자 m당 약 {(s_pm - o_pm) / s_pm:.0%} 낮음 · 상단 가로·디밍 포함</div></div></div>
 <div class="sect"><div class="eb">WHAT WE ADD</div><h3>엣지컴퍼니가 더 드리는 것</h3><div class="val">{vals}</div></div>
 <div class="sect"><div class="eb">SAME SCOPE</div><h3>같은 범위로 본 금액 <span class="spec">부가세 별도 · 단위 원</span></h3>
 <table class="c2"><tr><th>범위</th><th class="n">선○○</th><th class="n">엣지컴퍼니</th></tr>{scope}</table></div>
