@@ -154,8 +154,9 @@ THEMES = [
     dict(no="①", name="하늘에 새긴 빛", folder="하늘에 새긴 빛", hero="하늘에 새긴 빛",
          gallery=["하늘에 새긴 105의 빛-1", "105타워에 새긴 황금빛-2", "105 빌딩, 하늘에 새긴 빛-3"],
          where="105동 측벽 · 지상 27층 · 높이 79.3m", kind="상시 경관조명",
-         concept="27층을 따라 오르는 한 줄의 황금빛. 단지 밖에서도 영주자이를 알아보게 하는 밤의 표식입니다.",
-         points=["3000K 따뜻한 단색, 깜빡임 없는 정적 점등", "2층 바닥부터 옥상까지 끊김 없는 세로 라인", "기본안 1줄 · 프리미엄안 측벽을 감싸는 ∩ 프레임"],
+         tagline="27층을 따라 오르는 황금빛 한 줄",
+         concept="어둠이 내려앉으면, 105동 위로 한 줄기 빛이 떠오릅니다. 27층의 높이를 따라 곧게 이어지는 황금빛 라인은 멀리서도 영주자이를 알아보게 하는 밤의 서명이 됩니다.",
+         points=["3000K 따뜻한 단색, 깜빡임 없는 고요한 점등", "2층에서 옥상까지 끊김 없이 이어지는 세로 라인", "기본안 1줄 · 프리미엄안 측벽을 감싸는 ∩ 프레임"],
          note="※ 연출 이미지는 프리미엄안(∩ 프레임) 기준입니다.",
          items=[("sky_line", "LED 경관 라인바", "알루미늄 100×85 · 광확산 커버 · 3000K · 층고 맞춤 2.9m 모듈", "기본 75.5m / 프리미엄 약 160m"),
                 (None, "분산 전원장치", "12V · 방수 IP67 · KC · 측벽 약 6m마다 설치", "기본 13대 / 프리미엄 28대"),
@@ -163,8 +164,9 @@ THEMES = [
     dict(no="②", name="겨울빛의 문", folder="겨울빛의 문", hero="겨울빛의 문",
          gallery=["별빛이 머무는 정문 야경-1", "별빛의 초대, 영주자이 입구-2", "자이 게이트의 별빛 조명-3", "우측 시점의 별빛 입구-4"],
          where="정문 문주 · 길이 약 28.6m · 높이 6.85m", kind="시즌 장식",
-         concept="단지에 들어서는 순간 겨울이 시작되는 문. 지붕 띠를 따라 고드름 빛이 내려앉습니다.",
-         points=["지붕 띠 전면에 전구색 고드름 커튼", "로고 벽에 눈꽃·별, 화단에 원뿔 트리", "석재·유리·SUS 마감 무타공 시공"],
+         tagline="집으로 들어서는 순간 시작되는 겨울",
+         concept="집으로 돌아오는 길, 가장 먼저 만나는 겨울. 문주의 처마를 따라 고드름 빛이 내려앉고, 로고 벽 위로 눈꽃이 피어납니다.",
+         points=["처마 전면을 따라 흐르는 전구색 고드름 커튼", "로고 벽의 눈꽃과 별, 화단의 원뿔 트리", "석재·유리·SUS 마감에 흔적을 남기지 않는 무타공 시공"],
          note="",
          items=[("gate_icicle", "고드름 커튼 라이트", "전구색 · 드롭 0.2~0.6m · 하단 보조 와이어 고정", "32m"),
                 ("gate_motif", "눈꽃·별 모티브", "Ø35~80cm · 전구색·백색 · 투명 와이어 행잉", "4개"),
@@ -174,8 +176,9 @@ THEMES = [
     dict(no="③", name="별빛이 머무는 정원", folder="별빛이 머무는 정원", hero="별빛이 머무는 정원 야경-2",
          gallery=["초승달 아래 별빛 정원-1", "별빛이 머무는 정원, 새로운 각도-3", "나무 곁의 별빛 정원-4"],
          where="잔디 정원 · 스테인리스 조형물 주변", kind="시즌 장식",
-         concept="사슴과 토끼가 쉬어 가는 별빛 정원. 큰 나무 가지에는 별이 매달립니다.",
-         points=["와이어 프레임 조형물로 낮에도 정원과 어울림", "기존 나무 조명·조형물은 그대로 살림", "잔디 앵커 고정, 보행로 무배선"],
+         tagline="사슴과 토끼가 쉬어 가는 별빛 정원",
+         concept="잔디 위로 내려온 별빛 사이, 사슴과 토끼가 조용히 쉬어 갑니다. 큰 나무 가지 끝에는 별이 매달려, 아이들의 발걸음이 오래 머무는 겨울 정원이 됩니다.",
+         points=["낮에도 정원과 어울리는 와이어 프레임 조형물", "기존 나무 조명과 조형물을 그대로 살린 구성", "잔디 앵커 고정, 산책로를 가로지르지 않는 배선"],
          note="",
          items=[("gdn_deer", "LED 사슴", "H1.5m · H1.1m · 와이어 프레임", "2점"),
                 ("gdn_rabbit", "LED 토끼", "H0.5m · 와이어 프레임", "2점"),
@@ -186,8 +189,9 @@ THEMES = [
     dict(no="④", name="요정의 숲", folder="요정의 숲", hero="요정의 숲",
          gallery=["요정의 숲 빛나는 정원 전경-2", "오른쪽 산책로의 요정의 숲-3", "요정의 숲, 빛나는 중정-4", "왼편에서 바라본 요정의 숲"],
          where="소나무 숲 · 쉼터 파고라 주변", kind="시즌 장식",
-         concept="푸른 빛으로 물든 소나무 사이를 걷는 산책. 정원이 하나의 숲 속 이야기가 됩니다.",
-         points=["소나무 수관을 블루·그린·퍼플·화이트로 감쌈", "나무 밑 색 업라이트로 기둥에 깊이감", "화단 경계 조명·파고라 등 기존 시설 유지"],
+         tagline="푸른 빛으로 물든 소나무 산책길",
+         concept="소나무 가지마다 푸른 빛이 내려앉아, 익숙한 산책길이 동화 속 숲길로 바뀝니다. 나무 아래에서 올려 비추는 빛이 숲에 깊이를 더합니다.",
+         points=["소나무 수관을 감싼 블루·그린·퍼플·화이트의 빛", "나무 밑 색 업라이트로 기둥에 입체감", "화단 경계 조명·파고라 등 기존 시설은 그대로"],
          note="",
          items=[("fst_canopy", "수관 은하수 · 대형 소나무", "H7~8m · 블루·그린·퍼플·화이트", "3그루"),
                 ("fst_purple", "수관 은하수 · 중형 소나무", "H4~5m · 같은 색 구성", "4그루"),
@@ -208,8 +212,8 @@ def page(inner, cls="pg"):
     return f'<section class="{cls}">{inner}</section>'
 
 
-def header(no, name, sub):
-    return (f'<div class="hd"><span class="no">{no}</span><span class="nm">{html.escape(name)}</span>'
+def header(no, name, sub, eb=""):
+    return (f'<div class="eyebrow heb">{eb}</div><div class="hd"><span class="no">{no}</span><span class="nm">{html.escape(name)}</span>'
             f'<span class="sub">{html.escape(sub)}</span><span class="brand">㈜엣지컴퍼니</span></div>')
 
 
@@ -231,11 +235,11 @@ def build_html(files: dict, cover: Path | None) -> str:
         cards += (f'<div class="card"><img src="img/{files[t["folder"] + "|" + t["hero"]]}">'
                   f'<div class="cb"><div class="cn">{t["no"]} {html.escape(t["name"])}</div>'
                   f'<div class="cw">{html.escape(t["where"])} · {t["kind"]}</div>'
-                  f'<div class="cc">{html.escape(t["concept"])}</div></div></div>')
-    P.append(page(f'''<div class="intro"><div class="eyebrow">YEONGJU Xi SIGNATURE · WINTER LIGHTING</div>
-<h1>빛으로 완성하는 네 가지 겨울 풍경</h1>
-<p class="lead">영주자이 시그니처의 랜드마크 동, 정문, 정원, 소나무 숲을 하나의 이야기로 잇는 야간 경관 제안입니다.
-상시 경관조명 1곳과 겨울 시즌 장식 3곳으로 구성했습니다.</p>
+                  f'<div class="cc">{html.escape(t["tagline"])}</div></div></div>')
+    P.append(page(f'''<div class="intro"><div class="eyebrow">YEONGJU Xi SIGNATURE · LANDSCAPE LIGHTING PROPOSAL</div>
+<h1>빛으로 완성하는 영주자이의 밤</h1>
+<p class="lead">랜드마크 동과 정문, 정원, 소나무 숲을 하나의 빛으로 잇습니다.
+사계절 단지를 지키는 상시 경관조명 한 곳과, 겨울을 특별하게 만드는 시즌 연출 세 곳으로 구성했습니다.</p>
 <div class="cards">{cards}</div></div>'''))
 
     for t in THEMES:
@@ -243,7 +247,7 @@ def build_html(files: dict, cover: Path | None) -> str:
         g = t["gallery"]
         cols = "g3" if len(g) == 3 else "g4"
         tiles = "".join(f'<figure><img src="img/{files[t["folder"] + "|" + s]}"><figcaption>{html.escape(s.rsplit("-", 1)[0] if s[-2:-1] == "-" else s)}</figcaption></figure>' for s in g)
-        P.append(page(header(t["no"], t["name"], "다른 시점에서 본 연출") + f'<div class="gal {cols}">{tiles}</div>'))
+        P.append(page(header(t["no"], t["name"], "여러 시점에서 본 풍경", "PERSPECTIVES") + f'<div class="gal {cols}">{tiles}</div>'))
         items = ""
         for crop, nm, spec, qty in t["items"]:
             vis = f'<img src="img/{crop}.jpg">' if crop else f'<div class="ico">{ICON[nm]}</div>'
@@ -252,7 +256,7 @@ def build_html(files: dict, cover: Path | None) -> str:
         note = f'<p class="note">{html.escape(t["note"])}</p>' if t["note"] else ""
         n = len(t["items"])
         grid = "i3" if n <= 3 else ("i5" if n == 5 else "i6")
-        P.append(page(header(t["no"], t["name"], "디자인 계획") + f'''<div class="plan">
+        P.append(page(header(t["no"], t["name"], "디자인 계획", "DESIGN PLAN") + f'''<div class="plan">
 <div class="pl"><div class="tag">{t["kind"]}</div><h2>{html.escape(t["name"])}</h2><div class="where">{html.escape(t["where"])}</div>
 <p class="concept">{html.escape(t["concept"])}</p><ul>{pts}</ul>{note}</div>
 <div class="pr {grid}">{items}</div></div>'''))
@@ -276,8 +280,8 @@ def build_html(files: dict, cover: Path | None) -> str:
     svg.append('<text x="318" y="130" font-size="12" fill="#1d2430">전원장치</text><text x="318" y="145" font-size="12" fill="#1d2430">약 6m마다</text>')
     svg.append('<text x="318" y="300" font-size="11" fill="#b8913a">라인바 2.9m 모듈</text><text x="318" y="314" font-size="11" fill="#b8913a">(층고 맞춤)</text>')
     svg.append('</svg>')
-    P.append(page(header("①", "하늘에 새긴 빛", "경관바 시공 방식") + f'''<div class="tech"><div class="tl">{"".join(svg)}</div>
-<div class="tr"><h2>오래 가도록 설계한 세로 라인</h2><ul class="big">
+    P.append(page(header("①", "하늘에 새긴 빛", "경관바 설계", "CRAFTSMANSHIP") + f'''<div class="tech"><div class="tl">{"".join(svg)}</div>
+<div class="tr"><h2>오래 머무는 빛을 위한 설계</h2><ul class="big">
 <li><b>공장 완제품</b> — 12V 정전류 3구 모듈을 알루미늄 케이스에 나사로 고정하고 결선·밀봉·점등 검사까지 마친 상태로 들여옵니다.</li>
 <li><b>층고 맞춤 2.9m 모듈</b> — 이음이 층 바닥선과 맞아 눈에 덜 띄고, 승강기 운반과 로프 작업이 안전한 길이입니다.</li>
 <li><b>분산 전원</b> — 방수 전원장치를 약 6m(바 2개)마다 두고, 한 줄 병렬 50개 이하로 배선해 아래쪽까지 밝기를 고르게 유지합니다.</li>
@@ -295,7 +299,7 @@ def build_html(files: dict, cover: Path | None) -> str:
             + row("② 겨울빛의 문", "정문 문주 · 시즌", q[others[0]], qx[others[0]])
             + row("③ 별빛이 머무는 정원", "잔디 정원 · 시즌", q[others[1]], qx[others[1]])
             + row("④ 요정의 숲", "소나무 숲 · 시즌", q[others[2]], qx[others[2]]))
-    P.append(page(header("₩", "견적 요약", "부가세 별도 기준 · 단위 원") + f'''<div class="est"><table>
+    P.append(page(header("₩", "견적 요약", "부가세 별도 · 단위 원", "ESTIMATE") + f'''<div class="est"><table>
 <tr><th>테마</th><th>내용</th><th class="n">공급가액</th><th class="n">부가세 포함</th><th class="n">철거(선택)</th></tr>{rows}
 <tr class="tot"><td colspan="2">합계 — ① 기본안</td><td class="n">{won(base)}</td><td class="n">{won(base + base // 10)}</td><td class="n">{won(tear)}</td></tr>
 <tr class="tot2"><td colspan="2">합계 — ① 프리미엄안</td><td class="n">{won(prem)}</td><td class="n">{won(prem + prem // 10)}</td><td class="n">{won(tear)}</td></tr></table>
@@ -306,14 +310,15 @@ def build_html(files: dict, cover: Path | None) -> str:
     # 시공·품질·회사
     reg = (OUT.parent.parent / "00_운영" / "회사서류")
     certs = "".join(f'<img src="{p.as_uri()}">' for p in sorted(reg.glob("*.jpg")))
-    P.append(page(header("✓", "시공 · 품질 · 회사", "") + f'''<div class="qa"><div class="qa1">
+    P.append(page(header("✓", "시공 · 품질 · 약속", "", "OUR PROMISE") + f'''<div class="qa"><div class="qa1">
 <h3>시공 일정</h3><p>발주 후 자재 입고 약 3주 → 현장 시공 105동 4일 · 정문 2일 · 정원 1일 · 숲 2일 (기상에 따라 변동)</p>
 <h3>시공 원칙</h3><ul><li>석재·유리·SUS 마감 무타공, 수목은 못·스테이플 없이 감기</li><li>기존 경관조명·로고 사인·정원 시설은 그대로 유지</li><li>손이 닿는 1층 필로티 구간은 설치하지 않음</li></ul>
 <h3>안전 · 품질</h3><ul><li>로프 작업 안전관리비 반영 (수직구명줄·추락방지·하부 통제)</li><li>전원함 누전차단기·서지보호기, 전 구간 절연저항 시험 후 점등</li><li>하자보수: 경관바·전원장치 3년 / 시즌 장식 점등 기간 무상 교체</li></ul></div>
 <div class="qa2"><h3>㈜엣지컴퍼니</h3><p class="co">{LICENSE}<br>한국전기공사협회 회원 제00362호<br>대표 고진식 · ☎ 1533-3210</p><div class="certs">{certs}</div>
-<p class="note">전기공사업 면허를 가진 회사가 설계·생산·시공·하자보수를 직접 맡습니다.</p></div></div>'''))
+<p class="note">전기공사업 면허를 갖춘 엣지컴퍼니가 설계부터 생산, 시공, 하자보수까지 한 책임으로 맡습니다.</p></div></div>'''))
 
-    P.append(page('''<div class="thanks"><div class="eyebrow">YEONGJU Xi SIGNATURE · WINTER LIGHTING</div><h1>감사합니다</h1>
+    P.append(page('''<div class="thanks"><div class="eyebrow">YEONGJU Xi SIGNATURE · LANDSCAPE LIGHTING PROPOSAL</div><h1>감사합니다</h1>
+<p class="tq">빛은 단지가 건네는 첫인사입니다.<br>영주자이의 겨울을 정성껏 밝히겠습니다.</p>
 <p>㈜엣지컴퍼니 · 전기공사업 등록 제 울산-00821호 · ☎ 1533-3210</p></div>'''))
     return HTML_HEAD + "".join(P) + "</body></html>"
 
@@ -384,6 +389,8 @@ figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 12px
 .certs { display: flex; gap: 14px; margin-top: 10px; } .certs img { height: 250px; border: 1px solid #e6e1d6; }
 .thanks { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
 .thanks h1 { font-size: 56px; } .thanks p { color: #6b7280; }
+.thanks .tq { font-family: "Noto Serif KR", serif; font-size: 20px; line-height: 1.8; color: #1d2430; margin: 6px 0 26px; }
+.heb { font-size: 11px; margin-bottom: 4px; }
 </style></head><body>"""
 
 

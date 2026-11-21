@@ -133,7 +133,7 @@ QUOTES = [
             "기존 경관조명·단지 로고 사인·주차장 출입구 조명은 그대로 유지합니다.",
             "점등 기간 중 불량 조명은 무상 교체합니다.",
             "1차 전원(가까운 분전반 → 전원함)은 발주처 제공 조건이며, 전기요금은 제외합니다.",
-            "철거는 선택 항목이며 아래 별도 금액입니다.",
+            "철거는 선택 항목이며, 위 「선택 항목」 금액으로 따로 표시했습니다.",
             "결제: 계약금 50% / 설치 완료 후 50%.",
         ],
     },
@@ -171,7 +171,7 @@ QUOTES = [
             "잔디용 앵커·고정핀으로 고정하고 경계석에는 타공하지 않으며, 전선은 보행로를 가로지르지 않게 배선합니다.",
             "점등 기간 중 불량 조명은 무상 교체합니다.",
             "1차 전원은 발주처 제공 조건이며, 전기요금은 제외합니다.",
-            "철거는 선택 항목이며 아래 별도 금액입니다.",
+            "철거는 선택 항목이며, 위 「선택 항목」 금액으로 따로 표시했습니다.",
             "결제: 계약금 50% / 설치 완료 후 50%.",
         ],
     },
@@ -204,7 +204,7 @@ QUOTES = [
             "화단 경계 조명·정원등·쉼터 파고라 등 기존 시설은 그대로 유지하며 견적에서 제외합니다.",
             "점등 기간 중 불량 조명은 무상 교체합니다.",
             "1차 전원은 발주처 제공 조건이며, 전기요금은 제외합니다.",
-            "철거는 선택 항목이며 아래 별도 금액입니다.",
+            "철거는 선택 항목이며, 위 「선택 항목」 금액으로 따로 표시했습니다.",
             "결제: 계약금 50% / 설치 완료 후 50%.",
         ],
     },
@@ -254,89 +254,123 @@ def korean_won(n: int) -> str:
 
 # ───────────────────────── HTML / PDF ─────────────────────────
 CSS = """
-@page { size: A4; margin: 14mm 12mm; }
+@page { size: A4; margin: 15mm 14mm 14mm; }
 * { box-sizing: border-box; }
-body { font-family: "Malgun Gothic", "맑은 고딕", sans-serif; color: #1d2430; font-size: 10.5pt; margin: 0; }
-h1 { text-align: center; letter-spacing: 18px; font-size: 24pt; margin: 4mm 0 6mm; }
-.top { display: flex; gap: 4mm; }
-.top > div { flex: 1; border: 1.2px solid #1d2430; padding: 3mm 4mm; }
-.top .l p { margin: 1.6mm 0; }
-.to { font-size: 12.5pt; font-weight: 700; border-bottom: 1px solid #1d2430; padding-bottom: 1mm; }
-.co table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
-.co td { padding: 1mm 1.5mm; border-bottom: 1px solid #e3e7ec; }
-.co td:first-child { width: 26mm; color: #5b6573; }
-.sum { margin: 5mm 0 3mm; border: 1.2px solid #1d2430; background: #f6f8fa; padding: 3mm 4mm; font-size: 12pt; font-weight: 700; }
-.sum span { font-weight: 400; font-size: 10pt; color: #5b6573; }
-table.q { width: 100%; border-collapse: collapse; font-size: 9.3pt; }
-table.q th, table.q td { border: 1px solid #b9c0c9; padding: 1.4mm 1.6mm; vertical-align: middle; }
-table.q th { background: #eef1f4; }
-table.q td.n { text-align: right; white-space: nowrap; }
-table.q td.c { text-align: center; white-space: nowrap; }
-tr.sec td { background: #f6f8fa; font-weight: 700; }
-tr.tot td { font-weight: 700; background: #eef1f4; }
-tr.grand td { font-weight: 700; font-size: 11pt; border-top: 2px solid #1d2430; }
-.spec { color: #5b6573; font-size: 8.6pt; }
-h3 { font-size: 11pt; margin: 5mm 0 2mm; }
-ol { margin: 0; padding-left: 5mm; font-size: 9.3pt; } li { margin: 0.8mm 0; }
-.foot { margin-top: 5mm; text-align: right; font-size: 10pt; }
+body { font-family: "Noto Sans KR", "Malgun Gothic", sans-serif; color: #1d2430; font-size: 9.4pt; margin: 0; line-height: 1.45; }
+.eb { font-size: 7.4pt; letter-spacing: 3.2px; color: #b8913a; font-weight: 500; }
+.mast { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 3.5mm; border-bottom: 1.6px solid #b8913a; }
+.mast h1 { font-family: "Noto Serif KR", serif; font-weight: 600; font-size: 25pt; letter-spacing: 9px; margin: 1mm 0 0; }
+.mast .brand { text-align: right; }
+.mast .brand b { font-family: "Noto Serif KR", serif; font-size: 14pt; font-weight: 600; display: block; }
+.mast .brand span { font-size: 7.8pt; color: #6b7280; }
+.rule2 { border-top: 0.6px solid #1d2430; margin-top: 0.8mm; }
+.project { margin: 5mm 0 4mm; }
+.project .pj { font-size: 9.5pt; color: #4a5563; margin-top: 1mm; }
+.project .th { font-family: "Noto Serif KR", serif; font-size: 15pt; font-weight: 600; margin-top: 0.5mm; }
+.project .th em { font-style: normal; color: #b8913a; }
+.info { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.info table { width: 100%; border-collapse: collapse; font-size: 8.8pt; }
+.info td { padding: 1.3mm 0; border-bottom: 0.6px solid #e6e0d2; vertical-align: top; }
+.info td.k { width: 23mm; color: #8a7a55; font-size: 8pt; letter-spacing: 0.5px; }
+.info .to { font-size: 10.5pt; font-weight: 700; }
+.sup { position: relative; }
+.seal { position: absolute; right: 2mm; top: 3mm; width: 15mm; height: 15mm; border: 1px dashed #c9a85c; border-radius: 50%; color: #c9a85c; font-size: 8pt; display: flex; align-items: center; justify-content: center; }
+.amount { margin: 5mm 0 4mm; display: flex; justify-content: space-between; align-items: center; background: #faf7f0; border-left: 3.5px solid #b8913a; padding: 3.5mm 5mm; }
+.amount .lb { font-size: 8.6pt; color: #6b7280; }
+.amount .kr { font-size: 9.6pt; margin-top: 0.8mm; }
+.amount .big { font-family: "Noto Serif KR", serif; font-size: 21pt; font-weight: 600; text-align: right; }
+.amount .vat { font-size: 8pt; color: #6b7280; text-align: right; }
+table.q { width: 100%; border-collapse: collapse; font-size: 8.8pt; }
+table.q th { text-align: left; font-weight: 500; font-size: 7.8pt; letter-spacing: 1px; color: #6b7280; padding: 1.6mm 1.8mm; border-bottom: 1.4px solid #1d2430; }
+table.q td { padding: 1.7mm 1.8mm; border-bottom: 0.6px solid #ece6d9; vertical-align: top; }
+table.q .n { text-align: right; white-space: nowrap; }
+table.q .c { text-align: center; white-space: nowrap; }
+tr.sec td { color: #b8913a; font-weight: 700; font-size: 8pt; letter-spacing: 1.2px; padding-top: 3.2mm; border-bottom: 0.8px solid #d9cfb8; }
+tr.sec td span { color: #9aa3b2; font-weight: 400; letter-spacing: 2px; margin-left: 2mm; font-size: 7pt; }
+tr.tot td { background: #faf7f0; font-weight: 600; }
+tr.calc td { color: #374151; }
+tr.grand td { font-weight: 700; font-size: 10pt; border-top: 1.4px solid #1d2430; border-bottom: none; padding-top: 2.4mm; }
+tr.grand2 td { font-family: "Noto Serif KR", serif; font-weight: 600; font-size: 11pt; background: #faf7f0; }
+.spec { color: #7b8391; font-size: 7.6pt; margin-top: 0.4mm; }
+.sect { margin-top: 6mm; }
+.sect h3 { font-family: "Noto Serif KR", serif; font-size: 11.5pt; font-weight: 600; margin: 0.8mm 0 2mm; }
+ol.terms { margin: 0; padding: 0; list-style: none; counter-reset: t; font-size: 8.6pt; }
+ol.terms li { counter-increment: t; position: relative; padding: 1mm 0 1mm 7mm; border-bottom: 0.5px dotted #e2dccd; }
+ol.terms li::before { content: counter(t, decimal-leading-zero); position: absolute; left: 0; top: 1mm; color: #b8913a; font-weight: 600; font-size: 7.8pt; }
+.sign { margin-top: 7mm; text-align: right; font-size: 9.4pt; line-height: 1.9; page-break-inside: avoid; }
+.sign b { font-family: "Noto Serif KR", serif; font-size: 12pt; }
+.foot { margin-top: 6mm; padding-top: 2mm; border-top: 0.6px solid #e2dccd; font-size: 7.4pt; color: #8b94a3; text-align: center; letter-spacing: 0.3px; }
 """
 
 
-def rows_html(items, label):
-    h = [f'<tr class="sec"><td colspan="6">{label}</td></tr>']
+def rows_html(items, label, en):
+    h = [f'<tr class="sec"><td colspan="5">{label}<span>{en}</span></td></tr>']
     for name, spec, unit, q, p, _ in items:
         h.append(
             f'<tr><td>{html.escape(name)}<div class="spec">{html.escape(spec)}</div></td>'
             f'<td class="c">{unit}</td><td class="n">{q:,}</td><td class="n">{p:,}</td>'
-            f'<td class="n">{q * p:,}</td><td></td></tr>')
+            f'<td class="n">{q * p:,}</td></tr>')
     return h
 
 
 def cost_table(block, t, with_total_label="공급가액"):
-    h = ['<table class="q"><tr><th style="width:46%">품명 / 규격</th><th>단위</th><th>수량</th>'
-         '<th>단가</th><th>금액</th><th style="width:9%">비고</th></tr>']
+    h = ['<table class="q"><tr><th style="width:50%">품명 · 규격</th><th class="c">단위</th><th class="n">수량</th>'
+         '<th class="n">단가</th><th class="n">금액</th></tr>']
     if block.get("재료비"):
-        h += rows_html(block["재료비"], "1. 재료비")
-        h.append(f'<tr class="tot"><td colspan="4">재료비 소계</td><td class="n">{t["a"]:,}</td><td></td></tr>')
-    h += rows_html(block["노무비"], "2. 노무비")
-    h.append(f'<tr class="tot"><td colspan="4">노무비 소계</td><td class="n">{t["b"]:,}</td><td></td></tr>')
-    h += rows_html(block["경비"], "3. 경비")
+        h += rows_html(block["재료비"], "재료비", "MATERIALS")
+        h.append(f'<tr class="tot"><td colspan="4">재료비 소계</td><td class="n">{t["a"]:,}</td></tr>')
+    h += rows_html(block["노무비"], "노무비", "LABOR")
+    h.append(f'<tr class="tot"><td colspan="4">노무비 소계</td><td class="n">{t["b"]:,}</td></tr>')
+    h += rows_html(block["경비"], "경비", "EXPENSES")
     h.append(f'<tr><td>산재보험료<div class="spec">노무비 × 3.7%</div></td><td class="c">식</td><td class="n">1</td>'
-             f'<td class="n">{t["sanjae"]:,}</td><td class="n">{t["sanjae"]:,}</td><td></td></tr>')
+             f'<td class="n">{t["sanjae"]:,}</td><td class="n">{t["sanjae"]:,}</td></tr>')
     h.append(f'<tr><td>고용보험료<div class="spec">노무비 × 1.01%</div></td><td class="c">식</td><td class="n">1</td>'
-             f'<td class="n">{t["goyong"]:,}</td><td class="n">{t["goyong"]:,}</td><td></td></tr>')
-    h.append(f'<tr class="tot"><td colspan="4">경비 소계</td><td class="n">{t["c"]:,}</td><td></td></tr>')
-    h.append(f'<tr><td colspan="4">일반관리비 <span class="spec">(재료비+노무비+경비) × 6%</span></td><td class="n">{t["d"]:,}</td><td></td></tr>')
-    h.append(f'<tr><td colspan="4">이윤 <span class="spec">(노무비+경비+일반관리비) × 15%</span></td><td class="n">{t["e"]:,}</td><td></td></tr>')
+             f'<td class="n">{t["goyong"]:,}</td><td class="n">{t["goyong"]:,}</td></tr>')
+    h.append(f'<tr class="tot"><td colspan="4">경비 소계</td><td class="n">{t["c"]:,}</td></tr>')
+    h.append('<tr class="sec"><td colspan="5">원가 집계<span>SUMMARY</span></td></tr>')
+    h.append(f'<tr class="calc"><td colspan="4">일반관리비 <span class="spec">(재료비+노무비+경비) × 6%</span></td><td class="n">{t["d"]:,}</td></tr>')
+    h.append(f'<tr class="calc"><td colspan="4">이윤 <span class="spec">(노무비+경비+일반관리비) × 15%</span></td><td class="n">{t["e"]:,}</td></tr>')
     if t["cut"]:
-        h.append(f'<tr><td colspan="4">단수정리 <span class="spec">천원 미만 절사</span></td><td class="n">-{t["cut"]:,}</td><td></td></tr>')
-    h.append(f'<tr class="grand"><td colspan="4">{with_total_label} (부가세 별도)</td><td class="n">{t["supply"]:,}</td><td></td></tr>')
-    h.append(f'<tr><td colspan="4">부가세 10%</td><td class="n">{t["vat"]:,}</td><td></td></tr>')
-    h.append(f'<tr class="grand"><td colspan="4">합계 (부가세 포함)</td><td class="n">{t["total"]:,}</td><td></td></tr>')
+        h.append(f'<tr class="calc"><td colspan="4">단수정리 <span class="spec">천원 미만 절사</span></td><td class="n">-{t["cut"]:,}</td></tr>')
+    h.append(f'<tr class="grand"><td colspan="4">{with_total_label} <span class="spec">부가세 별도</span></td><td class="n">{t["supply"]:,}</td></tr>')
+    h.append(f'<tr class="calc"><td colspan="4">부가가치세 10%</td><td class="n">{t["vat"]:,}</td></tr>')
+    h.append(f'<tr class="grand2"><td colspan="4">합계 <span class="spec">부가세 포함</span></td><td class="n">{t["total"]:,}</td></tr>')
     h.append("</table>")
     return "\n".join(h)
 
 
 def quote_html(qd: dict) -> str:
     t = calc(qd)
-    co = "".join(f"<tr><td>{k}</td><td>{html.escape(v)}</td></tr>" for k, v in COMPANY.items())
+    title = qd["title"]
+    theme, _, sub = title.partition(" — ")
+    theme_name = theme[2:] if theme[:1] in "①②③④" else theme
+    sup = "".join(f'<tr><td class="k">{k}</td><td>{html.escape(v)}</td></tr>' for k, v in COMPANY.items())
     body = [
-        f"<h1>견 적 서</h1>",
-        '<div class="top"><div class="l">',
-        f"<p>견적일 : {DATE}</p>",
-        '<p class="to">수 신 : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 귀중</p>',
-        f"<p>건 명 : <b>{html.escape(qd['건명'])}</b></p>",
-        "<p>아래와 같이 견적합니다.</p><p>견적 유효기간 : 견적일로부터 15일</p>",
-        f'</div><div class="co"><table>{co}<tr><td>공급자</td><td>{COMPANY["상호"]} 대표 {COMPANY["대표"]} (인)</td></tr></table></div></div>',
-        f'<div class="sum">총 금액 : 금 {korean_won(t["supply"])}원정 (₩{t["supply"]:,}) <span>부가세 별도 · 부가세 포함 ₩{t["total"]:,}</span></div>',
+        '<div class="mast"><div><div class="eb">QUOTATION</div><h1>견 적 서</h1></div>'
+        f'<div class="brand"><b>{COMPANY["상호"]}</b><span>{COMPANY["면허"]}</span></div></div><div class="rule2"></div>',
+        '<div class="project"><div class="eb">PROJECT</div><div class="pj">영주자이 시그니처 경관조명</div>'
+        f'<div class="th"><em>「{html.escape(theme_name)}」</em> {html.escape(sub)}</div></div>',
+        '<div class="info"><table>'
+        '<tr><td class="k">수신</td><td class="to">&nbsp;</td></tr>'
+        f'<tr><td class="k">건명</td><td>{html.escape(qd["건명"])}</td></tr>'
+        f'<tr><td class="k">견적일</td><td>{DATE}</td></tr>'
+        '<tr><td class="k">유효기간</td><td>견적일로부터 15일</td></tr></table>'
+        f'<div class="sup"><table>{sup}</table><div class="seal">인</div></div></div>',
+        '<div class="amount"><div><div class="lb">견적 금액 · 부가세 별도</div>'
+        f'<div class="kr">금 {korean_won(t["supply"])}원정</div></div>'
+        f'<div><div class="big">₩ {t["supply"]:,}</div><div class="vat">부가세 포함 ₩ {t["total"]:,}</div></div></div>',
         cost_table(qd, t),
     ]
     if qd.get("철거"):
         tt = calc(qd["철거"])
-        body += ["<h3>선택 항목 — 시즌 종료 후 철거</h3>", cost_table(qd["철거"], tt, "철거 공급가액")]
-    body += ["<h3>특기사항</h3><ol>" + "".join(f"<li>{html.escape(s)}</li>" for s in qd["특기"]) + "</ol>",
-             f'<div class="foot">{COMPANY["상호"]} · {COMPANY["면허"]} · ☎ {COMPANY["전화"]}</div>']
-    return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>견적서 {qd["title"]}</title>'
+        body += ['<div class="sect"><div class="eb">OPTION</div><h3>선택 항목 — 시즌 종료 후 철거</h3>',
+                 cost_table(qd["철거"], tt, "철거 공급가액"), "</div>"]
+    body += ['<div class="sect"><div class="eb">TERMS</div><h3>견적 조건</h3><ol class="terms">'
+             + "".join(f"<li>{html.escape(x)}</li>" for x in qd["특기"]) + "</ol></div>",
+             f'<div class="sign">위와 같이 견적합니다.<br>{DATE}<br><b>{COMPANY["상호"]}</b> 대표이사 {COMPANY["대표"]} (인)</div>',
+             f'<div class="foot">{COMPANY["상호"]} · {COMPANY["면허"]} · 사업자등록번호 {COMPANY["사업자등록번호"]} · '
+             f'{COMPANY["주소"]} · ☎ {COMPANY["전화"]}</div>']
+    return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>견적서 {html.escape(title)}</title>'
             f"<style>{CSS}</style></head><body>{''.join(body)}</body></html>")
 
 
