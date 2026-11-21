@@ -314,15 +314,30 @@ def build_html(files: dict, cover: Path | None) -> str:
 <li>1차 전원(가까운 분전반 → 전원함)은 발주처 제공 조건이며, 전기요금·경관심의·인허가는 제외입니다.</li>
 <li>시즌 장식(②③④)의 철거는 선택 항목이며, 점등 기간 중 불량 조명은 무상 교체합니다.</li></ul></div>'''))
 
-    # 시공·품질·회사
+    # 시공·품질·약속
+    rope_days = yb.L["ㄷ자"]["rope"]
+    P.append(page(header("✓", "시공 · 품질 · 약속", "", "OUR PROMISE") + f'''<div class="prom">
+<div class="pc"><div class="pn">01</div><h3>시공 일정</h3><p>발주 후 자재 입고 약 3주</p>
+<ul><li>105동 경관바 {rope_days}일</li><li>정문 문주 2일</li><li>잔디 정원 1일</li><li>소나무 숲 2일</li></ul><p class="sm">기상에 따라 변동될 수 있습니다.</p></div>
+<div class="pc"><div class="pn">02</div><h3>시공 원칙</h3><ul><li>석재·유리·SUS 마감 무타공</li><li>수목은 못·스테이플 없이 감기</li><li>기존 경관조명·로고 사인·정원 시설은 그대로 유지</li><li>손이 닿는 1층 필로티 구간은 설치하지 않음</li></ul></div>
+<div class="pc"><div class="pn">03</div><h3>안전 · 품질</h3><ul><li>로프 작업 안전관리비 반영 (수직구명줄·추락방지·하부 통제)</li><li>누전차단기·서지보호기, 전 구간 절연저항 시험 후 점등</li><li>하자보수: 경관바·전원장치 3년 / 시즌 장식 점등 기간 무상 교체</li></ul></div></div>
+<div class="pledge"><q>설계부터 생산, 시공, 하자보수까지 한 책임으로 맡습니다.</q><span>㈜엣지컴퍼니 · {LICENSE}</span></div>'''))
+
+    # 면허·자격 — 증서를 액자처럼 크게
     reg = (OUT.parent.parent / "00_운영" / "회사서류")
-    certs = "".join(f'<img src="{p.as_uri()}">' for p in sorted(reg.glob("*.jpg")))
-    P.append(page(header("✓", "시공 · 품질 · 약속", "", "OUR PROMISE") + f'''<div class="qa"><div class="qa1">
-<h3>시공 일정</h3><p>발주 후 자재 입고 약 3주 → 현장 시공 105동 4일 · 정문 2일 · 정원 1일 · 숲 2일 (기상에 따라 변동)</p>
-<h3>시공 원칙</h3><ul><li>석재·유리·SUS 마감 무타공, 수목은 못·스테이플 없이 감기</li><li>기존 경관조명·로고 사인·정원 시설은 그대로 유지</li><li>손이 닿는 1층 필로티 구간은 설치하지 않음</li></ul>
-<h3>안전 · 품질</h3><ul><li>로프 작업 안전관리비 반영 (수직구명줄·추락방지·하부 통제)</li><li>전원함 누전차단기·서지보호기, 전 구간 절연저항 시험 후 점등</li><li>하자보수: 경관바·전원장치 3년 / 시즌 장식 점등 기간 무상 교체</li></ul></div>
-<div class="qa2"><h3>㈜엣지컴퍼니</h3><p class="co">{LICENSE}<br>한국전기공사협회 회원 제00362호<br>대표 고진식 · ☎ 1533-3210</p><div class="certs">{certs}</div>
-<p class="note">전기공사업 면허를 갖춘 엣지컴퍼니가 설계부터 생산, 시공, 하자보수까지 한 책임으로 맡습니다.</p></div></div>'''))
+    cap = {"전기공사업_등록증": ("전기공사업 등록증", "제 울산-00821호 · 울산광역시"),
+           "전기공사협회_회원증": ("한국전기공사협회 회원증", "제 00362호")}
+    frames = ""
+    for p in sorted(reg.glob("*.jpg")):
+        t, s = next((v for k, v in cap.items() if p.stem.startswith(k)), (p.stem, ""))
+        frames += f'<figure class="cert"><div class="mat"><img src="{p.as_uri()}"></div><figcaption><b>{t}</b><span>{s}</span></figcaption></figure>'
+    P.append(page(header("◆", "면허 · 자격", "", "CREDENTIALS") + f'''<div class="cred">
+<div class="cl"><div class="eyebrow">LICENSED ELECTRICAL CONTRACTOR</div><h2>면허로 책임지는 시공</h2>
+<p class="cp">경관조명은 고층 외벽에서 이뤄지는 전기공사입니다. 엣지컴퍼니는 전기공사업 등록 업체로서 설계부터 생산, 시공, 하자보수까지 직접 책임집니다.</p>
+<dl class="facts"><dt>전기공사업 등록</dt><dd>제 울산-00821호<span>2022. 5. 4. 등록 · 울산광역시</span></dd>
+<dt>한국전기공사협회</dt><dd>회원 제00362호<span>2022. 5. 9. 가입</span></dd>
+<dt>대표</dt><dd>고진식<span>☎ 1533-3210</span></dd></dl></div>
+<div class="cr">{frames}</div></div>'''))
 
     P.append(page('''<div class="thanks"><div class="eyebrow">YEONGJU Xi SIGNATURE · LANDSCAPE LIGHTING PROPOSAL</div><h1>감사합니다</h1>
 <p class="tq">빛은 단지가 건네는 첫인사입니다.<br>영주자이의 겨울을 정성껏 밝히겠습니다.</p>
@@ -390,10 +405,32 @@ figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 12px
 .est tr.tot td { font-weight: 700; border-top: 2px solid #1d2430; background: #fbf6ea; }
 .est tr.tot2 td { font-weight: 700; color: #6b7280; }
 .fine { font-size: 13px; color: #6b7280; line-height: 1.7; margin-top: 18px; padding-left: 18px; }
-.qa { display: grid; grid-template-columns: 1.15fr 1fr; gap: 40px; }
-.qa p, .qa li { font-size: 14px; line-height: 1.65; color: #374151; } .qa ul { padding-left: 18px; margin: 0; }
-.co { font-size: 15px !important; }
-.certs { display: flex; gap: 14px; margin-top: 10px; } .certs img { height: 250px; border: 1px solid #e6e1d6; }
+.prom { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.pc { background: #fff; border: 1px solid #e6e1d6; border-top: 3px solid #b8913a; padding: 28px 30px 28px; min-height: 418px; }
+.pn { font-family: "Noto Serif KR", serif; font-size: 30px; color: #b8913a; line-height: 1; }
+.pc h3 { font-family: "Noto Serif KR", serif; font-size: 22px; color: #1d2430; margin: 12px 0 14px; }
+.pc p, .pc li { font-size: 16px; line-height: 1.8; color: #374151; } .pc p { margin: 0 0 6px; }
+.pc ul { padding-left: 18px; margin: 0; } .pc li { margin: 3px 0; } .pc .sm { font-size: 12.5px; color: #8a6d2f; margin-top: 12px; }
+.pledge { margin-top: 26px; background: #1d2430; padding: 26px 34px; display: flex; justify-content: space-between; align-items: center; }
+.pledge q { quotes: none; font-family: "Noto Serif KR", serif; font-size: 22px; color: #fff; }
+.pledge span { font-size: 13px; color: #c9b98f; letter-spacing: .5px; }
+.cred { display: grid; grid-template-columns: 350px 1fr; gap: 40px; height: 568px; align-items: center; }
+.cl h2 { font-size: 32px; margin: 10px 0 16px; }
+.cp { font-size: 15px; line-height: 1.85; color: #4a5563; margin: 0 0 22px; }
+.facts { margin: 0; border-top: 1px solid #d9c38f; }
+.facts dt { font-size: 12px; letter-spacing: 1px; color: #b8913a; margin-top: 14px; }
+.facts dd { margin: 3px 0 0; padding-bottom: 12px; border-bottom: 1px solid #ece6d9; font-family: "Noto Serif KR", serif; font-size: 21px; font-weight: 600; }
+.facts dd span { display: block; font-family: "Noto Sans KR", sans-serif; font-size: 12.5px; font-weight: 400; color: #6b7280; margin-top: 3px; }
+.cr { height: 100%; display: flex; justify-content: center; align-items: center; gap: 46px;
+      background: radial-gradient(ellipse at 50% 42%, rgba(224, 178, 90, .22), rgba(224, 178, 90, 0) 64%); }
+figure.cert { overflow: visible; background: transparent; text-align: center; }
+.mat { background: #fff; padding: 16px; border: 1px solid #e3d6b5; position: relative;
+       box-shadow: 0 24px 46px rgba(29, 36, 48, .22), 0 3px 8px rgba(29, 36, 48, .10); }
+.mat::after { content: ""; position: absolute; inset: 7px; border: 1px solid #cfae63; pointer-events: none; }
+.mat img { height: 440px; width: auto; display: block; object-fit: contain; }
+figure.cert figcaption { position: static; background: none; color: #1d2430; padding: 18px 0 0; }
+.cert figcaption b { display: block; font-family: "Noto Serif KR", serif; font-size: 18px; font-weight: 600; }
+.cert figcaption span { display: block; font-size: 13px; color: #8a6d2f; letter-spacing: .5px; margin-top: 2px; }
 .thanks { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
 .thanks h1 { font-size: 56px; } .thanks p { color: #6b7280; }
 .thanks .tq { font-family: "Noto Serif KR", serif; font-size: 20px; line-height: 1.8; color: #1d2430; margin: 6px 0 26px; }
