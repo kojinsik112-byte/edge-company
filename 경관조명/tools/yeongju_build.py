@@ -90,10 +90,10 @@ def bldg105(layout: str, volt: str, alt: bool) -> dict:
 
 
 QUOTES = [
-    bldg105("1줄", "24V", False),
-    bldg105("1줄", "12V", True),
-    bldg105("프레임", "24V", True),
+    bldg105("1줄", "12V", False),
+    bldg105("1줄", "24V", True),
     bldg105("프레임", "12V", True),
+    bldg105("프레임", "24V", True),
     {
         "key": "2_겨울빛의문_정문문주",
         "title": "② 겨울빛의 문 — 정문 문주",
@@ -463,7 +463,7 @@ def build_xlsx(path: Path, internal: bool):
     alts = [qd for qd in QUOTES if qd.get("alt")]
     if alts:
         ws0.append([])
-        ws0.append(["대안 (합계 미포함 — 105동 1줄·24V 대신 선택 시)"])
+        ws0.append(["대안 (합계 미포함 — 105동 1줄·12V 대신 선택 시)"])
         ws0.cell(ws0.max_row, 1).font = Font(bold=True)
         for qd in alts:
             row(qd)
