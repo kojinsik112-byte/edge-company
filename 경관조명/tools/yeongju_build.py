@@ -299,6 +299,7 @@ ol.terms li { counter-increment: t; position: relative; padding: 1mm 0 1mm 7mm; 
 ol.terms li::before { content: counter(t, decimal-leading-zero); position: absolute; left: 0; top: 1mm; color: #b8913a; font-weight: 600; font-size: 7.8pt; }
 .sign { margin-top: 7mm; text-align: right; font-size: 9.4pt; line-height: 1.9; page-break-inside: avoid; }
 .sign b { font-family: "Noto Serif KR", serif; font-size: 12pt; }
+.sig { font-family: "Gungsuh", "궁서", "GungSeo", serif; font-size: 23pt; color: #1f2a55; display: inline-block; margin-left: 5mm; transform: rotate(-7deg) skewX(-8deg); position: relative; top: 1.5mm; letter-spacing: -1.5px; border-bottom: 1px solid rgba(31, 42, 85, .55); padding: 0 1mm; line-height: 1.1; }
 .foot { margin-top: 6mm; padding-top: 2mm; border-top: 0.6px solid #e2dccd; font-size: 7.4pt; color: #8b94a3; text-align: center; letter-spacing: 0.3px; }
 """
 
@@ -355,7 +356,7 @@ def quote_html(qd: dict) -> str:
         f'<tr><td class="k">건명</td><td>{html.escape(qd["건명"])}</td></tr>'
         f'<tr><td class="k">견적일</td><td>{DATE}</td></tr>'
         '<tr><td class="k">유효기간</td><td>견적일로부터 15일</td></tr></table>'
-        f'<div class="sup"><table>{sup}</table><div class="seal">인</div></div></div>',
+        f'<div class="sup"><table>{sup}</table></div></div>',
         '<div class="amount"><div><div class="lb">견적 금액 · 부가세 별도</div>'
         f'<div class="kr">금 {korean_won(t["supply"])}원정</div></div>'
         f'<div><div class="big">₩ {t["supply"]:,}</div><div class="vat">부가세 포함 ₩ {t["total"]:,}</div></div></div>',
@@ -367,7 +368,8 @@ def quote_html(qd: dict) -> str:
                  cost_table(qd["철거"], tt, "철거 공급가액"), "</div>"]
     body += ['<div class="sect"><div class="eb">TERMS</div><h3>견적 조건</h3><ol class="terms">'
              + "".join(f"<li>{html.escape(x)}</li>" for x in qd["특기"]) + "</ol></div>",
-             f'<div class="sign">위와 같이 견적합니다.<br>{DATE}<br><b>{COMPANY["상호"]}</b> 대표이사 {COMPANY["대표"]} (인)</div>',
+             f'<div class="sign">위와 같이 견적합니다.<br>{DATE}<br><b>{COMPANY["상호"]}</b> 대표 {COMPANY["대표"]}'
+             f'<span class="sig">{COMPANY["대표"]}</span></div>',
              f'<div class="foot">{COMPANY["상호"]} · {COMPANY["면허"]} · 사업자등록번호 {COMPANY["사업자등록번호"]} · '
              f'{COMPANY["주소"]} · ☎ {COMPANY["전화"]}</div>']
     return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>견적서 {html.escape(title)}</title>'
