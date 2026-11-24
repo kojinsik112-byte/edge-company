@@ -116,10 +116,13 @@ def summary_html(qs: list[dict]) -> tuple[str, dict]:
 
 
 # ───────────── 앞부분: 표지 + 테마 2쪽 (A4 세로) ─────────────
-PAGES = {  # 테마 이름 → (페이지 머리 영문, 대표컷, 다른 각도 3컷)
-    "겨울빛의 문": ("GATE", "겨울빛의 문", ["자이 게이트의 별빛 조명-3", "별빛의 초대, 영주자이 입구-2", "우측 시점의 별빛 입구-4"]),
-    "별빛이 머무는 정원": ("GARDEN", "별빛이 머무는 정원 야경-2", ["나무 곁의 별빛 정원-4", "별빛이 머무는 정원, 새로운 각도-3", "초승달 아래 별빛 정원-1"]),
+PAGES = {  # 테마 이름 → (페이지 머리 영문, 대표컷, 다른 각도 3컷) — 카톡용 JPG(yeongju_kakao.py)도 같이 씀
+    "하늘에 새긴 빛": ("LANDSCAPE LIGHTING · TOWER", "하늘에 새긴 빛", ["하늘에 새긴 105의 빛-1", "105타워에 새긴 황금빛-2", "105 빌딩, 하늘에 새긴 빛-3"]),
+    "겨울빛의 문": ("WINTER LIGHTING · GATE", "겨울빛의 문", ["자이 게이트의 별빛 조명-3", "별빛의 초대, 영주자이 입구-2", "우측 시점의 별빛 입구-4"]),
+    "별빛이 머무는 정원": ("WINTER LIGHTING · GARDEN", "별빛이 머무는 정원 야경-2", ["나무 곁의 별빛 정원-4", "별빛이 머무는 정원, 새로운 각도-3", "초승달 아래 별빛 정원-1"]),
+    "요정의 숲": ("WINTER LIGHTING · FOREST", "요정의 숲", ["요정의 숲 빛나는 정원 전경-2", "오른쪽 산책로의 요정의 숲-3", "왼편에서 바라본 요정의 숲"]),
 }
+BUNDLE_THEMES = ["겨울빛의 문", "별빛이 머무는 정원"]  # 공무팀 묶음 견적에 들어가는 공종
 COVER_PAIR = [("겨울빛의 문", "별빛이 머무는 정문 야경-1", "정문 문주"), ("별빛이 머무는 정원", "나무 곁의 별빛 정원-4", "잔디 정원")]
 
 INTRO_CSS = """
@@ -168,46 +171,58 @@ section { width: 210mm; height: 297mm; overflow: hidden; position: relative; pag
 """
 
 
-def intro_html(img_dir: Path) -> str:
+def _jpg(src: Path, img_dir: Path, name: str) -> str:
     img_dir.mkdir(parents=True, exist_ok=True)
+    dst = img_dir / f"{name}.jpg"
+    Image.open(src).convert("RGB").save(dst, quality=86)
+    return dst.as_uri()
 
-    def jpg(src: Path, name: str) -> str:
-        dst = img_dir / f"{name}.jpg"
-        Image.open(src).convert("RGB").save(dst, quality=86)
-        return dst.as_uri()
 
-    def shot(theme: str, stem: str) -> str:
-        return jpg(yp.FIXED / theme / f"{stem}.png", f"{theme}_{stem}".replace(" ", "_").replace(",", ""))
+def _shot(theme: str, stem: str, img_dir: Path) -> str:
+    return _jpg(yp.FIXED / theme / f"{stem}.png", img_dir, f"{theme}_{stem}".replace(" ", "_").replace(",", ""))
 
+
+def theme_section(name: str, img_dir: Path) -> str:
+    """공종 사진 소개 1쪽(A4 세로): 대표컷 · 소개 · 다른 각도 3컷 · 구성 품목."""
     co = yb.COMPANY
-    cover = yp.OUT / "표지.png"
-    pair = "".join(f'<figure><img src="{shot(t, s)}"><figcaption><b>「{t}」</b>{w}</figcaption></figure>' for t, s, w in COVER_PAIR)
-    pages = [f'''<section class="cv"><div class="cvtop"><div class="eb">YEONGJU Xi SIGNATURE · WINTER LIGHTING</div>
-<h1>영주자이의 겨울,<br>빛으로 맞이합니다</h1>
-<p class="cvsub">정문 문주 <em>「겨울빛의 문」</em>과 잔디 정원 <em>「별빛이 머무는 정원」</em> — 제안 및 견적</p></div>
-<img class="cvmain" src="{jpg(cover, "cover")}">
-<div class="cvcap">영주자이 시그니처 경관조명 전체 구상 — 이번 제안은 정문 문주와 잔디 정원입니다.</div>
-<div class="cvpair">{pair}</div>
-<div class="cvfoot"><div><span class="to">{TO}</span><br>{yb.DATE}</div>
-<div class="brand"><b>{co["상호"]}</b><br>{co["면허"]} · ☎ {co["전화"]}</div></div></section>''']
-    themes = {t["name"]: t for t in yp.THEMES}
-    for name, (en, hero, gal) in PAGES.items():
-        t = themes[name]
-        pts = "".join(f"<li>{html.escape(x)}</li>" for x in t["points"])
-        gal_html = "".join(f'<img src="{shot(name, s)}">' for s in gal)
-        items = "".join(f'<div class="it"><img src="{(yp.IMG / f"{c}.jpg").as_uri()}"><div><b>{html.escape(n)}</b><span>{html.escape(q)}</span></div></div>'
-                        for c, n, _, q in t["items"])
-        pages.append(f'''<section class="tp"><div class="tphd"><span class="eb">WINTER LIGHTING · {en}</span><span class="br">{co["상호"]}</span></div>
-<img class="hero" src="{shot(name, hero)}">
+    t = {x["name"]: x for x in yp.THEMES}[name]
+    eb, hero, gal = PAGES[name]
+    pts = "".join(f"<li>{html.escape(x)}</li>" for x in t["points"])
+    gal_html = "".join(f'<img src="{_shot(name, s, img_dir)}">' for s in gal)
+    items = ""
+    for c, n, _, q in t["items"]:
+        fit = ' style="object-fit:contain;background:#fff"' if c in ("smps", "dbox") else ""  # 회장 실물 제품 사진
+        items += f'<div class="it"><img src="{(yp.IMG / f"{c}.jpg").as_uri()}"{fit}><div><b>{html.escape(n)}</b><span>{html.escape(q)}</span></div></div>'
+    return f'''<section class="tp"><div class="tphd"><span class="eb">{eb}</span><span class="br">{co["상호"]}</span></div>
+<img class="hero" src="{_shot(name, hero, img_dir)}">
 <div class="tpbody"><div><span class="tag">{t["kind"]}</span><h2>{html.escape(name)}</h2><div class="where">{html.escape(t["where"])}</div>
 <p class="tg">{html.escape(t["tagline"])}</p></div>
 <div><p class="concept">{html.escape(t["concept"])}</p><ul>{pts}</ul></div></div>
 <div class="gal3">{gal_html}</div>
-<div class="ithd"><h3>구성 품목</h3><span>수량·규격은 별첨 견적서 기준</span></div>
+<div class="ithd"><h3>구성 품목</h3><span>수량·규격은 견적서 기준</span></div>
 <div class="its" style="grid-template-columns: repeat({len(t["items"])}, 1fr)">{items}</div>
-<div class="tpfoot">{co["상호"]} · {co["면허"]} · ☎ {co["전화"]} · 이미지는 설치 예상 연출이며 실제 시공과 차이가 있을 수 있습니다.</div></section>''')
-    return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>{NAME}</title>'
-            f'<style>{INTRO_CSS}</style></head><body>{"".join(pages)}</body></html>')
+<div class="tpfoot">{co["상호"]} · {co["면허"]} · ☎ {co["전화"]} · 이미지는 설치 예상 연출이며 실제 시공과 차이가 있을 수 있습니다.</div></section>'''
+
+
+def html_doc(sections: str, title: str = NAME) -> str:
+    return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>{title}</title>'
+            f'<style>{INTRO_CSS}</style></head><body>{sections}</body></html>')
+
+
+def intro_html(img_dir: Path) -> str:
+    co = yb.COMPANY
+    cover = yp.OUT / "표지.png"
+    pair = "".join(f'<figure><img src="{_shot(t, s, img_dir)}"><figcaption><b>「{t}」</b>{w}</figcaption></figure>' for t, s, w in COVER_PAIR)
+    pages = [f'''<section class="cv"><div class="cvtop"><div class="eb">YEONGJU Xi SIGNATURE · WINTER LIGHTING</div>
+<h1>영주자이의 겨울,<br>빛으로 맞이합니다</h1>
+<p class="cvsub">정문 문주 <em>「겨울빛의 문」</em>과 잔디 정원 <em>「별빛이 머무는 정원」</em> — 제안 및 견적</p></div>
+<img class="cvmain" src="{_jpg(cover, img_dir, "cover")}">
+<div class="cvcap">영주자이 시그니처 경관조명 전체 구상 — 이번 제안은 정문 문주와 잔디 정원입니다.</div>
+<div class="cvpair">{pair}</div>
+<div class="cvfoot"><div><span class="to">{TO}</span><br>{yb.DATE}</div>
+<div class="brand"><b>{co["상호"]}</b><br>{co["면허"]} · ☎ {co["전화"]}</div></div></section>''']
+    pages += [theme_section(n, img_dir) for n in BUNDLE_THEMES]
+    return html_doc("".join(pages))
 
 
 def main():
