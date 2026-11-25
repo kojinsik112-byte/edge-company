@@ -552,6 +552,48 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
 .sigsvg.sm{width:170px}
 .sigsvg.sm .sigt{font-size:66px}
 .greet .sig{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+/* ===== branch cards v2 ===== */
+.map{grid-template-columns:1fr 1fr;gap:12px}
+.map .bc{position:relative;padding:22px 24px 20px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.012));overflow:hidden;transition:border-color .35s,background .35s,transform .35s,box-shadow .35s;cursor:pointer}
+.map .bc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);transition:width .3s}
+.map .bc .num{position:absolute;top:14px;right:18px;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:30px;color:rgba(255,255,255,.22);line-height:1;transition:color .3s}
+.map .bc small{display:block;font-size:10.5px;letter-spacing:.14em;color:#e9d49a;font-weight:700}
+.map .bc b{display:block;font-size:22px;font-weight:700;margin-top:8px;letter-spacing:-.02em;color:#fff;transition:letter-spacing .35s}
+.map .chips{margin-top:12px}
+.map .chips i{display:inline-block;font-style:normal;font-size:12px;color:#d7dbe3;border:1px solid rgba(255,255,255,.18);padding:4px 10px;border-radius:999px;margin:0 5px 5px 0;transition:border-color .3s,color .3s,background .3s}
+.map .bc .addr2,.map .bc .sites{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s cubic-bezier(.16,1,.3,1),opacity .35s,margin .35s;font-size:12.5px;color:#e6e9f0;line-height:1.7;word-break:keep-all}
+.map .bc .addr2 em,.map .bc .sites em{display:block;font-style:normal;font-size:10px;letter-spacing:.14em;color:#e9d49a;font-weight:700;margin-bottom:2px}
+.map .bc.on{border-color:#d9bf7a;background:linear-gradient(135deg,rgba(217,191,122,.2),rgba(217,191,122,.04));transform:translateY(-3px);box-shadow:0 18px 40px rgba(0,0,0,.45),0 0 0 1px rgba(217,191,122,.5)}
+.map .bc.on::before{width:5px}
+.map .bc.on .num{color:#e9d49a}
+.map .bc.on b{letter-spacing:.01em;text-shadow:0 0 14px rgba(255,255,255,.55)}
+.map .bc.on .chips i{border-color:#d9bf7a;color:#fff;background:rgba(217,191,122,.12)}
+.map .bc.on .addr2,.map .bc.on .sites{max-height:120px;opacity:1;margin-top:12px}
+.map .bc.hq{background:#fff;color:#000;border-color:#fff}
+.map .bc.hq small{color:#b8933f}.map .bc.hq b{color:#000}.map .bc.hq .num{color:rgba(0,0,0,.25)}.map .bc.hq .chips i{color:#333;border-color:rgba(0,0,0,.2)}
+.map .bc.hq .addr2,.map .bc.hq .sites{color:#333}.map .bc.hq .addr2 em,.map .bc.hq .sites em{color:#b8933f}
+.map .bc.hq::before{background:#000}
+.map .bc.hq.on{background:#fff;box-shadow:0 18px 40px rgba(0,0,0,.45),0 0 0 2px #d9bf7a}.map .bc.hq.on b{text-shadow:none}.map .bc.hq.on .chips i{color:#000;background:rgba(217,191,122,.2)}
+@media(max-width:560px){.map{grid-template-columns:1fr}}
+/* map labels bigger */
+.kmap .bl{font-size:14.5px;font-weight:700;fill:#e9d49a;cursor:pointer;paint-order:stroke;stroke:rgba(0,0,0,.6);stroke-width:3px;transition:font-size .25s}
+.kmap .sl{font-size:13px}
+.kmap .mk.on+.bl{fill:#fff;font-size:18px;font-weight:800;filter:drop-shadow(0 0 8px rgba(255,255,255,.9))}
+.kmap .cov .cl{font-size:12.5px}
+.kmap .addr text{font-size:12.5px}
+.kmap .addr rect{height:32px}
+
+.wtip{position:fixed;z-index:80;width:320px;background:rgba(10,10,12,.96);border:1px solid rgba(217,191,122,.6);box-shadow:0 24px 60px rgba(0,0,0,.6);padding:20px 22px;color:#fff;pointer-events:none;opacity:0;transform:translateY(8px) scale(.98);transition:opacity .22s,transform .22s;backdrop-filter:blur(8px)}
+.wtip.on{opacity:1;transform:none}
+.wtip small{font-size:10.5px;letter-spacing:.1em;color:#e9d49a;font-weight:700}
+.wtip b{display:block;font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:6px;word-break:keep-all;line-height:1.3}
+.wtip .u{font-weight:700;font-size:34px;letter-spacing:-.04em;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums}
+.wtip .u i{font-style:normal;font-size:13px;color:#e9d49a;margin-left:3px}
+.wtip dl{display:grid;grid-template-columns:52px 1fr;gap:5px 10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14);font-size:12.5px}
+.wtip dt{color:#8d939f}.wtip dd{color:#fff;word-break:keep-all}
+.wtip em{display:block;font-style:normal;margin-top:12px;font-size:11.5px;color:#e9d49a;font-weight:700}
+@media(hover:none),(max-width:800px){.wtip{display:none}}
 </style>
 </head>
 <body>
@@ -671,21 +713,21 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
 <g class="cov" data-b="gj"><line class="ln" x1="114.7" y1="413.8" x2="107.0" y2="428.0"/><line class="fl" x1="114.7" y1="413.8" x2="107.0" y2="428.0" style="animation-delay:0.00s"/><circle class="cd" cx="107.0" cy="428.0" r="3.4" style="animation-delay:0.50s"/><text class="cl" x="100.0" y="432.0" text-anchor="end" style="animation-delay:0.55s">나주</text><line class="ln" x1="114.7" y1="413.8" x2="149.4" y2="333.6"/><line class="fl" x1="114.7" y1="413.8" x2="149.4" y2="333.6" style="animation-delay:0.12s"/><circle class="cd" cx="149.4" cy="333.6" r="3.4" style="animation-delay:0.62s"/><text class="cl" x="156.4" y="337.6" text-anchor="start" style="animation-delay:0.67s">전주</text><line class="ln" x1="114.7" y1="413.8" x2="131.1" y2="318.3"/><line class="fl" x1="114.7" y1="413.8" x2="131.1" y2="318.3" style="animation-delay:0.24s"/><circle class="cd" cx="131.1" cy="318.3" r="3.4" style="animation-delay:0.74s"/><text class="cl" x="138.1" y="322.3" text-anchor="start" style="animation-delay:0.79s">익산</text><line class="ln" x1="114.7" y1="413.8" x2="76.1" y2="452.7"/><line class="fl" x1="114.7" y1="413.8" x2="76.1" y2="452.7" style="animation-delay:0.36s"/><circle class="cd" cx="76.1" cy="452.7" r="3.4" style="animation-delay:0.86s"/><text class="cl" x="69.1" y="456.7" text-anchor="end" style="animation-delay:0.91s">목포</text><line class="ln" x1="114.7" y1="413.8" x2="182.2" y2="436.2"/><line class="fl" x1="114.7" y1="413.8" x2="182.2" y2="436.2" style="animation-delay:0.48s"/><circle class="cd" cx="182.2" cy="436.2" r="3.4" style="animation-delay:0.98s"/><text class="cl" x="189.2" y="440.2" text-anchor="start" style="animation-delay:1.03s">순천</text><line class="ln" x1="114.7" y1="413.8" x2="198.6" y2="458.6"/><line class="fl" x1="114.7" y1="413.8" x2="198.6" y2="458.6" style="animation-delay:0.60s"/><circle class="cd" cx="198.6" cy="458.6" r="3.4" style="animation-delay:1.10s"/><text class="cl" x="205.6" y="462.6" text-anchor="start" style="animation-delay:1.15s">여수</text><circle class="ring" cx="114.7" cy="413.8" r="18"/></g>
 <g class="cov" data-b="bs"><line class="ln" x1="343.1" y1="411.5" x2="296.9" y2="403.2"/><line class="fl" x1="343.1" y1="411.5" x2="296.9" y2="403.2" style="animation-delay:0.00s"/><circle class="cd" cx="296.9" cy="403.2" r="3.4" style="animation-delay:0.50s"/><text class="cl" x="289.9" y="407.2" text-anchor="end" style="animation-delay:0.55s">창원</text><line class="ln" x1="343.1" y1="411.5" x2="317.1" y2="403.2"/><line class="fl" x1="343.1" y1="411.5" x2="317.1" y2="403.2" style="animation-delay:0.12s"/><circle class="cd" cx="317.1" cy="403.2" r="3.4" style="animation-delay:0.62s"/><text class="cl" x="310.1" y="407.2" text-anchor="end" style="animation-delay:0.67s">김해</text><line class="ln" x1="343.1" y1="411.5" x2="331.6" y2="390.2"/><line class="fl" x1="343.1" y1="411.5" x2="331.6" y2="390.2" style="animation-delay:0.24s"/><circle class="cd" cx="331.6" cy="390.2" r="3.4" style="animation-delay:0.74s"/><text class="cl" x="324.6" y="394.2" text-anchor="end" style="animation-delay:0.79s">양산</text><line class="ln" x1="343.1" y1="411.5" x2="348.0" y2="402.0"/><line class="fl" x1="343.1" y1="411.5" x2="348.0" y2="402.0" style="animation-delay:0.36s"/><circle class="cd" cx="348.0" cy="402.0" r="3.4" style="animation-delay:0.86s"/><text class="cl" x="355.0" y="406.0" text-anchor="start" style="animation-delay:0.91s">기장</text><line class="ln" x1="343.1" y1="411.5" x2="291.1" y2="444.5"/><line class="fl" x1="343.1" y1="411.5" x2="291.1" y2="444.5" style="animation-delay:0.48s"/><circle class="cd" cx="291.1" cy="444.5" r="3.4" style="animation-delay:0.98s"/><text class="cl" x="284.1" y="448.5" text-anchor="end" style="animation-delay:1.03s">거제</text><line class="ln" x1="343.1" y1="411.5" x2="241.9" y2="409.1"/><line class="fl" x1="343.1" y1="411.5" x2="241.9" y2="409.1" style="animation-delay:0.60s"/><circle class="cd" cx="241.9" cy="409.1" r="3.4" style="animation-delay:1.10s"/><text class="cl" x="234.9" y="413.1" text-anchor="end" style="animation-delay:1.15s">진주</text><circle class="ring" cx="343.1" cy="411.5" r="18"/></g>
 <g class="cov" data-b="dg"><line class="ln" x1="292.0" y1="328.9" x2="362.4" y2="310.1"/><line class="fl" x1="292.0" y1="328.9" x2="362.4" y2="310.1" style="animation-delay:0.00s"/><circle class="cd" cx="362.4" cy="310.1" r="3.4" style="animation-delay:0.50s"/><text class="cl" x="369.4" y="314.1" text-anchor="start" style="animation-delay:0.55s">포항</text><line class="ln" x1="292.0" y1="328.9" x2="348.9" y2="328.9"/><line class="fl" x1="292.0" y1="328.9" x2="348.9" y2="328.9" style="animation-delay:0.12s"/><circle class="cd" cx="348.9" cy="328.9" r="3.4" style="animation-delay:0.62s"/><text class="cl" x="355.9" y="332.9" text-anchor="start" style="animation-delay:0.67s">경주</text><line class="ln" x1="292.0" y1="328.9" x2="264.1" y2="298.3"/><line class="fl" x1="292.0" y1="328.9" x2="264.1" y2="298.3" style="animation-delay:0.24s"/><circle class="cd" cx="264.1" cy="298.3" r="3.4" style="animation-delay:0.74s"/><text class="cl" x="257.1" y="302.3" text-anchor="end" style="animation-delay:0.79s">구미</text><line class="ln" x1="292.0" y1="328.9" x2="291.1" y2="216.9"/><line class="fl" x1="292.0" y1="328.9" x2="291.1" y2="216.9" style="animation-delay:0.36s"/><circle class="cd" cx="291.1" cy="216.9" r="3.4" style="animation-delay:0.86s"/><text class="cl" x="284.1" y="220.9" text-anchor="end" style="animation-delay:0.91s">영주</text><line class="ln" x1="292.0" y1="328.9" x2="301.7" y2="245.2"/><line class="fl" x1="292.0" y1="328.9" x2="301.7" y2="245.2" style="animation-delay:0.48s"/><circle class="cd" cx="301.7" cy="245.2" r="3.4" style="animation-delay:0.98s"/><text class="cl" x="308.7" y="249.2" text-anchor="start" style="animation-delay:1.03s">안동</text><line class="ln" x1="292.0" y1="328.9" x2="302.7" y2="332.5"/><line class="fl" x1="292.0" y1="328.9" x2="302.7" y2="332.5" style="animation-delay:0.60s"/><circle class="cd" cx="302.7" cy="332.5" r="3.4" style="animation-delay:1.10s"/><text class="cl" x="309.7" y="336.5" text-anchor="start" style="animation-delay:1.15s">경산</text><circle class="ring" cx="292.0" cy="328.9" r="18"/></g>
-<g class="mk" data-b="hq"><circle cx="357.6" cy="366.7" r="14" fill="rgba(217,191,122,.18)"><animate attributeName="r" values="10;20;10" dur="2.4s" repeatCount="indefinite"/></circle><circle cx="357.6" cy="366.7" r="5.5" fill="#fff"/><circle cx="357.6" cy="366.7" r="2.4" fill="#000"/><circle class="hit" cx="357.6" cy="366.7" r="16"/></g>
+<g class="mk" data-b="hq"><circle cx="357.6" cy="366.7" r="14" fill="rgba(217,191,122,.18)"><animate attributeName="r" values="10;20;10" dur="2.4s" repeatCount="indefinite"/></circle><circle cx="357.6" cy="366.7" r="5.5" fill="#fff"/><circle cx="357.6" cy="366.7" r="2.4" fill="#000"/><circle class="hit" r="30" cx="357.6" cy="366.7"/></g>
 <text class="bl" x="371.6" y="370.7">본사 · HQ</text>
-<g class="mk" data-b="ansan"><circle cx="118.6" cy="156.8" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="1.8s" repeatCount="indefinite"/></circle><circle cx="118.6" cy="156.8" r="4.2" fill="#d9bf7a"/><circle class="hit" cx="118.6" cy="156.8" r="16"/></g>
+<g class="mk" data-b="ansan"><circle cx="118.6" cy="156.8" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="1.8s" repeatCount="indefinite"/></circle><circle cx="118.6" cy="156.8" r="4.2" fill="#d9bf7a"/><circle class="hit" r="30" cx="118.6" cy="156.8"/></g>
 <text class="bl" x="18.6" y="154.8">안산 · 경기북부</text>
-<g class="mk" data-b="pt"><circle cx="134.0" cy="195.7" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="0.9s" repeatCount="indefinite"/></circle><circle cx="134.0" cy="195.7" r="4.2" fill="#d9bf7a"/><circle class="hit" cx="134.0" cy="195.7" r="16"/></g>
+<g class="mk" data-b="pt"><circle cx="134.0" cy="195.7" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="0.9s" repeatCount="indefinite"/></circle><circle cx="134.0" cy="195.7" r="4.2" fill="#d9bf7a"/><circle class="hit" r="30" cx="134.0" cy="195.7"/></g>
 <text class="bl" x="40.0" y="209.7">평택 · 경기남부</text>
-<g class="mk" data-b="ic"><circle cx="109.9" cy="130.9" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="0.7s" repeatCount="indefinite"/></circle><circle cx="109.9" cy="130.9" r="4.2" fill="#d9bf7a"/><circle class="hit" cx="109.9" cy="130.9" r="16"/></g>
+<g class="mk" data-b="ic"><circle cx="109.9" cy="130.9" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="0.7s" repeatCount="indefinite"/></circle><circle cx="109.9" cy="130.9" r="4.2" fill="#d9bf7a"/><circle class="hit" r="30" cx="109.9" cy="130.9"/></g>
 <text class="bl" x="75.9" y="122.9">인천</text>
-<g class="mk" data-b="sj"><circle cx="162.9" cy="255.8" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="1.1s" repeatCount="indefinite"/></circle><circle cx="162.9" cy="255.8" r="4.2" fill="#d9bf7a"/><circle class="hit" cx="162.9" cy="255.8" r="16"/></g>
+<g class="mk" data-b="sj"><circle cx="162.9" cy="255.8" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="1.1s" repeatCount="indefinite"/></circle><circle cx="162.9" cy="255.8" r="4.2" fill="#d9bf7a"/><circle class="hit" r="30" cx="162.9" cy="255.8"/></g>
 <text class="bl" x="174.9" y="259.8">세종 · 충청</text>
-<g class="mk" data-b="gj"><circle cx="114.7" cy="413.8" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="0.5s" repeatCount="indefinite"/></circle><circle cx="114.7" cy="413.8" r="4.2" fill="#d9bf7a"/><circle class="hit" cx="114.7" cy="413.8" r="16"/></g>
+<g class="mk" data-b="gj"><circle cx="114.7" cy="413.8" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="0.5s" repeatCount="indefinite"/></circle><circle cx="114.7" cy="413.8" r="4.2" fill="#d9bf7a"/><circle class="hit" r="30" cx="114.7" cy="413.8"/></g>
 <text class="bl" x="70.7" y="431.8">광주</text>
-<g class="mk" data-b="bs"><circle cx="343.1" cy="411.5" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="1.0s" repeatCount="indefinite"/></circle><circle cx="343.1" cy="411.5" r="4.2" fill="#d9bf7a"/><circle class="hit" cx="343.1" cy="411.5" r="16"/></g>
+<g class="mk" data-b="bs"><circle cx="343.1" cy="411.5" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="1.0s" repeatCount="indefinite"/></circle><circle cx="343.1" cy="411.5" r="4.2" fill="#d9bf7a"/><circle class="hit" r="30" cx="343.1" cy="411.5"/></g>
 <text class="bl" x="355.1" y="425.5">부산</text>
-<g class="mk" data-b="dg"><circle cx="292.0" cy="328.9" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="1.8s" repeatCount="indefinite"/></circle><circle cx="292.0" cy="328.9" r="4.2" fill="#d9bf7a"/><circle class="hit" cx="292.0" cy="328.9" r="16"/></g>
+<g class="mk" data-b="dg"><circle cx="292.0" cy="328.9" r="9" fill="rgba(217,191,122,.2)"><animate attributeName="r" values="6;13;6" dur="2.4s" begin="1.8s" repeatCount="indefinite"/></circle><circle cx="292.0" cy="328.9" r="4.2" fill="#d9bf7a"/><circle class="hit" r="30" cx="292.0" cy="328.9"/></g>
 <text class="bl" x="304.0" y="322.9">대구 · 경북</text>
 <circle cx="133.0" cy="127.3" r="3.2" fill="#fff" opacity=".85"/><text class="sl" x="141.0" y="131.3">서울</text>
 <circle cx="362.4" cy="310.1" r="3.2" fill="#fff" opacity=".85"/><text class="sl" x="370.4" y="314.1">포항</text>
@@ -702,14 +744,14 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
         <p class="desc" style="margin-top:22px;font-size:13.5px">지사 카드나 지도의 금색 점에 마우스를 올리면 <b>지사 주소와 담당 도시</b>가 펼쳐집니다. ○ 흰 점 = 진행 단지.</p>
       </div>
       <div class="map rv">
-        <div class="hq" data-b="hq"><small>HEADQUARTERS</small><b>본사</b><span>전국 12개 지사 총괄 · 전기공사업 면허 보유 · 협약 · 집행 관리</span></div>
-        <div data-b="ansan"><small>SEOUL · GYEONGGI N.</small><b><i class="pulse"></i>경기북부지사</b><span>안산 상록구 · 서울 · 고양 · 의정부 · 남양주 · 수원 · 시흥 · 부천</span></div>
-        <div data-b="pt"><small>GYEONGGI S.</small><b><i class="pulse"></i>경기남부지사</b><span>평택 · 오산 · 용인 · 동탄 · 안성 · 천안 · 아산</span></div>
-        <div data-b="ic"><small>INCHEON</small><b><i class="pulse"></i>인천지사</b><span>인천 계양구 · 송도 · 검단 · 김포 · 부평 · 영종</span></div>
-        <div data-b="sj"><small>CHUNGCHEONG</small><b><i class="pulse"></i>충청지사</b><span>세종시 · 대전 · 청주 · 공주 · 충주 · 논산</span></div>
-        <div data-b="gj"><small>HONAM</small><b><i class="pulse"></i>광주지사</b><span>광주 광산구 · 나주 · 전주 · 익산 · 목포 · 순천 · 여수</span></div>
-        <div data-b="bs"><small>BUSAN · GYEONGNAM</small><b><i class="pulse"></i>부산지사</b><span>부산 해운대구 · 창원 · 김해 · 양산 · 기장 · 거제 · 진주</span></div>
-        <div data-b="dg"><small>DAEGU · GYEONGBUK</small><b><i class="pulse"></i>경북지사</b><span>대구 수성구 · 포항 · 경주 · 구미 · 영주 · 안동 · 경산</span></div>
+        <div class="bc hq" data-b="hq"><span class="num">01</span><small>HEADQUARTERS</small><b>본사</b><div class="chips"><i>전국 12개 지사 총괄</i><i>협약 · 집행 관리</i><i>전기공사업 면허</i></div><div class="addr2"><em>ADDRESS</em>울산 중구 종가로 668-10 (서동) · 전기공사업 울산-00821</div><div class="sites"><em>담당 단지</em>남울산 노르웨이숲 · 영주자이 시그니처</div></div>
+        <div class="bc" data-b="ansan"><span class="num">02</span><small>SEOUL · GYEONGGI N.</small><b><i class="pulse"></i>경기북부지사</b><div class="chips"><i>서울</i><i>고양</i><i>의정부</i><i>남양주</i><i>수원</i><i>시흥</i><i>부천</i><i>안산</i></div><div class="addr2"><em>ADDRESS</em>경기 안산시 상록구 해양3로 15, 2111호 (그랑시티자이시그니처)</div><div class="sites"><em>담당 단지</em>성동자이 리버뷰 · 영등포자이 디그니티</div></div>
+        <div class="bc" data-b="pt"><span class="num">03</span><small>GYEONGGI S.</small><b><i class="pulse"></i>경기남부지사</b><div class="chips"><i>평택</i><i>오산</i><i>용인</i><i>동탄</i><i>안성</i><i>천안</i><i>아산</i></div><div class="addr2"><em>ADDRESS</em>경기 평택시 문화촌로11번길 43-8, 1층 (비전동)</div><div class="sites"><em>담당 단지</em>경기 남부 · 충청 북부 신규 단지 영업</div></div>
+        <div class="bc" data-b="ic"><span class="num">04</span><small>INCHEON</small><b><i class="pulse"></i>인천지사</b><div class="chips"><i>인천 계양</i><i>송도</i><i>검단</i><i>김포</i><i>부평</i><i>영종</i></div><div class="addr2"><em>ADDRESS</em>인천 계양구 안산로 60, 505호 (임학동)</div><div class="sites"><em>담당 단지</em>e편한세상 송도 더퍼스트비치</div></div>
+        <div class="bc" data-b="sj"><span class="num">05</span><small>CHUNGCHEONG</small><b><i class="pulse"></i>충청지사</b><div class="chips"><i>세종</i><i>대전</i><i>청주</i><i>공주</i><i>충주</i><i>논산</i></div><div class="addr2"><em>ADDRESS</em>세종특별자치시 시청대로 20, 101호 (대평동 아마존타워)</div><div class="sites"><em>담당 단지</em>세종 5-1생활권 스마트시티 광고 · 분양</div></div>
+        <div class="bc" data-b="gj"><span class="num">06</span><small>HONAM</small><b><i class="pulse"></i>광주지사</b><div class="chips"><i>광주 광산</i><i>나주</i><i>전주</i><i>익산</i><i>목포</i><i>순천</i><i>여수</i></div><div class="addr2"><em>ADDRESS</em>광주 광산구 월계로16번길 43, 1층 (월계동)</div><div class="sites"><em>담당 단지</em>힐스테이트 중외공원</div></div>
+        <div class="bc" data-b="bs"><span class="num">07</span><small>BUSAN · GYEONGNAM</small><b><i class="pulse"></i>부산지사</b><div class="chips"><i>부산 해운대</i><i>창원</i><i>김해</i><i>양산</i><i>기장</i><i>거제</i><i>진주</i></div><div class="addr2"><em>ADDRESS</em>부산 해운대구 센텀중앙로 97, 505호 (재송동)</div><div class="sites"><em>담당 단지</em>레이카운티 · 에코델타시티 6개 단지 · 일광 오션포레 · 창원 센트럴 아이파크</div></div>
+        <div class="bc" data-b="dg"><span class="num">08</span><small>DAEGU · GYEONGBUK</small><b><i class="pulse"></i>경북지사</b><div class="chips"><i>대구 수성</i><i>포항</i><i>경주</i><i>구미</i><i>영주</i><i>안동</i><i>경산</i></div><div class="addr2"><em>ADDRESS</em>대구 수성구 파동로 42 (파동)</div><div class="sites"><em>담당 단지</em>힐스테이트 포항 · 포항 힐스테이트더샵 상생공원 · 영주자이</div></div>
       </div>
     </div>
   </div>
@@ -969,6 +1011,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
 
 
 <div class="wmod" id="wmod" role="dialog" aria-modal="true"><div class="wbox" style="position:relative"><button class="x" id="wx" aria-label="닫기">×</button><div class="im"><img id="wimg" src="" alt=""><span class="tagc" id="wtag"></span></div><div class="in"><small id="wsm"></small><h3 id="wt"></h3><div class="big2"><span id="wu"></span><i>세대</i></div><dl><dt>위치</dt><dd id="wloc"></dd><dt>주관 형태</dt><dd id="wty"></dd><dt>입주박람회</dt><dd id="wex"></dd><dt>입주</dt><dd id="wmv"></dd><dt>혜택 기준</dt><dd>세대당 혜택 · 발전지원금은 단지별 협약으로 확정</dd></dl><div class="nav"><button id="wprev">← 이전 단지</button><button id="wnext">다음 단지 →</button><a class="f" href="#contact" id="wcta" style="flex:1;text-align:center;padding:12px;border-radius:999px;background:#fff;color:#000;font-size:13px;font-weight:700">주관 제안 요청</a></div><p class="note">단지 정보는 공개 자료 기준이며, 세대수 · 일정은 변경될 수 있습니다.</p></div></div></div>
+<div class="wtip" id="wtip" aria-hidden="true"><small id="tsm"></small><b id="tt"></b><div class="u"><span id="tu"></span><i>세대</i></div><dl><dt>위치</dt><dd id="tloc"></dd><dt>주관</dt><dd id="tty"></dd><dt>박람회</dt><dd id="tex"></dd><dt>입주</dt><dd id="tmv"></dd></dl><em>클릭하면 크게 보기 →</em></div>
 <!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="wrap">
@@ -1050,7 +1093,7 @@ svg.querySelectorAll('.addr').forEach(function(g){var t=g.querySelector('text'),
 function act(k){svg.querySelectorAll('.cov,.addr,.mk').forEach(function(e){e.classList.toggle('on',e.dataset.b===k)});document.querySelectorAll('.map [data-b]').forEach(function(c){c.classList.toggle('on',c.dataset.b===k)});svg.classList.toggle('mdim',!!k)}
 function over(k){if(!pinned)act(k)} function out(){if(!pinned)act(null)}
 document.querySelectorAll('.map [data-b]').forEach(function(c){c.addEventListener('mouseenter',function(){over(c.dataset.b)});c.addEventListener('mouseleave',out);c.addEventListener('click',function(){pinned=(pinned===c.dataset.b)?null:c.dataset.b;act(pinned)})});
-svg.querySelectorAll('.mk').forEach(function(m){m.addEventListener('mouseenter',function(){over(m.dataset.b)});m.addEventListener('mouseleave',out);m.addEventListener('click',function(e){e.stopPropagation();pinned=(pinned===m.dataset.b)?null:m.dataset.b;act(pinned)})});
+svg.querySelectorAll('.mk').forEach(function(m){var lb=m.nextElementSibling;if(lb&&lb.classList.contains('bl')){lb.addEventListener('mouseenter',function(){over(m.dataset.b)});lb.addEventListener('mouseleave',out);lb.addEventListener('click',function(e){e.stopPropagation();pinned=(pinned===m.dataset.b)?null:m.dataset.b;act(pinned)})}m.addEventListener('mouseenter',function(){over(m.dataset.b)});m.addEventListener('mouseleave',out);m.addEventListener('click',function(e){e.stopPropagation();pinned=(pinned===m.dataset.b)?null:m.dataset.b;act(pinned)})});
 document.addEventListener('click',function(e){if(pinned&&!e.target.closest('.map [data-b]')&&!e.target.closest('.kmap .mk')){pinned=null;act(null)}});
 })();
 
@@ -1070,6 +1113,11 @@ wk.forEach(function(a,i){a.addEventListener('click',function(e){e.preventDefault
 document.getElementById('wx').onclick=hide;m.addEventListener('click',function(e){if(e.target===m)hide()});document.getElementById('wcta').onclick=hide;
 document.getElementById('wprev').onclick=function(){show(cur-1)};document.getElementById('wnext').onclick=function(){show(cur+1)};
 document.addEventListener('keydown',function(e){if(!m.classList.contains('on'))return;if(e.key==='Escape')hide();if(e.key==='ArrowRight')show(cur+1);if(e.key==='ArrowLeft')show(cur-1)});})();
+// ===== works hover tip (마우스만 올려도 상세) =====
+(function(){var tip=document.getElementById('wtip');if(!tip||!window.matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+function fill(a){document.getElementById('tsm').textContent=a.querySelector('.ov small').textContent;document.getElementById('tt').textContent=a.dataset.t;document.getElementById('tu').textContent=a.dataset.units;document.getElementById('tloc').textContent=a.dataset.loc;document.getElementById('tty').textContent=a.dataset.type;document.getElementById('tex').textContent=a.dataset.expo;document.getElementById('tmv').textContent=a.dataset.move}
+function move(e){var w=330,h=tip.offsetHeight||260,x=e.clientX+26,y=e.clientY-30;if(x+w>innerWidth-12)x=e.clientX-w-26;if(y+h>innerHeight-12)y=innerHeight-h-12;if(y<70)y=70;tip.style.left=x+'px';tip.style.top=y+'px'}
+document.querySelectorAll('.wk[data-t]').forEach(function(a){a.addEventListener('mouseenter',function(e){fill(a);move(e);tip.classList.add('on')});a.addEventListener('mousemove',move);a.addEventListener('mouseleave',function(){tip.classList.remove('on')});a.addEventListener('click',function(){tip.classList.remove('on')})});})();
 // ===== benefit stack =====
 (function(){var st=document.getElementById('stack');if(!st)return;var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){st.classList.add('go');io2.unobserve(st)}})},{threshold:.25});io2.observe(st)})();
 // ===== signature draw =====
