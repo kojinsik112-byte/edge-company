@@ -4564,5 +4564,73 @@ document.querySelectorAll('a[href="javascript:copyKakaoID()"]').forEach(a => {
 })();
 </script>
 
+<!-- ============================================================
+     🔔 최근 수주 팝업 (A4 세로 절반 사이즈 · 여러 장 나란히 · 24시간 보지 않기)
+     ▼ 여기 목록만 고치면 됩니다. 한 줄 = 팝업 한 장.
+       - id      : 팝업마다 다른 아무 글자 (바꾸면 '보지 않기' 기록이 초기화됨)
+       - badge   : 작은 띠 문구 (예: NEW 수주 / 박람회 예정)
+       - title   : 단지명 (크게 표시)
+       - lines   : 아래 줄들 (세대수 · 일정 · 장소 등, 몇 줄이든)
+       - img     : 이미지 팝업으로 쓰려면 'images/파일명.jpg' (없으면 '' 텍스트 카드)
+       - link    : 누르면 이동할 주소 ('' 이면 없음, '#contact' 가능)
+     팝업을 내리려면 그 줄을 지우거나 맨 앞에 // 를 붙이세요.
+============================================================ -->
+<script>
+window.EDGE_POPUPS = [
+  { id:'changwon2607', badge:'주관 완료', title:'창원 센트럴 아이파크',
+    lines:['1,540세대 · 입주박람회 주관','2026.07.03 – 05 · CECO'], img:'', link:'#achievement' },
+  { id:'yeongju2608', badge:'주관 완료', title:'영주자이 시그니처',
+    lines:['763세대 · 입주박람회 주관','2026.08.29 – 30 · 영주 그랜드컨벤션'], img:'', link:'#achievement' },
+  // { id:'seongdong', badge:'NEW 수주', title:'성동자이 리버뷰',
+  //   lines:['서울 성동구 · 1,670세대','일정 추후 공지'], img:'', link:'#contact' },
+];
+</script>
+<style>
+  #egPopWrap{position:fixed;inset:0;z-index:9999;background:rgba(10,12,18,.62);overflow-y:auto;display:none}
+  #egPopWrap.on{display:block}
+  #egPopIn{min-height:100%;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px;padding:34px 18px}
+  .egPop{width:min(86vw,320px);background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.45);display:flex;flex-direction:column;flex-shrink:0}
+  .egPop .bd{aspect-ratio:210/297;position:relative;display:flex;flex-direction:column;justify-content:center;padding:26px 24px;background:
+    linear-gradient(160deg,#1a1d24 0%,#232838 62%,#2d3448 100%)}
+  .egPop .bd.hasimg{padding:0}
+  .egPop .bd img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
+  .egPop .badge{position:absolute;top:18px;left:24px;background:#d4a747;color:#1a1d24;font-size:11px;font-weight:800;letter-spacing:.08em;padding:5px 12px;border-radius:999px}
+  .egPop .tt{font-family:'Noto Serif KR',serif;font-size:26px;line-height:1.3;font-weight:700;color:#fff;margin-top:14px;word-break:keep-all}
+  .egPop .ln{margin-top:14px;color:#d8dbe4;font-size:13.5px;line-height:1.8}
+  .egPop .ln b{color:#ffd966}
+  .egPop .mark{position:absolute;right:22px;bottom:18px;font-size:10px;letter-spacing:.26em;color:#d4b87a;font-weight:700}
+  .egPop .go{display:block;text-align:center;background:#1a1d24;color:#fff;font-size:13px;font-weight:700;padding:11px 0;text-decoration:none}
+  .egPop .ft{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-top:1px solid #e8e4da;background:#fff}
+  .egPop .ft label{display:flex;align-items:center;gap:7px;font-size:12px;color:#777;cursor:pointer}
+  .egPop .ft button{border:0;background:none;font-size:13px;font-weight:700;color:#1a1d24;cursor:pointer}
+</style>
+<div id="egPopWrap" role="dialog" aria-modal="true"><div id="egPopIn"></div></div>
+<script>
+(function(){
+  var HIDE = 24*60*60*1000; // 24시간
+  var list = (window.EDGE_POPUPS||[]).filter(function(p){
+    try{ return Number(localStorage.getItem('egpop_'+p.id)||0) < Date.now(); }catch(e){ return true; }
+  });
+  if(!list.length) return;
+  var wrap = document.getElementById('egPopWrap'), box = document.getElementById('egPopIn');
+  list.forEach(function(p){
+    var c = document.createElement('div'); c.className='egPop';
+    var body = p.img
+      ? '<div class="bd hasimg">'+(p.link?'<a href="'+p.link+'">':'')+'<img src="'+p.img+'" alt="'+p.title+'">'+(p.link?'</a>':'')+'<span class="badge">'+p.badge+'</span></div>'
+      : '<div class="bd"><span class="badge">'+p.badge+'</span><div class="tt">'+p.title+'</div><div class="ln">'+(p.lines||[]).join('<br>')+'</div><span class="mark">EDGE COMPANY</span></div>';
+    c.innerHTML = body
+      + (p.link && !p.img ? '<a class="go" href="'+p.link+'">자세히 보기</a>' : '')
+      + '<div class="ft"><label><input type="checkbox"> 24시간 동안 보지 않기</label><button type="button">닫기 ✕</button></div>';
+    var chk = c.querySelector('input'), btn = c.querySelector('.ft button');
+    function close(){ if(chk.checked){ try{ localStorage.setItem('egpop_'+p.id, String(Date.now()+HIDE)); }catch(e){} }
+      c.remove(); if(!box.children.length) wrap.classList.remove('on'); }
+    btn.addEventListener('click', close);
+    c.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ c.remove(); if(!box.children.length) wrap.classList.remove('on'); }); });
+    box.appendChild(c);
+  });
+  wrap.classList.add('on');
+})();
+</script>
+
 </body>
 </html>

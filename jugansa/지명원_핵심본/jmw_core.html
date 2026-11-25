@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>엣지컴퍼니 지명원 — 핵심본</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#182230; --navy:#0f2342; --gold:#b98a45; --gold-l:#d6b88a;
+    --paper:#ffffff; --warm:#faf8f5; --line:#e4ded4; --muted:#6b7280; --bar:#c9c2b6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  @page{size:A4 landscape;margin:0}
+  body{font-family:'Pretendard',sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page{width:297mm;height:209.8mm;position:relative;background:var(--paper);overflow:hidden;page-break-after:always;padding:13mm 16mm 12mm}
+  .serif{font-family:'Noto Serif KR',serif}
+  .doc-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--navy);padding-bottom:3mm}
+  .dh-l{font-size:10.5pt;font-weight:800;letter-spacing:.14em;color:var(--navy)}
+  .dh-l small{font-weight:600;color:var(--gold);letter-spacing:.22em;margin-left:3mm;font-size:7.5pt}
+  .dh-r{font-size:7.5pt;color:var(--muted);letter-spacing:.06em}
+  .doc-foot{position:absolute;left:16mm;right:16mm;bottom:8mm;display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:2.4mm;font-size:7pt;color:var(--muted);letter-spacing:.05em}
+  .pageno{font-weight:700;color:var(--navy)}
+  .sec-kicker{font-size:8pt;font-weight:700;letter-spacing:.3em;color:var(--gold);margin:5.5mm 0 2.2mm}
+  h2.sec{font-family:'Noto Serif KR',serif;font-size:18.5pt;font-weight:700;color:var(--navy);letter-spacing:-.01em}
+  h2.sec .g{color:var(--gold)}
+  .sec-lede{margin-top:2.4mm;font-size:9pt;color:var(--muted);line-height:1.65}
+  .note{margin-top:4.6mm;border-left:2.5px solid var(--bar);padding:2mm 0 2mm 4.5mm;font-size:8pt;color:var(--muted);line-height:1.65}
+  .note b{color:var(--navy)}
+  /* 표지 */
+  .cover{padding:0}
+  .cover .frame{position:absolute;inset:8mm;border:1px solid var(--line)}
+  .cover .frame::before{content:'';position:absolute;inset:1.6mm;border:1px solid var(--gold-l)}
+  .cv{position:absolute;inset:8mm;padding:16mm 18mm;display:flex;flex-direction:column}
+  .cv-top{display:flex;justify-content:space-between;align-items:flex-start}
+  .brand{font-size:13pt;font-weight:800;letter-spacing:.1em;color:var(--navy)}
+  .brand small{display:block;font-size:7pt;font-weight:600;color:var(--gold);letter-spacing:.34em;margin-top:1.6mm}
+  .docmeta{text-align:right;font-size:7.5pt;color:var(--muted);line-height:1.9}
+  .cv-mid{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .kicker{font-size:9pt;font-weight:700;letter-spacing:.42em;color:var(--gold);margin-bottom:7mm}
+  .kicker::before{content:'';display:inline-block;width:14mm;height:1px;background:var(--gold);vertical-align:middle;margin-right:4mm}
+  h1.title{font-size:33pt;line-height:1.32;font-weight:700;color:var(--navy)}
+  h1.title .g{color:var(--gold)}
+  .lede{margin-top:8mm;font-size:11pt;line-height:2.0;color:#3d4654;max-width:152mm}
+  .lede b{color:var(--navy)}
+  .badges{display:flex;gap:2.4mm;margin-top:6mm;flex-wrap:wrap}
+  .bdg{border:1px solid var(--line);background:var(--warm);border-radius:2mm;padding:1.6mm 3.4mm;font-size:7.3pt;font-weight:600;color:#4a5568}
+  .bdg b{color:var(--navy)}
+  .cv-bot{display:flex;justify-content:space-between;align-items:flex-end}
+  .cv-info{display:flex;gap:13mm}
+  .ci b{display:block;font-size:7pt;letter-spacing:.2em;color:var(--gold);font-weight:700;margin-bottom:1.8mm}
+  .ci span{font-size:9.5pt;font-weight:600}
+  .seal{width:26mm;height:26mm;border-radius:50%;border:1.2px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--gold);gap:1mm}
+  .seal .e{font-family:'Noto Serif KR',serif;font-size:15pt;font-weight:700}
+  .seal small{font-size:5pt;letter-spacing:.3em}
+  /* 요약 */
+  .sum{margin-top:5mm;display:grid;grid-template-columns:1fr 1fr;column-gap:10mm;row-gap:4mm}
+  .srow{border-left:2.5px solid var(--bar);padding:.8mm 0 .8mm 4.5mm}
+  .srow .no{font-family:'Noto Serif KR',serif;font-size:8.5pt;color:var(--gold);font-weight:700}
+  .srow h3{font-size:10.3pt;font-weight:800;color:var(--navy);margin:.7mm 0 1mm}
+  .srow h3 em{font-style:normal;font-weight:500;color:var(--muted);font-size:7.6pt;margin-left:2.2mm}
+  .srow p{font-size:8pt;line-height:1.6;color:#4a5568}
+  .srow p b{color:var(--ink)}
+  /* 약속 표 */
+  table.pm{width:100%;border-collapse:collapse;margin-top:4.5mm}
+  table.pm th{font-size:7.2pt;letter-spacing:.14em;color:var(--gold);font-weight:700;text-align:left;border-bottom:1.5px solid var(--navy);padding:0 2mm 1.8mm}
+  table.pm td{border-bottom:1px solid var(--line);padding:2.05mm 2mm;font-size:8.2pt;line-height:1.5;vertical-align:top}
+  table.pm td.no{font-family:'Noto Serif KR',serif;color:var(--gold);font-weight:700;width:8mm}
+  table.pm td.t{font-weight:800;color:var(--navy);width:52mm}
+  table.pm td.c{color:#4a5568}
+  table.pm td.r{width:24mm;color:var(--muted);font-size:7.4pt;white-space:nowrap}
+  /* 등기/지사 */
+  .cols{display:grid;grid-template-columns:92mm 1fr;gap:10mm;margin-top:5mm}
+  .regcard{border:1px solid var(--line);border-radius:2.4mm;background:var(--warm);padding:4.5mm 5mm;margin-bottom:3.6mm}
+  .regcard b{display:block;font-size:11pt;font-weight:800;color:var(--navy)}
+  .regcard b .g{color:var(--gold)}
+  .regcard span{display:block;margin-top:1.4mm;font-size:7.6pt;color:var(--muted);line-height:1.6}
+  table.br{width:100%;border-collapse:collapse}
+  table.br th{font-size:7.2pt;letter-spacing:.14em;color:var(--gold);text-align:left;border-bottom:1.5px solid var(--navy);padding:0 2mm 1.8mm}
+  table.br td{border-bottom:1px solid var(--line);padding:1.95mm 2mm;font-size:8.3pt}
+  table.br td.n{font-weight:800;color:var(--navy);width:26mm}
+  table.br td.a{color:#4a5568}
+  table.br td.w{color:var(--muted);font-size:7.6pt}
+  table.br tr.hq td{background:var(--warm)}
+  /* 실적 */
+  .grid9{margin-top:4.6mm;display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+  .card{border:1px solid var(--line);border-radius:2.4mm;overflow:hidden;background:#fff;display:flex}
+  .card .ph{width:33mm;height:26mm;flex-shrink:0;position:relative}
+  .card .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .card .ph .hh{position:absolute;left:0;bottom:0;background:rgba(15,35,66,.85);color:#fff;font-size:6.2pt;font-weight:700;padding:.8mm 2mm}
+  .card .tx{padding:2.4mm 2.8mm;display:flex;flex-direction:column;justify-content:center;min-width:0}
+  .card .no{font-family:'Noto Serif KR',serif;font-size:7.4pt;color:var(--gold);font-weight:700}
+  .card h4{font-size:8.6pt;font-weight:800;color:var(--navy);line-height:1.3;margin:.7mm 0 .9mm;word-break:keep-all}
+  .card p{font-size:6.9pt;color:var(--muted);line-height:1.5}
+  .card p b{color:#374151;font-weight:600}
+  .total{margin-top:4.2mm;background:var(--navy);border-radius:2.4mm;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:3.4mm 6mm}
+  .total .serif{font-size:13pt;font-weight:700}
+  .total .serif .g{color:var(--gold-l)}
+  .total span{font-size:8pt;opacity:.85}
+  /* 유튜브 */
+  .yt{display:grid;grid-template-columns:1fr 96mm;gap:11mm;margin-top:5mm}
+  .yt-ch{border:1px solid var(--line);border-radius:3mm;padding:6mm 6.5mm;background:var(--warm)}
+  .yt-ch .lab{font-size:7.5pt;letter-spacing:.26em;color:var(--gold);font-weight:700}
+  .yt-ch h3{font-family:'Noto Serif KR',serif;font-size:16.5pt;color:var(--navy);font-weight:700;margin:2.4mm 0 1.6mm;line-height:1.35}
+  .yt-ch .handle{font-size:9.5pt;font-weight:700;color:#c00}
+  .yt-num{display:flex;gap:9mm;margin:4.6mm 0 4mm}
+  .yt-num b{font-family:'Noto Serif KR',serif;font-size:21pt;color:var(--navy);display:block;line-height:1}
+  .yt-num b i{font-style:normal;font-size:10pt;color:var(--gold)}
+  .yt-num span{display:block;font-size:7.4pt;color:var(--muted);margin-top:1.6mm}
+  .yt-ch ul{list-style:none;margin-top:1mm}
+  .yt-ch li{font-size:8.6pt;color:#3d4654;line-height:1.95;padding-left:4mm;position:relative}
+  .yt-ch li::before{content:'';position:absolute;left:0;top:.4em;width:1.6mm;height:1.6mm;background:var(--gold)}
+  .yt-qr{display:flex;align-items:center;gap:4mm;margin-top:4.6mm;border-top:1px solid var(--line);padding-top:4mm}
+  .yt-qr img{width:19mm;height:19mm}
+  .yt-qr div{font-size:8pt;line-height:1.7;color:#3d4654}
+  .yt-qr b{color:var(--navy)}
+  .vids{display:flex;flex-direction:column;gap:3.6mm}
+  .vid{display:flex;border:1px solid var(--line);border-radius:2.4mm;overflow:hidden}
+  .vid img{width:44mm;height:25mm;object-fit:cover;flex-shrink:0}
+  .vid .tx{padding:2.6mm 3.4mm;display:flex;flex-direction:column;justify-content:center}
+  .vid h4{font-size:8.8pt;font-weight:800;color:var(--navy);line-height:1.4}
+  .vid p{font-size:7.2pt;color:var(--muted);margin-top:1mm}
+  /* 발전지원금 */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin-top:5.5mm}
+  .step{border:1px solid var(--line);border-radius:2.6mm;padding:5mm 5mm 4.4mm;position:relative;background:#fff}
+  .step .n{font-family:'Noto Serif KR',serif;font-size:14pt;color:var(--gold);font-weight:700}
+  .step h3{font-size:11.5pt;font-weight:800;color:var(--navy);margin:1.8mm 0 2mm}
+  .step p{font-size:8.3pt;line-height:1.7;color:#4a5568}
+  .step p b{color:var(--ink)}
+  .caseband{margin-top:5.5mm;background:var(--navy);border-radius:2.6mm;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:4mm 6.5mm}
+  .caseband .l small{display:block;font-size:7pt;letter-spacing:.26em;color:var(--gold-l);font-weight:700;margin-bottom:1.4mm}
+  .caseband .l b{font-family:'Noto Serif KR',serif;font-size:12.5pt;font-weight:700}
+  .caseband .r{display:flex;gap:9mm;text-align:right}
+  .caseband .r div b{font-family:'Noto Serif KR',serif;font-size:15pt;display:block;line-height:1.1;color:#fff}
+  .caseband .r div b i{font-style:normal;font-size:8.5pt;color:var(--gold-l)}
+  .caseband .r div span{font-size:6.8pt;opacity:.8}
+  .principle{margin-top:5mm;display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}
+  .pr{border-left:2.5px solid var(--bar);padding:1mm 0 1mm 4.5mm}
+  .pr b{display:block;font-size:9.5pt;color:var(--navy);font-weight:800;margin-bottom:1.2mm}
+  .pr span{font-size:8pt;color:#4a5568;line-height:1.6;display:block}
+  /* 영주 4테마 */
+  .themes{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin-top:5mm}
+  .th{border:1px solid var(--line);border-radius:2.6mm;overflow:hidden;background:#fff}
+  .th .im{height:74mm;overflow:hidden}
+  .th img{width:100%;height:100%;object-fit:cover;display:block}
+  .th .tx{padding:3mm 3.4mm 3.4mm}
+  .th .no{font-family:'Noto Serif KR',serif;font-size:7.6pt;color:var(--gold);font-weight:700}
+  .th h4{font-family:'Noto Serif KR',serif;font-size:11pt;color:var(--navy);font-weight:700;margin:1mm 0 1.2mm}
+  .th p{font-size:7.4pt;color:var(--muted);line-height:1.6}
+  /* 운영 4단계 */
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:4.6mm;margin-top:5.5mm}
+  .fl{border-top:2.5px solid var(--navy);padding-top:3.4mm}
+  .fl .n{font-family:'Noto Serif KR',serif;font-size:12pt;color:var(--gold);font-weight:700}
+  .fl h3{font-size:11pt;font-weight:800;color:var(--navy);margin:1.6mm 0 1.8mm}
+  .fl p{font-size:8.2pt;line-height:1.7;color:#4a5568}
+  .fl p b{color:var(--ink)}
+  /* 2열 리스트 페이지 공용 */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:10mm;margin-top:5mm}
+  /* 지원 8종 */
+  .g8{display:grid;grid-template-columns:repeat(4,1fr);gap:4.4mm;margin-top:5.5mm}
+  .s8{border:1px solid var(--line);border-radius:2.6mm;padding:4.6mm 4.4mm;background:#fff}
+  .s8 .n{font-family:'Noto Serif KR',serif;font-size:9pt;color:var(--gold);font-weight:700}
+  .s8 h4{font-size:10pt;font-weight:800;color:var(--navy);margin:1.4mm 0 1.6mm}
+  .s8 p{font-size:7.7pt;color:#4a5568;line-height:1.6}
+  /* 보증 빅넘버 */
+  .big4{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm;margin-top:6mm}
+  .b4{text-align:center;border:1px solid var(--line);border-radius:2.6mm;padding:6mm 3mm 5mm;background:var(--warm)}
+  .b4 b{font-family:'Noto Serif KR',serif;font-size:23pt;color:var(--navy);display:block;line-height:1}
+  .b4 b i{font-style:normal;font-size:11pt;color:var(--gold)}
+  .b4 h4{font-size:9.3pt;font-weight:800;color:var(--navy);margin:2.6mm 0 1.4mm}
+  .b4 p{font-size:7.4pt;color:var(--muted);line-height:1.55}
+  /* 마지막 */
+  .fin{display:grid;grid-template-columns:1fr 92mm;gap:12mm;margin-top:6mm}
+  .fin blockquote{font-family:'Noto Serif KR',serif;font-size:15.5pt;color:var(--navy);line-height:1.75;font-weight:600}
+  .fin blockquote .g{color:var(--gold)}
+  .fin .sign{margin-top:7mm;font-size:9.5pt;color:#3d4654}
+  .fin .sign b{font-size:12pt;color:var(--navy);margin-left:2mm}
+  .contact{border:1px solid var(--line);border-radius:3mm;padding:5.5mm 6mm;background:var(--warm)}
+  .contact h4{font-size:8pt;letter-spacing:.26em;color:var(--gold);font-weight:700;margin-bottom:3.4mm}
+  .contact .row{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:2.1mm 0;font-size:8.8pt}
+  .contact .row:last-child{border-bottom:0}
+  .contact .row span{color:var(--muted)}
+  .contact .row b{color:var(--navy);font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- P1 표지 -->
+<section class="page cover">
+  <div class="frame"></div>
+  <div class="cv">
+    <div class="cv-top">
+      <div class="brand">주식회사 엣지컴퍼니<small>EDGE COMPANY · SINCE 2022</small></div>
+      <div class="docmeta">문서번호 EG-JMW-2026-11<br>발행 2026. 11 · 유효 발행일로부터 6개월<br>수신 입주예정자협의회 귀중</div>
+    </div>
+    <div class="cv-mid">
+      <div class="kicker">COMPANY PROFILE · 지명원 핵심본</div>
+      <h1 class="title serif">기록으로 증명하는<br>입주박람회 <span class="g">주관사의 기준</span></h1>
+      <p class="lede">본 지명원의 모든 수치는 <b>법인등기 · 공식 행사자료 · 협약서</b> 등 근거 자료와 함께 제시하며,
+      요청 시 원본을 제출합니다. 가까운 지사가 먼저 가고, <b>사후관리가 끝나는 날까지 본사가 책임</b>지겠습니다.</p>
+      <div class="badges">
+        <span class="bdg"><b>전기공사업</b> 울산-00821</span>
+        <span class="bdg"><b>실내건축공사업</b> 등기 목적</span>
+        <span class="bdg"><b>ISO</b> 9001 · 14001 · 45001</span>
+        <span class="bdg"><b>NICE D&amp;B</b> 신용평가 보유</span>
+        <span class="bdg"><b>삼성전자</b> MOU</span>
+        <span class="bdg"><b>법인등기 지사</b> 7곳</span>
+      </div>
+    </div>
+    <div class="cv-bot">
+      <div class="cv-info">
+        <div class="ci"><b>회사</b><span>주식회사 엣지컴퍼니</span></div>
+        <div class="ci"><b>대표이사</b><span>고진식</span></div>
+        <div class="ci"><b>본사</b><span>울산 · 전국 지사 7곳</span></div>
+        <div class="ci"><b>대표번호</b><span>1533-3210</span></div>
+      </div>
+      <div class="seal"><span class="e">E</span><small>EDGE</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- P2 한장요약 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">제안 개요 · 한 장으로 보는 엣지컴퍼니</div></div>
+  <div class="sec-kicker">OVERVIEW</div>
+  <h2 class="sec">한 장으로 보는 <span class="g">엣지컴퍼니</span></h2>
+  <p class="sec-lede">입주박람회 주관사가 하는 일을 여덟 가지로 나눴습니다. 세부 근거 자료는 별책(전체 지명원)과 원본 서류로 제출합니다.</p>
+  <div class="sum">
+    <div class="srow"><span class="no">01</span><h3>회사 · 실적</h3><p>법인등기(자본금 5억 · 등기 지사 7곳) · <b>주관 이력 17건</b> · 공식 행사일정 · 협약서 · 운영책임자</p></div>
+    <div class="srow"><span class="no">02</span><h3>대표 유튜브 채널<em>구독자 1.5만</em></h3><p><b>대표가 직접</b> 입주 전 과정을 설명하는 주관사 채널 — 단지와 숨김없이 소통합니다</p></div>
+    <div class="srow"><span class="no">03</span><h3>발전지원금 · 세대 혜택</h3><p>발전지원금은 <b>현금이 아닌 단지 시설(현물)로 직접 시공 · 집행</b>하고 내역을 공개 — 대표 사례 = 단지 경관조명</p></div>
+    <div class="srow"><span class="no">04</span><h3>입주박람회 운영</h3><p>업체 <b>공개 모집 · 4단계 심사</b> · 박람회 30일 전 가격 공개 · <b>최저가 차액 10배 보상</b></p></div>
+    <div class="srow"><span class="no">05</span><h3>공동구매 특화 품목</h3><p>실링팬 · 조명 직영 품목 · 휴젠트 · 중문 · 시스템에어컨 등 — <b>공개 심사 뒤 확정</b></p></div>
+    <div class="srow"><span class="no">06</span><h3>하자 점검 · 단지 지원 8종</h3><p>철근탐지 · 열화상 드론 · 일조량 · 라돈 · 항균 코팅 · 세스코 · 하자 분석 · 협상 미팅 — 협의회 전용 무상 지원</p></div>
+    <div class="srow"><span class="no">07</span><h3>A/S · 하자보수</h3><p>24시간 1차 회신 · 48시간 안 방문 확정 · 시공 품목 최소 2년 · <b>예치금 최대 1억 · 하자보증보험 최대 10억</b>(협약 때 확정)</p></div>
+    <div class="srow"><span class="no">08</span><h3>환불 · 계약 보호</h3><p>계약금 10% 상한 · 기한 안 전액 환불 · <b>재하도급 금지</b> · 업체 문제 시 주관사 책임 이관</p></div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 증명할 수 없는 과장 표현은 쓰지 않았습니다. 항목마다 근거 자료가 있고, 단지별 조건은 협약 때 입예협과 확정합니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">02</span></div>
+</section>
+
+<!-- P3 약속 10 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">제안 개요 · 약속 10가지</div></div>
+  <div class="sec-kicker">PROMISE</div>
+  <h2 class="sec">엣지컴퍼니가 드리는 <span class="g">약속 10가지</span></h2>
+  <p class="sec-lede">입예협이 먼저 보실 한 장입니다. 지킬 수 있는 내용만 적었고, 세부는 협약서에 옮깁니다.</p>
+  <table class="pm">
+    <tr><th style="width:8mm">NO</th><th style="width:52mm">약속</th><th>조건 · 기준</th></tr>
+    <tr><td class="no">01</td><td class="t">세대 혜택 · 단지별 협약</td><td class="c">금액 · 대상 · 지급 시기 · 방식은 협약 시 확정 — 주관사가 직접 사서 드림 · 단가 입예협 승인 · 가격 비교</td></tr>
+    <tr><td class="no">02</td><td class="t">같은 기준 · 선택권 보장</td><td class="c">단지 세대 모두 공구가 · 박람회 초대 · A/S 기준이 같음 — 특정 제품 · 업체 구매를 권하거나 끼워 팔지 않음</td></tr>
+    <tr><td class="no">03</td><td class="t">가격 먼저 공개 · 총 부담액</td><td class="c">박람회 30일 전 입예협 단가 검수 · 14일 전 확정가와 같은 조건 일반 판매가 비교자료 공개 — 부가세 · 배송 · 설치 포함 총액</td></tr>
+    <tr><td class="no">04</td><td class="t">최저가 차액 10배 보상</td><td class="c">인근 매장 · 구매 영수증 · 주관사 확인 — 1건당 최대 50만원 · 온라인 · 시공 품목 제외 · 주관사 지급</td></tr>
+    <tr><td class="no">05</td><td class="t">계약금 10% 상한 · 잔금은 확인 뒤</td><td class="c">맞춤 제작 · 본사 규정 품목 예외 — 대금은 계약서에 적힌 업체 명의로만 · 잔금은 시공 · 설치 · 계약자 확인 뒤</td></tr>
+    <tr><td class="no">06</td><td class="t">24시간 · 48시간</td><td class="c">24시간 안 1차 회신(주말 · 공휴일 = 다음 영업일 12시) · 48시간 안 방문 일정 확정 — 업체가 24시간 무응답이면 주관사 개입</td></tr>
+    <tr><td class="no">07</td><td class="t">무상 A/S · 업체 이관</td><td class="c">시공 품목 최소 2년(브랜드는 제조사 보증) — 업체 폐업 · 연락 두절 시 대체 업체로 이관(입예협 승인 · 계약자 동의)</td></tr>
+    <tr><td class="no">08</td><td class="t">하자 보수 이행 · 변상</td><td class="c">보증기간 안 참여업체 하자 = 즉시 보수 또는 변상 — <b>이행 담보 = 예치금 최대 1억 · 하자보증보험 최대 10억</b>(협약 때 확정)</td></tr>
+    <tr><td class="no">09</td><td class="t">시공 · 납품 지연 처리</td><td class="c">공동구매 업체 귀책 지연은 일정 재조정 또는 계약 취소 · 전액 환불 중 입주민이 선택 — 세부 기준은 협약서에 명시</td></tr>
+    <tr><td class="no">10</td><td class="t">입예협 활동 지원</td><td class="c">설명회 · 행사 · 회의 장소와 비품 · 드론 촬영 · 공문 · 자료 정리 — 일정과 범위는 입예협과 정함</td></tr>
+  </table>
+  <div class="note"><b>KEY POINT</b> — 지킬 수 있는 내용만 적었습니다. 증명할 수 없는 과장 표현은 쓰지 않았습니다 · 세부 조건과 방식은 협약 시 확정합니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">03</span></div>
+</section>
+
+<!-- P4 등기 신뢰 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">01. 회사 · 실적</div></div>
+  <div class="sec-kicker">VERIFIED</div>
+  <h2 class="sec">말이 아니라 <span class="g">등기부로 확인되는 회사</span></h2>
+  <p class="sec-lede">아래 내용은 전부 법인등기부등본(2026.11.10 발행)에서 발췌했습니다. 원본 전체는 요청 시 제출합니다.</p>
+  <div class="cols">
+    <div>
+      <div class="regcard"><b>자본금 <span class="g">5억원</span></b><span>2026.11.03 증자 등기 — 책임질 수 있는 체급을 등기부에 올렸습니다</span></div>
+      <div class="regcard"><b>법인등기 지사 <span class="g">7곳</span></b><span>설치 2026.10.27 · 등기 2026.11.03 — 홈페이지 속 지사가 아니라 등기부에 오른 지점입니다 (본점 포함 등기 8곳)</span></div>
+      <div class="regcard"><b>실내건축공사업 <span class="g">사업목적 등기</span></b><span>2026.11.05 등기 — 전기공사업 면허(울산-00821)와 함께 시공 · 검수의 법적 근거</span></span></div>
+      <div class="badges" style="margin-top:4mm">
+        <span class="bdg"><b>ISO</b> 9001·14001·45001</span>
+        <span class="bdg"><b>NICE D&amp;B</b> 신용평가</span>
+        <span class="bdg"><b>삼성전자</b> MOU</span>
+      </div>
+    </div>
+    <div>
+      <table class="br">
+        <tr><th>지사</th><th>위치</th><th>맡는 권역</th></tr>
+        <tr class="hq"><td class="n">울산 본점</td><td class="a">울산 울주군 청량읍</td><td class="w">계약 · 보상 책임 · 시공팀</td></tr>
+        <tr><td class="n">경기북부지사</td><td class="a">경기 안산시 상록구</td><td class="w">경기 서부 · 북부권</td></tr>
+        <tr><td class="n">경기남부지사</td><td class="a">경기 평택시 비전동</td><td class="w">상설 쇼룸 · 경기 남부권</td></tr>
+        <tr><td class="n">인천지사</td><td class="a">인천 계양구 임학동</td><td class="w">임원 상주 · 경기권 지사 관리</td></tr>
+        <tr><td class="n">충청지사</td><td class="a">세종 대평동</td><td class="w">세종 · 대전 · 충청권</td></tr>
+        <tr><td class="n">경북지사</td><td class="a">대구 수성구 파동</td><td class="w">대구 · 경북권</td></tr>
+        <tr><td class="n">부산지사</td><td class="a">부산 해운대구 재송동</td><td class="w">부산 · 경남권</td></tr>
+        <tr><td class="n">광주지사</td><td class="a">광주 광산구 월계동</td><td class="w">광주 · 전라권</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 가까운 지사가 상담 · 접수 · 출동을 맡고, 계약 · 보상 책임은 울산 본사가 집니다. 출처 법인등기부등본 2026.11.10 발행본 발췌.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">04</span></div>
+</section>
+
+<!-- P5 실적1 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">01. 회사 · 실적</div></div>
+  <div class="sec-kicker">TRACK RECORD</div>
+  <h2 class="sec">입주박람회 주관 이력 <span class="g">17건</span> ①</h2>
+  <p class="sec-lede">엣지컴퍼니가 주관한 입주박람회 이력입니다. 최근 3년 14건 · 3년 이전 3건이고, 일정은 공식 행사 자료와 같습니다.</p>
+  <div class="grid9">
+    <div class="card"><div class="ph"><img src="assets/apt01.png"><span class="hh">750세대</span></div><div class="tx"><span class="no">01</span><h4>부산 드파인 센텀</h4><p><b>주관</b> · 2024.05.24 – 26 · BEXCO<br>확인 주관사 협약서</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt02.png"><span class="hh">1,302세대</span></div><div class="tx"><span class="no">02</span><h4>e편한세상 송도 더퍼스트비치</h4><p><b>주관</b> · 2024.06.14 – 16 · BEXCO<br>확인 BEXCO 공식 일정</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt03.png"><span class="hh">1,643세대</span></div><div class="tx"><span class="no">03</span><h4>두산위브더제니스 센트럴사하</h4><p><b>주관</b> · 2024.06.08–09 / 08.10–11 · BEXCO<br>확인 NICE 연혁</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt04.png"><span class="hh">2,272세대</span></div><div class="tx"><span class="no">04</span><h4>양정자이더샵 SK VIEW 1·2단지</h4><p><b>조합 주관</b> · 2025.01.11 – 12 · BEXCO<br>확인 NICE 연혁</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt05.png"><span class="hh">953세대</span></div><div class="tx"><span class="no">05</span><h4>e편한세상 에코델타 센터포인트</h4><p><b>주관</b> · 2025.02.14 – 16 · BEXCO<br>확인 공식 일정 · 협약서</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt06.png"><span class="hh">856세대</span></div><div class="tx"><span class="no">06</span><h4>강서자이 에코델타</h4><p><b>주관</b> · 2025.02.21 – 23 · BEXCO<br>확인 BEXCO 공식 일정</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt07.png"><span class="hh">886세대</span></div><div class="tx"><span class="no">07</span><h4>에코델타시티 푸르지오 린</h4><p><b>주관</b> · 2025.07.05 – 07 · BEXCO<br>확인 BEXCO 공식 일정</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt08.png"><span class="hh">1,114세대</span></div><div class="tx"><span class="no">08</span><h4>춘천 학곡지구 중해마루힐 포레스트</h4><p><b>주관</b> · 2025.08.09 – 10 · 춘천 베어스호텔<br>확인 NICE 연혁</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt09.png"><span class="hh">1,120세대</span></div><div class="tx"><span class="no">09</span><h4>에코델타 대성베르힐</h4><p><b>주관</b> · 2025.11.28 – 30 · BEXCO<br>확인 공식 일정 · 입주자 모임 공지</p></div></div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 세대 수 = 단지 규모 · 구분 = 주관 · 공동 주관 · 조합 주관 · 확인 자료는 요청 시 제출합니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">05</span></div>
+</section>
+
+<!-- P6 실적2 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">01. 회사 · 실적</div></div>
+  <div class="sec-kicker">TRACK RECORD</div>
+  <h2 class="sec">입주박람회 주관 이력 <span class="g">17건</span> ②</h2>
+  <p class="sec-lede">최근 3년 나머지 5건과 3년 이전 3건입니다. 3년 이전 단지 자료는 요청하시면 드립니다.</p>
+  <div class="grid9" style="grid-template-columns:repeat(3,1fr)">
+    <div class="card"><div class="ph"><img src="assets/apt10.png"><span class="hh">2,813세대</span></div><div class="tx"><span class="no">10</span><h4>두산위브더제니스 오션시티</h4><p><b>조합 주관</b> · 2025.12.06 – 07 · BEXCO<br>확인 NICE 연혁</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt11.png"><span class="hh">848세대</span></div><div class="tx"><span class="no">11</span><h4>남울산 노르웨이숲</h4><p><b>주관</b> · 2026.03.28 – 29 · UECO<br>확인 UECO 공식 일정</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt12.png"><span class="hh">972세대</span></div><div class="tx"><span class="no">12</span><h4>디에트르 더 퍼스트</h4><p><b>주관</b> · 2026.05.08 – 10 · BEXCO<br>확인 주관사 협약서</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt13.png"><span class="hh">1,540세대</span></div><div class="tx"><span class="no">13</span><h4>창원 센트럴 아이파크</h4><p><b>주관</b> · 2026.07.03 – 05 · CECO<br>확인 NICE 연혁 · CECO 공식 일정</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt14.png"><span class="hh">763세대</span></div><div class="tx"><span class="no">14</span><h4>영주자이 시그니처</h4><p><b>주관</b> · 2026.08.29 – 30 · 영주 그랜드컨벤션<br>확인 박람회 공지 목록</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt15.png"><span class="hh">1,717세대</span></div><div class="tx"><span class="no">15</span><h4>힐스테이트 포항</h4><p><b>주관 · 3년 이전</b> · 2023.03.18 – 19 · 써밋컨벤션<br>확인 요청 시 제출</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt16.png"><span class="hh">1,572세대</span></div><div class="tx"><span class="no">16</span><h4>부산사상 중흥S-클래스 그랜드센트럴</h4><p><b>공동 주관 · 3년 이전</b> · 2023.03 / 06 · BEXCO<br>확인 요청 시 제출</p></div></div>
+    <div class="card"><div class="ph"><img src="assets/apt17.png"><span class="hh">4,470세대</span></div><div class="tx"><span class="no">17</span><h4>레이카운티</h4><p><b>공동 주관 · 3년 이전</b> · 2023.08 / 10 · BEXCO<br>확인 요청 시 제출</p></div></div>
+    <div class="card" style="background:var(--warm);align-items:center;justify-content:center;display:flex"><div class="tx" style="text-align:center;width:100%"><span class="no">TOTAL</span><h4 class="serif" style="font-size:13pt">주관 이력 17건</h4><p>최근 3년 14건 · 3년 이전 3건<br>확인 자료 = 요청 시 제출</p></div></div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 단지마다 확인 자료가 있습니다. 일정은 공식 행사 자료와 같습니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">06</span></div>
+</section>
+
+<!-- P7 유튜브 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">02. 대표 유튜브 채널</div></div>
+  <div class="sec-kicker">YOUTUBE</div>
+  <h2 class="sec">대표가 직접 운영하는 <span class="g">구독자 1.5만 주관사 채널</span></h2>
+  <p class="sec-lede">숨길 게 없는 주관사는 얼굴을 걸고 말합니다. 대표이사가 직접 출연해 입주 준비 전 과정을 공개합니다.</p>
+  <div class="yt">
+    <div class="yt-ch">
+      <span class="lab">OFFICIAL CHANNEL</span>
+      <h3>엣지컴퍼니<br>대한민국 주관사 기준</h3>
+      <div class="handle">youtube.com/@대한민국주관사기준</div>
+      <div class="yt-num">
+        <div><b>1.5<i>만</i></b><span>구독자</span></div>
+        <div><b>대표<i> 직접</i></b><span>출연 · 답변</span></div>
+      </div>
+      <ul>
+        <li>주관사 선정 기준 — 무엇을 봐야 하나</li>
+        <li>발전지원금의 진실 — 어떻게 집행되어야 하나</li>
+        <li>공동구매 가격 — 영업 멘트와 실제 가격</li>
+        <li>입주예정자협의회 운영 경험담</li>
+      </ul>
+      <div class="yt-qr">
+        <img src="assets/qr_youtube.png">
+        <div><b>지금 확인해 보세요</b><br>휴대폰 카메라로 QR을 비추면<br>채널로 바로 연결됩니다</div>
+      </div>
+    </div>
+    <div class="vids">
+      <div class="vid"><img src="assets/yt_B9AD2ipgrp4.jpg"><div class="tx"><h4>입주아파트 입주민이 제일 많이 묻는 질문 1위</h4><p>조회수 2,650회+</p></div></div>
+      <div class="vid"><img src="assets/yt_80eEBoKnnGA.jpg"><div class="tx"><h4>"오늘만 이 가격!" 영업사원 거짓말 팩트체크</h4><p>조회수 1,789회+</p></div></div>
+      <div class="vid"><img src="assets/yt_LqrIv43V6fs.jpg"><div class="tx"><h4>입주예정자 협의회, 실제 운영 이야기</h4><p>조회수 1,618회+</p></div></div>
+    </div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 박람회가 끝나도 채널은 남습니다. 약속을 어기면 기록이 남는 구조 — 그래서 더 책임 있게 일합니다. (조회수 2026.10 기준)</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">07</span></div>
+</section>
+
+<!-- P8 발전지원금 원칙 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">03. 발전지원금 · 단지 지원</div></div>
+  <div class="sec-kicker">COMMUNITY FUND</div>
+  <h2 class="sec">발전지원금, <span class="g">현금이 아니라 단지의 자산으로</span></h2>
+  <p class="sec-lede">엣지컴퍼니의 발전지원금은 현금 지급이 아닙니다. 입예협이 정한 품목을 주관사가 직접 시공 · 구매해 단지에 남기고, 내역을 공개합니다.</p>
+  <div class="steps">
+    <div class="step"><span class="n">STEP 1</span><h3>협약으로 확정</h3><p>지원 규모 · 품목 · 일정은 <b>입예협과 서면 협약</b>으로 확정합니다. 금액과 대상은 단지별 협약에서 정합니다.</p></div>
+    <div class="step"><span class="n">STEP 2</span><h3>현물로 직접 집행</h3><p>현금을 건네지 않습니다. <b>주관사가 직접 구매 · 시공</b>해 단지 시설로 남깁니다 — 대표 품목 = 단지 경관조명.</p></div>
+    <div class="step"><span class="n">STEP 3</span><h3>내역 공개</h3><p>품목 · 수량 · 집행 일자를 <b>입예협에 서면 보고</b>하고 단지 카페에 공개할 수 있게 자료로 드립니다.</p></div>
+  </div>
+  <div class="caseband">
+    <div class="l"><small>RECENT CASE · 성동자이 리버뷰 (서울 · 1,670세대)</small><b>세대당 18만원 상당 발전지원금 — 전액 현물 · 공개 집행 제안</b></div>
+    <div class="r">
+      <div><b>18<i>만원/세대</i></b><span>일반분양 797세대 기준</span></div>
+      <div><b>1.43<i>억원</i></b><span>지원 총액 (797세대 × 18만원)</span></div>
+      <div><b>택 1<i> 현물</i></b><span>사용처는 협의회가 의결</span></div>
+    </div>
+  </div>
+  <div class="sec-kicker" style="margin-top:5.5mm">WHY — 직접 생산 · 직접 시공 법인이라 가능한 구조</div>
+  <div class="principle">
+    <div class="pr"><b>전 세대가 누리는 혜택</b><span>특정 세대 사은품이 아니라 단지 전체의 자산 — 조명 · 시설을 직접 생산 · 수입해 유통 마진 없이 집행합니다.</span></div>
+    <div class="pr"><b>면허 보유 직접 시공</b><span>전기공사업 면허(울산-00821) 법인이 설계 · 시공 · A/S까지 직접 책임집니다.</span></div>
+    <div class="pr"><b>단지 가치로 남는 집행</b><span>소모성 행사 비용이 아니라 단지 외관 · 상징성을 올리는 시설 투자로 집행됩니다.</span></div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 지원 금액 · 품목은 단지 규모와 협약에 따라 단지별로 확정됩니다. 사용처는 입예협이 정하고, 엣지컴퍼니는 투명하게 집행하고 기록으로 남깁니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">08</span></div>
+</section>
+
+<!-- P9 영주 경관조명 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">03. 발전지원금 · 단지 지원</div></div>
+  <div class="sec-kicker">CASE · 영주자이 시그니처</div>
+  <h2 class="sec">주관 단지에 제안한 <span class="g">경관조명 연출안</span></h2>
+  <p class="sec-lede">주관 단지인 영주자이 시그니처(763세대)에 제안한 4가지 빛 연출입니다. 단지마다 건물 · 문주 · 정원에 맞춰 새로 설계합니다.</p>
+  <div class="themes">
+    <div class="th"><div class="im"><img src="assets/yj1.png"></div><div class="tx"><span class="no">THEME 01</span><h4>하늘에 새긴 빛</h4><p>동 외벽 수직 라인조명 — 단지의 밤 실루엣을 완성하는 상징 조명</p></div></div>
+    <div class="th"><div class="im"><img src="assets/yj2.png"></div><div class="tx"><span class="no">THEME 02</span><h4>겨울빛의 문</h4><p>정문 문주 윈터라이팅 — 돌아오는 가족을 맞는 단지의 첫인사</p></div></div>
+    <div class="th"><div class="im"><img src="assets/yj3.png"></div><div class="tx"><span class="no">THEME 03</span><h4>별빛이 머무는 정원</h4><p>잔디 정원 조형 조명 — 산책길에 만나는 작은 빛의 풍경</p></div></div>
+    <div class="th"><div class="im"><img src="assets/yj4.png"></div><div class="tx"><span class="no">THEME 04</span><h4>요정의 숲</h4><p>소나무 은하수 조명 — 아이들이 가장 좋아하는 빛의 숲</p></div></div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 이미지는 설치 예상 연출안입니다. 범위 · 품목 · 일정은 입예협 협약으로 확정하며, 설계 · 시공 · A/S는 면허 보유 법인이 직접 합니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">09</span></div>
+</section>
+
+<!-- P10 박람회 운영 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">04. 입주박람회 운영</div></div>
+  <div class="sec-kicker">OPERATION</div>
+  <h2 class="sec">업체는 공개로 뽑고, <span class="g">가격은 먼저 공개합니다</span></h2>
+  <p class="sec-lede">참여업체 선정과 가격 검증이 주관사의 본질입니다. 전 과정을 입예협과 함께 진행합니다.</p>
+  <div class="flow">
+    <div class="fl"><span class="n">01</span><h3>수요조사 · 공개 모집</h3><p>단지 수요조사로 품목을 정하고 참여업체를 <b>공개 모집</b>합니다. 비공개 수의 선정을 하지 않습니다.</p></div>
+    <div class="fl"><span class="n">02</span><h3>4단계 심사</h3><p>서류 · 재무 → 시공 실적 → 가격 → 면접의 <b>4단계 심사</b>로 선정하고, 심사 결과를 입예협과 공유합니다.</p></div>
+    <div class="fl"><span class="n">03</span><h3>가격 먼저 공개</h3><p>박람회 <b>30일 전</b> 입예협 단가 검수 · <b>14일 전</b> 확정가와 같은 조건의 일반 판매가 비교자료 공개 — 부가세 · 배송 · 설치 포함 총액 기준.</p></div>
+    <div class="fl"><span class="n">04</span><h3>차액 10배 보상</h3><p>최저가 보장 — 같은 조건 더 싼 가격이 확인되면 <b>차액의 10배</b>(1건당 최대 50만원)를 주관사가 지급합니다.</p></div>
+  </div>
+  <div class="sec-kicker" style="margin-top:7mm">공동구매 특화 품목</div>
+  <div class="principle" style="grid-template-columns:repeat(3,1fr)">
+    <div class="pr"><b>직영 품목</b><span>실링팬 · 조명 — 직접 생산 · 수입하는 품목은 유통 마진 없이 공급하고 직접 A/S합니다.</span></div>
+    <div class="pr"><b>심사 선정 품목</b><span>휴젠트 · 중문 · 시스템에어컨 · 마감 · 안전 · 생활 품목 — 전부 공개 심사 뒤 확정합니다.</span></div>
+    <div class="pr"><b>선택은 입주민이</b><span>어떤 품목도 구매를 권하거나 끼워 팔지 않습니다. 같은 공구가 · 같은 기준 · 같은 A/S.</span></div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 참여업체는 지역업체 중심으로 구성하며, 선정 기준과 가격 자료는 입예협에 공개합니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">10</span></div>
+</section>
+
+<!-- P11 단지 지원 8종 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">05. 하자 점검 · 단지 지원</div></div>
+  <div class="sec-kicker">FREE SUPPORT</div>
+  <h2 class="sec">협의회 전용 <span class="g">무상 단지지원 8가지</span></h2>
+  <p class="sec-lede">박람회와 별개로, 입주 전 단지 품질을 확인하는 전문 장비 지원입니다. 일정과 범위는 입예협과 정합니다.</p>
+  <div class="g8">
+    <div class="s8"><span class="n">01</span><h4>철근 탐지</h4><p>비파괴 장비로 구조 철근 배근 상태를 표본 확인합니다</p></div>
+    <div class="s8"><span class="n">02</span><h4>열화상 드론</h4><p>외벽 단열 · 누수 의심 부위를 열화상으로 촬영합니다</p></div>
+    <div class="s8"><span class="n">03</span><h4>일조량 분석</h4><p>동 · 향별 일조 시뮬레이션 자료를 협의회에 제공합니다</p></div>
+    <div class="s8"><span class="n">04</span><h4>라돈 측정</h4><p>요청 세대 표본 라돈 측정 — 결과는 서면 보고합니다</p></div>
+    <div class="s8"><span class="n">05</span><h4>항균 코팅</h4><p>공용부 핵심 접촉면 항균 코팅을 지원합니다</p></div>
+    <div class="s8"><span class="n">06</span><h4>전문 방역 점검</h4><p>전문 방역업체 공용부 위생 점검을 지원합니다</p></div>
+    <div class="s8"><span class="n">07</span><h4>하자 분석 리포트</h4><p>사전점검 하자 유형을 분석해 협의회 대응 자료로 드립니다</p></div>
+    <div class="s8"><span class="n">08</span><h4>협상 미팅 지원</h4><p>시공사 미팅 자료 정리 · 공문 작성 · 기록을 지원합니다</p></div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 하자 점검의 역할은 명확히 구분합니다. 법정 권한이 필요한 업무(감리 등)는 수행하지 않으며, 협의회의 확인 활동을 장비와 기록으로 돕습니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">11</span></div>
+</section>
+
+<!-- P12 A/S 보증 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">06. A/S · 하자보수</div></div>
+  <div class="sec-kicker">AFTER SERVICE</div>
+  <h2 class="sec">박람회가 끝나도 <span class="g">책임은 끝나지 않습니다</span></h2>
+  <p class="sec-lede">참여업체의 하자는 주관사의 하자입니다. 담보 장치를 걸어두고 약속합니다.</p>
+  <div class="big4">
+    <div class="b4"><b>24<i>시간</i></b><h4>1차 회신</h4><p>접수 후 24시간 안 1차 회신<br>(주말 · 공휴일 = 다음 영업일 12시)</p></div>
+    <div class="b4"><b>48<i>시간</i></b><h4>방문 일정 확정</h4><p>48시간 안 방문 일정 확정<br>업체 무응답 시 주관사 개입</p></div>
+    <div class="b4"><b>2<i>년+</i></b><h4>무상 A/S</h4><p>시공 품목 최소 2년<br>브랜드 품목은 제조사 보증</p></div>
+    <div class="b4"><b>1<i>억</i> · 10<i>억</i></b><h4>이행 담보</h4><p>예치금 최대 1억 · 하자보증보험<br>최대 10억 (협약 때 확정)</p></div>
+  </div>
+  <div class="principle" style="margin-top:6mm">
+    <div class="pr"><b>업체 폐업 · 연락 두절</b><span>대체 업체로 이관해 보증을 잇습니다(입예협 승인 · 계약자 동의). 책임은 주관사가 집니다.</span></div>
+    <div class="pr"><b>패널티 운영</b><span>기준 위반 업체는 홍보 정지 등 패널티를 적용하고 입예협에 보고합니다.</span></div>
+    <div class="pr"><b>증빙 발행</b><span>현금영수증 · 세금계산서 등 정식 증빙을 발행합니다. 대금은 계약서에 적힌 업체 명의로만.</span></div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 이행 담보 방안(예치금 · 보증보험)의 적용 항목 · 금액 · 방식은 협약 때 입예협과 확정합니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">12</span></div>
+</section>
+
+<!-- P13 환불 계약보호 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">07. 환불 · 계약 보호</div></div>
+  <div class="sec-kicker">PROTECTION</div>
+  <h2 class="sec">계약금부터 환불까지 <span class="g">입주민 편에서</span></h2>
+  <p class="sec-lede">가장 분쟁이 많은 돈 문제부터 규정으로 막아둡니다.</p>
+  <div class="flow" style="margin-top:6mm">
+    <div class="fl"><span class="n">01</span><h3>계약금 10% 상한</h3><p>계약금은 <b>10%를 넘지 않습니다</b>(맞춤 제작 · 본사 규정 품목 예외). 잔금은 시공 · 설치 · 계약자 확인 뒤.</p></div>
+    <div class="fl"><span class="n">02</span><h3>기한 안 전액 환불</h3><p>규정 기한 안 취소는 <b>전액 환불</b>. 취소 · 환불 규정을 계약서에 전문으로 명시합니다.</p></div>
+    <div class="fl"><span class="n">03</span><h3>재하도급 금지</h3><p>계약 상대방과 시공 주체가 같도록 <b>재하도급을 금지</b>합니다. 업체 변경은 입예협 승인 절차로만.</p></div>
+    <div class="fl"><span class="n">04</span><h3>지연 시 선택권</h3><p>업체 귀책 지연은 일정 재조정 또는 <b>계약 취소 · 전액 환불</b> 중 입주민이 선택합니다.</p></div>
+  </div>
+  <div class="sec-kicker" style="margin-top:7mm">입예협 활동 지원</div>
+  <div class="principle" style="grid-template-columns:repeat(3,1fr)">
+    <div class="pr"><b>운영 지원</b><span>설명회 · 회의 장소와 비품 · 행사 · 드론 촬영 — 일정과 범위는 입예협과 정합니다.</span></div>
+    <div class="pr"><b>기록 지원</b><span>공문 · 자료 정리 · 카페 콘텐츠 · 시공사 미팅 기록 — 협의회의 행정 부담을 덜어드립니다.</span></div>
+    <div class="pr"><b>단지 컨설팅</b><span>경관조명 진단 · 커뮤니티 시설 업그레이드 등 단지 특화 과제를 함께 검토합니다.</span></div>
+  </div>
+  <div class="note"><b>KEY POINT</b> — 세부 기준은 전부 협약서와 계약서 문구로 남깁니다. 말로 한 약속은 약속이 아닙니다.</div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원</span><span class="pageno">13</span></div>
+</section>
+
+<!-- P14 마무리/문의 -->
+<section class="page">
+  <div class="doc-head"><div class="dh-l">엣지컴퍼니 지명원<small>COMPANY PROFILE</small></div><div class="dh-r">문의 · 다음 단계</div></div>
+  <div class="fin">
+    <div>
+      <div class="sec-kicker" style="margin-top:10mm">OUR PROMISE</div>
+      <blockquote>“입주민의 든든한 파트너.<br>박람회가 끝나는 날이 아니라,<br><span class="g">사후관리가 끝나는 날</span>이<br>저희 일이 끝나는 날입니다.”</blockquote>
+      <p class="sign">주식회사 엣지컴퍼니 대표이사 <b class="serif">고 진 식</b></p>
+      <div class="badges" style="margin-top:8mm">
+        <span class="bdg"><b>다음 단계</b> 설명회 · 제안 PT 요청</span>
+        <span class="bdg"><b>비교 환영</b> 타 주관사와 같은 기준으로 심사해 주십시오</span>
+      </div>
+    </div>
+    <div>
+      <div class="contact">
+        <h4>CONTACT</h4>
+        <div class="row"><span>대표번호</span><b>1533-3210</b></div>
+        <div class="row"><span>대표이사 직통</span><b>010-3345-6107</b></div>
+        <div class="row"><span>본사</span><b>울산광역시 울주군 청량읍</b></div>
+        <div class="row"><span>지사</span><b>경기북부 · 경기남부 · 인천 · 충청 · 경북 · 부산 · 광주</b></div>
+        <div class="row"><span>유튜브</span><b>@대한민국주관사기준</b></div>
+      </div>
+      <div class="yt-qr" style="border-top:0;margin-top:4mm">
+        <img src="assets/qr_youtube.png">
+        <div><b>대표 유튜브 채널</b><br>구독자 1.5만 · 대표 직접 출연<br>주관사 선정 전, 영상부터 확인해 보세요</div>
+      </div>
+    </div>
+  </div>
+  <div class="doc-foot"><span>주식회사 엣지컴퍼니 · 입주박람회 주관사 지명원 · 2026.11</span><span class="pageno">14</span></div>
+</section>
+
+</body>
+</html>
