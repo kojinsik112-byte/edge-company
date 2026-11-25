@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDGE COMPANY | 입주박람회 주관사</title>
+<meta name="description" content="주식회사 엣지컴퍼니 — 2018년부터 전국 80개 단지·48,523세대 입주박람회 주관. 자본금 5억 · 전기공사·실내건축 면허 자체 보유 · 대표 직접 운영 유튜브 15,000+.">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0d12;--bg2:#12151c;--ink:#111318;--paper:#f6f5f2;--line:rgba(255,255,255,.12);--line-d:rgba(0,0,0,.1);--mute:#8d939f;--gold:#c9a24a;--gold-l:#e3c77e}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:#fff;line-height:1.7;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+.en{font-family:'Montserrat',sans-serif;letter-spacing:.22em;text-transform:uppercase}
+.wrap{max-width:1320px;margin:0 auto;padding:0 40px}
+@media(max-width:700px){.wrap{padding:0 20px}}
+.thin{font-weight:200}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+.rv.on{opacity:1;transform:none}
+/* ===== header ===== */
+.hd{position:fixed;inset-inline:0;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:26px 40px;mix-blend-mode:difference}
+.hd .logo{display:flex;align-items:center;gap:12px;color:#fff}
+.hd .logo .em{width:34px;height:34px;border:1px solid #fff;display:flex;align-items:center;justify-content:center;font-family:'Montserrat';font-weight:600;font-size:14px}
+.hd .logo b{font-family:'Montserrat';font-weight:600;font-size:13px;letter-spacing:.28em}
+.hd .logo small{display:block;font-size:10px;letter-spacing:.18em;opacity:.7;font-weight:400}
+.hd .right{display:flex;align-items:center;gap:22px}
+.hd .yt{font-size:11px;letter-spacing:.2em;font-family:'Montserrat';font-weight:500;border:1px solid #fff;padding:9px 14px}
+.burger{width:40px;height:40px;display:flex;flex-direction:column;justify-content:center;gap:6px;cursor:pointer;background:none;border:0}
+.burger span{height:1.5px;background:#fff;display:block;width:28px;margin-left:auto}
+.burger span:nth-child(2){width:18px}
+@media(max-width:700px){.hd{padding:18px 20px}.hd .yt{display:none}}
+/* drawer */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:#0a0c10;z-index:60;transform:translateX(100%);transition:transform .5s cubic-bezier(.2,.8,.2,1);padding:120px 48px 40px;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer .x{position:absolute;top:28px;right:34px;font-size:30px;font-weight:200;cursor:pointer;background:none;border:0;color:#fff}
+.drawer h5{font-family:'Montserrat';font-size:15px;font-weight:600;letter-spacing:.12em;margin-bottom:12px}
+.drawer ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.drawer li a{font-size:12px;letter-spacing:.08em;color:#9aa0ab}
+.drawer li a:hover{color:#fff}
+.drawer .foot{margin-top:auto;font-size:11px;color:#6f7580;letter-spacing:.06em;line-height:1.9}
+.dim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55;opacity:0;pointer-events:none;transition:opacity .4s}
+.dim.on{opacity:1;pointer-events:auto}
+/* ===== hero slider ===== */
+.hero{position:relative;height:100vh;min-height:620px;overflow:hidden;background:#000}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease}
+.slide img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);transition:transform 9s linear}
+.slide.on{opacity:1}.slide.on img{transform:scale(1)}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,transparent 35%,rgba(0,0,0,.72) 100%);pointer-events:none}
+.hero-txt{position:absolute;left:40px;right:40px;bottom:80px;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;gap:30px}
+.hero-txt .cap{font-family:'Montserrat';font-size:11px;letter-spacing:.3em;color:var(--gold-l);margin-bottom:18px}
+.hero-txt h1{font-weight:200;font-size:clamp(30px,4.4vw,60px);line-height:1.3;letter-spacing:-.02em;word-break:keep-all;max-width:860px}
+.hero-txt h1 b{font-weight:600}
+.hero-txt h1 .num{font-family:'Montserrat';font-weight:300;letter-spacing:0}
+.hero-txt p{margin-top:18px;font-size:15px;color:#d7dbe3;max-width:560px;font-weight:300}
+.hero-txt p b{color:#fff;font-weight:600}
+.hero-side{text-align:right;font-family:'Montserrat';font-size:10px;letter-spacing:.3em;color:#aab0ba}
+.hero-side b{display:block;font-size:12px;color:#fff;font-weight:500;letter-spacing:.2em;margin-top:6px}
+.dots{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:flex;gap:10px;z-index:2}
+.dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);display:block;transition:all .3s}
+.dots i.on{width:20px;border-radius:3px;background:#fff}
+@media(max-width:800px){.hero-txt{flex-direction:column;align-items:flex-start;bottom:70px;left:20px;right:20px}.hero-side{display:none}}
+/* ===== section bones ===== */
+section{padding:130px 0}
+@media(max-width:800px){section{padding:84px 0}}
+.lab{font-family:'Montserrat';font-size:11px;letter-spacing:.32em;color:var(--gold);font-weight:500}
+.lab.w{color:#9aa0ab}
+h2.t{font-weight:200;font-size:clamp(28px,3.6vw,50px);line-height:1.3;letter-spacing:-.02em;margin-top:18px;word-break:keep-all}
+h2.t b{font-weight:600}
+.desc{margin-top:22px;font-size:15.5px;color:#9aa0ab;max-width:640px;font-weight:300;line-height:1.85}
+.light{background:var(--paper);color:var(--ink)}
+.light .desc{color:#5d6370}.light .lab.w{color:#8d939f}
+/* intro stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:70px;border-top:1px solid var(--line-d)}
+.st{padding:34px 0 10px;border-right:1px solid var(--line-d);padding-right:24px}
+.st:last-child{border-right:0}
+.st b{font-family:'Montserrat';font-weight:300;font-size:clamp(34px,4vw,56px);display:block;line-height:1;letter-spacing:-.02em}
+.st b i{font-style:normal;font-size:16px;color:var(--gold);margin-left:4px;letter-spacing:0}
+.st span{display:block;margin-top:12px;font-size:13px;color:#5d6370}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.st{border-right:0;padding:26px 0 4px}}
+/* credentials */
+.creds{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:60px}
+.cr{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:34px 28px;min-height:170px}
+.cr .en{font-size:10px;color:#7d8490}
+.cr b{display:block;font-size:22px;font-weight:500;margin-top:14px;line-height:1.35;word-break:keep-all}
+.cr b em{font-style:normal;color:var(--gold-l)}
+.cr span{display:block;margin-top:8px;font-size:12.5px;color:#8d939f;line-height:1.6}
+@media(max-width:900px){.creds{grid-template-columns:repeat(2,1fr)}}
+/* works grid */
+.works{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:60px}
+.wk{position:relative;overflow:hidden;aspect-ratio:4/3;background:#ddd}
+.wk img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease}
+.wk:hover img{transform:scale(1.06)}
+.wk .ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.78) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px;color:#fff;opacity:.95}
+.wk .ov small{font-family:'Montserrat';font-size:10px;letter-spacing:.26em;color:var(--gold-l)}
+.wk .ov b{font-size:17px;font-weight:500;margin-top:6px;word-break:keep-all}
+.wk .ov span{font-size:12px;color:#cfd4dc;margin-top:3px}
+.wk.big{grid-column:span 2;aspect-ratio:8/4.5}
+@media(max-width:900px){.works{grid-template-columns:repeat(2,1fr)}.wk.big{grid-column:span 2}}
+@media(max-width:560px){.works{grid-template-columns:1fr}.wk.big{grid-column:span 1;aspect-ratio:4/3}}
+.more{margin-top:28px;font-size:13px;color:#5d6370;font-weight:300}
+/* growth */
+.gr{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:end;margin-top:30px}
+.bars{display:flex;align-items:flex-end;gap:18px;height:260px;border-bottom:1px solid var(--line);padding-bottom:0}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.bar i{width:100%;background:linear-gradient(180deg,var(--gold-l),var(--gold));display:block;transition:height 1.2s cubic-bezier(.2,.8,.2,1);height:0}
+.bar b{font-family:'Montserrat';font-weight:300;font-size:22px;margin-bottom:10px}
+.bar span{font-family:'Montserrat';font-size:10px;letter-spacing:.2em;color:#7d8490;margin-top:12px}
+.gr .big{font-family:'Montserrat';font-weight:200;font-size:clamp(56px,7vw,110px);line-height:1;letter-spacing:-.03em}
+.gr .big i{font-style:normal;font-size:24px;color:var(--gold-l)}
+.gr p{margin-top:18px;font-size:15px;color:#9aa0ab;font-weight:300}
+@media(max-width:900px){.gr{grid-template-columns:1fr;gap:40px}}
+/* fund */
+.fsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line-d);margin-top:60px}
+.fs{padding:34px 28px 34px 0;border-right:1px solid var(--line-d);margin-right:28px}
+.fs:last-child{border-right:0;margin-right:0}
+.fs .en{font-size:10px;color:var(--gold)}
+.fs b{display:block;font-size:22px;font-weight:500;margin:12px 0 10px}
+.fs p{font-size:14px;color:#5d6370;font-weight:300;line-height:1.8}
+.case{margin-top:60px;background:var(--ink);color:#fff;padding:46px 50px;display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap}
+.case small{font-family:'Montserrat';font-size:10px;letter-spacing:.3em;color:var(--gold-l);display:block;margin-bottom:12px}
+.case .t2{font-size:clamp(20px,2.4vw,30px);font-weight:300;line-height:1.4;word-break:keep-all}
+.case .t2 b{font-weight:600}
+.case .nums{display:flex;gap:44px;flex-wrap:wrap}
+.case .nums b{font-family:'Montserrat';font-weight:300;font-size:46px;display:block;line-height:1;letter-spacing:-.02em}
+.case .nums b i{font-style:normal;font-size:14px;color:var(--gold-l);margin-left:3px}
+.case .nums span{font-size:11.5px;color:#9aa0ab;display:block;margin-top:8px}
+@media(max-width:900px){.fsteps{grid-template-columns:1fr}.fs{border-right:0;margin-right:0;border-bottom:1px solid var(--line-d)}.case{padding:34px 26px}}
+/* themes band */
+.themes{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.th{position:relative;aspect-ratio:3/4.2;overflow:hidden}
+.th img{width:100%;height:100%;object-fit:cover;transition:transform .9s}
+.th:hover img{transform:scale(1.06)}
+.th .ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.85) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:26px}
+.th .ov small{font-family:'Montserrat';font-size:10px;letter-spacing:.3em;color:var(--gold-l)}
+.th .ov b{font-size:22px;font-weight:500;margin-top:8px}
+.th .ov span{font-size:12.5px;color:#cfd4dc;margin-top:6px;font-weight:300}
+@media(max-width:800px){.themes{grid-template-columns:repeat(2,1fr)}}
+/* ceo + youtube */
+.ceo{display:grid;grid-template-columns:440px 1fr;gap:80px;align-items:center}
+.ceo .ph{aspect-ratio:4/5;overflow:hidden}
+.ceo .ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(.15)}
+.ceo blockquote{font-size:clamp(22px,2.6vw,34px);font-weight:200;line-height:1.6;word-break:keep-all}
+.ceo blockquote b{font-weight:600;color:var(--gold-l)}
+.ceo .who{margin-top:26px;font-family:'Montserrat';font-size:11px;letter-spacing:.3em;color:#9aa0ab}
+.ceo .who b{display:block;font-family:'Pretendard';font-size:20px;letter-spacing:0;color:#fff;font-weight:500;margin-top:6px}
+.ytbox{margin-top:46px;border-top:1px solid var(--line);padding-top:30px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.ytbox a{display:block}
+.ytbox .im{aspect-ratio:16/9;overflow:hidden;position:relative}
+.ytbox .im img{width:100%;height:100%;object-fit:cover}
+.ytbox .im::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;background:rgba(0,0,0,.25)}
+.ytbox b{display:block;font-size:13px;font-weight:500;margin-top:10px;line-height:1.5;word-break:keep-all}
+.ytbox span{font-size:11px;color:#7d8490}
+.ytline{margin-top:26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.ytline .k{font-family:'Montserrat';font-weight:300;font-size:40px;line-height:1}
+.ytline .k i{font-style:normal;font-size:14px;color:var(--gold-l)}
+.ytline p{font-size:13.5px;color:#9aa0ab;font-weight:300}
+.ytline a.ch{margin-left:auto;font-family:'Montserrat';font-size:11px;letter-spacing:.2em;border:1px solid #fff;padding:11px 18px}
+@media(max-width:900px){.ceo{grid-template-columns:1fr;gap:40px}.ytbox{grid-template-columns:1fr}}
+/* promise list */
+.pl{margin-top:50px;display:grid;grid-template-columns:1fr 1fr;gap:0 60px}
+.pi{display:grid;grid-template-columns:52px 1fr;gap:16px;padding:22px 0;border-bottom:1px solid var(--line-d)}
+.pi .n{font-family:'Montserrat';font-weight:300;font-size:22px;color:var(--gold)}
+.pi b{display:block;font-size:16.5px;font-weight:500}
+.pi p{font-size:13px;color:#5d6370;margin-top:5px;font-weight:300;line-height:1.7}
+@media(max-width:800px){.pl{grid-template-columns:1fr}}
+/* support */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:60px}
+.sg div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:30px 26px;min-height:150px}
+.sg .en{font-size:10px;color:var(--gold)}
+.sg b{display:block;font-size:17px;font-weight:500;margin-top:12px}
+.sg p{font-size:12.5px;color:#8d939f;margin-top:6px;font-weight:300}
+@media(max-width:900px){.sg{grid-template-columns:repeat(2,1fr)}}
+/* contact */
+.contact{background:#000;text-align:center;padding:150px 0}
+.contact .tel{font-family:'Montserrat';font-weight:200;font-size:clamp(46px,7vw,96px);letter-spacing:-.02em;line-height:1;margin:30px 0 10px}
+.contact .sub{font-size:14px;color:#9aa0ab;font-weight:300}
+.cta{display:flex;justify-content:center;gap:12px;margin-top:40px;flex-wrap:wrap}
+.cta a{font-family:'Montserrat';font-size:11px;letter-spacing:.22em;padding:16px 26px;border:1px solid #fff}
+.cta a.f{background:#fff;color:#000}
+.branches{margin-top:60px;font-size:12.5px;color:#6f7580;font-weight:300;line-height:2}
+footer{padding:40px 0;border-top:1px solid var(--line);font-size:12px;color:#6f7580;line-height:2}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.mbar{position:fixed;inset-inline:0;bottom:0;z-index:45;display:none;grid-template-columns:1fr 1fr;background:#000;border-top:1px solid var(--line)}
+.mbar a{text-align:center;padding:14px 0;font-size:13px;font-weight:600}
+.mbar .a{background:#fff;color:#000}
+@media(max-width:700px){.mbar{display:grid}body{padding-bottom:50px}}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <a href="#top" class="logo"><span class="em">E</span><span><b>EDGE COMPANY</b><small>입주박람회 전문 주관사</small></span></a>
+  <div class="right">
+    <a class="yt" href="https://www.youtube.com/@대한민국주관사기준" target="_blank" rel="noopener">YOUTUBE 15K+</a>
+    <button class="burger" id="burger" aria-label="메뉴"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<div class="dim" id="dim"></div>
+<aside class="drawer" id="drawer">
+  <button class="x" id="dx" aria-label="닫기">×</button>
+  <h5>ABOUT</h5><ul><li><a href="#intro">OVERVIEW</a></li><li><a href="#creds">CREDENTIALS</a></li><li><a href="#ceo">CEO MESSAGE</a></li></ul>
+  <h5>FEATURED PROJECT</h5><ul><li><a href="#works">PROJECTS 80+</a></li><li><a href="#growth">GROWTH</a></li></ul>
+  <h5>BENEFITS</h5><ul><li><a href="#fund">발전지원금</a></li><li><a href="#lighting">경관조명</a></li><li><a href="#promise">약속 10가지</a></li><li><a href="#support">무상 단지지원 8</a></li></ul>
+  <h5>CONTACT</h5><ul><li><a href="#contact">주관사 문의</a></li><li><a href="https://www.band.us/band/81783086" target="_blank">네이버 밴드</a></li><li><a href="https://www.youtube.com/@대한민국주관사기준" target="_blank">YOUTUBE</a></li></ul>
+  <div class="foot">주식회사 엣지컴퍼니 · 대표이사 고진식<br>본사 울산 · 전국 12개 지사<br>대표번호 1533-3210</div>
+</aside>
+
+<!-- HERO -->
+<section class="hero" id="top" style="padding:0">
+  <div class="slide on"><img src="images/r/apt17.jpg" alt=""></div>
+  <div class="slide"><img src="images/r/apt04.jpg" alt=""></div>
+  <div class="slide"><img src="images/r/yj1.jpg" alt=""></div>
+  <div class="slide"><img src="images/r/apt10.jpg" alt=""></div>
+  <div class="slide"><img src="images/r/apt13.jpg" alt=""></div>
+  <div class="hero-txt">
+    <div>
+      <div class="cap" id="cap">FEATURED · 레이카운티 4,470세대</div>
+      <h1>대한민국 단지가 선택한<br><span class="num">48,523</span>세대, <b>입주박람회의 기준.</b></h1>
+      <p>2018년부터 8년간 전국 <b>80개 단지 · 12개 지사</b>. 자본금 5억, 전기공사 · 실내건축 면허를 <b>직접 보유</b>한 주관사입니다.</p>
+    </div>
+    <div class="hero-side">SINCE 2018<b>EDGE COMPANY</b></div>
+  </div>
+  <div class="dots" id="dots"></div>
+</section>
+
+<!-- INTRO -->
+<section class="light" id="intro">
+  <div class="wrap">
+    <div class="rv"><span class="lab">01 · OVERVIEW</span>
+    <h2 class="t">숫자가 증명하는<br><b>다른 차원의 신뢰.</b></h2>
+    <p class="desc">말로 하는 약속이 아닙니다. 8년간 누적된 실적과 단지 규모가 엣지컴퍼니가 어떤 회사인지 가장 정확하게 보여줍니다.</p></div>
+    <div class="stats rv">
+      <div class="st"><b>80<i>+</i></b><span>누적 주관 단지 · 2018–2025</span></div>
+      <div class="st"><b>48,523</b><span>누적 세대</span></div>
+      <div class="st"><b>4,470<i>세대</i></b><span>최대 단지 · 레이카운티 단일 주관</span></div>
+      <div class="st"><b>93<i>%</i></b><span>지역 점유율 · 사송 88% · 에코델타 93%</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDENTIALS -->
+<section id="creds">
+  <div class="wrap">
+    <div class="rv"><span class="lab">02 · CREDENTIALS</span>
+    <h2 class="t">주관사의 체급은<br><b>등기부와 면허로 증명됩니다.</b></h2></div>
+    <div class="creds rv">
+      <div class="cr"><span class="en">Capital</span><b>자본금 <em>5억</em></b><span>2026.11 등기 · 자가 사옥 보유</span></div>
+      <div class="cr"><span class="en">License</span><b>전기공사업 면허<br><em>자체 보유</em></b><span>울산-00821 · 시공 · 검수 직접</span></div>
+      <div class="cr"><span class="en">License</span><b>실내건축공사업<br><em>자체 보유</em></b><span>마감 · 커뮤니티 자체 검수 근거</span></div>
+      <div class="cr"><span class="en">Guarantee</span><b>예치금 <em>1억</em> 자체 지원</b><span>업체 사고 시 입주민이 먼저 보상</span></div>
+      <div class="cr"><span class="en">Network</span><b>전국 <em>12개</em> 지사</b><span>서울 · 부산 · 울산 · 대구 · 광주 등</span></div>
+      <div class="cr"><span class="en">Certified</span><b>ISO <em>3종</em> 인증</b><span>9001 · 14001 · 45001</span></div>
+      <div class="cr"><span class="en">Partnership</span><b>삼성전자 <em>MOU</em></b><span>공식 파트너십</span></div>
+      <div class="cr"><span class="en">Rating</span><b>현금흐름 <em>A</em> · 신용 B+</b><span>제3자 공식 평가</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section class="light" id="works">
+  <div class="wrap">
+    <div class="rv"><span class="lab">03 · FEATURED PROJECTS</span>
+    <h2 class="t">전국 80개 단지,<br><b>엣지가 만든 현장들.</b></h2></div>
+    <div class="works">
+      <a class="wk big rv" href="#contact"><img src="images/r/apt17.jpg" alt=""><div class="ov"><small>2023 · BEXCO</small><b>레이카운티</b><span>4,470세대 · 공동 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt10.jpg" alt=""><div class="ov"><small>2025 · BEXCO</small><b>두산위브더제니스 오션시티</b><span>2,813세대 · 조합 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt04.jpg" alt=""><div class="ov"><small>2025 · BEXCO</small><b>양정자이더샵 SK VIEW</b><span>2,272세대 · 조합 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt15.jpg" alt=""><div class="ov"><small>2023 · 써밋컨벤션</small><b>힐스테이트 포항</b><span>1,717세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt03.jpg" alt=""><div class="ov"><small>2024 · BEXCO</small><b>두산위브더제니스 센트럴사하</b><span>1,643세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt16.jpg" alt=""><div class="ov"><small>2023 · BEXCO</small><b>중흥S-클래스 그랜드센트럴</b><span>1,572세대 · 공동 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt13.jpg" alt=""><div class="ov"><small>2026 · CECO</small><b>창원 센트럴 아이파크</b><span>1,540세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt02.jpg" alt=""><div class="ov"><small>2024 · BEXCO</small><b>e편한세상 송도 더퍼스트비치</b><span>1,302세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt09.jpg" alt=""><div class="ov"><small>2025 · BEXCO</small><b>에코델타 대성베르힐</b><span>1,120세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt08.jpg" alt=""><div class="ov"><small>2025 · 춘천</small><b>춘천 중해마루힐 포레스트</b><span>1,114세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt12.jpg" alt=""><div class="ov"><small>2026 · BEXCO</small><b>디에트르 더 퍼스트</b><span>972세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt05.jpg" alt=""><div class="ov"><small>2025 · BEXCO</small><b>e편한세상 에코델타 센터포인트</b><span>953세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt07.jpg" alt=""><div class="ov"><small>2025 · BEXCO</small><b>에코델타시티 푸르지오 린</b><span>886세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt06.jpg" alt=""><div class="ov"><small>2025 · BEXCO</small><b>강서자이 에코델타</b><span>856세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt11.jpg" alt=""><div class="ov"><small>2026 · UECO</small><b>남울산 노르웨이숲</b><span>848세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt14.jpg" alt=""><div class="ov"><small>2026 · 영주</small><b>영주자이 시그니처</b><span>763세대 · 주관</span></div></a>
+      <a class="wk rv" href="#contact"><img src="images/r/apt01.jpg" alt=""><div class="ov"><small>2024 · BEXCO</small><b>부산 드파인 센텀</b><span>750세대 · 주관</span></div></a>
+    </div>
+    <p class="more rv">외 60여 개 단지 — 2018년부터 2025년까지 전국 입주박람회 주관 실적 · 자료 요청 시 제출</p>
+  </div>
+</section>
+
+<!-- GROWTH -->
+<section id="growth">
+  <div class="wrap">
+    <div class="rv"><span class="lab">04 · GROWTH</span>
+    <h2 class="t">매년 성장하는<br><b>엣지컴퍼니의 발자취.</b></h2></div>
+    <div class="gr">
+      <div class="bars rv" id="bars">
+        <div class="bar"><b>9</b><i data-h="36"></i><span>2022</span></div>
+        <div class="bar"><b>12</b><i data-h="48"></i><span>2023</span></div>
+        <div class="bar"><b>15</b><i data-h="60"></i><span>2024</span></div>
+        <div class="bar"><b>18</b><i data-h="72"></i><span>2025</span></div>
+        <div class="bar"><b>25</b><i data-h="100"></i><span>2026 예약</span></div>
+      </div>
+      <div class="rv"><div class="big">+178<i>%</i></div><p>5년간 누적 성장 · 연평균 28.9%. 2022년 9개 단지에서 2026년 25개 단지 예약까지 — 신규 영업이 아닌 입소문 기반 성장입니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FUND -->
+<section class="light" id="fund">
+  <div class="wrap">
+    <div class="rv"><span class="lab">05 · COMMUNITY FUND</span>
+    <h2 class="t">발전지원금,<br><b>현금이 아니라 단지의 자산으로.</b></h2>
+    <p class="desc">협의회가 정한 품목을 주관사가 직접 시공 · 구매해 단지에 남기고, 품목 · 수량 · 집행 일자를 공개합니다. 직접 생산 · 직접 시공 법인이라 유통 마진 없이 집행합니다.</p></div>
+    <div class="fsteps rv">
+      <div class="fs"><span class="en">Step 01</span><b>협약으로 확정</b><p>지원 규모 · 품목 · 일정은 협의회와 서면 협약으로 확정합니다.</p></div>
+      <div class="fs"><span class="en">Step 02</span><b>현물로 직접 집행</b><p>현금을 건네지 않습니다. 주관사가 직접 구매 · 시공해 단지 시설로 남깁니다.</p></div>
+      <div class="fs"><span class="en">Step 03</span><b>내역 공개</b><p>집행 내역을 협의회에 서면 보고하고 단지 카페 공개 자료로 드립니다.</p></div>
+    </div>
+    <div class="case rv">
+      <div><small>RECENT CASE · 성동자이 리버뷰 · 서울 1,670세대</small><div class="t2">세대당 18만원 상당 발전지원금<br><b>전액 현물 · 공개 집행 제안</b></div></div>
+      <div class="nums"><div><b>18<i>만원</i></b><span>세대당 · 일반분양 797세대</span></div><div><b>1.43<i>억</i></b><span>지원 총액</span></div><div><b>택1<i>현물</i></b><span>사용처 협의회 의결</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTING -->
+<section id="lighting" style="padding-bottom:0">
+  <div class="wrap rv" style="padding-bottom:60px"><span class="lab">06 · LANDSCAPE LIGHTING</span>
+    <h2 class="t">발전지원금이<br><b>매일 밤 빛나는 자산이 됩니다.</b></h2>
+    <p class="desc">주관 단지 영주자이 시그니처에 제안한 경관조명 연출안. 전기공사업 면허 법인이 설계 · 시공 · A/S까지 직접 합니다.</p></div>
+  <div class="themes">
+    <a class="th" href="#contact"><img src="images/r/yj1.jpg" alt=""><div class="ov"><small>Theme 01</small><b>하늘에 새긴 빛</b><span>동 외벽 수직 라인조명</span></div></a>
+    <a class="th" href="#contact"><img src="images/r/yj2.jpg" alt=""><div class="ov"><small>Theme 02</small><b>겨울빛의 문</b><span>정문 문주 윈터라이팅</span></div></a>
+    <a class="th" href="#contact"><img src="images/r/yj3.jpg" alt=""><div class="ov"><small>Theme 03</small><b>별빛이 머무는 정원</b><span>잔디 정원 조형 조명</span></div></a>
+    <a class="th" href="#contact"><img src="images/r/yj4.jpg" alt=""><div class="ov"><small>Theme 04</small><b>요정의 숲</b><span>소나무 은하수 조명</span></div></a>
+  </div>
+</section>
+
+<!-- CEO + YOUTUBE -->
+<section id="ceo">
+  <div class="wrap">
+    <div class="ceo">
+      <div class="ph rv"><img src="images/ceo-portrait.jpg" alt="대표이사 고진식"></div>
+      <div class="rv">
+        <span class="lab">07 · CEO MESSAGE</span>
+        <blockquote style="margin-top:18px">박람회를 운영하는 회사가 아닌,<br><b>단지를 완성시키는 회사.</b><br>도망갈 수 없는 회사가, 가장 신뢰할 수 있는 회사입니다.</blockquote>
+        <div class="who">CEO · EDGE COMPANY<b>대표이사 고진식</b></div>
+        <div class="ytline"><div class="k">15K<i>+</i></div><p>대표가 직접 운영하는 유튜브 「대한민국 주관사 기준」<br>구독자 15,000명이 매일 검증하는 회사</p><a class="ch" href="https://www.youtube.com/@대한민국주관사기준" target="_blank" rel="noopener">CHANNEL →</a></div>
+        <div class="ytbox">
+          <a href="https://www.youtube.com/watch?v=B9AD2ipgrp4" target="_blank" rel="noopener"><div class="im"><img src="images/r/yt_B9AD2ipgrp4.jpg" alt=""></div><b>입주민이 제일 많이 묻는 질문 1위</b><span>조회수 2,650+</span></a>
+          <a href="https://www.youtube.com/watch?v=80eEBoKnnGA" target="_blank" rel="noopener"><div class="im"><img src="images/r/yt_80eEBoKnnGA.jpg" alt=""></div><b>"오늘만 이 가격" 영업 멘트 팩트체크</b><span>조회수 1,789+</span></a>
+          <a href="https://www.youtube.com/watch?v=LqrIv43V6fs" target="_blank" rel="noopener"><div class="im"><img src="images/r/yt_LqrIv43V6fs.jpg" alt=""></div><b>입주예정자 협의회, 실제 운영 이야기</b><span>조회수 1,618+</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMISE -->
+<section class="light" id="promise">
+  <div class="wrap">
+    <div class="rv"><span class="lab">08 · 10 PROMISES</span><h2 class="t">지킬 수 있는 것만,<br><b>약속 10가지.</b></h2></div>
+    <div class="pl">
+      <div class="pi rv"><span class="n">01</span><div><b>세대 혜택 · 단지별 협약</b><p>금액 · 대상 · 시기는 협약 시 확정 — 단가는 협의회가 승인</p></div></div>
+      <div class="pi rv"><span class="n">02</span><div><b>같은 기준 · 선택권 보장</b><p>전 세대 같은 공구가 · 같은 A/S, 끼워 팔기 없음</p></div></div>
+      <div class="pi rv"><span class="n">03</span><div><b>가격 먼저 공개</b><p>박람회 30일 전 단가 검수 · 14일 전 일반가 비교 공개</p></div></div>
+      <div class="pi rv"><span class="n">04</span><div><b>최저가 차액 10배 보상</b><p>같은 조건 더 싼 가격 확인 시 차액 10배 (1건 최대 50만원)</p></div></div>
+      <div class="pi rv"><span class="n">05</span><div><b>계약금 10% 상한</b><p>잔금은 시공 · 설치 · 계약자 확인 뒤에만</p></div></div>
+      <div class="pi rv"><span class="n">06</span><div><b>24시간 · 48시간</b><p>24시간 안 1차 회신 · 48시간 안 방문 확정, 무응답 시 주관사 개입</p></div></div>
+      <div class="pi rv"><span class="n">07</span><div><b>무상 A/S · 업체 이관</b><p>시공 품목 최소 2년 · 업체 폐업 시 대체 업체 이관</p></div></div>
+      <div class="pi rv"><span class="n">08</span><div><b>하자 보수 이행 담보</b><p>예치금 최대 1억 · 하자보증보험 최대 10억 (협약 시 확정)</p></div></div>
+      <div class="pi rv"><span class="n">09</span><div><b>지연 시 입주민 선택권</b><p>일정 재조정 또는 계약 취소 · 전액 환불 중 선택</p></div></div>
+      <div class="pi rv"><span class="n">10</span><div><b>재하도급 금지</b><p>계약 상대방 = 시공 주체, 업체 변경은 협의회 승인으로만</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPORT -->
+<section id="support">
+  <div class="wrap">
+    <div class="rv"><span class="lab">09 · EXCLUSIVE SUPPORT</span><h2 class="t">협의회 전용,<br><b>8가지 무상 단지지원.</b></h2></div>
+    <div class="sg rv">
+      <div><span class="en">01</span><b>철근탐지 · 강도 측정</b><p>공용부 시공품질 정밀 검증</p></div>
+      <div><span class="en">02</span><b>열화상 드론</b><p>외벽 단열 · 누수 의심 부위 촬영</p></div>
+      <div><span class="en">03</span><b>일조량 분석</b><p>동 · 향별 일조 시뮬레이션</p></div>
+      <div><span class="en">04</span><b>라돈 측정</b><p>요청 세대 표본 측정 · 서면 보고</p></div>
+      <div><span class="en">05</span><b>항균 코팅</b><p>공용부 핵심 접촉면</p></div>
+      <div><span class="en">06</span><b>전문 방역 점검</b><p>공용부 위생 점검 지원</p></div>
+      <div><span class="en">07</span><b>하자 분석 리포트</b><p>사전점검 하자 유형 분석</p></div>
+      <div><span class="en">08</span><b>협상 미팅 지원</b><p>시공사 미팅 자료 · 공문 · 기록</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <span class="lab">10 · CONTACT</span>
+    <h2 class="t rv">주관사 선정 전,<br><b>꼭 비교해 보십시오.</b></h2>
+    <div class="tel rv">1533-3210</div>
+    <div class="sub">대표이사 직통 010-3345-6107 · 카카오톡 실시간 상담</div>
+    <div class="cta rv">
+      <a class="f" href="tel:15333210">CALL</a>
+      <a href="sms:01033456107">SMS</a>
+      <a href="https://www.band.us/band/81783086" target="_blank" rel="noopener">BAND</a>
+      <a href="https://www.youtube.com/@대한민국주관사기준" target="_blank" rel="noopener">YOUTUBE</a>
+    </div>
+    <p class="branches">본사 울산 · 지사 서울 · 경기북부 · 경기남부 · 인천 · 충청 · 경북 · 부산 · 광주 외<br>설명회 · 제안 PT 요청을 환영합니다. 확인 자료 원본은 요청 시 제출합니다.</p>
+  </div>
+</section>
+<footer><div class="wrap"><div>주식회사 엣지컴퍼니 · 대표이사 고진식 · 사업자등록번호 508-81-42798<br>자본금 5억 · 전기공사업 · 실내건축공사업 면허 자체 보유 · ISO 9001 · 14001 · 45001 · 삼성전자 MOU</div><div>© 2026 EDGE COMPANY Co., Ltd.</div></div></footer>
+<div class="mbar"><a class="a" href="tel:15333210">1533-3210</a><a href="#contact">주관사 문의</a></div>
+
+<script>
+// hero slider
+var slides=[].slice.call(document.querySelectorAll('.slide')), caps=['FEATURED · 레이카운티 4,470세대','FEATURED · 양정자이더샵 SK VIEW 2,272세대','LANDSCAPE · 영주자이 시그니처 경관조명','FEATURED · 두산위브더제니스 오션시티 2,813세대','FEATURED · 창원 센트럴 아이파크 1,540세대'];
+var dots=document.getElementById('dots'), cur=0;
+slides.forEach(function(_,i){var d=document.createElement('i'); if(!i) d.className='on'; d.onclick=function(){go(i)}; dots.appendChild(d);});
+function go(n){slides[cur].classList.remove('on');dots.children[cur].classList.remove('on');cur=n%slides.length;slides[cur].classList.add('on');dots.children[cur].classList.add('on');document.getElementById('cap').textContent=caps[cur];}
+setInterval(function(){go(cur+1)},6000);
+// drawer
+var dr=document.getElementById('drawer'),dim=document.getElementById('dim');
+function openD(){dr.classList.add('on');dim.classList.add('on')} function closeD(){dr.classList.remove('on');dim.classList.remove('on')}
+document.getElementById('burger').onclick=openD;document.getElementById('dx').onclick=closeD;dim.onclick=closeD;
+dr.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeD)});
+// reveal
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:0,rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+setTimeout(function(){document.querySelectorAll('.rv').forEach(function(el){el.classList.add('on')})},5000);
+// bars
+var bio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.querySelectorAll('i').forEach(function(b){b.style.height=b.dataset.h+'%'});bio.unobserve(e.target)}})},{threshold:.3});
+bio.observe(document.getElementById('bars'));
+</script>
+</body>
+</html>
