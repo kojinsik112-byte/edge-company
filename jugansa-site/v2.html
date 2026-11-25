@@ -594,6 +594,26 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
 .wtip dt{color:#8d939f}.wtip dd{color:#fff;word-break:keep-all}
 .wtip em{display:block;font-style:normal;margin-top:12px;font-size:11.5px;color:#e9d49a;font-weight:700}
 @media(hover:none),(max-width:800px){.wtip{display:none}}
+
+/* ===== fountain-pen signature v2 (실제 획 그리기) ===== */
+.sig2{width:330px;height:auto;display:block;overflow:visible;filter:drop-shadow(0 2px 10px rgba(0,0,0,.5))}
+.sig2.sm{width:190px;margin-left:10px;vertical-align:middle}
+.sig2 path{stroke-dasharray:1;stroke-dashoffset:1;animation-name:none;animation-timing-function:cubic-bezier(.4,.1,.6,.9);animation-fill-mode:forwards}
+.sig-go .sig2 path{animation-name:pen}
+@keyframes pen{to{stroke-dashoffset:0}}
+
+.ytbox{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
+.ytbox a{display:block}
+.ytbox .im{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:6px;background:#111}
+.ytbox .im img{width:100%;height:100%;object-fit:cover;transition:transform .8s}
+.ytbox a:hover .im img{transform:scale(1.05)}
+.ytbox .im::after{content:"";position:absolute;left:50%;top:50%;width:64px;height:44px;transform:translate(-50%,-50%);background:#ff0000;border-radius:12px;opacity:.92;transition:transform .3s}
+.ytbox .im::before{content:"";position:absolute;left:50%;top:50%;z-index:2;transform:translate(-40%,-50%);border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent}
+.ytbox a:hover .im::after{transform:translate(-50%,-50%) scale(1.1)}
+.ytbox .dur{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.8);color:#fff;font-size:12px;font-weight:700;padding:3px 7px;border-radius:4px;z-index:2}
+.ytbox b{display:block;margin-top:12px;font-size:16px;font-weight:700;line-height:1.4;word-break:keep-all;letter-spacing:-.01em}
+.ytbox a>span{display:block;font-size:12.5px;color:#9aa0ab;margin-top:5px}
+@media(max-width:560px){.ytbox{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -892,7 +912,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
   <div class="wrap">
     <div class="ceo">
       <div class="phcol"><div class="ph rv"><div class="main"><img src="images/ceo/ceo_main.jpg" alt="대표이사 고진식"></div><img class="sub" src="images/ceo/ceo_site.jpg" alt="현장의 대표이사"><span class="tag">ON SITE · 2026</span></div>
-      <div class="cap2 rv"><div class="nm">CEO · EDGE COMPANY<b>대표이사 고진식</b></div><svg class="sigsvg" viewBox="0 0 320 120" aria-label="고진식 서명"><text class="sigt" x="14" y="86">고진식</text><path class="sigl" d="M10 100 C 80 112, 180 108, 250 92 S 300 84, 310 88"/></svg></div></div>
+      <div class="cap2 rv"><div class="nm">CEO · EDGE COMPANY<b>대표이사 고진식</b></div><svg class="sig2 " viewBox="0 0 380 170" aria-label="고진식 서명"><g fill="none" stroke="#fff" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round" transform="skewX(-9)"><path pathLength="1" d="M26 42 C 40 36, 58 34, 76 38 C 74 56, 70 72, 60 88" style="animation-duration:0.45s;animation-delay:0.20s"/><path pathLength="1" d="M50 96 C 50 104, 48 110, 48 116" style="animation-duration:0.20s;animation-delay:0.73s"/><path pathLength="1" d="M14 124 C 40 116, 70 114, 100 118" style="animation-duration:0.35s;animation-delay:1.01s"/><path pathLength="1" d="M118 40 C 136 34, 154 33, 172 36" style="animation-duration:0.35s;animation-delay:1.44s"/><path pathLength="1" d="M146 38 C 140 60, 128 80, 110 96" style="animation-duration:0.35s;animation-delay:1.87s"/><path pathLength="1" d="M148 56 C 156 70, 165 82, 176 92" style="animation-duration:0.30s;animation-delay:2.30s"/><path pathLength="1" d="M192 24 C 194 50, 194 76, 192 102" style="animation-duration:0.40s;animation-delay:2.68s"/><path pathLength="1" d="M120 112 C 118 122, 118 130, 120 138 C 140 136, 160 134, 182 134" style="animation-duration:0.45s;animation-delay:3.16s"/><path pathLength="1" d="M236 38 C 230 60, 220 80, 206 96" style="animation-duration:0.35s;animation-delay:3.69s"/><path pathLength="1" d="M238 48 C 246 66, 254 80, 266 92" style="animation-duration:0.30s;animation-delay:4.12s"/><path pathLength="1" d="M284 22 C 286 48, 286 76, 284 104" style="animation-duration:0.40s;animation-delay:4.50s"/><path pathLength="1" d="M222 114 C 240 110, 256 110, 272 112 C 272 122, 270 132, 266 140" style="animation-duration:0.45s;animation-delay:4.98s"/><path pathLength="1" d="M12 154 C 60 146, 120 150, 170 146 C 230 141, 290 150, 330 140 C 345 136, 352 142, 340 148" style="animation-duration:0.90s;animation-delay:5.51s" stroke-width="3.2"/></g></svg></div></div>
       <div class="rv">
         <span class="lab">07 · CEO MESSAGE</span>
         <blockquote style="margin-top:18px">박람회를 운영하는 회사가 아닌,<br><b>단지를 완성시키는 회사.</b><br>도망갈 수 없는 회사가, 가장 신뢰할 수 있는 회사입니다.</blockquote>
@@ -902,13 +922,18 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
           <p>저는 온산 대한유화에서 10년을 근무하고 2022년 엣지컴퍼니를 세웠습니다. 입주박람회 주관사를 하면서 가장 많이 들은 말은 <b>"박람회 끝나면 연락이 안 된다"</b>였습니다. 그래서 회사를 다르게 만들었습니다. 전기공사업 · 실내건축공사업 면허를 법인이 직접 갖고, 발전지원금은 현금이 아니라 단지에 남는 시설로 직접 시공합니다. 외주로 돌리지 않으니 박람회가 끝나도 저희는 단지에 남아 있습니다.</p>
           <p>자본금 5억, 예치금 1억, 4대보험 직원 13명, 전국 지사 — 숫자로 말씀드리는 이유는 하나입니다. <b>도망갈 수 없는 회사가 가장 신뢰할 수 있는 회사</b>라고 믿기 때문입니다. 운영 과정은 유튜브에 공개하고, 입주민이 매일 검증하게 하겠습니다.</p>
           <p>단지를 완성시키는 일, 끝까지 같이 하겠습니다.</p>
-          <div class="sig">주식회사 엣지컴퍼니 대표이사 <b>고진식</b><svg class="sigsvg sm" viewBox="0 0 320 120" aria-label="고진식 서명"><text class="sigt" x="14" y="86">고진식</text><path class="sigl" d="M10 100 C 80 112, 180 108, 250 92 S 300 84, 310 88"/></svg></div>
+          <div class="sig">주식회사 엣지컴퍼니 대표이사 <b>고진식</b><svg class="sig2 sm" viewBox="0 0 380 170" aria-label="고진식 서명"><g fill="none" stroke="#fff" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round" transform="skewX(-9)"><path pathLength="1" d="M26 42 C 40 36, 58 34, 76 38 C 74 56, 70 72, 60 88" style="animation-duration:0.45s;animation-delay:0.20s"/><path pathLength="1" d="M50 96 C 50 104, 48 110, 48 116" style="animation-duration:0.20s;animation-delay:0.73s"/><path pathLength="1" d="M14 124 C 40 116, 70 114, 100 118" style="animation-duration:0.35s;animation-delay:1.01s"/><path pathLength="1" d="M118 40 C 136 34, 154 33, 172 36" style="animation-duration:0.35s;animation-delay:1.44s"/><path pathLength="1" d="M146 38 C 140 60, 128 80, 110 96" style="animation-duration:0.35s;animation-delay:1.87s"/><path pathLength="1" d="M148 56 C 156 70, 165 82, 176 92" style="animation-duration:0.30s;animation-delay:2.30s"/><path pathLength="1" d="M192 24 C 194 50, 194 76, 192 102" style="animation-duration:0.40s;animation-delay:2.68s"/><path pathLength="1" d="M120 112 C 118 122, 118 130, 120 138 C 140 136, 160 134, 182 134" style="animation-duration:0.45s;animation-delay:3.16s"/><path pathLength="1" d="M236 38 C 230 60, 220 80, 206 96" style="animation-duration:0.35s;animation-delay:3.69s"/><path pathLength="1" d="M238 48 C 246 66, 254 80, 266 92" style="animation-duration:0.30s;animation-delay:4.12s"/><path pathLength="1" d="M284 22 C 286 48, 286 76, 284 104" style="animation-duration:0.40s;animation-delay:4.50s"/><path pathLength="1" d="M222 114 C 240 110, 256 110, 272 112 C 272 122, 270 132, 266 140" style="animation-duration:0.45s;animation-delay:4.98s"/><path pathLength="1" d="M12 154 C 60 146, 120 150, 170 146 C 230 141, 290 150, 330 140 C 345 136, 352 142, 340 148" style="animation-duration:0.90s;animation-delay:5.51s" stroke-width="3.2"/></g></svg></div>
         </div>
         <div class="ytline"><div class="k"><span class="cnt" data-n="15">0</span>K<i>+</i></div><p>대표가 직접 운영하는 유튜브 「엣지컴퍼니 | 대한민국 주관사 기준」<br>구독자 15,000명이 매일 검증하는 회사</p><a class="ch ytbtn" href="https://www.youtube.com/@edgecompany_official" target="_blank" rel="noopener"><svg class="yti" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>채널 바로가기</a></div>
         <div class="ytbox">
-          <a href="https://www.youtube.com/watch?v=B9AD2ipgrp4" target="_blank" rel="noopener"><div class="im"><img src="images/r/yt_B9AD2ipgrp4.jpg" alt=""></div><b>입주민이 제일 많이 묻는 질문 1위</b><span>조회수 2,650+</span></a>
-          <a href="https://www.youtube.com/watch?v=80eEBoKnnGA" target="_blank" rel="noopener"><div class="im"><img src="images/r/yt_80eEBoKnnGA.jpg" alt=""></div><b>"오늘만 이 가격" 영업 멘트 팩트체크</b><span>조회수 1,789+</span></a>
-          <a href="https://www.youtube.com/watch?v=LqrIv43V6fs" target="_blank" rel="noopener"><div class="im"><img src="images/r/yt_LqrIv43V6fs.jpg" alt=""></div><b>입주예정자 협의회, 실제 운영 이야기</b><span>조회수 1,618+</span></a>
+          <a href="https://www.youtube.com/watch?v=vxPl-YCNqbc" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_vxPl-YCNqbc.jpg" alt=""><span class="dur">2:10</span></div><b>에코델타 디에트르 더퍼스트 주간 점등식  웅장한 시작, 입주의 기준을 바꾸…</b><span>조회수 4.9천</span></a>
+          <a href="https://www.youtube.com/watch?v=bV1Ea4qcW1c" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_bV1Ea4qcW1c.jpg" alt=""><span class="dur">2:09</span></div><b>영주자이 시그니처의 빛나는 밤, 드디어 공개합니다 ✨</b><span>조회수 3.5천</span></a>
+          <a href="https://www.youtube.com/watch?v=NA9cLHN6tFo" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_NA9cLHN6tFo.jpg" alt=""><span class="dur">1:21</span></div><b>상생공원 힐스테이트·더샵 드론영상  2026.10.15 촬영  주관사 엣지…</b><span>조회수 2.2천</span></a>
+          <a href="https://www.youtube.com/watch?v=bz96SublyyU" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_bz96SublyyU.jpg" alt=""><span class="dur">7:04</span></div><b>입주박람회 주관사, 발전지원금 많이 주면 좋은 걸까 발전지원금의 진실 공개…</b><span>조회수 374</span></a>
+          <a href="https://www.youtube.com/watch?v=O6qXFwE88ng" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_O6qXFwE88ng.jpg" alt=""><span class="dur">4:46</span></div><b>에코델타 디에트르 더퍼스트 조명, 이렇게만 하시면 됩니다 (실링팬까지 정리)</b><span>조회수 460</span></a>
+          <a href="https://www.youtube.com/watch?v=1dAj3QftzQI" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_1dAj3QftzQI.jpg" alt=""><span class="dur">4:08</span></div><b>업체 같이 하면 주관사 자격 없다? PT 현장에서 들은 충격 발언</b><span>조회수 180</span></a>
+          <a href="https://www.youtube.com/watch?v=WXFxoHLxuds" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_WXFxoHLxuds.jpg" alt=""><span class="dur">6:52</span></div><b>입주업체 시작 전 꼭 보세요 10년차가 말하는 살아남는 방법</b><span>조회수 120</span></a>
+          <a href="https://www.youtube.com/watch?v=VqxAoF7blr8" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_VqxAoF7blr8.jpg" alt=""><span class="dur">7:00</span></div><b>입주박람회 계약업체가 갑자기 부도나면… 내 계약금은 어떻게 될까</b><span>조회수 54</span></a>
         </div>
       </div>
     </div>
@@ -1117,7 +1142,7 @@ document.querySelectorAll('.wk[data-t]').forEach(function(a){a.addEventListener(
 // ===== benefit stack =====
 (function(){var st=document.getElementById('stack');if(!st)return;var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){st.classList.add('go');io2.unobserve(st)}})},{threshold:.25});io2.observe(st)})();
 // ===== signature draw =====
-(function(){var sg=document.querySelectorAll('.sigsvg');if(!sg.length)return;var io3=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('sig-go');io3.unobserve(e.target)}})},{threshold:.5});sg.forEach(function(x){io3.observe(x.parentNode);x.parentNode.classList.add('sigp')})})();
+(function(){var sg=document.querySelectorAll('.sig2');if(!sg.length)return;var io3=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('sig-go');io3.unobserve(e.target)}})},{threshold:.5});sg.forEach(function(x){io3.observe(x.parentNode);x.parentNode.classList.add('sigp')})})();
 
 // 조직도 카드: 터치 기기에서는 탭으로 펼침
 document.querySelectorAll('.org .nd').forEach(function(n){n.addEventListener('click',function(){n.classList.toggle('open')})});
