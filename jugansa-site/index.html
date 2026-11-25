@@ -246,8 +246,8 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
 .kmap .addr.on{opacity:1}
 .kmap .addr rect{fill:#fff;stroke:#d9bf7a;stroke-width:1}
 .kmap .addr text{font-size:11.5px;font-weight:600;fill:#000}
-.kmap.dim .mk,.kmap.dim .bl{opacity:.35;transition:opacity .3s}
-.kmap.dim .mk.on,.kmap.dim .mk.on+.bl{opacity:1}
+.kmap.mdim .mk,.kmap.mdim .bl{opacity:.35;transition:opacity .3s}
+.kmap.mdim .mk.on,.kmap.mdim .mk.on+.bl{opacity:1}
 @keyframes dash{to{stroke-dashoffset:0}}
 @keyframes flow{to{stroke-dashoffset:-27}}
 @keyframes pop{to{opacity:1;transform:scale(1)}}
@@ -1041,7 +1041,7 @@ var gw=document.getElementById('chartwrap');if(gw){var gio=new IntersectionObser
 
 // 전국 지도: 지사 카드/마커 hover·click → 주소 + 담당 도시 광섬유 애니메이션
 (function(){var svg=document.getElementById('kmap');if(!svg)return;var pinned=null;
-function act(k){svg.querySelectorAll('.cov,.addr,.mk').forEach(function(e){e.classList.toggle('on',e.dataset.b===k)});document.querySelectorAll('.map [data-b]').forEach(function(c){c.classList.toggle('on',c.dataset.b===k)});svg.classList.toggle('dim',!!k)}
+function act(k){svg.querySelectorAll('.cov,.addr,.mk').forEach(function(e){e.classList.toggle('on',e.dataset.b===k)});document.querySelectorAll('.map [data-b]').forEach(function(c){c.classList.toggle('on',c.dataset.b===k)});svg.classList.toggle('mdim',!!k)}
 function over(k){if(!pinned)act(k)} function out(){if(!pinned)act(null)}
 document.querySelectorAll('.map [data-b]').forEach(function(c){c.addEventListener('mouseenter',function(){over(c.dataset.b)});c.addEventListener('mouseleave',out);c.addEventListener('click',function(){pinned=(pinned===c.dataset.b)?null:c.dataset.b;act(pinned)})});
 svg.querySelectorAll('.mk').forEach(function(m){m.addEventListener('mouseenter',function(){over(m.dataset.b)});m.addEventListener('mouseleave',out);m.addEventListener('click',function(e){e.stopPropagation();pinned=(pinned===m.dataset.b)?null:m.dataset.b;act(pinned)})});
