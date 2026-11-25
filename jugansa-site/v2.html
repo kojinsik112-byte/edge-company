@@ -28,9 +28,15 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
 .rv{opacity:0;transform:translateY(16px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
 .rv.on{opacity:1;transform:none}
 /* ===== header ===== */
-.hd{position:fixed;inset-inline:0;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:26px 40px;mix-blend-mode:difference}
+.hd{position:fixed;inset-inline:0;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:22px 40px;color:#fff;transition:color .3s,background .3s}
+.hd.onlight{color:#1d1d1f}
+.hd.onlight .yt,.hd.onlight .ig{border-color:rgba(0,0,0,.6)}
+.hd.onlight .burger span{background:#1d1d1f}
+.hd .elogo text{fill:#fff;transition:fill .3s}
+.hd.onlight .elogo text{fill:#2b2420}
 .hd .logo{display:flex;align-items:center;color:#fff;opacity:0;transition:opacity .6s}
-.elogo.hl{height:46px;width:auto;display:block}
+.elogo.hl{height:50px;width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+.hd.onlight .elogo.hl{filter:none}
 @media(max-width:700px){.elogo.hl{height:36px}}
 .hd.sc .logo{opacity:1}
 .hd .logo .mono{flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
@@ -117,7 +123,7 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
 @media(max-width:900px){.staff{grid-template-columns:1fr 1fr}.org .nd{min-width:46%}}
 @media(max-width:560px){.staff{grid-template-columns:1fr}.org .nd{min-width:100%}}
 .burger{width:40px;height:40px;display:flex;flex-direction:column;justify-content:center;gap:6px;cursor:pointer;background:none;border:0}
-.burger span{height:1.5px;background:#fff;display:block;width:28px;margin-left:auto}
+.burger span{height:1.5px;background:currentColor;display:block;width:28px;margin-left:auto}
 .burger span:nth-child(2){width:18px}
 @media(max-width:700px){.hd{padding:18px 20px}.hd .yt{display:none}}
 /* drawer */
@@ -614,13 +620,74 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
 .ytbox b{display:block;margin-top:12px;font-size:16px;font-weight:700;line-height:1.4;word-break:keep-all;letter-spacing:-.01em}
 .ytbox a>span{display:block;font-size:12.5px;color:#9aa0ab;margin-top:5px}
 @media(max-width:560px){.ytbox{grid-template-columns:1fr}}
+
+/* ===== hover detail panel (전 섹션 공통) ===== */
+.dtip{position:fixed;z-index:85;width:380px;background:rgba(10,10,12,.97);border:1px solid rgba(217,191,122,.65);box-shadow:0 26px 70px rgba(0,0,0,.6);padding:24px 26px;color:#fff;pointer-events:none;opacity:0;transform:translateX(12px);transition:opacity .22s,transform .25s;backdrop-filter:blur(10px)}
+.dtip.on{opacity:1;transform:none}
+.dtip small{font-size:10.5px;letter-spacing:.14em;color:#e9d49a;font-weight:700;display:block}
+.dtip b{display:block;font-size:20px;font-weight:700;letter-spacing:-.02em;margin-top:6px;word-break:keep-all;line-height:1.3}
+.dtip .what{margin-top:12px;font-size:13.5px;color:#e6e9f0;line-height:1.75;word-break:keep-all}
+.dtip .steps{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14)}
+.dtip .steps div{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#d7dbe3;padding:4px 0;opacity:0;transform:translateX(-10px);transition:opacity .4s,transform .4s}
+.dtip.on .steps div{opacity:1;transform:none}
+.dtip .steps i{font-style:normal;flex-shrink:0;width:20px;height:20px;border-radius:50%;background:#e9d49a;color:#000;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
+.dtip .ben{margin-top:12px;font-size:12.5px;color:#e9d49a;font-weight:600;border-left:2px solid #e9d49a;padding-left:10px;line-height:1.6}
+.dtip .ws span.w2{transition-duration:.35s}
+@media(hover:none),(max-width:900px){.dtip{display:none}}
+/* item highlight + inline detail (터치용) */
+.hv{cursor:pointer;transition:background .3s,transform .3s}
+.hv.on{background:rgba(217,191,122,.08)}
+.light .hv.on{background:rgba(184,147,63,.08)}
+.hv.on>b,.hv.on b:first-of-type{color:#e9d49a}
+.light .hv.on>b,.light .hv.on b:first-of-type{color:#b8933f}
+.hv .inl{display:none;margin-top:12px;font-size:12.5px;line-height:1.7;color:#d7dbe3;word-break:keep-all}
+.light .hv .inl{color:#4a4f58}
+.hv .inl em{display:block;font-style:normal;font-size:10px;letter-spacing:.12em;color:#b8933f;font-weight:700;margin:8px 0 2px}
+.hv.open .inl{display:block}
+.sg div.hv{transition:background .3s}
+.sg div.hv.on b{transform:translateX(4px);display:block;transition:transform .3s}
+.th.hv.on .ov b{text-shadow:0 0 14px rgba(255,255,255,.7)}
+.pi.hv.on{background:rgba(184,147,63,.06)}
+.bi.hv.on,.pc.hv.on{outline:2px solid #d9bf7a;outline-offset:-2px}
+
+/* ===== growth: 발자취 그래프 (골드) ===== */
+.chart .grid{stroke:rgba(255,255,255,.1);stroke-width:1;stroke-dasharray:3 5}
+.chart .yl{font-family:Pretendard,sans-serif;font-size:12px;fill:#86868b;font-weight:500}
+.chart .area{fill:url(#ga);opacity:0;transition:opacity 1.2s 1.4s}
+.chart .trail{fill:none;stroke:rgba(233,212,154,.35);stroke-width:1.5;stroke-dasharray:2 8;stroke-linecap:round}
+.chart .line{fill:none;stroke:url(#gl);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1200;stroke-dashoffset:1200}
+.chart .fp{opacity:0;transform-box:fill-box;transform-origin:center;transform:scale(.4)}
+.chart .halo{fill:rgba(233,212,154,.18)}
+.chart .dot{fill:#fff;stroke:#e9d49a;stroke-width:3}
+.chart .vl{font-family:Pretendard,sans-serif;font-size:20px;font-weight:800;fill:#fff}
+.chart .ms{opacity:0}
+.chart .yr{font-family:Pretendard,sans-serif;font-size:12.5px;font-weight:700;fill:#e9d49a}
+.chart .mt{font-family:Pretendard,sans-serif;font-size:10.5px;fill:#aab0ba}
+.gr.go .chart .line{animation:draw 2.4s cubic-bezier(.4,0,.2,1) forwards}
+.gr.go .chart .area{opacity:1}
+.gr.go .chart .fp{animation:fpin .6s cubic-bezier(.16,1,.3,1) forwards}
+.gr.go .chart .ms{animation:fin .5s forwards}
+.gr.go .chart .halo{animation:halo 2.2s 2.2s ease-out infinite}
+@keyframes fpin{to{opacity:1;transform:scale(1)}}
+@keyframes halo{0%{r:13;opacity:.9}100%{r:26;opacity:0}}
+.lim{background:transparent;border:1px solid rgba(233,212,154,.6);color:#e9d49a;font-weight:700;letter-spacing:.08em}
+.lim i{background:#e9d49a}
+.gr.go .lim{animation:none}
+.big{color:#fff}
+.big .up{color:#e9d49a}
+.big i{color:#e9d49a}
+.fpl{margin-top:22px;display:grid;gap:6px}
+.fpl span{display:flex;align-items:center;gap:12px;font-size:13px;color:#d7dbe3;opacity:0;transform:translateX(-10px);transition:opacity .5s,transform .5s}
+.fpl span i{font-style:normal;font-weight:700;color:#e9d49a;font-variant-numeric:tabular-nums;width:40px;flex-shrink:0}
+.gr.go .fpl span{opacity:1;transform:none}
+.gr.go .fpl span:nth-child(1){transition-delay:.5s}.gr.go .fpl span:nth-child(2){transition-delay:.9s}.gr.go .fpl span:nth-child(3){transition-delay:1.3s}.gr.go .fpl span:nth-child(4){transition-delay:1.7s}.gr.go .fpl span:nth-child(5){transition-delay:2.1s}
 </style>
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#f9ce34"/><stop offset=".5" stop-color="#ee2a7b"/><stop offset="1" stop-color="#6228d7"/></linearGradient><symbol id="ig" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#igg)"/><rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.4" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="12" cy="12" r="2.9" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="15.6" cy="8.4" r=".95" fill="#fff"/></symbol><symbol id="igm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17" cy="7" r="1.05" fill="currentColor"/></symbol></defs></svg>
 <header class="hd">
-  <a href="#top" class="logo"><svg class="elogo hl" viewBox="0 0 700 150" aria-label="EDGE COMPANY 프리미엄 입주박람회 주관사"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a5a2e"/><stop offset=".5" stop-color="#d9bf7a"/><stop offset="1" stop-color="#8c6a38"/></linearGradient></defs><path d="M30 132 V62 L104 26 V132" fill="none" stroke="currentColor" stroke-width="9" stroke-linejoin="miter"/><rect x="118" y="52" width="9" height="80" fill="currentColor"/><rect x="136" y="74" width="9" height="58" fill="currentColor"/><path d="M6 140 Q 95 158 184 140" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><text x="67" y="112" text-anchor="middle" font-family="Noto Serif KR,Georgia,serif" font-weight="900" font-size="58" fill="currentColor">E</text><text x="200" y="82" font-family="Noto Serif KR,Georgia,serif" font-weight="900" font-size="48" letter-spacing="1" fill="currentColor">EDGE COMPANY</text><line x1="202" y1="118" x2="236" y2="118" stroke="currentColor" stroke-width="3"/><text x="248" y="126" font-family="Pretendard,sans-serif" font-weight="700" font-size="24" fill="currentColor">프리미엄 입주박람회 주관사</text><line x1="562" y1="118" x2="612" y2="118" stroke="currentColor" stroke-width="3"/></svg></a>
+  <a href="#top" class="logo"><svg class="elogo hl" viewBox="0 0 700 150" aria-label="EDGE COMPANY 프리미엄 입주박람회 주관사"><defs><linearGradient id="lgh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a5a2e"/><stop offset=".5" stop-color="#d9bf7a"/><stop offset="1" stop-color="#8c6a38"/></linearGradient></defs><path d="M30 132 V62 L104 26 V132" fill="none" stroke="url(#lgh)" stroke-width="9" stroke-linejoin="miter"/><rect x="118" y="52" width="9" height="80" fill="url(#lgh)"/><rect x="136" y="74" width="9" height="58" fill="url(#lgh)"/><path d="M6 140 Q 95 158 184 140" fill="none" stroke="url(#lgh)" stroke-width="5" stroke-linecap="round"/><text x="67" y="112" text-anchor="middle" font-family="Noto Serif KR,Georgia,serif" font-weight="900" font-size="58" fill="#2b2420">E</text><text x="200" y="82" font-family="Noto Serif KR,Georgia,serif" font-weight="900" font-size="48" letter-spacing="1" fill="#2b2420">EDGE COMPANY</text><line x1="202" y1="118" x2="236" y2="118" stroke="url(#lgh)" stroke-width="3"/><text x="248" y="126" font-family="Pretendard,sans-serif" font-weight="700" font-size="24" fill="#2b2420">프리미엄 입주박람회 주관사</text><line x1="562" y1="118" x2="612" y2="118" stroke="url(#lgh)" stroke-width="3"/></svg></a>
   <div class="right">
     <a class="ig" href="https://www.instagram.com/edge__company/" target="_blank" rel="noopener" aria-label="인스타그램"><svg class="igi" viewBox="0 0 24 24" aria-hidden="true"><use href="#igm"/></svg></a>
     <a class="yt" href="https://www.youtube.com/@edgecompany_official" target="_blank" rel="noopener" aria-label="유튜브 채널"><svg class="yti" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YouTube 15K+</a>
@@ -760,14 +827,14 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
         <p class="desc" style="margin-top:22px;font-size:13.5px">지사 카드나 지도의 금색 점에 마우스를 올리면 <b>지사 주소 · 담당 도시 · 담당자</b>가 펼쳐집니다. ○ 흰 점 = 진행 단지. 본사는 특정 지역이 아닌 전국을 총괄합니다.</p>
       </div>
       <div class="map rv">
-        <div class="bc hq" data-b="hq"><span class="num">01</span><small>HEADQUARTERS · NATIONWIDE</small><b>본사 · 전국구</b><div class="chips"><i>전국 12개 지사 총괄</i><i>협약 · 집행 · 품질 최종 결정</i></div><div class="sites"><em>담당</em>대표이사 고진식 — 모든 협약 · 혜택 · 집행은 대표가 직접 결정합니다.</div></div>
-        <div class="bc" data-b="ansan"><span class="num">02</span><small>SEOUL · GYEONGGI N.</small><b><i class="pulse"></i>경기북부지사</b><div class="chips"><i>서울</i><i>고양</i><i>의정부</i><i>남양주</i><i>수원</i><i>시흥</i><i>부천</i><i>안산</i></div><div class="addr2"><em>ADDRESS</em>경기 안산시 상록구 해양3로 15, 2111호 (그랑시티자이시그니처)</div><div class="sites"><em>담당</em>총괄 김인철 전무 · 현장 윤현욱 본부장 · 최종 결정 대표이사 고진식</div></div>
-        <div class="bc" data-b="pt"><span class="num">03</span><small>GYEONGGI S.</small><b><i class="pulse"></i>경기남부지사</b><div class="chips"><i>평택</i><i>오산</i><i>용인</i><i>동탄</i><i>안성</i><i>천안</i><i>아산</i></div><div class="addr2"><em>ADDRESS</em>경기 평택시 문화촌로11번길 43-8, 1층 (비전동)</div><div class="sites"><em>담당</em>총괄 김인철 전무 · 현장 윤현욱 본부장 · 최종 결정 대표이사 고진식</div></div>
-        <div class="bc" data-b="ic"><span class="num">04</span><small>INCHEON</small><b><i class="pulse"></i>인천지사</b><div class="chips"><i>인천 계양</i><i>송도</i><i>검단</i><i>김포</i><i>부평</i><i>영종</i></div><div class="addr2"><em>ADDRESS</em>인천 계양구 안산로 60, 505호 (임학동)</div><div class="sites"><em>담당</em>총괄 김인철 전무 · 현장 윤현욱 본부장 · 최종 결정 대표이사 고진식</div></div>
-        <div class="bc" data-b="sj"><span class="num">05</span><small>CHUNGCHEONG</small><b><i class="pulse"></i>충청지사</b><div class="chips"><i>세종</i><i>대전</i><i>청주</i><i>공주</i><i>충주</i><i>논산</i></div><div class="addr2"><em>ADDRESS</em>세종특별자치시 시청대로 20, 101호 (대평동 아마존타워)</div><div class="sites"><em>담당</em>총괄 김인철 전무 · 현장 윤현욱 본부장 · 최종 결정 대표이사 고진식</div></div>
-        <div class="bc" data-b="gj"><span class="num">06</span><small>HONAM</small><b><i class="pulse"></i>광주지사</b><div class="chips"><i>광주 광산</i><i>나주</i><i>전주</i><i>익산</i><i>목포</i><i>순천</i><i>여수</i></div><div class="addr2"><em>ADDRESS</em>광주 광산구 월계로16번길 43, 1층 (월계동)</div><div class="sites"><em>담당</em>총괄 윤현욱 본부장 · 운영 하혜정 본부장 · 최종 결정 대표이사 고진식</div></div>
-        <div class="bc" data-b="bs"><span class="num">07</span><small>BUSAN · GYEONGNAM</small><b><i class="pulse"></i>부산지사</b><div class="chips"><i>부산 해운대</i><i>창원</i><i>김해</i><i>양산</i><i>기장</i><i>거제</i><i>진주</i></div><div class="addr2"><em>ADDRESS</em>부산 해운대구 센텀중앙로 97, 505호 (재송동)</div><div class="sites"><em>담당</em>총괄 윤현욱 본부장 · 운영 하혜정 본부장 · 최종 결정 대표이사 고진식</div></div>
-        <div class="bc" data-b="dg"><span class="num">08</span><small>DAEGU · GYEONGBUK</small><b><i class="pulse"></i>경북지사</b><div class="chips"><i>대구 수성</i><i>포항</i><i>경주</i><i>구미</i><i>영주</i><i>안동</i><i>경산</i></div><div class="addr2"><em>ADDRESS</em>대구 수성구 파동로 42 (파동)</div><div class="sites"><em>담당</em>총괄 윤현욱 본부장 · 운영 하혜정 본부장 · 최종 결정 대표이사 고진식</div></div>
+        <div class="bc hq" data-b="hq"><span class="num">01</span><small>HEADQUARTERS · NATIONWIDE</small><b>본사 · 전국구</b><div class="chips"><i>전국 12개 지사 총괄</i><i>협약 · 집행 · 품질 최종 결정</i></div><div class="sites"><em>담당</em>대표이사 고진식 — 모든 협약 · 혜택 · 집행 최종 결정<br>대표번호 <b style="display:inline;font-size:13px;margin:0">1533-3210</b> · 대표이사 직통 <b style="display:inline;font-size:13px;margin:0">010-3345-6107</b></div></div>
+        <div class="bc" data-b="ansan"><span class="num">02</span><small>SEOUL · GYEONGGI N.</small><b><i class="pulse"></i>경기북부지사</b><div class="chips"><i>서울</i><i>고양</i><i>의정부</i><i>남양주</i><i>수원</i><i>시흥</i><i>부천</i><i>안산</i></div><div class="addr2"><em>ADDRESS</em>경기 안산시 상록구 해양3로 15, 2111호 (그랑시티자이시그니처)</div><div class="sites"><em>담당</em>총괄 김인철 전무 · 현장 윤현욱 본부장 · 최종 결정 대표이사 고진식<br>대표번호 1533-3210</div></div>
+        <div class="bc" data-b="pt"><span class="num">03</span><small>GYEONGGI S.</small><b><i class="pulse"></i>경기남부지사</b><div class="chips"><i>평택</i><i>오산</i><i>용인</i><i>동탄</i><i>안성</i><i>천안</i><i>아산</i></div><div class="addr2"><em>ADDRESS</em>경기 평택시 문화촌로11번길 43-8, 1층 (비전동)</div><div class="sites"><em>담당</em>총괄 김인철 전무 · 현장 윤현욱 본부장 · 최종 결정 대표이사 고진식<br>대표번호 1533-3210</div></div>
+        <div class="bc" data-b="ic"><span class="num">04</span><small>INCHEON</small><b><i class="pulse"></i>인천지사</b><div class="chips"><i>인천 계양</i><i>송도</i><i>검단</i><i>김포</i><i>부평</i><i>영종</i></div><div class="addr2"><em>ADDRESS</em>인천 계양구 안산로 60, 505호 (임학동)</div><div class="sites"><em>담당</em>총괄 김인철 전무 · 현장 윤현욱 본부장 · 최종 결정 대표이사 고진식<br>대표번호 1533-3210</div></div>
+        <div class="bc" data-b="sj"><span class="num">05</span><small>CHUNGCHEONG</small><b><i class="pulse"></i>충청지사</b><div class="chips"><i>세종</i><i>대전</i><i>청주</i><i>공주</i><i>충주</i><i>논산</i></div><div class="addr2"><em>ADDRESS</em>세종특별자치시 시청대로 20, 101호 (대평동 아마존타워)</div><div class="sites"><em>담당</em>총괄 김인철 전무 · 현장 윤현욱 본부장 · 최종 결정 대표이사 고진식<br>대표번호 1533-3210</div></div>
+        <div class="bc" data-b="gj"><span class="num">06</span><small>HONAM</small><b><i class="pulse"></i>광주지사</b><div class="chips"><i>광주 광산</i><i>나주</i><i>전주</i><i>익산</i><i>목포</i><i>순천</i><i>여수</i></div><div class="addr2"><em>ADDRESS</em>광주 광산구 월계로16번길 43, 1층 (월계동)</div><div class="sites"><em>담당</em>총괄 윤현욱 본부장 · 운영 하혜정 본부장 · 최종 결정 대표이사 고진식<br>대표번호 1533-3210</div></div>
+        <div class="bc" data-b="bs"><span class="num">07</span><small>BUSAN · GYEONGNAM</small><b><i class="pulse"></i>부산지사</b><div class="chips"><i>부산 해운대</i><i>창원</i><i>김해</i><i>양산</i><i>기장</i><i>거제</i><i>진주</i></div><div class="addr2"><em>ADDRESS</em>부산 해운대구 센텀중앙로 97, 505호 (재송동)</div><div class="sites"><em>담당</em>총괄 윤현욱 본부장 · 운영 하혜정 본부장 · 최종 결정 대표이사 고진식<br>대표번호 1533-3210</div></div>
+        <div class="bc" data-b="dg"><span class="num">08</span><small>DAEGU · GYEONGBUK</small><b><i class="pulse"></i>경북지사</b><div class="chips"><i>대구 수성</i><i>포항</i><i>경주</i><i>구미</i><i>영주</i><i>안동</i><i>경산</i></div><div class="addr2"><em>ADDRESS</em>대구 수성구 파동로 42 (파동)</div><div class="sites"><em>담당</em>총괄 윤현욱 본부장 · 운영 하혜정 본부장 · 최종 결정 대표이사 고진식<br>대표번호 1533-3210</div></div>
       </div>
     </div>
   </div>
@@ -814,26 +881,27 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
     <h2 class="t">매년 성장하는<br><b>엣지컴퍼니의 발자취.</b></h2></div>
     <div class="gr">
       <div class="rv" id="chartwrap">
-        <svg class="chart" viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg" aria-label="연도별 주관 단지 수">
-          <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f04f4f" stop-opacity=".45"/><stop offset="1" stop-color="#f04f4f" stop-opacity="0"/></linearGradient></defs>
-          <g class="grid"><line x1="60" y1="60" x2="600" y2="60"/><line x1="60" y1="120" x2="600" y2="120"/><line x1="60" y1="180" x2="600" y2="180"/><line x1="60" y1="240" x2="600" y2="240"/><line x1="60" y1="280" x2="600" y2="280"/></g>
-          <g class="yl"><text x="20" y="64">25</text><text x="20" y="124">20</text><text x="20" y="184">15</text><text x="20" y="244">10</text><text x="26" y="284">5</text></g>
-          <!-- candles (캔들: 전년 → 당해) -->
-          <g class="cs" style="animation-delay:.3s"><line x1="100" y1="256" x2="100" y2="236"/><rect x="92" y="236" width="16" height="20"/></g>
-          <g class="cs" style="animation-delay:.7s"><line x1="220" y1="236" x2="220" y2="196"/><rect x="212" y="196" width="16" height="40"/></g>
-          <g class="cs" style="animation-delay:1.1s"><line x1="340" y1="196" x2="340" y2="160"/><rect x="332" y="160" width="16" height="36"/></g>
-          <g class="cs" style="animation-delay:1.5s"><line x1="460" y1="160" x2="460" y2="124"/><rect x="452" y="124" width="16" height="36"/></g>
-          <g class="cs" style="animation-delay:1.9s"><line x1="580" y1="124" x2="580" y2="40"/><rect x="572" y="40" width="16" height="84"/></g>
-          <path class="area" d="M100 236 L220 196 L340 160 L460 124 L580 40 L580 280 L100 280 Z"/>
-          <path class="line2" d="M100 236 L220 196 L340 160 L460 124 L580 40"/>
-          <path class="line" d="M100 236 L220 196 L340 160 L460 124 L580 40"/>
-          <circle class="pt" cx="100" cy="236" r="6" style="animation-delay:.3s"/><circle class="pt" cx="220" cy="196" r="6" style="animation-delay:.75s"/><circle class="pt" cx="340" cy="160" r="6" style="animation-delay:1.2s"/><circle class="pt" cx="460" cy="124" r="6" style="animation-delay:1.65s"/><circle class="pt" cx="580" cy="40" r="8" style="animation-delay:2.1s"/>
-          <text class="vl" x="100" y="222" text-anchor="middle" style="animation-delay:.4s">9</text><text class="vl" x="220" y="182" text-anchor="middle" style="animation-delay:.85s">12</text><text class="vl" x="340" y="146" text-anchor="middle" style="animation-delay:1.3s">15</text><text class="vl" x="460" y="110" text-anchor="middle" style="animation-delay:1.75s">18</text><text class="vl" x="580" y="26" text-anchor="middle" style="animation-delay:2.2s">25</text>
-          <g class="yl"><text x="100" y="306" text-anchor="middle">2022</text><text x="220" y="306" text-anchor="middle">2023</text><text x="340" y="306" text-anchor="middle">2024</text><text x="460" y="306" text-anchor="middle">2025</text><text x="580" y="306" text-anchor="middle">2026 예약</text></g>
-          <g class="arrow"><polygon points="560,70 600,70 580,52" fill="#f04f4f"/><polygon points="562,86 598,86 580,70" fill="#f04f4f" opacity=".5"/></g>
-        </svg>
+        <svg class="chart" viewBox="0 0 640 330" xmlns="http://www.w3.org/2000/svg" aria-label="연도별 주관 단지 수">
+          <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9d49a" stop-opacity=".35"/><stop offset="1" stop-color="#e9d49a" stop-opacity="0"/></linearGradient><linearGradient id="gl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b8933f"/><stop offset="1" stop-color="#fff"/></linearGradient></defs>
+          <g class="grid"><line x1="60" y1="203" x2="600" y2="203"/><line x1="60" y1="125" x2="600" y2="125"/><line x1="60" y1="48" x2="600" y2="48"/></g>
+          <g class="yl"><text x="22" y="207">10</text><text x="22" y="129">20</text><text x="22" y="52">30</text></g>
+          <path class="area" d="M100 187 L220 156 L340 141 L460 118 L580 56 L580 280 L100 280 Z"/>
+          <path class="trail" d="M100 187 L220 156 L340 141 L460 118 L580 56"/>
+          <path class="line" d="M100 187 L220 156 L340 141 L460 118 L580 56"/>
+          <g class="fp" style="animation-delay:0.35s"><circle cx="100" cy="187" r="13" class="halo"/><circle cx="100" cy="187" r="6.5" class="dot"/><text class="vl" x="100" y="167" text-anchor="middle">12</text></g>
+          <g class="ms" style="animation-delay:0.50s"><text x="100" y="306" text-anchor="middle" class="yr">2022</text><text x="100" y="322" text-anchor="middle" class="mt">설립 · 사송 · 에코델타 집중</text></g>
+          <g class="fp" style="animation-delay:0.77s"><circle cx="220" cy="156" r="13" class="halo"/><circle cx="220" cy="156" r="6.5" class="dot"/><text class="vl" x="220" y="136" text-anchor="middle">16</text></g>
+          <g class="ms" style="animation-delay:0.92s"><text x="220" y="306" text-anchor="middle" class="yr">2023</text><text x="220" y="322" text-anchor="middle" class="mt">레이카운티 4,470세대 공동 주관</text></g>
+          <g class="fp" style="animation-delay:1.19s"><circle cx="340" cy="141" r="13" class="halo"/><circle cx="340" cy="141" r="6.5" class="dot"/><text class="vl" x="340" y="121" text-anchor="middle">18</text></g>
+          <g class="ms" style="animation-delay:1.34s"><text x="340" y="306" text-anchor="middle" class="yr">2024</text><text x="340" y="322" text-anchor="middle" class="mt">부산 입주물량 70% 이상 주관</text></g>
+          <g class="fp" style="animation-delay:1.61s"><circle cx="460" cy="118" r="13" class="halo"/><circle cx="460" cy="118" r="6.5" class="dot"/><text class="vl" x="460" y="98" text-anchor="middle">21</text></g>
+          <g class="ms" style="animation-delay:1.76s"><text x="460" y="306" text-anchor="middle" class="yr">2025</text><text x="460" y="322" text-anchor="middle" class="mt">수도권 · 광주 진출</text></g>
+          <g class="fp" style="animation-delay:2.03s"><circle cx="580" cy="56" r="13" class="halo"/><circle cx="580" cy="56" r="6.5" class="dot"/><text class="vl" x="580" y="36" text-anchor="middle">29</text></g>
+          <g class="ms" style="animation-delay:2.18s"><text x="580" y="306" text-anchor="middle" class="yr">2026 예약</text><text x="580" y="322" text-anchor="middle" class="mt">서울 성동 · 전국 12개 지사</text></g>
+          </svg>
       </div>
-      <div class="rv"><span class="lim"><i></i>상한가 · 5년 연속 상승</span><div class="big"><span class="up">▲</span><span class="cnt" data-n="178">0</span><i>%</i></div><p>5년간 누적 성장 · 연평균 28.9%. 2022년 9개 단지에서 2026년 25개 단지 예약까지 — 신규 영업이 아닌 입소문 기반 성장입니다.</p></div>
+      <div class="rv"><span class="lim"><i></i>5년 연속 성장 · 주관 단지 수</span><div class="big"><span class="up">+</span><span class="cnt" data-n="142">0</span><i>%</i></div><p>2022년 12개 단지에서 2026년 29개 단지 예약까지, 연평균 24.7% 성장. 신규 영업이 아니라 먼저 주관한 단지의 입소문으로 다음 단지가 이어졌습니다.</p>
+      <div class="fpl"><span><i>2022</i>설립 첫해 12개 단지</span><span><i>2023</i>레이카운티 4,470세대</span><span><i>2024</i>부산 입주물량 70% 이상</span><span><i>2025</i>수도권 · 광주 진출</span><span><i>2026</i>서울 성동 · 전국 12개 지사</span></div></div>
     </div>
   </div>
 </section>
@@ -1033,6 +1101,8 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
 
 <div class="wmod" id="wmod" role="dialog" aria-modal="true"><div class="wbox" style="position:relative"><button class="x" id="wx" aria-label="닫기">×</button><div class="im"><img id="wimg" src="" alt=""><span class="tagc" id="wtag"></span></div><div class="in"><small id="wsm"></small><h3 id="wt"></h3><div class="big2"><span id="wu"></span><i>세대</i></div><dl><dt>위치</dt><dd id="wloc"></dd><dt>주관 형태</dt><dd id="wty"></dd><dt>입주박람회</dt><dd id="wex"></dd><dt>입주</dt><dd id="wmv"></dd><dt>혜택 기준</dt><dd>세대당 혜택 · 발전지원금은 단지별 협약으로 확정</dd></dl><div class="nav"><button id="wprev">← 이전 단지</button><button id="wnext">다음 단지 →</button><a class="f" href="#contact" id="wcta" style="flex:1;text-align:center;padding:12px;border-radius:999px;background:#fff;color:#000;font-size:13px;font-weight:700">주관 제안 요청</a></div><p class="note">단지 정보는 공개 자료 기준이며, 세대수 · 일정은 변경될 수 있습니다.</p></div></div></div>
 <div class="wtip" id="wtip" aria-hidden="true"><small id="tsm"></small><b id="tt"></b><div class="u"><span id="tu"></span><i>세대</i></div><dl><dt>위치</dt><dd id="tloc"></dd><dt>주관</dt><dd id="tty"></dd><dt>박람회</dt><dd id="tex"></dd><dt>입주</dt><dd id="tmv"></dd></dl><em>클릭하면 크게 보기 →</em></div>
+<div class="dtip" id="dtip" aria-hidden="true"><small id="dsm"></small><b id="dt"></b><div class="what ws" id="dwhat"></div><div class="steps" id="dsteps"></div><div class="ben" id="dben"></div></div>
+<script>window.EDGE_DT={"철근탐지 · 강도 측정": ["지하주차장 · 기둥 · 벽체의 철근 간격과 피복 두께, 콘크리트 반발경도를 장비로 측정합니다.", ["협의회 요청 · 측정 구간 선정", "철근탐지기 · 슈미트해머 현장 측정", "수치 리포트 작성", "시공사 공문 · 보수 요청"], "눈으로 볼 수 없는 구조 품질을 숫자로 확인합니다."], "열화상 드론": ["외벽 단열 결손 · 누수 의심 부위를 열화상 드론으로 촬영해 온도 차이로 찾아냅니다.", ["촬영 동의 · 비행 승인", "일몰 후 열화상 촬영", "온도 편차 분석 · 의심 부위 표시", "리포트 · 시공사 보수 요청"], "입주 전에 외벽 하자를 잡아 보수 근거를 남깁니다."], "일조량 분석": ["동 · 향별로 동지 · 하지 기준 시간대별 일조를 3D로 시뮬레이션합니다.", ["단지 배치도 · 층고 입수", "3D 모델링", "시간대별 일조 시뮬레이션", "세대 유형별 리포트"], "커튼 · 블라인드 · 조명 선택의 근거가 됩니다."], "라돈 측정": ["요청 세대를 표본으로 48시간 라돈 농도를 측정하고 서면 보고합니다.", ["세대 신청 접수", "측정기 설치 · 밀폐", "48시간 연속 측정", "기준치 비교 · 서면 보고"], "새집 유해물질 불안을 수치로 해소합니다."], "항균 코팅": ["엘리베이터 버튼 · 공용 손잡이 · 우편함 등 핵심 접촉면에 항균 코팅을 시공합니다.", ["접촉면 전수 조사", "코팅 시공 (야간 · 입주 전)", "시공 부위 안내문 부착", "유지 관리 안내"], "입주 첫날부터 공용부 위생을 챙깁니다."], "전문 방역 점검": ["MOU 파트너 세스코와 공용부 위생 · 해충 위험 구역을 점검합니다.", ["공용부 위험 구역 조사", "점검 · 방역 실시", "결과 보고", "정기 점검 일정 안내"], "관리사무소 인수 전 위생 기준을 세웁니다."], "하자 분석 리포트": ["사전점검 때 세대별 하자를 취합해 유형 · 동별 통계로 만듭니다.", ["세대 하자 데이터 취합", "유형 · 동 · 층별 통계", "반복 하자 · 중대 하자 분류", "시공사 협상용 리포트 제출"], "개별 민원이 아닌 단지 전체 데이터로 협상합니다."], "협상 미팅 지원": ["시공사 · 시행사 미팅의 자료 · 공문 · 회의 기록을 주관사가 준비하고 동석합니다.", ["쟁점 정리 · 자료 준비", "공문 작성 · 발송", "미팅 동석 · 기록", "후속 이행 추적"], "협의회가 전문가와 같은 테이블에 앉습니다."], "세대 혜택 · 단지별 협약": ["세대당 혜택의 금액 · 대상 · 시기를 협의회와 서면 협약으로 확정합니다.", ["협의회 요구 사항 접수", "혜택 패키지 제안", "협약서 체결", "협약 내용 단지 카페 공개"], "말이 아니라 문서로 남습니다."], "같은 기준 · 선택권 보장": ["전 세대가 같은 공구가 · 같은 A/S 조건을 받고, 끼워 팔기를 금지합니다.", ["공구가 기준표 작성", "전 세대 동일 적용", "끼워 팔기 신고 창구 운영"], "먼저 온 사람, 늦게 온 사람 차이가 없습니다."], "가격 먼저 공개": ["박람회 30일 전 단가를 검수하고 14일 전 일반가와 비교표를 공개합니다.", ["업체 단가 제출", "주관사 검수 · 일반가 조사", "비교표 공개 (D-14)", "현장 가격 동일 적용"], "현장에서 \"오늘만 이 가격\"이 통하지 않습니다."], "최저가 차액 10배 보상": ["같은 조건의 더 싼 가격이 확인되면 차액의 10배를 보상합니다 (1건 최대 50만원).", ["증빙 제출", "주관사 확인 (3일)", "차액 10배 보상", "해당 업체 패널티"], "가격을 의심할 필요가 없게 만듭니다."], "계약금 10% 상한": ["계약금은 10%를 넘지 않고, 잔금은 시공 · 설치 · 계약자 확인 뒤에만 받습니다.", ["표준 계약서 적용", "계약금 10% 이내", "시공 완료 확인", "잔금 지급"], "돈 먼저 받고 사라지는 구조를 막습니다."], "24시간 · 48시간": ["문의는 24시간 안 1차 회신, 하자는 48시간 안 방문을 확정합니다.", ["접수 (카페 · 전화 · 카톡)", "24시간 내 1차 회신", "48시간 내 방문 확정", "무응답 시 주관사 직접 개입"], "기다리게 하지 않습니다."], "무상 A/S · 업체 이관": ["시공 품목은 최소 2년 무상 A/S, 업체 폐업 시 대체 업체로 이관합니다.", ["A/S 접수", "업체 처리 (2년 무상)", "업체 폐업 · 불이행 시 이관", "주관사 비용 선집행"], "업체가 없어져도 A/S는 남습니다."], "하자 보수 이행 담보": ["예치금 최대 1억과 하자보증보험 최대 10억으로 이행을 담보합니다.", ["협약 시 담보 금액 확정", "공동 통장 · 보증서 발급", "하자 발생 시 협의회 집행", "사후 업체 구상"], "보상 재원이 먼저 준비돼 있습니다."], "지연 시 입주민 선택권": ["시공이 지연되면 일정 재조정 또는 계약 취소 · 전액 환불 중 입주민이 선택합니다.", ["지연 통보", "입주민 선택 (재조정 / 취소)", "환불 또는 재일정", "주관사 확인"], "기다릴지 말지는 입주민이 정합니다."], "재하도급 금지": ["계약 상대방이 곧 시공 주체이며, 업체 변경은 협의회 승인으로만 가능합니다.", ["계약서에 시공 주체 명시", "현장 시공 인력 확인", "변경 요청 시 협의회 승인"], "계약한 회사가 직접 시공합니다."], "협약으로 확정": ["지원 규모 · 품목 · 일정을 협의회와 서면 협약으로 확정합니다.", ["세대수 기준 지원 규모 산정", "협의회 희망 품목 수렴", "협약서 체결", "단지 카페 공개"], "구두 약속이 아닌 협약입니다."], "현물로 직접 집행": ["현금을 건네지 않고 주관사가 직접 구매 · 시공해 단지 시설로 남깁니다.", ["품목 견적 · 설계", "면허 법인 직접 시공", "준공 확인 (협의회 입회)", "시설 인계"], "유통 마진 없이 전액이 단지에 남습니다."], "내역 공개": ["집행 내역을 협의회에 서면 보고하고 단지 카페에 공개합니다.", ["품목 · 수량 · 금액 정리", "세금계산서 · 사진 첨부", "협의회 보고", "카페 공개 게시"], "누가 봐도 확인할 수 있게 남깁니다."], "하늘에 새긴 빛": ["동 외벽 모서리에 수직 라인 조명을 설치해 단지 실루엣을 밤에 드러냅니다.", ["동별 라인 위치 설계", "DMX 제어 · 디밍 설계", "전기공사 면허 시공", "점등식 · A/S 2년"], "단지 밖에서 보이는 첫인상이 달라집니다."], "겨울빛의 문": ["정문 문주에 윈터라이팅을 설치해 계절별 연출이 가능하게 합니다.", ["문주 구조 확인", "조명 패턴 설계", "시공 · 제어기 설치", "계절 연출 프로그램"], "입구가 단지의 상징이 됩니다."], "별빛이 머무는 정원": ["잔디 정원에 조형 조명을 배치해 야간 산책 공간을 만듭니다.", ["동선 · 조도 설계", "조형 조명 제작", "매립 배선 · 시공", "야간 점검"], "밤에도 머물고 싶은 정원이 됩니다."], "요정의 숲": ["소나무 군락에 은하수 조명을 걸어 단지 정원을 연출합니다.", ["수목 보호 설계", "저전압 조명 설치", "타이머 · 센서 제어", "수목 상태 정기 점검"], "사진이 찍히는 단지가 됩니다."], "18": ["세대당 18만원 상당의 발전지원금을 현금이 아닌 현물로 단지에 집행합니다.", ["협약으로 금액 확정", "협의회 품목 의결", "주관사 직접 시공", "내역 공개"], "성동자이 리버뷰 기준 · 단지별 협약으로 확정"], "커뮤니티 + 조경": ["발전지원금 사용처로 커뮤니티 시설 보강 · 조경 · 경관조명 중 협의회가 택1합니다.", ["사용처 후보 제안", "협의회 의결", "설계 · 시공", "준공 · 인계"], "면허 법인이 직접 시공하고 A/S합니다."], "80": ["박람회에 참여한 세대 전원에게 브랜드 실링팬 + 전동커튼 상당 80만원 혜택을 지급합니다.", ["박람회 방문 · 세대 확인", "혜택 신청서 작성", "설치 일정 배정", "설치 · 확인 서명"], "조건 없음 · 끼워 팔기 없음 · 추가 구매 없음"], "정대식 변호사": ["협약서 · 참여 업체 계약서를 사전 검토하고 입주민 분쟁 발생 시 법률 자문을 맡습니다.", ["협약서 초안 검토", "업체 계약서 표준화", "분쟁 접수 시 자문", "필요 시 내용증명 · 대응"], "협의회가 법률 비용 없이 전문가 검토를 받습니다."], "박은지 간호사": ["박람회 · 사전점검 현장에 상주해 응급 상황과 안전을 관리합니다.", ["현장 응급 키트 · 동선 점검", "어르신 · 유아 동반 세대 응대", "응급 발생 시 1차 처치 · 119 연계", "안전 일지 기록"], "행사장에서 안심하고 둘러보실 수 있습니다."], "디앤비건축사사무소": ["발전지원금 시설(커뮤니티 · 조경 · 경관조명) 설계안을 건축사가 검토합니다.", ["협의회 요구 사항 정리", "설계안 · 도면 검토", "구조 · 법규 확인", "시공 전 최종 승인"], "전문가 검토를 거친 설계로 시공합니다."], "포이시스": ["입주 안내 · 박람회 홍보물 · 단지 카페 콘텐츠를 광고 전문팀이 제작합니다.", ["단지 톤앤매너 설정", "홍보물 · 영상 제작", "카페 · 밴드 게시", "반응 분석 · 보완"], "단지 소식이 제대로 전달됩니다."]};</script>
 <!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="wrap">
@@ -1084,7 +1154,8 @@ function go(n){slides[cur].classList.remove('on');dots.children[cur].classList.r
   txt.classList.add('sw');setTimeout(function(){document.getElementById('cap').textContent=SL[cur].cap;document.getElementById('h1t').innerHTML=SL[cur].t;document.getElementById('h1p').innerHTML=SL[cur].p;splitH1();txt.classList.remove('sw')},500);}
 setInterval(function(){go(cur+1)},6500);
 // 히어로 구간에선 헤더 로고 숨김 (사진에 로고가 박혀 있어 중복 방지)
-var hdr=document.querySelector('.hd');function hdS(){hdr.classList.toggle('sc',window.scrollY>window.innerHeight*0.7)}window.addEventListener('scroll',hdS,{passive:true});hdS();
+var hdr=document.querySelector('.hd');function lum(c){var m=c.match(/[\d.]+/g);if(!m||m.length<3)return null;if(m.length>3&&parseFloat(m[3])===0)return null;return (0.299*m[0]+0.587*m[1]+0.114*m[2])/255}
+function hdS(){hdr.classList.toggle('sc',window.scrollY>window.innerHeight*0.7);var st=document.elementsFromPoint(Math.min(300,innerWidth/2),46),el=null;for(var i=0;i<st.length;i++){if(!st[i].closest('.hd,.cur,.dtip,.wtip,.wmod,#egPopWrap,.drawer,.dim')){el=st[i];break}}var L=null;while(el&&el!==document.documentElement){var l=lum(getComputedStyle(el).backgroundColor);if(l!==null){L=l;break}el=el.parentElement}hdr.classList.toggle('onlight',L!==null&&L>0.6)}window.addEventListener('scroll',hdS,{passive:true});hdS();
 // drawer
 var dr=document.getElementById('drawer'),dim=document.getElementById('dim');
 function openD(){dr.classList.add('on');dim.classList.add('on')} function closeD(){dr.classList.remove('on');dim.classList.remove('on')}
@@ -1139,6 +1210,21 @@ document.addEventListener('keydown',function(e){if(!m.classList.contains('on'))r
 function fill(a){document.getElementById('tsm').textContent=a.querySelector('.ov small').textContent;document.getElementById('tt').textContent=a.dataset.t;document.getElementById('tu').textContent=a.dataset.units;document.getElementById('tloc').textContent=a.dataset.loc;document.getElementById('tty').textContent=a.dataset.type;document.getElementById('tex').textContent=a.dataset.expo;document.getElementById('tmv').textContent=a.dataset.move}
 function move(e){var w=330,h=tip.offsetHeight||260,x=e.clientX+26,y=e.clientY-30;if(x+w>innerWidth-12)x=e.clientX-w-26;if(y+h>innerHeight-12)y=innerHeight-h-12;if(y<70)y=70;tip.style.left=x+'px';tip.style.top=y+'px'}
 document.querySelectorAll('.wk[data-t]').forEach(function(a){a.addEventListener('mouseenter',function(e){fill(a);move(e);tip.classList.add('on')});a.addEventListener('mousemove',move);a.addEventListener('mouseleave',function(){tip.classList.remove('on')});a.addEventListener('click',function(){tip.classList.remove('on')})});})();
+
+// ===== hover detail: 모든 리스트 항목 — 마우스 올리면 우측 패널에 무엇을 · 순서 · 입주민에게 =====
+(function(){var D=window.EDGE_DT||{},tip=document.getElementById('dtip');if(!tip)return;var fine=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+var SEL='.sg>div,.pi,.fs,.th,.bi,.pc';var LAB={sg:'무상 단지지원',pi:'약속',fs:'발전지원금 · 집행 순서',th:'경관조명 테마',bi:'입주민 혜택',pc:'협력 파트너'};
+function keyOf(el){var b=el.querySelector('b');if(!b)return null;var t=b.textContent.replace(/\s+/g,' ').trim();if(D[t])return t;var c=el.querySelector('.cnt');if(c&&D[c.dataset.n])return c.dataset.n;var k=Object.keys(D).find(function(x){return t.indexOf(x)>-1||x.indexOf(t)>-1});return k||null}
+function lab(el){if(el.closest('.sg'))return LAB.sg;if(el.classList.contains('pi'))return LAB.pi;if(el.classList.contains('fs'))return LAB.fs;if(el.classList.contains('th'))return LAB.th;if(el.classList.contains('bi'))return LAB.bi;if(el.classList.contains('pc'))return LAB.pc;return ''}
+function title(el){var b=el.querySelector('b');var t=b?b.textContent.replace(/\s+/g,' ').trim():'';if(el.classList.contains('bi')){var sp=el.querySelector(':scope>span');t=(t+' · '+(sp?sp.textContent:'')).replace(/\s+/g,' ')}return t}
+function words(html){return html.replace(/([^<>\s]+)/g,'<span class="w2">$1</span>')}
+function fill(el,k){var d=D[k];document.getElementById('dsm').textContent=lab(el);document.getElementById('dt').textContent=title(el);var w=document.getElementById('dwhat');w.innerHTML=words(d[0]);w.classList.remove('on');w.querySelectorAll('.w2').forEach(function(sp,i){sp.style.transitionDelay=(30*i)+'ms'});var st=document.getElementById('dsteps');st.innerHTML=d[1].map(function(x,i){return '<div style="transition-delay:'+(250+i*120)+'ms"><i>'+(i+1)+'</i><span>'+x+'</span></div>'}).join('');document.getElementById('dben').textContent=d[2];requestAnimationFrame(function(){requestAnimationFrame(function(){w.classList.add('on')})})}
+function place(el){var r=el.getBoundingClientRect(),W=380,h=tip.offsetHeight||300,x=r.right+16,y=r.top;if(x+W>innerWidth-12)x=r.left-W-16;if(x<12)x=12;if(y+h>innerHeight-12)y=innerHeight-h-12;if(y<80)y=80;tip.style.left=x+'px';tip.style.top=y+'px'}
+var items=[].slice.call(document.querySelectorAll(SEL));items.forEach(function(el){var k=keyOf(el);if(!k)return;el.classList.add('hv');var d=D[k];var inl=document.createElement('div');inl.className='inl';inl.innerHTML='<em>무엇을</em>'+d[0]+'<em>순서</em>'+d[1].map(function(x,i){return (i+1)+'. '+x}).join(' → ')+'<em>입주민에게</em>'+d[2];(el.classList.contains('th')?el.querySelector('.ov'):el).appendChild(inl);
+  if(fine){el.addEventListener('mouseenter',function(){items.forEach(function(o){o.classList.remove('on')});el.classList.add('on');fill(el,k);place(el);tip.classList.add('on')});el.addEventListener('mouseleave',function(){el.classList.remove('on');tip.classList.remove('on')});el.addEventListener('mousemove',function(){place(el)})}
+  else{el.addEventListener('click',function(e){if(el.tagName==='A')e.preventDefault();el.classList.toggle('open')})}});
+})();
+
 // ===== benefit stack =====
 (function(){var st=document.getElementById('stack');if(!st)return;var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){st.classList.add('go');io2.unobserve(st)}})},{threshold:.25});io2.observe(st)})();
 // ===== signature draw =====
