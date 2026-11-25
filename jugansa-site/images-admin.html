@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>엣지컴퍼니 | 이미지 관리자</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/[email protected]/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+:root {
+  --white: #ffffff;
+  --paper: #f7f5f0;
+  --paper-2: #efece4;
+  --ink: #1a1d24;
+  --ink-soft: #2d3139;
+  --ink-mute: #6b6f78;
+  --line: #e5e2da;
+  --line-soft: #ededea;
+  --accent: #b8935a;
+  --accent-deep: #8a6a3a;
+  --success: #2d7a4f;
+  --danger: #c0392b;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Pretendard', -apple-system, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  letter-spacing: -0.015em;
+  padding-bottom: 80px;
+}
+
+/* HEADER */
+.admin-header {
+  background: var(--ink);
+  color: var(--white);
+  padding: 32px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.admin-header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.admin-header h1 small {
+  display: block;
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  margin-top: 4px;
+}
+.admin-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-primary { background: var(--accent); color: var(--white); }
+.btn-primary:hover { background: var(--accent-deep); }
+.btn-ghost { background: rgba(255,255,255,0.1); color: var(--white); }
+.btn-ghost:hover { background: rgba(255,255,255,0.2); }
+.btn-danger { background: transparent; color: #ff8888; border: 1px solid #ff8888; }
+.btn-danger:hover { background: #ff8888; color: var(--white); }
+.btn-success { background: var(--success); color: var(--white); }
+
+/* HOW-TO */
+.howto {
+  max-width: 1200px;
+  margin: 32px auto 24px;
+  padding: 24px 32px;
+  background: var(--white);
+  border-radius: 12px;
+  border-left: 4px solid var(--accent);
+}
+.howto h2 {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+.howto ol {
+  margin-left: 18px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.howto ol li { margin-bottom: 6px; line-height: 1.7; }
+.howto strong { color: var(--accent-deep); font-weight: 700; }
+
+/* STATS */
+.stats {
+  max-width: 1200px;
+  margin: 0 auto 32px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 0 20px;
+}
+.stat-box {
+  background: var(--white);
+  padding: 20px 24px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.stat-box .label {
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.stat-box .value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.stat-box .value.uploaded { color: var(--success); }
+
+/* GROUPS */
+.group-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.group {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+.group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.group-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.group-title small {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
+}
+.group-count {
+  font-size: 12px;
+  color: var(--accent-deep);
+  font-weight: 700;
+  background: var(--paper);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.image-slot {
+  position: relative;
+  aspect-ratio: 4/3;
+  background: var(--paper);
+  border: 2px dashed var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.image-slot:hover {
+  border-color: var(--accent);
+  background: var(--paper-2);
+}
+.image-slot.has-image {
+  border-style: solid;
+  border-color: var(--success);
+  background: var(--ink);
+}
+.image-slot.dragover {
+  border-color: var(--accent-deep);
+  background: rgba(184,147,90,0.1);
+  transform: scale(1.02);
+}
+.image-slot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.image-slot .slot-label {
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
+  color: var(--ink-mute);
+  font-weight: 600;
+  text-align: center;
+  padding: 0 10px;
+}
+.image-slot .slot-icon {
+  position: relative;
+  z-index: 2;
+  font-size: 28px;
+  color: var(--ink-dim);
+  margin-bottom: 8px;
+}
+.image-slot.has-image .slot-label,
+.image-slot.has-image .slot-icon { display: none; }
+.image-slot .slot-name {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  color: var(--white);
+  padding: 30px 12px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  z-index: 3;
+}
+.image-slot .slot-delete {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  border: none;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  font-size: 14px;
+  color: var(--danger);
+  font-weight: 700;
+}
+.image-slot.has-image .slot-delete { display: flex; }
+.image-slot .slot-delete:hover { background: var(--danger); color: var(--white); }
+.image-slot input[type="file"] { display: none; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--ink);
+  color: var(--white);
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  transition: transform 0.3s;
+  z-index: 1000;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { background: var(--success); }
+.toast.danger { background: var(--danger); }
+
+/* WARNING */
+.warning-box {
+  max-width: 1200px;
+  margin: 24px auto;
+  padding: 16px 24px;
+  background: #fff8e6;
+  border: 1px solid #f5d889;
+  border-radius: 8px;
+  color: #8a6500;
+  font-size: 13px;
+}
+.warning-box strong { color: #6b4d00; font-weight: 800; }
+
+@media (max-width: 640px) {
+  .admin-header { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
+  .stats { grid-template-columns: 1fr; }
+  .group { padding: 20px; }
+  .image-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="admin-header">
+  <h1>
+    엣지컴퍼니 이미지 관리자
+    <small>EDGE COMPANY · IMAGE MANAGER</small>
+  </h1>
+  <div class="admin-actions">
+    <a href="index.html" class="btn btn-ghost">← 사이트로 돌아가기</a>
+    <button class="btn btn-ghost" onclick="exportBackup()">백업 내려받기</button>
+    <button class="btn btn-ghost" onclick="document.getElementById('import-input').click()">백업 불러오기</button>
+    <input type="file" id="import-input" accept=".json" style="display:none" onchange="importBackup(event)">
+    <button class="btn btn-danger" onclick="resetAll()">전체 초기화</button>
+  </div>
+</div>
+
+<div class="howto">
+  <h2>사용 방법</h2>
+  <ol>
+    <li>아래 각 칸을 <strong>클릭</strong>하거나 사진 파일을 <strong>드래그&드롭</strong>해서 올리세요.</li>
+    <li>저장은 자동입니다. 이 페이지 또는 사이트를 새로고침하면 바로 반영됩니다.</li>
+    <li>이미지는 이 브라우저에만 저장됩니다. 다른 PC나 폰에서도 같은 사진을 보려면 <strong>백업 내려받기</strong>로 JSON 파일을 받아두고, 다른 기기에서 <strong>백업 불러오기</strong>로 적용하세요.</li>
+    <li>사진 한 장당 <strong>2MB 이하</strong> 권장. 너무 크면 사이트가 느려집니다.</li>
+  </ol>
+</div>
+
+<div class="warning-box">
+  <strong>중요</strong> · 이 관리자 페이지는 브라우저 저장소(localStorage)를 사용합니다. 인터넷 사용기록·캐시를 지우면 이미지가 함께 지워집니다. <strong>백업 내려받기를 주기적으로 해두세요.</strong>
+</div>
+
+<div class="stats">
+  <div class="stat-box">
+    <div>
+      <div class="label">전체 이미지 슬롯</div>
+      <div class="value" id="total-count">0</div>
+    </div>
+  </div>
+  <div class="stat-box">
+    <div>
+      <div class="label">업로드 완료</div>
+      <div class="value uploaded" id="uploaded-count">0</div>
+    </div>
+  </div>
+  <div class="stat-box">
+    <div>
+      <div class="label">남은 슬롯</div>
+      <div class="value" id="remaining-count">0</div>
+    </div>
+  </div>
+</div>
+
+<div class="group-container" id="group-container">
+  <!-- 그룹들이 JS로 렌더링됨 -->
+</div>
+
+<div class="toast" id="toast">저장되었습니다</div>
+
+<script>
+// ===== 이미지 슬롯 정의 (사이트의 data-img-key와 일치해야 함) =====
+const IMAGE_GROUPS = [
+  {
+    name: '메인 (Hero · 대표 사진)',
+    section: 'Hero & CEO',
+    slots: [
+      { key: 'hero', label: 'Hero 우측 대표 사진' },
+      { key: 'ceo-portrait', label: '대표 정장 인사 사진 (CEO MESSAGE 섹션)' },
+      { key: 'ceo', label: '대표 사진 (CEO YOUTUBE 섹션)' }
+    ]
+  },
+  {
+    name: '회사 갤러리',
+    section: '상단 사진 슬라이드',
+    slots: [
+      { key: 'gallery-1', label: '엣지컴퍼니 본사 사옥' },
+      { key: 'gallery-2', label: '박람회 현장 전경' },
+      { key: 'gallery-3', label: '대표 미디어 현장' },
+      { key: 'gallery-4', label: '시공팀 작업 현장' },
+      { key: 'gallery-5', label: '협의회 미팅' },
+      { key: 'gallery-6', label: '삼성전자 MOU' }
+    ]
+  },
+  {
+    name: '포트폴리오 · 2025',
+    section: '단지 사진',
+    slots: [
+      { key: 'proj-leica', label: '레이카운티 4,470세대' },
+      { key: 'proj-yangjeong', label: '양정자이 SK뷰 2,276세대' },
+      { key: 'proj-doosan', label: '두산위브 오션시티 2,205세대' },
+      { key: 'proj-eco-ep', label: '에코델타 이편한세상 953세대' },
+      { key: 'proj-eco-pur', label: '에코델타 푸르지오린 886세대' },
+      { key: 'proj-eco-xi', label: '에코델타 강서자이 856세대' }
+    ]
+  },
+  {
+    name: '포트폴리오 · 2024',
+    section: '단지 사진',
+    slots: [
+      { key: 'proj-eco-bel', label: '에코델타 대성베르힐 1,120세대' },
+      { key: 'proj-songdo', label: 'E편한세상 송도 더퍼스트 1,312세대' },
+      { key: 'proj-namcheon', label: '남천 헤리치 자이 913세대' },
+      { key: 'proj-sasong-deci', label: '사송 데시앙 1차 1,712세대' },
+      { key: 'proj-pohang', label: '힐스테이트 포항 1,717세대' },
+      { key: 'proj-busan-pour', label: '부산 드파인 센텀 750세대' }
+    ]
+  },
+  {
+    name: '포트폴리오 · 2023',
+    section: '단지 사진',
+    slots: [
+      { key: 'proj-saha', label: '두산위브 제니스 사하 1,643세대' },
+      { key: 'proj-sasang', label: '사상중흥 S-클래스 1,572세대' },
+      { key: 'proj-jurae', label: '주례 롯데캐슬 998세대' }
+    ]
+  },
+  {
+    name: '포트폴리오 · 2022',
+    section: '단지 사진',
+    slots: [
+      { key: 'proj-saha-koolon', label: '사하 코오롱 하늘채 969세대' },
+      { key: 'proj-munsuro', label: '문수로 드림파크 448세대' },
+      { key: 'proj-otobelly', label: '오토밸리 한양립스 376세대' }
+    ]
+  },
+  {
+    name: '포트폴리오 · 2018-2021',
+    section: '단지 사진',
+    slots: [
+      { key: 'proj-yang-easy', label: '양산 이지더원 랜드파크 1,768세대' },
+      { key: 'proj-deokgye', label: '덕계 두산위브 1차 1,337세대' },
+      { key: 'proj-namyang', label: '남양역 반도유보라 1,216세대' }
+    ]
+  }
+];
+
+// ===== UI 렌더링 =====
+function renderGroups() {
+  const container = document.getElementById('group-container');
+  container.innerHTML = '';
+
+  IMAGE_GROUPS.forEach(group => {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'group';
+
+    const uploaded = group.slots.filter(s => localStorage.getItem('edge_img_' + s.key)).length;
+    const total = group.slots.length;
+
+    groupEl.innerHTML = `
+      <div class="group-header">
+        <div class="group-title">${group.name} <small>· ${group.section}</small></div>
+        <div class="group-count">${uploaded} / ${total}</div>
+      </div>
+      <div class="image-grid">
+        ${group.slots.map(slot => {
+          const stored = localStorage.getItem('edge_img_' + slot.key);
+          return `
+            <div class="image-slot ${stored ? 'has-image' : ''}"
+                 data-key="${slot.key}"
+                 onclick="document.getElementById('file-${slot.key}').click()">
+              ${stored ? `<img src="${stored}" alt="${slot.label}">` : ''}
+              <div class="slot-icon">＋</div>
+              <div class="slot-label">${slot.label}</div>
+              <button class="slot-delete" onclick="event.stopPropagation(); deleteImage('${slot.key}')">✕</button>
+              <div class="slot-name">${slot.label}</div>
+              <input type="file" id="file-${slot.key}" accept="image/*"
+                     onchange="handleFileSelect(event, '${slot.key}')">
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+    container.appendChild(groupEl);
+  });
+
+  attachDragDrop();
+  updateStats();
+}
+
+// ===== 파일 처리 =====
+function handleFileSelect(event, key) {
+  const file = event.target.files[0];
+  if (file) processFile(file, key);
+}
+
+function processFile(file, key) {
+  if (!file.type.startsWith('image/')) {
+    showToast('이미지 파일만 업로드 가능합니다', 'danger');
+    return;
+  }
+
+  // 2MB 초과 경고
+  if (file.size > 2 * 1024 * 1024) {
+    if (!confirm('파일 크기가 2MB를 초과합니다 (' + (file.size/1024/1024).toFixed(1) + 'MB).\n사이트 속도가 느려질 수 있어요. 계속 업로드할까요?')) {
+      return;
+    }
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      localStorage.setItem('edge_img_' + key, e.target.result);
+      showToast('저장되었습니다', 'success');
+      renderGroups();
+    } catch (err) {
+      showToast('저장 실패: 저장 공간 초과 (사진을 줄여주세요)', 'danger');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ===== 드래그 앤 드롭 =====
+function attachDragDrop() {
+  document.querySelectorAll('.image-slot').forEach(slot => {
+    slot.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      slot.classList.add('dragover');
+    });
+    slot.addEventListener('dragleave', () => slot.classList.remove('dragover'));
+    slot.addEventListener('drop', (e) => {
+      e.preventDefault();
+      slot.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) processFile(file, slot.dataset.key);
+    });
+  });
+}
+
+// ===== 삭제 =====
+function deleteImage(key) {
+  if (confirm('이 이미지를 삭제하시겠습니까?')) {
+    localStorage.removeItem('edge_img_' + key);
+    showToast('삭제되었습니다');
+    renderGroups();
+  }
+}
+
+// ===== 전체 초기화 =====
+function resetAll() {
+  if (!confirm('모든 이미지를 초기화합니다. 정말 진행하시겠습니까?\n(백업을 먼저 받아두는 걸 권장합니다)')) return;
+  IMAGE_GROUPS.forEach(g => g.slots.forEach(s => localStorage.removeItem('edge_img_' + s.key)));
+  showToast('모두 초기화되었습니다');
+  renderGroups();
+}
+
+// ===== 백업 ↓ =====
+function exportBackup() {
+  const data = {};
+  IMAGE_GROUPS.forEach(g => g.slots.forEach(s => {
+    const val = localStorage.getItem('edge_img_' + s.key);
+    if (val) data[s.key] = val;
+  }));
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'edge-images-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('백업 파일 내려받기 시작');
+}
+
+// ===== 백업 ↑ =====
+function importBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      Object.keys(data).forEach(key => localStorage.setItem('edge_img_' + key, data[key]));
+      showToast('백업이 적용되었습니다', 'success');
+      renderGroups();
+    } catch (err) {
+      showToast('백업 파일이 손상되었거나 형식이 맞지 않습니다', 'danger');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ===== 통계 =====
+function updateStats() {
+  let total = 0, uploaded = 0;
+  IMAGE_GROUPS.forEach(g => {
+    total += g.slots.length;
+    uploaded += g.slots.filter(s => localStorage.getItem('edge_img_' + s.key)).length;
+  });
+  document.getElementById('total-count').textContent = total;
+  document.getElementById('uploaded-count').textContent = uploaded;
+  document.getElementById('remaining-count').textContent = total - uploaded;
+}
+
+// ===== 토스트 알림 =====
+function showToast(msg, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show ' + type;
+  setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+// 초기 렌더
+renderGroups();
+</script>
+
+</body>
+</html>
