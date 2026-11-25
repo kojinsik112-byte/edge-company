@@ -1041,6 +1041,8 @@ var gw=document.getElementById('chartwrap');if(gw){var gio=new IntersectionObser
 
 // 전국 지도: 지사 카드/마커 hover·click → 주소 + 담당 도시 광섬유 애니메이션
 (function(){var svg=document.getElementById('kmap');if(!svg)return;var pinned=null;
+// 주소 말풍선 폭을 실제 글자 폭으로 재계산 (한글 폭 보정)
+svg.querySelectorAll('.addr').forEach(function(g){var t=g.querySelector('text'),r=g.querySelector('rect');try{var w=t.getBBox().width+24;var x=parseFloat(r.getAttribute('x'));x=Math.max(-36,Math.min(x,436-w));r.setAttribute('width',w);r.setAttribute('x',x);t.setAttribute('x',x+12)}catch(e){}});
 function act(k){svg.querySelectorAll('.cov,.addr,.mk').forEach(function(e){e.classList.toggle('on',e.dataset.b===k)});document.querySelectorAll('.map [data-b]').forEach(function(c){c.classList.toggle('on',c.dataset.b===k)});svg.classList.toggle('mdim',!!k)}
 function over(k){if(!pinned)act(k)} function out(){if(!pinned)act(null)}
 document.querySelectorAll('.map [data-b]').forEach(function(c){c.addEventListener('mouseenter',function(){over(c.dataset.b)});c.addEventListener('mouseleave',out);c.addEventListener('click',function(){pinned=(pinned===c.dataset.b)?null:c.dataset.b;act(pinned)})});
