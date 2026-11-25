@@ -74,6 +74,12 @@
       "autoPort": true
     },
     {
+      "name": "jugansa-site",
+      "runtimeExecutable": "C:/Users/win11/AppData/Local/Programs/Python/Python312/python.exe",
+      "runtimeArgs": ["-m", "http.server", "8787", "--directory", "jugansa-site"],
+      "port": 8787
+    },
+    {
       "name": "wow-clean",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
