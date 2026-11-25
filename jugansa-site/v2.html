@@ -6,27 +6,28 @@
 <title>EDGE COMPANY | 입주박람회 주관사</title>
 <meta name="description" content="주식회사 엣지컴퍼니 — 2018년부터 전국 80개 단지·48,523세대 입주박람회 주관. 자본금 5억 · 전기공사·실내건축 면허 자체 보유 · 대표 직접 운영 유튜브 15,000+.">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0d12;--bg2:#12151c;--ink:#111318;--paper:#f6f5f2;--line:rgba(255,255,255,.12);--line-d:rgba(0,0,0,.1);--mute:#8d939f;--gold:#c9a24a;--gold-l:#e3c77e}
+:root{--bg:#000;--bg2:#0a0a0c;--ink:#1d1d1f;--paper:#f5f5f7;--line:rgba(255,255,255,.14);--line-d:rgba(0,0,0,.1);--mute:#86868b;--gold:#b8933f;--gold-l:#d9bf7a}
+.cnt,.num{font-variant-numeric:tabular-nums}
+span.cnt{display:inline!important;font-size:inherit!important;font-weight:inherit!important;color:inherit!important;margin:0!important;letter-spacing:inherit!important}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:'Pretendard',sans-serif;background:var(--bg);color:#fff;line-height:1.7;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
-.en{font-family:'Montserrat',sans-serif;letter-spacing:.22em;text-transform:uppercase}
+.en{font-weight:600;font-size:11.5px;letter-spacing:.03em;color:#86868b}
 .wrap{max-width:1320px;margin:0 auto;padding:0 40px}
 @media(max-width:700px){.wrap{padding:0 20px}}
 .thin{font-weight:200}
-.rv{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+.rv{opacity:0;transform:translateY(16px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
 .rv.on{opacity:1;transform:none}
 /* ===== header ===== */
 .hd{position:fixed;inset-inline:0;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:26px 40px;mix-blend-mode:difference}
 .hd .logo{display:flex;align-items:center;gap:12px;color:#fff}
-.hd .logo .em{width:34px;height:34px;border:1px solid #fff;display:flex;align-items:center;justify-content:center;font-family:'Montserrat';font-weight:600;font-size:14px}
-.hd .logo b{font-family:'Montserrat';font-weight:600;font-size:13px;letter-spacing:.28em}
+.hd .logo .em{width:34px;height:34px;border:1px solid #fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.hd .logo b{font-weight:700;font-size:14px;letter-spacing:.12em}
 .hd .logo small{display:block;font-size:10px;letter-spacing:.18em;opacity:.7;font-weight:400}
 .hd .right{display:flex;align-items:center;gap:22px}
-.hd .yt{font-size:11px;letter-spacing:.2em;font-family:'Montserrat';font-weight:500;border:1px solid #fff;padding:9px 14px}
+.hd .yt{font-size:12.5px;letter-spacing:.01em;font-weight:600;border:1px solid rgba(255,255,255,.75);padding:9px 18px;border-radius:999px}
 .burger{width:40px;height:40px;display:flex;flex-direction:column;justify-content:center;gap:6px;cursor:pointer;background:none;border:0}
 .burger span{height:1.5px;background:#fff;display:block;width:28px;margin-left:auto}
 .burger span:nth-child(2){width:18px}
@@ -35,7 +36,7 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:#0a0c10;z-index:60;transform:translateX(100%);transition:transform .5s cubic-bezier(.2,.8,.2,1);padding:120px 48px 40px;display:flex;flex-direction:column}
 .drawer.on{transform:none}
 .drawer .x{position:absolute;top:28px;right:34px;font-size:30px;font-weight:200;cursor:pointer;background:none;border:0;color:#fff}
-.drawer h5{font-family:'Montserrat';font-size:15px;font-weight:600;letter-spacing:.12em;margin-bottom:12px}
+.drawer h5{font-size:18px;font-weight:700;letter-spacing:-.01em;margin-bottom:12px}
 .drawer ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--line)}
 .drawer li a{font-size:12px;letter-spacing:.08em;color:#9aa0ab}
 .drawer li a:hover{color:#fff}
@@ -49,14 +50,14 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
 .slide.on{opacity:1}.slide.on img{transform:scale(1)}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,transparent 35%,rgba(0,0,0,.72) 100%);pointer-events:none}
 .hero-txt{position:absolute;left:40px;right:40px;bottom:80px;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;gap:30px}
-.hero-txt .cap{font-family:'Montserrat';font-size:11px;letter-spacing:.3em;color:var(--gold-l);margin-bottom:18px}
-.hero-txt h1{font-weight:200;font-size:clamp(30px,4.4vw,60px);line-height:1.3;letter-spacing:-.02em;word-break:keep-all;max-width:860px}
-.hero-txt h1 b{font-weight:600}
-.hero-txt h1 .num{font-family:'Montserrat';font-weight:300;letter-spacing:0}
+.hero-txt .cap{font-size:13px;letter-spacing:.02em;color:#d9bf7a;font-weight:600;margin-bottom:16px}
+.hero-txt h1{font-weight:700;font-size:clamp(34px,4.8vw,66px);line-height:1.12;letter-spacing:-.035em;word-break:keep-all;max-width:900px}
+.hero-txt h1 b{font-weight:700;color:#fff}
+.hero-txt h1 .num{letter-spacing:-.04em}
 .hero-txt p{margin-top:18px;font-size:15px;color:#d7dbe3;max-width:560px;font-weight:300}
 .hero-txt p b{color:#fff;font-weight:600}
-.hero-side{text-align:right;font-family:'Montserrat';font-size:10px;letter-spacing:.3em;color:#aab0ba}
-.hero-side b{display:block;font-size:12px;color:#fff;font-weight:500;letter-spacing:.2em;margin-top:6px}
+.hero-side{text-align:right;font-size:12px;letter-spacing:.04em;color:#aab0ba;font-weight:500}
+.hero-side b{display:block;font-size:13px;color:#fff;font-weight:700;letter-spacing:.1em;margin-top:6px}
 .dots{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:flex;gap:10px;z-index:2}
 .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);display:block;transition:all .3s}
 .dots i.on{width:20px;border-radius:3px;background:#fff}
@@ -64,10 +65,10 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
 /* ===== section bones ===== */
 section{padding:130px 0}
 @media(max-width:800px){section{padding:84px 0}}
-.lab{font-family:'Montserrat';font-size:11px;letter-spacing:.32em;color:var(--gold);font-weight:500}
+.lab{font-size:13px;letter-spacing:0;color:var(--gold);font-weight:600}
 .lab.w{color:#9aa0ab}
-h2.t{font-weight:200;font-size:clamp(28px,3.6vw,50px);line-height:1.3;letter-spacing:-.02em;margin-top:18px;word-break:keep-all}
-h2.t b{font-weight:600}
+h2.t{font-weight:700;font-size:clamp(32px,4.2vw,58px);line-height:1.12;letter-spacing:-.035em;margin-top:16px;word-break:keep-all}
+h2.t b{font-weight:700;color:#86868b}
 .desc{margin-top:22px;font-size:15.5px;color:#9aa0ab;max-width:640px;font-weight:300;line-height:1.85}
 .light{background:var(--paper);color:var(--ink)}
 .light .desc{color:#5d6370}.light .lab.w{color:#8d939f}
@@ -75,7 +76,7 @@ h2.t b{font-weight:600}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:70px;border-top:1px solid var(--line-d)}
 .st{padding:34px 0 10px;border-right:1px solid var(--line-d);padding-right:24px}
 .st:last-child{border-right:0}
-.st b{font-family:'Montserrat';font-weight:300;font-size:clamp(34px,4vw,56px);display:block;line-height:1;letter-spacing:-.02em}
+.st b{font-weight:700;font-size:clamp(40px,5vw,68px);display:block;line-height:1;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
 .st b i{font-style:normal;font-size:16px;color:var(--gold);margin-left:4px;letter-spacing:0}
 .st span{display:block;margin-top:12px;font-size:13px;color:#5d6370}
 @media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.st{border-right:0;padding:26px 0 4px}}
@@ -83,7 +84,7 @@ h2.t b{font-weight:600}
 .creds{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:60px}
 .cr{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:34px 28px;min-height:170px}
 .cr .en{font-size:10px;color:#7d8490}
-.cr b{display:block;font-size:22px;font-weight:500;margin-top:14px;line-height:1.35;word-break:keep-all}
+.cr b{display:block;font-size:24px;font-weight:700;margin-top:14px;line-height:1.3;letter-spacing:-.02em;word-break:keep-all}
 .cr b em{font-style:normal;color:var(--gold-l)}
 .cr span{display:block;margin-top:8px;font-size:12.5px;color:#8d939f;line-height:1.6}
 @media(max-width:900px){.creds{grid-template-columns:repeat(2,1fr)}}
@@ -93,8 +94,8 @@ h2.t b{font-weight:600}
 .wk img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease}
 .wk:hover img{transform:scale(1.06)}
 .wk .ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.78) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px;color:#fff;opacity:.95}
-.wk .ov small{font-family:'Montserrat';font-size:10px;letter-spacing:.26em;color:var(--gold-l)}
-.wk .ov b{font-size:17px;font-weight:500;margin-top:6px;word-break:keep-all}
+.wk .ov small{font-size:11.5px;letter-spacing:.02em;color:#d9bf7a;font-weight:600}
+.wk .ov b{font-size:18px;font-weight:700;margin-top:6px;word-break:keep-all;letter-spacing:-.01em}
 .wk .ov span{font-size:12px;color:#cfd4dc;margin-top:3px}
 .wk.big{grid-column:span 2;aspect-ratio:8/4.5}
 @media(max-width:900px){.works{grid-template-columns:repeat(2,1fr)}.wk.big{grid-column:span 2}}
@@ -105,9 +106,9 @@ h2.t b{font-weight:600}
 .bars{display:flex;align-items:flex-end;gap:18px;height:260px;border-bottom:1px solid var(--line);padding-bottom:0}
 .bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
 .bar i{width:100%;background:linear-gradient(180deg,var(--gold-l),var(--gold));display:block;transition:height 1.2s cubic-bezier(.2,.8,.2,1);height:0}
-.bar b{font-family:'Montserrat';font-weight:300;font-size:22px;margin-bottom:10px}
-.bar span{font-family:'Montserrat';font-size:10px;letter-spacing:.2em;color:#7d8490;margin-top:12px}
-.gr .big{font-family:'Montserrat';font-weight:200;font-size:clamp(56px,7vw,110px);line-height:1;letter-spacing:-.03em}
+.bar b{font-weight:700;font-size:22px;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.bar span{font-size:12.5px;letter-spacing:0;color:#86868b;margin-top:12px;font-weight:500}
+.gr .big{font-weight:700;font-size:clamp(60px,7.5vw,120px);line-height:1;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
 .gr .big i{font-style:normal;font-size:24px;color:var(--gold-l)}
 .gr p{margin-top:18px;font-size:15px;color:#9aa0ab;font-weight:300}
 @media(max-width:900px){.gr{grid-template-columns:1fr;gap:40px}}
@@ -116,14 +117,14 @@ h2.t b{font-weight:600}
 .fs{padding:34px 28px 34px 0;border-right:1px solid var(--line-d);margin-right:28px}
 .fs:last-child{border-right:0;margin-right:0}
 .fs .en{font-size:10px;color:var(--gold)}
-.fs b{display:block;font-size:22px;font-weight:500;margin:12px 0 10px}
+.fs b{display:block;font-size:23px;font-weight:700;margin:12px 0 10px;letter-spacing:-.02em}
 .fs p{font-size:14px;color:#5d6370;font-weight:300;line-height:1.8}
 .case{margin-top:60px;background:var(--ink);color:#fff;padding:46px 50px;display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap}
-.case small{font-family:'Montserrat';font-size:10px;letter-spacing:.3em;color:var(--gold-l);display:block;margin-bottom:12px}
-.case .t2{font-size:clamp(20px,2.4vw,30px);font-weight:300;line-height:1.4;word-break:keep-all}
-.case .t2 b{font-weight:600}
+.case small{font-size:12.5px;letter-spacing:.02em;color:#d9bf7a;font-weight:600;display:block;margin-bottom:12px}
+.case .t2{font-size:clamp(20px,2.4vw,30px);font-weight:600;line-height:1.35;word-break:keep-all;letter-spacing:-.02em}
+.case .t2 b{font-weight:700;color:#a1a1a6}
 .case .nums{display:flex;gap:44px;flex-wrap:wrap}
-.case .nums b{font-family:'Montserrat';font-weight:300;font-size:46px;display:block;line-height:1;letter-spacing:-.02em}
+.case .nums b{font-weight:700;font-size:54px;display:block;line-height:1;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
 .case .nums b i{font-style:normal;font-size:14px;color:var(--gold-l);margin-left:3px}
 .case .nums span{font-size:11.5px;color:#9aa0ab;display:block;margin-top:8px}
 @media(max-width:900px){.fsteps{grid-template-columns:1fr}.fs{border-right:0;margin-right:0;border-bottom:1px solid var(--line-d)}.case{padding:34px 26px}}
@@ -133,17 +134,17 @@ h2.t b{font-weight:600}
 .th img{width:100%;height:100%;object-fit:cover;transition:transform .9s}
 .th:hover img{transform:scale(1.06)}
 .th .ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.85) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:26px}
-.th .ov small{font-family:'Montserrat';font-size:10px;letter-spacing:.3em;color:var(--gold-l)}
-.th .ov b{font-size:22px;font-weight:500;margin-top:8px}
+.th .ov small{font-size:11.5px;letter-spacing:.02em;color:#d9bf7a;font-weight:600}
+.th .ov b{font-size:23px;font-weight:700;margin-top:8px;letter-spacing:-.02em}
 .th .ov span{font-size:12.5px;color:#cfd4dc;margin-top:6px;font-weight:300}
 @media(max-width:800px){.themes{grid-template-columns:repeat(2,1fr)}}
 /* ceo + youtube */
 .ceo{display:grid;grid-template-columns:440px 1fr;gap:80px;align-items:center}
 .ceo .ph{aspect-ratio:4/5;overflow:hidden}
 .ceo .ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(.15)}
-.ceo blockquote{font-size:clamp(22px,2.6vw,34px);font-weight:200;line-height:1.6;word-break:keep-all}
-.ceo blockquote b{font-weight:600;color:var(--gold-l)}
-.ceo .who{margin-top:26px;font-family:'Montserrat';font-size:11px;letter-spacing:.3em;color:#9aa0ab}
+.ceo blockquote{font-size:clamp(22px,2.6vw,36px);font-weight:700;line-height:1.35;letter-spacing:-.03em;word-break:keep-all}
+.ceo blockquote b{font-weight:700;color:#86868b}
+.ceo .who{margin-top:26px;font-size:12.5px;letter-spacing:.02em;color:#86868b;font-weight:600}
 .ceo .who b{display:block;font-family:'Pretendard';font-size:20px;letter-spacing:0;color:#fff;font-weight:500;margin-top:6px}
 .ytbox{margin-top:46px;border-top:1px solid var(--line);padding-top:30px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .ytbox a{display:block}
@@ -153,31 +154,31 @@ h2.t b{font-weight:600}
 .ytbox b{display:block;font-size:13px;font-weight:500;margin-top:10px;line-height:1.5;word-break:keep-all}
 .ytbox span{font-size:11px;color:#7d8490}
 .ytline{margin-top:26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.ytline .k{font-family:'Montserrat';font-weight:300;font-size:40px;line-height:1}
+.ytline .k{font-weight:700;font-size:46px;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .ytline .k i{font-style:normal;font-size:14px;color:var(--gold-l)}
 .ytline p{font-size:13.5px;color:#9aa0ab;font-weight:300}
-.ytline a.ch{margin-left:auto;font-family:'Montserrat';font-size:11px;letter-spacing:.2em;border:1px solid #fff;padding:11px 18px}
+.ytline a.ch{margin-left:auto;font-size:13px;letter-spacing:0;font-weight:600;border:1px solid rgba(255,255,255,.7);padding:11px 22px;border-radius:999px}
 @media(max-width:900px){.ceo{grid-template-columns:1fr;gap:40px}.ytbox{grid-template-columns:1fr}}
 /* promise list */
 .pl{margin-top:50px;display:grid;grid-template-columns:1fr 1fr;gap:0 60px}
 .pi{display:grid;grid-template-columns:52px 1fr;gap:16px;padding:22px 0;border-bottom:1px solid var(--line-d)}
-.pi .n{font-family:'Montserrat';font-weight:300;font-size:22px;color:var(--gold)}
-.pi b{display:block;font-size:16.5px;font-weight:500}
+.pi .n{font-weight:700;font-size:20px;color:#86868b;font-variant-numeric:tabular-nums}
+.pi b{display:block;font-size:17px;font-weight:700;letter-spacing:-.01em}
 .pi p{font-size:13px;color:#5d6370;margin-top:5px;font-weight:300;line-height:1.7}
 @media(max-width:800px){.pl{grid-template-columns:1fr}}
 /* support */
 .sg{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:60px}
 .sg div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:30px 26px;min-height:150px}
 .sg .en{font-size:10px;color:var(--gold)}
-.sg b{display:block;font-size:17px;font-weight:500;margin-top:12px}
+.sg b{display:block;font-size:17.5px;font-weight:700;margin-top:12px;letter-spacing:-.01em}
 .sg p{font-size:12.5px;color:#8d939f;margin-top:6px;font-weight:300}
 @media(max-width:900px){.sg{grid-template-columns:repeat(2,1fr)}}
 /* contact */
 .contact{background:#000;text-align:center;padding:150px 0}
-.contact .tel{font-family:'Montserrat';font-weight:200;font-size:clamp(46px,7vw,96px);letter-spacing:-.02em;line-height:1;margin:30px 0 10px}
+.contact .tel{font-weight:700;font-size:clamp(48px,7.5vw,104px);letter-spacing:-.055em;line-height:1;margin:30px 0 10px;font-variant-numeric:tabular-nums}
 .contact .sub{font-size:14px;color:#9aa0ab;font-weight:300}
 .cta{display:flex;justify-content:center;gap:12px;margin-top:40px;flex-wrap:wrap}
-.cta a{font-family:'Montserrat';font-size:11px;letter-spacing:.22em;padding:16px 26px;border:1px solid #fff}
+.cta a{font-size:14px;letter-spacing:0;font-weight:600;padding:14px 30px;border:1px solid rgba(255,255,255,.6);border-radius:999px}
 .cta a.f{background:#fff;color:#000}
 .branches{margin-top:60px;font-size:12.5px;color:#6f7580;font-weight:300;line-height:2}
 footer{padding:40px 0;border-top:1px solid var(--line);font-size:12px;color:#6f7580;line-height:2}
@@ -217,7 +218,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
   <div class="hero-txt">
     <div>
       <div class="cap" id="cap">FEATURED · 레이카운티 4,470세대</div>
-      <h1>대한민국 단지가 선택한<br><span class="num">48,523</span>세대, <b>입주박람회의 기준.</b></h1>
+      <h1>대한민국 단지가 선택한<br><span class="num cnt" data-n="48523" data-fmt="comma">0</span>세대, <b>입주박람회의 기준.</b></h1>
       <p>2018년부터 8년간 전국 <b>80개 단지 · 12개 지사</b>. 자본금 5억, 전기공사 · 실내건축 면허를 <b>직접 보유</b>한 주관사입니다.</p>
     </div>
     <div class="hero-side">SINCE 2018<b>EDGE COMPANY</b></div>
@@ -232,10 +233,10 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
     <h2 class="t">숫자가 증명하는<br><b>다른 차원의 신뢰.</b></h2>
     <p class="desc">말로 하는 약속이 아닙니다. 8년간 누적된 실적과 단지 규모가 엣지컴퍼니가 어떤 회사인지 가장 정확하게 보여줍니다.</p></div>
     <div class="stats rv">
-      <div class="st"><b>80<i>+</i></b><span>누적 주관 단지 · 2018–2025</span></div>
-      <div class="st"><b>48,523</b><span>누적 세대</span></div>
-      <div class="st"><b>4,470<i>세대</i></b><span>최대 단지 · 레이카운티 단일 주관</span></div>
-      <div class="st"><b>93<i>%</i></b><span>지역 점유율 · 사송 88% · 에코델타 93%</span></div>
+      <div class="st"><b><span class="cnt" data-n="80">0</span><i>+</i></b><span>누적 주관 단지 · 2018–2025</span></div>
+      <div class="st"><b><span class="cnt" data-n="48523" data-fmt="comma">0</span></b><span>누적 세대</span></div>
+      <div class="st"><b><span class="cnt" data-n="4470" data-fmt="comma">0</span><i>세대</i></b><span>최대 단지 · 레이카운티 단일 주관</span></div>
+      <div class="st"><b><span class="cnt" data-n="93">0</span><i>%</i></b><span>지역 점유율 · 사송 88% · 에코델타 93%</span></div>
     </div>
   </div>
 </section>
@@ -299,7 +300,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
         <div class="bar"><b>18</b><i data-h="72"></i><span>2025</span></div>
         <div class="bar"><b>25</b><i data-h="100"></i><span>2026 예약</span></div>
       </div>
-      <div class="rv"><div class="big">+178<i>%</i></div><p>5년간 누적 성장 · 연평균 28.9%. 2022년 9개 단지에서 2026년 25개 단지 예약까지 — 신규 영업이 아닌 입소문 기반 성장입니다.</p></div>
+      <div class="rv"><div class="big">+<span class="cnt" data-n="178">0</span><i>%</i></div><p>5년간 누적 성장 · 연평균 28.9%. 2022년 9개 단지에서 2026년 25개 단지 예약까지 — 신규 영업이 아닌 입소문 기반 성장입니다.</p></div>
     </div>
   </div>
 </section>
@@ -317,7 +318,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
     </div>
     <div class="case rv">
       <div><small>RECENT CASE · 성동자이 리버뷰 · 서울 1,670세대</small><div class="t2">세대당 18만원 상당 발전지원금<br><b>전액 현물 · 공개 집행 제안</b></div></div>
-      <div class="nums"><div><b>18<i>만원</i></b><span>세대당 · 일반분양 797세대</span></div><div><b>1.43<i>억</i></b><span>지원 총액</span></div><div><b>택1<i>현물</i></b><span>사용처 협의회 의결</span></div></div>
+      <div class="nums"><div><b><span class="cnt" data-n="18">0</span><i>만원</i></b><span>세대당 · 일반분양 797세대</span></div><div><b><span class="cnt" data-n="1.43" data-dec="2">0</span><i>억</i></b><span>지원 총액</span></div><div><b>택1<i>현물</i></b><span>사용처 협의회 의결</span></div></div>
     </div>
   </div>
 </section>
@@ -344,7 +345,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
         <span class="lab">07 · CEO MESSAGE</span>
         <blockquote style="margin-top:18px">박람회를 운영하는 회사가 아닌,<br><b>단지를 완성시키는 회사.</b><br>도망갈 수 없는 회사가, 가장 신뢰할 수 있는 회사입니다.</blockquote>
         <div class="who">CEO · EDGE COMPANY<b>대표이사 고진식</b></div>
-        <div class="ytline"><div class="k">15K<i>+</i></div><p>대표가 직접 운영하는 유튜브 「대한민국 주관사 기준」<br>구독자 15,000명이 매일 검증하는 회사</p><a class="ch" href="https://www.youtube.com/@대한민국주관사기준" target="_blank" rel="noopener">CHANNEL →</a></div>
+        <div class="ytline"><div class="k"><span class="cnt" data-n="15">0</span>K<i>+</i></div><p>대표가 직접 운영하는 유튜브 「대한민국 주관사 기준」<br>구독자 15,000명이 매일 검증하는 회사</p><a class="ch" href="https://www.youtube.com/@대한민국주관사기준" target="_blank" rel="noopener">CHANNEL →</a></div>
         <div class="ytbox">
           <a href="https://www.youtube.com/watch?v=B9AD2ipgrp4" target="_blank" rel="noopener"><div class="im"><img src="images/r/yt_B9AD2ipgrp4.jpg" alt=""></div><b>입주민이 제일 많이 묻는 질문 1위</b><span>조회수 2,650+</span></a>
           <a href="https://www.youtube.com/watch?v=80eEBoKnnGA" target="_blank" rel="noopener"><div class="im"><img src="images/r/yt_80eEBoKnnGA.jpg" alt=""></div><b>"오늘만 이 가격" 영업 멘트 팩트체크</b><span>조회수 1,789+</span></a>
@@ -426,6 +427,13 @@ dr.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeD)}
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:0,rootMargin:'0px 0px -60px 0px'});
 document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
 setTimeout(function(){document.querySelectorAll('.rv').forEach(function(el){el.classList.add('on')})},5000);
+// 숫자 카운트업 (easeOutExpo · 탭 숫자로 흔들림 없음)
+var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;cio.unobserve(e.target);
+  var el=e.target,n=parseFloat(el.dataset.n),dec=+(el.dataset.dec||0),fmt=el.dataset.fmt,t0=null,D=1900;
+  function f(t){if(!t0)t0=t;var p=Math.min((t-t0)/D,1),v=p===1?n:n*(1-Math.pow(2,-10*p));
+    var s=fmt==='comma'?Math.round(v).toLocaleString('ko-KR'):v.toFixed(dec);el.textContent=s;if(p<1)requestAnimationFrame(f)}
+  requestAnimationFrame(f)})},{threshold:.4});
+document.querySelectorAll('.cnt').forEach(function(el){cio.observe(el)});
 // bars
 var bio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.querySelectorAll('i').forEach(function(b){b.style.height=b.dataset.h+'%'});bio.unobserve(e.target)}})},{threshold:.3});
 bio.observe(document.getElementById('bars'));
