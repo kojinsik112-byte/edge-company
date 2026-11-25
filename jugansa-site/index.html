@@ -224,7 +224,7 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
 .map div.hq{background:#fff;color:#000}.map div.hq small{color:#b8933f}.map div.hq span{color:#555}.map div.hq::before{background:#000}
 .pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-l);margin-right:8px;vertical-align:2px;box-shadow:0 0 0 0 rgba(217,191,122,.6);animation:pulse 2.2s infinite}
 @keyframes pulse{70%{box-shadow:0 0 0 9px rgba(217,191,122,0)}100%{box-shadow:0 0 0 0 rgba(217,191,122,0)}}
-.kmap{width:100%;max-width:480px;height:auto;display:block;margin:30px auto 0;filter:drop-shadow(0 10px 30px rgba(0,0,0,.6));overflow:visible}
+.kmap{width:100%;max-width:480px;height:auto;display:block;margin:30px auto 0;overflow:visible}
 .kmap .dots{stroke:rgba(255,255,255,.26);stroke-width:4.4;stroke-linecap:round;fill:none}
 .kmap text{font-family:Pretendard,sans-serif}
 .kmap .bl{font-size:11.5px;font-weight:600;fill:#e9d49a}
@@ -436,7 +436,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
 @media(max-width:700px){.mbar{display:grid}body{padding-bottom:50px}}
 
 /* ===== custom cursor ===== */
-.cur{position:fixed;left:0;top:0;width:36px;height:36px;border:1.5px solid rgba(255,255,255,.95);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .25s,height .25s,background .25s,opacity .3s;will-change:left,top;opacity:0}
+.cur{position:fixed;left:0;top:0;width:36px;height:36px;border:1.5px solid rgba(255,255,255,.95);box-shadow:0 0 0 1px rgba(0,0,0,.35),inset 0 0 0 1px rgba(0,0,0,.35);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s,opacity .3s;will-change:left,top;opacity:0}
 .cur.v{opacity:1}
 .cur.h{width:76px;height:76px;background:rgba(255,255,255,.22)}
 .cur i{position:absolute;left:50%;top:50%;width:5px;height:5px;background:#fff;border-radius:50%;transform:translate(-50%,-50%)}
