@@ -71,6 +71,25 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
 .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);display:block;transition:all .3s}
 .dots i.on{width:38px;border-radius:3px;background:linear-gradient(90deg,#fff 50%,rgba(255,255,255,.35) 50%);background-size:200% 100%;background-position:100% 0;animation:prog 6.5s linear forwards}
 @keyframes prog{to{background-position:0 0}}
+/* hero side panel (건축설계 펌 스타일 우측 인덱스) */
+.hpanel{display:none;position:absolute;top:0;right:0;bottom:0;width:360px;background:#0c1118;border-left:1px solid rgba(255,255,255,.07);padding:118px 44px 46px;z-index:3;flex-direction:column}
+.hpanel .pg{padding:22px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.hpanel .pg:first-child{padding-top:0}
+.hpanel h5{font-size:17px;font-weight:700;letter-spacing:-.01em;margin:0 0 12px}
+.hpanel .pg a{display:inline-block;font-size:12.5px;color:#aab0ba;font-weight:500;margin:0 18px 6px 0;letter-spacing:.01em;transition:color .25s}
+.hpanel .pg a:hover{color:#fff}
+.hpanel .pf{margin-top:auto;font-size:12.5px;color:#9aa0ab;line-height:1.9;font-weight:300;padding-top:30px}
+.hpanel .pf b{display:block;color:#fff;font-weight:700;font-size:13px;letter-spacing:.08em;margin-bottom:8px}
+@media(min-width:1120px){.hpanel{display:flex}.slide{right:360px}.slide img{object-position:0% 50%}.hero::after{right:360px}.hero-txt{right:424px}.hero-side{display:none}.dots{left:calc((100% - 360px)/2)}}
+/* wide image bands */
+.wide{position:relative;margin-top:50px;aspect-ratio:21/9;overflow:hidden}
+.wide img{width:100%;height:100%;object-fit:cover}
+.tagc{position:absolute;left:18px;bottom:14px;font-size:11.5px;color:#fff;background:rgba(0,0,0,.45);padding:6px 11px;border-radius:999px;font-weight:500;letter-spacing:.01em}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.pair figure{margin:0;position:relative;aspect-ratio:16/9;overflow:hidden}
+.pair img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s}
+.pair figure:hover img{transform:scale(1.04)}
+@media(max-width:700px){.pair{grid-template-columns:1fr}.wide{aspect-ratio:16/10}}
 /* 문의 폼 (Netlify Forms — 서버 없이 접수) */
 .form{max-width:680px;margin:52px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left}
 .form input,.form textarea{width:100%;background:#0f0f11;border:1px solid var(--line);color:#fff;padding:16px 18px;border-radius:14px;font-size:14.5px;font-family:inherit;outline:none;transition:border-color .3s}
@@ -166,11 +185,13 @@ h2.t b{font-weight:700;color:#86868b}
 .ceo .ph .tag{position:absolute;left:0;bottom:-34px;font-size:11.5px;letter-spacing:.08em;color:#86868b;font-weight:600}
 @media(max-width:800px){.ceo .ph .sub{right:0;bottom:-24px;width:38%;border-width:4px}.ceo .ph .tag{display:none}}
 /* photo backdrops */
-#creds,#support{position:relative;isolation:isolate}
-#creds::before,#support::before{content:"";position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center;opacity:.28}
+#creds,#support,#growth,#contact{position:relative;isolation:isolate}
+#creds::before,#support::before,#growth::before,#contact::before{content:"";position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center;opacity:.28}
 #creds::before{background-image:url(images/night/g1.jpg)}
 #support::before{background-image:url(images/night/g6.jpg)}
-#creds::after,#support::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.35) 50%,#000 100%)}
+#growth::before{background-image:url(images/scene/gate.jpg);opacity:.2}
+#contact::before{background-image:url(images/scene/expo2.jpg);opacity:.16}
+#creds::after,#support::after,#growth::after,#contact::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.35) 50%,#000 100%)}
 /* night marquee */
 .mq{overflow:hidden;background:#000;padding-top:6px}
 .mq .trk{display:flex;gap:6px;width:max-content;animation:mq 70s linear infinite;will-change:transform}
@@ -252,6 +273,14 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
   <div class="slide"><img src="images/hero/h3.jpg" alt=""></div>
   <div class="slide"><img src="images/hero/h4.jpg" alt=""></div>
   <div class="slide"><img src="images/hero/h5.jpg" alt=""></div>
+  <div class="slide"><img src="images/scene/sunset.jpg" alt=""></div>
+  <aside class="hpanel" aria-label="바로가기">
+    <div class="pg"><h5>ABOUT</h5><a href="#intro">OVERVIEW</a><a href="#creds">CREDENTIALS</a><a href="#ceo">CEO MESSAGE</a></div>
+    <div class="pg"><h5>FEATURED PROJECT</h5><a href="#works">PROJECTS 80+</a><a href="#growth">GROWTH</a></div>
+    <div class="pg"><h5>BENEFITS</h5><a href="#fund">발전지원금</a><a href="#lighting">경관조명</a><a href="#promise">약속 10가지</a><a href="#support">무상 단지지원 8</a></div>
+    <div class="pg"><h5>CONTACT</h5><a href="#contact">주관사 문의</a><a href="https://www.band.us/band/81783086" target="_blank" rel="noopener">네이버 밴드</a><a href="https://www.youtube.com/@대한민국주관사기준" target="_blank" rel="noopener">YOUTUBE</a></div>
+    <div class="pf"><b>EDGE COMPANY · SINCE 2018</b>전국 아파트 입주박람회 주관<br>발전지원금 기반 단지 가치 향상<br>경관조명 · 커뮤니티 직접 시공 (면허 보유)</div>
+  </aside>
   <div class="hero-txt" id="heroTxt">
     <div>
       <div class="cap" id="cap">A Different Dimension.</div>
@@ -301,7 +330,8 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
   <div class="wrap">
     <div class="rv"><span class="lab">03 · FEATURED PROJECTS</span>
     <h2 class="t">전국 80개 단지,<br><b>엣지가 만든 현장들.</b></h2></div>
-    <div class="works">
+    <div class="wide rv"><img loading="lazy" src="images/scene/expo1.jpg" alt=""><span class="tagc">입주박람회 현장 · 연출 이미지</span></div>
+    <div class="works" style="margin-top:14px">
       <a class="wk big rv" href="#contact"><img loading="lazy" src="images/r/apt17.jpg" alt=""><div class="ov"><small>2023 · BEXCO</small><b>레이카운티</b><span>4,470세대 · 공동 주관</span></div></a>
       <a class="wk rv" href="#contact"><img loading="lazy" src="images/r/apt10.jpg" alt=""><div class="ov"><small>2025 · BEXCO</small><b>두산위브더제니스 오션시티</b><span>2,813세대 · 조합 주관</span></div></a>
       <a class="wk rv" href="#contact"><img loading="lazy" src="images/r/apt04.jpg" alt=""><div class="ov"><small>2025 · BEXCO</small><b>양정자이더샵 SK VIEW</b><span>2,272세대 · 조합 주관</span></div></a>
@@ -356,6 +386,10 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
     <div class="case rv">
       <div><small>RECENT CASE · 성동자이 리버뷰 · 서울 1,670세대</small><div class="t2">세대당 18만원 상당 발전지원금<br><b>전액 현물 · 공개 집행 제안</b></div></div>
       <div class="nums"><div><b><span class="cnt" data-n="18">0</span><i>만원</i></b><span>세대당 · 일반분양 797세대</span></div><div><b><span class="cnt" data-n="1.43" data-dec="2">0</span><i>억</i></b><span>지원 총액</span></div><div><b>택1<i>현물</i></b><span>사용처 협의회 의결</span></div></div>
+    </div>
+    <div class="pair rv">
+      <figure><img loading="lazy" src="images/scene/garden.jpg" alt=""><span class="tagc">단지 조경 · 연출 이미지</span></figure>
+      <figure><img loading="lazy" src="images/scene/plaza.jpg" alt=""><span class="tagc">커뮤니티 광장 · 연출 이미지</span></figure>
     </div>
   </div>
 </section>
@@ -471,7 +505,8 @@ var SL=[
  {cap:'Everything, In One Partner.', t:'모든 것을 갖춘 주관사.',                  p:'자본금 5억 · 전기공사 · 실내건축 면허 <b>자체 보유</b> · 전국 12개 지사 · 대표 직접 운영 유튜브 15,000+'},
  {cap:'Benefits, Delivered.',        t:'입주민 혜택,<br>엣지로 오십시오.',          p:'발전지원금은 현금이 아닌 <b>단지의 자산</b>으로 — 세대당 혜택을 현물로 직접 시공합니다.'},
  {cap:'Chosen by 48,523 Households.',t:'대한민국 단지가 선택한<br>48,523세대.',   p:'2018년부터 8년간 전국 <b>80개 단지</b> · 입주박람회의 기준.'},
- {cap:'Proven by Record.',           t:'80개 단지,<br>기록으로 증명합니다.',        p:'사송 88% · 에코델타 93% — <b>지역이 먼저 선택한</b> 주관사.'}
+ {cap:'Proven by Record.',           t:'80개 단지,<br>기록으로 증명합니다.',        p:'사송 88% · 에코델타 93% — <b>지역이 먼저 선택한</b> 주관사.'},
+ {cap:'Built to Last.',              t:'박람회가 끝나도,<br>단지에 남는 회사.',      p:'전기공사 · 실내건축 면허 법인이 <b>박람회 이후</b>까지 단지를 책임집니다.'}
 ];
 var slides=[].slice.call(document.querySelectorAll('.slide')), dots=document.getElementById('dots'), cur=0, txt=document.getElementById('heroTxt');
 slides.forEach(function(_,i){var d=document.createElement('i'); if(!i) d.className='on'; d.onclick=function(){go(i)}; dots.appendChild(d);});
