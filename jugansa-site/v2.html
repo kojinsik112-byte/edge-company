@@ -624,7 +624,9 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
 .sig-go .sig2 path{animation-name:pen}
 @keyframes pen{to{stroke-dashoffset:0}}
 
-.ytbox{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
+.ytwrap{margin-top:70px;padding-top:40px;border-top:1px solid var(--line)}
+.ytbox{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:22px}
+@media(max-width:1000px){.ytbox{grid-template-columns:repeat(2,1fr)}}
 .ytbox a{display:block}
 .ytbox .im{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:6px;background:#111}
 .ytbox .im img{width:100%;height:100%;object-fit:cover;transition:transform .8s}
@@ -633,7 +635,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
 .ytbox .im::before{content:"";position:absolute;left:50%;top:50%;z-index:2;transform:translate(-40%,-50%);border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent}
 .ytbox a:hover .im::after{transform:translate(-50%,-50%) scale(1.1)}
 .ytbox .dur{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.8);color:#fff;font-size:12px;font-weight:700;padding:3px 7px;border-radius:4px;z-index:2}
-.ytbox b{display:block;margin-top:12px;font-size:16px;font-weight:700;line-height:1.4;word-break:keep-all;letter-spacing:-.01em}
+.ytbox b{display:block;margin-top:12px;font-size:14.5px;font-weight:700;line-height:1.4;word-break:keep-all;letter-spacing:-.01em}
 .ytbox a>span{display:block;font-size:12.5px;color:#9aa0ab;margin-top:5px}
 @media(max-width:560px){.ytbox{grid-template-columns:1fr}}
 
@@ -1033,7 +1035,10 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
           <div class="sig">주식회사 엣지컴퍼니 대표이사 <b>고진식</b><div class="sigw sm"><img src="images/sig.png" alt="고진식 서명"><i class="pen"></i></div></div>
         </div>
         <div class="ytline"><div class="k"><span class="cnt" data-n="15">0</span>K<i>+</i></div><p>대표가 직접 운영하는 유튜브 「엣지컴퍼니 | 대한민국 주관사 기준」<br>구독자 15,000명이 매일 검증하는 회사</p><a class="ch ytbtn" href="https://www.youtube.com/@edgecompany_official" target="_blank" rel="noopener"><svg class="yti" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>채널 바로가기</a></div>
-        <div class="ytbox">
+      </div>
+    </div>
+    <div class="ytwrap rv"><span class="lab">유튜브 「대한민국 주관사 기준」 · 대표가 직접 운영</span>
+    <div class="ytbox">
           <a href="https://www.youtube.com/watch?v=vxPl-YCNqbc" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_vxPl-YCNqbc.jpg" alt=""><span class="dur">2:10</span></div><b>에코델타 디에트르 더퍼스트 주간 점등식  웅장한 시작, 입주의 기준을 바꾸…</b><span>조회수 4.9천</span></a>
           <a href="https://www.youtube.com/watch?v=bV1Ea4qcW1c" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_bV1Ea4qcW1c.jpg" alt=""><span class="dur">2:09</span></div><b>영주자이 시그니처의 빛나는 밤, 드디어 공개합니다 ✨</b><span>조회수 3.5천</span></a>
           <a href="https://www.youtube.com/watch?v=NA9cLHN6tFo" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_NA9cLHN6tFo.jpg" alt=""><span class="dur">1:21</span></div><b>상생공원 힐스테이트·더샵 드론영상  2026.10.15 촬영  주관사 엣지…</b><span>조회수 2.2천</span></a>
@@ -1043,7 +1048,6 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;
           <a href="https://www.youtube.com/watch?v=WXFxoHLxuds" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_WXFxoHLxuds.jpg" alt=""><span class="dur">6:52</span></div><b>입주업체 시작 전 꼭 보세요 10년차가 말하는 살아남는 방법</b><span>조회수 120</span></a>
           <a href="https://www.youtube.com/watch?v=VqxAoF7blr8" target="_blank" rel="noopener"><div class="im"><img loading="lazy" src="images/r/yt_VqxAoF7blr8.jpg" alt=""><span class="dur">7:00</span></div><b>입주박람회 계약업체가 갑자기 부도나면… 내 계약금은 어떻게 될까</b><span>조회수 54</span></a>
         </div>
-      </div>
     </div>
   </div>
 </section>
